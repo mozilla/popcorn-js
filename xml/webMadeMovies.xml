@@ -1,0 +1,35 @@
+<popcorn>
+  <subtitles>
+    <subtitle in="0:05" out="0:07">Hello! My name is Celine Celine</subtitle>
+    <subtitle in="0:07" out="0:09">And I help the Internet be easier</subtitle>
+    <subtitle in="0:09" out="0:12">by making things easier</subtitle>
+    <subtitle in="0:15" out="0:17">My name is Mona Kasra</subtitle>
+    <subtitle in="0:17" out="0:19">and I'm building a better internet</subtitle>
+  </subtitles>
+  <inThisVideo>
+    <tagThisVideo in="0:03" out="0:14">Celine Celine</tagThisVideo>
+	  <tagThisVideo in="0:13" out="0:16">Bryan</tagThisVideo>
+    <tagThisVideo in="0:15" out="0:19">Mona Kasra</tagThisVideo>
+	  <tagThisVideo in="0:19" out="0:21">Caleb</tagThisVideo>
+	  <tagThisVideo in="0:21" out="0:31">Dave</tagThisVideo>
+	  <tagThisVideo in="0:21" out="0:33">Noah</tagThisVideo>
+	  <tagThisVideo in="0:39" out="0:41">Celine Celine</tagThisVideo>
+  </inThisVideo>
+  <map>
+    <location id="map1" in="0:01" out="0:30" lat="45.505" long="-73.335" target="map" zoom="8"/>
+    <location id="map2" in="0:30" out="1:00" lat="43.771" long="-79.5" target="map" zoom="16"/>
+    <location id="map3" in="1:00" out="1:30" lat="41.771" long="-76.5" target="map" zoom="16"/>
+  </map>
+  <twitter>
+    <celine target="div1" mostrecenttweets="15" user="celinecelines">
+      <tweet in="0:01" out="0:10"/>
+      <tweet in="0:10" out="0:20"/>
+      <tweet in="0:20" out="0:30"/>
+    </celine>
+    <humphd target="div2" mostrecenttweets="15" user="humphd">
+      <tweet in="0:01" out="0:10"/>
+      <tweet in="0:10" out="0:20"/>
+      <tweet in="0:20" out="0:30"/>
+    </humphd>
+  </twitter>
+</popcorn>

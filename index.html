@@ -1,67 +1,48 @@
 <html> 
-	<head> 
-		<title>html5 video demo</title> 
-		<script src="http://code.jquery.com/jquery.js"></script> 
-		<script src="http://google.com/jsapi"></script> 
-		<script>google.load("language","1");</script>			
-		<script src="video.js"></script>	
-		<style type="text/css" media="screen"> 
-                        body { background-color:#eee; }
-                        #container {
-                                width:850px;
-                                margin:auto 50px;
-                                border:1px solid #ccc;
-                                background:white;
-                                padding:20px;
-                                position:relative;
-                        }
-			#sub { 
-				position:absolute;
-				top:435px;
-				left:40px;
-				color:white;
-				font-weight:bold;
-				font-family:sans-serif;	
-				text-shadow:black 1px 1px 3px;
-				width:820px;	
-				font-size:25px;
-			}
-                        select { font-size:30px; float:left; }
-                        #credit { font-size:25px; color:#999; float:right; padding-top:3px; }
-                                #credit a { color:#555; }
-                        .clear { clear:both; }
-		</style> 
-	</head> 
-	<body> 
-                <div id="container">
-
-                        <video src="video/years.ogv" ontimeupdate="update(this)" controls> 
-                                <subtitles> 
-                                        <subtitle from="0:02" to="0:05">Intro. Lyrics start at ~0:16</subtitle> 
-                                        <subtitle from="0:16" to="0:22.5">I'm fifteen for a moment, caught in between ten and twenty</subtitle> 
-                                        <subtitle from="0:23" to="0:30">and I'm just dreaming, counting the ways to where you are.</subtitle> 
-                                        <subtitle from="0:32" to="0:39">I'm twenty-two for a moment, and she feels better than ever and we're</subtitle> 
-                                        <subtitle from="0:39" to="0:46.5">on fire, making our way back from Mars.</subtitle> 
-                                        <subtitle from="0:48" to="0:56">Fifteen there's still time for you, time to buy and time to lose.</subtitle> 
-                                        <subtitle from="0:56.5" to="1:08">Fifteen, there's never a wish better than this, when you've only got a hundred years to live</subtitle> 
-                                </subtitles> 
-                        </video> 
-                        <div id="sub" border="2"></div><br/>
-
-                        <div id="bottom">
-                                <select id="language">
-                                        <option val="en">English</option>
-                                        <option val="es">Spanish</option>
-                                        <option val="fr">French</option>
-                                        <option val="de">German</option>
-                                        <option val="ja">Japanese</option>
-
-                                </select>
-                                <div id="credit">with help from <a href="http://google.com/translate">Google Translate</a> and <a href="http://jquery.com">jQuery</a></div>
-                        </div>
-                        <div class="clear"></div>
-                 </div>
-	</body> 
-
+  <head> 
+    <title>html5 video demo</title>
+    <script src="http://code.jquery.com/jquery.js"></script> 
+    <script src="popcorn.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <style type="text/css" media="screen"> 
+      body { 
+        background-color:#eee; 
+      }
+      #container {
+        width:850px;
+        margin:auto 50px;
+        border:1px solid #ccc;
+        background:white;
+        padding:20px;
+        position:relative;
+      }
+      #sub { 
+        position:absolute;
+        top:435px;
+        left:40px;
+        color:white;
+        font-weight:bold;
+        font-family:sans-serif;	
+        text-shadow:black 1px 1px 3px;
+        width:820px;	
+        font-size:25px;
+      }
+      #map {
+          border: solid 1px #000;
+          width: 200px;
+          height: 200px;
+      }
+    </style> 
+  </head> 
+  <body> 
+    <div id="container">
+      <video src="video/webMadeMovies.ogg" data-timeline-sources="xml/webMadeMovies.xml" controls></video>
+      <div id="sub"></div><br />
+      <div id="tagthisvideo">In this video:<span id="inthisvideo"></span></div><br />
+      <div id="map"></div><br />
+      <div>Celine Celine tweets: <br /><span id="div1"></span></div><br />
+      <div>Humphd tweets: <br /><span id="div2"></span></div>
+    </div>
+  </body> 
 </html> 
 
