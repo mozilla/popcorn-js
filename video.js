@@ -1,3 +1,4 @@
+// fire when DOM is ready, jQuery shortcut for $(document).ready
 $(function() {
         $("video").each(function() {
                 if (lang=window.location.search.substring(1)) {
@@ -20,6 +21,7 @@ $(function() {
 });
 
 var lt = 0;
+// fires when ontimeupdate() runs from <video> tag
 function update(vid) {
         var has_sub=false,
         t = vid.currentTime; 
@@ -64,6 +66,7 @@ function update(vid) {
         lt = t;
 }
 
+// convert time format mm:ss to seconds integer
 function to_secs(time) {
 	var t = time.split(":");
 	return parseInt(t[0]*60,10) + parseInt(t[1],10);
