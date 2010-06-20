@@ -144,24 +144,7 @@
     };
   };
 
-  var TwitterCommand = function(name, params, text) {
-    VideoCommand.call(this, name, params, text);
-    // Uses JQuery
-    var tweets = [];
-    $.getJSON("http://search.twitter.com/search.json?rpp=" + this.params.mostrecenttweets + "&callback=?&q=" + this.params.user, function(json) {
-      $.each(json.results, function(i, tweet){
-        tweets.push(tweet.text);
-      });
-    });
-    this.tweets = tweets;
-    this.in = function() {
-      document.getElementById(this.params.target).innerHTML = this.tweets[(Math.round((Math.random()*(this.tweets.length-1))))];
-    };
-    this.out = function() {
-      document.getElementById(this.params.target).innerHTML = "";
-    };
-  }; 
-  // http://twitter.com/celinecelines
+  var TwitterCommand = function(name, params, text) {}; // http://twitter.com/celinecelines
 
   // Wrapper for accessing commands by name
   // commands[name].create() returns a new command of type name
@@ -181,11 +164,6 @@
     location: {
       create: function(name, params, text) {
         return new MapCommand(name, params, text);
-      }
-    },
-    tweet: {
-      create: function(name, params, text) {
-        return new TwitterCommand(name, params, text);
       }
     }
   };

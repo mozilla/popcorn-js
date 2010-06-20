@@ -20,16 +20,4 @@
     <location id="map2" in="0:30" out="1:00" lat="43.771" long="-79.5" target="map" zoom="16"/>
     <location id="map3" in="1:00" out="1:30" lat="41.771" long="-76.5" target="map" zoom="16"/>
   </map>
-  <twitter>
-    <celine target="div1" mostrecenttweets="15" user="celinecelines">
-      <tweet in="0:01" out="0:10"/>
-      <tweet in="0:10" out="0:20"/>
-      <tweet in="0:20" out="0:30"/>
-    </celine>
-    <humphd target="div2" mostrecenttweets="15" user="humphd">
-      <tweet in="0:01" out="0:10"/>
-      <tweet in="0:10" out="0:20"/>
-      <tweet in="0:20" out="0:30"/>
-    </humphd>
-  </twitter>
 </popcorn>
