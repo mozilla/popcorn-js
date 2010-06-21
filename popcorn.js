@@ -1,3 +1,5 @@
+/*global google: false */ // This global comment is read by jslint
+
 (function() {
 
   // The video manager manages a single video element, and all it's commands.
@@ -17,24 +19,28 @@
   // Update is called on the video every time it's time changes.
   VideoManager.update = function(vid, manager) {
     var t = vid.currentTime;
-    // Loops through all commands in the manager, preloading data, and calling in() or out().
+    // Loops through all commands in the manager, preloading data, and calling onIn() or onOut().
     var commandObject = {};
     for (var i in manager.commandObjects) {
-      commandObject = manager.commandObjects[i];
-      if (commandObject.running && (commandObject.params.in > t || commandObject.params.out < t)) {
-        commandObject.running = false;
-        commandObject.out();
+      if (manager.commandObjects.hasOwnProperty(i)) {
+        commandObject = manager.commandObjects[i];
+        if (commandObject.running && (commandObject.params["in"] > t || commandObject.params["out"] < t)) {
+          commandObject.running = false;
+          commandObject.onOut();
+        }
       }
     }
-    for (var i in manager.commandObjects) {
-      commandObject = manager.commandObjects[i];
-      if (!commandObject.loaded && (commandObject.params.in-5) < t && commandObject.params.out > t) {
-        commandObject.loaded = true;
-        commandObject.preload();
-      }
-      if (!commandObject.running && commandObject.params.in < t && commandObject.params.out > t) {
-        commandObject.running = true;
-        commandObject.in();
+    for (var j in manager.commandObjects) {
+      if (manager.commandObjects.hasOwnProperty(j)) {
+        commandObject = manager.commandObjects[j];
+        if (!commandObject.loaded && (commandObject.params["in"] - 5) < t && commandObject.params["out"] > t) {
+          commandObject.loaded = true;
+          commandObject.preload();
+        }
+        if (!commandObject.running && commandObject.params["in"] < t && commandObject.params["out"] > t) {
+          commandObject.running = true;
+          commandObject.onIn();
+        }
       }
     }
   };
@@ -72,8 +78,8 @@
     this.text = text;
     this.running = false;
     this.loaded = false;
-    this.in = function() {};
-    this.out = function() {};
+    this.onIn = function() {};
+    this.onOut = function() {};
     this.preload = function() {};
     this.id = name + VideoCommand.count++;
     for (var i = 0, pl = params.length; i < pl; i++) {
@@ -90,24 +96,24 @@
   };
   VideoCommand.count = 0;
 
-  // Child commands. Uses in() and out() to do time based operations
+  // Child commands. Uses onIn() and onOut() to do time based operations
   var SubtitleCommand = function(name, params, text) {
     VideoCommand.call(this, name, params, text);
-    this.in = function() {
+    this.onIn = function() {
       document.getElementById("sub").innerHTML  = this.text;
     };
-    this.out = function() {
+    this.onOut = function() {
       document.getElementById("sub").innerHTML  = "";
     };
   };
 
   var TagCommand = function(name, params, text) {
     VideoCommand.call(this, name, params, text);
-    this.in = function() {
+    this.onIn = function() {
       TagCommand.people.contains[this.text] = this.text;
       document.getElementById("inthisvideo").innerHTML  = TagCommand.people.toString();
     };
-    this.out = function() {
+    this.onOut = function() {
       delete TagCommand.people.contains[this.text];
       document.getElementById("inthisvideo").innerHTML  = TagCommand.people.toString();
     };
@@ -117,7 +123,9 @@
     toString: function() {
       var r = [];
       for (var i in this.contains) {
-        r.push(" " + this.contains[i]);
+        if (this.contains.hasOwnProperty(i)) {
+          r.push(" " + this.contains[i]);
+        }
       }
       return r.toString();
     }
@@ -125,21 +133,21 @@
 
   var MapCommand = function(name, params, text) {
     VideoCommand.call(this, name, params, text);
-    this.params.zoom = parseInt(this.params.zoom);
+    this.params.zoom = parseInt(this.params.zoom, 10);
     // load the map
     // http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions  <-- Map API
     this.location = new google.maps.LatLng(this.params.lat, this.params.long);
     if (!MapCommand.map) {
       MapCommand.map = new google.maps.Map(document.getElementById(this.params.target), {mapTypeId: google.maps.MapTypeId.HYBRID});
-      MapCommand.map.setCenter(new google.maps.LatLng(0, 0))
+      MapCommand.map.setCenter(new google.maps.LatLng(0, 0));
       MapCommand.map.setZoom(0);
     }
-    this.in = function() {
+    this.onIn = function() {
       MapCommand.map.setCenter(this.location);
       MapCommand.map.setZoom(this.params.zoom);
     };
-    this.out = function() {
-      MapCommand.map.setCenter(new google.maps.LatLng(0, 0))
+    this.onOut = function() {
+      MapCommand.map.setCenter(new google.maps.LatLng(0, 0));
       MapCommand.map.setZoom(0);
     };
   };
@@ -178,7 +186,9 @@
         videoManager.addCommand(commands[node.nodeName].create(node.nodeName, allAttributes, node.textContent));
       } else {
         for (var i = 0; i < childNodes.length; i++) {
-          childNodes[i].nodeType === 1 && parseNode(childNodes[i], allAttributes);
+          if (childNodes[i].nodeType === 1) {
+            parseNode(childNodes[i], allAttributes);
+          }
         }
       }
     };
@@ -186,7 +196,9 @@
     for (var j = 0, dl = xmlDoc.length; j < dl; j++) {
       var x = xmlDoc[j].documentElement.childNodes;
       for (var i = 0, xl = x.length; i < xl; i++) {
-        x[i].nodeType === 1 && parseNode(x[i], []);
+        if (x[i].nodeType === 1) {
+          parseNode(x[i], []);
+        }
       }
     }
   };
