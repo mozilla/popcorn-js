@@ -1,23 +1,67 @@
 <popcorn>
-  <subtitles>
-    <subtitle in="0:05" out="0:07">Hello! My name is Celine Celine</subtitle>
-    <subtitle in="0:07" out="0:09">And I help the Internet be easier</subtitle>
-    <subtitle in="0:09" out="0:12">by making things easier</subtitle>
-    <subtitle in="0:15" out="0:17">My name is Mona Kasra</subtitle>
-    <subtitle in="0:17" out="0:19">and I'm building a better internet</subtitle>
-  </subtitles>
-  <inThisVideo>
-    <tagThisVideo in="0:03" out="0:14">Celine Celine</tagThisVideo>
-	  <tagThisVideo in="0:13" out="0:16">Bryan</tagThisVideo>
-    <tagThisVideo in="0:15" out="0:19">Mona Kasra</tagThisVideo>
-	  <tagThisVideo in="0:19" out="0:21">Caleb</tagThisVideo>
-	  <tagThisVideo in="0:21" out="0:31">Dave</tagThisVideo>
-	  <tagThisVideo in="0:21" out="0:33">Noah</tagThisVideo>
-	  <tagThisVideo in="0:39" out="0:41">Celine Celine</tagThisVideo>
-  </inThisVideo>
-  <map>
-    <location id="map1" in="0:01" out="0:30" lat="45.505" long="-73.335" target="map" zoom="8"/>
-    <location id="map2" in="0:30" out="1:00" lat="43.771" long="-79.5" target="map" zoom="16"/>
-    <location id="map3" in="1:00" out="1:30" lat="41.771" long="-76.5" target="map" zoom="16"/>
-  </map>
+  <manifest>
+    <people>
+      <person id="celine" name="Celine" salutation="Miss." >
+        <resource id="celinehomepage" src="http://www.celinecelines.com/" description="Celine's Homepage" />
+        <resource id="celinetwitter" src="http://twitter.com/celinecelines" description="Celine's Twitter" />
+      </person>
+      <person id="brian" name="brian" >
+        <resource type="twitter" source="http://twitter.com/bchirls" description="Brian's twitter" />
+      </person>
+      <person id="mona" name="Mona" >
+        <resource type="homepage" source="http://monakasra.com/" description="Mona's Homepage"/>
+      </person>
+      <person id="dave" name="Dave" >
+        <resource type="twitter" source="http://twitter.com/academicdave" description="Dave's twitter" />
+      </person>
+      <person id="noah" name="Noah" >
+        <resource type="twitter" source="http://twitter.com/noahworkman" description="Noah's Twitter Feed" />
+      </person>
+    </people>
+    <places>
+      <place id="acc" type="building" name="Austin Convention Center">
+        <resource id="acchomepage" src="http://www.austinconventioncenter.com/" description="Austin Convention Center"/>
+      </place>
+      <place id="saopaulo" type="city" name="Sao Paulo">
+        <resource id="saupaulowiki" src="http://en.wikipedia.org/wiki/S%C3%A3o_Paulo" description="Sao Paulo city, Brazil"/>
+      </place>
+    </places>
+  </manifest>
+  <timeline>
+    <subtitles>
+      <subtitle in="0:05" out="0:07">Hello! My name is Celine Celine</subtitle>
+      <subtitle in="0:07" out="0:09">And I help the Internet be easier</subtitle>
+      <subtitle in="0:09" out="0:12">by making things easier</subtitle>
+      <subtitle in="0:15" out="0:17">My name is Mona Kasra</subtitle>
+      <subtitle in="0:17" out="0:19">and I'm building a better internet</subtitle>
+      <subtitle in="0:32" out="0:34">I make the Internet better</subtitle>
+      <subtitle in="0:34" out="0:36">producing and sharing music</subtitle>
+      <subtitle in="0:36" out="0:38">using creative commons</subtitle>
+      <subtitle in="0:42" out="0:44">I make the Internet better</subtitle>
+      <subtitle in="0:44" out="0:46">because I fight for open educational resources</subtitle>
+      <subtitle in="0:46" out="0:47">on the web</subtitle>
+      <subtitle in="0:51" out="0:53">I make the Internet better</subtitle>
+      <subtitle in="0:53" out="0:54.5">by hacking things</subtitle>
+      <subtitle in="0:54.5" out="0:56">without using a single line of code</subtitle>
+      <subtitle in="0:56" out="0:57">I make the Internet better</subtitle>
+      <subtitle in="0:57" out="1:00">by changing the world of journalism</subtitle>
+      <subtitle in="1:01" out="1:02.5">you can mobilize people</subtitle>
+      <subtitle in="1:02.5" out="1:05">you don't need to have money anymore</subtitle>
+      <subtitle in="1:05" out="1:08">or big structures</subtitle>
+      <subtitle in="1:08" out="1:09">you can do everything at home with the Internet</subtitle>
+    </subtitles>
+    <inThisVideo>
+      <tagThisVideo in="0:03" out="0:14">Celine Celine</tagThisVideo>
+	    <tagThisVideo in="0:13" out="0:16">Bryan</tagThisVideo>
+      <tagThisVideo in="0:15" out="0:19">Mona Kasra</tagThisVideo>
+	    <tagThisVideo in="0:19" out="0:21">Caleb</tagThisVideo>
+	    <tagThisVideo in="0:21" out="0:31">Dave</tagThisVideo>
+	    <tagThisVideo in="0:21" out="0:33">Noah</tagThisVideo>
+	    <tagThisVideo in="0:39" out="0:41">Celine Celine</tagThisVideo>
+    </inThisVideo>
+    <map>
+      <location id="map1" in="0:11" out="0:32" lat="30.1580" long="-97.7388" target="map" zoom="8"/>
+      <location id="map2" in="0:32" out="1:00" lat="-23.55" long="-46.6388" target="map" zoom="6"/>
+    </map>
+  </timeline>
 </popcorn>
