@@ -11,11 +11,13 @@
   Bug Tracking      https://processing-js.lighthouseapp.com/projects/52212-popcornjs/overview
 
   IMPORTANT! - NOTE FOR DEVELOPERS
-  Please read the guidelines before pushing your code to the repository. The function(s) you are working on may already be finished and queued for push. 
+
+  Please read the guidelines before pushing your code to the repository. The 
+  function(s) you are working on may already be finished and queued for push. 
 
   GUIDELINES
   https://processing-js.lighthouseapp.com/projects/52212/project-workflow
-
+  
   IRC CHANNEL
   Join the development team at irc://irc.mozilla.org/popcorn for more info
 

@@ -1,23 +1,26 @@
 <popcorn>
   <subtitles>
-    <subtitle in="0:05" out="0:07">Hello! My name is Celine Celine</subtitle>
-    <subtitle in="0:07" out="0:09">And I help the Internet be easier</subtitle>
-    <subtitle in="0:09" out="0:12">by making things easier</subtitle>
-    <subtitle in="0:15" out="0:17">My name is Mona Kasra</subtitle>
-    <subtitle in="0:17" out="0:19">and I'm building a better internet</subtitle>
+    <subtitle in="00:05:00" out="00:07:00">Hello! My name is Celine Celine</subtitle>
+    <subtitle in="00:07:00" out="00:09:00">And I help the Internet be easier</subtitle>
+    <subtitle in="00:09:00" out="00:12:00">by making things easier</subtitle>
+    <subtitle in="00:15:00" out="00:17:00">My name is Mona Kasra</subtitle>
+    <subtitle in="00:17:00" out="00:19:00">and I'm building a better internet</subtitle>
   </subtitles>
   <inThisVideo>
-    <tagThisVideo in="0:03" out="0:14">Celine Celine</tagThisVideo>
-	  <tagThisVideo in="0:13" out="0:16">Bryan</tagThisVideo>
-    <tagThisVideo in="0:15" out="0:19">Mona Kasra</tagThisVideo>
-	  <tagThisVideo in="0:19" out="0:21">Caleb</tagThisVideo>
-	  <tagThisVideo in="0:21" out="0:31">Dave</tagThisVideo>
-	  <tagThisVideo in="0:21" out="0:33">Noah</tagThisVideo>
-	  <tagThisVideo in="0:39" out="0:41">Celine Celine</tagThisVideo>
+    <tagThisVideo in="00:03:00" out="00:14:00">Celine Celine</tagThisVideo>
+    <tagThisVideo in="00:03:15" out="00:14:00">Celine Celine2</tagThisVideo>
+    <tagThisVideo in="00:03:30" out="00:14:00">Celine Celine3</tagThisVideo>
+    <tagThisVideo in="00:03:45" out="00:14:00">Celine Celine4</tagThisVideo>
+	  <tagThisVideo in="00:13:00" out="00:16:00">Bryan</tagThisVideo>
+    <tagThisVideo in="00:15:00" out="00:19:00">Mona Kasra</tagThisVideo>
+	  <tagThisVideo in="00:19:00" out="00:21:00">Caleb</tagThisVideo>
+	  <tagThisVideo in="00:21:00" out="00:31:00">Dave</tagThisVideo>
+	  <tagThisVideo in="00:21:00" out="00:33:00">Noah</tagThisVideo>
+	  <tagThisVideo in="00:39:00" out="00:41:00">Celine Celine</tagThisVideo>
   </inThisVideo>
   <map>
-    <location id="map1" in="0:01" out="0:30" lat="45.505" long="-73.335" target="map" zoom="8"/>
-    <location id="map2" in="0:30" out="1:00" lat="43.771" long="-79.5" target="map" zoom="16"/>
-    <location id="map3" in="1:00" out="1:30" lat="41.771" long="-76.5" target="map" zoom="16"/>
+    <location id="map1" in="00:01:00" out="00:30:00" lat="45.505" long="-73.335" target="map" zoom="8"/>
+    <location id="map2" in="00:30:00" out="01:00:00" lat="43.771" long="-79.5" target="map" zoom="16"/>
+    <location id="map3" in="01:00:00" out="01:30:00" lat="41.771" long="-76.5" target="map" zoom="16"/>
   </map>
 </popcorn>
