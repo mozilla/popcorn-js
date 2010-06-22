@@ -57,13 +57,9 @@
   };
 
   // Simple function to convert 0:05 to 0.5 in seconds
-  var toSeconds = function(time) {
+  var to_secs = function(time) {
     var t = time.split(":");
-    if (t.length === 3) {
-      return parseInt(t[0] * 60, 10) + parseFloat(t[1], 10) + parseFloat(t[2] / 30, 10);
-    } else if (t.length === 4) {
-      return parseInt(t[0] * 3600, 10) + parseInt(t[1] * 60, 10) + parseFloat(t[2], 10) + parseFloat(t[3] / 30, 10);
-    }
+    return parseInt(t[0] * 60, 10) + parseInt(t[1], 10);
   };
 
   ////////////////////////////////////////////////////////////////////////////
@@ -85,7 +81,7 @@
         var key = params[i].item(j).nodeName,
             data = params[i].item(j).nodeValue;
         if (key === "in" || key === "out") {
-          this.params[key] = toSeconds(data);
+          this.params[key] = to_secs(data);
         } else {
           this.params[key] = data;
         }
