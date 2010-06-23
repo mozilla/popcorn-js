@@ -144,7 +144,55 @@
     };
   };
 
-  var TwitterCommand = function(name, params, text) {}; // http://twitter.com/celinecelines
+  var TwitterCommand = function(name, params, text) {
+    VideoCommand.call(this, name, params, text);
+    // Setup a default, hidden div to hold the feed
+    this.target = document.createElement('div');
+    this.target.setAttribute('id', this.id);
+    document.getElementById(this.params.target).appendChild(this.target);
+    // Div is hidden by default
+    this.target.setAttribute('style', 'display:none');
+    new TWTR.Widget({
+      creator: true,
+      version: 2,
+      type: 'search',
+      id: this.target.getAttribute('id'),
+      search: this.params.source,
+      rpp: 30,
+      width: 250,
+      height: 200,
+      interval: 6000,
+      theme: {
+        shell: {
+          background: '#8ec1da',
+          color: '#ffffff'
+        },
+        tweets: {
+          background: '#ffffff',
+          color: '#444444',
+          links: '#1985b5'
+        }
+      },
+      features: {
+        loop: true,
+        timestamp: true,
+        avatars: true,
+        hashtags: true,
+        toptweets: true,
+        live: true,
+        scrollbar: false,
+        behavior: 'default'
+      }
+    }).render().start();
+
+    this.in = function() {
+      this.target.setAttribute('style', 'display:inline');
+    };
+    this.out = function() {
+      this.target.setAttribute('style', 'display:none');
+    };
+    this.preload = function() {}; // Probably going to need to preload this.
+  }; // http://twitter.com/celinecelines
 
   // Wrapper for accessing commands by name
   // commands[name].create() returns a new command of type name
@@ -164,6 +212,11 @@
     location: {
       create: function(name, params, text) {
         return new MapCommand(name, params, text);
+      }
+    },
+    twitter: {
+      create: function(name, params, text) {
+        return new TwitterCommand(name, params, text);
       }
     }
   };

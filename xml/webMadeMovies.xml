@@ -20,4 +20,6 @@
     <location id="map2" in="0:30" out="1:00" lat="43.771" long="-79.5" target="map" zoom="16"/>
     <location id="map3" in="1:00" out="1:30" lat="41.771" long="-76.5" target="map" zoom="16"/>
   </map>
+  <twitter in="0:10" out="0:30" source="#oilspill" target="twitter"/>
+  <twitter in="0:01" out="0:20" source="from:celinecelines" target="twitter"/>
 </popcorn>
