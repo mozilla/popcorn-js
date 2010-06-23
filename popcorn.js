@@ -81,15 +81,18 @@
   ///////////////////////////////////////////////////////////////////////////
 
   // Base class for all commands, SubtitleCommand, MapCommand, etc.
-  var VideoCommand = function(name, params, text) {
+  var VideoCommand = function(name, params, text, videoManager) {
     this.params = {};
     this.text = text;
+    this.videoManager = videoManager;
     this.running = false;
     this.loaded = false;
     this.onIn = function() {};
     this.onOut = function() {};
     this.preload = function() {};
     this.id = name + VideoCommand.count++;
+    this.params["in"] = "0";
+    this.params["out"] = this.videoManager.videoElement.duration;
     for (var i = 0, pl = params.length; i < pl; i++) {
       for (var j = 0, nl = params[i].length; j < nl; j++) {
         var key = params[i].item(j).nodeName,
@@ -105,8 +108,8 @@
   VideoCommand.count = 0;
 
   // Child commands. Uses onIn() and onOut() to do time based operations
-  var SubtitleCommand = function(name, params, text) {
-    VideoCommand.call(this, name, params, text);
+  var SubtitleCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
       document.getElementById("sub").innerHTML  = this.text;
     };
@@ -115,8 +118,8 @@
     };
   };
 
-  var TagCommand = function(name, params, text) {
-    VideoCommand.call(this, name, params, text);
+  var TagCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
       TagCommand.people.contains[this.text] = this.text;
       document.getElementById("inthisvideo").innerHTML  = TagCommand.people.toString();
@@ -139,8 +142,8 @@
     }
   };
 
-  var MapCommand = function(name, params, text) {
-    VideoCommand.call(this, name, params, text);
+  var MapCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
     this.params.zoom = parseInt(this.params.zoom, 10);
     // load the map
     // http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions  <-- Map API
@@ -160,7 +163,7 @@
     };
   };
 
-  var TwitterCommand = function(name, params, text) {}; // http://twitter.com/celinecelines
+  var TwitterCommand = function(name, params, text, videoManager) {}; // http://twitter.com/celinecelines
 
   // Wrapper for accessing commands by name
   // commands[name].create() returns a new command of type name
@@ -168,18 +171,18 @@
   // I liked it more than a switch, though
   var commands = {
     subtitle: {
-      create: function(name, params, text) {
-        return new SubtitleCommand(name, params, text);
+      create: function(name, params, text, videoManager) {
+        return new SubtitleCommand(name, params, text, videoManager);
       }
     },
     tagThisVideo: {
-      create: function(name, params, text) {
-        return new TagCommand(name, params, text);
+      create: function(name, params, text, videoManager) {
+        return new TagCommand(name, params, text, videoManager);
       }
     },
     location: {
-      create: function(name, params, text) {
-        return new MapCommand(name, params, text);
+      create: function(name, params, text, videoManager) {
+        return new MapCommand(name, params, text, videoManager);
       }
     }
   };
@@ -191,7 +194,7 @@
       allAttributes.push(node.attributes);
       var childNodes = node.childNodes;
       if (childNodes.length < 1 || (childNodes.length === 1 && childNodes[0].nodeType === 3)) {
-        videoManager.addCommand(commands[node.nodeName].create(node.nodeName, allAttributes, node.textContent));
+        videoManager.addCommand(commands[node.nodeName].create(node.nodeName, allAttributes, node.textContent, videoManager));
       } else {
         for (var i = 0; i < childNodes.length; i++) {
           if (childNodes[i].nodeType === 1) {
