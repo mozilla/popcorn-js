@@ -1,23 +1,28 @@
 <popcorn>
-  <subtitles>
-    <subtitle in="00:05:00" out="00:07:00">Hello! My name is Celine Celine</subtitle>
-    <subtitle in="00:07:00" out="00:09:00">And I help the Internet be easier</subtitle>
-    <subtitle in="00:09:00" out="00:12:00">by making things easier</subtitle>
-    <subtitle in="00:15:00" out="00:17:00">My name is Mona Kasra</subtitle>
-    <subtitle in="00:17:00" out="00:19:00">and I'm building a better internet</subtitle>
-  </subtitles>
-  <inThisVideo>
-    <tagThisVideo in="00:03:00" out="00:14:00">Celine Celine</tagThisVideo>
-    <tagThisVideo in="00:13:00" out="00:16:00">Bryan</tagThisVideo>
-    <tagThisVideo in="00:15:00" out="00:19:00">Mona Kasra</tagThisVideo>
-    <tagThisVideo in="00:19:00" out="00:21:00">Caleb</tagThisVideo>
-    <tagThisVideo in="00:21:00" out="00:31:00">Dave</tagThisVideo>
-    <tagThisVideo in="00:21:00" out="00:33:00">Noah</tagThisVideo>
-    <tagThisVideo in="00:39:00" out="00:41:00">Celine Celine</tagThisVideo>
-  </inThisVideo>
-  <map>
-    <location id="map1" in="00:01:00" out="00:30:00" lat="45.505" long="-73.335" target="map" zoom="8"/>
-    <location id="map2" in="00:30:00" out="01:00:00" lat="43.771" long="-79.5" target="map" zoom="16"/>
-    <location id="map3" in="01:00:00" out="01:30:00" lat="41.771" long="-76.5" target="map" zoom="16"/>
-  </map>
+  <manifest>
+    <location id="number1" lat="45.505" long="-73.335" target="map" zoom="8"/>
+  </manifest>
+  <timeline>
+    <subtitles>
+      <subtitle in="00:05:00" out="00:07:00">Hello! My name is Celine Celine</subtitle>
+      <subtitle in="00:07:00" out="00:09:00">And I help the Internet be easier</subtitle>
+      <subtitle in="00:09:00" out="00:12:00">by making things easier</subtitle>
+      <subtitle in="00:15:00" out="00:17:00">My name is Mona Kasra</subtitle>
+      <subtitle in="00:17:00" out="00:19:00">and I'm building a better internet</subtitle>
+    </subtitles>
+    <inThisVideo>
+      <tagThisVideo in="00:03:00" out="00:14:00">Celine Celine</tagThisVideo>
+      <tagThisVideo in="00:13:00" out="00:16:00">Bryan</tagThisVideo>
+      <tagThisVideo in="00:15:00" out="00:19:00">Mona Kasra</tagThisVideo>
+      <tagThisVideo in="00:19:00" out="00:21:00">Caleb</tagThisVideo>
+      <tagThisVideo in="00:21:00" out="00:31:00">Dave</tagThisVideo>
+      <tagThisVideo in="00:21:00" out="00:33:00">Noah</tagThisVideo>
+      <tagThisVideo in="00:39:00" out="00:41:00">Celine Celine</tagThisVideo>
+    </inThisVideo>
+    <map>
+      <location in="00:01:00" out="00:30:00" resourceid="number1"/>
+      <location in="00:30:00" out="01:00:00" lat="43.771" long="-79.5" target="map" zoom="16"/>
+      <location in="01:00:00" out="01:30:00" lat="41.771" long="-76.5" target="map" zoom="16"/>
+    </map>
+  </timeline>
 </popcorn>

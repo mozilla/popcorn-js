@@ -4,7 +4,8 @@
 
   // The video manager manages a single video element, and all it's commands.
   var VideoManager = this.VideoManager = function(videoElement) {
-    this.commandObjects = {};
+    this.commandObjects  = {};
+    this.manifestObjects = {};
     this.videoElement = videoElement;
     videoElement.videoManager = this;
     VideoManager.addInstance(this);
@@ -15,6 +16,25 @@
   };
   VideoManager.prototype.removeCommand = function(command) {
     delete this.commandObjects[command.id];
+  };
+  VideoManager.prototype.addManifestObject = function(manifestAttributes) {
+    var manifest = {};
+    var manifestId = "";
+    for (var i = 0, pl = manifestAttributes.length; i < pl; i++) {
+      for (var j = 0, nl = manifestAttributes[i].length; j < nl; j++) {
+        var key = manifestAttributes[i].item(j).nodeName,
+            data = manifestAttributes[i].item(j).nodeValue;
+        if (key === "id") {
+          manifestId = data;
+        } else {
+          manifest[key] = data;
+        }
+      }
+    }
+    this.manifestObjects[manifestId] = manifest;
+  };
+  VideoManager.prototype.removeManifestObject = function(itemId) {
+    delete this.manifestObjects[itemId];
   };
   // Update is called on the video every time it's time changes.
   VideoManager.update = function(vid, manager) {
@@ -78,12 +98,13 @@
 
   ////////////////////////////////////////////////////////////////////////////
   // Command objects
-  ///////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
 
   // Base class for all commands, SubtitleCommand, MapCommand, etc.
-  var VideoCommand = function(name, params, text) {
+  var VideoCommand = function(name, params, text, videoManager) {
     this.params = {};
     this.text = text;
+    this.videoManager = videoManager;
     this.running = false;
     this.loaded = false;
     this.onIn = function() {};
@@ -101,12 +122,23 @@
         }
       }
     }
+    // Checkes for a resourceid and gets all the attributes from that resource
+    if (this.params.resourceid) {
+      for (var attributeName in this.videoManager.manifestObjects[this.params.resourceid]) {
+        if (this.videoManager.manifestObjects[this.params.resourceid].hasOwnProperty(attributeName)) {
+          this.params[attributeName] = this.videoManager.manifestObjects[this.params.resourceid][attributeName];
+        }
+      }
+    }
   };
   VideoCommand.count = 0;
 
-  // Child commands. Uses onIn() and onOut() to do time based operations
-  var SubtitleCommand = function(name, params, text) {
-    VideoCommand.call(this, name, params, text);
+  ////////////////////////////////////////////////////////////////////////////
+  // Subtitle Command
+  ////////////////////////////////////////////////////////////////////////////
+
+  var SubtitleCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
       document.getElementById("sub").innerHTML  = this.text;
     };
@@ -115,8 +147,12 @@
     };
   };
 
-  var TagCommand = function(name, params, text) {
-    VideoCommand.call(this, name, params, text);
+  ////////////////////////////////////////////////////////////////////////////
+  // TagThisPerson Command
+  ////////////////////////////////////////////////////////////////////////////
+
+  var TagCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
       TagCommand.people.contains[this.text] = this.text;
       document.getElementById("inthisvideo").innerHTML  = TagCommand.people.toString();
@@ -139,8 +175,12 @@
     }
   };
 
-  var MapCommand = function(name, params, text) {
-    VideoCommand.call(this, name, params, text);
+  ////////////////////////////////////////////////////////////////////////////
+  // Map Command
+  ////////////////////////////////////////////////////////////////////////////
+
+  var MapCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
     this.params.zoom = parseInt(this.params.zoom, 10);
     // load the map
     // http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions  <-- Map API
@@ -160,7 +200,11 @@
     };
   };
 
-  var TwitterCommand = function(name, params, text) {}; // http://twitter.com/celinecelines
+  ////////////////////////////////////////////////////////////////////////////
+  // Twitter Command
+  ////////////////////////////////////////////////////////////////////////////
+
+  var TwitterCommand = function(name, params, text, videoManager) {}; // http://twitter.com/celinecelines
 
   // Wrapper for accessing commands by name
   // commands[name].create() returns a new command of type name
@@ -168,34 +212,43 @@
   // I liked it more than a switch, though
   var commands = {
     subtitle: {
-      create: function(name, params, text) {
-        return new SubtitleCommand(name, params, text);
+      create: function(name, params, text, videoManager) {
+        return new SubtitleCommand(name, params, text, videoManager);
       }
     },
     tagThisVideo: {
-      create: function(name, params, text) {
-        return new TagCommand(name, params, text);
+      create: function(name, params, text, videoManager) {
+        return new TagCommand(name, params, text, videoManager);
       }
     },
     location: {
-      create: function(name, params, text) {
-        return new MapCommand(name, params, text);
+      create: function(name, params, text, videoManager) {
+        return new MapCommand(name, params, text, videoManager);
       }
     }
   };
 
+  ////////////////////////////////////////////////////////////////////////////
+  // XML Parser
+  ////////////////////////////////////////////////////////////////////////////
+
   // Parses xml into command objects and adds them to the video manager
   var parse = function(xmlDoc, videoManager) {
-    var parseNode = function(node, attributes) {
+
+    var parseNode = function(node, attributes, manifest) {
       var allAttributes = attributes.slice(0);
       allAttributes.push(node.attributes);
       var childNodes = node.childNodes;
       if (childNodes.length < 1 || (childNodes.length === 1 && childNodes[0].nodeType === 3)) {
-        videoManager.addCommand(commands[node.nodeName].create(node.nodeName, allAttributes, node.textContent));
+        if (!manifest) {
+          videoManager.addCommand(commands[node.nodeName].create(node.nodeName, allAttributes, node.textContent, videoManager));
+        } else {
+          videoManager.addManifestObject(allAttributes);
+        }
       } else {
         for (var i = 0; i < childNodes.length; i++) {
           if (childNodes[i].nodeType === 1) {
-            parseNode(childNodes[i], allAttributes);
+            parseNode(childNodes[i], allAttributes, manifest);
           }
         }
       }
@@ -205,7 +258,11 @@
       var x = xmlDoc[j].documentElement.childNodes;
       for (var i = 0, xl = x.length; i < xl; i++) {
         if (x[i].nodeType === 1) {
-          parseNode(x[i], []);
+          if (x[i].nodeName === "manifest") {
+            parseNode(x[i], [], true);
+          } else {
+            parseNode(x[i], [], false);
+          }
         }
       }
     }
