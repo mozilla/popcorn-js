@@ -227,7 +227,11 @@
 			}
     };
     this.onOut = function() {
-      document.getElementById("footnote").innerHTML  = "";
+			if( this.params.target ) {
+				document.getElementById( this.params.target ).innerHTML  = "";
+			} else {
+				//this will be done later in ticket #46 (support default div)
+			}
     };
   };
 
