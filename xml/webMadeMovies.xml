@@ -33,7 +33,7 @@
   </manifest>
   <timeline>
     <subtitles>
-      <subtitle in="00:00:05:00" out="00:00:07:00">Hello! My name is Celine Celine</subtitle>
+      <subtitle >Hello! My name is Celine Celine</subtitle>
       <subtitle in="00:00:07:00" out="00:00:09:00">And I help the Internet be easier</subtitle>
       <subtitle in="00:00:09:00" out="00:00:12:00">by making things easier</subtitle>
       <subtitle in="00:00:15:00" out="00:00:17:00">My name is Mona Kasra</subtitle>
