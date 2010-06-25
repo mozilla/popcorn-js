@@ -159,7 +159,22 @@
       MapCommand.map.setZoom(0);
     };
   };
-
+	var FootnoteCommand = function(name, params, text) {
+    VideoCommand.call(this, name, params, text);
+    this.onIn = function() {
+			//if the user specifies a target div for this in the xml use it
+			//otherwise make a new div 
+			if( this.params.target ) {
+				document.getElementById( this.params.target ).innerHTML  = this.text;
+			} else {
+				//this will be done later in ticket #46 (support default div)
+				//for this case i would think get the parent div of the <video> and append a new div to it
+			}
+    };
+    this.onOut = function() {
+      document.getElementById("footnote").innerHTML  = "";
+    };
+  };
   var TwitterCommand = function(name, params, text) {}; // http://twitter.com/celinecelines
 
   // Wrapper for accessing commands by name
@@ -180,6 +195,11 @@
     location: {
       create: function(name, params, text) {
         return new MapCommand(name, params, text);
+      }
+    },
+	footnote: {
+		create: function(name, params, text) {
+        return new FootnoteCommand(name, params, text);
       }
     }
   };

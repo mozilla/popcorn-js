@@ -6,6 +6,9 @@
     <subtitle in="00:15:00" out="00:17:00">My name is Mona Kasra</subtitle>
     <subtitle in="00:17:00" out="00:19:00">and I'm building a better internet</subtitle>
   </subtitles>
+	<footnotes>
+		<footnote in="00:00:00" out="00:14:00" target="footnotediv"> This video made exclusively for drumbeat.org </footnote>
+	</footnotes>
   <inThisVideo>
     <tagThisVideo in="00:03:00" out="00:14:00">Celine Celine</tagThisVideo>
     <tagThisVideo in="00:13:00" out="00:16:00">Bryan</tagThisVideo>
