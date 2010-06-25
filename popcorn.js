@@ -140,7 +140,11 @@
   var SubtitleCommand = function(name, params, text, videoManager) {
     VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
-      document.getElementById("sub").innerHTML  = this.text;
+      var i = document.getElementById("language").selectedIndex;
+      google.language.translate(this.text, '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
+        document.getElementById("sub").innerHTML  = result.translation;
+      });
+      
     };
     this.onOut = function() {
       document.getElementById("sub").innerHTML  = "";
