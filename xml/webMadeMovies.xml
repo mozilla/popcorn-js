@@ -54,6 +54,9 @@
       <subtitle in="00:01:05:00" out="00:01:08:00">or big structures</subtitle>
       <subtitle in="00:01:08:00" out="00:01:09:00">you can do everything at home with the Internet</subtitle>
     </subtitles>
+    <footnotes>
+      <footnote in="00:00:00" out="00:14:00" target="footnotediv"> This video made exclusively for drumbeat.org </footnote>
+    </footnotes>
     <resources>
       <twitter in="00:00:05:00" out="00:00:13:00" target="map" resourceid="celinetwitter" numberoftweets="5"/>
       <attribution in="00:00:36:00" out="00:40:00" target="map" resourceid="attrib" />
