@@ -111,6 +111,8 @@
     this.onOut = function() {};
     this.preload = function() {};
     this.id = name + VideoCommand.count++;
+    this.params["in"] = "0";
+    this.params["out"] = this.videoManager.videoElement.duration;
     for (var i = 0, pl = params.length; i < pl; i++) {
       for (var j = 0, nl = params[i].length; j < nl; j++) {
         var key = params[i].item(j).nodeName,
@@ -137,6 +139,7 @@
   // Subtitle Command
   ////////////////////////////////////////////////////////////////////////////
 
+  // Child commands. Uses onIn() and onOut() to do time based operations
   var SubtitleCommand = function(name, params, text, videoManager) {
     VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
