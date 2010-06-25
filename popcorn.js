@@ -220,7 +220,7 @@
         return new SubtitleCommand(name, params, text, videoManager);
       }
     },
-    tagThisVideo: {
+    videotag: {
       create: function(name, params, text, videoManager) {
         return new TagCommand(name, params, text, videoManager);
       }

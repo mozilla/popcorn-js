@@ -6,16 +6,16 @@
         <resource id="celinetwitter" src="http://twitter.com/celinecelines" description="Celine's Twitter" />
       </person>
       <person id="brian" name="brian" >
-        <resource id="briantwitter" source="http://twitter.com/bchirls" description="Brian's twitter" />
+        <resource id="briantwitter" src="http://twitter.com/bchirls" description="Brian's twitter" />
       </person>
       <person id="mona" name="Mona" >
-        <resource id="monahomepage" source="http://monakasra.com/" description="Mona's Homepage"/>
+        <resource id="monahomepage" src="http://monakasra.com/" description="Mona's Homepage"/>
       </person>
       <person id="dave" name="Dave" >
-        <resource id="davetwitter" source="http://twitter.com/academicdave" description="Dave's twitter" />
+        <resource id="davetwitter" src="http://twitter.com/academicdave" description="Dave's twitter" />
       </person>
       <person id="noah" name="Noah" >
-        <resource id="noahtwitter" source="http://twitter.com/noahworkman" description="Noah's Twitter Feed" />
+        <resource id="noahtwitter" src="http://twitter.com/noahworkman" description="Noah's Twitter Feed" />
       </person>
     </people>
     <places>
