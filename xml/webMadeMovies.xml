@@ -20,4 +20,7 @@
     <location id="map2" in="00:30:00" out="01:00:00" lat="43.771" long="-79.5" target="map" zoom="16"/>
     <location id="map3" in="01:00:00" out="01:30:00" lat="41.771" long="-76.5" target="map" zoom="16"/>
   </map>
+  <flick>
+    <flickr in="00:01:00" out="00:05:00" target="flickr" userid="13072070" numberofimages="1000"/>
+  </flick>
 </popcorn>

@@ -160,6 +160,50 @@
     };
   };
 
+  var FlickrCommand = function(name, params, text) {
+    VideoCommand.call(this, name, params, text);
+    
+    // Setup a default, hidden div to hold the images
+    var target = document.createElement('div');
+    target.setAttribute('id', this.id);
+    document.getElementById(this.params.target).appendChild(target);
+    // Div is hidden by default
+    target.setAttribute('style', 'display:none');
+    var height  = this.params.height || "50px",
+        width   = this.params.width || "50px",
+        count   = this.params.numberofimages || 4,
+        padding = this.params.padding || "5px",
+        border  = this.params.border || "0px";
+
+    // This uses jquery
+    $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?id=" + this.params.userid + "@N00&lang=en-us&format=json&jsoncallback=?", function(data){
+      $.each(data.items, function(i, item) {
+        if (i < count) {
+          var link = document.createElement('a');
+          link.setAttribute('href', item.link);
+          var image = document.createElement('img');
+          image.setAttribute('src', item.media.m);
+          image.setAttribute('height', height);
+          image.setAttribute('width', width);
+          image.setAttribute('style', 'border:' + border + ';padding:' + padding);
+          link.appendChild(image);
+          target.appendChild(link);
+        } else {
+          return false;
+        }
+      });
+    });
+    this.target = target;
+
+    this.onIn = function() {
+      this.target.setAttribute('style', 'display:inline');
+    };
+    this.onOut = function() {
+      this.target.setAttribute('style', 'display:none');
+    };
+  };
+  
+
   var TwitterCommand = function(name, params, text) {}; // http://twitter.com/celinecelines
 
   // Wrapper for accessing commands by name
@@ -180,6 +224,11 @@
     location: {
       create: function(name, params, text) {
         return new MapCommand(name, params, text);
+      }
+    },
+    flickr: {
+      create: function(name, params, text) {
+        return new FlickrCommand(name, params, text);
       }
     }
   };
