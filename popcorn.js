@@ -306,8 +306,8 @@
         return new MapCommand(name, params, text, videoManager);
       }
     },
-	footnote: {
-		create: function(name, params, text) {
+	  footnote: {
+		  create: function(name, params, text) {
         return new FootnoteCommand(name, params, text);
       }
     },
