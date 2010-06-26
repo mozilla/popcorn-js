@@ -307,15 +307,9 @@
         return new MapCommand(name, params, text, videoManager);
       }
     },
-//<<<<<<< HEAD
-	  footnote: {
-		  create: function(name, params, text) {
-        return new FootnoteCommand(name, params, text);
-//=======
-//	footnote: {
-//		create: function(name, params, text, videoManager) {
-//        return new FootnoteCommand(name, params, text, videoManager);
-//>>>>>>> beba354b7e69916ba8ccbe63ffbf39c9cfe35af7
+    footnote: {
+      create: function(name, params, text, videoManager) {
+        return new FootnoteCommand(name, params, text, videoManager);
       }
     },
     twitter: {
