@@ -124,6 +124,7 @@
         }
       }
     }
+    
     // Checkes for a resourceid and gets all the attributes from that resource
     if (this.params.resourceid) {
       for (var attributeName in this.videoManager.manifestObjects[this.params.resourceid]) {
@@ -211,8 +212,8 @@
   // Twitter Command
   ////////////////////////////////////////////////////////////////////////////
 
-  var TwitterCommand = function(name, params, text) {
-    VideoCommand.call(this, name, params, text);
+  var TwitterCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
     // Setup a default, hidden div to hold the feed
     this.target = document.createElement('div');
     this.target.setAttribute('id', this.id);
@@ -265,8 +266,8 @@
   // Footnote Command
   ////////////////////////////////////////////////////////////////////////////
 
-	var FootnoteCommand = function(name, params, text) {
-    VideoCommand.call(this, name, params, text);
+	var FootnoteCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
 			//if the user specifies a target div for this in the xml use it
 			//otherwise make a new div 
@@ -307,13 +308,13 @@
       }
     },
 	footnote: {
-		create: function(name, params, text) {
-        return new FootnoteCommand(name, params, text);
+		create: function(name, params, text, videoManager) {
+        return new FootnoteCommand(name, params, text, videoManager);
       }
     },
     twitter: {
-      create: function(name, params, text) {
-        return new TwitterCommand(name, params, text);
+      create: function(name, params, text, videoManager) {
+        return new TwitterCommand(name, params, text, videoManager);
       }
     }
   };
@@ -384,7 +385,9 @@
           }
         }
         var manager = new VideoManager(video[i]);
-        parse(xml, manager);
+        video[i].addEventListener('loadedmetadata', function() {
+          parse(xml, manager);
+        }, false);
       }
     }
   };
