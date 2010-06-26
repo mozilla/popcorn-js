@@ -74,7 +74,7 @@
     </videotags>
     <map>
       <location id="mapacc" resourceid="acchomepage" in="00:00:11:00" out="00:00:32:00" lat="30.1580" long="-97.7388" target="map" zoom="8"/>
-      <location id="mapsaopaulo" resourceid="saopaulo" in="00:00:32:00" out="00:01:00:00" lat="-23.55" long="-46.6388" target="map" zoom="6"/>
+      <location id="mapsaopaulo" resourceid="saupaulowiki" in="00:00:32:00" out="00:01:00:00" lat="-23.55" long="-46.6388" target="map" zoom="6"/>
     </map>
   </timeline>
 </popcorn>

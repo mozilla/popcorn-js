@@ -201,10 +201,18 @@
     this.onIn = function() {
       MapCommand.map.setCenter(this.location);
       MapCommand.map.setZoom(this.params.zoom);
+      var txt = document.createTextNode("Filmed in: ");
+      var link = document.createElement("a");
+      link.setAttribute("href", this.params.src);
+      link.setAttribute("target", "_new");
+      link.appendChild(document.createTextNode(this.params.description));
+      document.getElementById('mapinfo').appendChild(txt);
+      document.getElementById('mapinfo').appendChild(link);
     };
     this.onOut = function() {
       MapCommand.map.setCenter(new google.maps.LatLng(0, 0));
       MapCommand.map.setZoom(0);
+      document.getElementById('mapinfo').innerHTML = "";
     };
   };
 
