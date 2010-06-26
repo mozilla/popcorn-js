@@ -58,7 +58,7 @@
       <footnote in="00:00:00" out="00:14:00" target="footnotediv"> This video made exclusively for drumbeat.org </footnote>
     </footnotes>
     <resources>
-      <twitter in="00:00:10:00" out="00:00:30:00" source="#oilspill" target="twitter"/>
+      <twitter source="#oilspill" target="twitter"/>
       <twitter in="00:00:01:00" out="00:00:20:00" source="from:celinecelines" target="twitter"/>
       <!--<attribution in="00:00:36:00" out="00:40:00" target="map" resourceid="attrib" />
       <attribution in="00:40:00" out="00:00:42:00" target="map">A Shared Culture, Jesse Dylan</attribution>-->
