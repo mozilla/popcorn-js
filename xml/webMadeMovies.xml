@@ -15,6 +15,9 @@
     <tagThisVideo in="00:21:00" out="00:33:00">Noah</tagThisVideo>
     <tagThisVideo in="00:39:00" out="00:41:00">Celine Celine</tagThisVideo>
   </inThisVideo>
+	<attributions>
+		<attribution id="attrib" in="00:01:00" out="00:30:00" target="attributiondiv" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan" license="CC-BY-NC-ND" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/" />
+	</attributions>
   <map>
     <location id="map1" in="00:01:00" out="00:30:00" lat="45.505" long="-73.335" target="map" zoom="8"/>
     <location id="map2" in="00:30:00" out="01:00:00" lat="43.771" long="-79.5" target="map" zoom="16"/>
