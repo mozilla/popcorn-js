@@ -28,7 +28,7 @@
     </places>
     <attributions>
       <attribution id="attrib" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan"
-                   license="CC-BY-NC"  licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
+                   license="CC-BY-NC-ND"  licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
     </attributions>
   </manifest>
   <timeline>
@@ -60,8 +60,8 @@
     <resources>
       <twitter source="#oilspill" target="twitter"/>
       <twitter in="00:00:01:00" out="00:00:20:00" source="from:celinecelines" target="twitter"/>
-      <!--<attribution in="00:00:36:00" out="00:40:00" target="map" resourceid="attrib" />
-      <attribution in="00:40:00" out="00:00:42:00" target="map">A Shared Culture, Jesse Dylan</attribution>-->
+      <attribution in="00:00:1:00" out="00:40:00" target="attributiondiv" resourceid="attrib" />
+      <attribution in="00:42:00" out="00:00:48:00" target="attributiondiv">A Shared Culture, Jesse Dylan</attribution>
     </resources>
     <videotags>
       <videotag in="00:00:03:00" out="00:00:14:00">Celine Celine</videotag>
