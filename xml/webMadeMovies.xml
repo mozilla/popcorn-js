@@ -58,8 +58,8 @@
       <footnote in="00:00:00" out="00:14:00" target="footnotediv"> This video made exclusively for drumbeat.org </footnote>
     </footnotes>
     <resources>
-      <twitter source="#oilspill" target="twitter"/>
-      <twitter in="00:00:01:00" out="00:00:20:00" source="from:celinecelines" target="twitter"/>
+      <twitter source="#oilspill" subject="Oilspill" title="this is a title" target="twitter"/>
+      <twitter in="00:00:01:00" out="00:00:20:00" subject="Celine Celine" source="from:celinecelines" target="twitter"/>
       <attribution in="00:00:1:00" out="00:40:00" target="attributiondiv" resourceid="attrib" />
       <attribution in="00:42:00" out="00:00:48:00" target="attributiondiv">A Shared Culture, Jesse Dylan</attribution>
     </resources>
@@ -76,5 +76,8 @@
       <location id="mapacc" resourceid="acchomepage" in="00:00:11:00" out="00:00:32:00" lat="30.1580" long="-97.7388" target="map" zoom="8"/>
       <location id="mapsaopaulo" resourceid="saupaulowiki" in="00:00:32:00" out="00:01:00:00" lat="-23.55" long="-46.6388" target="map" zoom="6"/>
     </map>
+    <flick>
+      <flickr in="00:01:00" out="00:20:00" target="flickr" userid="13072070" numberofimages="10"/>
+    </flick>
   </timeline>
 </popcorn>

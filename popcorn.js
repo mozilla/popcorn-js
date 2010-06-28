@@ -18,8 +18,8 @@
     delete this.commandObjects[command.id];
   };
   VideoManager.prototype.addManifestObject = function(manifestAttributes) {
-    var manifest = {};
-    var manifestId = "";
+    var manifest = {},
+        manifestId = "";
     for (var i = 0, pl = manifestAttributes.length; i < pl; i++) {
       for (var j = 0, nl = manifestAttributes[i].length; j < nl; j++) {
         var key = manifestAttributes[i].item(j).nodeName,
@@ -38,9 +38,9 @@
   };
   // Update is called on the video every time it's time changes.
   VideoManager.update = function(vid, manager) {
-    var t = vid.currentTime;
-    // Loops through all commands in the manager, preloading data, and calling onIn() or onOut().
-    var commandObject = {};
+    var t = vid.currentTime,
+        // Loops through all commands in the manager, preloading data, and calling onIn() or onOut().
+        commandObject = {};
     for (var i in manager.commandObjects) {
       if (manager.commandObjects.hasOwnProperty(i)) {
         commandObject = manager.commandObjects[i];
@@ -234,6 +234,8 @@
       type: 'search',
       id: this.target.getAttribute('id'),
       search: this.params.source,
+      title: this.params.title || null,
+      subject: this.params.subject || null,
       rpp: 30,
       width: 250,
       height: 200,
@@ -260,7 +262,6 @@
         behavior: 'default'
       }
     }).render().start();
-
     this.onIn = function() {
       this.target.setAttribute('style', 'display:inline');
     };
@@ -268,8 +269,55 @@
       this.target.setAttribute('style', 'display:none');
     };
     this.preload = function() {}; // Probably going to need to preload this.
-  }; // http://twitter.com/celinecelines
+  };
+  
+  ////////////////////////////////////////////////////////////////////////////
+  // FlickrCommand Command
+  ////////////////////////////////////////////////////////////////////////////
+  
+  var FlickrCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
 
+    // Setup a default, hidden div to hold the images
+    var target = document.createElement('div');
+    target.setAttribute('id', this.id);
+    document.getElementById(this.params.target).appendChild(target);
+    // Div is hidden by default
+    target.setAttribute('style', 'display:none');
+    var height  = this.params.height || "50px",
+        width   = this.params.width || "50px",
+        count   = this.params.numberofimages || 4,
+        padding = this.params.padding || "5px",
+        border  = this.params.border || "0px";
+
+    // This uses jquery
+    $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?id=" + this.params.userid + "@N00&lang=en-us&format=json&jsoncallback=?", function(data){
+      $.each(data.items, function(i, item) {
+        if (i < count) {
+          var link = document.createElement('a');
+          link.setAttribute('href', item.link);
+          var image = document.createElement('img');
+          image.setAttribute('src', item.media.m);
+          image.setAttribute('height', height);
+          image.setAttribute('width', width);
+          image.setAttribute('style', 'border:' + border + ';padding:' + padding);
+          link.appendChild(image);
+          target.appendChild(link);
+        } else {
+          return false;
+        }
+      });
+    });
+    this.target = target;
+
+    this.onIn = function() {
+      this.target.setAttribute('style', 'display:inline');
+    };
+    this.onOut = function() {
+      this.target.setAttribute('style', 'display:none');
+    };
+  };
+    
   ////////////////////////////////////////////////////////////////////////////
   // Footnote Command
   ////////////////////////////////////////////////////////////////////////////
@@ -334,7 +382,7 @@
     }
     //if the user did not specify any parameters just pull the text from the tag
     if( attribution === "" ){
-      attribution = this.text
+      attribution = this.text;
     }
     this.onIn = function() {
       //check if the user specified a target div otherwise create default
@@ -352,7 +400,7 @@
       }
     };
   };
-
+  
   // Wrapper for accessing commands by name
   // commands[name].create() returns a new command of type name
   // Not sure if this is the best way; maybe it's too fancy?
@@ -388,6 +436,11 @@
         return new AttributionCommand(name, params, text, videoManager);
       }
     },
+    flickr: {
+      create: function(name, params, text, videoManager) {
+        return new FlickrCommand(name, params, text, videoManager);
+      }
+    }
   };
 
   ////////////////////////////////////////////////////////////////////////////
@@ -448,8 +501,8 @@
     for (var i = 0, l = video.length; i < l; i++) {
       var videoSources = video[i].getAttribute('data-timeline-sources');
       if (videoSources) {
-        var filenames = videoSources.split(' ');
-        var xml = [];
+        var filenames = videoSources.split(' '),
+            xml = [];
         for (var j=0, fl=filenames.length; j<fl; j++) {
           if (filenames[j]) {
             xml.push(loadXMLDoc(filenames[j]));

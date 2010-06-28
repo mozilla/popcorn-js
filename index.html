@@ -3,6 +3,7 @@
     <title>html5 video demo</title> 
     <script src="http://widgets.twimg.com/j/2/widget.js"></script>
     <script src="popcorn.js"></script>
+    <script src="http://code.jquery.com/jquery.js"></script> 
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script src="http://google.com/jsapi"></script>
     <script>google.load("language","1");</script>
@@ -38,7 +39,7 @@
   </head> 
   <body> 
     <div id="container">
-      <video src="http://a52.video2.blip.tv/7320003802153/Etherworks-WebMadeMovies3BuildingABetterInternet799.ogg" data-timeline-sources="xml/webMadeMovies.xml" controls></video>
+      <video src="../webMadeMovies.ogg" data-timeline-sources="xml/webMadeMovies.xml" controls></video>
       <select id="language">
         <option val="en">English</option>
         <option val="es">Spanish</option>
@@ -58,6 +59,8 @@
           </p>
       </div>
       <div id="twitter"></div>
+      <div id="flickr"></div>
+    </div>
   </body> 
 </html> 
 
