@@ -79,5 +79,8 @@
     <flick>
       <flickr in="00:01:00" out="00:20:00" target="flickr" userid="13072070" numberofimages="10"/>
     </flick>
+    <news>
+      <googlenews in="00:01:00" out="00:10:00" topic="oilspill" target="googlenewsdiv"/>>
+    </news>
   </timeline>
 </popcorn>
