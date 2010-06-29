@@ -47,6 +47,7 @@
         if (commandObject.running && (commandObject.params["in"] > t || commandObject.params["out"] < t)) {
           commandObject.running = false;
           commandObject.onOut();
+          commandObject.removeOverlay();
         }
       }
     }
@@ -60,6 +61,7 @@
         if (!commandObject.running && commandObject.params["in"] < t && commandObject.params["out"] > t) {
           commandObject.running = true;
           commandObject.onIn();
+          commandObject.displayOverlay();
         }
       }
     }
@@ -96,6 +98,8 @@
     }
   };
 
+  
+  
   ////////////////////////////////////////////////////////////////////////////
   // Command objects
   ////////////////////////////////////////////////////////////////////////////
@@ -110,9 +114,13 @@
     this.onIn = function() {};
     this.onOut = function() {};
     this.preload = function() {};
+    this.displayOverlay = function() {};
+    this.removeOverlay = function() {};
     this.id = name + VideoCommand.count++;
     this.params["in"] = "0";
     this.params["out"] = this.videoManager.videoElement.duration;
+
+    // Adds all attributes from the xml tag into this.params
     for (var i = 0, pl = params.length; i < pl; i++) {
       for (var j = 0, nl = params[i].length; j < nl; j++) {
         var key = params[i].item(j).nodeName,
@@ -132,6 +140,27 @@
           this.params[attributeName] = this.videoManager.manifestObjects[this.params.resourceid][attributeName];
         }
       }
+    }
+
+    // Creates a div for all overlays to use
+    if (!VideoManager.overlayDiv) {
+      VideoManager.overlayDiv = document.createElement('div');
+      VideoManager.overlayDiv.setAttribute('style', 'position:absolute;top:20px;left:20px');
+      this.videoManager.videoElement.parentNode.appendChild(VideoManager.overlayDiv);
+    }
+    
+    // Checks for a url of an image to overlay onto the video
+    if (this.params.overlay) {
+      this.image = document.createElement('img');
+      this.image.setAttribute('src', this.params.overlay);
+      this.image.setAttribute('style', 'display:none');
+      VideoManager.overlayDiv.appendChild(this.image);
+      this.displayOverlay = function() {
+        this.image.setAttribute('style', 'display:inline');
+      };
+      this.removeOverlay = function() {
+        this.image.setAttribute('style', 'display:none');
+      };
     }
   };
   VideoCommand.count = 0;
@@ -272,7 +301,7 @@
   };
   
   ////////////////////////////////////////////////////////////////////////////
-  // FlickrCommand Command
+  // Flickr Command
   ////////////////////////////////////////////////////////////////////////////
   
   var FlickrCommand = function(name, params, text, videoManager) {
