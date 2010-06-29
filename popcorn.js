@@ -169,7 +169,7 @@
     var options = {
       format : "300x250",
       queryList : [
-        {q: this.params.topic}
+        {q: this.params.topic || "Top Stories"}
       ]
     };
     var newsShow = new google.elements.NewsShow(content, options);
