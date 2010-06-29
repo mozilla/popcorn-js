@@ -201,12 +201,10 @@
     this.onIn = function() {
       MapCommand.map.setCenter(this.location);
       MapCommand.map.setZoom(this.params.zoom);
-      var txt = document.createTextNode("Filmed in: ");
       var link = document.createElement("a");
       link.setAttribute("href", this.params.src);
       link.setAttribute("target", "_new");
       link.appendChild(document.createTextNode(this.params.description));
-      document.getElementById('mapinfo').appendChild(txt);
       document.getElementById('mapinfo').appendChild(link);
     };
     this.onOut = function() {
@@ -226,6 +224,7 @@
     this.target = document.createElement('div');
     this.target.setAttribute('id', this.id);
     document.getElementById(this.params.target).appendChild(this.target);
+    
     // Div is hidden by default
     this.target.setAttribute('style', 'display:none');
     new TWTR.Widget({
@@ -237,8 +236,8 @@
       title: this.params.title || null,
       subject: this.params.subject || null,
       rpp: 30,
-      width: 250,
-      height: 200,
+      width: this.params.width || 250,
+      height: this.params.height || 200,
       interval: 6000,
       theme: {
         shell: {
