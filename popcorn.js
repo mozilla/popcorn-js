@@ -183,11 +183,6 @@
   ////////////////////////////////////////////////////////////////////////////
   // Credits Command
   ////////////////////////////////////////////////////////////////////////////
-  var credits = {
-    add: function() {
-        
-    }
-  }
   var CreditsCommand = function(name, params, text, videoManager) {
     VideoCommand.call(this, name, params, text, videoManager);
     $("#credits")
