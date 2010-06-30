@@ -23,7 +23,7 @@
         <resource id="acchomepage" src="http://www.austinconventioncenter.com/" description="Austin Convention Center"/>
       </place>
       <place id="saopaulo" type="city" name="Sao Paulo">
-        <resource id="saupaulowiki" src="http://en.wikipedia.org/wiki/S%C3%A3o_Paulo" description="Sao Paulo city, Brazil"/>
+        <resource id="saupaulowiki" src="http://en.wikipedia.org/wiki/S%C3%A3o_Paulo" title="S%C3%A3o_Paulo" description="Sao Paulo city, Brazil"/>
       </place>
     </places>
     <attributions>
@@ -60,6 +60,7 @@
     <resources>
       <twitter source="#oilspill" subject="Oilspill" title="this is a title" target="twitter"/>
       <twitter in="00:00:01:00" out="00:00:20:00" subject="Celine Celine" source="from:celinecelines" target="twitter"/>
+			<wiki in="00:00:02:00" out="00:01:00:00" resourceid="saupaulowiki" target="wikidiv"/>
       <attribution in="00:00:1:00" out="00:40:00" target="attributiondiv" resourceid="attrib" />
       <attribution in="00:42:00" out="00:00:48:00" target="attributiondiv">A Shared Culture, Jesse Dylan</attribution>
     </resources>

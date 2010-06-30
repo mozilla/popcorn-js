@@ -317,7 +317,48 @@
       this.target.setAttribute('style', 'display:none');
     };
   };
+	
+	////////////////////////////////////////////////////////////////////////////
+  // Wiki Command
+  ////////////////////////////////////////////////////////////////////////////
+  
+  var WikiCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
     
+    var src = this.params.src;
+    // Setup a default, hidden div to hold the images
+    var target = document.createElement('div');
+    target.setAttribute('id', this.id);
+    document.getElementById(this.params.target).appendChild(target);
+    // Div is hidden by default
+    target.setAttribute('style', 'display:none');
+   
+    // This uses jquery
+    $.getJSON("http://en.wikipedia.org/w/api.php?action=parse&props=text&page=" + this.params.title+ "&format=json&callback=?", function(data){
+      //$.each(data.parse, function(i, item) {
+        var link = document.createElement('a');
+        link.setAttribute('href', src);
+        var p = document.createElement('p');
+        p.innerHTML = data.parse.displaytitle;
+        link.appendChild(p);
+        var desc = document.createElement('p');
+        //((<(.|\n)+?>)|\[(.*?)\]|\((.*?)\))
+        var text = data.parse.text.*.substr(data.parse.text.*.indexOf('<p>'));
+        text = text.replace(/(<(.|\n)+?>)|\((.*?)\)|\[(.*?)\]/g, "");
+        alert(text);desc.innerHTML = text;
+        target.appendChild(link);
+        target.appendChild(desc);
+      //});
+    }); 
+    
+    this.target = target;
+    //this.onIn = function() {
+      this.target.setAttribute('style', 'display:inline');
+    //};
+    this.onOut = function() {
+      //this.target.setAttribute('style', 'display:none');
+    };
+	};
   ////////////////////////////////////////////////////////////////////////////
   // Footnote Command
   ////////////////////////////////////////////////////////////////////////////
@@ -439,6 +480,11 @@
     flickr: {
       create: function(name, params, text, videoManager) {
         return new FlickrCommand(name, params, text, videoManager);
+      }
+    },
+		wiki: {
+      create: function(name, params, text, videoManager) {
+        return new WikiCommand(name, params, text, videoManager);
       }
     }
   };
