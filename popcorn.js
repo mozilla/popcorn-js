@@ -267,8 +267,8 @@
       interval: 6000,
       theme: {
         shell: {
-          background: '#8ec1da',
-          color: '#ffffff'
+          background: '#ffffff',
+          color: '#000000'
         },
         tweets: {
           background: '#ffffff',

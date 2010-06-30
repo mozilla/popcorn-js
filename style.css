@@ -252,6 +252,10 @@ background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #cc
 position: relative;
 }
 
+.twtr-ft{
+display:none !important;
+}
+
 .video-div .video-info .foot-notes{
 width:332px;
 height:90px;
