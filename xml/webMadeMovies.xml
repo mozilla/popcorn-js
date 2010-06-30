@@ -79,5 +79,8 @@
     <flick>
       <flickr in="00:01:00" out="00:20:00" target="flickr" userid="13072070" numberofimages="10"/>
     </flick>
+    <credit>
+        <credits>test</credits>
+    </credit>
   </timeline>
 </popcorn>

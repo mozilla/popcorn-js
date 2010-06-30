@@ -4,6 +4,7 @@
     <script src="http://widgets.twimg.com/j/2/widget.js"></script>
     <script src="popcorn.js"></script>
     <script src="http://code.jquery.com/jquery.js"></script> 
+    <script src="ihttp://twitter.com/statuses/user_timeline/dharmmotyar.json?callback=showAvatar&count=1"></script>
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script src="http://google.com/jsapi"></script>
     <script>google.load("language","1");</script>
@@ -11,6 +12,7 @@
       body { 
         background-color:#eee; 
       }
+
       #container {
         width:850px;
         margin:auto 50px;
@@ -19,27 +21,76 @@
         padding:20px;
         position:relative;
       }
+
       #sub { 
         position:absolute;
         top:435px;
         left:40px;
-        color:white;
+        color:#eee;
         font-weight:bold;
         font-family:sans-serif;	
         text-shadow:black 1px 1px 3px;
         width:820px;	
         font-size:25px;
       }
+
       #map {
           border: solid 1px #000;
           width: 200px;
           height: 200px;
       }
+
+      #credits {
+        position:absolute;   
+        overflow:hidden;
+        background-color:#333;
+        border-left:1px solid #333;
+      }
+        
+      #credits .column {
+        float:left;
+        position:absolute;
+        height:100%;
+        top:0px;
+        margin:0px;
+        padding:0px;
+        background-color:#555;
+        overflow:auto;
+        border-right:1px #666 solid;
+      }
+        
+        .play { 
+            background:url('play.png') left center no-repeat;
+        }
+
+        #credits li {
+            list-style-type:none;
+        }
+            #credits li.selected { border-left:2px solid #FADBAF; }
+
+            #credits li a {
+                display:block;
+                text-decoration:none;
+                color:#efefef;
+                font-weight:bold;
+                font-family:sans-serif;	
+                text-shadow:black 1px 1px 3px;
+                padding:12px 14px;
+                border-bottom:1px solid #666;
+            }
+
+            #credits li a:hover {
+                color:#FADBAF;
+            }
     </style> 
   </head> 
   <body> 
     <div id="container">
-      <video src="http://a52.video2.blip.tv/7320003802153/Etherworks-WebMadeMovies3BuildingABetterInternet799.ogg" data-timeline-sources="xml/webMadeMovies.xml" controls></video>
+      <div id="credits" style="display:none">
+        <div id="credit_inner">
+        </div>
+      </div>
+      <video src="video.ogg" data-timeline-sources="xml/webMadeMovies.xml" controls></video>
       <select id="language">
         <option val="en">English</option>
         <option val="es">Spanish</option>
@@ -63,4 +114,3 @@
     </div>
   </body> 
 </html> 
-

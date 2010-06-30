@@ -1,7 +1,6 @@
 /*global google: false */ // This global comment is read by jslint
 
 (function() {
-
   // The video manager manages a single video element, and all it's commands.
   var VideoManager = this.VideoManager = function(videoElement) {
     this.commandObjects  = {};
@@ -156,6 +155,115 @@
   };
 
   ////////////////////////////////////////////////////////////////////////////
+  // Credits Command
+  ////////////////////////////////////////////////////////////////////////////
+  var credits = {
+    add: function() {
+        
+    }
+  }
+  var CreditsCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
+    $("#credits")
+        .width(this.videoManager.videoElement.clientWidth)
+        .height(this.videoManager.videoElement.clientHeight)
+    this.params["in"]=this.videoManager.videoElement.duration-.1;
+    this.params["out"]=this.videoManager.videoElement.duration+.1;
+    var that = this;
+    this.onIn = function() {
+        $("#credits").show();
+        $("#choices").animate({ right:'+=200px' }, 1000);
+        CreditsCommand.add( [
+            { 
+                text: "Play Again",
+                click:function() {
+                    CreditsCommand.killCol(0)
+                    $('video')[0].currentTime=0;
+                }
+            },
+            { 
+                text: "People",
+                next:[
+                    {
+                        text: "Nick Cammarata",
+                        next: [
+                            { text: "Twitter", href: "http://twitter.com/nicklovescode" },
+                            { text: "Flickr", href: "http://flickr.com/nicklovescode" }
+                        ] 
+                    },
+                    {
+                        text: "Celine Celine",
+                        href: "http://twitter.com/celinecelines"    
+                    }
+                ]
+            },
+            { text: "Places" },
+            { text: "Articles" }
+        ]);
+    };
+    this.onOut = function() {
+        $("#choices").css("right","-200px");
+        $("#credits").hide();
+    };
+  };
+  CreditsCommand.colIndex = 0;
+  CreditsCommand.killCol = function(index, callback) {
+     $(".column").each(function() {
+        if ($(this).attr("colindex")>index) {
+           $(this).addClass("removing").animate( { left: -$(this).outerWidth() + "px" }, 1200, function() {
+               $(this).remove(); 
+           });
+        }
+     });
+     if (callback) callback();
+  }
+
+  CreditsCommand.add =  function(items) {
+        CreditsCommand.colIndex++;
+        var ul = $("<ul></ul>")
+            .addClass('column')
+            .attr('colindex',parseInt(CreditsCommand.colIndex))
+        $.each(items, function(i, val) {
+            var li = $(document.createElement('li'))
+                .append($(document.createElement('a'))
+                    .text(val.text)
+                    .attr("href",val.href||"#")
+                    .attr("target",val.href?"_blank":""))
+                .appendTo(ul)
+                .addClass('play')
+                .click(function() {
+                    if (val.href) return true;
+                    var colIndex = $(this).parent().attr('colindex');
+                    if (CreditsCommand.colIndex>colIndex) { 
+                        CreditsCommand.killCol(colIndex);
+                        CreditsCommand.colIndex = colIndex;
+                    }
+                    var hasClass = $(this).hasClass('selected');
+                    if (!hasClass) {
+                        if (val.click) val.click();
+                        if (val.next) CreditsCommand.add(val.next); 
+                    }  
+                    $(this)
+                       .parent()
+                       .find('.selected')
+                       .removeClass('selected')
+                    if (!hasClass) $(this).addClass('selected');
+                })
+        });
+        var width = 0;
+        $(".column:not(.removing)").each(function() {
+            width+=$(this).outerWidth();    
+        })
+        ul
+            .appendTo("#credit_inner")
+            .css("z-index",1000-CreditsCommand.colIndex)
+            .css("left",-ul.outerWidth())
+            .animate({ 
+                left: width + "px"
+            },750)
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
   // TagThisPerson Command
   ////////////////////////////////////////////////////////////////////////////
 
@@ -277,7 +385,6 @@
   
   var FlickrCommand = function(name, params, text, videoManager) {
     VideoCommand.call(this, name, params, text, videoManager);
-
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
     target.setAttribute('id', this.id);
@@ -411,6 +518,16 @@
         return new SubtitleCommand(name, params, text, videoManager);
       }
     },
+    credits: {
+      create: function(name, params, text, videoManager) {
+        return new CreditsCommand(name, params, text, videoManager);
+      }
+    },
+    flickr: {
+      create: function(name, params, text, videoManager) {
+        return new FlickrCommand(name, params, text, videoManager);
+      }
+    },
     videotag: {
       create: function(name, params, text, videoManager) {
         return new TagCommand(name, params, text, videoManager);
@@ -434,11 +551,6 @@
     attribution: {
       create: function(name, params, text, videoManager) {
         return new AttributionCommand(name, params, text, videoManager);
-      }
-    },
-    flickr: {
-      create: function(name, params, text, videoManager) {
-        return new FlickrCommand(name, params, text, videoManager);
       }
     }
   };
