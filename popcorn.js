@@ -162,7 +162,7 @@
   var GoogleNewsCommand = function(name, params, text, videoManager) {
     VideoCommand.call(this, name, params, text, videoManager);
     this.target = document.createElement('div');
-    this.target.setAttribute('style', 'display:none');
+    this.target.setAttribute('style', 'display:none;border:0px;');
     document.getElementById(this.params.target).appendChild(this.target);
     this.target.setAttribute('id', this.id);
     var content = document.getElementById(this.id);
