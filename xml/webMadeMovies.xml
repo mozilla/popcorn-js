@@ -77,6 +77,9 @@
       <location id="mapacc" resourceid="acchomepage" in="00:00:01:00" out="00:00:32:00" lat="30.1580" long="-97.7388" target="container2" overlay="images/overlay/googlemap.png" zoom="8"/>
       <location id="mapsaopaulo" resourceid="saupaulowiki" in="00:00:32:00" out="00:01:00:00" lat="-23.55" long="-46.6388" target="container2" overlay="images/overlay/googlemap.png" zoom="6"/>
     </map>
+    <credit>
+        <credits>test</credits>
+    </credit>
     <news>
       <googlenews in="00:05:00" out="00:10:00" target="googlenewsdiv"/>
       <googlenews in="00:01:00" out="00:10:00" topic="oilspill" target="googlenewsdiv"/>

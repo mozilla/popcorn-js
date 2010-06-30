@@ -491,3 +491,54 @@ footer .footer_drumbeat{
 width:480px;
 }
 
+#sub { 
+position:absolute;
+top:350px;
+left:300px;
+color:white;
+font-weight:bold;
+font-family:sans-serif;	
+text-shadow:black 1px 1px 3px;
+width:820px;	
+font-size:22px;
+}
+
+/* Credits */
+#credits {
+position:absolute;   
+overflow:hidden;
+background-color:#333;
+border-left:1px solid #333;
+}
+
+#credits .column {
+float:left;
+position:absolute;
+height:100%;
+top:0px;
+margin:0px;
+padding:0px;
+background-color:#555;
+overflow:auto;
+border-right:1px #666 solid;
+}
+
+#credits li {
+    list-style-type:none;
+}
+#credits li.selected { border-left:2px solid #FADBAF; }
+
+#credits li a {
+    display:block;
+    text-decoration:none;
+    color:#efefef;
+    font-weight:bold;
+    font-family:sans-serif;	
+    text-shadow:black 1px 1px 3px;
+    padding:12px 14px;
+    border-bottom:1px solid #666;
+}
+
+#credits li a:hover {
+    color:#FADBAF;
+}
