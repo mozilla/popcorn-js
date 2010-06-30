@@ -98,8 +98,6 @@
     }
   };
 
-  
-  
   ////////////////////////////////////////////////////////////////////////////
   // Command objects
   ////////////////////////////////////////////////////////////////////////////
@@ -145,8 +143,8 @@
     // Creates a div for all overlays to use
     if (!VideoManager.overlayDiv) {
       VideoManager.overlayDiv = document.createElement('div');
-      VideoManager.overlayDiv.setAttribute('style', 'position:absolute;top:20px;left:20px');
-      this.videoManager.videoElement.parentNode.appendChild(VideoManager.overlayDiv);
+      VideoManager.overlayDiv.setAttribute('style', 'position:absolute;top:1px;left:1px');
+      document.getElementById("videoContainer").appendChild(VideoManager.overlayDiv);
     }
     
     // Checks for a url of an image to overlay onto the video
@@ -172,15 +170,23 @@
   // Child commands. Uses onIn() and onOut() to do time based operations
   var SubtitleCommand = function(name, params, text, videoManager) {
     VideoCommand.call(this, name, params, text, videoManager);
+
+    // Creates a div for all subtitles to use
+    if (!SubtitleCommand.subDiv) {
+      SubtitleCommand.subDiv = document.createElement('div');
+      SubtitleCommand.subDiv.setAttribute('style', 
+        'position:absolute;top:240px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 1px 1px 3px;font-size:22px;width:820px;');
+      document.getElementById("videoContainer").appendChild(SubtitleCommand.subDiv);
+    }
     this.onIn = function() {
       var i = document.getElementById("language").selectedIndex;
       google.language.translate(this.text, '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
-        document.getElementById("sub").innerHTML  = result.translation;
+        SubtitleCommand.subDiv.innerHTML = result.translation;
       });
       
     };
     this.onOut = function() {
-      document.getElementById("sub").innerHTML  = "";
+      SubtitleCommand.subDiv.innerHTML = "";
     };
   };
 

@@ -55,14 +55,14 @@
       <subtitle in="00:01:08:00" out="00:01:09:00">you can do everything at home with the Internet</subtitle>
     </subtitles>
     <footnotes>
-      <footnote in="00:00:00" out="00:14:00" target="footnotediv"> This video made exclusively for drumbeat.org </footnote>
+      <footnote in="00:00:00" out="00:14:00" overlay="images/overlay/footnote.png" target="footnotediv"> This video made exclusively for drumbeat.org </footnote>
     </footnotes>
     <resources>
       <twitter source="#oilspill" title="BP Oil Spill" target="twitter" width="238" height="160"/>
-      <twitter in="00:00:01:00" out="00:00:20:00" title="Celine Celine" source="from:celinecelines" target="personaltwitter" width="238" height="120"/>
+      <twitter in="00:00:01:00" out="00:00:20:00" title="Celine Celine" overlay="images/overlay/twitter.png" source="from:celinecelines" target="personaltwitter" width="238" height="120"/>
       <attribution in="00:00:1:00" out="00:40:00" target="container5" resourceid="attrib" />
       <attribution in="00:42:00" out="00:00:48:00" target="container5">A Shared Culture, Jesse Dylan</attribution>
-      <flickr in="00:01:00" out="00:20:00" target="personalflickr" userid="13072070" numberofimages="8" padding="4px"/>
+      <flickr in="00:01:00" out="00:20:00" target="personalflickr" overlay="images/overlay/flickr.png" userid="13072070" numberofimages="8" padding="4px"/>
     </resources>
     <videotags>
       <videotag in="00:00:03:00" out="00:00:14:00">Celine Celine</videotag>
@@ -74,8 +74,8 @@
       <videotag in="00:00:39:00" out="00:00:41:00">Celine Celine</videotag>
     </videotags>
     <map>
-      <location id="mapacc" resourceid="acchomepage" in="00:00:01:00" out="00:00:32:00" lat="30.1580" long="-97.7388" target="container2" zoom="8"/>
-      <location id="mapsaopaulo" resourceid="saupaulowiki" in="00:00:32:00" out="00:01:00:00" lat="-23.55" long="-46.6388" target="container2" zoom="6"/>
+      <location id="mapacc" resourceid="acchomepage" in="00:00:01:00" out="00:00:32:00" lat="30.1580" long="-97.7388" target="container2" overlay="images/overlay/googlemap.png" zoom="8"/>
+      <location id="mapsaopaulo" resourceid="saupaulowiki" in="00:00:32:00" out="00:01:00:00" lat="-23.55" long="-46.6388" target="container2" overlay="images/overlay/googlemap.png" zoom="6"/>
     </map>
     <news>
       <googlenews in="00:05:00" out="00:10:00" target="googlenewsdiv"/>
