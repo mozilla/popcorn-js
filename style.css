@@ -237,6 +237,7 @@ display: inline;
 /* Left Content */
 
 .video-div{
+position:relative;
 border: 2px solid #cc433c;
 margin-bottom: 15px;
 -webkit-box-shadow: -1px 1px 1px #d9d9d9;
@@ -490,14 +491,3 @@ footer .footer_drumbeat{
 width:480px;
 }
 
-#sub { 
-position:absolute;
-top:350px;
-left:300px;
-color:white;
-font-weight:bold;
-font-family:sans-serif;	
-text-shadow:black 1px 1px 3px;
-width:820px;	
-font-size:22px;
-}
