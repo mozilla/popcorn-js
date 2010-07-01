@@ -175,7 +175,7 @@
     if (!SubtitleCommand.subDiv) {
       SubtitleCommand.subDiv = document.createElement('div');
       
-      var style = 'position:absolute;top:240px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 2px 2px 6px;font-size:18px;width:80%;';
+      var style = 'position:absolute;top:240px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 2px 2px 6px;font-size:18px;width:100%;';
       SubtitleCommand.subDiv.setAttribute('style', style);  
       document.getElementById("videoContainer").appendChild(SubtitleCommand.subDiv);      
     }
