@@ -8,72 +8,8 @@
       <person id="brian" name="brian" >
         <resource id="briantwitter" src="http://twitter.com/bchirls" description="Brian's twitter" />
       </person>
-      <person id="mona" name="Mona" >
-        <resource id="monahomepage" src="http://monakasra.com/" description="Mona's Homepage"/>
-      </person>
-      <person id="dave" name="Dave" >
-        <resource id="davetwitter" src="http://twitter.com/academicdave" description="Dave's twitter" />
-      </person>
-      <person id="noah" name="Noah" >
-        <resource id="noahtwitter" src="http://twitter.com/noahworkman" description="Noah's Twitter Feed" />
-      </person>
-    </people>
-    <places>
-      <place id="acc" type="building" name="Austin Convention Center">
-        <resource id="acchomepage" src="http://www.austinconventioncenter.com/" description="Austin Convention Center"/>
-      </place>
-      <place id="saopaulo" type="city" name="Sao Paulo">
-        <resource id="saupaulowiki" src="http://en.wikipedia.org/wiki/S%C3%A3o_Paulo" description="Sao Paulo city, Brazil"/>
-      </place>
-    </places>
-    <attributions>
-      <attribution id="attrib" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan"
-                   license="CC-BY-NC-ND"  licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
-    </attributions>
-  </manifest>
-  
-  <articles>
-  <resource id="theinternet" src="http://en.wikipedia.org/wiki/internet" description="The Internet"/>
-  </articles>
-  
-  <timeline>
-    <subtitles>
-      <subtitle in="00:00:05:00" out="00:00:07:00">Hello! My name is Celine Celine</subtitle>
-      <subtitle in="00:00:07:00" out="00:00:09:00">And I help the Internet be easier</subtitle>
-      <subtitle in="00:00:09:00" out="00:00:12:00">by making things easier</subtitle>
-      <subtitle in="00:00:15:00" out="00:00:17:00">My name is Mona Kasra</subtitle>
-      <subtitle in="00:00:17:00" out="00:00:19:00">and I'm building a better internet</subtitle>
-      <subtitle in="00:00:32:00" out="00:00:34:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:34:00" out="00:00:36:00">producing and sharing music</subtitle>
-      <subtitle in="00:36:00" out="00:38:00">using creative commons</subtitle>
-      <subtitle in="00:00:42:00" out="00:00:44:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:44:00" out="00:00:46:00">because I fight for open educational resources</subtitle>
-      <subtitle in="00:00:46:00" out="00:00:47:00">on the web</subtitle>
-      <subtitle in="00:00:51:00" out="00:00:53:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:53:00" out="00:00:54.5:00">by hacking things</subtitle>
-      <subtitle in="00:00:54.5:00" out="00:00:56:00">without using a single line of code</subtitle>
-      <subtitle in="00:00:56:00" out="00:00:57:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:57:00" out="00:01:00:00">by changing the world of journalism</subtitle>
-      <subtitle in="00:01:01:00" out="00:01:02:15">you can mobilize people</subtitle>
-      <subtitle in="00:01:02:15" out="00:01:05:00">you don't need to have money anymore</subtitle>
-      <subtitle in="00:01:05:00" out="00:01:08:00">or big structures</subtitle>
-      <subtitle in="00:01:08:00" out="00:01:09:00">you can do everything at home with the Internet</subtitle>
-    </subtitles>
-    <footnotes>
-      <footnote in="00:00:00" out="00:14:00" target="footnotediv"> This video made exclusively for drumbeat.org </footnote>
-    </footnotes>
-    <resources>
-      <twitter source="#oilspill" title="BP Oil Spill" target="twitter" width="238" height="160"/>
-      <twitter in="00:00:01:00" out="00:00:20:00" title="Celine Celine" source="from:celinecelines" target="personaltwitter" width="238" height="120"/>
-      <popcorn>
-  <manifest>
-    <people>
-      <person id="celine" name="Celine" salutation="Miss." >
-        <resource id="celinehomepage" src="http://www.celinecelines.com/" description="Celine's Homepage" />
-        <resource id="celinetwitter" src="http://twitter.com/celinecelines" description="Celine's Twitter" />
-      </person>
-      <person id="brian" name="brian" >
-        <resource id="briantwitter" src="http://twitter.com/bchirls" description="Brian's twitter" />
+      <person id="SteveSong" name="Steve Song" >
+        <resource id="stevetwitter" src="http://twitter.com/stevesong" description="Steve's twitter" />
       </person>
       <person id="mona" name="Mona" >
         <resource id="monahomepage" src="http://monakasra.com/" description="Mona's Homepage"/>
@@ -94,83 +30,97 @@
       </place>
     </places>
     <attributions>
-      <attribution id="attrib" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan"
-                   license="CC-BY-NC-ND"  licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
+      <attribution id="attrib" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan" license="CC-BY-NC-ND" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
     </attributions>
+    <articles>
+      <resource id="theinternet" src="http://en.wikipedia.org/wiki/internet" description="The Internet"/>
+      <resource id="villagetelco" src="http://en.wikipedia.org/wiki/Village_telco" description="The Village Telco"/>
+    </articles>
   </manifest>
+
   <timeline>
-    <subtitles>
-      <subtitle in="00:00:05:00" out="00:00:07:00">Hello! My name is Celine Celine</subtitle>
-      <subtitle in="00:00:07:00" out="00:00:09:00">And I help the Internet be easier</subtitle>
-      <subtitle in="00:00:09:00" out="00:00:12:00">by making things easier</subtitle>
-      <subtitle in="00:00:15:00" out="00:00:17:00">My name is Mona Kasra</subtitle>
-      <subtitle in="00:00:17:00" out="00:00:19:00">and I'm building a better internet</subtitle>
-      <subtitle in="00:00:32:00" out="00:00:34:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:34:00" out="00:00:36:00">producing and sharing music</subtitle>
-      <subtitle in="00:36:00" out="00:38:00">using creative commons</subtitle>
-      <subtitle in="00:00:42:00" out="00:00:44:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:44:00" out="00:00:46:00">because I fight for open educational resources</subtitle>
-      <subtitle in="00:00:46:00" out="00:00:47:00">on the web</subtitle>
-      <subtitle in="00:00:51:00" out="00:00:53:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:53:00" out="00:00:54.5:00">by hacking things</subtitle>
-      <subtitle in="00:00:54.5:00" out="00:00:56:00">without using a single line of code</subtitle>
-      <subtitle in="00:00:56:00" out="00:00:57:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:57:00" out="00:01:00:00">by changing the world of journalism</subtitle>
-      <subtitle in="00:01:01:00" out="00:01:02:15">you can mobilize people</subtitle>
-      <subtitle in="00:01:02:15" out="00:01:05:00">you don't need to have money anymore</subtitle>
-      <subtitle in="00:01:05:00" out="00:01:08:00">or big structures</subtitle>
-      <subtitle in="00:01:08:00" out="00:01:09:00">you can do everything at home with the Internet</subtitle>
-    </subtitles>
+
     <footnotes>
-      <footnote in="00:00:00" out="00:14:00" target="footnotediv"> This video made exclusively for drumbeat.org </footnote>
+      <footnote in="00:00:00" out="00:14:00" target="footnotediv">This video made exclusively for drumbeat.org </footnote>
     </footnotes>
+
     <resources>
-      <twitter source="#oilspill" title="BP Oil Spill" target="twitter" width="238" height="160"/>
-      <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
-      <twitter in="00:00:18:04" out="00:00:25:02" title="Keyboard Cat" source="#keyboardcat" target="twitter" width="238" height="120"/>
-      <twitter in="00:00:28:09" out="00:00:29:07 source="#oilspill" title="BP Oil Spill" target="twitter" width="238" height="160"/>
-      <twitter in="00:00:29:08" out="00:00:31:00" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
 
-      <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="attrib">The Village Telco, Richard Mills</attribution>
-      <attribution in="00:00:18:04" out="00:00:25:02" target="container5" resourceid="attrib">KeyBoard Cat, Charlie Schmidt</attribution>
-      <attribution in="00:00:28:09" out="00:00:29:07" target="container5" resourceid="attrib">Grassroots Mapping, Tungsten Monkey</attribution>
-      
-      <attribution in="00:42:00" out="00:00:48:00" target="container5">A Shared Culture, Jesse Dylan</attribution>
-      <flickr in="00:01:00" out="00:20:00" target="flickr" userid="13072070" numberofimages="8" padding="4px"/>
-
-      <googlenews in="00:01:00" out="00:10:00" topic="oilspill" target="googlenewsdiv"/>
-
-      <wiki in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberOfWords="200" target="wikidiv"/>
-    
-
-    </resources>
-    <videotags>
       <videotag in="00:00:05:02" out="00:00:10:07">Steve Song</videotag>
+      <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="attrib">The Village Telco, Richard Mills</attribution>
+      <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
+      <wiki in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv"/>      
+      <flickr in="00:00:05:02" out="00:00:10:07" target="flickr" userid="78868639" numberofimages="8" padding="4px"/>
+      
       <videotag in="00:00:18:04" out="00:00:25:02">Keyboard Cat</videotag>
+      <twitter in="00:00:18:04" out="00:00:25:02" title="Keyboard Cat" source="#keyboardcat" target="twitter" width="238" height="120"/>
+      <attribution in="00:00:18:04" out="00:00:25:02" target="container5" resourceid="attrib">KeyBoard Cat, Charlie Schmidt</attribution>
+      
       <videotag in="00:00:28:09" out="00:00:29:07">Geoffrey Warren</videotag>
+      <attribution in="00:00:28:09" out="00:00:29:07" target="container5" resourceid="attrib">Grassroots Mapping, Tungsten Monkey</attribution>
       <videotag in="00:00:29:08" out="00:00:31:00">Village Telco Guy</videotag>
+      <wiki in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberOfWords="200" target="wikidiv"/>
       <videotag in="00:00:41:00" out="00:01:07:09">Geoffrey Warren</videotag>
-      <videotag in="00:01:07:10" out="00:01:25:07">Steve Song</videotag>
+      <attribution in="00:42:00" out="00:00:48:00" target="container5">A Shared Culture, Jesse Dylan</attribution>
+ 
+      <twitter in="00:01:07:10" out="00:01:25:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
       <videotag in="00:01:25:08" out="00:01:32:07">Village Telco Guy</videotag>
+      
       <videotag in="00:01:32:08" out="00:01:38:02">Charlie Schmidt</videotag>
+      <twitter in="00:01:32:08" out="00:01:57:11" title="Charlie Schmidt" source="from:chuckieart" target="personaltwitter" width="238" height="120"/>
       <videotag in="00:01:38:02" out="00:01:41:10">Keyboard Cat</videotag>
-      <videotag in="00:01:41:11" out="00:01:57:11">Charlie Schmidt</videotag>   
-      <videotag in="00:02:09:00" out="00:03:07:05">Jonathan Zittrain</videotag>   
-      <videotag in="00:03:09:00" out="00:03:16:00">NCSA guy</videotag>   
-      <videotag in="00:03:16:01" out="00:03:18:05">Computer Chronicles guy #1</videotag>   
-      <videotag in="00:03:16:02" out="00:03:21:00">Computer Chronicles guy #2</videotag>  
-      <videotag in="00:03:21:01" out="00:03:28:06">Computer Chronicles guy #3</videotag>   
+      <videotag in="00:01:41:11" out="00:01:57:11">Charlie Schmidt</videotag>
+
+      <videotag in="00:02:09:00" out="00:03:07:05">Jonathan Zittrain</videotag>
+      <twitter in="00:02:09:00" out="00:03:07:05" title="Jonathan Zittrain" source="from:zittrain" target="personaltwitter" width="238" height="120"/>
+      
+      <videotag in="00:03:09:00" out="00:03:16:00">NCSA guy</videotag>
+      <videotag in="00:03:16:01" out="00:03:18:05">Computer Chronicles guy #1</videotag>
+      <videotag in="00:03:16:02" out="00:03:21:00">Computer Chronicles guy #2</videotag>
+      <videotag in="00:03:21:01" out="00:03:28:06">Computer Chronicles guy #3</videotag>
+      
       <videotag in="00:03:43:00" out="00:03:56:00">Jonathan Zittrain</videotag>
+      <twitter in="00:03:43:00" out="00:03:56:00" title="Jonathan Zittrain" source="from:zittrain" target="personaltwitter" width="238" height="120"/>
+      
       <videotag in="00:03:59:00" out="00:04:03:05">Mona Kasra</videotag>
       <videotag in="00:04:03:06" out="00:04:07:00">Noah Workman</videotag>
-      <videotag in="00:04:03:06" out="00:04:13:01">Brazillian dude</videotag>         
-      <videotag in="00:04:13:02" out="00:04:19:05">Keechang Kim</videotag>         
-      <videotag in="00:04:19:06" out="00:04:24:01">Celine Celines</videotag>    
-    </videotags>
+      <twitter in="00:04:03:06" out="00:04:07:00" title="Noah Workman" source="from:noahworkman" target="personaltwitter" width="238" height="120"/>
+      <videotag in="00:04:03:06" out="00:04:13:01">Brazillian dude</videotag>
+      <videotag in="00:04:13:02" out="00:04:19:05">Keechang Kim</videotag>
+      <twitter in="00:04:19:06" out="00:04:24:01" title="Celine Celines" source="from:celinecelines" target="personaltwitter" width="238" height="120"/>
+      <videotag in="00:04:19:06" out="00:04:24:01">Celine Celines</videotag>
+      <flickr in="00:04:19:06" out="00:04:24:01" target="flickr" userid="13072070" numberofimages="8" padding="4px"/>
+    </resources>
+
     <map>
       <location id="CapeTown" resourceid="acchomepage" in="00:00:03:00" out="00:00:11:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
       <location id="Grand Isle" resourceid="acchomepage" in="00:00:11:07" out="00:00:19:07" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>
       <location id="MITMediaLab" resourceid="mitwiki" in="00:00:19:08" out="00:00:27:00" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>
+      <location id="Montreal" resourceid="montrealwiki" in="00:04:19:06" out="00:04:24:01" lat="45.5089" long="-73.5542 " target="container2" zoom="8"/>
     </map>
+    <!--
+    <subtitles>   
+      <subtitle in="00:00:05:00" out="00:00:07:00">Hello! My name is Celine Celine</subtitle>
+      <subtitle in="00:00:07:00" out="00:00:09:00">And I help the Internet be easier</subtitle>
+      <subtitle in="00:00:09:00" out="00:00:12:00">by making things easier</subtitle>
+      <subtitle in="00:00:15:00" out="00:00:17:00">My name is Mona Kasra</subtitle>
+      <subtitle in="00:00:17:00" out="00:00:19:00">and I'm building a better internet</subtitle>
+      <subtitle in="00:00:32:00" out="00:00:34:00">I make the Internet better</subtitle>
+      <subtitle in="00:00:34:00" out="00:00:36:00">producing and sharing music</subtitle>
+      <subtitle in="00:36:00" out="00:38:00">using creative commons</subtitle>
+      <subtitle in="00:00:42:00" out="00:00:44:00">I make the Internet better</subtitle>
+      <subtitle in="00:00:44:00" out="00:00:46:00">because I fight for open educational resources</subtitle>
+      <subtitle in="00:00:46:00" out="00:00:47:00">on the web</subtitle>
+      <subtitle in="00:00:51:00" out="00:00:53:00">I make the Internet better</subtitle>
+      <subtitle in="00:00:53:00" out="00:00:54.5:00">by hacking things</subtitle>
+      <subtitle in="00:00:54.5:00" out="00:00:56:00">without using a single line of code</subtitle>
+      <subtitle in="00:00:56:00" out="00:00:57:00">I make the Internet better</subtitle>
+      <subtitle in="00:00:57:00" out="00:01:00:00">by changing the world of journalism</subtitle>
+      <subtitle in="00:01:01:00" out="00:01:02:15">you can mobilize people</subtitle>
+      <subtitle in="00:01:02:15" out="00:01:05:00">you don't need to have money anymore</subtitle>
+      <subtitle in="00:01:05:00" out="00:01:08:00">or big structures</subtitle>
+      <subtitle in="00:01:08:00" out="00:01:09:00">you can do everything at home with the Internet</subtitle>
+    </subtitles>
+    -->
   </timeline>
 </popcorn>
