@@ -31,7 +31,11 @@
       <attribution id="attrib" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan"
                    license="CC-BY-NC-ND"  licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
     </attributions>
+	<articles>
+	  <resource id="theinternet" src="http://en.wikipedia.org/wiki/internet" description="The Internet"/>
+	</articles>
   </manifest>
+ 
   <timeline>
     <subtitles>
       <subtitle in="00:00:05:00" out="00:00:07:00">Hello! My name is Celine Celine</subtitle>
@@ -66,19 +70,41 @@
       <attribution in="00:00:1:00" out="00:40:00" target="container5" resourceid="attrib" />
       <attribution in="00:42:00" out="00:00:48:00" target="container5">A Shared Culture, Jesse Dylan</attribution>
       <flickr in="00:01:00" out="00:20:00" target="flickr" userid="13072070" numberofimages="8" padding="4px"/>
+      <wiki in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberOfWords="200" target="wikidiv"/>
+      
     </resources>
     <videotags>
-      <videotag in="00:00:03:00" out="00:00:14:00">Celine Celine</videotag>
-      <videotag in="00:00:13:00" out="00:00:16:00">Brian</videotag>
-      <videotag in="00:00:15:00" out="00:00:19:00">Mona Kasra</videotag>
-      <videotag in="00:00:19:00" out="00:00:21:00">Caleb</videotag>
-      <videotag in="00:00:21:00" out="00:00:31:00">Dave</videotag>
-      <videotag in="00:00:21:00" out="00:00:33:00">Noah</videotag>
-      <videotag in="00:00:39:00" out="00:00:41:00">Celine Celine</videotag>
+      <videotag in="00:00:05:02" out="00:00:10:07">Steve Song</videotag>
+      <videotag in="00:00:18:04" out="00:00:25:02">Keyboard Cat</videotag>
+      <videotag in="00:00:28:09" out="00:00:29:07">Geoffrey Warren</videotag>
+      <videotag in="00:00:29:08" out="00:00:31:00">Village Telco Guy</videotag>
+      <videotag in="00:00:41:00" out="00:01:07:09">Geoffrey Warren</videotag>
+      <videotag in="00:01:07:10" out="00:01:25:07">Steve Song</videotag>
+      <videotag in="00:01:25:08" out="00:01:32:07">Village Telco Guy</videotag>
+      <videotag in="00:01:32:08" out="00:01:38:02">Charlie Schmidt</videotag>
+      <videotag in="00:01:38:02" out="00:01:41:10">Keyboard Cat</videotag>
+      <videotag in="00:01:41:11" out="00:01:57:11">Charlie Schmidt</videotag>   
+      <videotag in="00:02:09:00" out="00:03:07:05">Jonathan Zittrain</videotag>   
+      <videotag in="00:03:09:00" out="00:03:16:00">NCSA guy</videotag>   
+      <videotag in="00:03:16:01" out="00:03:18:05">Computer Chronicles guy #1</videotag>   
+      <videotag in="00:03:16:02" out="00:03:21:00">Computer Chronicles guy #2</videotag>  
+      <videotag in="00:03:21:01" out="00:03:28:06">Computer Chronicles guy #3</videotag>   
+      <videotag in="00:03:43:00" out="00:03:56:00">Jonathan Zittrain</videotag>
+      <videotag in="00:03:59:00" out="00:04:03:05">Mona Kasra</videotag>
+      <videotag in="00:04:03:06" out="00:04:07:00">Noah Workman</videotag>
+      <videotag in="00:04:03:06" out="00:04:13:01">Brazillian dude</videotag>         
+      <videotag in="00:04:13:02" out="00:04:19:05">Keechang Kim</videotag>         
+      <videotag in="00:04:19:06" out="00:04:24:01">Celine Celines</videotag>    
     </videotags>
     <map>
-      <location id="mapacc" resourceid="acchomepage" in="00:00:01:00" out="00:00:32:00" lat="30.1580" long="-97.7388" target="container2" zoom="8"/>
-      <location id="mapsaopaulo" resourceid="saupaulowiki" in="00:00:32:00" out="00:01:00:00" lat="-23.55" long="-46.6388" target="container2" zoom="6"/>
+      <location id="CapeTown" resourceid="acchomepage" in="00:00:03:00" out="00:00:11:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
+      <location id="Grand Isle" resourceid="acchomepage" in="00:00:11:07" out="00:00:19:07" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>
+      <location id="MITMediaLab" resourceid="mitwiki" in="00:00:19:08" out="00:00:27:00" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>
     </map>
+    <credit><credits></credits></credit>
+	<news>
+      <googlenews in="00:05:00" out="00:10:00" target="googlenewsdiv"/>
+      <googlenews in="00:01:00" out="00:10:00" topic="oilspill" target="googlenewsdiv"/>
+    </news>
   </timeline>
 </popcorn>
