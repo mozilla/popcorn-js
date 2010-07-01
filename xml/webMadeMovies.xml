@@ -37,27 +37,39 @@
   </manifest>
  
   <timeline>
-    <subtitles>
-      <subtitle in="00:00:05:00" out="00:00:07:00">Hello! My name is Celine Celine</subtitle>
-      <subtitle in="00:00:07:00" out="00:00:09:00">And I help the Internet be easier</subtitle>
-      <subtitle in="00:00:09:00" out="00:00:12:00">by making things easier</subtitle>
-      <subtitle in="00:00:15:00" out="00:00:17:00">My name is Mona Kasra</subtitle>
-      <subtitle in="00:00:17:00" out="00:00:19:00">and I'm building a better internet</subtitle>
-      <subtitle in="00:00:32:00" out="00:00:34:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:34:00" out="00:00:36:00">producing and sharing music</subtitle>
-      <subtitle in="00:36:00" out="00:38:00">using creative commons</subtitle>
-      <subtitle in="00:00:42:00" out="00:00:44:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:44:00" out="00:00:46:00">because I fight for open educational resources</subtitle>
-      <subtitle in="00:00:46:00" out="00:00:47:00">on the web</subtitle>
-      <subtitle in="00:00:51:00" out="00:00:53:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:53:00" out="00:00:54.5:00">by hacking things</subtitle>
-      <subtitle in="00:00:54.5:00" out="00:00:56:00">without using a single line of code</subtitle>
-      <subtitle in="00:00:56:00" out="00:00:57:00">I make the Internet better</subtitle>
-      <subtitle in="00:00:57:00" out="00:01:00:00">by changing the world of journalism</subtitle>
-      <subtitle in="00:01:01:00" out="00:01:02:15">you can mobilize people</subtitle>
-      <subtitle in="00:01:02:15" out="00:01:05:00">you don't need to have money anymore</subtitle>
-      <subtitle in="00:01:05:00" out="00:01:08:00">or big structures</subtitle>
-      <subtitle in="00:01:08:00" out="00:01:09:00">you can do everything at home with the Internet</subtitle>
+    <subtitles language="en" align="left">
+      <subtitle in="00:00:00:01" out="00:00:03:00">Alright lets take a look and show me how much neat things you can do on the internet</subtitle>
+      <subtitle in="00:00:05:00" out="00:00:07:00">Have you ever wondered if there is a common thread</subtitle>
+      <subtitle in="00:00:07:01" out="00:00:11:00">that exists between mobile phone hackers in South Africa, </subtitle>
+      <subtitle in="00:00:12.5:00" out="00:00:16:00">adventures using kites to map an oil spil, </subtitle>
+      <subtitle in="00:00:19:00" out="00:00:22:00">and a video of a cat seen by tens of millions of people?</subtitle>
+      <subtitle in="00:00:27:00" out="00:00:30.5:00">Well it's the Internet - the cat, the kite, and the cell phone hackers</subtitle>
+      <subtitle in="00:00:30.5:01" out="00:00:33:00">would all be impossible without the internet</subtitle>
+      <subtitle in="00:00:33:01" out="00:00:37.5:00">an open platform that lets everyone participate without asking permission.</subtitle>
+      <subtitle in="00:00:39:00" out="00:00:41.5:00">The Internet is what lets M.I.T student Geoffrey Warren</subtitle>
+      <subtitle in="00:00:42:00" out="00:00:45:00">use kites to map the Luisiana oil spill. </subtitle>
+      <subtitle in="00:00:47.5:00" out="00:00:50:00">well wait a second why do we have to go all the way into space to take pictures of things</subtitle>
+      <subtitle in="00:00:50:02" out="00:00:52:00">that are righ, literally right next to us, you know. </subtitle>
+      <subtitle in="00:00:53:00" out="00:00:55:00">We can use symple tools like baloons or kites.</subtitle>
+      <subtitle in="00:00:55.5:00" out="00:00:57:00">Have the camera taking pictures every five seconds </subtitle>
+      <subtitle in="00:00:58:00" out="00:01:00:00">the idea is to get a lot of people involved </subtitle>
+      <subtitle in="00:01:01:00" out="00:01:03:00">in producing maps and then share all of the information</subtitle>
+      <subtitle in="00:01:03.5:00" out="00:01:03:00">like wikipedia style you know?</subtitle>
+      <subtitle in="00:01:06:00" out="00:01:10.5:00">The Internet is what allows Steve Song and his friends to create a D.I.Y. phone network</subtitle>
+      <subtitle in="00:01:11:00" out="00:01:12:00">called the Village Telco.</subtitle>
+      <subtitle in="00:01:12.5:00" out="00:01:18:00">Everyone that has a device that we call a mesh potatoe actually has a phone number</subtitle>
+      <subtitle in="00:01:18.5:00" out="00:01:20.5:00">and can call anyone else on the mesh at no charge.</subtitle>
+      <subtitle in="00:01:21.5:00" out="00:01:24.5:00">So taking an open-source principles to a telephone company.</subtitle>
+      <subtitle in="00:01:25:00" out="00:01:31:00">Everything is open umm anyone can come and anyone can join, anyone can make contributions</subtitle>
+    </subtitles>
+    <subtitles language="fa" align="right">
+      <subtitle in="00:04:00:00" out="00:04:01.5:00">My name is Mona Kasra</subtitle>
+      <subtitle in="00:04:02:00" out="00:04:02.5:00">and I'm building a better Internet</subtitle>
+    </subtitles>
+    <subtitles language="pt" align="left">
+      <subtitle in="00:04:06.5:00" out="00:04:08:00">I make the Internet better</subtitle>
+      <subtitle in="00:04:09:00" out="00:04:10.5:00">producing and sharing music</subtitle>
+      <subtitle in="00:04:11:00" out="00:04:12:00">using Creative Commons</subtitle>
     </subtitles>
     <footnotes>
       <footnote in="00:00:00" out="00:14:00" target="footnotediv"> This video made exclusively for drumbeat.org </footnote>

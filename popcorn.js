@@ -168,25 +168,32 @@
 
   // Child commands. Uses onIn() and onOut() to do time based operations
   var SubtitleCommand = function(name, params, text, videoManager) {
+    
     VideoCommand.call(this, name, params, text, videoManager);
 
     // Creates a div for all subtitles to use
     if (!SubtitleCommand.subDiv) {
       SubtitleCommand.subDiv = document.createElement('div');
-      SubtitleCommand.subDiv.setAttribute('style', 
-        'position:absolute;top:240px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 1px 1px 3px;font-size:22px;width:820px;');
-      document.getElementById("videoContainer").appendChild(SubtitleCommand.subDiv);
+      
+      var style = 'position:absolute;top:240px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 2px 2px 6px;font-size:18px;width:80%;';
+      SubtitleCommand.subDiv.setAttribute('style', style);  
+      document.getElementById("videoContainer").appendChild(SubtitleCommand.subDiv);      
     }
     this.onIn = function() {
       var i = document.getElementById("language").selectedIndex;
-      google.language.translate(this.text, '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
-        SubtitleCommand.subDiv.innerHTML = result.translation;
-      });
-      
+      if( document.getElementById("language").options[i].getAttribute("val") !== ( this.params.language || "en") ) {
+        google.language.translate(this.text, '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
+          SubtitleCommand.subDiv.innerHTML = result.translation;
+        });
+        style = SubtitleCommand.subDiv.getAttribute("style") + 'text-align:'+( this.params.align || "center" )+';';
+        SubtitleCommand.subDiv.setAttribute('style', style);  
+      }      
     };
     this.onOut = function() {
       SubtitleCommand.subDiv.innerHTML = "";
     };
+          
+    
   };
 
   ////////////////////////////////////////////////////////////////////////////
