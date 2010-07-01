@@ -31,7 +31,7 @@
     </places>
     <attributions>
       <attribution id="attrib" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
-      <attribution id="villagetelcoattrib" nameofwork="Village Telco" copyrightholder="Richard Mills" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
+      <attribution id="villagetelcoattrib" nameofwork="Village Telco" nameofworkurl="http://www.google.com" copyrightholderurl="http://www.google.com" copyrightholder="Richard Mills" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
     </attributions>
     <articles>
       <resource id="theinternet" src="http://en.wikipedia.org/wiki/internet" description="The Internet"/>

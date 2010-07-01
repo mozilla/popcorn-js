@@ -555,11 +555,24 @@
     VideoCommand.call(this, name, params, text, videoManager);
     var attribution = "";
     var image = "";
+
+    if ( this.params.nameofworkurl ) {
+      attribution += "<a href='" + this.params.nameofworkurl + "'>";
+    }
     if ( this.params.nameofwork ) {
       attribution += this.params.nameofwork;
     }
+    if ( this.params.nameofworkurl ) {
+      attribution += "</a>";
+    }
+    if ( this.params.copyrightholderurl ) {
+      attribution += "<a href='" + this.params.copyrightholderurl + "'>";
+    }
     if ( this.params.copyrightholder ) {
       attribution += ", " + this.params.copyrightholder;
+    }
+    if ( this.params.copyrightholderurl ) {
+      attribution += "</a>";
     }
     if ( this.params.license ) {
       if ( this.params.license.toUpperCase() === "CC-BY" ) {
