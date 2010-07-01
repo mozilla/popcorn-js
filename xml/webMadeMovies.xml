@@ -30,7 +30,8 @@
       </place>
     </places>
     <attributions>
-      <attribution id="attrib" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan" license="CC-BY-NC-ND" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
+      <attribution id="attrib" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
+      <attribution id="villagetelcoattrib" nameofwork="Village Telco" copyrightholder="Richard Mills" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
     </attributions>
     <articles>
       <resource id="theinternet" src="http://en.wikipedia.org/wiki/internet" description="The Internet"/>
@@ -47,21 +48,21 @@
     <resources>
 
       <videotag in="00:00:05:02" out="00:00:10:07">Steve Song</videotag>
-      <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="attrib">The Village Telco, Richard Mills</attribution>
+      <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>
       <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
       <wiki in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv"/>
-      <flickr in="00:00:05:02" out="00:00:10:07" target="flickr" userid="78868639" numberofimages="8" padding="4px"/>
+      <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639" numberofimages="8" padding="4px"/>
+      <googlenews in="00:00:05:02" out="00:00:10:07" target="googlenewsdiv" topic="Village Telco"/>
 
       <videotag in="00:00:18:04" out="00:00:25:02">Keyboard Cat</videotag>
       <twitter in="00:00:18:04" out="00:00:25:02" title="Keyboard Cat" source="#keyboardcat" target="twitter" width="238" height="120"/>
-      <attribution in="00:00:18:04" out="00:00:25:02" target="container5" resourceid="attrib">KeyBoard Cat, Charlie Schmidt</attribution>
+      <attribution in="00:00:18:04" out="00:00:25:02" target="container5">KeyBoard Cat, Charlie Schmidt</attribution>
 
       <videotag in="00:00:28:09" out="00:00:29:07">Geoffrey Warren</videotag>
-      <attribution in="00:00:28:09" out="00:00:29:07" target="container5" resourceid="attrib">Grassroots Mapping, Tungsten Monkey</attribution>
+      <attribution in="00:00:28:09" out="00:00:29:07" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>
       <videotag in="00:00:29:08" out="00:00:31:00">Village Telco Guy</videotag>
       <wiki in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberOfWords="200" target="wikidiv"/>
       <videotag in="00:00:41:00" out="00:01:07:09">Geoffrey Warren</videotag>
-      <attribution in="00:42:00" out="00:00:48:00" target="container5">A Shared Culture, Jesse Dylan</attribution>
 
       <twitter in="00:01:07:10" out="00:01:25:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
       <videotag in="00:01:25:08" out="00:01:32:07">Village Telco Guy</videotag>
@@ -86,6 +87,7 @@
       <videotag in="00:04:03:06" out="00:04:07:00">Noah Workman</videotag>
       <twitter in="00:04:03:06" out="00:04:07:00" title="Noah Workman" source="from:noahworkman" target="personaltwitter" width="238" height="120"/>
       <videotag in="00:04:03:06" out="00:04:13:01">Brazillian dude</videotag>
+      <attribution in="00:04:10:00" out="00:04:13:00" target="container5" resourceid="attrib"></attribution>
       <videotag in="00:04:13:02" out="00:04:19:05">Keechang Kim</videotag>
       <twitter in="00:04:19:06" out="00:04:24:01" title="Celine Celines" source="from:celinecelines" target="personaltwitter" width="238" height="120"/>
       <videotag in="00:04:19:06" out="00:04:24:01">Celine Celines</videotag>
