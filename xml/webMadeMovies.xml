@@ -31,7 +31,7 @@
     </places>
     <attributions>
       <attribution id="attrib" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
-      <attribution id="villagetelcoattrib" nameofwork="Village Telco" copyrightholder="Richard Mills" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
+      <attribution id="villagetelcoattrib" nameofwork="Village Telco" nameofworkurl="http://www.google.com" copyrightholderurl="http://www.google.com" copyrightholder="Richard Mills" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
     </attributions>
     <articles>
       <resource id="theinternet" src="http://en.wikipedia.org/wiki/internet" description="The Internet"/>
@@ -53,15 +53,14 @@
       <wiki in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv"/>
       <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639" numberofimages="8" padding="4px"/>
       <googlenews in="00:00:05:02" out="00:00:10:07" target="googlenewsdiv" topic="Village Telco"/>
-
       <videotag in="00:00:18:04" out="00:00:25:02">Keyboard Cat</videotag>
-      <twitter in="00:00:18:04" out="00:00:25:02" title="Keyboard Cat" source="#keyboardcat" target="twitter" width="238" height="120"/>
+      <twitter in="00:00:18:04" out="00:00:25:02" overlay="images/overlay/twitter.png" title="Keyboard Cat" source="#keyboardcat" target="twitter" width="238" height="120"/>
       <attribution in="00:00:18:04" out="00:00:25:02" target="container5">KeyBoard Cat, Charlie Schmidt</attribution>
 
       <videotag in="00:00:28:09" out="00:00:29:07">Geoffrey Warren</videotag>
       <attribution in="00:00:28:09" out="00:00:29:07" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>
       <videotag in="00:00:29:08" out="00:00:31:00">Village Telco Guy</videotag>
-      <wiki in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberOfWords="200" target="wikidiv"/>
+      <wiki in="00:00:32:00" out="00:00:41:00" overlay="images/overlay/wikipedia.png" resourceid="theinternet" numberOfWords="200" target="wikidiv"/>
       <videotag in="00:00:41:00" out="00:01:07:09">Geoffrey Warren</videotag>
 
       <twitter in="00:01:07:10" out="00:01:25:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
