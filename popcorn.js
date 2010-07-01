@@ -190,6 +190,44 @@
   };
 
   ////////////////////////////////////////////////////////////////////////////
+  // Lower third text Command
+  ////////////////////////////////////////////////////////////////////////////
+
+  var LowerThirdCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
+    
+    // Creates a div for all subtitles to use
+    if (!LowerThirdCommand.ltDiv) {
+      LowerThirdCommand.ltDiv = document.createElement('div');
+      LowerThirdCommand.ltDiv.setAttribute('style', 
+        'padding-left:40px;padding-right:40px;padding-top:40px;position:absolute;top:150px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 1px 1px 3px;font-size:22px;width:450px;');
+      document.getElementById("videoContainer").appendChild(LowerThirdCommand.ltDiv);
+    }
+    this.onIn = function() {
+      $(LowerThirdCommand.ltDiv).css("text-align", (this.params.align || 'left'));
+      var i = document.getElementById("language").selectedIndex;
+      google.language.translate((this.params.salutation || ""), '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
+        var span = document.createElement('span');
+        span.innerHTML = result.translation + " ";
+        span.setAttribute('style', 'font-size:26px;');
+        LowerThirdCommand.ltDiv.appendChild(span);
+      });
+      google.language.translate((this.params.name || ""), '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
+        var span = document.createElement('span');
+        span.innerHTML = result.translation;
+        span.setAttribute('style', 'font-size:26px;');
+        LowerThirdCommand.ltDiv.appendChild(span);
+      });
+      google.language.translate((this.params.role || ""), '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
+        LowerThirdCommand.ltDiv.innerHTML += "<br/>" + result.translation;
+      });
+    };
+    this.onOut = function() {
+      LowerThirdCommand.ltDiv.innerHTML = "";
+    };
+  };
+
+  ////////////////////////////////////////////////////////////////////////////
   // GoogleNews Command
   ////////////////////////////////////////////////////////////////////////////
 
@@ -479,7 +517,49 @@
       this.target.setAttribute('style', 'display:none');
     };
   };
+	
+  ////////////////////////////////////////////////////////////////////////////
+  // Wiki Command
+  ////////////////////////////////////////////////////////////////////////////
+  
+  var WikiCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
     
+    var src = this.params.src;
+    var length = this.params.numberOfWords;
+    // Setup a default, hidden div to hold the images
+    var target = document.createElement('div');
+    target.setAttribute('id', this.id);
+    document.getElementById(this.params.target).appendChild(target);
+    // Div is hidden by default
+    target.setAttribute('style', 'display:none');
+    // This uses jquery
+    $.getJSON("http://en.wikipedia.org/w/api.php?action=parse&props=text&page=" + ( this.params.title || src.slice(src.lastIndexOf("/")+1) ) + "&format=json&callback=?", function(data){
+      if( data ) {
+        //make a link to the document
+        var link = document.createElement('a');
+        link.setAttribute('href', src);
+        var p = document.createElement('p');
+        p.innerHTML = data.parse.displaytitle;
+        link.appendChild(p);
+        // get the first 140 characters of the wiki content
+        var desc = document.createElement('p');
+        var text = data.parse.text.*.substr(data.parse.text.*.indexOf('<p>'));
+        text = text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
+        desc.innerHTML = text.substr(0, ( length || 140 )) + " ...";
+        target.appendChild(link);
+        target.appendChild(desc);
+      }
+    }); 
+    
+    this.target = target;
+    this.onIn = function() {
+      this.target.setAttribute('style', 'display:inline');
+    };
+    this.onOut = function() {
+      this.target.setAttribute('style', 'display:none');
+    };
+	};
   ////////////////////////////////////////////////////////////////////////////
   // Footnote Command
   ////////////////////////////////////////////////////////////////////////////
@@ -612,6 +692,16 @@
       create: function(name, params, text, videoManager) {
         return new GoogleNewsCommand(name, params, text, videoManager);
       }
+    },
+    wiki: {
+      create: function(name, params, text, videoManager) {
+        return new WikiCommand(name, params, text, videoManager);
+      }
+    },
+    lowerthird: {
+      create: function(name, params, text, videoManager) {
+        return new LowerThirdCommand(name, params, text, videoManager);
+      }
     }
   };
 
@@ -692,4 +782,3 @@
   }, false);
   
 }());
-
