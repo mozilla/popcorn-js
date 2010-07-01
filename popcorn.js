@@ -410,11 +410,13 @@
     this.onIn = function() {
       MapCommand.map.setCenter(this.location);
       MapCommand.map.setZoom(this.params.zoom);
-      var link = document.createElement("a");
-      link.setAttribute("href", this.params.src);
-      link.setAttribute("target", "_new");
-      link.appendChild(document.createTextNode(this.params.description));
-      document.getElementById('mapinfo').appendChild(link);
+      if (this.params.src) {
+        var link = document.createElement("a");
+        link.setAttribute("href", this.params.src);
+        link.setAttribute("target", "_new");
+        link.appendChild(document.createTextNode(this.params.description||this.params.src));
+        document.getElementById('mapinfo').appendChild(link);
+      }
     };
     this.onOut = function() {
       MapCommand.map.setCenter(new google.maps.LatLng(0, 0));
