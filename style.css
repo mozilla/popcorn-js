@@ -325,7 +325,7 @@ border: 1px solid #d9d9d9;
 margin-bottom: 15px;
 }
 
-section:hover{
+section.hover{
 -webkit-box-shadow: -1px 1px 1px #bdc7c6;
 -moz-box-shadow: -1px 1px 1px #bdc7c6;
 box-shadow:  -1px 1px 1px #bdc7c6;

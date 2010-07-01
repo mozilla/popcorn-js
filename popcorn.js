@@ -59,6 +59,13 @@
         }
         if (!commandObject.running && commandObject.params["in"] < t && commandObject.params["out"] > t) {
           commandObject.running = true;
+          if (typeof commandObject.flash=="undefined") {
+             var section = $(commandObject.target).parents('section');
+             if (!section.hasClass('hover')) {
+                section.addClass('hover');    
+                section.attr('hoveron', $('video')[0].currentTime);
+             }
+          }
           commandObject.onIn();
           commandObject.displayOverlay();
         }
