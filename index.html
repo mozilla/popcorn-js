@@ -1,68 +1,214 @@
-<html> 
-  <head> 
-    <title>html5 video demo</title> 
-    <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-    <script src="popcorn.js"></script>
-    <script src="http://code.jquery.com/jquery.js"></script> 
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script src="http://google.com/jsapi"></script>
-    <script>google.load("language","1");</script>
-    <script>google.load("elements", "1", {packages : ["newsshow"]});</script>
-    <style type="text/css" media="screen"> 
-      body { 
-        background-color:#eee; 
-      }
-      #container {
-        width:850px;
-        margin:auto 50px;
-        border:1px solid #ccc;
-        background:white;
-        padding:20px;
-        position:relative;
-      }
-      #sub { 
-        position:absolute;
-        top:435px;
-        left:40px;
-        color:white;
-        font-weight:bold;
-        font-family:sans-serif;	
-        text-shadow:black 1px 1px 3px;
-        width:820px;	
-        font-size:25px;
-      }
-      #map {
-          border: solid 1px #000;
-          width: 200px;
-          height: 200px;
-      }
-    </style> 
-  </head> 
-  <body> 
-    <div id="container">
-      <video src="http://a52.video2.blip.tv/7320003802153/Etherworks-WebMadeMovies3BuildingABetterInternet799.ogg" data-timeline-sources="xml/webMadeMovies.xml" controls></video>
-      <select id="language">
-        <option val="en">English</option>
-        <option val="es">Spanish</option>
-        <option val="fr">French</option>
-        <option val="de">German</option>
-        <option val="ja">Japanese</option>
-        <option val="zh">Chinese</option>
-      </select>
-      <div id="sub"></div><br />
-      <div id="footnotediv"></div><br />
-      <div id="attributiondiv"></div><br />
-      <div id="tagthisvideo">In this video:<span id="inthisvideo"></span></div><br />
-      <div>
-        <div id="map">        
-        </div>
-          <p id="mapinfo">
-          </p>
-      </div>
-      <div id="googlenewsdiv"></div>
-      <div id="twitter"></div>
-      <div id="flickr"></div>
-    </div>
-  </body> 
-</html> 
+<html>
+<head>
+  <title>html5 video demo</title>
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <script src="http://google.com/jsapi"></script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script src="http://widgets.twimg.com/j/2/widget.js"></script>
+  <script>google.load("language", "1");</script>
+  <script>google.load("elements", "1", {packages : ["newsshow"]});</script>
+  <script src="popcorn.js"></script>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript">
+    $(document).ready(function () {
+      //Show hide the contents
+      $(".collapse").click(function () {
+        $(this).next(".content").slideToggle("fast");
+      });
+      //Swap class names
+      $(".collapse").toggle(function () {
+        $(this).addClass("expand");
+      }, function () {
+        $(this).removeClass("expand");
+      });
+      $(".collapse").toggle(function () {
+        $("span", this).text('Expand');
+      }, function () {
+        $("span", this).text('Collapse');
+      });
+    });
+  </script>
+</head>
 
+<body>
+  <!-- Start First Container Div -->
+  <div class="container-top">
+    <!-- Start Second Container Div -->
+    <div class="container-bot">
+      <!-- Start Wrapper Div -->
+      <div class="wrapper">
+        <!-- Start Header -->
+        <header id="global-header">
+          <a href="http://www.drumbeat.org/" class="logo"><img src="images/drumbeat_logo.png" alt="drumbeat_logo" width="" height="" /></a>
+
+          <!-- Start Login/Signup -->
+          <nav id="login">
+            <ul>
+              <li><a href="#">log in</a></li>
+              <li><a href="#">sign up</a></li>
+            </ul>
+          </nav>
+          <!-- End Login/Signup -->
+
+          <!-- Start Primary Links -->
+          <nav id="primary-links">
+            <ul>
+              <li><a title="" href="http://www.drumbeat.org/about">About</a></li>
+              <li><a title="" href="http://www.drumbeat.org/projects">Projects</a></li>
+              <li><a title="" href="http://www.drumbeat.org/people">People</a></li>
+              <li><a title="" href="http://www.drumbeat.org/events">Events</a></li>
+              <li><a title="" href="http://indofolio.com/civicrm/contribute/transact?reset=1&id=3?reset=1&id=3">Donate</a></li>
+            </ul>
+          </nav>
+          <!-- End Primary Links -->
+
+        </header>
+        <!-- End Header -->
+        <!-- Start Contents -->
+        <div id="contents">
+          <!-- Start Left Contents -->
+          <div class="left-content">
+            <!-- Start Video Div -->
+            <div id="videoContainer" class="video-div">
+              <div id="credits" style="display:none">
+                <div id="credit_inner">
+                </div>
+              </div>
+              <video width="530px" height="299px" src="http://a6.video3.blip.tv/0210003175398/Etherworks-WMMOGGVERSION204.ogv" data-timeline-sources="xml/webMadeMovies.xml" controls></video>
+                <!-- Start Video Info -->
+                <div class="video-info">
+                  <!-- Start Choose Language -->
+                  <div class="choose-language">
+                    <h2>Choose your language</h2>
+                    <select id="language">
+                      <option val="en">English</option>
+                      <option val="es">Spanish</option>
+                      <option val="fr">French</option>
+                      <option val="de">German</option>
+                      <option val="ja">Japanese</option>
+                    </select>
+                    <div id="credit">
+                      with help from
+                      <br />
+                      <a href="http://google.com/translate">Google Translate</a> and <a href="http://jquery.com">
+                        jQuery</a>
+                    </div>
+                  </div>
+                  <!-- End Choose Language -->
+                  <!-- Start Foot Notes -->
+                  <div class="foot-notes">
+                    <h2>
+                      This video's footnotes</h2>
+                    <p id="footnotediv"></p>
+                  </div>
+                  <!-- End Foot Notes -->
+                </div>
+                <!-- End Video Info -->
+              </div>
+              <!-- End Video Div -->
+              <h1>
+                <span>In this video: <strong id="inthisvideo"></strong></span>
+              </h1>
+              <!-- Start Column A -->
+              <div class="columna">
+                <section>
+			            <h3><img src="images/logo_twitter.png" alt="Twitter Updates" width="" height="" />
+			              <span>&nbsp;</span></h3>
+			            <a href="#" class="collapse"><span>Collapse</span></a>
+			            <div id="personaltwitter" class="content"></div>
+			          </section>
+                         
+              </div>
+              <!-- End Column A -->
+              <!-- Start Column B -->
+              <div class="columnb">
+                <section>
+			            <h3><img src="images/logo_flickr.png" alt="Flickr Images" width="" height="" />
+                    <span>&nbsp;</span></h3> 
+			            <a href="#" class="collapse"><span>Collapse</span></a>
+			            <div id="personalflickr" class="content"></div>
+			          </section>
+              </div>
+              <!-- End Column B -->
+            </div>
+            <!-- End Left Contents -->
+            <!-- Start Right Contents -->
+            <div class="right-content">
+              <h1>
+                <span>Related to this video</span></h1>
+              <!-- Start Column A -->
+              <div class="columna">
+                <section>
+			            <div id="container3" class="google-map-title">
+                    <h4>Filmed in:</h4>
+                    <span id="mapinfo"></span>
+                  </div>            
+
+			            <div id="container2" class="google-map"></div>
+			
+			          </section>
+                <section>
+			            <h3><img src="images/logo_twitter.png" alt="Twitter" width="" height="" /></h3> 
+			            <a href="#" class="collapse"><span>Collapse</span></a>
+			            <div id="twitter" class="content"></div>
+		            </section>
+              </div>
+              <!-- End Column A -->
+              <!-- Start Column B -->
+              <div class="columnb">
+                <section>
+			            <h3><img src="images/logo_wiki.png" alt="Wikipedia" width="" height="" /></h3> 
+			            <a href="#" class="collapse"><span>Collapse</span></a>
+
+			            <div class="content">
+			              Use the #Evernote Fx Add-on to save, organize, & search info you find on the Web http://bit.ly/evernotewebclipper /via @rockyourfirefox
+			              <a href="#" class="more">more</a>
+			            </div>
+			          </section>
+                <section>
+			            <h3><img src="images/logo_flickr.png" alt="Flickr Images" width="" height="" /></h3> 
+			            <a href="#" class="collapse"><span>Collapse</span></a>
+
+			            <div id="flickr" class="content"></div>
+			          </section>
+
+              </div>
+              <!-- End Column B -->
+
+              <h1></h1>
+              <section>
+			          <h3><img src="images/logo_google_news.png" alt="Google News" width="" height="" />
+			          </h3> 
+			          <div id="googlenewsdiv">
+			          </div>
+		          </section>
+	            <h1><span>This video's copyright information</span></h1>
+              <section>
+	    	        <div id="container5">
+                  Attribution
+                </div>
+		          </section>
+            </div>
+            <!-- End Right Contents -->
+          </div>
+          <!-- End Contents -->
+          <footer>
+	          <div class="footer_webmade">
+	          <img src="images/footer_webmade.png" alt="footer_webmade" width="" height="" />
+	          <p>Web Made Movies is a Mozilla's Open video lab
+	            <a href="#">Learn More <span>&raquo;</span></a>
+	          </p>
+	        </div>
+	        <div class="footer_drumbeat">
+	          <img src="images/footer_drumbeat.png" alt="footer_drumbeat" width="" height="" /><p>Innovation on the open web, </br> powered by everybody.</p>
+	        </div>
+          <div class="copyright">Portions of this content are &copy;2010 by individual drumbeat.org contributors. Content available under a Creative Commons license.</div>
+        </footer>
+      </div>
+      <!-- End Wrapper Div -->
+    </div>
+    <!-- End First Container Div -->
+  </div>
+  <!-- End Second Container Div -->
+</body>
+</html>

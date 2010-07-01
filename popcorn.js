@@ -1,7 +1,6 @@
 /*global google: false */ // This global comment is read by jslint
 
 (function() {
-
   // The video manager manages a single video element, and all it's commands.
   var VideoManager = this.VideoManager = function(videoElement) {
     this.commandObjects  = {};
@@ -47,6 +46,7 @@
         if (commandObject.running && (commandObject.params["in"] > t || commandObject.params["out"] < t)) {
           commandObject.running = false;
           commandObject.onOut();
+          commandObject.removeOverlay();
         }
       }
     }
@@ -60,6 +60,7 @@
         if (!commandObject.running && commandObject.params["in"] < t && commandObject.params["out"] > t) {
           commandObject.running = true;
           commandObject.onIn();
+          commandObject.displayOverlay();
         }
       }
     }
@@ -110,9 +111,13 @@
     this.onIn = function() {};
     this.onOut = function() {};
     this.preload = function() {};
+    this.displayOverlay = function() {};
+    this.removeOverlay = function() {};
     this.id = name + VideoCommand.count++;
     this.params["in"] = "0";
     this.params["out"] = this.videoManager.videoElement.duration;
+
+    // Adds all attributes from the xml tag into this.params
     for (var i = 0, pl = params.length; i < pl; i++) {
       for (var j = 0, nl = params[i].length; j < nl; j++) {
         var key = params[i].item(j).nodeName,
@@ -133,6 +138,27 @@
         }
       }
     }
+
+    // Creates a div for all overlays to use
+    if (!VideoManager.overlayDiv) {
+      VideoManager.overlayDiv = document.createElement('div');
+      VideoManager.overlayDiv.setAttribute('style', 'position:absolute;top:1px;left:1px');
+      document.getElementById("videoContainer").appendChild(VideoManager.overlayDiv);
+    }
+    
+    // Checks for a url of an image to overlay onto the video
+    if (this.params.overlay) {
+      this.image = document.createElement('img');
+      this.image.setAttribute('src', this.params.overlay);
+      this.image.setAttribute('style', 'display:none');
+      VideoManager.overlayDiv.appendChild(this.image);
+      this.displayOverlay = function() {
+        this.image.setAttribute('style', 'display:inline');
+      };
+      this.removeOverlay = function() {
+        this.image.setAttribute('style', 'display:none');
+      };
+    }
   };
   VideoCommand.count = 0;
 
@@ -143,15 +169,23 @@
   // Child commands. Uses onIn() and onOut() to do time based operations
   var SubtitleCommand = function(name, params, text, videoManager) {
     VideoCommand.call(this, name, params, text, videoManager);
+
+    // Creates a div for all subtitles to use
+    if (!SubtitleCommand.subDiv) {
+      SubtitleCommand.subDiv = document.createElement('div');
+      SubtitleCommand.subDiv.setAttribute('style', 
+        'position:absolute;top:240px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 1px 1px 3px;font-size:22px;width:820px;');
+      document.getElementById("videoContainer").appendChild(SubtitleCommand.subDiv);
+    }
     this.onIn = function() {
       var i = document.getElementById("language").selectedIndex;
       google.language.translate(this.text, '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
-        document.getElementById("sub").innerHTML  = result.translation;
+        SubtitleCommand.subDiv.innerHTML = result.translation;
       });
       
     };
     this.onOut = function() {
-      document.getElementById("sub").innerHTML  = "";
+      SubtitleCommand.subDiv.innerHTML = "";
     };
   };
 
@@ -162,7 +196,7 @@
   var GoogleNewsCommand = function(name, params, text, videoManager) {
     VideoCommand.call(this, name, params, text, videoManager);
     this.target = document.createElement('div');
-    this.target.setAttribute('style', 'display:none');
+    this.target.setAttribute('style', 'display:none;border:0px;');
     document.getElementById(this.params.target).appendChild(this.target);
     this.target.setAttribute('id', this.id);
     var content = document.getElementById(this.id);
@@ -180,6 +214,110 @@
       this.target.setAttribute('style', 'display:none');
     };
   };
+
+  ////////////////////////////////////////////////////////////////////////////
+  // Credits Command
+  ////////////////////////////////////////////////////////////////////////////
+  var CreditsCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
+    $("#credits")
+        .width(this.videoManager.videoElement.clientWidth)
+        .height(this.videoManager.videoElement.clientHeight)
+    this.params["in"]=this.videoManager.videoElement.duration-.1;
+    this.params["out"]=this.videoManager.videoElement.duration+.1;
+    var that = this;
+    this.onIn = function() {
+        $("#credits").show();
+        $("#choices").animate({ right:'+=200px' }, 1000);
+        CreditsCommand.add( [
+            { 
+                text: "Play Again",
+                click:function() {
+                    CreditsCommand.killCol(0)
+                    $('video')[0].currentTime=0;
+                }
+            },
+            { 
+                text: "People",
+                next:[
+                    {
+                        text: "Nick Cammarata",
+                        next: [
+                            { text: "Twitter", href: "http://twitter.com/nicklovescode" },
+                            { text: "Flickr", href: "http://flickr.com/nicklovescode" }
+                        ] 
+                    },
+                    {
+                        text: "Celine Celine",
+                        href: "http://twitter.com/celinecelines"    
+                    }
+                ]
+            },
+            { text: "Places" },
+            { text: "Articles" }
+        ]);
+    };
+    this.onOut = function() {
+        $("#choices").css("right","-200px");
+        $("#credits").hide();
+    };
+  };
+  CreditsCommand.colIndex = 0;
+  CreditsCommand.killCol = function(index, callback) {
+     $(".column").each(function() {
+        if ($(this).attr("colindex")>index) {
+           $(this).addClass("removing").animate( { left: -$(this).outerWidth() + "px" }, 1200, function() {
+               $(this).remove(); 
+           });
+        }
+     });
+     if (callback) callback();
+  }
+
+  CreditsCommand.add =  function(items) {
+        CreditsCommand.colIndex++;
+        var ul = $("<ul></ul>")
+            .addClass('column')
+            .attr('colindex',parseInt(CreditsCommand.colIndex))
+        $.each(items, function(i, val) {
+            var li = $(document.createElement('li'))
+                .append($(document.createElement('a'))
+                    .text(val.text)
+                    .attr("href",val.href||"#")
+                    .attr("target",val.href?"_blank":""))
+                .appendTo(ul)
+                .addClass('play')
+                .click(function() {
+                    if (val.href) return true;
+                    var colIndex = $(this).parent().attr('colindex');
+                    if (CreditsCommand.colIndex>colIndex) { 
+                        CreditsCommand.killCol(colIndex);
+                        CreditsCommand.colIndex = colIndex;
+                    }
+                    var hasClass = $(this).hasClass('selected');
+                    if (!hasClass) {
+                        if (val.click) val.click();
+                        if (val.next) CreditsCommand.add(val.next); 
+                    }  
+                    $(this)
+                       .parent()
+                       .find('.selected')
+                       .removeClass('selected')
+                    if (!hasClass) $(this).addClass('selected');
+                })
+        });
+        var width = 0;
+        $(".column:not(.removing)").each(function() {
+            width+=$(this).outerWidth();    
+        })
+        ul
+            .appendTo("#credit_inner")
+            .css("z-index",1000-CreditsCommand.colIndex)
+            .css("left",-ul.outerWidth())
+            .animate({ 
+                left: width + "px"
+            },750)
+  }
 
   ////////////////////////////////////////////////////////////////////////////
   // TagThisPerson Command
@@ -267,8 +405,8 @@
       interval: 6000,
       theme: {
         shell: {
-          background: '#8ec1da',
-          color: '#ffffff'
+          background: '#ffffff',
+          color: '#000000'
         },
         tweets: {
           background: '#ffffff',
@@ -297,12 +435,11 @@
   };
   
   ////////////////////////////////////////////////////////////////////////////
-  // FlickrCommand Command
+  // Flickr Command
   ////////////////////////////////////////////////////////////////////////////
   
   var FlickrCommand = function(name, params, text, videoManager) {
     VideoCommand.call(this, name, params, text, videoManager);
-
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
     target.setAttribute('id', this.id);
@@ -436,6 +573,16 @@
         return new SubtitleCommand(name, params, text, videoManager);
       }
     },
+    credits: {
+      create: function(name, params, text, videoManager) {
+        return new CreditsCommand(name, params, text, videoManager);
+      }
+    },
+    flickr: {
+      create: function(name, params, text, videoManager) {
+        return new FlickrCommand(name, params, text, videoManager);
+      }
+    },
     videotag: {
       create: function(name, params, text, videoManager) {
         return new TagCommand(name, params, text, videoManager);
@@ -464,11 +611,6 @@
     googlenews: {
       create: function(name, params, text, videoManager) {
         return new GoogleNewsCommand(name, params, text, videoManager);
-      }
-    },
-    flickr: {
-      create: function(name, params, text, videoManager) {
-        return new FlickrCommand(name, params, text, videoManager);
       }
     }
   };
