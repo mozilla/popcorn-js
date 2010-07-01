@@ -181,7 +181,7 @@
     }
     this.onIn = function() {
       var i = document.getElementById("language").selectedIndex;
-      if( document.getElementById("language").options[i].getAttribute("val") !== ( this.params.language || "en") ) {
+      if( ( document.getElementById("language").options[i].getAttribute("val") !== ( this.params.language || "en") ) || ( document.getElementById('accessibility').checked ) ) {
         google.language.translate(this.text, '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
           SubtitleCommand.subDiv.innerHTML = result.translation;
         });
