@@ -190,6 +190,44 @@
   };
 
   ////////////////////////////////////////////////////////////////////////////
+  // Lower third text Command
+  ////////////////////////////////////////////////////////////////////////////
+
+  var LowerThirdCommand = function(name, params, text, videoManager) {
+    VideoCommand.call(this, name, params, text, videoManager);
+    
+    // Creates a div for all subtitles to use
+    if (!LowerThirdCommand.ltDiv) {
+      LowerThirdCommand.ltDiv = document.createElement('div');
+      LowerThirdCommand.ltDiv.setAttribute('style', 
+        'padding-left:40px;padding-right:40px;padding-top:40px;position:absolute;top:150px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 1px 1px 3px;font-size:22px;width:450px;');
+      document.getElementById("videoContainer").appendChild(LowerThirdCommand.ltDiv);
+    }
+    this.onIn = function() {
+      $(LowerThirdCommand.ltDiv).css("text-align", (this.params.align || 'left'));
+      var i = document.getElementById("language").selectedIndex;
+      google.language.translate((this.params.salutation || ""), '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
+        var span = document.createElement('span');
+        span.innerHTML = result.translation + " ";
+        span.setAttribute('style', 'font-size:26px;');
+        LowerThirdCommand.ltDiv.appendChild(span);
+      });
+      google.language.translate((this.params.name || ""), '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
+        var span = document.createElement('span');
+        span.innerHTML = result.translation;
+        span.setAttribute('style', 'font-size:26px;');
+        LowerThirdCommand.ltDiv.appendChild(span);
+      });
+      google.language.translate((this.params.role || ""), '', document.getElementById("language").options[i].getAttribute("val"), function(result) {
+        LowerThirdCommand.ltDiv.innerHTML += "<br/>" + result.translation;
+      });
+    };
+    this.onOut = function() {
+      LowerThirdCommand.ltDiv.innerHTML = "";
+    };
+  };
+
+  ////////////////////////////////////////////////////////////////////////////
   // GoogleNews Command
   ////////////////////////////////////////////////////////////////////////////
 
@@ -672,6 +710,11 @@
       create: function(name, params, text, videoManager) {
         return new WikiCommand(name, params, text, videoManager);
       }
+    },
+    lowerthird: {
+      create: function(name, params, text, videoManager) {
+        return new LowerThirdCommand(name, params, text, videoManager);
+      }
     }
   };
 
@@ -752,4 +795,3 @@
   }, false);
   
 }());
-

@@ -24,9 +24,10 @@
     <places>
       <place id="acc" type="building" name="Austin Convention Center">
         <resource id="acchomepage" src="http://www.austinconventioncenter.com/" description="Austin Convention Center"/>
+        <resource id="accwiki" src="http://en.wikipedia.org/wiki/Austin_Convention_Center" description="Austin Convention Center Wiki"/>
       </place>
       <place id="saopaulo" type="city" name="Sao Paulo">
-        <resource id="saupaulowiki" src="http://en.wikipedia.org/wiki/S%C3%A3o_Paulo" description="Sao Paulo city, Brazil"/>
+        <resource id="saupaulowiki" src="http://en.wikipedia.org/wiki/S%C3%A3o_Paulo" title="S%C3%A3o_Paulo" description="Sao Paulo city, Brazil"/>
       </place>
     </places>
     <attributions>
@@ -38,7 +39,6 @@
       <resource id="villagetelco" src="http://en.wikipedia.org/wiki/Village_telco" description="The Village Telco"/>
     </articles>
   </manifest>
-
   <timeline>
 
     <footnotes>
@@ -46,7 +46,6 @@
     </footnotes>
 
     <resources>
-
       <videotag in="00:00:05:02" out="00:00:10:07">Steve Song</videotag>
       <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>
       <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
@@ -124,6 +123,11 @@
       <subtitle in="00:01:08:00" out="00:01:09:00">you can do everything at home with the Internet</subtitle>
     </subtitles>
     -->
-  <credits></credits>
+    <credits></credits>
+    <news>
+      <googlenews in="00:05:00" out="00:10:00" target="googlenewsdiv"/>
+      <googlenews in="00:01:00" out="00:10:00" topic="oilspill" target="googlenewsdiv"/>
+    </news>
+    <lowerthird in="01" out="05" salutation="Mr." name="Scott" role="Rad Mobile" align="center"/>
   </timeline>
 </popcorn>
