@@ -63,6 +63,7 @@
       <attribution in="00:00:1:00" out="00:40:00" target="container5" resourceid="attrib" />
       <attribution in="00:42:00" out="00:00:48:00" target="container5">A Shared Culture, Jesse Dylan</attribution>
       <flickr in="00:01:00" out="00:20:00" target="flickr" userid="13072070" numberofimages="8" padding="4px"/>
+      <googlenews in="00:01:00" out="00:10:00" topic="oilspill" target="googlenewsdiv"/>
     </resources>
     <videotags>
       <videotag in="00:00:03:00" out="00:00:14:00">Celine Celine</videotag>
