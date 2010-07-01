@@ -91,9 +91,9 @@
     } else if (t.length === 2) {
       return parseFloat(t[0], 10) + parseFloat(t[1] / 12, 10);
     } else if (t.length === 3) {
-      return parseInt(t[0] * 60, 10) + parseFloat(t[1], 10) + parseFloat(t[2] / 30, 10);
+      return parseInt(t[0] * 60, 10) + parseFloat(t[1], 10) + parseFloat(t[2] / 12, 10);
     } else if (t.length === 4) {
-      return parseInt(t[0] * 3600, 10) + parseInt(t[1] * 60, 10) + parseFloat(t[2], 10) + parseFloat(t[3] / 30, 10);
+      return parseInt(t[0] * 3600, 10) + parseInt(t[1] * 60, 10) + parseFloat(t[2], 10) + parseFloat(t[3] / 12, 10);
     }
   };
 
