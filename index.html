@@ -26,6 +26,21 @@
       }, function () {
         $("span", this).text('Collapse');
       });
+      $('section').hover(function() { 
+          $(this).addClass('hover')
+      }, function() {
+          $(this).removeClass('hover')
+      })
+      setInterval(function() {
+        $('section.hover').each(function() {
+            if ($(this).attr('hoveron')) {
+                if ($('video')[0].currentTime-$(this).attr('hoveron')>1) {
+                    $(this).removeAttr('hoveron').removeClass('hover');
+                }
+            }
+        })
+      }, 500);
+
     });
   </script>
 </head>
