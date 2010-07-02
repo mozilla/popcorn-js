@@ -511,7 +511,7 @@
         border  = this.params.border || "0px";
 
     // This uses jquery
-    $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?id=" + this.params.userid + "@N00&lang=en-us&format=json&jsoncallback=?", function(data){
+    $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?id=" + this.params.userid + "&lang=en-us&format=json&jsoncallback=?", function(data){
       $.each(data.items, function(i, item) {
         if (i < count) {
           var link = document.createElement('a');

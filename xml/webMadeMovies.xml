@@ -160,7 +160,7 @@
       <videotag in="00:04:13:02" out="00:04:19:05">Keechang Kim</videotag>
       <twitter in="00:04:19:06" out="00:04:24:01" title="Celine Celines" source="from:celinecelines" target="personaltwitter" width="238" height="120"/>
       <videotag in="00:04:19:06" out="00:04:24:01">Celine Celines</videotag>
-      <flickr in="00:04:19:06" out="00:04:24:01" target="personalflickr" userid="13072070" numberofimages="8" padding="4px"/>
+      <flickr in="00:04:19:06" out="00:04:24:01" target="personalflickr" userid="13072070@N00" numberofimages="8" padding="4px"/>
     </resources>
 
     <map>
