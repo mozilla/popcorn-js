@@ -257,6 +257,36 @@ position: relative;
 display:none !important;
 }
 
+.gns-sstitle, .gns-sstitle-link{
+font-size:12px;
+}
+
+.gns-root{
+width:238px !important;
+height:216px !important;
+}
+.gns-clusterresults, .gns-pausable{
+width:82px !important;
+}
+
+.gns-title-link, .gns-publisher-link, .gns-cluster-publishers, .gns-cluster-link, .gns-linktrackable, .gns-cluster, .gns-clearim, .gns-poweredby{
+display:none !important;
+}
+
+.gns-result, .gns-linktrackable, .gns-qtitle, .gns-snippet{
+width:220px !important;
+}
+
+.gns-cursorcontrols{
+width:236px !important;
+}
+
+.gns-basecanvas{
+width:236px !important;
+height:214px !important;
+background-image:none !important;
+}
+
 .video-div .video-info .foot-notes{
 width:332px;
 height:90px;

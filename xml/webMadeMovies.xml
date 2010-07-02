@@ -69,7 +69,7 @@
       <wiki in="00:00:10:00" out="00:00:25:00" resourceid="accwiki" target="wikidiv"/>
       <attribution in="00:00:1:00" out="00:40:00" target="container5" resourceid="attrib" />
       <attribution in="00:42:00" out="00:00:48:00" target="container5">A Shared Culture, Jesse Dylan</attribution>
-      <flickr in="00:01:00" out="00:20:00" target="flickr" userid="13072070" numberofimages="8" padding="4px"/>
+      <flickr in="00:01:00" out="00:20:00" target="personalflickr" userid="13072070" numberofimages="8" padding="4px"/>
       <wiki in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberOfWords="200" target="wikidiv"/>
       
     </resources>
