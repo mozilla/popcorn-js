@@ -559,6 +559,7 @@
         //make a link to the document
         var link = document.createElement('a');
         link.setAttribute('href', src);
+        link.setAttribute('target', '_blank');
         var p = document.createElement('p');
         p.innerHTML = data.parse.displaytitle;
         link.appendChild(p);

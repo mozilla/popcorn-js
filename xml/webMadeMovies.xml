@@ -57,6 +57,13 @@
     <attributions>
       <attribution id="attrib" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
       <attribution id="villagetelcoattrib" nameofwork="Village Telco" copyrightholder="Richard Mills" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
+      <attribution id="prodigyattrib" nameofwork="Prodigy Commercial" nameofworkurl="http://www.youtube.com/watch?v=TSlb7-FJr3k" />
+      <attribution id="compuserveattrib" nameofwork="1991 Compuserve Internet" nameworkurl="http://www.youtube.com/watch?v=TSlb7-FJr3k" />
+      <attribution id="aolattrib" nameofwork="1996 AOL Commercial" nameworkurl="http://www.youtube.com/watch?v=0kf1DBg5vJs" />
+      <attribution id="chronicles1attrib" nameofwork="Internet" nameworkurl="http://www.archive.org/details/CC1232_internet" copyrightholder="The Computer Chronicles" license="CC-BY-NC-ND" licenseurl="http://creativecommons.org/licenses/by-nc-nd/2.0/" />
+      <attribution id="chronicles2attrib" nameofwork="The Internet" nameworkurl="http://www.archive.org/details/episode_1134" copyrightholder="The Computer Chronicles" license="CC-BY-NC-ND" licenseurl="http://creativecommons.org/licenses/by-nc-nd/2.0/" />
+      <attribution id="bankattrib" nameofwork="Using the Bank (1947)" nameworkurl="http://www.archive.org/details/Usingthe1947" copyrightholder="The Prelinger Archives" />
+      <attribution id="networksattrib" nameofwork="Computer Networks - The Heralds of Resource Sharing" nameofworkurl="http://video.google.com/videoplay?docid=4989933629762859961#" copyrightholder="MIT"/>
     </attributions>
     <articles>
       <resource id="theinternet" src="http://en.wikipedia.org/wiki/internet" description="The Internet"/>
@@ -75,10 +82,11 @@
   </manifest>
 
   <timeline>
-
+    
+    <footnotes>
+      <footnote in="00:00:00" out="00:14:00" target="footnotediv">Look around the page as info is updated!</footnote>
+    </footnotes>
     <resources>
-
-      <footnote in="00:00:00" out="00:15:00" target="footnotediv">This video made exclusively for drumbeat.org </footnote>
   
       <videotag in="00:00:05:02" out="00:00:10:07">Steve Song</videotag>
       <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>
@@ -109,15 +117,16 @@
       <googlenews in="00:00:41:00" out="00:01:07:09" target="googlenewsdiv" topic="Oil Spill"/>
       <location resourceid="grandislewiki" in="00:00:41:00" out="00:01:07:09" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>
       <wiki in="00:00:41:00" out="00:01:07:09" resourceid="oilspill" numberOfWords="200" target="wikidiv"/>
-
+      <footnote in="00:00:41:00" out="00:01:07:09" target="footnotediv">Learn more about Grass Roots mapping at www.grassrootsmapping.org</footnote>
       <twitter in="00:01:07:10" out="00:01:25:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
       <flickr in="00:01:07:10" oout="00:01:25:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
-
+      <location id="CapeTown" resourceid="capetownwiki" in="00:01:07:10" out="00:01:32:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
       <wiki in="00:01:07:10" out="00:01:32:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv"/>
       <videotag in="00:01:25:08" out="00:01:32:07">Michael Adeyeye</videotag>
 
       <videotag in="00:01:32:08" out="00:01:38:02">Charlie Schmidt</videotag>
       <twitter in="00:01:32:08" out="00:01:57:11" title="Charlie Schmidt" source="from:chuckieart" target="personaltwitter" width="238" height="120"/>
+      <location id="MITMediaLab" resourceid="mitmedialabhome" in="00:01:32:08" out="00:01:57:11" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>
       <videotag in="00:01:38:02" out="00:01:41:10">Keyboard Cat</videotag>
       <videotag in="00:01:41:11" out="00:01:57:11">Charlie Schmidt</videotag>
 
@@ -128,6 +137,15 @@
       <wiki in="00:02:20:01" out="00:02:23:00" resourceid="compuserve" numberOfWords="200" target="wikidiv"/>
       <wiki in="00:02:23:01" out="00:02:26:00" resourceid="aol" numberOfWords="200" target="wikidiv"/>
       <wiki in="00:02:26:01" out="00:02:33:00" resourceid="prodigy" numberOfWords="200" target="wikidiv"/>
+
+      <attribution in="00:02:15:09" out="00:02:17:00" target="container5" resourceid="compuserveattrib"></attribution>
+      <attribution in="00:02:17:01" out="00:02:20:00" target="container5" resourceid="aolattrib"></attribution>
+      <attribution in="00:02:20:01" out="00:02:17:00" target="container5" resourceid="compuserveattrib"></attribution>
+      <attribution in="00:02:17:01" out="00:02:26:00" target="container5" resourceid="aolattrib"></attribution>
+      <attribution in="00:02:26:01" out="00:02:33:00" target="container5" resourceid="prodigyattrib"></attribution>
+      <attribution in="00:02:37:00" out="00:02:47:00" target="container5" resourceid="networksattrib"></attribution>
+      <attribution in="00:02:47:01" out="00:02:55:00" target="container5" resourceid="bankattrib"></attribution>
+      <attribution in="00:03:07:10" out="00:03:29:00" target="container5" resourceid="bankattrib"></attribution>
 
       <wiki in="00:02:41:00" out="00:02:57:00" resourceid="internetprotocol" numberOfWords="200" target="wikidiv"/>
       <wiki in="00:02:57:01" out="00:03:03:00" resourceid="timbernerslee" numberOfWords="200" target="wikidiv"/>
@@ -150,7 +168,7 @@
 
       <videotag in="00:03:43:00" out="00:03:56:00">Jonathan Zittrain</videotag>
       <twitter in="00:03:43:00" out="00:03:56:00" title="Jonathan Zittrain" source="from:zittrain" target="personaltwitter" width="238" height="120"/>
-      <footnote in="00:03:43:00" out="00:03:57:00" target="footnotediv">Read Zittrain's book 'The Future of the Internet — And How to Stop It'This video made exclusively for drumbeat.org </footnote>
+      <footnote in="00:03:43:00" out="00:03:57:00" target="footnotediv">Read Zittrain's book 'The Future of the Internet — And How to Stop It'</footnote>
 
       <videotag in="00:03:59:00" out="00:04:03:05">Mona Kasra</videotag>
       <videotag in="00:04:03:06" out="00:04:07:00">Noah Workman</videotag>
@@ -164,15 +182,15 @@
     </resources>
 
     <map>
-      <location id="CapeTown" resourceid="capetownwiki" in="00:00:03:00" out="00:00:11:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
-      <location id="GrandIsle" resourceid="grandislewiki" in="00:00:11:07" out="00:00:19:07" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>
-      <location id="MITMediaLab" resourceid="mitmedialabhome" in="00:00:19:08" out="00:00:27:00" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>
+      <location resourceid="capetownwiki" in="00:00:03:00" out="00:00:11:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
+      <location resourceid="grandislewiki" in="00:00:11:07" out="00:00:19:07" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>
+      <location resourceid="mitmedialabhome" in="00:00:19:08" out="00:00:27:00" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>
 
-      <location id="Austin" resourceid="austinwiki" in="00:03:59:00" out="00:04:03:05" lat="45.5089" long="-73.5542" target="container2" zoom="8"/>
-      <location id="NewYork" resourceid="newyorkwiki" in="00:04:03:06" out="00:04:07:01" lat="40.7143" long="-74.0060" target="container2" zoom="8"/>
-      <location id="saopaulo" resourceid="saopaulowiki" in="00:04:07:02" out="00:04:13:01" lat="-23.5489" long="-46.6388 " target="container2" zoom="8"/>
-      <location id="Seoul" resourceid="seoulwiki" in="00:04:13:02" out="00:04:19:05" lat="37.5665" long="126.9780" target="container2" zoom="8"/>
-      <location id="Montreal" resourceid="montrealwiki" in="00:04:19:06" out="00:04:24:01" lat="45.5089" long="-73.5542 " target="container2" zoom="8"/>
+      <location resourceid="austinwiki" in="00:03:59:00" out="00:04:03:05" lat="45.5089" long="-73.5542" target="container2" zoom="8"/>
+      <location resourceid="newyorkwiki" in="00:04:03:06" out="00:04:07:01" lat="40.7143" long="-74.0060" target="container2" zoom="8"/>
+      <location resourceid="saopaulowiki" in="00:04:07:02" out="00:04:13:01" lat="-23.5489" long="-46.6388 " target="container2" zoom="8"/>
+      <location resourceid="seoulwiki" in="00:04:13:02" out="00:04:19:05" lat="37.5665" long="126.9780" target="container2" zoom="8"/>
+      <location resourceid="montrealwiki" in="00:04:19:06" out="00:04:24:01" lat="45.5089" long="-73.5542 " target="container2" zoom="8"/>
     </map>
 
     <subtitles>
