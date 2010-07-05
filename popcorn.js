@@ -512,6 +512,7 @@
 
     // This uses jquery
     $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?id=" + this.params.userid + "&lang=en-us&format=json&jsoncallback=?", function(data){
+      target.innerHTML = "<p style='padding:" + padding + ";'>" + data.title + "<p/>";
       $.each(data.items, function(i, item) {
         if (i < count) {
           var link = document.createElement('a');
