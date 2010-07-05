@@ -119,7 +119,7 @@
       <wiki in="00:00:41:00" out="00:01:07:09" resourceid="oilspill" numberOfWords="200" target="wikidiv"/>
       <footnote in="00:00:41:00" out="00:01:07:09" target="footnotediv">Learn more about Grass Roots mapping at www.grassrootsmapping.org</footnote>
       <twitter in="00:01:07:10" out="00:01:25:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
-      <flickr in="00:01:07:10" oout="00:01:25:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
+      <flickr in="00:01:07:10" out="00:01:25:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
       <location id="CapeTown" resourceid="capetownwiki" in="00:01:07:10" out="00:01:32:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
       <wiki in="00:01:07:10" out="00:01:32:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv"/>
       <videotag in="00:01:25:08" out="00:01:32:07">Michael Adeyeye</videotag>
