@@ -45,13 +45,9 @@
         commandObject = manager.commandObjects[i];
         if (commandObject.running && (commandObject.params["in"] > t || commandObject.params["out"] < t)) {
           commandObject.running = false;
-
-          
           if (VideoCommand.active[commandObject.params.target] <= 0 || --VideoCommand.active[commandObject.params.target] <= 0) {
             $("#" + commandObject.params.target + " .inactive").fadeIn(500);
           }
-
-          
           commandObject.onOut();
           commandObject.removeOverlay();
         }
