@@ -45,6 +45,13 @@
         commandObject = manager.commandObjects[i];
         if (commandObject.running && (commandObject.params["in"] > t || commandObject.params["out"] < t)) {
           commandObject.running = false;
+
+          
+          if (VideoCommand.active[commandObject.params.target] <= 0 || --VideoCommand.active[commandObject.params.target] <= 0) {
+            $("#" + commandObject.params.target + " .inactive").fadeIn(500);
+          }
+
+          
           commandObject.onOut();
           commandObject.removeOverlay();
         }
@@ -59,7 +66,14 @@
         }
         if (!commandObject.running && commandObject.params["in"] < t && commandObject.params["out"] > t) {
           commandObject.running = true;
-          if (typeof commandObject.flash=="undefined") {
+          
+          $("#" + commandObject.params.target + " .inactive").hide();
+          VideoCommand.active[commandObject.params.target]++;
+
+          if (commandObject.params.target) {
+            $("#" + commandObject.params.target + " .overlay").show().fadeOut(500);
+          }
+          if (typeof commandObject.flash == "undefined") {
              var section = $(commandObject.target).parents('section');
              if (!section.hasClass('hover')) {
                 section.addClass('hover');    
@@ -136,7 +150,7 @@
         }
       }
     }
-    
+
     // Checkes for a resourceid and gets all the attributes from that resource
     if (this.params.resourceid) {
       for (var attributeName in this.videoManager.manifestObjects[this.params.resourceid]) {
@@ -170,7 +184,12 @@
         this.image.setAttribute('style', 'display:none');
       };
     }
+
+    if (!VideoCommand.active[this.params.target]) {
+      VideoCommand.active[this.params.target] = 0;
+    }
   };
+  VideoCommand.active = {};
   VideoCommand.count = 0;
 
   ////////////////////////////////////////////////////////////////////////////
