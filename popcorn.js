@@ -586,7 +586,7 @@
         link.appendChild(p);
         // get the first 140 characters of the wiki content
         var desc = document.createElement('p');
-        var text = data.parse.text.*.substr(data.parse.text.*.indexOf('<p>'));
+        var text = data.parse.text["*"].substr(data.parse.text["*"].indexOf('<p>'));
         text = text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
         desc.innerHTML = text.substr(0, ( length || 140 )) + " ...";
         target.appendChild(link);
