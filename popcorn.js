@@ -164,6 +164,10 @@
     }
     
     // Checks for a url of an image to overlay onto the video
+    if (!this.params.overlay) {
+      this.params.overlay = "images/overlay/" + name + ".png";
+    }
+    
     if (this.params.overlay) {
       this.image = document.createElement('img');
       var that = this;
@@ -172,13 +176,6 @@
         .append($(that.image)
         .attr("src",that.params.overlay)
         .attr("style", "display:none")).appendTo(VideoManager.overlayDiv);
-      
-      this.displayOverlay = function() {
-        this.image.setAttribute('style', 'display:inline');
-      };
-      this.removeOverlay = function() {
-        this.image.setAttribute('style', 'display:none');
-      };
     }
 
     if (!VideoCommand.active[this.params.target]) {
@@ -437,6 +434,13 @@
       MapCommand.map.setCenter(new google.maps.LatLng(0, 0));
       MapCommand.map.setZoom(0);
     }
+      
+    this.displayOverlay = function() {
+      $(this.image).fadeIn(2000);
+    };
+    this.removeOverlay = function() {
+      $(this.image).fadeOut(2000);
+    };
     this.onIn = function() {
       MapCommand.map.setCenter(this.location);
       MapCommand.map.setZoom(this.params.zoom);
@@ -502,6 +506,12 @@
         behavior: 'default'
       }
     }).render().start();
+    this.displayOverlay = function() {
+      $(this.image).fadeIn(2000);
+    };
+    this.removeOverlay = function() {
+      $(this.image).fadeOut(2000);
+    };
     this.onIn = function() {
       this.target.setAttribute('style', 'display:inline');
     };
@@ -549,6 +559,12 @@
         }
       });
     });
+    this.displayOverlay = function() {
+      $(this.image).fadeIn(2000);
+    };
+    this.removeOverlay = function() {
+      $(this.image).fadeOut(2000);
+    };
     this.target = target;
 
     this.onIn = function() {
@@ -595,6 +611,12 @@
     }); 
     
     this.target = target;
+    this.displayOverlay = function() {
+      $(this.image).fadeIn(2000);
+    };
+    this.removeOverlay = function() {
+      $(this.image).fadeOut(2000);
+    };
     this.onIn = function() {
       this.target.setAttribute('style', 'display:inline');
     };
@@ -608,6 +630,12 @@
 
   var FootnoteCommand = function(name, params, text, videoManager) {
     VideoCommand.call(this, name, params, text, videoManager);
+    this.displayOverlay = function() {
+      $(this.image).fadeIn(2000);
+    };
+    this.removeOverlay = function() {
+      $(this.image).fadeOut(2000);
+    };
     this.onIn = function() {
       //if the user specifies a target div for this in the xml use it
       //otherwise make a new div 
