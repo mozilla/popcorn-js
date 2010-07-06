@@ -355,6 +355,32 @@ border: 1px solid #d9d9d9;
 margin-bottom: 15px;
 }
 
+.overlay{
+z-index: 9001;
+display: none;
+top: 0px;
+left: 0px;
+opacity: 0.4;
+filter: alpha(opacity=40);
+height: 100%;
+width: 100%;
+background: red;
+position: absolute;
+}
+
+.inactive{
+z-index: 9001;
+display: inline;
+top: 0px;
+left: 0px;
+opacity: 0.4;
+filter: alpha(opacity=40);
+height: 100%;
+width: 100%;
+background: grey;
+position: absolute;
+}
+
 section.hover{
 -webkit-box-shadow: -1px 1px 1px #bdc7c6;
 -moz-box-shadow: -1px 1px 1px #bdc7c6;
