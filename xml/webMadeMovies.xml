@@ -91,9 +91,9 @@
       <videotag in="00:00:05:02" out="00:00:10:07">Steve Song</videotag>
       <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>
       <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120" overlay="images/overlay/twitter.png" />
-      <wiki in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv" overlay="images/overlay/wikipedia.png"/>
+      <wiki in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv" overlay="images/overlay/wiki.png"/>
       <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px" overlay="images/overlay/flickr.png"/>
-      <googlenews in="00:00:05:02" out="00:00:10:07" target="googlenewsdiv" topic="Village Telco" overlay="images/overlay/googlemap.png"/>
+      <googlenews in="00:00:05:02" out="00:00:10:07" target="googlenewsdiv" topic="Village Telco"/>
 
       <twitter in="00:00:10:07" out="00:00:18:04" title="Oil Spill" source="#oilspill" target="twitter" width="238" height="120"/>
       <googlenews in="00:00:10:07" out="00:00:18:04" target="googlenewsdiv" topic="Oil Spill"/>
