@@ -309,24 +309,165 @@
                     $('video')[0].currentTime=0;
                 }
             },
-            { 
+            {
                 text: "People",
-                next:[
+                next :[
                     {
-                        text: "Nick Cammarata",
-                        next: [
-                            { text: "Twitter", href: "http://twitter.com/nicklovescode" },
-                            { text: "Flickr", href: "http://flickr.com/nicklovescode" }
-                        ] 
+                        text: "Steve Song", href: "http://www.google.ca/"
                     },
                     {
-                        text: "Celine Celine",
-                        href: "http://twitter.com/celinecelines"    
+                        text: "Jeffrey Warren"
+                    },
+                    {
+                        text: "Michael Adeyeye"
+                    },
+                    {
+                        text: "Charlie Schmidt"
+                    },
+                    {
+                        text: "Jonathan Zittrain"
+                    },
+                    {
+                        text: "Mona Kasra"
+                    },
+                    {
+                        text: "Noah Workman"
+                    },
+                    {
+                        text: "Wilken Sanches"
+                    },
+                    {
+                        text: "Keechang Kim"
+                    },
+                    {
+                        text: "Celine Celines"
                     }
                 ]
             },
-            { text: "Places" },
-            { text: "Articles" }
+            {
+                text: "Places",
+                next: [
+                    {
+                        text: "Sao Paulo", href: "http://en.wikipedia.org/wiki/S%C3%A3o_Paulo"
+                    },
+                    {
+                        text: "Cape Town", href: "http://en.wikipedia.org/wiki/Cape_Town"
+                    },
+                    {
+                        text: "Grande Isle, Louisiana", href: "http://en.wikipedia.org/wiki/Grand_Isle,_Louisiana"
+                    },
+                    {
+                        text: "MIT Media Lab", href: "http://www.media.mit.edu/"
+                    },
+                    {
+                        text: "Austin, Texas", href: "http://en.wikipedia.org/wiki/Austin,_Texas"
+                    },
+                    {
+                        text: "New York, New York", href: "http://en.wikipedia.org/wiki/New_York_City"
+                    },
+                    {
+                        text: "Seoul, Republic of South Korea", href: "http://en.wikipedia.org/wiki/Seoul"
+                    },
+                    {
+                        text: "Montreal, Quebec", href: "http://en.wikipedia.org/wiki/Montreal"
+                    },
+                    {
+                        text: "Harvard Law School", href: "http://www.law.harvard.edu/index.html"
+                    }
+                ]
+            },
+            {
+                text: "Articles",
+                next: [
+                    {
+                        text: "The Internet", href: "http://en.wikipedia.org/wiki/internet"
+                    },
+                    {
+                        text: "The Village Telco", href: "http://en.wikipedia.org/wiki/Village_telco"
+                    },
+                    {
+                        text: "Deepwater Horizon Oil Spill", href: "http://en.wikipedia.org/wiki/Deepwater_Horizon_oil_spill"
+                    },
+                    {
+                        text: "Jonathan Zittrain", href: "http://en.wikipedia.org/wiki/Jonathan_Zittrain"
+                    },
+                    {
+                        text: "Compuserve", href: "http://en.wikipedia.org/wiki/Compuserve"
+                    },
+                    {
+                        text: "AOL", href: "http://en.wikipedia.org/wiki/AOL"
+                    },
+                    {
+                        text: "Prodigy", href: "http://en.wikipedia.org/wiki/Prodigy_%28online_service%29"
+                    },
+                    {
+                        text: "Internet Protocol", href: "http://en.wikipedia.org/wiki/Internet_Protocol"
+                    },
+                    {
+                        text: "Tim Berners-Lee", href: "http://en.wikipedia.org/wiki/Tim_Berners-Lee"
+                    },
+                    {
+                        text: "World Wide Web", href: "http://en.wikipedia.org/wiki/World_wide_web"
+                    },
+                    {
+                        text: "Wikipedia", href: "http://en.wikipedia.org/wiki/Wikipedia"
+                    },
+                    {
+                        text: "Open Standards", href: "http://en.wikipedia.org/wiki/Open_Standards"
+                    }
+                ]    
+            },
+            {
+                text: "Developers",
+                next: [
+                    {
+                        text: "Brett Gaylor",
+                        next: [
+                            { text: "Twitter", href: "http://twitter.com/remixmanifesto"},
+                            { text: "Email", href: "mailto: nick@nickcammarata.com"},
+                        ]
+                    },
+                    {
+                         text: "Scott Downe",
+                         next:  [{ text: "Email", href: "mailto:scott.downe@senecac.on.ca" }]
+                    },
+                    
+                    {
+                        text: "Nick Cammarata",
+                        next: [
+                            { text: "Twitter", href: "http://twitter.com/nicklovescode"},
+                            { text: "Email", href: "mailto: nick@nickcammarata.com"},
+                        ]
+                    },
+                    {
+                        text: "Anna Sobiepanek",
+                        next: [
+                            { text: "Twitter", href: "http://twitter.com/annasob"},
+                            { text: "Email", href: "mailto: anna.sobiepanek@gmail.com"},
+                        ]
+                    },
+                    {
+                        text: "Daniel Hodgen",
+                        next: [
+                            { text: "Twitter", href: "http://twitter.com/dhhodgin"},
+                            { text: "Email", href: "mailto: daniel.hodgin@senecac.on.ca"},
+                        ]
+                    },
+                    {
+                        text: "David Humphrey",
+                        next: [
+                            { text: "Twitter", href: "http://twitter.com/humphd"},
+                            { text: "Email", href: "mailto: david.humphrey@senecac.on.ca"},
+                        ]
+                    }
+                ]
+            },
+            { 
+                text: "Sources",
+                next: [
+                    
+                ]
+            }
         ]);
     };
     this.onOut = function() {
