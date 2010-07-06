@@ -156,9 +156,13 @@
     // Checks for a url of an image to overlay onto the video
     if (this.params.overlay) {
       this.image = document.createElement('img');
-      this.image.setAttribute('src', this.params.overlay);
-      this.image.setAttribute('style', 'display:none');
-      VideoManager.overlayDiv.appendChild(this.image);
+      var that = this;
+      $('<a href="' + (that.params.overlaylink || "#") + '"></a>')
+        .attr("target", that.params.overlaylink ? "_blank" : "")
+        .append($(that.image)
+        .attr("src",that.params.overlay)
+        .attr("style", "display:none")).appendTo(VideoManager.overlayDiv);
+      
       this.displayOverlay = function() {
         this.image.setAttribute('style', 'display:inline');
       };
