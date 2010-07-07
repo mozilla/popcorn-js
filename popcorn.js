@@ -424,7 +424,7 @@
                         text: "Brett Gaylor",
                         next: [
                             { text: "Twitter", href: "http://twitter.com/remixmanifesto"},
-                            { text: "Email", href: "mailto: nick@nickcammarata.com"},
+                            { text: "Email", href: "mailto:brett@eyesteelfilm.com"},
                         ]
                     },
                     {
@@ -436,28 +436,28 @@
                         text: "Nick Cammarata",
                         next: [
                             { text: "Twitter", href: "http://twitter.com/nicklovescode"},
-                            { text: "Email", href: "mailto: nick@nickcammarata.com"},
+                            { text: "Email", href: "mailto:nick@nickcammarata.com"},
                         ]
                     },
                     {
                         text: "Anna Sobiepanek",
                         next: [
                             { text: "Twitter", href: "http://twitter.com/annasob"},
-                            { text: "Email", href: "mailto: anna.sobiepanek@gmail.com"},
+                            { text: "Email", href: "mailto:anna.sobiepanek@gmail.com"},
                         ]
                     },
                     {
-                        text: "Daniel Hodgen",
+                        text: "Daniel Hodgin",
                         next: [
                             { text: "Twitter", href: "http://twitter.com/dhhodgin"},
-                            { text: "Email", href: "mailto: daniel.hodgin@senecac.on.ca"},
+                            { text: "Email", href: "mailto:daniel.hodgin@senecac.on.ca"},
                         ]
                     },
                     {
                         text: "David Humphrey",
                         next: [
                             { text: "Twitter", href: "http://twitter.com/humphd"},
-                            { text: "Email", href: "mailto: david.humphrey@senecac.on.ca"},
+                            { text: "Email", href: "mailto:david.humphrey@senecac.on.ca"},
                         ]
                     }
                 ]
