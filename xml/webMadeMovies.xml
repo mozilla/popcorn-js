@@ -82,7 +82,7 @@
   </manifest>
 
   <timeline>
-    
+
     <footnotes>
       <footnote in="00:00:00" out="00:14:00" target="footnotediv">Look around the page as info is updated!</footnote>
     </footnotes>
@@ -195,7 +195,7 @@
 
     <subtitles>
       <subtitles language="en" align="center">
-        <subtitle in="00:00:00:03" out="00:00:01:06">All right lets take a look and show me some</subtitle>
+        <subtitle in="00:00:00:03" out="00:00:01:06">All right let's take a look and show me some</subtitle>
         <subtitle in="00:00:01:06" out="00:00:03:00">of the neat things you can do on the internet</subtitle>
         <subtitle in="00:00:05:00" out="00:00:07:00">Have you ever wondered if there is a common thread</subtitle>
         <subtitle in="00:00:07:01" out="00:00:11:00">that exists between mobile phone hackers in South Africa, </subtitle>
@@ -215,31 +215,58 @@
         <subtitle in="00:00:55.5:00" out="00:00:57:00">Have the camera taking pictures every five seconds </subtitle>
         <subtitle in="00:00:58:00" out="00:01:00:00">the idea is to get a lot of people involved </subtitle>
         <subtitle in="00:01:00:06" out="00:01:03:00">in producing maps and then share all of the information</subtitle>
-        <subtitle in="00:01:03.5:00" out="00:01:05:00">like wikipedia style you know?</subtitle>
+        <subtitle in="00:01:03.5:00" out="00:01:05:00">like Wikipedia style you know?</subtitle>
         <subtitle in="00:01:06:00" out="00:01:08:00">The Internet is what allows Steve Song and his friends</subtitle>
         <subtitle in="00:01:08:01" out="00:01:10.5:00">to create a D.I.Y. phone network</subtitle>
         <subtitle in="00:01:11:00" out="00:01:12:00">called the Village Telco.</subtitle>
-        <subtitle in="00:01:12:00" out="00:01:16:00">Everyone that has a device, that we call a mesh potatoe,</subtitle>
+        <subtitle in="00:01:12:00" out="00:01:16:00">Everyone that has a device, that we call a mesh potato,</subtitle>
         <subtitle in="00:01:16:00" out="00:01:18:00">actually has a phone number</subtitle>
         <subtitle in="00:01:18.5:00" out="00:01:20.5:00">and can call anyone else on the mesh at no charge.</subtitle>
         <subtitle in="00:01:21.5:00" out="00:01:24.5:00">So taking an open-source principle to a telephone company.</subtitle>
         <subtitle in="00:01:25:00" out="00:01:28:05">Everything is open, anyone can come and anyone can join</subtitle>
         <subtitle in="00:01:29:05" out="00:01:31:00">anyone can make contributions </subtitle>
-        <subtitle in="00:01:31:00" out="00:01:32:00">and thats why I'm here.</subtitle>
+        <subtitle in="00:01:31:00" out="00:01:32:00">and that's why I'm here.</subtitle>
         <subtitle in="00:01:32:05" out="00:01:34:05">The Internet is what allowed Charlie Schmidt</subtitle>
         <subtitle in="00:01:35:00" out="00:01:36:05">to film his cat on his keyboard and </subtitle>
         <subtitle in="00:01:37:00" out="00:01:38:00">well the rest is history. </subtitle>
         <subtitle in="00:01:41:00" out="00:01:45:00">I remember having two profound thoughts back to back </subtitle>
         <subtitle in="00:01:45:05" out="00:01:47:08">and the first one was any pervert in his basement </subtitle>
-        <subtitle in="00:01:48:02" out="00:01:51:00">can compete with NBC. </subtitle>
-        <subtitle in="00:01:52:04" out="00:01:58:00">And then I thought, ohh I am that pervert in this basement.</subtitle>
+        <subtitle in="00:01:48:02" out="00:01:51:00">can compete with and be seen. </subtitle>
+        <subtitle in="00:01:52:04" out="00:01:58:00">And then I thought, ohh I am that pervert in his basement.</subtitle>
         <subtitle in="00:01:58:04" out="00:01:59:05">It wasn't always this way</subtitle>
-        <subtitle in="00:02:00:05" out="00:02:02:05">before the web our computers can only network</subtitle>
+        <subtitle in="00:02:00:05" out="00:02:02:05">before the web our computers could only network</subtitle>
         <subtitle in="00:02:02:08" out="00:02:05:05">with a series of walled gardens, and we had to ask</subtitle>
         <subtitle in="00:02:06:00" out="00:02:08:00">permission to publish our content or create our services.</subtitle>
         <subtitle in="00:02:08:05" out="00:02:10:05">There were some big companies in there that thought</subtitle>
         <subtitle in="00:02:11:00" out="00:02:14:00">they would run the mainframes that we might be mediating</subtitle>
         <subtitle in="00:02:14:05" out="00:02:16:05">data through.</subtitle>
+
+        <subtitle in="00:03:09:00" out="00:03:11:00">Ordinary people are becoming electronic publishers.</subtitle>
+        <subtitle in="00:03:11:01" out="00:03:12:06">They are putting up the things</subtitle>
+        <subtitle in="00:03:12:07" out="00:03:14:00">that mean something to them</subtitle>
+        <subtitle in="00:03:14:01" out="00:03:16:00">and they want to share it with the rest of the world.</subtitle>
+        <subtitle in="00:03:16:01" out="00:03:18:00">Why is it better than CompuServe or Prodigy?</subtitle>
+        <subtitle in="00:03:18:01" out="00:03:19:09">That anyone can put any servers on </subtitle>
+        <subtitle in="00:03:19:10" out="00:03:21:06">and have it do anything they want.</subtitle>
+        <subtitle in="00:03:21:07" out="00:03:23:00">In fact most browsers have the ability</subtitle>
+        <subtitle in="00:03:23:01" out="00:03:24:06">for you to view that source code.</subtitle>
+        <subtitle in="00:03:24:07" out="00:03:26:02">I can go in then and start changing it</subtitle>
+        <subtitle in="00:03:26:03" out="00:03:27:10">myself for free. Ok great.</subtitle>
+        <subtitle in="00:03:27:11" out="00:03:29:09">Listen there’s even an encyclopedia</subtitle>
+        <subtitle in="00:03:29:10" out="00:03:31:06">Awesome. All right.</subtitle>
+        <subtitle in="00:03:31:09" out="00:03:34:00">We owe everything about the internet</subtitle>
+        <subtitle in="00:03:34:01" out="00:03:36:00">to the fact that its open.</subtitle>
+        <subtitle in="00:03:36:01" out="00:03:38:00">And the hacker spirit that the people</subtitle>
+        <subtitle in="00:03:38:01" out="00:03:40:00">who created it believed it.</subtitle>
+        <subtitle in="00:03:40:01" out="00:03:42:04">But all that could change.</subtitle>
+        <subtitle in="00:03:42:06" out="00:03:44:10">The way things are…  are not the way</subtitle>
+        <subtitle in="00:03:44:11" out="00:03:47:00">things will inevitably be.</subtitle>
+        <subtitle in="00:03:48:00" out="00:03:50:01">That the internet itself is evolving</subtitle>
+        <subtitle in="00:03:50:02" out="00:03:51:01">and can be pushed</subtitle>
+        <subtitle in="00:03:51:02" out="00:03:53:06">in one direction or another.</subtitle>
+        <subtitle in="00:03:53:07" out="00:03:55:09">And some futures are much better than others.</subtitle>
+        <subtitle in="00:03:55:10" out="00:03:58:00">So, what are you going to do about it?</subtitle>
+
       </subtitles>
       <subtitles language="fa" align="center">
         <subtitle in="00:04:00:00" out="00:04:01.5:00">My name is Mona Kasra</subtitle>
