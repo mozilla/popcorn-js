@@ -1,221 +1,85 @@
-<html>
-<head>
-  <title>html5 video demo</title>
-  <script src="http://code.jquery.com/jquery.js"></script>
-  <script src="http://google.com/jsapi"></script>
-  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-  <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-  <script>google.load("language", "1");</script>
-  <script>google.load("elements", "1", {packages : ["newsshow"]});</script>
-  <script src="popcorn.js"></script>
-  <link href="style.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript">
-    $(document).ready(function () {
-      //Show hide the contents
-      $(".collapse").click(function () {
-        $(this).next(".content").slideToggle("fast");
-      });
-      //Swap class names
-      $(".collapse").toggle(function () {
-        $(this).addClass("expand");
-      }, function () {
-        $(this).removeClass("expand");
-      });
-      $(".collapse").toggle(function () {
-        $("span", this).text('Expand');
-      }, function () {
-        $("span", this).text('Collapse');
-      });
-      $('section').hover(function() { 
-          $(this).addClass('hover')
-      }, function() {
-          $(this).removeClass('hover')
-      })
-      setInterval(function() {
-        $('section.hover').each(function() {
-            if ($(this).attr('hoveron')) {
-                if ($('video')[0].currentTime-$(this).attr('hoveron')>1) {
-                    $(this).removeAttr('hoveron').removeClass('hover');
-                }
-            }
-        })
-      }, 500);
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-    });
-  </script>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>mozilla/popcorn-js @ GitHub</title>
+	
+	<style type="text/css">
+		body {
+  		margin-top: 1.0em;
+  		background-color: #ffffff;
+		  font-family: "Helvetica,Arial,FreeSans";
+  		color: #000000;
+    }
+    #container {
+      margin: 0 auto;
+      width: 700px;
+    }
+		h1 { font-size: 3.8em; color: #336699; margin-bottom: 3px; }
+		h1 .small { font-size: 0.4em; }
+		h1 a { text-decoration: none }
+		h2 { font-size: 1.5em; color: #336699; }
+    h3 { text-align: center; color: #73c01b; }
+    a { color: #336699; }
+    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px;}
+    .download { float: right; }
+		pre { background: #000; color: #fff; padding: 15px;}
+    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    .footer { text-align:center; padding-top:30px; font-style: italic; }
+	</style>
+	
 </head>
 
 <body>
-  <!-- Start First Container Div -->
-  <div class="container-top">
-    <!-- Start Second Container Div -->
-    <div class="container-bot">
-      <!-- Start Wrapper Div -->
-      <div class="wrapper">
-        <!-- Start Header -->
-        <header id="global-header">
-          <a href="http://www.drumbeat.org/" class="logo"><img src="images/drumbeat_logo.png" alt="drumbeat_logo" width="" height="" /></a>
+  <a href="http://github.com/mozilla/popcorn-js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
-          <!-- Start Login/Signup -->
-          <nav id="login">
-            <ul>
-              <li><a href="#">log in</a></li>
-              <li><a href="#">sign up</a></li>
-            </ul>
-          </nav>
-          <!-- End Login/Signup -->
+  <div id="container">
 
-          <!-- Start Primary Links -->
-          <nav id="primary-links">
-            <ul>
-              <li><a title="" href="http://www.drumbeat.org/about">About</a></li>
-              <li><a title="" href="http://www.drumbeat.org/projects">Projects</a></li>
-              <li><a title="" href="http://www.drumbeat.org/people">People</a></li>
-              <li><a title="" href="http://www.drumbeat.org/events">Events</a></li>
-              <li><a title="" href="http://indofolio.com/civicrm/contribute/transact?reset=1&id=3?reset=1&id=3">Donate</a></li>
-            </ul>
-          </nav>
-          <!-- End Primary Links -->
-
-        </header>
-        <!-- End Header -->
-        <!-- Start Contents -->
-        <div id="contents">
-          <!-- Start Left Contents -->
-          <div class="left-content">
-            <!-- Start Video Div -->
-            <div id="videoContainer" class="video-div">
-              <div id="credits" style="display:none">
-                <div id="credit_inner">
-                </div>
-              </div>
-              <video width="530px" height="299px" src="http://a55.video2.blip.tv/8080004989393/Etherworks-WMMOGGVERSION204.ogv?bri=2.7&brs=750" data-timeline-sources="xml/webMadeMovies.xml" controls></video>
-                <!-- Start Video Info -->
-                <div class="video-info">
-                  <!-- Start Choose Language -->
-                  <div class="choose-language">
-                    <h2>Choose your language</h2>
-                    <select id="language">
-                      <option val="zh">Chinese</option>
-                      <option val="en" selected="selected">English</option>
-                      <option val="fr">French</option>
-                      <option val="de">German</option>
-                      <option val="it">Italian</option>
-                      <option val="ja">Japanese</option>
-                      <option val="ko">Korean</option>
-                      <option val="fa">Persian</option>
-                      <option val="pl">Polish</option>
-                      <option val="pt">Portuguese</option>
-                      <option val="es">Spanish</option>
-                    </select>
-                    <div id="credit">
-                      with help from
-                      <br />
-                      <a href="http://google.com/translate">Google Translate</a> and <a href="http://jquery.com">
-                        jQuery</a><br />
-                      <input type="checkbox" id="accessibility" checked="checked" />All subtitles (accessibility)
-                    </div>
-                  </div>
-                 
-                  <!-- End Choose Language -->
-                  <!-- Start Foot Notes -->
-                  <div class="foot-notes">
-                    <h2>
-                      This video's footnotes</h2>
-                    <p id="footnotediv"></p>
-                  </div>
-                  <!-- End Foot Notes -->
-                </div>
-                <!-- End Video Info -->
-              </div>
-              <!-- End Video Div -->
-              <h1>
-                <span>In this video: <strong id="inthisvideo"></strong></span>
-              </h1>
-              <!-- Start Column A -->
-              <div class="columna">
-                <section>
-                  <h3><img src="images/logo_twitter.png" alt="Twitter Updates" width="" height="" />
-                  <span>&nbsp;</span></h3>
-                  <a href="#" class="collapse"><span>Collapse</span></a>
-                  <div id="personaltwitter" class="content"><div class="overlay"></div><div class="inactive"></div></div>
-                </section>
-                         
-              </div>
-              <!-- End Column A -->
-              <!-- Start Column B -->
-              <div class="columnb">
-                <section>
-                  <h3><img src="images/logo_flickr.png" alt="Flickr Images" width="" height="" />
-                                      <span>&nbsp;</span></h3>
-                  <a href="#" class="collapse"><span>Collapse</span></a>
-                  <div id="personalflickr" class="content"><div class="overlay"></div><div class="inactive"></div></div>
-                </section>
-              </div>
-              <!-- End Column B -->
-            </div>
-            <!-- End Left Contents -->
-            <!-- Start Right Contents -->
-            <div class="right-content">
-              <h1>
-                <span>Related to this video</span></h1>
-              <!-- Start Column A -->
-              <div class="columna">
-                <section>
-                  <div id="container3" class="google-map-title">
-                    <h4>Filmed in:</h4>
-                    <span id="mapinfo"></span>
-                  </div>
-
-                  <div id="container2" class="google-map"></div>
-
-                </section>
-                <section>
-                  <h3><img src="images/logo_twitter.png" alt="Twitter" width="" height="" /></h3>
-                  <a href="#" class="collapse"><span>Collapse</span></a>
-                  <div id="twitter" class="content"><div class="overlay"></div><div class="inactive"></div></div>
-                </section>
-              </div>
-              <!-- End Column A -->
-              <!-- Start Column B -->
-              <div class="columnb">
-                <section>
-                  <h3><img src="images/logo_wiki.png" alt="Wikipedia" width="" height="" /></h3>
-                  <a href="#" class="collapse"><span>Collapse</span></a>
-                  <div class="content" id="wikidiv"><div class="overlay"></div><div class="inactive"></div></div>
-				        </section>
-                <section>
-			            <h3><img src="images/logo_google_news.png" alt="Google News" width="" height="" />
-			            </h3> 
-			            <div id="googlenewsdiv"><div class="overlay"></div><div class="inactive"></div></div>
-		            </section>
-              </div>
-              <!-- End Column B -->
-	            <h1><span>This video's copyright information</span></h1>
-              <section>
-                <div id="container5"></div>
-              </section>
-            </div>
-            <!-- End Right Contents -->
-          </div>
-          <!-- End Contents -->
-          <footer>
-            <div class="footer_drumbeat">
-            <img src="images/footer_webmade.png" alt="footer_drumbeat" width="" height="" />
-            <p>Web Made Movies is Mozilla's<br /> Open video lab<br />
-            <a href="#">Learn More <span>&raquo;</span></a>
-            </p>
-            </div>
-            <div class="footer_drumbeat">
-            <img src="images/footer_drumbeat.png" alt="footer_drumbeat" width="" height="" /><p>Innovation on the open web, <br /> powered by everybody.</p>
-            </div>
-          <div class="copyright">Portions of this content are &copy;2010 by individual drumbeat.org contributors. Content available under a Creative Commons license.</div>
-        </footer>
-      </div>
-      <!-- End Wrapper Div -->
+    <div class="download">
+   
+      <a href="http://github.com/mozilla/popcorn-js/zipball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+      <a href="http://github.com/mozilla/popcorn-js/tarball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+         <img src="http://ftp.etherworks.ca/webmademovieslogo150.jpg">
     </div>
-    <!-- End First Container Div -->
-  </div>
-  <!-- End Second Container Div -->
+
+    <h1><a href="http://github.com/mozilla/popcorn-js">popcorn-js</a></h1>
+
+    <div class="description">
+    
+      Welcome to the Popcorn.js development hub!  
+      <p>
+      <h2>What is Popcorn.js?</h2><br />
+      
+      Popcorn is a javascript library for manipulating open video on the web.
+<p>
+Popcorn.js is a project of <a href="http://www.drumbeat.org/webmademovies">Web Made Movies</a>, Mozilla's Open Video Lab.  It has been developed by the <a href="http://cdot.senecac.on.ca/">Center for Development of Open Technology</a> at Seneca College and contributors like you.
+<p>
+<h2>Get involved</h2>
+Please download the source code at <a href="http://github.com/mozilla/popcorn-js">mozilla/popcorn-js</a>
+<p>
+You can find our evolving documentation on <a href="http://wiki.github.com/mozilla/popcorn-js/">our wiki</a>.
+
+<a href="https://processing-js.lighthouseapp.com/projects/52212-popcornjs/overview">We use Lighthouse</a> for bug tracking.  Please file a bug or even better, fix one!
+
+We have an active developer community on IRC at irc.mozilla.org/popcorn.  Please come say hello!
+    </div>
+
+    <h2>Download</h2>
+    <p>
+      You can download this project in either
+      <a href="http://github.com/mozilla/popcorn-js/zipball/master">zip</a> or
+      <a href="http://github.com/mozilla/popcorn-js/tarball/master">tar</a> formats.
+    </p>
+    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+      by running:
+      <pre>$ git clone git://github.com/mozilla/popcorn-js</pre>
+    </p>
+
+  
 </body>
 </html>
