@@ -1069,6 +1069,3 @@
   
 }());
 
-HTMLVideoElement.prototype.viewPort = function() {
-  alert(this);
-};
