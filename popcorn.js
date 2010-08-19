@@ -1,22 +1,24 @@
 /*global google: false, $: false, TWTR: false*/ // This global comment is read by jslint
 
 (function() {
+  var p = this.Popcorn = {};
+
   // The video manager manages a single video element, and all it's commands.
-  var VideoManager = this.VideoManager = function(videoElement) {
+  p.VideoManager = function(videoElement) {
     this.commandObjects  = {};
     this.manifestObjects = {};
     this.videoElement = videoElement;
     videoElement.videoManager = this;
-    VideoManager.addInstance(this);
-    videoElement.setAttribute("ontimeupdate", "VideoManager.update(this, this.videoManager);"); 
+    p.addInstance(this);
+    videoElement.setAttribute("ontimeupdate", "Popcorn.update(this, this.videoManager);"); 
   };
-  VideoManager.prototype.addCommand = function(command) {
+  p.VideoManager.prototype.addCommand = function(command) {
     this.commandObjects[command.id] = command;
   };
-  VideoManager.prototype.removeCommand = function(command) {
+  p.VideoManager.prototype.removeCommand = function(command) {
     delete this.commandObjects[command.id];
   };
-  VideoManager.prototype.addManifestObject = function(manifestAttributes) {
+  p.VideoManager.prototype.addManifestObject = function(manifestAttributes) {
     var manifest = {},
         manifestId = "";
     for (var i = 0, pl = manifestAttributes.length; i < pl; i++) {
@@ -32,14 +34,15 @@
     }
     this.manifestObjects[manifestId] = manifest;
   };
-  VideoManager.prototype.removeManifestObject = function(itemId) {
+  p.VideoManager.prototype.removeManifestObject = function(itemId) {
     delete this.manifestObjects[itemId];
   };
+  p.VideoManager.prototype.loaded = function() {};
   
   var inactiveTarget = {};
   
   // Update is called on the video every time it's time changes.
-  VideoManager.update = function(vid, manager) {
+  p.update = function(vid, manager) {
     var t = vid.currentTime,
         commandObject = {}; // Loops through all commands in the manager, preloading data, and calling onIn() or onOut().
     for (var i in manager.commandObjects) {
@@ -51,7 +54,7 @@
             $("#" + commandObject.params.target + " .inactive").fadeIn(500);
           }
           commandObject.onOut();
-          commandObject.removeOverlay();
+          commandObject.extension.onOut();
         }
       }
     }
@@ -79,29 +82,29 @@
              }
           }
           commandObject.onIn();
-          commandObject.displayOverlay();
+          commandObject.extension.onIn();
         }
       }
     }
   };
 
   // Store VideoManager instances
-  VideoManager.instances = [];
-  VideoManager.instanceIds = {};
-  VideoManager.addInstance = function(manager) {
+  p.instances = [];
+  p.instanceIds = {};
+  p.addInstance = function(manager) {
     if (typeof manager.videoElement.id === 'undefined' || !manager.videoElement.id.length) {
-      manager.videoElement.id = "__video" + VideoManager.instances.length;
+      manager.videoElement.id = "__video" + p.instances.length;
     }
-    VideoManager.instanceIds[manager.videoElement.id] = VideoManager.instances.length;
-    VideoManager.instances.push(manager);
+    p.instanceIds[manager.videoElement.id] = p.instances.length;
+    p.instances.push(manager);
   };
-  VideoManager.getInstanceById = function(name) {
-    return VideoManager.instances[VideoManager.instanceIds[name]];
+  p.getInstanceById = function(name) {
+    return p.instances[p.instanceIds[name]];
   };
-  VideoManager.getInstance = function(index) {
-    return VideoManager.instances[index];
+  p.getInstance = function(index) {
+    return p.instances[index];
   };
-
+  
   // Simple function to convert 0:05 to 0.5 in seconds
   var toSeconds = function(time) {
     var t = time.split(":");
@@ -121,7 +124,8 @@
   ////////////////////////////////////////////////////////////////////////////
 
   // Base class for all commands, SubtitleCommand, MapCommand, etc.
-  var VideoCommand = function(name, params, text, videoManager) {
+  p.VideoCommand = function(name, params, text, videoManager) {
+    this.name = name;
     this.params = {};
     this.text = text;
     this.videoManager = videoManager;
@@ -130,9 +134,11 @@
     this.onIn = function() {};
     this.onOut = function() {};
     this.preload = function() {};
-    this.displayOverlay = function() {};
-    this.removeOverlay = function() {};
-    this.id = name + VideoCommand.count++;
+    this.extension = {
+      onIn: function() {},
+      onOut: function() {}
+    };
+    this.id = name + p.VideoCommand.count++;
     this.params["in"] = "0";
     this.params["out"] = this.videoManager.videoElement.duration;
 
@@ -158,56 +164,33 @@
       }
     }
 
-    // Creates a div for all overlays to use
-    if (!VideoManager.overlayDiv) {
-      VideoManager.overlayDiv = document.createElement('div');
-      VideoManager.overlayDiv.setAttribute('style', 'position:absolute;top:1px;left:1px');
-      this.videoManager.videoElement.parentNode.appendChild(VideoManager.overlayDiv);
-    }
-    
-    // Checks for a url of an image to overlay onto the video
-    if (!this.params.overlay) {
-      this.params.overlay = "images/overlay/" + name + ".png";
-    }
-    
-    if (this.params.overlay) {
-      this.image = document.createElement('img');
-      var that = this;
-      $('<a href="' + (that.params.overlaylink || "#") + '"></a>')
-        .attr("target", that.params.overlaylink ? "_blank" : "")
-        .append($(that.image)
-        .attr("src",that.params.overlay)
-        .attr("style", "display:none")).appendTo(VideoManager.overlayDiv);
-    }
-
     if (!inactiveTarget[this.params.target]) {
       inactiveTarget[this.params.target] = 0;
     }
   };
-  VideoCommand.count = 0;
+  p.VideoCommand.count = 0;
 
   ////////////////////////////////////////////////////////////////////////////
   // Subtitle Command
   ////////////////////////////////////////////////////////////////////////////
 
   // Child commands. Uses onIn() and onOut() to do time based operations
-  var SubtitleCommand = function(name, params, text, videoManager) {
-    
-    VideoCommand.call(this, name, params, text, videoManager);
+  p.SubtitleCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     var style = "";
 
     // Creates a div for all subtitles to use
-    if (!SubtitleCommand.subDiv) {
-      SubtitleCommand.subDiv = document.createElement('div');
+    if (!p.SubtitleCommand.subDiv) {
+      p.SubtitleCommand.subDiv = document.createElement('div');
       
       style = 'position:absolute;top:240px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 2px 2px 6px;font-size:18px;width:100%;';
-      SubtitleCommand.subDiv.setAttribute('style', style);  
-      this.videoManager.videoElement.parentNode.appendChild(SubtitleCommand.subDiv);
+      p.SubtitleCommand.subDiv.setAttribute('style', style);  
+      this.videoManager.videoElement.parentNode.appendChild(p.SubtitleCommand.subDiv);
     }
     if (this.params.target) {
       this.target = document.getElementById(this.params.target);
     } else {
-      this.target = SubtitleCommand.subDiv;
+      this.target = p.SubtitleCommand.subDiv;
     }
 
     this.onIn = function() {
@@ -234,20 +217,20 @@
   // Lower third text Command
   ////////////////////////////////////////////////////////////////////////////
 
-  var LowerThirdCommand = function(name, params, text, videoManager) {
-    VideoCommand.call(this, name, params, text, videoManager);
+  p.LowerThirdCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     
-    // Creates a div for all subtitles to use
-    if (!LowerThirdCommand.ltDiv) {
-      LowerThirdCommand.ltDiv = document.createElement('div');
-      LowerThirdCommand.ltDiv.setAttribute('style', 
+    // Creates a div for all lower thirds
+    if (!p.LowerThirdCommand.ltDiv) {
+      p.LowerThirdCommand.ltDiv = document.createElement('div');
+      p.LowerThirdCommand.ltDiv.setAttribute('style', 
         'padding-left:40px;padding-right:40px;padding-top:40px;position:absolute;top:150px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 1px 1px 3px;font-size:22px;width:450px;');
-      this.videoManager.videoElement.parentNode.appendChild(LowerThirdCommand.ltDiv);
+      this.videoManager.videoElement.parentNode.appendChild(p.LowerThirdCommand.ltDiv);
     }
     if (this.params.target) {
       this.target = document.getElementById(this.params.target);
     } else {
-      this.target = LowerThirdCommand.ltDiv;
+      this.target = p.LowerThirdCommand.ltDiv;
     }
     
     this.onIn = function() {
@@ -287,8 +270,8 @@
   // GoogleNews Command
   ////////////////////////////////////////////////////////////////////////////
 
-  var GoogleNewsCommand = function(name, params, text, videoManager) {
-    VideoCommand.call(this, name, params, text, videoManager);
+  p.GoogleNewsCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     this.target = document.createElement('div');
     this.target.setAttribute('style', 'display:none;border:0px;');
     document.getElementById(this.params.target).appendChild(this.target);
@@ -316,8 +299,8 @@
   ////////////////////////////////////////////////////////////////////////////
   // Credits Command
   ////////////////////////////////////////////////////////////////////////////
-  var CreditsCommand = function(name, params, text, videoManager) {
-    VideoCommand.call(this, name, params, text, videoManager);
+  p.CreditsCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     $("#credits")
         .width(this.videoManager.videoElement.clientWidth)
         .height(this.videoManager.videoElement.clientHeight);
@@ -327,7 +310,7 @@
     this.onIn = function() {
         $("#credits").show();
         $("#choices").animate({ right:'+=200px' }, 1000);
-        CreditsCommand.add( [
+        p.CreditsCommand.add( [
             { 
                 text: "Play Again",
                 click:function() {
@@ -501,8 +484,8 @@
         $("#credits").hide();
     };
   };
-  CreditsCommand.colIndex = 0;
-  CreditsCommand.killCol = function(index, callback) {
+  p.CreditsCommand.colIndex = 0;
+  p.CreditsCommand.killCol = function(index, callback) {
     $(".column").each(function() {
       if ($(this).attr("colindex")>index) {
         $(this).addClass("removing").animate( { left: -$(this).outerWidth() + "px" }, 1200, function() {
@@ -515,11 +498,11 @@
     }
   };
 
-  CreditsCommand.add =  function(items) {
-        CreditsCommand.colIndex++;
+  p.CreditsCommand.add =  function(items) {
+        p.CreditsCommand.colIndex++;
         var ul = $("<ul></ul>")
             .addClass('column')
-            .attr('colindex',parseInt(CreditsCommand.colIndex, 10));
+            .attr('colindex',parseInt(p.CreditsCommand.colIndex, 10));
         $.each(items, function(i, val) {
             var li = $(document.createElement('li'))
                 .append($(document.createElement('a'))
@@ -533,9 +516,9 @@
                       return true;
                     }
                     var colIndex = $(this).parent().attr('colindex');
-                    if (CreditsCommand.colIndex>colIndex) { 
-                        CreditsCommand.killCol(colIndex);
-                        CreditsCommand.colIndex = colIndex;
+                    if (p.CreditsCommand.colIndex>colIndex) { 
+                        p.CreditsCommand.killCol(colIndex);
+                        p.CreditsCommand.colIndex = colIndex;
                     }
                     var hasClass = $(this).hasClass('selected');
                     if (!hasClass) {
@@ -543,7 +526,7 @@
                           val.click();
                         }
                         if (val.next) {
-                          CreditsCommand.add(val.next);
+                          p.CreditsCommand.add(val.next);
                         }
                     }  
                     $(this)
@@ -561,7 +544,7 @@
         });
         ul
             .appendTo("#credit_inner")
-            .css("z-index",1000-CreditsCommand.colIndex)
+            .css("z-index",1000 - p.CreditsCommand.colIndex)
             .css("left",-ul.outerWidth())
             .animate({ 
                 left: width + "px"
@@ -584,20 +567,20 @@
       return r.toString();
     };
   };
-  var TagCommand = function(name, params, text, videoManager) {
-    VideoCommand.call(this, name, params, text, videoManager);
+  p.TagCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     
-    if (!TagCommand[this.params.target]) {
-      TagCommand[this.params.target] = new people();
+    if (!p.TagCommand[this.params.target]) {
+      p.TagCommand[this.params.target] = new people();
     }
     
     this.onIn = function() {
-      TagCommand[this.params.target].contains[this.text] = this.text;
-      document.getElementById(this.params.target).innerHTML  = TagCommand[this.params.target].toString();
+      p.TagCommand[this.params.target].contains[this.text] = this.text;
+      document.getElementById(this.params.target).innerHTML  = p.TagCommand[this.params.target].toString();
     };
     this.onOut = function() {
-      delete TagCommand[this.params.target].contains[this.text];
-      document.getElementById(this.params.target).innerHTML  = TagCommand[this.params.target].toString();
+      delete p.TagCommand[this.params.target].contains[this.text];
+      document.getElementById(this.params.target).innerHTML  = p.TagCommand[this.params.target].toString();
     };
   };
 
@@ -605,27 +588,20 @@
   // Map Command
   ////////////////////////////////////////////////////////////////////////////
 
-  var MapCommand = function(name, params, text, videoManager) {
-    VideoCommand.call(this, name, params, text, videoManager);
+  p.MapCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     this.params.zoom = parseInt(this.params.zoom, 10);
     // load the map
     // http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions  <-- Map API
     this.location = new google.maps.LatLng(this.params.lat, this.params.long);
-    if (!MapCommand[this.params.target]) {
-      MapCommand[this.params.target] = new google.maps.Map(document.getElementById(this.params.target), {mapTypeId: google.maps.MapTypeId.HYBRID});
-      MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
-      MapCommand[this.params.target].setZoom(0);
+    if (!p.MapCommand[this.params.target]) {
+      p.MapCommand[this.params.target] = new google.maps.Map(document.getElementById(this.params.target), {mapTypeId: google.maps.MapTypeId.HYBRID});
+      p.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
+      p.MapCommand[this.params.target].setZoom(0);
     }
-      
-    this.displayOverlay = function() {
-      $(this.image).fadeIn(2000);
-    };
-    this.removeOverlay = function() {
-      $(this.image).fadeOut(2000);
-    };
     this.onIn = function() {
-      MapCommand[this.params.target].setCenter(this.location);
-      MapCommand[this.params.target].setZoom(this.params.zoom);
+      p.MapCommand[this.params.target].setCenter(this.location);
+      p.MapCommand[this.params.target].setZoom(this.params.zoom);
       if (this.params.src && this.params.mapinfo) {
         var link = document.createElement("a");
         link.setAttribute("href", this.params.src);
@@ -635,8 +611,8 @@
       }
     };
     this.onOut = function() {
-      MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
-      MapCommand[this.params.target].setZoom(0);
+      p.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
+      p.MapCommand[this.params.target].setZoom(0);
       if (this.params.mapinfo) {
         document.getElementById(this.params.mapinfo).innerHTML = "";
       }
@@ -647,8 +623,8 @@
   // Twitter Command
   ////////////////////////////////////////////////////////////////////////////
 
-  var TwitterCommand = function(name, params, text, videoManager) {
-    VideoCommand.call(this, name, params, text, videoManager);
+  p.TwitterCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     // Setup a default, hidden div to hold the feed
     this.target = document.createElement('div');
     this.target.setAttribute('id', this.id);
@@ -690,12 +666,6 @@
         behavior: 'default'
       }
     }).render().start();
-    this.displayOverlay = function() {
-      $(this.image).fadeIn(2000);
-    };
-    this.removeOverlay = function() {
-      $(this.image).fadeOut(2000);
-    };
     this.onIn = function() {
       this.target.setAttribute('style', 'display:inline');
     };
@@ -709,8 +679,8 @@
   // Flickr Command
   ////////////////////////////////////////////////////////////////////////////
   
-  var FlickrCommand = function(name, params, text, videoManager) {
-    VideoCommand.call(this, name, params, text, videoManager);
+  p.FlickrCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
     target.setAttribute('id', this.id);
@@ -743,12 +713,6 @@
         }
       });
     });
-    this.displayOverlay = function() {
-      $(this.image).fadeIn(2000);
-    };
-    this.removeOverlay = function() {
-      $(this.image).fadeOut(2000);
-    };
     this.target = target;
 
     this.onIn = function() {
@@ -763,8 +727,8 @@
   // Wiki Command
   ////////////////////////////////////////////////////////////////////////////
   
-  var WikiCommand = function(name, params, text, videoManager) {
-    VideoCommand.call(this, name, params, text, videoManager);
+  p.WikiCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     
     var src = this.params.src;
     var length = this.params.numberOfWords;
@@ -795,12 +759,6 @@
     }); 
     
     this.target = target;
-    this.displayOverlay = function() {
-      $(this.image).fadeIn(2000);
-    };
-    this.removeOverlay = function() {
-      $(this.image).fadeOut(2000);
-    };
     this.onIn = function() {
       this.target.setAttribute('style', 'display:inline');
     };
@@ -812,14 +770,8 @@
   // Footnote Command
   ////////////////////////////////////////////////////////////////////////////
 
-  var FootnoteCommand = function(name, params, text, videoManager) {
-    VideoCommand.call(this, name, params, text, videoManager);
-    this.displayOverlay = function() {
-      $(this.image).fadeIn(2000);
-    };
-    this.removeOverlay = function() {
-      $(this.image).fadeOut(2000);
-    };
+  p.FootnoteCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
       //if the user specifies a target div for this in the xml use it
       //otherwise make a new div 
@@ -843,8 +795,8 @@
   // Attribution Command
   ////////////////////////////////////////////////////////////////////////////
 
-  var AttributionCommand = function(name, params, text, videoManager) {
-    VideoCommand.call(this, name, params, text, videoManager);
+  p.AttributionCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     var attribution = "";
     var image = "";
 
@@ -914,8 +866,8 @@
   // Warp Command
   ////////////////////////////////////////////////////////////////////////////
 
-  var seekCommand = function(name, params, text, videoManager) {
-    VideoCommand.call(this, name, params, text, videoManager);
+  p.SeekCommand = function(name, params, text, videoManager) {
+    p.VideoCommand.call(this, name, params, text, videoManager);
     this.params["in"] = toSeconds(this.params.seekfrom);
     this.params["out"] = toSeconds(this.params.seekfrom) + 1;
     this.params.seekto = toSeconds(this.params.seekto);
@@ -931,62 +883,62 @@
   var commands = {
     subtitle: {
       create: function(name, params, text, videoManager) {
-        return new SubtitleCommand(name, params, text, videoManager);
+        return new p.SubtitleCommand(name, params, text, videoManager);
       }
     },
     credits: {
       create: function(name, params, text, videoManager) {
-        return new CreditsCommand(name, params, text, videoManager);
+        return new p.CreditsCommand(name, params, text, videoManager);
       }
     },
     flickr: {
       create: function(name, params, text, videoManager) {
-        return new FlickrCommand(name, params, text, videoManager);
+        return new p.FlickrCommand(name, params, text, videoManager);
       }
     },
     videotag: {
       create: function(name, params, text, videoManager) {
-        return new TagCommand(name, params, text, videoManager);
+        return new p.TagCommand(name, params, text, videoManager);
       }
     },
     location: {
       create: function(name, params, text, videoManager) {
-        return new MapCommand(name, params, text, videoManager);
+        return new p.MapCommand(name, params, text, videoManager);
       }
     },
     footnote: {
       create: function(name, params, text, videoManager) {
-        return new FootnoteCommand(name, params, text, videoManager);
+        return new p.FootnoteCommand(name, params, text, videoManager);
       }
     },
     twitter: {
       create: function(name, params, text, videoManager) {
-        return new TwitterCommand(name, params, text, videoManager);
+        return new p.TwitterCommand(name, params, text, videoManager);
       }
     },
     attribution: {
       create: function(name, params, text, videoManager) {
-        return new AttributionCommand(name, params, text, videoManager);
+        return new p.AttributionCommand(name, params, text, videoManager);
       }
     },
     googlenews: {
       create: function(name, params, text, videoManager) {
-        return new GoogleNewsCommand(name, params, text, videoManager);
+        return new p.GoogleNewsCommand(name, params, text, videoManager);
       }
     },
     wiki: {
       create: function(name, params, text, videoManager) {
-        return new WikiCommand(name, params, text, videoManager);
+        return new p.WikiCommand(name, params, text, videoManager);
       }
     },
     lowerthird: {
       create: function(name, params, text, videoManager) {
-        return new LowerThirdCommand(name, params, text, videoManager);
+        return new p.LowerThirdCommand(name, params, text, videoManager);
       }
     },
     seek: {
       create: function(name, params, text, videoManager) {
-        return new seekCommand(name, params, text, videoManager);
+        return new p.SeekCommand(name, params, text, videoManager);
       }
     }
   };
@@ -1056,10 +1008,11 @@
             xml.push(loadXMLDoc(filenames[j]));
           }
         }
-        var manager = new VideoManager(video[i]);
+        var manager = new p.VideoManager(video[i]);
         video[i].addEventListener('loadedmetadata', (function() {
           return function() {
             parse(xml, manager);
+            manager.loaded();
           };
         }()), false);
       }

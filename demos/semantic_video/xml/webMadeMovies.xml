@@ -90,9 +90,9 @@
       <footnote in="00:00:00" out="00:15:00" target="footnotediv">This video made exclusively for drumbeat.org </footnote>
       <videotag target="inthisvideo" in="00:00:05:02" out="00:00:10:07">Steve Song</videotag>
       <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>
-      <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120" overlay="images/overlay/twitter.png" />
-      <wiki in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv" overlay="images/overlay/wiki.png"/>
-      <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px" overlay="images/overlay/flickr.png"/>
+      <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
+      <wiki in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv"/>
+      <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
       <googlenews in="00:00:05:02" out="00:00:10:07" target="googlenewsdiv" topic="Village Telco"/>
 
       <twitter in="00:00:10:07" out="00:00:18:04" title="Oil Spill" source="#oilspill" target="twitter" width="238" height="120"/>
@@ -193,7 +193,7 @@
       <location resourceid="montrealwiki" in="00:04:19:06" out="00:04:24:01" lat="45.5089" long="-73.5542 " target="container2" zoom="8"/>
     </map>
 
-    <subtitles>
+    <subtitles languagesrc="language" accessibilitysrc="accessibility">
       <subtitles language="en" align="center">
         <subtitle in="00:00:00:03" out="00:00:01:06">All right let's take a look and show me some</subtitle>
         <subtitle in="00:00:01:06" out="00:00:03:00">of the neat things you can do on the Internet</subtitle>
