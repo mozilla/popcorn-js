@@ -1,15 +1,15 @@
-<html>
-<head>
-  <title>html5 video demo</title>
-  <script src="http://code.jquery.com/jquery.js"></script>
-  <script src="http://google.com/jsapi"></script>
-  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-  <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-  <script>google.load("language", "1");</script>
-  <script>google.load("elements", "1", {packages : ["newsshow"]});</script>
-  <script src="../../popcorn.js"></script>
-  <link href="style.css" rel="stylesheet" type="text/css" />
-  <script type="text/javascript">
+<html> 
+<head> 
+  <title>html5 video demo</title> 
+  <script src="http://code.jquery.com/jquery.js"></script> 
+  <script src="http://google.com/jsapi"></script> 
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> 
+  <script src="http://widgets.twimg.com/j/2/widget.js"></script> 
+  <script>google.load("language", "1");</script> 
+  <script>google.load("elements", "1", {packages : ["newsshow"]});</script> 
+  <script src="../../popcorn.js"></script> 
+  <link href="style.css" rel="stylesheet" type="text/css" /> 
+  <script type="text/javascript"> 
     $(document).ready(function () {
       //Show hide the contents
       $(".collapse").click(function () {
@@ -40,182 +40,230 @@
             }
         })
       }, 500);
+       
+      $('.clickhere').click(function(){
+        $('.popup').fadeIn();
+        $('.pop-overlay').fadeIn()
+      });
 
+
+      $('.pop-overlay').click(function(){
+        $('.pop-overlay').fadeOut();
+        $('.popup').fadeOut();
+      });
+
+
+      $('.close_btn').click(function(){
+        $('.pop-overlay').fadeOut();
+        $('.popup').fadeOut();
+      });
+    
     });
-  </script>
-</head>
-
-<body>
-  <!-- Start First Container Div -->
-  <div class="container-top">
-    <!-- Start Second Container Div -->
-    <div class="container-bot">
-      <!-- Start Wrapper Div -->
-      <div class="wrapper">
-        <!-- Start Header -->
-        <header id="global-header">
-          <a href="http://www.drumbeat.org/" class="logo"><img src="images/drumbeat_logo.png" alt="drumbeat_logo" width="" height="" /></a>
-
-          <!-- Start Login/Signup -->
-          <nav id="login">
+ 
+ 
+    
+  </script> 
+</head> 
+ 
+<body> 
+ 
+ 
+              
+  <!-- Start First Container Div --> 
+  <div class="container-top"> 
+    <!-- Start Second Container Div --> 
+    <div class="container-bot"> 
+      <!-- Start Wrapper Div --> 
+      <div class="wrapper"> 
+        <!-- Start Header --> 
+        <header id="global-header"> 
+          <a href="http://www.drumbeat.org/" class="logo"><img src="images/drumbeat_logo.png" alt="drumbeat_logo" width="" height="" /></a> 
+ 
+          <!-- Start Login/Signup --> 
+          <!-- <nav id="login">
             <ul>
               <li><a href="#">log in</a></li>
               <li><a href="#">sign up</a></li>
             </ul>
-          </nav>
-          <!-- End Login/Signup -->
-
-          <!-- Start Primary Links -->
-          <nav id="primary-links">
-            <ul>
-              <li><a title="" href="http://www.drumbeat.org/about">About</a></li>
-              <li><a title="" href="http://www.drumbeat.org/projects">Projects</a></li>
-              <li><a title="" href="http://www.drumbeat.org/people">People</a></li>
-              <li><a title="" href="http://www.drumbeat.org/events">Events</a></li>
-              <li><a title="" href="http://indofolio.com/civicrm/contribute/transact?reset=1&id=3?reset=1&id=3">Donate</a></li>
-            </ul>
-          </nav>
-          <!-- End Primary Links -->
-
-        </header>
-        <!-- End Header -->
-        <!-- Start Contents -->
-        <div id="contents">
-          <!-- Start Left Contents -->
-          <div class="left-content">
-            <!-- Start Video Div -->
-            <div id="videoContainer" class="video-div">
-              <div id="credits" style="display:none">
-                <div id="credit_inner">
-                </div>
-              </div>
-              <video width="530px" height="299px" src="http://a55.video2.blip.tv/8080004989393/Etherworks-WMMOGGVERSION204.ogv?bri=2.7&brs=750" data-timeline-sources="xml/webMadeMovies.xml" controls></video>
-                <!-- Start Video Info -->
-                <div class="video-info">
-                  <!-- Start Choose Language -->
-                  <div class="choose-language">
-                    <h2>Choose your language</h2>
-                    <select id="language">
-                      <option val="zh">Chinese</option>
-                      <option val="en" selected="selected">English</option>
-                      <option val="fr">French</option>
-                      <option val="de">German</option>
-                      <option val="it">Italian</option>
-                      <option val="ja">Japanese</option>
-                      <option val="ko">Korean</option>
-                      <option val="fa">Persian</option>
-                      <option val="pl">Polish</option>
-                      <option val="pt">Portuguese</option>
-                      <option val="es">Spanish</option>
-                    </select>
-                    <div id="credit">
+          </nav> --> 
+          <!-- End Login/Signup --> 
+ 
+                    <!-- Start Primary Links --> 
+             <nav id="demo-info"> 
+            <ul> 
+              <li><a href="javascript:void();" class="clickhere green"><img src="images/video_icon.png" alt="video_icon" width="" height="" />watch a video and learn more about this demo</a></li> 
+              
+             
+            </ul> 
+          </nav> 
+          <!-- End Primary Links --> 
+ 
+        </header> 
+        <!-- End Header --> 
+        <!-- Start Contents --> 
+        <div id="contents"> 
+          <!-- Start Left Contents --> 
+          <div class="left-content"> 
+          
+ 
+            <!-- Start Video Div --> 
+            <div id="videoContainer" class="video-div"> 
+              <div id="credits" style="display:none"> 
+                <div id="credit_inner"> 
+                </div> 
+              </div> 
+            
+              <video width="530px" height="299px" data-timeline-sources="xml/webMadeMovies.xml" controls> 
+              <source src="http://a55.video2.blip.tv/8080004989393/Etherworks-WMMOGGVERSION204.ogv?bri=2.7&brs=750" type='video/ogg; codecs="theora, vorbis"'> 
+              </video> 
+        
+                <!-- Start Video Info --> 
+                <div class="video-info"> 
+                  <!-- Start Choose Language --> 
+                  <div class="choose-language"> 
+                    <h2>Choose your language</h2> 
+                    <select id="language"> 
+                      <option val="zh">Chinese</option> 
+                      <option val="en" selected="selected">English</option> 
+                      <option val="fr">French</option> 
+                      <option val="de">German</option> 
+                      <option val="it">Italian</option> 
+                      <option val="ja">Japanese</option> 
+                      <option val="ko">Korean</option> 
+                      <option val="fa">Persian</option> 
+                      <option val="pl">Polish</option> 
+                      <option val="pt">Portuguese</option> 
+                      <option val="es">Spanish</option> 
+                    </select> 
+                    <div id="credit"> 
                       with help from
-                      <br />
-                      <a href="http://google.com/translate">Google Translate</a> and <a href="http://jquery.com">
-                        jQuery</a><br />
+                      <br /> 
+                      <a href="http://google.com/translate">Google Translate</a> and <a href="http://jquery.com"> 
+                        jQuery</a><br /> 
                       <input type="checkbox" id="accessibility" checked="checked" />All subtitles (accessibility)
-                    </div>
-                  </div>
+                    </div> 
+                  </div> 
                  
-                  <!-- End Choose Language -->
-                  <!-- Start Foot Notes -->
-                  <div class="foot-notes">
-                    <h2>
-                      This video's footnotes</h2>
-                    <p id="footnotediv"></p>
-                  </div>
-                  <!-- End Foot Notes -->
-                </div>
-                <!-- End Video Info -->
-              </div>
-              <!-- End Video Div -->
-              <h1>
-                <span>In this video: <strong id="inthisvideo"></strong></span>
-              </h1>
-              <!-- Start Column A -->
-              <div class="columna">
-                <section>
-                  <h3><img src="images/logo_twitter.png" alt="Twitter Updates" width="" height="" />
-                  <span>&nbsp;</span></h3>
-                  <a href="#" class="collapse"><span>Collapse</span></a>
-                  <div id="personaltwitter" class="content"><div class="overlay"></div><div class="inactive"></div></div>
-                </section>
+                  <!-- End Choose Language --> 
+                  <!-- Start Foot Notes --> 
+                  <div class="foot-notes"> 
+                    <h2> 
+                      This video's footnotes</h2> 
+                    <p id="footnotediv"></p> 
+                  </div> 
+                  <!-- End Foot Notes --> 
+                </div> 
+                <!-- End Video Info --> 
+              </div> 
+              <!-- End Video Div --> 
+              <h1> 
+                <span>In this video: <strong id="inthisvideo"></strong></span> 
+              </h1> 
+              <!-- Start Column A --> 
+              <div class="columna"> 
+                <section> 
+                  <h3><img src="images/logo_twitter.png" alt="Twitter Updates" width="" height="" /> 
+                  <span>&nbsp;</span></h3> 
+                  <a href="#" class="collapse"><span>Collapse</span></a> 
+                  <div id="personaltwitter" class="content"><div class="overlay"></div><div class="inactive"></div></div> 
+                </section> 
                          
-              </div>
-              <!-- End Column A -->
-              <!-- Start Column B -->
-              <div class="columnb">
-                <section>
-                  <h3><img src="images/logo_flickr.png" alt="Flickr Images" width="" height="" />
-                                      <span>&nbsp;</span></h3>
-                  <a href="#" class="collapse"><span>Collapse</span></a>
-                  <div id="personalflickr" class="content"><div class="overlay"></div><div class="inactive"></div></div>
-                </section>
-              </div>
-              <!-- End Column B -->
-            </div>
-            <!-- End Left Contents -->
-            <!-- Start Right Contents -->
-            <div class="right-content">
-              <h1>
-                <span>Related to this video</span></h1>
-              <!-- Start Column A -->
-              <div class="columna">
-                <section>
-                  <div id="container3" class="google-map-title">
-                    <h4>Filmed in:</h4>
-                    <span id="mapinfo"></span>
-                  </div>
-
-                  <div id="container2" class="google-map"></div>
-
-                </section>
-                <section>
-                  <h3><img src="images/logo_twitter.png" alt="Twitter" width="" height="" /></h3>
-                  <a href="#" class="collapse"><span>Collapse</span></a>
-                  <div id="twitter" class="content"><div class="overlay"></div><div class="inactive"></div></div>
-                </section>
-              </div>
-              <!-- End Column A -->
-              <!-- Start Column B -->
-              <div class="columnb">
-                <section>
-                  <h3><img src="images/logo_wiki.png" alt="Wikipedia" width="" height="" /></h3>
-                  <a href="#" class="collapse"><span>Collapse</span></a>
-                  <div class="content" id="wikidiv"><div class="overlay"></div><div class="inactive"></div></div>
-				        </section>
-                <section>
-			            <h3><img src="images/logo_google_news.png" alt="Google News" width="" height="" />
+              </div> 
+              <!-- End Column A --> 
+              <!-- Start Column B --> 
+              <div class="columnb"> 
+                <section> 
+                  <h3><img src="images/logo_flickr.png" alt="Flickr Images" width="" height="" /> 
+                                      <span>&nbsp;</span></h3> 
+                  <a href="#" class="collapse"><span>Collapse</span></a> 
+                  <div id="personalflickr" class="content"><div class="overlay"></div><div class="inactive"></div></div> 
+                </section> 
+              </div> 
+              <!-- End Column B --> 
+            </div> 
+            <!-- End Left Contents --> 
+            <!-- Start Right Contents --> 
+            <div class="right-content"> 
+              <h1> 
+                <span>Related to this video</span></h1> 
+              <!-- Start Column A --> 
+              <div class="columna"> 
+                <section> 
+                  <div id="container3" class="google-map-title"> 
+                    <h4>Filmed in:</h4> 
+                    <span id="mapinfo"></span> 
+                  </div> 
+ 
+                  <div id="container2" class="google-map"></div> 
+ 
+                </section> 
+                <section> 
+                  <h3><img src="images/logo_twitter.png" alt="Twitter" width="" height="" /></h3> 
+                  <a href="#" class="collapse"><span>Collapse</span></a> 
+                  <div id="twitter" class="content"><div class="overlay"></div><div class="inactive"></div></div> 
+                </section> 
+              </div> 
+              <!-- End Column A --> 
+              <!-- Start Column B --> 
+              <div class="columnb"> 
+                <section> 
+                  <h3><img src="images/logo_wiki.png" alt="Wikipedia" width="" height="" /></h3> 
+                  <a href="#" class="collapse"><span>Collapse</span></a> 
+                  <div class="content" id="wikidiv"><div class="overlay"></div><div class="inactive"></div></div> 
+				        </section> 
+                <section> 
+			            <h3><img src="images/logo_google_news.png" alt="Google News" width="" height="" /> 
 			            </h3> 
-			            <div id="googlenewsdiv"><div class="overlay"></div><div class="inactive"></div></div>
-		            </section>
-              </div>
-              <!-- End Column B -->
-	            <h1><span>This video's copyright information</span></h1>
-              <section>
-                <div id="container5"></div>
-              </section>
-            </div>
-            <!-- End Right Contents -->
-          </div>
-          <!-- End Contents -->
-          <footer>
-            <div class="footer_drumbeat">
-            <img src="images/footer_webmade.png" alt="footer_drumbeat" width="" height="" />
-            <p>Web Made Movies is Mozilla's<br /> Open video lab<br />
-            <a href="#">Learn More <span>&raquo;</span></a>
-            </p>
-            </div>
-            <div class="footer_drumbeat">
-            <img src="images/footer_drumbeat.png" alt="footer_drumbeat" width="" height="" /><p>Innovation on the open web, <br /> powered by everybody.</p>
-            </div>
-          <div class="copyright">Portions of this content are &copy;2010 by individual drumbeat.org contributors. Content available under a Creative Commons license.</div>
-        </footer>
-      </div>
-      <!-- End Wrapper Div -->
-    </div>
-    <!-- End First Container Div -->
-  </div>
-  <!-- End Second Container Div -->
-</body>
-</html>
+			            <div id="googlenewsdiv"><div class="overlay"></div><div class="inactive"></div></div> 
+		            </section> 
+              </div> 
+              <!-- End Column B --> 
+	            <h1><span>This video's copyright information</span></h1> 
+              <section> 
+                <div id="container5"></div> 
+              </section> 
+            </div> 
+            <!-- End Right Contents --> 
+          </div> 
+          <!-- End Contents --> 
+          <footer> 
+            <div class="footer_drumbeat"> 
+            <img src="images/footer_webmade.png" alt="footer_drumbeat" width="" height="" /> 
+            <p>Web Made Movies is Mozilla's<br /> Open video lab<br /> 
+            <a href="http://www.drumbeat.org/webmademovies">Learn More and find the source code for this demo<span>&raquo;</span></a> 
+            </p> 
+            </div> 
+            <div class="footer_drumbeat"> 
+            <img src="images/footer_drumbeat.png" alt="footer_drumbeat" width="" height="" /><p>Innovation on the open web, <br /> powered by everybody.</p> 
+            </div> 
+          <div class="copyright">Portions of this content are &copy;2010 by individual drumbeat.org contributors. Content available under a Creative Commons license.</div> 
+        </footer> 
+      </div> 
+      <!-- End Wrapper Div --> 
+    </div> 
+    <!-- End First Container Div --> 
+  </div> 
+  <!-- End Second Container Div --> 
+  
+  
+<!-- Start Popup -->  
+<div class="pop-overlay"> 
+</div> 
+ 
+<div class="popup"> 
+<span class="close_btn">x</span> 
+ 
+<div class="popup-content"> 
+<h1>Info about this page</h1> 
+<p>This demo was created by Scott Downe, Anna Sobiepanek, Daniel Hodgin and Nick Cammarata and Brett Gaylor as part of Web Made Movies.  To download the source code and find out how you can contribute, click on the Web Made Movies logo at the bottom of this page</p>.
+ 
+<p><b>Are you having trouble getting this demo to play?</b><br> 
+This video will only play on modern browsers such as Firefox 3.5 and up and Safari.  Unforutunately, as Internet Explorer does not currently support open video codecs, it won't work on that browser.
+</div> 
+</div> 
+ 
+<!-- End Popup -->   
+  
+</body> 
+</html> 
+              
