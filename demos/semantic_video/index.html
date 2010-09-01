@@ -114,29 +114,52 @@
               </div> 
             
               <video width="530px" height="299px" data-timeline-sources="xml/webMadeMovies.xml" controls> 
-              <source src="http://webmademovies.etherworks.ca/popcorndemo/wmmjuly6.ogv" type='video/ogg; codecs="theora, vorbis"'> 
-              <source src="http://webmademovies.etherworks.ca/popcorndemo/wmmjuly6.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'> 
+                <source src="http://webmademovies.etherworks.ca/popcorndemo/wmmjuly6.ogv" type='video/ogg; codecs="theora, vorbis"'> 
+                <source src="http://webmademovies.etherworks.ca/popcorndemo/wmmjuly6.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'> 
               </video> 
-        
-                <!-- Start Video Info --> 
-                <div class="video-info"> 
-                  <!-- Start Choose Language --> 
-                  <div class="choose-language"> 
-                    <h2>Choose your language</h2> 
-                    <select id="language"> 
-                      <option val="zh">Chinese</option> 
-                      <option val="en" selected="selected">English</option> 
-                      <option val="fr">French</option> 
-                      <option val="de">German</option> 
-                      <option val="it">Italian</option> 
-                      <option val="ja">Japanese</option> 
-                      <option val="ko">Korean</option> 
-                      <option val="fa">Persian</option> 
-                      <option val="pl">Polish</option> 
-                      <option val="pt">Portuguese</option> 
-                      <option val="es">Spanish</option> 
-                    </select> 
-                    <div id="credit"> 
+                <div id="overlaydiv" style="position:absolute;top:1px;left:1px"></div>
+                <script>
+                  overlayDiv = document.getElementById("overlaydiv");
+                  var createImage = function(src) {
+                    var image = document.createElement('img');
+                    image.setAttribute('src', src);
+                    image.setAttribute('style', "display:none");
+                    overlayDiv.appendChild(image);
+                    return image;
+                  };
+                  Popcorn.VideoManager.prototype.loaded = function() {
+                    for (var i in this.commandObjects) {
+                      if (this.commandObjects[i].name === 'flickr' || this.commandObjects[i].name === 'footnote' || this.commandObjects[i].name === 'location' || this.commandObjects[i].name === 'twitter' || this.commandObjects[i].name === 'wiki') {
+                        this.commandObjects[i].extension.image = createImage("images/overlay/" + this.commandObjects[i].name + ".png");
+                        this.commandObjects[i].extension.onIn = function() {
+                          this.image.setAttribute('style', "display:inline");
+                        };
+                        this.commandObjects[i].extension.onOut = function() {
+                          this.image.setAttribute('style', "display:none");
+                        };
+                      }
+                    }
+                  };
+                </script>
+                <!-- Start Video Info -->
+                <div class="video-info">
+                  <!-- Start Choose Language -->
+                  <div class="choose-language">
+                    <h2>Choose your language</h2>
+                    <select id="language">
+                      <option value="zh">Chinese</option>
+                      <option value="en" selected="selected">English</option>
+                      <option value="fr">French</option>
+                      <option value="de">German</option>
+                      <option value="it">Italian</option>
+                      <option value="ja">Japanese</option>
+                      <option value="ko">Korean</option>
+                      <option value="fa">Persian</option>
+                      <option value="pl">Polish</option>
+                      <option value="pt">Portuguese</option>
+                      <option value="es">Spanish</option>
+                    </select>
+                    <div id="credit">
                       with help from
                       <br /> 
                       <a href="http://google.com/translate">Google Translate</a> and <a href="http://jquery.com"> 
