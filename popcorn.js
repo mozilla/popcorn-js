@@ -1,24 +1,27 @@
 /*global google: false, $: false, TWTR: false*/ // This global comment is read by jslint
 
 (function() {
-  var p = this.Popcorn = {};
+  var Popcorn = this.Popcorn = {};
 
   // The video manager manages a single video element, and all it's commands.
-  p.VideoManager = function(videoElement) {
+  Popcorn.VideoManager = function(videoElement) {
     this.commandObjects  = {};
     this.manifestObjects = {};
     this.videoElement = videoElement;
     videoElement.videoManager = this;
-    p.addInstance(this);
+    Popcorn.addInstance(this);
     videoElement.setAttribute("ontimeupdate", "Popcorn.update(this, this.videoManager);"); 
   };
-  p.VideoManager.prototype.addCommand = function(command) {
+
+  Popcorn.VideoManager.prototype.addCommand = function(command) {
     this.commandObjects[command.id] = command;
   };
-  p.VideoManager.prototype.removeCommand = function(command) {
+
+  Popcorn.VideoManager.prototype.removeCommand = function(command) {
     delete this.commandObjects[command.id];
   };
-  p.VideoManager.prototype.addManifestObject = function(manifestAttributes) {
+
+  Popcorn.VideoManager.prototype.addManifestObject = function(manifestAttributes) {
     var manifest = {},
         manifestId = "";
     for (var i = 0, pl = manifestAttributes.length; i < pl; i++) {
@@ -34,15 +37,17 @@
     }
     this.manifestObjects[manifestId] = manifest;
   };
-  p.VideoManager.prototype.removeManifestObject = function(itemId) {
+
+  Popcorn.VideoManager.prototype.removeManifestObject = function(itemId) {
     delete this.manifestObjects[itemId];
   };
-  p.VideoManager.prototype.loaded = function() {};
+
+  Popcorn.VideoManager.prototype.loaded = function() {};
   
   var inactiveTarget = {};
   
   // Update is called on the video every time it's time changes.
-  p.update = function(vid, manager) {
+  Popcorn.update = function(vid, manager) {
     var t = vid.currentTime,
         commandObject = {}; // Loops through all commands in the manager, preloading data, and calling onIn() or onOut().
     for (var i in manager.commandObjects) {
@@ -89,20 +94,22 @@
   };
 
   // Store VideoManager instances
-  p.instances = [];
-  p.instanceIds = {};
-  p.addInstance = function(manager) {
+  Popcorn.instances = [];
+  Popcorn.instanceIds = {};
+  Popcorn.addInstance = function(manager) {
     if (typeof manager.videoElement.id === 'undefined' || !manager.videoElement.id.length) {
-      manager.videoElement.id = "__video" + p.instances.length;
+      manager.videoElement.id = "__video" + Popcorn.instances.length;
     }
-    p.instanceIds[manager.videoElement.id] = p.instances.length;
-    p.instances.push(manager);
+    Popcorn.instanceIds[manager.videoElement.id] = Popcorn.instances.length;
+    Popcorn.instances.push(manager);
   };
-  p.getInstanceById = function(name) {
-    return p.instances[p.instanceIds[name]];
+
+  Popcorn.getInstanceById = function(name) {
+    return Popcorn.instances[Popcorn.instanceIds[name]];
   };
-  p.getInstance = function(index) {
-    return p.instances[index];
+
+  Popcorn.getInstance = function(index) {
+    return Popcorn.instances[index];
   };
   
   // Simple function to convert 0:05 to 0.5 in seconds
@@ -124,7 +131,7 @@
   ////////////////////////////////////////////////////////////////////////////
 
   // Base class for all commands, SubtitleCommand, MapCommand, etc.
-  p.VideoCommand = function(name, params, text, videoManager) {
+  Popcorn.VideoCommand = function(name, params, text, videoManager) {
     this.name = name;
     this.params = {};
     this.text = text;
@@ -138,7 +145,7 @@
       onIn: function() {},
       onOut: function() {}
     };
-    this.id = name + p.VideoCommand.count++;
+    this.id = name + Popcorn.VideoCommand.count++;
     this.params["in"] = "0";
     this.params["out"] = this.videoManager.videoElement.duration;
 
@@ -168,29 +175,29 @@
       inactiveTarget[this.params.target] = 0;
     }
   };
-  p.VideoCommand.count = 0;
+  Popcorn.VideoCommand.count = 0;
 
   ////////////////////////////////////////////////////////////////////////////
   // Subtitle Command
   ////////////////////////////////////////////////////////////////////////////
 
   // Child commands. Uses onIn() and onOut() to do time based operations
-  p.SubtitleCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.SubtitleCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     var style = "";
 
     // Creates a div for all subtitles to use
-    if (!p.SubtitleCommand.subDiv) {
-      p.SubtitleCommand.subDiv = document.createElement('div');
+    if (!Popcorn.SubtitleCommand.subDiv) {
+      Popcorn.SubtitleCommand.subDiv = document.createElement('div');
       
       style = 'position:absolute;top:240px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 2px 2px 6px;font-size:18px;width:100%;';
-      p.SubtitleCommand.subDiv.setAttribute('style', style);  
-      this.videoManager.videoElement.parentNode.appendChild(p.SubtitleCommand.subDiv);
+      Popcorn.SubtitleCommand.subDiv.setAttribute('style', style);  
+      this.videoManager.videoElement.parentNode.appendChild(Popcorn.SubtitleCommand.subDiv);
     }
     if (this.params.target) {
       this.target = document.getElementById(this.params.target);
     } else {
-      this.target = p.SubtitleCommand.subDiv;
+      this.target = Popcorn.SubtitleCommand.subDiv;
     }
 
     this.onIn = function() {
@@ -217,20 +224,20 @@
   // Lower third text Command
   ////////////////////////////////////////////////////////////////////////////
 
-  p.LowerThirdCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.LowerThirdCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     
     // Creates a div for all lower thirds
-    if (!p.LowerThirdCommand.ltDiv) {
-      p.LowerThirdCommand.ltDiv = document.createElement('div');
-      p.LowerThirdCommand.ltDiv.setAttribute('style', 
+    if (!Popcorn.LowerThirdCommand.ltDiv) {
+      Popcorn.LowerThirdCommand.ltDiv = document.createElement('div');
+      Popcorn.LowerThirdCommand.ltDiv.setAttribute('style', 
         'padding-left:40px;padding-right:40px;padding-top:40px;position:absolute;top:150px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 1px 1px 3px;font-size:22px;width:450px;');
-      this.videoManager.videoElement.parentNode.appendChild(p.LowerThirdCommand.ltDiv);
+      this.videoManager.videoElement.parentNode.appendChild(Popcorn.LowerThirdCommand.ltDiv);
     }
     if (this.params.target) {
       this.target = document.getElementById(this.params.target);
     } else {
-      this.target = p.LowerThirdCommand.ltDiv;
+      this.target = Popcorn.LowerThirdCommand.ltDiv;
     }
     
     this.onIn = function() {
@@ -270,8 +277,8 @@
   // GoogleNews Command
   ////////////////////////////////////////////////////////////////////////////
 
-  p.GoogleNewsCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.GoogleNewsCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     this.target = document.createElement('div');
     this.target.setAttribute('style', 'display:none;border:0px;');
     document.getElementById(this.params.target).appendChild(this.target);
@@ -299,8 +306,8 @@
   ////////////////////////////////////////////////////////////////////////////
   // Credits Command
   ////////////////////////////////////////////////////////////////////////////
-  p.CreditsCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.CreditsCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     $("#credits")
         .width(this.videoManager.videoElement.clientWidth)
         .height(this.videoManager.videoElement.clientHeight);
@@ -310,11 +317,11 @@
     this.onIn = function() {
         $("#credits").show();
         $("#choices").animate({ right:'+=200px' }, 1000);
-        p.CreditsCommand.add( [
+        Popcorn.CreditsCommand.add( [
             { 
                 text: "Play Again",
                 click:function() {
-                    CreditsCommand.killCol(0);
+                    Popcorn.CreditsCommand.killCol(0);
                     $('video')[0].currentTime=0;
                 }
             },
@@ -484,8 +491,8 @@
         $("#credits").hide();
     };
   };
-  p.CreditsCommand.colIndex = 0;
-  p.CreditsCommand.killCol = function(index, callback) {
+  Popcorn.CreditsCommand.colIndex = 0;
+  Popcorn.CreditsCommand.killCol = function(index, callback) {
     $(".column").each(function() {
       if ($(this).attr("colindex")>index) {
         $(this).addClass("removing").animate( { left: -$(this).outerWidth() + "px" }, 1200, function() {
@@ -498,11 +505,11 @@
     }
   };
 
-  p.CreditsCommand.add =  function(items) {
-        p.CreditsCommand.colIndex++;
+  Popcorn.CreditsCommand.add =  function(items) {
+        Popcorn.CreditsCommand.colIndex++;
         var ul = $("<ul></ul>")
             .addClass('column')
-            .attr('colindex',parseInt(p.CreditsCommand.colIndex, 10));
+            .attr('colindex',parseInt(Popcorn.CreditsCommand.colIndex, 10));
         $.each(items, function(i, val) {
             var li = $(document.createElement('li'))
                 .append($(document.createElement('a'))
@@ -516,9 +523,9 @@
                       return true;
                     }
                     var colIndex = $(this).parent().attr('colindex');
-                    if (p.CreditsCommand.colIndex>colIndex) { 
-                        p.CreditsCommand.killCol(colIndex);
-                        p.CreditsCommand.colIndex = colIndex;
+                    if (Popcorn.CreditsCommand.colIndex>colIndex) { 
+                        Popcorn.CreditsCommand.killCol(colIndex);
+                        Popcorn.CreditsCommand.colIndex = colIndex;
                     }
                     var hasClass = $(this).hasClass('selected');
                     if (!hasClass) {
@@ -526,7 +533,7 @@
                           val.click();
                         }
                         if (val.next) {
-                          p.CreditsCommand.add(val.next);
+                          Popcorn.CreditsCommand.add(val.next);
                         }
                     }  
                     $(this)
@@ -544,7 +551,7 @@
         });
         ul
             .appendTo("#credit_inner")
-            .css("z-index",1000 - p.CreditsCommand.colIndex)
+            .css("z-index",1000 - Popcorn.CreditsCommand.colIndex)
             .css("left",-ul.outerWidth())
             .animate({ 
                 left: width + "px"
@@ -567,20 +574,20 @@
       return r.toString();
     };
   };
-  p.TagCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.TagCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     
-    if (!p.TagCommand[this.params.target]) {
-      p.TagCommand[this.params.target] = new people();
+    if (!Popcorn.TagCommand[this.params.target]) {
+      Popcorn.TagCommand[this.params.target] = new people();
     }
     
     this.onIn = function() {
-      p.TagCommand[this.params.target].contains[this.text] = this.text;
-      document.getElementById(this.params.target).innerHTML  = p.TagCommand[this.params.target].toString();
+      Popcorn.TagCommand[this.params.target].contains[this.text] = this.text;
+      document.getElementById(this.params.target).innerHTML  = Popcorn.TagCommand[this.params.target].toString();
     };
     this.onOut = function() {
-      delete p.TagCommand[this.params.target].contains[this.text];
-      document.getElementById(this.params.target).innerHTML  = p.TagCommand[this.params.target].toString();
+      delete Popcorn.TagCommand[this.params.target].contains[this.text];
+      document.getElementById(this.params.target).innerHTML  = Popcorn.TagCommand[this.params.target].toString();
     };
   };
 
@@ -588,20 +595,20 @@
   // Map Command
   ////////////////////////////////////////////////////////////////////////////
 
-  p.MapCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.MapCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     this.params.zoom = parseInt(this.params.zoom, 10);
     // load the map
     // http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions  <-- Map API
     this.location = new google.maps.LatLng(this.params.lat, this.params.long);
-    if (!p.MapCommand[this.params.target]) {
-      p.MapCommand[this.params.target] = new google.maps.Map(document.getElementById(this.params.target), {mapTypeId: google.maps.MapTypeId.HYBRID});
-      p.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
-      p.MapCommand[this.params.target].setZoom(0);
+    if (!Popcorn.MapCommand[this.params.target]) {
+      Popcorn.MapCommand[this.params.target] = new google.maps.Map(document.getElementById(this.params.target), {mapTypeId: google.maps.MapTypeId.HYBRID});
+      Popcorn.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
+      Popcorn.MapCommand[this.params.target].setZoom(0);
     }
     this.onIn = function() {
-      p.MapCommand[this.params.target].setCenter(this.location);
-      p.MapCommand[this.params.target].setZoom(this.params.zoom);
+      Popcorn.MapCommand[this.params.target].setCenter(this.location);
+      Popcorn.MapCommand[this.params.target].setZoom(this.params.zoom);
       if (this.params.src && this.params.mapinfo) {
         var link = document.createElement("a");
         link.setAttribute("href", this.params.src);
@@ -611,8 +618,8 @@
       }
     };
     this.onOut = function() {
-      p.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
-      p.MapCommand[this.params.target].setZoom(0);
+      Popcorn.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
+      Popcorn.MapCommand[this.params.target].setZoom(0);
       if (this.params.mapinfo) {
         document.getElementById(this.params.mapinfo).innerHTML = "";
       }
@@ -623,8 +630,8 @@
   // Twitter Command
   ////////////////////////////////////////////////////////////////////////////
 
-  p.TwitterCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.TwitterCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     // Setup a default, hidden div to hold the feed
     this.target = document.createElement('div');
     this.target.setAttribute('id', this.id);
@@ -679,8 +686,8 @@
   // Flickr Command
   ////////////////////////////////////////////////////////////////////////////
   
-  p.FlickrCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.FlickrCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
     target.setAttribute('id', this.id);
@@ -727,8 +734,8 @@
   // Wiki Command
   ////////////////////////////////////////////////////////////////////////////
   
-  p.WikiCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.WikiCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     
     var src = this.params.src;
     var length = this.params.numberOfWords;
@@ -746,7 +753,7 @@
         link.setAttribute('href', src);
         link.setAttribute('target', '_blank');
         var p = document.createElement('p');
-        p.innerHTML = data.parse.displaytitle;
+        Popcorn.innerHTML = data.parse.displaytitle;
         link.appendChild(p);
         // get the first 140 characters of the wiki content
         var desc = document.createElement('p');
@@ -770,8 +777,8 @@
   // Footnote Command
   ////////////////////////////////////////////////////////////////////////////
 
-  p.FootnoteCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.FootnoteCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
       //if the user specifies a target div for this in the xml use it
       //otherwise make a new div 
@@ -795,8 +802,8 @@
   // Attribution Command
   ////////////////////////////////////////////////////////////////////////////
 
-  p.AttributionCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.AttributionCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     var attribution = "";
     var image = "";
 
@@ -866,8 +873,8 @@
   // Warp Command
   ////////////////////////////////////////////////////////////////////////////
 
-  p.SeekCommand = function(name, params, text, videoManager) {
-    p.VideoCommand.call(this, name, params, text, videoManager);
+  Popcorn.SeekCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     this.params["in"] = toSeconds(this.params.seekfrom);
     this.params["out"] = toSeconds(this.params.seekfrom) + 1;
     this.params.seekto = toSeconds(this.params.seekto);
@@ -883,62 +890,62 @@
   var commands = {
     subtitle: {
       create: function(name, params, text, videoManager) {
-        return new p.SubtitleCommand(name, params, text, videoManager);
+        return new Popcorn.SubtitleCommand(name, params, text, videoManager);
       }
     },
     credits: {
       create: function(name, params, text, videoManager) {
-        return new p.CreditsCommand(name, params, text, videoManager);
+        return new Popcorn.CreditsCommand(name, params, text, videoManager);
       }
     },
     flickr: {
       create: function(name, params, text, videoManager) {
-        return new p.FlickrCommand(name, params, text, videoManager);
+        return new Popcorn.FlickrCommand(name, params, text, videoManager);
       }
     },
     videotag: {
       create: function(name, params, text, videoManager) {
-        return new p.TagCommand(name, params, text, videoManager);
+        return new Popcorn.TagCommand(name, params, text, videoManager);
       }
     },
     location: {
       create: function(name, params, text, videoManager) {
-        return new p.MapCommand(name, params, text, videoManager);
+        return new Popcorn.MapCommand(name, params, text, videoManager);
       }
     },
     footnote: {
       create: function(name, params, text, videoManager) {
-        return new p.FootnoteCommand(name, params, text, videoManager);
+        return new Popcorn.FootnoteCommand(name, params, text, videoManager);
       }
     },
     twitter: {
       create: function(name, params, text, videoManager) {
-        return new p.TwitterCommand(name, params, text, videoManager);
+        return new Popcorn.TwitterCommand(name, params, text, videoManager);
       }
     },
     attribution: {
       create: function(name, params, text, videoManager) {
-        return new p.AttributionCommand(name, params, text, videoManager);
+        return new Popcorn.AttributionCommand(name, params, text, videoManager);
       }
     },
     googlenews: {
       create: function(name, params, text, videoManager) {
-        return new p.GoogleNewsCommand(name, params, text, videoManager);
+        return new Popcorn.GoogleNewsCommand(name, params, text, videoManager);
       }
     },
     wiki: {
       create: function(name, params, text, videoManager) {
-        return new p.WikiCommand(name, params, text, videoManager);
+        return new Popcorn.WikiCommand(name, params, text, videoManager);
       }
     },
     lowerthird: {
       create: function(name, params, text, videoManager) {
-        return new p.LowerThirdCommand(name, params, text, videoManager);
+        return new Popcorn.LowerThirdCommand(name, params, text, videoManager);
       }
     },
     seek: {
       create: function(name, params, text, videoManager) {
-        return new p.SeekCommand(name, params, text, videoManager);
+        return new Popcorn.SeekCommand(name, params, text, videoManager);
       }
     }
   };
@@ -1008,7 +1015,7 @@
             xml.push(loadXMLDoc(filenames[j]));
           }
         }
-        var manager = new p.VideoManager(video[i]);
+        var manager = new Popcorn.VideoManager(video[i]);
         video[i].addEventListener('loadedmetadata', (function() {
           return function() {
             parse(xml, manager);
