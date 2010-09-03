@@ -88,30 +88,30 @@
     </footnotes>
     <resources>
       <footnote in="00:00:00" out="00:15:00" target="footnotediv">This video made exclusively for drumbeat.org </footnote>
-      <videotag in="00:00:05:02" out="00:00:10:07">Steve Song</videotag>
+      <videotag target="inthisvideo" in="00:00:05:02" out="00:00:10:07">Steve Song</videotag>
       <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>
-      <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120" overlay="images/overlay/twitter.png" />
-      <wiki in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv" overlay="images/overlay/wiki.png"/>
-      <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px" overlay="images/overlay/flickr.png"/>
+      <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
+      <wiki in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv"/>
+      <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
       <googlenews in="00:00:05:02" out="00:00:10:07" target="googlenewsdiv" topic="Village Telco"/>
 
       <twitter in="00:00:10:07" out="00:00:18:04" title="Oil Spill" source="#oilspill" target="twitter" width="238" height="120"/>
       <googlenews in="00:00:10:07" out="00:00:18:04" target="googlenewsdiv" topic="Oil Spill"/>
       <attribution in="00:00:10:07" out="00:00:18:04" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>
 
-      <videotag in="00:00:18:04" out="00:00:25:02">Keyboard Cat</videotag>
+      <videotag target="inthisvideo" in="00:00:18:04" out="00:00:25:02">Keyboard Cat</videotag>
       <twitter in="00:00:18:04" out="00:00:25:02" title="Keyboard Cat" source="#keyboardcat" target="twitter" width="238" height="120"/>
       <attribution in="00:00:18:04" out="00:00:25:02" target="container5">KeyBoard Cat, Charlie Schmidt</attribution>
       <googlenews in="00:00:18:04" out="00:00:25:02" target="googlenewsdiv" topic="Keyboard Cat"/>
 
-      <videotag in="00:00:28:09" out="00:00:29:07">Jeffrey Warren</videotag>
+      <videotag target="inthisvideo" in="00:00:28:09" out="00:00:29:07">Jeffrey Warren</videotag>
       <attribution in="00:00:28:09" out="00:00:29:07" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>
-      <videotag in="00:00:29:08" out="00:00:31:00">Village Telco Guy</videotag>
+      <videotag target="inthisvideo" in="00:00:29:08" out="00:00:31:00">Village Telco Guy</videotag>
 
       <wiki in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberOfWords="200" target="wikidiv"/>
       <googlenews in="00:00:32:00" out="00:00:41:00" target="googlenewsdiv" topic="the internet"/>
 
-      <videotag in="00:00:41:00" out="00:01:07:09">Jeffrey Warren</videotag>
+      <videotag target="inthisvideo" in="00:00:41:00" out="00:01:07:09">Jeffrey Warren</videotag>
       <flickr in="00:00:41:00" out="00:01:07:09" target="personalflickr" userid="35034346917@N01" numberofimages="8" padding="4px"/>
       <twitter in="00:00:41:00" out="00:01:07:09" title="Oil Spill" source="#oilspill" target="twitter" width="238" height="120"/>
       <googlenews in="00:00:41:00" out="00:01:07:09" target="googlenewsdiv" topic="Oil Spill"/>
@@ -122,15 +122,15 @@
       <flickr in="00:01:07:10" out="00:01:25:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
       <location id="CapeTown" resourceid="capetownwiki" in="00:01:07:10" out="00:01:32:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
       <wiki in="00:01:07:10" out="00:01:32:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv"/>
-      <videotag in="00:01:25:08" out="00:01:32:07">Michael Adeyeye</videotag>
+      <videotag target="inthisvideo" in="00:01:25:08" out="00:01:32:07">Michael Adeyeye</videotag>
 
-      <videotag in="00:01:32:08" out="00:01:38:02">Charlie Schmidt</videotag>
+      <videotag target="inthisvideo" in="00:01:32:08" out="00:01:38:02">Charlie Schmidt</videotag>
       <twitter in="00:01:32:08" out="00:01:57:11" title="Charlie Schmidt" source="from:chuckieart" target="personaltwitter" width="238" height="120"/>
       <location id="MITMediaLab" resourceid="mitmedialabhome" in="00:01:32:08" out="00:01:57:11" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>
-      <videotag in="00:01:38:02" out="00:01:41:10">Keyboard Cat</videotag>
-      <videotag in="00:01:41:11" out="00:01:57:11">Charlie Schmidt</videotag>
+      <videotag target="inthisvideo" in="00:01:38:02" out="00:01:41:10">Keyboard Cat</videotag>
+      <videotag target="inthisvideo" in="00:01:41:11" out="00:01:57:11">Charlie Schmidt</videotag>
 
-      <videotag in="00:02:09:00" out="00:03:07:05">Jonathan Zittrain</videotag>
+      <videotag target="inthisvideo" in="00:02:09:00" out="00:03:07:05">Jonathan Zittrain</videotag>
       <twitter in="00:02:09:00" out="00:03:07:05" title="Jonathan Zittrain" source="from:zittrain" target="personaltwitter" width="238" height="120"/>
       <location resourceid="harvardlawhome" in="00:02:09:00" out="00:03:07:05" lat="42.4222" long="-88.6137" target="container2" zoom="12"/>
       <wiki in="00:02:09:00" out="00:02:20:00" resourceid="zittrain" numberOfWords="200" target="wikidiv"/>
@@ -161,23 +161,23 @@
 
       <wiki in="00:03:36:00" out="00:03:43:00" resourceid="openstandards" numberOfWords="200" target="wikidiv"/>
 
-      <videotag in="00:03:09:00" out="00:03:16:00">NCSA guy</videotag>
-      <videotag in="00:03:16:01" out="00:03:18:05">Computer Chronicles guy #1</videotag>
-      <videotag in="00:03:16:02" out="00:03:21:00">Computer Chronicles guy #2</videotag>
-      <videotag in="00:03:21:01" out="00:03:28:06">Computer Chronicles guy #3</videotag>
+      <videotag target="inthisvideo" in="00:03:09:00" out="00:03:16:00">NCSA guy</videotag>
+      <videotag target="inthisvideo" in="00:03:16:01" out="00:03:18:05">Computer Chronicles guy #1</videotag>
+      <videotag target="inthisvideo" in="00:03:16:02" out="00:03:21:00">Computer Chronicles guy #2</videotag>
+      <videotag target="inthisvideo" in="00:03:21:01" out="00:03:28:06">Computer Chronicles guy #3</videotag>
 
-      <videotag in="00:03:43:00" out="00:03:56:00">Jonathan Zittrain</videotag>
+      <videotag target="inthisvideo" in="00:03:43:00" out="00:03:56:00">Jonathan Zittrain</videotag>
       <twitter in="00:03:43:00" out="00:03:56:00" title="Jonathan Zittrain" source="from:zittrain" target="personaltwitter" width="238" height="120"/>
       <footnote in="00:03:43:00" out="00:03:57:00" target="footnotediv">Read Zittrain's book 'The Future of the Internet — And How to Stop It'</footnote>
 
-      <videotag in="00:03:59:00" out="00:04:03:05">Mona Kasra</videotag>
-      <videotag in="00:04:03:06" out="00:04:07:00">Noah Workman</videotag>
+      <videotag target="inthisvideo" in="00:03:59:00" out="00:04:03:05">Mona Kasra</videotag>
+      <videotag target="inthisvideo" in="00:04:03:06" out="00:04:07:00">Noah Workman</videotag>
       <twitter in="00:04:03:06" out="00:04:07:00" title="Noah Workman" source="from:noahworkman" target="personaltwitter" width="238" height="120"/>
-      <videotag in="00:04:03:06" out="00:04:13:01">Wilken Sanches</videotag>
+      <videotag target="inthisvideo" in="00:04:03:06" out="00:04:13:01">Wilken Sanches</videotag>
       <attribution in="00:04:10:00" out="00:04:13:00" target="container5" resourceid="attrib"></attribution>
-      <videotag in="00:04:13:02" out="00:04:19:05">Keechang Kim</videotag>
+      <videotag target="inthisvideo" in="00:04:13:02" out="00:04:19:05">Keechang Kim</videotag>
       <twitter in="00:04:19:06" out="00:04:24:01" title="Celine Celines" source="from:celinecelines" target="personaltwitter" width="238" height="120"/>
-      <videotag in="00:04:19:06" out="00:04:24:01">Celine Celines</videotag>
+      <videotag target="inthisvideo" in="00:04:19:06" out="00:04:24:01">Celine Celines</videotag>
       <flickr in="00:04:19:06" out="00:04:24:01" target="personalflickr" userid="13072070@N00" numberofimages="8" padding="4px"/>
     </resources>
 
@@ -193,7 +193,7 @@
       <location resourceid="montrealwiki" in="00:04:19:06" out="00:04:24:01" lat="45.5089" long="-73.5542 " target="container2" zoom="8"/>
     </map>
 
-    <subtitles>
+    <subtitles languagesrc="language" accessibilitysrc="accessibility">
       <subtitles language="en" align="center">
         <subtitle in="00:00:00:03" out="00:00:01:06">All right let's take a look and show me some</subtitle>
         <subtitle in="00:00:01:06" out="00:00:03:00">of the neat things you can do on the Internet</subtitle>
