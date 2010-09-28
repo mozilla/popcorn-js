@@ -85,7 +85,7 @@
           <!-- Start Primary Links -->
           <nav id="demo-info">
             <ul>
-              <li><a href="#" onclick="javascript:void();" class="clickhere green"><img src="images/video_icon.png" alt="" width="18" height="14" />watch a video and learn more about this demo</a></li>
+              <li><a href="#" onClick="javascript:void();" class="clickhere green"><img src="images/video_icon.png" alt="" width="18" height="14" />watch a video and learn more about this demo</a></li>
             </ul>
           </nav>
           <!-- End Primary Links -->
@@ -118,7 +118,7 @@
                 };
                 Popcorn.VideoManager.prototype.loaded = function() {
                   for (var i in this.commandObjects) {
-                    if (this.commandObjects[i].name === 'flickr' || this.commandObjects[i].name === 'footnote' || this.commandObjects[i].name === 'location' || this.commandObjects[i].name === 'twitter' || this.commandObjects[i].name === 'wiki') {
+                    if (this.commandObjects[i].name === 'flickr' || this.commandObjects[i].name === 'footnote' || this.commandObjects[i].name === 'location' || this.commandObjects[i].name === 'twitter' || this.commandObjects[i].name === 'wiki' || this.commandObjects[i].name === 'lastfm') {
                       this.commandObjects[i].extension.image = createImage("images/overlay/" + this.commandObjects[i].name + ".png");
                       this.commandObjects[i].extension.onIn = function() {
                         this.image.setAttribute('style', "display:inline");
@@ -226,6 +226,11 @@
                 <h3><img src="images/logo_google_news.png" alt="Google News" width="74" height="33" />
                 </h3>
                 <div id="googlenewsdiv"><div class="overlay"></div><div class="inactive"></div></div>
+              </section>
+			  <section>
+                <h3><img src="images/logo_lastfm.png" alt="Lastfm" width="80" height="24" /></h3>
+                <a href="#" class="collapse"><span>Collapse</span></a>
+                <div class="content" id="lastfmdiv"><div class="overlay"></div><div class="inactive"></div></div>
               </section>
             </div>
             <!-- End Column B -->
