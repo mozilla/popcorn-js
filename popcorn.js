@@ -638,11 +638,11 @@
     document.getElementById(this.params.target).appendChild(target);
     // Div is hidden by default
     target.setAttribute('style', 'display:none');
+	
     // This uses jquery
-	$.getJSON("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ this.params.resourceid +"&api_key=30ac38340e8be75f9268727cb4526b3d&format=json&callback=?",
+	$.getJSON("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ this.params.artist +"&api_key=30ac38340e8be75f9268727cb4526b3d&format=json&callback=?",
 	  function(data){	
 	    htmlString = '';
-	    //console.log(data.artist.image[2]['#text']);
 		htmlString += '<h3>'+data.artist.name+'</h3>';
 	    htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
 		htmlString += '<p>'+ data.artist.bio.summary +'</p>';
@@ -985,6 +985,16 @@
 	lastfm: {
       create: function(name, params, text, videoManager) {
         return new Popcorn.LastfmCommand(name, params, text, videoManager);
+      }
+    },
+	facebookuser: {
+      create: function(name, params, text, videoManager) {
+        return new Popcorn.FacebookuserCommand(name, params, text, videoManager);
+      }
+    },
+	blogmarks: {
+      create: function(name, params, text, videoManager) {
+        return new Popcorn.BlogmarksCommand(name, params, text, videoManager);
       }
     },
     lowerthird: {

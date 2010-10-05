@@ -179,10 +179,11 @@
       <twitter in="00:04:19:06" out="00:04:24:01" title="Celine Celines" source="from:celinecelines" target="personaltwitter" width="238" height="120"/>
       <videotag target="inthisvideo" in="00:04:19:06" out="00:04:24:01">Celine Celines</videotag>
       <flickr in="00:04:19:06" out="00:04:24:01" target="personalflickr" userid="13072070@N00" numberofimages="8" padding="4px"/>
-	  <lastfm in="00:00:00" out="00:05:00" resourceid="the rolling stones" target="lastfmdiv"/>
-	  <lastfm in="00:05:00" out="00:10:00" resourceid="arctic monkeys" target="lastfmdiv"/>
-	  <lastfm in="00:10:00" out="00:15:00" resourceid="johnny cash" target="lastfmdiv"/>
-	  <lastfm in="00:15:00" out="01:00:00" resourceid="the libertines" target="lastfmdiv"/>
+	  <lastfm in="00:00:00" out="00:05:00" artist="the rolling stones" target="lastfmdiv"/>
+	  <lastfm in="00:05:00" out="00:10:00" artist="arctic monkeys" target="lastfmdiv"/>
+	  <lastfm in="00:10:00" out="00:15:00" artist="johnny cash" target="lastfmdiv"/>
+	  <lastfm in="00:15:00" out="01:00:00" artist="the libertines" target="lastfmdiv"/>
+	  
     </resources>
 
     <map>
