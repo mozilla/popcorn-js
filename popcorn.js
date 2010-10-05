@@ -739,7 +739,7 @@
     //L10n
     var src = this.params.src;
     var lang = this.params.lang;
-    if (lang === undefined) {lang="en";}   
+    if (typeof lang === "undefined") { lang="en"; }   
     //end L10n
     var length = this.params.numberOfWords;
     // Setup a default, hidden div to hold the images
