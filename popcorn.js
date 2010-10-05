@@ -149,13 +149,18 @@
     this.params["in"] = "0";
     this.params["out"] = this.videoManager.videoElement.duration;
 
-    // Adds all attributes from the xml tag into this.params
+    // Adds all attributes from the xml/json tag into this.params
     for (var i = 0, pl = params.length; i < pl; i++) {
       for (var j = 0, nl = params[i].length; j < nl; j++) {
         var key = params[i].item(j).nodeName,
             data = params[i].item(j).nodeValue;
+        if (key === "start_time") {
+          key = "in";
+        } else if (key === "end_time") {
+          key = "out";
+        }
         if (key === "in" || key === "out") {
-          this.params[key] = toSeconds(data);
+          this.params[key] = (typeof data === "number" ? data : toSeconds(data));
         } else {
           this.params[key] = data;
         }
@@ -597,6 +602,17 @@
 
   Popcorn.MapCommand = function(name, params, text, videoManager) {
     Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+
+    // All data from Universal Subtitles comes from the text attribute
+    // so the data from that needs to enter the appropriate fields
+    if (typeof this.text === "string" && this.text !== "") {
+      // Universal Subtitles has no target attribute, so we create a default
+      this.params.target = "mapdiv";
+      var split = this.text.split(", ");
+      this.params.lat = split[0];
+      this.params.long = split[1];
+      this.params.zoom = split[2];
+    }
     this.params.zoom = parseInt(this.params.zoom, 10);
     // load the map
     // http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions  <-- Map API
@@ -632,6 +648,15 @@
 
   Popcorn.TwitterCommand = function(name, params, text, videoManager) {
     Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+
+    // All data from Universal Subtitles comes from the text attribute
+    // so the data from that needs to enter the appropriate fields
+    if (typeof text === "string" && text !== "") {
+      this.params.source = text;
+      // Universal Subtitles has no target attribute, so we create a default
+      this.params.target = "twitterdiv";
+    }
+
     // Setup a default, hidden div to hold the feed
     this.target = document.createElement('div');
     this.target.setAttribute('id', this.id);
@@ -736,9 +761,17 @@
   
   Popcorn.WikiCommand = function(name, params, text, videoManager) {
     Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+
+    // All data from Universal Subtitles comes from the text attribute
+    // so the data from that needs to enter the appropriate fields
+    if (typeof text === "string" && text !== "") {
+      this.params.src = text;
+      // Universal Subtitles has no target attribute, so we create a default
+      this.params.target = "wikidiv";
+    }
     
     var src = this.params.src;
-    var length = this.params.numberOfWords;
+    var length = this.params.numberOfWords || 200;
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
     target.setAttribute('id', this.id);
@@ -780,7 +813,7 @@
   Popcorn.FootnoteCommand = function(name, params, text, videoManager) {
     Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
-      //if the user specifies a target div for this in the xml use it
+      //if the user specifies a target div for this in the xml/json use it
       //otherwise make a new div 
       if(this.params.target) {
         document.getElementById(this.params.target).innerHTML  = this.text;
@@ -951,11 +984,11 @@
   };
 
   ////////////////////////////////////////////////////////////////////////////
-  // XML Parser
+  // XML Converter
   ////////////////////////////////////////////////////////////////////////////
 
-  // Parses xml into command objects and adds them to the video manager
-  var parse = function(xmlDoc, videoManager) {
+  // Converts xml into command objects and adds them to the video manager
+  var convertXML = function(xmlDoc, videoManager) {
 
     var parseNode = function(node, attributes, manifest) {
       var allAttributes = attributes.slice(0);
@@ -976,27 +1009,62 @@
       }
     };
 
-    for (var j = 0, dl = xmlDoc.length; j < dl; j++) {
-      var x = xmlDoc[j].documentElement.childNodes;
-      for (var i = 0, xl = x.length; i < xl; i++) {
-        if (x[i].nodeType === 1) {
-          if (x[i].nodeName === "manifest") {
-            parseNode(x[i], [], true);
-          } else {
-            parseNode(x[i], [], false);
-          }
+    var x = xmlDoc.documentElement.childNodes;
+    for (var i = 0, xl = x.length; i < xl; i++) {
+      if (x[i].nodeType === 1) {
+        if (x[i].nodeName === "manifest") {
+          parseNode(x[i], [], true);
+        } else {
+          parseNode(x[i], [], false);
         }
       }
     }
   };
 
+  ////////////////////////////////////////////////////////////////////////////
+  // JSON Converter
+  ////////////////////////////////////////////////////////////////////////////
+
+  // Converts json into command objects and adds them to the video manager
+  var convertJSON = function(jsonData, videoManager, type) {
+
+    // loops through subtitles in the json
+    for (var j = 0, jl = jsonData.length; j < jl; j++) {
+      var allAttributes = [],
+          attributes = [],
+          l = 0,
+          text = "";
+      // loops through attributes inside command, and packages them similar to how the xml data looks
+      for (var attribute in jsonData[j]) {
+        if (jsonData[j].hasOwnProperty(attribute)) {
+          if (attribute === "text") {
+            text = jsonData[j][attribute];
+          } else {
+            attributes.push({"nodeName":attribute,"nodeValue":jsonData[j][attribute]});
+            l++;
+          }
+        }
+      }
+      allAttributes = [];
+      // this object mimics the object used for xml
+      allAttributes.push({
+        "att": attributes.slice(0),
+        "item": function(i) {
+          return this.att[i];
+        },
+        "length": l
+      });
+      videoManager.addCommand(commands[type].create(type, allAttributes, text, videoManager));
+    }
+  };
+  
   // Loads an external xml file, and returns the xml object
-  var loadXMLDoc = function(name) {
+  var getTimelineData = function(name) {
     var xhttp = new XMLHttpRequest();
     if (xhttp) {
       xhttp.open("GET", name, false);
       xhttp.send();
-      return xhttp.responseXML;
+      return xhttp;
     } else {
       return false;
     }
@@ -1006,25 +1074,44 @@
   var init = function() {
     var video = document.getElementsByTagName('video');
     for (var i = 0, l = video.length; i < l; i++) {
-      var videoSources = video[i].getAttribute('data-timeline-sources');
+      var ind = i;
+      var videoSources = video[ind].getAttribute('data-timeline-sources');
       if (videoSources) {
-        var filenames = videoSources.split(' '),
-            xml = [];
-        for (var j=0, fl=filenames.length; j<fl; j++) {
-          if (filenames[j]) {
-            xml.push(loadXMLDoc(filenames[j]));
-          }
+        var filename = videoSources,
+            dataXML = "",
+            dataJSON = "";
+        var ext = (filename.toLowerCase()).match(/\.xml$/);
+        if (ext !== null) {
+          convertData(video[ind], getTimelineData(filename).responseXML, convertXML);
+        } else {
+          var manager = new Popcorn.VideoManager(video[ind]);
+          
+          $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&callback=?", function(data) {
+            convertData(video[ind], manager, data, convertJSON, "subtitle");
+            $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-geo&callback=?", function(data) {
+              convertData(video[ind], manager, data, convertJSON, "location");
+              $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-tw&callback=?", function(data) {
+                convertData(video[ind], manager, data, convertJSON, "twitter");
+                $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-wiki&callback=?", function(data) {
+                  convertData(video[ind], manager, data, convertJSON, "wiki");
+                });
+              });
+            });
+          });          
         }
-        var manager = new Popcorn.VideoManager(video[i]);
-        video[i].addEventListener('loadedmetadata', (function() {
-          return function() {
-            parse(xml, manager);
-            manager.loaded();
-          };
-        }()), false);
       }
     }
   };
+  
+  var convertData = function(video, manager, data, convert, type) {
+    video.addEventListener('loadedmetadata', (function(data, convert, type) {
+      return function() {
+        convert(data, manager, type);
+        manager.loaded();
+      };
+    }(data, convert, type)), false);
+  };
+  
   document.addEventListener('DOMContentLoaded', init, false);
   
 }());
