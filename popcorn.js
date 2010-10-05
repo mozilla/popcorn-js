@@ -736,8 +736,11 @@
   
   Popcorn.WikiCommand = function(name, params, text, videoManager) {
     Popcorn.VideoCommand.call(this, name, params, text, videoManager);
-    
+    //L10n
     var src = this.params.src;
+    var lang = this.params.lang;
+    if (lang === undefined) {lang="en";}   
+    //end L10n
     var length = this.params.numberOfWords;
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
@@ -746,7 +749,7 @@
     // Div is hidden by default
     target.setAttribute('style', 'display:none');
     // This uses jquery
-    $.getJSON("http://en.wikipedia.org/w/api.php?action=parse&props=text&page=" + ( this.params.title || src.slice(src.lastIndexOf("/")+1) ) + "&format=json&callback=?", function(data){
+    $.getJSON("http://"+lang+".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( this.params.title || src.slice(src.lastIndexOf("/")+1) ) + "&format=json&callback=?", function(data){
       if(data) {
         //make a link to the document
         var link = document.createElement('a');
@@ -764,7 +767,7 @@
         target.appendChild(desc);
       }
     }); 
-    
+
     this.target = target;
     this.onIn = function() {
       this.target.setAttribute('style', 'display:inline');
@@ -772,7 +775,7 @@
     this.onOut = function() {
       this.target.setAttribute('style', 'display:none');
     };
-	};
+  };
   ////////////////////////////////////////////////////////////////////////////
   // Footnote Command
   ////////////////////////////////////////////////////////////////////////////
