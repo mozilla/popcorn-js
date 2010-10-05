@@ -113,6 +113,7 @@
   };
   
   // Simple function to convert 0:05 to 0.5 in seconds
+  // acceptable formats are HH:MM:SS:MM, MM:SS:MM, SS:MM, SS
   var toSeconds = function(time) {
     var t = time.split(":");
     if (t.length === 1) {
@@ -1081,10 +1082,10 @@
             dataXML = "",
             dataJSON = "";
         var ext = (filename.toLowerCase()).match(/\.xml$/);
+        var manager = new Popcorn.VideoManager(video[ind]);
         if (ext !== null) {
-          convertData(video[ind], getTimelineData(filename).responseXML, convertXML);
+          convertData(video[ind], manager, getTimelineData(filename).responseXML, convertXML);
         } else {
-          var manager = new Popcorn.VideoManager(video[ind]);
           
           $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&callback=?", function(data) {
             convertData(video[ind], manager, data, convertJSON, "subtitle");
