@@ -987,16 +987,6 @@
         return new Popcorn.LastfmCommand(name, params, text, videoManager);
       }
     },
-	facebookuser: {
-      create: function(name, params, text, videoManager) {
-        return new Popcorn.FacebookuserCommand(name, params, text, videoManager);
-      }
-    },
-	blogmarks: {
-      create: function(name, params, text, videoManager) {
-        return new Popcorn.BlogmarksCommand(name, params, text, videoManager);
-      }
-    },
     lowerthird: {
       create: function(name, params, text, videoManager) {
         return new Popcorn.LowerThirdCommand(name, params, text, videoManager);
