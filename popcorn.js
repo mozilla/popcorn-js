@@ -627,6 +627,50 @@
   };
 
   ////////////////////////////////////////////////////////////////////////////
+  // Lastfm Command
+  ////////////////////////////////////////////////////////////////////////////
+  
+  Popcorn.LastfmCommand = function(name, params, text, videoManager) {
+   	Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+    // Setup a default, hidden div to hold the images
+    var target = document.createElement('div');
+    target.setAttribute('id', this.id);
+    document.getElementById(this.params.target).appendChild(target);
+    // Div is hidden by default
+    target.setAttribute('style', 'display:none');
+	
+    // This uses jquery
+	$.getJSON("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ this.params.artist +"&api_key=30ac38340e8be75f9268727cb4526b3d&format=json&callback=?",
+	  function(data){	
+	    htmlString = '';
+		htmlString += '<h3>'+data.artist.name+'</h3>';
+	    htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
+		htmlString += '<p>'+ data.artist.bio.summary +'</p>';
+		htmlString += '<hr /><p><h4>Tags</h4><ul>';
+		jQuery.each(data.artist.tags.tag, function(i,val) {
+		  htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
+		});
+		htmlString += '</ul></p>';
+		htmlString += '<hr /><p><h4>Similar</h4><ul>';
+		jQuery.each(data.artist.similar.artist, function(i,val) {
+		  htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
+		});
+		htmlString += '</ul></p>';
+	    target.innerHTML = htmlString;
+	  }
+	);
+	
+    this.target = target;
+    this.onIn = function() {
+      this.target.setAttribute('style', 'display:inline');
+    };
+    this.onOut = function() {
+      this.target.setAttribute('style', 'display:none');
+    };
+	this.preload = function() {}; // Probably going to need to preload this.
+  };
+  
+  ////////////////////////////////////////////////////////////////////////////
   // Twitter Command
   ////////////////////////////////////////////////////////////////////////////
 
@@ -939,6 +983,11 @@
     wiki: {
       create: function(name, params, text, videoManager) {
         return new Popcorn.WikiCommand(name, params, text, videoManager);
+      }
+    },
+	lastfm: {
+      create: function(name, params, text, videoManager) {
+        return new Popcorn.LastfmCommand(name, params, text, videoManager);
       }
     },
     lowerthird: {
