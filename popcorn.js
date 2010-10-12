@@ -648,31 +648,31 @@
   ////////////////////////////////////////////////////////////////////////////
   
   Popcorn.LastfmCommand = function(name, params, text, videoManager) {
-   	Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
     target.setAttribute('id', this.id);
     document.getElementById(this.params.target).appendChild(target);
     // Div is hidden by default
     target.setAttribute('style', 'display:none');
+	  var htmlString = '';
 	
     // This uses jquery
 	$.getJSON("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ this.params.artist +"&api_key=30ac38340e8be75f9268727cb4526b3d&format=json&callback=?",
-	  function(data){	
-	    htmlString = '';
-		htmlString += '<h3>'+data.artist.name+'</h3>';
+	  function(data){
+		  htmlString += '<h3>'+data.artist.name+'</h3>';
 	    htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
-		htmlString += '<p>'+ data.artist.bio.summary +'</p>';
-		htmlString += '<hr /><p><h4>Tags</h4><ul>';
-		jQuery.each(data.artist.tags.tag, function(i,val) {
-		  htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
-		});
-		htmlString += '</ul></p>';
-		htmlString += '<hr /><p><h4>Similar</h4><ul>';
-		jQuery.each(data.artist.similar.artist, function(i,val) {
-		  htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
-		});
-		htmlString += '</ul></p>';
+		  htmlString += '<p>'+ data.artist.bio.summary +'</p>';
+		  htmlString += '<hr /><p><h4>Tags</h4><ul>';
+		  $.each(data.artist.tags.tag, function(i,val) {
+		    htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
+		  });
+		  htmlString += '</ul></p>';
+		  htmlString += '<hr /><p><h4>Similar</h4><ul>';
+		  $.each(data.artist.similar.artist, function(i,val) {
+		    htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
+		  });
+		  htmlString += '</ul></p>';
 	    target.innerHTML = htmlString;
 	  }
 	);
@@ -812,7 +812,6 @@
     var lang = this.params.lang;
     if (typeof lang === "undefined") { lang="en"; }   
     //end L10n
-    var length = this.params.numberOfWords;
 
     // All data from Universal Subtitles comes from the text attribute
     // so the data from that needs to enter the appropriate fields
@@ -1105,15 +1104,26 @@
       // this object mimics the object used for xml
       allAttributes.push({
         "att": attributes.slice(0),
-        "item": function(i) {
-          return this.att[i];
-        },
+        "item": (function() {
+          return function(i) {
+            return this.att[i];
+          };
+        }()),
         "length": l
       });
       videoManager.addCommand(commands[type].create(type, allAttributes, text, videoManager));
     }
   };
-  
+
+  var convertData = function(video, manager, data, convert, type) {
+    video.addEventListener('loadedmetadata', (function(data, convert, type) {
+      return function() {
+        convert(data, manager, type);
+        manager.loaded();
+      };
+    }(data, convert, type)), false);
+  };
+
   // Loads an external xml file, and returns the xml object
   var getTimelineData = function(name) {
     var xhttp = new XMLHttpRequest();
@@ -1141,7 +1151,6 @@
         if (ext !== null) {
           convertData(video[ind], manager, getTimelineData(filename).responseXML, convertXML);
         } else {
-          
           $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&callback=?", function(data) {
             convertData(video[ind], manager, data, convertJSON, "subtitle");
             $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-geo&callback=?", function(data) {
@@ -1153,21 +1162,12 @@
                 });
               });
             });
-          });          
+          });     
         }
       }
     }
   };
-  
-  var convertData = function(video, manager, data, convert, type) {
-    video.addEventListener('loadedmetadata', (function(data, convert, type) {
-      return function() {
-        convert(data, manager, type);
-        manager.loaded();
-      };
-    }(data, convert, type)), false);
-  };
-  
+
   document.addEventListener('DOMContentLoaded', init, false);
   
 }());
