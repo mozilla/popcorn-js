@@ -112,30 +112,16 @@ font-size:15px;
 
 /* Layout */
 
-body{
-background: #f8f8f8 url(http://64.19.142.10/webmademovies.org/demos/semantic_video/images/body_bg.jpg) repeat-x center top;
-}
-
 .wrapper{
 width:1090px;
 margin:0 auto;
 min-height:880px;
-background: url(http://64.19.142.11/webmademovies.org/demos/semantic_video/images/header.jpg) no-repeat center top;
 }
 
 .container-bot, .container-top{
 width:100%;
 overflow: hidden;
 }
-
-.container-top{
-background: url(http://64.19.142.12/webmademovies.org/demos/semantic_video/images/footer_bg.jpg) repeat-x center bottom;
-}
-
-.container-bot{
-background: url(http://64.19.142.10/webmademovies.org/demos/semantic_video/images/footer.jpg) repeat-x center bottom;
-}
-
 
 /* Header */
 

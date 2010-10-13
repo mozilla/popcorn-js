@@ -807,11 +807,6 @@
   Popcorn.WikiCommand = function(name, params, text, videoManager) {
     Popcorn.VideoCommand.call(this, name, params, text, videoManager);
 
-    //L10n
-    var src = this.params.src;
-    var lang = this.params.lang;
-    if (typeof lang === "undefined") { lang="en"; }   
-    //end L10n
 
     // All data from Universal Subtitles comes from the text attribute
     // so the data from that needs to enter the appropriate fields
@@ -820,6 +815,12 @@
       // Universal Subtitles has no target attribute, so we create a default
       this.params.target = "wikidiv";
     }
+    
+    //L10n
+    var src = this.params.src;
+    var lang = this.params.lang;
+    if (typeof lang === "undefined") { lang="en"; }   
+    //end L10n
 
     var length = this.params.numberOfWords || 200;
     // Setup a default, hidden div to hold the images
@@ -1116,12 +1117,12 @@
   };
 
   var convertData = function(video, manager, data, convert, type) {
-    video.addEventListener('loadedmetadata', (function(data, convert, type) {
-      return function() {
+    //var si = setInterval(function() {
+    //    if (video.readyState < 1) return;
+    //    clearInterval(si);
         convert(data, manager, type);
         manager.loaded();
-      };
-    }(data, convert, type)), false);
+    //}, 50);
   };
 
   // Loads an external xml file, and returns the xml object
