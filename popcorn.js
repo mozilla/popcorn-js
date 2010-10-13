@@ -807,12 +807,6 @@
   Popcorn.WikiCommand = function(name, params, text, videoManager) {
     Popcorn.VideoCommand.call(this, name, params, text, videoManager);
 
-    //L10n
-    var src = this.params.src;
-    var lang = this.params.lang;
-    if (typeof lang === "undefined") { lang="en"; }   
-    //end L10n
-
     // All data from Universal Subtitles comes from the text attribute
     // so the data from that needs to enter the appropriate fields
     if (typeof text === "string" && text !== "") {
@@ -820,8 +814,13 @@
       // Universal Subtitles has no target attribute, so we create a default
       this.params.target = "wikidiv";
     }
-
-    var length = this.params.numberOfWords || 200;
+    
+    //L10n
+    var src = this.params.src;
+    var lang = this.params.lang;
+    if (typeof lang === 'undefined') {lang="en";}
+    //end L10n
+    var length = this.params.numberOfWords;
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
     target.setAttribute('id', this.id);
@@ -846,7 +845,7 @@
         target.appendChild(link);
         target.appendChild(desc);
       }
-    }); 
+    });
 
     this.target = target;
     this.onIn = function() {
@@ -1021,7 +1020,7 @@
         return new Popcorn.WikiCommand(name, params, text, videoManager);
       }
     },
-	lastfm: {
+	  lastfm: {
       create: function(name, params, text, videoManager) {
         return new Popcorn.LastfmCommand(name, params, text, videoManager);
       }
