@@ -1117,12 +1117,12 @@
   };
 
   var convertData = function(video, manager, data, convert, type) {
-    //var si = setInterval(function() {
-    //    if (video.readyState < 1) return;
-    //    clearInterval(si);
+    var si = setInterval(function() {
+        if (video.readyState < 1) return;
+        clearInterval(si);
         convert(data, manager, type);
         manager.loaded();
-    //}, 50);
+    }, 50);
   };
 
   // Loads an external xml file, and returns the xml object
