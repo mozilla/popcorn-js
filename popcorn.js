@@ -820,7 +820,7 @@
     var lang = this.params.lang;
     if (typeof lang === 'undefined') {lang="en";}
     //end L10n
-    var length = this.params.numberOfWords;
+    var length = this.params.numberOfWords || 200;
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
     target.setAttribute('id', this.id);
