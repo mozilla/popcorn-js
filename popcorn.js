@@ -820,6 +820,7 @@
     var lang = this.params.lang;
     if (typeof lang === 'undefined') {lang="en";}
     //end L10n
+
     var length = this.params.numberOfWords || 200;
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
@@ -1115,12 +1116,12 @@
   };
 
   var convertData = function(video, manager, data, convert, type) {
-    video.addEventListener('loadedmetadata', (function(data, convert, type) {
-      return function() {
+    var si = setInterval(function() {
+        if (video.readyState < 1) return;
+        clearInterval(si);
         convert(data, manager, type);
         manager.loaded();
-      };
-    }(data, convert, type)), false);
+    }, 50);
   };
 
   // Loads an external xml file, and returns the xml object
