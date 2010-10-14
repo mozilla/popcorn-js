@@ -1,0 +1,5 @@
+<popcorn>
+	<timeline>
+    <script in="1" out="10" start="customJS.start" stop="customJS.stop"/>
+	</timeline>
+</popcorn>

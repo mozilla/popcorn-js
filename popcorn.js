@@ -986,7 +986,23 @@
       this.videoManager.videoElement.currentTime = this.params.seekto;
     };
   };
-  
+
+  ////////////////////////////////////////////////////////////////////////////
+  // Script Command
+  ////////////////////////////////////////////////////////////////////////////
+
+  Popcorn.ScriptCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+    this.start = eval(this.params.start) || function() {};
+    this.stop = eval(this.params.stop) || function() {};
+    this.onIn = function() {
+      this.start();
+    };
+    this.onOut = function() {
+      this.stop();
+    };
+  };
+
   // Wrapper for accessing commands by name
   // commands[name].create() returns a new command of type name
   // Not sure if this is the best way; maybe it's too fancy?
@@ -1055,6 +1071,11 @@
     seek: {
       create: function(name, params, text, videoManager) {
         return new Popcorn.SeekCommand(name, params, text, videoManager);
+      }
+    },
+    script: {
+      create: function(name, params, text, videoManager) {
+        return new Popcorn.ScriptCommand(name, params, text, videoManager);
       }
     }
   };
