@@ -972,8 +972,8 @@
 
   Popcorn.JsCommand = function(name, params, text, videoManager) {
     Popcorn.VideoCommand.call(this, name, params, text, videoManager);
-    this.start = eval(this.params.start);
-    this.stop = eval(this.params.stop);
+    this.start = eval(this.params.start) || function() {};
+    this.stop = eval(this.params.stop) || function() {};
     this.onIn = function() {
       this.start();
     };
