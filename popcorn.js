@@ -967,10 +967,10 @@
   };
 
   ////////////////////////////////////////////////////////////////////////////
-  // Javascript Command
+  // Script Command
   ////////////////////////////////////////////////////////////////////////////
 
-  Popcorn.JsCommand = function(name, params, text, videoManager) {
+  Popcorn.ScriptCommand = function(name, params, text, videoManager) {
     Popcorn.VideoCommand.call(this, name, params, text, videoManager);
     this.start = eval(this.params.start) || function() {};
     this.stop = eval(this.params.stop) || function() {};
@@ -1052,9 +1052,9 @@
         return new Popcorn.SeekCommand(name, params, text, videoManager);
       }
     },
-    javascript: {
+    script: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.JsCommand(name, params, text, videoManager);
+        return new Popcorn.ScriptCommand(name, params, text, videoManager);
       }
     }
   };
