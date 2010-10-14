@@ -1153,7 +1153,6 @@
       };
       head.appendChild(script);
     } else {
-      alert(test);
       success();
     }
   }
