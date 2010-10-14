@@ -1003,6 +1003,32 @@
     };
   };
 
+  ////////////////////////////////////////////////////////////////////////////
+  // WebPage Command
+  ////////////////////////////////////////////////////////////////////////////
+  
+  Popcorn.WebPageCommand = function(name, params, text, videoManager) {
+    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+
+    // Setup a default, iframe to hold the website
+    var target = document.createElement('iframe');
+    target.setAttribute('src', this.params.src);
+    target.setAttribute('width', this.params.width);
+    target.setAttribute('height', this.params.height);
+    target.setAttribute('id', this.id);
+    document.getElementById(this.params.target).appendChild(target);
+    // iframe is hidden by default
+    target.setAttribute('style', 'display:none');
+    // toggle display of the iframe 
+    this.target = target;
+    this.onIn = function() {
+      this.target.setAttribute('style', 'display:inline');
+    };
+    this.onOut = function() {
+      this.target.setAttribute('style', 'display:none');
+    };
+  };
+  
   // Wrapper for accessing commands by name
   // commands[name].create() returns a new command of type name
   // Not sure if this is the best way; maybe it's too fancy?
@@ -1076,6 +1102,11 @@
     script: {
       create: function(name, params, text, videoManager) {
         return new Popcorn.ScriptCommand(name, params, text, videoManager);
+       }
+    },
+    webpage: {
+      create: function(name, params, text, videoManager) {
+        return new Popcorn.WebPageCommand(name, params, text, videoManager);
       }
     }
   };
