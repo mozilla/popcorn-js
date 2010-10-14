@@ -694,62 +694,65 @@
   Popcorn.TwitterCommand = function(name, params, text, videoManager) {
     Popcorn.VideoCommand.call(this, name, params, text, videoManager);
 
-    // All data from Universal Subtitles comes from the text attribute
-    // so the data from that needs to enter the appropriate fields
-    if (typeof text === "string" && text !== "") {
-      this.params.source = text;
-      // Universal Subtitles has no target attribute, so we create a default
-      this.params.target = "twitterdiv";
-    }
-
-    // Setup a default, hidden div to hold the feed
-    this.target = document.createElement('div');
-    this.target.setAttribute('id', this.id);
-    document.getElementById(this.params.target).appendChild(this.target);
-    
-    // Div is hidden by default
-    this.target.setAttribute('style', 'display:none');
-    var widget = new TWTR.Widget({
-      creator: true,
-      version: 2,
-      type: 'search',
-      id: this.target.getAttribute('id'),
-      search: this.params.source,
-      title: this.params.title || null,
-      subject: this.params.subject || null,
-      rpp: 30,
-      width: this.params.width || 250,
-      height: this.params.height || 200,
-      interval: 6000,
-      theme: {
-        shell: {
-          background: '#ffffff',
-          color: '#000000'
-        },
-        tweets: {
-          background: '#ffffff',
-          color: '#444444',
-          links: '#1985b5'
-        }
-      },
-      features: {
-        loop: true,
-        timestamp: true,
-        avatars: true,
-        hashtags: true,
-        toptweets: true,
-        live: true,
-        scrollbar: false,
-        behavior: 'default'
+    var that = this;
+    getScript("http://widgets.twimg.com/j/2/widget.js", typeof TWTR, function() {
+      // All data from Universal Subtitles comes from the text attribute
+      // so the data from that needs to enter the appropriate fields
+      if (typeof text === "string" && text !== "") {
+        that.params.source = text;
+        // Universal Subtitles has no target attribute, so we create a default
+        that.params.target = "twitterdiv";
       }
-    }).render().start();
-    this.onIn = function() {
-      this.target.setAttribute('style', 'display:inline');
-    };
-    this.onOut = function() {
-      this.target.setAttribute('style', 'display:none');
-    };
-    this.preload = function() {}; // Probably going to need to preload this.
+
+      // Setup a default, hidden div to hold the feed
+      that.target = document.createElement('div');
+      that.target.setAttribute('id', that.id);
+      document.getElementById(that.params.target).appendChild(that.target);
+      
+      // Div is hidden by default
+      that.target.setAttribute('style', 'display:none');
+      var widget = new TWTR.Widget({
+        creator: true,
+        version: 2,
+        type: 'search',
+        id: that.target.getAttribute('id'),
+        search: that.params.source,
+        title: that.params.title || null,
+        subject: that.params.subject || null,
+        rpp: 30,
+        width: that.params.width || 250,
+        height: that.params.height || 200,
+        interval: 6000,
+        theme: {
+          shell: {
+            background: '#ffffff',
+            color: '#000000'
+          },
+          tweets: {
+            background: '#ffffff',
+            color: '#444444',
+            links: '#1985b5'
+          }
+        },
+        features: {
+          loop: true,
+          timestamp: true,
+          avatars: true,
+          hashtags: true,
+          toptweets: true,
+          live: true,
+          scrollbar: false,
+          behavior: 'default'
+        }
+      }).render().start();
+      that.onIn = function() {
+        that.target.setAttribute('style', 'display:inline');
+      };
+      that.onOut = function() {
+        that.target.setAttribute('style', 'display:none');
+      };
+      that.preload = function() {}; // Probably going to need to preload this.
+    });
   };
   
   ////////////////////////////////////////////////////////////////////////////
@@ -1136,36 +1139,57 @@
     }
   };
 
+  function getScript(url, test, success) {
+    if (test === 'undefined') {
+      var script = document.createElement('script');
+      script.src = url;
+      var head = document.getElementsByTagName('head')[0],
+        done = false;
+      script.onload = script.onreadystatechange = function () {
+        if (!done && (!this.readyState || this.readyState === 'loaded' || this.readyState === 'complete')) {
+          done = true;
+          success();
+        }
+      };
+      head.appendChild(script);
+    } else {
+      alert(test);
+      success();
+    }
+  }
+
   // Automatic Initialization Method
   var init = function() {
-    var video = document.getElementsByTagName('video');
-    for (var i = 0, l = video.length; i < l; i++) {
-      var ind = i;
-      var videoSources = video[ind].getAttribute('data-timeline-sources');
-      if (videoSources) {
-        var filename = videoSources,
-            dataXML = "",
-            dataJSON = "";
-        var ext = (filename.toLowerCase()).match(/\.xml$/);
-        var manager = new Popcorn.VideoManager(video[ind]);
-        if (ext !== null) {
-          convertData(video[ind], manager, getTimelineData(filename).responseXML, convertXML);
-        } else {
-          $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&callback=?", function(data) {
-            convertData(video[ind], manager, data, convertJSON, "subtitle");
-            $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-geo&callback=?", function(data) {
-              convertData(video[ind], manager, data, convertJSON, "location");
-              $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-tw&callback=?", function(data) {
-                convertData(video[ind], manager, data, convertJSON, "twitter");
-                $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-wiki&callback=?", function(data) {
-                  convertData(video[ind], manager, data, convertJSON, "wiki");
+    getScript('http://code.jquery.com/jquery.js', typeof jQuery, function() {
+      var video = document.getElementsByTagName('video');
+      for (var i = 0, l = video.length; i < l; i++) {
+        var ind = i;
+        var videoSources = video[ind].getAttribute('data-timeline-sources');
+        if (videoSources) {
+          var filename = videoSources,
+              dataXML = "",
+              dataJSON = "";
+          var ext = (filename.toLowerCase()).match(/\.xml$/);
+          var manager = new Popcorn.VideoManager(video[ind]);
+          if (ext !== null) {
+            convertData(video[ind], manager, getTimelineData(filename).responseXML, convertXML);
+          } else {
+            $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&callback=?", function(data) {
+              convertData(video[ind], manager, data, convertJSON, "subtitle");
+              $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-geo&callback=?", function(data) {
+                convertData(video[ind], manager, data, convertJSON, "location");
+                $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-tw&callback=?", function(data) {
+                  convertData(video[ind], manager, data, convertJSON, "twitter");
+                  $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-wiki&callback=?", function(data) {
+                    convertData(video[ind], manager, data, convertJSON, "wiki");
+                  });
                 });
               });
-            });
-          });     
+            });     
+          }
         }
       }
-    }
+    });
   };
 
   document.addEventListener('DOMContentLoaded', init, false);
