@@ -1,6 +1,24 @@
-/*global google: false, $: false, TWTR: false*/ // This global comment is read by jslint
+/*global google: false, $: false, TWTR: false, jQuery: false*/ // This global comment is read by jslint
 
 (function() {
+  function getScript(url, test, success) {
+    if (test === 'undefined') {
+      var script = document.createElement('script');
+      script.src = url;
+      var head = document.getElementsByTagName('head')[0],
+        done = false;
+      script.onload = script.onreadystatechange = function () {
+        if (!done && (!this.readyState || this.readyState === 'loaded' || this.readyState === 'complete')) {
+          done = true;
+          success();
+        }
+      };
+      head.appendChild(script);
+    } else {
+      success();
+    }
+  }
+
   var Popcorn = this.Popcorn = {};
 
   // The video manager manages a single video element, and all it's commands.
@@ -1120,7 +1138,7 @@
 
   var convertData = function(video, manager, data, convert, type) {
     var si = setInterval(function() {
-        if (video.readyState < 1) return;
+        if (video.readyState < 1) { return; }
         clearInterval(si);
         convert(data, manager, type);
         manager.loaded();
@@ -1139,24 +1157,6 @@
     }
   };
 
-  function getScript(url, test, success) {
-    if (test === 'undefined') {
-      var script = document.createElement('script');
-      script.src = url;
-      var head = document.getElementsByTagName('head')[0],
-        done = false;
-      script.onload = script.onreadystatechange = function () {
-        if (!done && (!this.readyState || this.readyState === 'loaded' || this.readyState === 'complete')) {
-          done = true;
-          success();
-        }
-      };
-      head.appendChild(script);
-    } else {
-      success();
-    }
-  }
-
   // Automatic Initialization Method
   var init = function() {
     getScript('http://code.jquery.com/jquery.js', typeof jQuery, function() {
@@ -1173,18 +1173,26 @@
           if (ext !== null) {
             convertData(video[ind], manager, getTimelineData(filename).responseXML, convertXML);
           } else {
-            $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&callback=?", function(data) {
-              convertData(video[ind], manager, data, convertJSON, "subtitle");
-              $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-geo&callback=?", function(data) {
-                convertData(video[ind], manager, data, convertJSON, "location");
-                $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-tw&callback=?", function(data) {
-                  convertData(video[ind], manager, data, convertJSON, "twitter");
-                  $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-wiki&callback=?", function(data) {
-                    convertData(video[ind], manager, data, convertJSON, "wiki");
-                  });
-                });
-              });
-            });     
+            $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&callback=?", (function() {
+              return function(data) {
+                convertData(video[ind], manager, data, convertJSON, "subtitle");
+                $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-geo&callback=?", (function() {
+                  return function(data) {
+                    convertData(video[ind], manager, data, convertJSON, "location");
+                    $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-tw&callback=?", (function() {
+                      return function(data) {
+                        convertData(video[ind], manager, data, convertJSON, "twitter");
+                        $.getJSON("http://dev.universalsubtitles.org/api/subtitles/?video_url=" + filename + "&language=meta-wiki&callback=?", (function() {
+                          return function(data) {
+                            convertData(video[ind], manager, data, convertJSON, "wiki");
+                          };
+                        }()));
+                      };
+                    }()));
+                  };
+                }()));
+              };
+            }()));
           }
         }
       }
