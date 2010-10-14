@@ -9,7 +9,7 @@
       <person id="SteveSong" name="Steve Song" >
       </person>
       <person id="mona" name="Mona" >
-        <resource id="monahomepage" src="http://monakasra.com/" description="Mona's Homepage"/>
+        <resource id="monahomepage" src="http://www.monakasra.com/" description="Mona's Homepage"/>
       </person>
       <person id="dave" name="Dave" >
       </person>
@@ -304,8 +304,6 @@
         <subtitle in="00:04:37:07" out="00:04:38:06">along the way.</subtitle>
         <subtitle in="00:04:39:02" out="00:04:40:08">Explore our credits section to see</subtitle>
         <subtitle in="00:04:41:00" out="00:04:45:00">how you can get involved.</subtitle>
-
-
       </subtitles>
       <subtitles language="fa" align="center">
         <subtitle in="00:04:00:08" out="00:04:01:09">My name is Mona Kasra</subtitle>
@@ -317,6 +315,10 @@
         <subtitle in="00:04:08:07" out="00:04:10:01">using Creative Commons</subtitle>
       </subtitles>
     </subtitles>
+    <webpages>
+      <webpage in="00:04:00:08" out="00:04:19:00" target="iframes" resourceid="monahomepage" width="100%" height="100%"></webpage>
+      <webpage in="00:04:19:06" out="00:04:24:01" target="iframes" resourceid="celinehomepage" width="100%" height="100%"></webpage>
+    </webpages>
     <credits></credits>
   </timeline>
 </popcorn>
