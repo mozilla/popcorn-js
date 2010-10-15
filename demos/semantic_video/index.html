@@ -116,7 +116,7 @@
                   overlayDiv.appendChild(image);
                   return image;
                 };
-                Popcorn.VideoManager.prototype.loaded = function() {
+                popcorn.VideoManager.prototype.loaded = function() {
                   for (var i in this.commandObjects) {
                     if (this.commandObjects[i].name === 'flickr' || this.commandObjects[i].name === 'footnote' || this.commandObjects[i].name === 'location' || this.commandObjects[i].name === 'twitter' || this.commandObjects[i].name === 'wiki' || this.commandObjects[i].name === 'lastfm') {
                       this.commandObjects[i].extension.image = createImage("images/overlay/" + this.commandObjects[i].name + ".png");
