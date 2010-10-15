@@ -19,27 +19,27 @@
     }
   }
 
-  var Popcorn = this.Popcorn = {};
+  var popcorn = this.popcorn = {};
 
   // The video manager manages a single video element, and all it's commands.
-  Popcorn.VideoManager = function(videoElement) {
+  popcorn.VideoManager = function(videoElement) {
     this.commandObjects  = {};
     this.manifestObjects = {};
     this.videoElement = videoElement;
     videoElement.videoManager = this;
-    Popcorn.addInstance(this);
-    videoElement.setAttribute("ontimeupdate", "Popcorn.update(this, this.videoManager);"); 
+    popcorn.addInstance(this);
+    videoElement.setAttribute("ontimeupdate", "popcorn.update(this, this.videoManager);"); 
   };
 
-  Popcorn.VideoManager.prototype.addCommand = function(command) {
+  popcorn.VideoManager.prototype.addCommand = function(command) {
     this.commandObjects[command.id] = command;
   };
 
-  Popcorn.VideoManager.prototype.removeCommand = function(command) {
+  popcorn.VideoManager.prototype.removeCommand = function(command) {
     delete this.commandObjects[command.id];
   };
 
-  Popcorn.VideoManager.prototype.addManifestObject = function(manifestAttributes) {
+  popcorn.VideoManager.prototype.addManifestObject = function(manifestAttributes) {
     var manifest = {},
         manifestId = "";
     for (var i = 0, pl = manifestAttributes.length; i < pl; i++) {
@@ -56,16 +56,16 @@
     this.manifestObjects[manifestId] = manifest;
   };
 
-  Popcorn.VideoManager.prototype.removeManifestObject = function(itemId) {
+  popcorn.VideoManager.prototype.removeManifestObject = function(itemId) {
     delete this.manifestObjects[itemId];
   };
 
-  Popcorn.VideoManager.prototype.loaded = function() {};
+  popcorn.VideoManager.prototype.loaded = function() {};
   
   var inactiveTarget = {};
   
   // Update is called on the video every time it's time changes.
-  Popcorn.update = function(vid, manager) {
+  popcorn.update = function(vid, manager) {
     var t = vid.currentTime,
         commandObject = {}; // Loops through all commands in the manager, preloading data, and calling onIn() or onOut().
     for (var i in manager.commandObjects) {
@@ -112,22 +112,22 @@
   };
 
   // Store VideoManager instances
-  Popcorn.instances = [];
-  Popcorn.instanceIds = {};
-  Popcorn.addInstance = function(manager) {
+  popcorn.instances = [];
+  popcorn.instanceIds = {};
+  popcorn.addInstance = function(manager) {
     if (typeof manager.videoElement.id === 'undefined' || !manager.videoElement.id.length) {
-      manager.videoElement.id = "__video" + Popcorn.instances.length;
+      manager.videoElement.id = "__video" + popcorn.instances.length;
     }
-    Popcorn.instanceIds[manager.videoElement.id] = Popcorn.instances.length;
-    Popcorn.instances.push(manager);
+    popcorn.instanceIds[manager.videoElement.id] = popcorn.instances.length;
+    popcorn.instances.push(manager);
   };
 
-  Popcorn.getInstanceById = function(name) {
-    return Popcorn.instances[Popcorn.instanceIds[name]];
+  popcorn.getInstanceById = function(name) {
+    return popcorn.instances[popcorn.instanceIds[name]];
   };
 
-  Popcorn.getInstance = function(index) {
-    return Popcorn.instances[index];
+  popcorn.getInstance = function(index) {
+    return popcorn.instances[index];
   };
   
   // Simple function to convert 0:05 to 0.5 in seconds
@@ -150,7 +150,7 @@
   ////////////////////////////////////////////////////////////////////////////
 
   // Base class for all commands, SubtitleCommand, MapCommand, etc.
-  Popcorn.VideoCommand = function(name, params, text, videoManager) {
+  popcorn.VideoCommand = function(name, params, text, videoManager) {
     this.name = name;
     this.params = {};
     this.text = text;
@@ -164,7 +164,7 @@
       onIn: function() {},
       onOut: function() {}
     };
-    this.id = name + Popcorn.VideoCommand.count++;
+    this.id = name + popcorn.VideoCommand.count++;
     this.params["in"] = "0";
     this.params["out"] = this.videoManager.videoElement.duration;
 
@@ -199,29 +199,29 @@
       inactiveTarget[this.params.target] = 0;
     }
   };
-  Popcorn.VideoCommand.count = 0;
+  popcorn.VideoCommand.count = 0;
 
   ////////////////////////////////////////////////////////////////////////////
   // Subtitle Command
   ////////////////////////////////////////////////////////////////////////////
 
   // Child commands. Uses onIn() and onOut() to do time based operations
-  Popcorn.SubtitleCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.SubtitleCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
     var style = "";
 
     // Creates a div for all subtitles to use
-    if (!Popcorn.SubtitleCommand.subDiv) {
-      Popcorn.SubtitleCommand.subDiv = document.createElement('div');
+    if (!popcorn.SubtitleCommand.subDiv) {
+      popcorn.SubtitleCommand.subDiv = document.createElement('div');
       
       style = 'position:absolute;top:240px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 2px 2px 6px;font-size:18px;width:100%;';
-      Popcorn.SubtitleCommand.subDiv.setAttribute('style', style);  
-      this.videoManager.videoElement.parentNode.appendChild(Popcorn.SubtitleCommand.subDiv);
+      popcorn.SubtitleCommand.subDiv.setAttribute('style', style);  
+      this.videoManager.videoElement.parentNode.appendChild(popcorn.SubtitleCommand.subDiv);
     }
     if (this.params.target) {
       this.target = document.getElementById(this.params.target);
     } else {
-      this.target = Popcorn.SubtitleCommand.subDiv;
+      this.target = popcorn.SubtitleCommand.subDiv;
     }
 
     this.onIn = function() {
@@ -248,20 +248,20 @@
   // Lower third text Command
   ////////////////////////////////////////////////////////////////////////////
 
-  Popcorn.LowerThirdCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.LowerThirdCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
     
     // Creates a div for all lower thirds
-    if (!Popcorn.LowerThirdCommand.ltDiv) {
-      Popcorn.LowerThirdCommand.ltDiv = document.createElement('div');
-      Popcorn.LowerThirdCommand.ltDiv.setAttribute('style', 
+    if (!popcorn.LowerThirdCommand.ltDiv) {
+      popcorn.LowerThirdCommand.ltDiv = document.createElement('div');
+      popcorn.LowerThirdCommand.ltDiv.setAttribute('style', 
         'padding-left:40px;padding-right:40px;padding-top:40px;position:absolute;top:150px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 1px 1px 3px;font-size:22px;width:450px;');
-      this.videoManager.videoElement.parentNode.appendChild(Popcorn.LowerThirdCommand.ltDiv);
+      this.videoManager.videoElement.parentNode.appendChild(popcorn.LowerThirdCommand.ltDiv);
     }
     if (this.params.target) {
       this.target = document.getElementById(this.params.target);
     } else {
-      this.target = Popcorn.LowerThirdCommand.ltDiv;
+      this.target = popcorn.LowerThirdCommand.ltDiv;
     }
     
     this.onIn = function() {
@@ -301,8 +301,8 @@
   // GoogleNews Command
   ////////////////////////////////////////////////////////////////////////////
 
-  Popcorn.GoogleNewsCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.GoogleNewsCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
     this.target = document.createElement('div');
     this.target.setAttribute('style', 'display:none;border:0px;');
     document.getElementById(this.params.target).appendChild(this.target);
@@ -330,8 +330,8 @@
   ////////////////////////////////////////////////////////////////////////////
   // Credits Command
   ////////////////////////////////////////////////////////////////////////////
-  Popcorn.CreditsCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.CreditsCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
     $("#credits")
         .width(this.videoManager.videoElement.clientWidth)
         .height(this.videoManager.videoElement.clientHeight);
@@ -341,11 +341,11 @@
     this.onIn = function() {
         $("#credits").show();
         $("#choices").animate({ right:'+=200px' }, 1000);
-        Popcorn.CreditsCommand.add( [
+        popcorn.CreditsCommand.add( [
             { 
                 text: "Play Again",
                 click:function() {
-                    Popcorn.CreditsCommand.killCol(0);
+                    popcorn.CreditsCommand.killCol(0);
                     $('video')[0].currentTime=0;
                 }
             },
@@ -515,8 +515,8 @@
         $("#credits").hide();
     };
   };
-  Popcorn.CreditsCommand.colIndex = 0;
-  Popcorn.CreditsCommand.killCol = function(index, callback) {
+  popcorn.CreditsCommand.colIndex = 0;
+  popcorn.CreditsCommand.killCol = function(index, callback) {
     $(".column").each(function() {
       if ($(this).attr("colindex")>index) {
         $(this).addClass("removing").animate( { left: -$(this).outerWidth() + "px" }, 1200, function() {
@@ -529,11 +529,11 @@
     }
   };
 
-  Popcorn.CreditsCommand.add =  function(items) {
-        Popcorn.CreditsCommand.colIndex++;
+  popcorn.CreditsCommand.add =  function(items) {
+        popcorn.CreditsCommand.colIndex++;
         var ul = $("<ul></ul>")
             .addClass('column')
-            .attr('colindex',parseInt(Popcorn.CreditsCommand.colIndex, 10));
+            .attr('colindex',parseInt(popcorn.CreditsCommand.colIndex, 10));
         $.each(items, function(i, val) {
             var li = $(document.createElement('li'))
                 .append($(document.createElement('a'))
@@ -547,9 +547,9 @@
                       return true;
                     }
                     var colIndex = $(this).parent().attr('colindex');
-                    if (Popcorn.CreditsCommand.colIndex>colIndex) { 
-                        Popcorn.CreditsCommand.killCol(colIndex);
-                        Popcorn.CreditsCommand.colIndex = colIndex;
+                    if (popcorn.CreditsCommand.colIndex>colIndex) { 
+                        popcorn.CreditsCommand.killCol(colIndex);
+                        popcorn.CreditsCommand.colIndex = colIndex;
                     }
                     var hasClass = $(this).hasClass('selected');
                     if (!hasClass) {
@@ -557,7 +557,7 @@
                           val.click();
                         }
                         if (val.next) {
-                          Popcorn.CreditsCommand.add(val.next);
+                          popcorn.CreditsCommand.add(val.next);
                         }
                     }  
                     $(this)
@@ -575,7 +575,7 @@
         });
         ul
             .appendTo("#credit_inner")
-            .css("z-index",1000 - Popcorn.CreditsCommand.colIndex)
+            .css("z-index",1000 - popcorn.CreditsCommand.colIndex)
             .css("left",-ul.outerWidth())
             .animate({ 
                 left: width + "px"
@@ -598,20 +598,20 @@
       return r.toString();
     };
   };
-  Popcorn.TagCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.TagCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
     
-    if (!Popcorn.TagCommand[this.params.target]) {
-      Popcorn.TagCommand[this.params.target] = new people();
+    if (!popcorn.TagCommand[this.params.target]) {
+      popcorn.TagCommand[this.params.target] = new people();
     }
     
     this.onIn = function() {
-      Popcorn.TagCommand[this.params.target].contains[this.text] = this.text;
-      document.getElementById(this.params.target).innerHTML  = Popcorn.TagCommand[this.params.target].toString();
+      popcorn.TagCommand[this.params.target].contains[this.text] = this.text;
+      document.getElementById(this.params.target).innerHTML  = popcorn.TagCommand[this.params.target].toString();
     };
     this.onOut = function() {
-      delete Popcorn.TagCommand[this.params.target].contains[this.text];
-      document.getElementById(this.params.target).innerHTML  = Popcorn.TagCommand[this.params.target].toString();
+      delete popcorn.TagCommand[this.params.target].contains[this.text];
+      document.getElementById(this.params.target).innerHTML  = popcorn.TagCommand[this.params.target].toString();
     };
   };
 
@@ -619,8 +619,8 @@
   // Map Command
   ////////////////////////////////////////////////////////////////////////////
 
-  Popcorn.MapCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.MapCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
 
     // All data from Universal Subtitles comes from the text attribute
     // so the data from that needs to enter the appropriate fields
@@ -636,14 +636,14 @@
     // load the map
     // http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions  <-- Map API
     this.location = new google.maps.LatLng(this.params.lat, this.params.long);
-    if (!Popcorn.MapCommand[this.params.target]) {
-      Popcorn.MapCommand[this.params.target] = new google.maps.Map(document.getElementById(this.params.target), {mapTypeId: google.maps.MapTypeId.HYBRID});
-      Popcorn.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
-      Popcorn.MapCommand[this.params.target].setZoom(0);
+    if (!popcorn.MapCommand[this.params.target]) {
+      popcorn.MapCommand[this.params.target] = new google.maps.Map(document.getElementById(this.params.target), {mapTypeId: google.maps.MapTypeId.HYBRID});
+      popcorn.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
+      popcorn.MapCommand[this.params.target].setZoom(0);
     }
     this.onIn = function() {
-      Popcorn.MapCommand[this.params.target].setCenter(this.location);
-      Popcorn.MapCommand[this.params.target].setZoom(this.params.zoom);
+      popcorn.MapCommand[this.params.target].setCenter(this.location);
+      popcorn.MapCommand[this.params.target].setZoom(this.params.zoom);
       if (this.params.src && this.params.mapinfo) {
         var link = document.createElement("a");
         link.setAttribute("href", this.params.src);
@@ -653,8 +653,8 @@
       }
     };
     this.onOut = function() {
-      Popcorn.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
-      Popcorn.MapCommand[this.params.target].setZoom(0);
+      popcorn.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
+      popcorn.MapCommand[this.params.target].setZoom(0);
       if (this.params.mapinfo) {
         document.getElementById(this.params.mapinfo).innerHTML = "";
       }
@@ -665,8 +665,8 @@
   // Lastfm Command
   ////////////////////////////////////////////////////////////////////////////
   
-  Popcorn.LastfmCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.LastfmCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
     target.setAttribute('id', this.id);
@@ -709,8 +709,8 @@
   // Twitter Command
   ////////////////////////////////////////////////////////////////////////////
 
-  Popcorn.TwitterCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.TwitterCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
 
     var that = this;
     getScript("http://widgets.twimg.com/j/2/widget.js", typeof TWTR, function() {
@@ -777,8 +777,8 @@
   // Flickr Command
   ////////////////////////////////////////////////////////////////////////////
   
-  Popcorn.FlickrCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.FlickrCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
     // Setup a default, hidden div to hold the images
     var target = document.createElement('div');
     target.setAttribute('id', this.id);
@@ -825,8 +825,8 @@
   // Wiki Command
   ////////////////////////////////////////////////////////////////////////////
   
-  Popcorn.WikiCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.WikiCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
 
     // All data from Universal Subtitles comes from the text attribute
     // so the data from that needs to enter the appropriate fields
@@ -857,7 +857,7 @@
         link.setAttribute('href', src);
         link.setAttribute('target', '_blank');
         var p = document.createElement('p');
-        Popcorn.innerHTML = data.parse.displaytitle;
+        popcorn.innerHTML = data.parse.displaytitle;
         link.appendChild(p);
         // get the first 140 characters of the wiki content
         var desc = document.createElement('p');
@@ -881,8 +881,8 @@
   // Footnote Command
   ////////////////////////////////////////////////////////////////////////////
 
-  Popcorn.FootnoteCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.FootnoteCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
       //if the user specifies a target div for this in the xml/json use it
       //otherwise make a new div 
@@ -906,8 +906,8 @@
   // Attribution Command
   ////////////////////////////////////////////////////////////////////////////
 
-  Popcorn.AttributionCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.AttributionCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
     var attribution = "";
     var image = "";
 
@@ -977,8 +977,8 @@
   // Warp Command
   ////////////////////////////////////////////////////////////////////////////
 
-  Popcorn.SeekCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.SeekCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
     this.params["in"] = toSeconds(this.params.seekfrom);
     this.params["out"] = toSeconds(this.params.seekfrom) + 1;
     this.params.seekto = toSeconds(this.params.seekto);
@@ -991,8 +991,8 @@
   // Script Command
   ////////////////////////////////////////////////////////////////////////////
 
-  Popcorn.ScriptCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.ScriptCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
     this.start = eval(this.params.start) || function() {};
     this.stop = eval(this.params.stop) || function() {};
     this.onIn = function() {
@@ -1007,8 +1007,8 @@
   // WebPage Command
   ////////////////////////////////////////////////////////////////////////////
   
-  Popcorn.WebPageCommand = function(name, params, text, videoManager) {
-    Popcorn.VideoCommand.call(this, name, params, text, videoManager);
+  popcorn.WebPageCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
 
     // Setup a default, iframe to hold the website
     var target = document.createElement('iframe');
@@ -1036,77 +1036,77 @@
   var commands = {
     subtitle: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.SubtitleCommand(name, params, text, videoManager);
+        return new popcorn.SubtitleCommand(name, params, text, videoManager);
       }
     },
     credits: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.CreditsCommand(name, params, text, videoManager);
+        return new popcorn.CreditsCommand(name, params, text, videoManager);
       }
     },
     flickr: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.FlickrCommand(name, params, text, videoManager);
+        return new popcorn.FlickrCommand(name, params, text, videoManager);
       }
     },
     videotag: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.TagCommand(name, params, text, videoManager);
+        return new popcorn.TagCommand(name, params, text, videoManager);
       }
     },
     location: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.MapCommand(name, params, text, videoManager);
+        return new popcorn.MapCommand(name, params, text, videoManager);
       }
     },
     footnote: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.FootnoteCommand(name, params, text, videoManager);
+        return new popcorn.FootnoteCommand(name, params, text, videoManager);
       }
     },
     twitter: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.TwitterCommand(name, params, text, videoManager);
+        return new popcorn.TwitterCommand(name, params, text, videoManager);
       }
     },
     attribution: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.AttributionCommand(name, params, text, videoManager);
+        return new popcorn.AttributionCommand(name, params, text, videoManager);
       }
     },
     googlenews: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.GoogleNewsCommand(name, params, text, videoManager);
+        return new popcorn.GoogleNewsCommand(name, params, text, videoManager);
       }
     },
     wiki: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.WikiCommand(name, params, text, videoManager);
+        return new popcorn.WikiCommand(name, params, text, videoManager);
       }
     },
 	  lastfm: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.LastfmCommand(name, params, text, videoManager);
+        return new popcorn.LastfmCommand(name, params, text, videoManager);
       }
     },
     lowerthird: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.LowerThirdCommand(name, params, text, videoManager);
+        return new popcorn.LowerThirdCommand(name, params, text, videoManager);
       }
     },
     seek: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.SeekCommand(name, params, text, videoManager);
+        return new popcorn.SeekCommand(name, params, text, videoManager);
       }
     },
     script: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.ScriptCommand(name, params, text, videoManager);
+        return new popcorn.ScriptCommand(name, params, text, videoManager);
        }
     },
     webpage: {
       create: function(name, params, text, videoManager) {
-        return new Popcorn.WebPageCommand(name, params, text, videoManager);
+        return new popcorn.WebPageCommand(name, params, text, videoManager);
       }
     }
   };
@@ -1221,7 +1221,7 @@
               dataXML = "",
               dataJSON = "";
           var ext = (filename.toLowerCase()).match(/\.xml$/);
-          var manager = new Popcorn.VideoManager(video[ind]);
+          var manager = new popcorn.VideoManager(video[ind]);
           if (ext !== null) {
             convertData(video[ind], manager, getTimelineData(filename).responseXML, convertXML);
           } else {
