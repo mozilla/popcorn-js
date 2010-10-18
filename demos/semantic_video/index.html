@@ -10,6 +10,7 @@
   <script>google.load("language", "1");</script>
   <script>google.load("elements", "1", {packages : ["newsshow"]});</script>
   <script src="../../popcorn.js"></script>
+
   <link href="style.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript">
     $(document).ready(function () {
@@ -102,8 +103,260 @@
                 <div id="credit_inner">
                 </div>
               </div>
+                <script>
+
+                ////////////////////////////////////////////////////////////////////////////
+                // Credits
+                ////////////////////////////////////////////////////////////////////////////
+
+                  $("#credits")
+                      .width(530)
+                      .height(299);
+                  var displayCredits = function() {
+                      $("#credits").show();
+                      $("#choices").animate({ right:'+=200px' }, 1000);
+                      add( [
+                          { 
+                              text: "Play Again",
+                              click:function() {
+                                  killCol(0);
+                                  $('video')[0].currentTime=0;
+                              }
+                          },
+                          {
+                              text: "People",
+                              next :[
+                                  {
+                                      text: "Steve Song", href: "http://www.google.ca/"
+                                  },
+                                  {
+                                      text: "Jeffrey Warren"
+                                  },
+                                  {
+                                      text: "Michael Adeyeye"
+                                  },
+                                  {
+                                      text: "Charlie Schmidt"
+                                  },
+                                  {
+                                      text: "Jonathan Zittrain"
+                                  },
+                                  {
+                                      text: "Mona Kasra"
+                                  },
+                                  {
+                                      text: "Noah Workman"
+                                  },
+                                  {
+                                      text: "Wilken Sanches"
+                                  },
+                                  {
+                                      text: "Keechang Kim"
+                                  },
+                                  {
+                                      text: "Celine Celines"
+                                  }
+                              ]
+                          },
+                          {
+                              text: "Places",
+                              next: [
+                                  {
+                                      text: "Sao Paulo", href: "http://en.wikipedia.org/wiki/S%C3%A3o_Paulo"
+                                  },
+                                  {
+                                      text: "Cape Town", href: "http://en.wikipedia.org/wiki/Cape_Town"
+                                  },
+                                  {
+                                      text: "Grande Isle, Louisiana", href: "http://en.wikipedia.org/wiki/Grand_Isle,_Louisiana"
+                                  },
+                                  {
+                                      text: "MIT Media Lab", href: "http://www.media.mit.edu/"
+                                  },
+                                  {
+                                      text: "Austin, Texas", href: "http://en.wikipedia.org/wiki/Austin,_Texas"
+                                  },
+                                  {
+                                      text: "New York, New York", href: "http://en.wikipedia.org/wiki/New_York_City"
+                                  },
+                                  {
+                                      text: "Seoul, Republic of South Korea", href: "http://en.wikipedia.org/wiki/Seoul"
+                                  },
+                                  {
+                                      text: "Montreal, Quebec", href: "http://en.wikipedia.org/wiki/Montreal"
+                                  },
+                                  {
+                                      text: "Harvard Law School", href: "http://www.law.harvard.edu/index.html"
+                                  }
+                              ]
+                          },
+                          {
+                              text: "Articles",
+                              next: [
+                                  {
+                                      text: "The Internet", href: "http://en.wikipedia.org/wiki/internet"
+                                  },
+                                  {
+                                      text: "The Village Telco", href: "http://en.wikipedia.org/wiki/Village_telco"
+                                  },
+                                  {
+                                      text: "Deepwater Horizon Oil Spill", href: "http://en.wikipedia.org/wiki/Deepwater_Horizon_oil_spill"
+                                  },
+                                  {
+                                      text: "Jonathan Zittrain", href: "http://en.wikipedia.org/wiki/Jonathan_Zittrain"
+                                  },
+                                  {
+                                      text: "Compuserve", href: "http://en.wikipedia.org/wiki/Compuserve"
+                                  },
+                                  {
+                                      text: "AOL", href: "http://en.wikipedia.org/wiki/AOL"
+                                  },
+                                  {
+                                      text: "Prodigy", href: "http://en.wikipedia.org/wiki/Prodigy_%28online_service%29"
+                                  },
+                                  {
+                                      text: "Internet Protocol", href: "http://en.wikipedia.org/wiki/Internet_Protocol"
+                                  },
+                                  {
+                                      text: "Tim Berners-Lee", href: "http://en.wikipedia.org/wiki/Tim_Berners-Lee"
+                                  },
+                                  {
+                                      text: "World Wide Web", href: "http://en.wikipedia.org/wiki/World_wide_web"
+                                  },
+                                  {
+                                      text: "Wikipedia", href: "http://en.wikipedia.org/wiki/Wikipedia"
+                                  },
+                                  {
+                                      text: "Open Standards", href: "http://en.wikipedia.org/wiki/Open_Standards"
+                                  }
+                              ]    
+                          },
+                          {
+                              text: "Developers",
+                              next: [
+                                  {
+                                      text: "Brett Gaylor",
+                                      next: [
+                                          { text: "Twitter", href: "http://twitter.com/remixmanifesto"},
+                                          { text: "Email", href: "mailto:brett@eyesteelfilm.com"}
+                                      ]
+                                  },
+                                  {
+                                       text: "Scott Downe",
+                                       next:  [{ text: "Email", href: "mailto:scott.downe@senecac.on.ca" }]
+                                  },
+                                  
+                                  {
+                                      text: "Nick Cammarata",
+                                      next: [
+                                          { text: "Twitter", href: "http://twitter.com/nicklovescode"},
+                                          { text: "Email", href: "mailto:nick@nickcammarata.com"}
+                                      ]
+                                  },
+                                  {
+                                      text: "Anna Sobiepanek",
+                                      next: [
+                                          { text: "Twitter", href: "http://twitter.com/annasob"},
+                                          { text: "Email", href: "mailto:anna.sobiepanek@gmail.com"}
+                                      ]
+                                  },
+                                  {
+                                      text: "Daniel Hodgin",
+                                      next: [
+                                          { text: "Twitter", href: "http://twitter.com/dhhodgin"},
+                                          { text: "Email", href: "mailto:daniel.hodgin@senecac.on.ca"}
+                                      ]
+                                  },
+                                  {
+                                      text: "David Humphrey",
+                                      next: [
+                                          { text: "Twitter", href: "http://twitter.com/humphd"},
+                                          { text: "Email", href: "mailto:david.humphrey@senecac.on.ca"}
+                                      ]
+                                  }
+                              ]
+                          },
+                          { 
+                              text: "Sources",
+                              next: [
+                                  
+                              ]
+                          }
+                      ]);
+                  };
+                  var removeCredits = function() {
+                      $("#choices").css("right","-200px");
+                      $("#credits").hide();
+                  };
+                  var colIndex = 0;
+                  var killCol = function(index, callback) {
+                    $(".column").each(function() {
+                      if ($(this).attr("colindex")>index) {
+                        $(this).addClass("removing").animate( { left: -$(this).outerWidth() + "px" }, 1200, function() {
+                          $(this).remove(); 
+                        });
+                      }
+                    });
+                    if (callback) {
+                      callback();
+                    }
+                  };
+
+                  var add =  function(items) {
+                        colIndex++;
+                        var ul = $("<ul></ul>")
+                            .addClass('column')
+                            .attr('colindex',parseInt(colIndex, 10));
+                        $.each(items, function(i, val) {
+                            var li = $(document.createElement('li'))
+                                .append($(document.createElement('a'))
+                                    .text(val.text)
+                                    .attr("href",val.href||"#")
+                                    .attr("target",val.href?"_blank":""))
+                                .appendTo(ul)
+                                .addClass('play')
+                                .click(function() {
+                                    if (val.href) {
+                                      return true;
+                                    }
+                                    var colIndex2 = $(this).parent().attr('colindex');
+                                    if (colIndex>colIndex2) {
+                                        killCol(colIndex2);
+                                        colIndex = colIndex2;
+                                    }
+                                    var hasClass = $(this).hasClass('selected');
+                                    if (!hasClass) {
+                                        if (val.click) {
+                                          val.click();
+                                        }
+                                        if (val.next) {
+                                          add(val.next);
+                                        }
+                                    }  
+                                    $(this)
+                                       .parent()
+                                       .find('.selected')
+                                       .removeClass('selected');
+                                    if (!hasClass) {
+                                      $(this).addClass('selected');
+                                    }
+                                });
+                        });
+                        var width = 0;
+                        $(".column:not(.removing)").each(function() {
+                            width+=$(this).outerWidth();    
+                        });
+                        ul
+                            .appendTo("#credit_inner")
+                            .css("z-index",1000 - colIndex)
+                            .css("left",-ul.outerWidth())
+                            .animate({ 
+                                left: width + "px"
+                            },750);
+                  };
+              </script>
               <video width="530" height="299" data-timeline-sources="xml/webMadeMovies.xml" controls>
-                <source src="http://webmademovies.etherworks.ca/popcorndemo/wmmjuly6.ogv" type='video/ogg; codecs="theora, vorbis"'>
+                <source src="../../../wmmjuly6.ogv" type='video/ogg; codecs="theora, vorbis"'>
                 <source src="http://webmademovies.etherworks.ca/popcorndemo/wmmjuly6.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
               </video>
               <div id="overlaydiv" style="position:absolute;top:1px;left:1px"></div>
