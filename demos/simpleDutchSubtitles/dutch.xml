@@ -1,6 +1,6 @@
 <popcorn>
 	<timeline>
-    <subtitles languagesrc="language" accessibilitysrc="accessibility">
+    <subtitles language="nl" languagesrc="language" accessibilitysrc="accessibility">
 		  <subtitle in="00:00:02:00" out="00:00:03:00">De beeldtelefoon heeft zijn intreden gedaan in ons land</subtitle>
 		  <subtitle in="00:00:03:00" out="00:00:11:00">Een experimenteel proefnet moet de PTT in staat stellen zich een oordeel te vormen over dit nieuwe communicatiemedium.</subtitle>
 		  <subtitle in="00:00:11:00" out="00:00:15:00">Waarmee mensen door een nummer te kiezen om in beeld en geluid met elkaar te communiceren.</subtitle>

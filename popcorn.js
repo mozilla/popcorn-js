@@ -228,7 +228,8 @@
       if (this.params.languagesrc) {
         var i = document.getElementById(this.params.languagesrc).selectedIndex,
             that = this;
-        if (document.getElementById(this.params.languagesrc).options[i].value !== (this.params.language || "") || (this.params.accessibilitysrc && document.getElementById(this.params.accessibilitysrc).checked)) {
+        if (document.getElementById(this.params.languagesrc).options[i].value !== (this.params.language || "") || 
+           (this.params.accessibilitysrc && document.getElementById(this.params.accessibilitysrc).checked)) {
           google.language.translate(this.text, '', document.getElementById(this.params.languagesrc).options[i].value, function(result) {
             that.target.innerHTML = result.translation;
           });
