@@ -884,21 +884,10 @@
   popcorn.FootnoteCommand = function(name, params, text, videoManager) {
     popcorn.VideoCommand.call(this, name, params, text, videoManager);
     this.onIn = function() {
-      //if the user specifies a target div for this in the xml/json use it
-      //otherwise make a new div 
-      if(this.params.target) {
-        document.getElementById(this.params.target).innerHTML  = this.text;
-      } else {
-        //this will be done later in ticket #46 (support default div)
-        //for this case i would think get the parent div of the <video> and append a new div to it
-      }
+      document.getElementById(this.params.target).innerHTML  = this.text;
     };
     this.onOut = function() {
-      if(this.params.target) {
-        document.getElementById(this.params.target).innerHTML  = "";
-      } else {
-        //this will be done later in ticket #46 (support default div)
-      }
+      document.getElementById(this.params.target).innerHTML  = "";
     };
   };
 
@@ -957,19 +946,10 @@
       attribution = this.text;
     }
     this.onIn = function() {
-      //check if the user specified a target div otherwise create default
-      if(this.params.target) {
-        document.getElementById(this.params.target).innerHTML = attribution;
-      } else {
-        //default div
-      }
+      document.getElementById(this.params.target).innerHTML = attribution;
     };
     this.onOut = function() {
-      if(this.params.target) {
-        document.getElementById(this.params.target).innerHTML = "";
-      } else {
-        //default div
-      }
+      document.getElementById(this.params.target).innerHTML = "";
     };
   };
 
