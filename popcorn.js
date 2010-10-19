@@ -28,7 +28,7 @@
     this.videoElement = videoElement;
     videoElement.videoManager = this;
     popcorn.addInstance(this);
-    videoElement.setAttribute("ontimeupdate", "popcorn.update(this, this.videoManager);"); 
+    videoElement.setAttribute("ontimeupdate", "popcorn.update(this);"); 
   };
 
   popcorn.VideoManager.prototype.addCommand = function(command) {
@@ -65,12 +65,12 @@
   var inactiveTarget = {};
   
   // Update is called on the video every time it's time changes.
-  popcorn.update = function(vid, manager) {
+  popcorn.update = function(vid) {
     var t = vid.currentTime,
         commandObject = {}; // Loops through all commands in the manager, preloading data, and calling onIn() or onOut().
-    for (var i in manager.commandObjects) {
-      if (manager.commandObjects.hasOwnProperty(i)) {
-        commandObject = manager.commandObjects[i];
+    for (var i in vid.videoManager.commandObjects) {
+      if (vid.videoManager.commandObjects.hasOwnProperty(i)) {
+        commandObject = vid.videoManager.commandObjects[i];
         if (commandObject.running && (commandObject.params["in"] > t || commandObject.params["out"] < t)) {
           commandObject.running = false;
           if (inactiveTarget[commandObject.params.target] <= 0 || --inactiveTarget[commandObject.params.target] <= 0) {
@@ -81,9 +81,9 @@
         }
       }
     }
-    for (var j in manager.commandObjects) {
-      if (manager.commandObjects.hasOwnProperty(j)) {
-        commandObject = manager.commandObjects[j];
+    for (var j in vid.videoManager.commandObjects) {
+      if (vid.videoManager.commandObjects.hasOwnProperty(j)) {
+        commandObject = vid.videoManager.commandObjects[j];
         if (!commandObject.loaded && (commandObject.params["in"] - 5) < t && commandObject.params["out"] > t) {
           commandObject.loaded = true;
           commandObject.preload();
