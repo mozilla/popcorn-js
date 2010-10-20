@@ -223,6 +223,7 @@
     } else {
       this.target = popcorn.SubtitleCommand.subDiv;
     }
+    this.target.style.display = "none";
 
     this.onIn = function() {
       if (this.params.languagesrc) {
@@ -239,9 +240,11 @@
       }
       style = this.target.getAttribute("style") + 'text-align:'+( this.params.align || "center" )+';';
       this.target.setAttribute('style', style);
+      this.target.style.display = "inline";
     };
     this.onOut = function() {
       this.target.innerHTML = "";
+      this.target.style.display = "none";
     };
   };
 
