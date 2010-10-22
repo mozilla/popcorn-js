@@ -332,261 +332,6 @@
   };
 
   ////////////////////////////////////////////////////////////////////////////
-  // Credits Command
-  ////////////////////////////////////////////////////////////////////////////
-  popcorn.CreditsCommand = function(name, params, text, videoManager) {
-    popcorn.VideoCommand.call(this, name, params, text, videoManager);
-    $("#credits")
-        .width(this.videoManager.videoElement.clientWidth)
-        .height(this.videoManager.videoElement.clientHeight);
-    this.params["in"]=this.videoManager.videoElement.duration-0.1;
-    this.params["out"]=this.videoManager.videoElement.duration+0.1;
-    var that = this;
-    this.onIn = function() {
-        $("#credits").show();
-        $("#choices").animate({ right:'+=200px' }, 1000);
-        popcorn.CreditsCommand.add( [
-            { 
-                text: "Play Again",
-                click:function() {
-                    popcorn.CreditsCommand.killCol(0);
-                    $('video')[0].currentTime=0;
-                }
-            },
-            {
-                text: "People",
-                next :[
-                    {
-                        text: "Steve Song", href: "http://www.google.ca/"
-                    },
-                    {
-                        text: "Jeffrey Warren"
-                    },
-                    {
-                        text: "Michael Adeyeye"
-                    },
-                    {
-                        text: "Charlie Schmidt"
-                    },
-                    {
-                        text: "Jonathan Zittrain"
-                    },
-                    {
-                        text: "Mona Kasra"
-                    },
-                    {
-                        text: "Noah Workman"
-                    },
-                    {
-                        text: "Wilken Sanches"
-                    },
-                    {
-                        text: "Keechang Kim"
-                    },
-                    {
-                        text: "Celine Celines"
-                    }
-                ]
-            },
-            {
-                text: "Places",
-                next: [
-                    {
-                        text: "Sao Paulo", href: "http://en.wikipedia.org/wiki/S%C3%A3o_Paulo"
-                    },
-                    {
-                        text: "Cape Town", href: "http://en.wikipedia.org/wiki/Cape_Town"
-                    },
-                    {
-                        text: "Grande Isle, Louisiana", href: "http://en.wikipedia.org/wiki/Grand_Isle,_Louisiana"
-                    },
-                    {
-                        text: "MIT Media Lab", href: "http://www.media.mit.edu/"
-                    },
-                    {
-                        text: "Austin, Texas", href: "http://en.wikipedia.org/wiki/Austin,_Texas"
-                    },
-                    {
-                        text: "New York, New York", href: "http://en.wikipedia.org/wiki/New_York_City"
-                    },
-                    {
-                        text: "Seoul, Republic of South Korea", href: "http://en.wikipedia.org/wiki/Seoul"
-                    },
-                    {
-                        text: "Montreal, Quebec", href: "http://en.wikipedia.org/wiki/Montreal"
-                    },
-                    {
-                        text: "Harvard Law School", href: "http://www.law.harvard.edu/index.html"
-                    }
-                ]
-            },
-            {
-                text: "Articles",
-                next: [
-                    {
-                        text: "The Internet", href: "http://en.wikipedia.org/wiki/internet"
-                    },
-                    {
-                        text: "The Village Telco", href: "http://en.wikipedia.org/wiki/Village_telco"
-                    },
-                    {
-                        text: "Deepwater Horizon Oil Spill", href: "http://en.wikipedia.org/wiki/Deepwater_Horizon_oil_spill"
-                    },
-                    {
-                        text: "Jonathan Zittrain", href: "http://en.wikipedia.org/wiki/Jonathan_Zittrain"
-                    },
-                    {
-                        text: "Compuserve", href: "http://en.wikipedia.org/wiki/Compuserve"
-                    },
-                    {
-                        text: "AOL", href: "http://en.wikipedia.org/wiki/AOL"
-                    },
-                    {
-                        text: "Prodigy", href: "http://en.wikipedia.org/wiki/Prodigy_%28online_service%29"
-                    },
-                    {
-                        text: "Internet Protocol", href: "http://en.wikipedia.org/wiki/Internet_Protocol"
-                    },
-                    {
-                        text: "Tim Berners-Lee", href: "http://en.wikipedia.org/wiki/Tim_Berners-Lee"
-                    },
-                    {
-                        text: "World Wide Web", href: "http://en.wikipedia.org/wiki/World_wide_web"
-                    },
-                    {
-                        text: "Wikipedia", href: "http://en.wikipedia.org/wiki/Wikipedia"
-                    },
-                    {
-                        text: "Open Standards", href: "http://en.wikipedia.org/wiki/Open_Standards"
-                    }
-                ]    
-            },
-            {
-                text: "Developers",
-                next: [
-                    {
-                        text: "Brett Gaylor",
-                        next: [
-                            { text: "Twitter", href: "http://twitter.com/remixmanifesto"},
-                            { text: "Email", href: "mailto:brett@eyesteelfilm.com"}
-                        ]
-                    },
-                    {
-                         text: "Scott Downe",
-                         next:  [{ text: "Email", href: "mailto:scott.downe@senecac.on.ca" }]
-                    },
-                    
-                    {
-                        text: "Nick Cammarata",
-                        next: [
-                            { text: "Twitter", href: "http://twitter.com/nicklovescode"},
-                            { text: "Email", href: "mailto:nick@nickcammarata.com"}
-                        ]
-                    },
-                    {
-                        text: "Anna Sobiepanek",
-                        next: [
-                            { text: "Twitter", href: "http://twitter.com/annasob"},
-                            { text: "Email", href: "mailto:anna.sobiepanek@gmail.com"}
-                        ]
-                    },
-                    {
-                        text: "Daniel Hodgin",
-                        next: [
-                            { text: "Twitter", href: "http://twitter.com/dhhodgin"},
-                            { text: "Email", href: "mailto:daniel.hodgin@senecac.on.ca"}
-                        ]
-                    },
-                    {
-                        text: "David Humphrey",
-                        next: [
-                            { text: "Twitter", href: "http://twitter.com/humphd"},
-                            { text: "Email", href: "mailto:david.humphrey@senecac.on.ca"}
-                        ]
-                    }
-                ]
-            },
-            { 
-                text: "Sources",
-                next: [
-                    
-                ]
-            }
-        ]);
-    };
-    this.onOut = function() {
-        $("#choices").css("right","-200px");
-        $("#credits").hide();
-    };
-  };
-  popcorn.CreditsCommand.colIndex = 0;
-  popcorn.CreditsCommand.killCol = function(index, callback) {
-    $(".column").each(function() {
-      if ($(this).attr("colindex")>index) {
-        $(this).addClass("removing").animate( { left: -$(this).outerWidth() + "px" }, 1200, function() {
-          $(this).remove(); 
-        });
-      }
-    });
-    if (callback) {
-      callback();
-    }
-  };
-
-  popcorn.CreditsCommand.add =  function(items) {
-        popcorn.CreditsCommand.colIndex++;
-        var ul = $("<ul></ul>")
-            .addClass('column')
-            .attr('colindex',parseInt(popcorn.CreditsCommand.colIndex, 10));
-        $.each(items, function(i, val) {
-            var li = $(document.createElement('li'))
-                .append($(document.createElement('a'))
-                    .text(val.text)
-                    .attr("href",val.href||"#")
-                    .attr("target",val.href?"_blank":""))
-                .appendTo(ul)
-                .addClass('play')
-                .click(function() {
-                    if (val.href) {
-                      return true;
-                    }
-                    var colIndex = $(this).parent().attr('colindex');
-                    if (popcorn.CreditsCommand.colIndex>colIndex) { 
-                        popcorn.CreditsCommand.killCol(colIndex);
-                        popcorn.CreditsCommand.colIndex = colIndex;
-                    }
-                    var hasClass = $(this).hasClass('selected');
-                    if (!hasClass) {
-                        if (val.click) {
-                          val.click();
-                        }
-                        if (val.next) {
-                          popcorn.CreditsCommand.add(val.next);
-                        }
-                    }  
-                    $(this)
-                       .parent()
-                       .find('.selected')
-                       .removeClass('selected');
-                    if (!hasClass) {
-                      $(this).addClass('selected');
-                    }
-                });
-        });
-        var width = 0;
-        $(".column:not(.removing)").each(function() {
-            width+=$(this).outerWidth();    
-        });
-        ul
-            .appendTo("#credit_inner")
-            .css("z-index",1000 - popcorn.CreditsCommand.colIndex)
-            .css("left",-ul.outerWidth())
-            .animate({ 
-                left: width + "px"
-            },750);
-  };
-
-  ////////////////////////////////////////////////////////////////////////////
   // TagThisPerson Command
   ////////////////////////////////////////////////////////////////////////////
 
@@ -680,24 +425,24 @@
 	  var htmlString = '';
 	
     // This uses jquery
-	$.getJSON("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ this.params.artist +"&api_key=30ac38340e8be75f9268727cb4526b3d&format=json&callback=?",
-	  function(data){
-		  htmlString += '<h3>'+data.artist.name+'</h3>';
-	    htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
-		  htmlString += '<p>'+ data.artist.bio.summary +'</p>';
-		  htmlString += '<hr /><p><h4>Tags</h4><ul>';
-		  $.each(data.artist.tags.tag, function(i,val) {
-		    htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
-		  });
-		  htmlString += '</ul></p>';
-		  htmlString += '<hr /><p><h4>Similar</h4><ul>';
-		  $.each(data.artist.similar.artist, function(i,val) {
-		    htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
-		  });
-		  htmlString += '</ul></p>';
-	    target.innerHTML = htmlString;
-	  }
-	);
+	  $.getJSON("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ this.params.artist +"&api_key=30ac38340e8be75f9268727cb4526b3d&format=json&callback=?",
+	    function(data){
+		    htmlString += '<h3>'+data.artist.name+'</h3>';
+	      htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
+		    htmlString += '<p>'+ data.artist.bio.summary +'</p>';
+		    htmlString += '<hr /><p><h4>Tags</h4><ul>';
+		    $.each(data.artist.tags.tag, function(i,val) {
+		      htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
+		    });
+		    htmlString += '</ul></p>';
+		    htmlString += '<hr /><p><h4>Similar</h4><ul>';
+		    $.each(data.artist.similar.artist, function(i,val) {
+		      htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
+		    });
+		    htmlString += '</ul></p>';
+	      target.innerHTML = htmlString;
+	    }
+	  );
 	
     this.target = target;
     this.onIn = function() {
@@ -1021,11 +766,6 @@
     subtitle: {
       create: function(name, params, text, videoManager) {
         return new popcorn.SubtitleCommand(name, params, text, videoManager);
-      }
-    },
-    credits: {
-      create: function(name, params, text, videoManager) {
-        return new popcorn.CreditsCommand(name, params, text, videoManager);
       }
     },
     flickr: {
