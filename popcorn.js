@@ -208,14 +208,17 @@
   // Child commands. Uses onIn() and onOut() to do time based operations
   popcorn.SubtitleCommand = function(name, params, text, videoManager) {
     popcorn.VideoCommand.call(this, name, params, text, videoManager);
-    var style = "";
 
     // Creates a div for all subtitles to use
     if (!popcorn.SubtitleCommand.subDiv) {
       popcorn.SubtitleCommand.subDiv = document.createElement('div');
-      
-      style = 'position:absolute;top:240px;left:1px;color:white;font-weight:bold;font-family:sans-serif;text-shadow:black 2px 2px 6px;font-size:18px;width:100%;';
-      popcorn.SubtitleCommand.subDiv.setAttribute('style', style);  
+      popcorn.SubtitleCommand.subDiv.style.position = "absolute";
+      popcorn.SubtitleCommand.subDiv.style.color = "white";
+      popcorn.SubtitleCommand.subDiv.style.textShadow = "black 2px 2px 6px";
+      popcorn.SubtitleCommand.subDiv.style.fontSize = "18px";
+      popcorn.SubtitleCommand.subDiv.style.fontWeight = "bold";
+      popcorn.SubtitleCommand.subDiv.style.textAlign = "center";
+
       this.videoManager.videoElement.parentNode.appendChild(popcorn.SubtitleCommand.subDiv);
     }
     if (this.params.target) {
@@ -233,14 +236,17 @@
            (this.params.accessibilitysrc && document.getElementById(this.params.accessibilitysrc).checked)) {
           google.language.translate(this.text, '', document.getElementById(this.params.languagesrc).options[i].value, function(result) {
             that.target.innerHTML = result.translation;
+            that.target.style.display = "inline";
+            popcorn.SubtitleCommand.subDiv.style.top = videoManager.videoElement.offsetTop + videoManager.videoElement.offsetHeight - 64 + "px";
+            popcorn.SubtitleCommand.subDiv.style.left = videoManager.videoElement.offsetLeft + ((videoManager.videoElement.offsetWidth / 2) - (popcorn.SubtitleCommand.subDiv.offsetWidth / 2)) + "px";
           });
         }
       } else {
         this.target.innerHTML = this.text;
+        this.target.style.display = "inline";
+        popcorn.SubtitleCommand.subDiv.style.top = videoManager.videoElement.offsetTop + videoManager.videoElement.offsetHeight - 64 + "px";
+        popcorn.SubtitleCommand.subDiv.style.left = videoManager.videoElement.offsetLeft + ((videoManager.videoElement.offsetWidth / 2) - (popcorn.SubtitleCommand.subDiv.offsetWidth / 2)) + "px";
       }
-      style = this.target.getAttribute("style") + 'text-align:'+( this.params.align || "center" )+';';
-      this.target.setAttribute('style', style);
-      this.target.style.display = "inline";
     };
     this.onOut = function() {
       this.target.innerHTML = "";
