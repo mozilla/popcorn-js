@@ -479,7 +479,6 @@
       // Div is hidden by default
       that.target.setAttribute('style', 'display:none');
       var widget = new TWTR.Widget({
-        creator: true,
         version: 2,
         type: 'search',
         id: that.target.getAttribute('id'),
