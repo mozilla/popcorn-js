@@ -84,11 +84,11 @@
     for (var j in vid.videoManager.commandObjects) {
       if (vid.videoManager.commandObjects.hasOwnProperty(j)) {
         commandObject = vid.videoManager.commandObjects[j];
-        if (!commandObject.loaded && (commandObject.params["in"] - 5) < t && commandObject.params["out"] > t) {
+        if (!commandObject.loaded && (commandObject.params["in"] - 5) <= t && commandObject.params["out"] > t) {
           commandObject.loaded = true;
           commandObject.preload();
         }
-        if (!commandObject.running && commandObject.params["in"] < t && commandObject.params["out"] > t) {
+        if (!commandObject.running && commandObject.params["in"] <= t && commandObject.params["out"] > t) {
           commandObject.running = true;
           
           $("#" + commandObject.params.target + " .inactive").hide();
@@ -918,6 +918,7 @@
         clearInterval(si);
         convert(data, manager, type);
         manager.loaded();
+        popcorn.update(video);
     }, 50);
   };
 
