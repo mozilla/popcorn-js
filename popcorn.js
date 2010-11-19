@@ -145,6 +145,20 @@
     }
   };
 
+  var offset = function(elem) {
+    if(!elem) elem = this;
+
+    var x = elem.offsetLeft;
+    var y = elem.offsetTop;
+
+    while (elem = elem.offsetParent) {
+      x += elem.offsetLeft;
+      y += elem.offsetTop;
+    }
+
+    return { left: x, top: y };
+  }
+
   ////////////////////////////////////////////////////////////////////////////
   // Command objects
   ////////////////////////////////////////////////////////////////////////////
@@ -237,15 +251,15 @@
           google.language.translate(this.text, '', document.getElementById(this.params.languagesrc).options[i].value, function(result) {
             that.target.innerHTML = result.translation;
             that.target.style.display = "inline";
-            popcorn.SubtitleCommand.subDiv.style.top = videoManager.videoElement.offsetTop + videoManager.videoElement.offsetHeight - 64 + "px";
-            popcorn.SubtitleCommand.subDiv.style.left = videoManager.videoElement.offsetLeft + ((videoManager.videoElement.offsetWidth / 2) - (popcorn.SubtitleCommand.subDiv.offsetWidth / 2)) + "px";
+            popcorn.SubtitleCommand.subDiv.style.top = offset(videoManager.videoElement).top + videoManager.videoElement.offsetHeight - 64 + "px";
+            popcorn.SubtitleCommand.subDiv.style.left = offset(videoManager.videoElement).left + ((videoManager.videoElement.offsetWidth / 2) - (popcorn.SubtitleCommand.subDiv.offsetWidth / 2)) + "px";
           });
         }
       } else {
         this.target.innerHTML = this.text;
         this.target.style.display = "inline";
-        popcorn.SubtitleCommand.subDiv.style.top = videoManager.videoElement.offsetTop + videoManager.videoElement.offsetHeight - 64 + "px";
-        popcorn.SubtitleCommand.subDiv.style.left = videoManager.videoElement.offsetLeft + ((videoManager.videoElement.offsetWidth / 2) - (popcorn.SubtitleCommand.subDiv.offsetWidth / 2)) + "px";
+        popcorn.SubtitleCommand.subDiv.style.top = offset(videoManager.videoElement).top + videoManager.videoElement.offsetHeight - 64 + "px";
+        popcorn.SubtitleCommand.subDiv.style.left = offset(videoManager.videoElement).left + ((videoManager.videoElement.offsetWidth / 2) - (popcorn.SubtitleCommand.subDiv.offsetWidth / 2)) + "px";
       }
     };
     this.onOut = function() {
