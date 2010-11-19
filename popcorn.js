@@ -741,9 +741,8 @@
     // Setup a default, iframe to hold the website
     var target = document.createElement('iframe');
     target.setAttribute('src', this.params.src);
-    target.setAttribute('width', this.params.width);
-    target.setAttribute('height', this.params.height);
-    target.setAttribute('id', this.id);
+    target.setAttribute('width', "100%");
+    target.setAttribute('height', "100%");
     document.getElementById(this.params.target).appendChild(target);
     // iframe is hidden by default
     target.setAttribute('style', 'display:none');
