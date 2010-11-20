@@ -408,6 +408,10 @@
         document.getElementById(this.params.mapinfo).innerHTML = "";
       }
     };
+    
+    // This seems like a hack to me, implemented in response to bug 144
+    var $elem = $('#' + this.params.target);
+    $elem.height() === 0 ? $elem.height(300) : '';
   };
 
   ////////////////////////////////////////////////////////////////////////////
