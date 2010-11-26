@@ -368,6 +368,7 @@
   // Map Command
   ////////////////////////////////////////////////////////////////////////////
 
+
   popcorn.MapCommand = function(name, params, text, videoManager) {
     popcorn.VideoCommand.call(this, name, params, text, videoManager);
     var that = this,
