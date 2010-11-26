@@ -370,6 +370,42 @@
 
   popcorn.MapCommand = function(name, params, text, videoManager) {
     popcorn.VideoCommand.call(this, name, params, text, videoManager);
+    var that = this,
+    renderMap = function(){
+      var elem = document.getElementById(this.params.target);
+
+      this.params.zoom = parseInt(this.params.zoom, 10);
+      // load the map
+      // http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions  <-- Map API
+      this.location = new google.maps.LatLng(this.params.lat, this.params.long);
+      if (!popcorn.MapCommand[this.params.target]) {
+        popcorn.MapCommand[this.params.target] = new google.maps.Map(elem, {mapTypeId: google.maps.MapTypeId.HYBRID});
+        popcorn.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
+        popcorn.MapCommand[this.params.target].setZoom(0);
+      }
+      this.onIn = function() {
+        popcorn.MapCommand[this.params.target].setCenter(this.location);
+        popcorn.MapCommand[this.params.target].setZoom(this.params.zoom);
+        if (this.params.src && this.params.mapinfo) {
+          var link = document.createElement("a");
+          link.setAttribute("href", this.params.src);
+          link.setAttribute("target", "_blank");
+          link.appendChild(document.createTextNode(this.params.description||this.params.src));
+          document.getElementById(this.params.mapinfo).appendChild(link);
+        }
+      };
+      this.onOut = function() {
+        popcorn.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
+        popcorn.MapCommand[this.params.target].setZoom(0);
+        if (this.params.mapinfo) {
+          document.getElementById(this.params.mapinfo).innerHTML = "";
+        }
+      };
+
+      // This seems like a hack to me, implemented in response to bug 144
+      elem.offsetHeight === 0 ? elem.style.setProperty('height', "300px") : '';
+    }
+
 
     // All data from Universal Subtitles comes from the text attribute
     // so the data from that needs to enter the appropriate fields
@@ -381,37 +417,24 @@
       this.params.long = split[1];
       this.params.zoom = split[2];
     }
-    this.params.zoom = parseInt(this.params.zoom, 10);
-    // load the map
-    // http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions  <-- Map API
-    this.location = new google.maps.LatLng(this.params.lat, this.params.long);
-    if (!popcorn.MapCommand[this.params.target]) {
-      popcorn.MapCommand[this.params.target] = new google.maps.Map(document.getElementById(this.params.target), {mapTypeId: google.maps.MapTypeId.HYBRID});
-      popcorn.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
-      popcorn.MapCommand[this.params.target].setZoom(0);
+
+    // If there is no lat/long, and there is location, geocode the location
+    if ( !this.params.lat || !this.params.long || this.params.lat == 'null' || this.params.long == 'null' && this.params.location) {
+      var location = 'boston',
+          geocoder = new google.maps.Geocoder(),
+          lat,
+          long;
+
+      geocoder.geocode({
+          address: this.params.location
+        }, function(results, status) {
+             that.params.lat = results[0].geometry.location.va;
+             that.params.long = results[0].geometry.location.wa;
+             renderMap.call(that)
+      })
+    } else {
+      renderMap();
     }
-    this.onIn = function() {
-      popcorn.MapCommand[this.params.target].setCenter(this.location);
-      popcorn.MapCommand[this.params.target].setZoom(this.params.zoom);
-      if (this.params.src && this.params.mapinfo) {
-        var link = document.createElement("a");
-        link.setAttribute("href", this.params.src);
-        link.setAttribute("target", "_blank");
-        link.appendChild(document.createTextNode(this.params.description||this.params.src));
-        document.getElementById(this.params.mapinfo).appendChild(link);
-      }
-    };
-    this.onOut = function() {
-      popcorn.MapCommand[this.params.target].setCenter(new google.maps.LatLng(0, 0));
-      popcorn.MapCommand[this.params.target].setZoom(0);
-      if (this.params.mapinfo) {
-        document.getElementById(this.params.mapinfo).innerHTML = "";
-      }
-    };
-    
-    // This seems like a hack to me, implemented in response to bug 144
-    var $elem = $('#' + this.params.target);
-    $elem.height() === 0 ? $elem.height(300) : '';
   };
 
   ////////////////////////////////////////////////////////////////////////////
