@@ -1,0 +1,5 @@
+<popcorn>
+	<timeline>
+    <subtitle>init subtitle</subtitle> <!-- no in and out defaults to in="0" out="video's duration" -->
+	</timeline>
+</popcorn>
