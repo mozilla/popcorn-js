@@ -34,11 +34,8 @@
 
       matches = rIdExp.exec( entity );
       
-      
       if ( matches.length && matches[2]  ) {
-
         elem = document.getElementById(matches[2]);
-        
       }
       
       this.video = elem ? elem : null;
@@ -48,11 +45,9 @@
         timelines: []
       };
       
-      
       return this;
     }
   };
-
 
   //  This trick allows our api methods to be chained to 
   //  instance references.    
@@ -79,7 +74,6 @@
     return obj;
   };    
   
-  
   Popcorn.extend = function( obj ) {
     var dest = obj, src = slice.call(arguments, 1);
 
@@ -90,7 +84,6 @@
     });
     return dest;      
   };
-
 
   // A Few reusable utils, memoized onto Popcorn
   Popcorn.extend( Popcorn, {
@@ -107,7 +100,6 @@
       return size;
     }
   });    
-
   
   //  Simple Factory pattern to implement native 
   //  getters/setters and controllers 
@@ -115,7 +107,6 @@
   //  The immediately invoked function creates 
   //  and returns an object of methods
   Popcorn.extend(Popcorn.p, (function () {
-      
       
       // todo: play, pause, mute should toggle
       var methods = "load play pause currentTime playbackRate mute volume", 
@@ -147,13 +138,10 @@
     })()
   );
   
-  
   var nativeEvents = "loadstart progress suspend emptied stalled play pause " + 
                      "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
                      "seeking seeked timeupdate ended ratechange durationchange volumechange";
   
-
-
   Popcorn.events  = {
     //todo, fix types to be custom, natives will be native only
     types: nativeEvents.split(/\s+/g),
@@ -215,7 +203,6 @@
     }
   };
   
-  
   //  Extend listen and trigger to all Popcorn instances
   Popcorn.forEach( ["trigger", "listen"], function ( key ) {
     Popcorn.p[key] = Popcorn.events.fn[key];
@@ -238,7 +225,6 @@
     //  within the context of a plugin, the `timeupdate` or any of the events can be listened to 
 
   };
-
 
   global.Popcorn = Popcorn;
   
