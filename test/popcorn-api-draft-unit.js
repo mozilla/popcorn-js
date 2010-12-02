@@ -55,7 +55,7 @@ test("Popcorn Object", function () {
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume";
   
-  console.log(popped);
+  //console.log(popped);
   
   popped.play();
 
@@ -83,7 +83,7 @@ test("Popcorn Plugin", function () {
   Popcorn.plugin("subtitles", function ( ) {
   
     
-    console.log(this);
+    //console.log(this);
   
   
   
@@ -121,7 +121,7 @@ test("Popcorn Events", function () {
       count = 0;
 
   //expect(expects);
-  
+  // not in full use
   function plus(){ 
     if ( ++count == expects ) start(); 
   }
@@ -160,7 +160,7 @@ test("Popcorn Events", function () {
   
   setTimeout(function() {
   
-    console.log(completed);
+    //console.log(completed);
   
     start();
     
