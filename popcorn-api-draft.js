@@ -41,8 +41,8 @@
       this.video = elem ? elem : null;
       
       this.data = {
-        events:    {},
-        timelines: []
+        events: {},
+        tracks: []
       };
       
       return this;
@@ -180,7 +180,7 @@
           this.data.events[type] = {};
         }
         
-        //  setup for custom event system
+        //  Register 
         this.data.events[type][ fn.toString() + Popcorn.guid() ] = fn;
         
         if ( Popcorn.events.all.indexOf( type ) > -1 ) {
@@ -205,6 +205,8 @@
     Popcorn.p[key] = Popcorn.events.fn[key];
   });  
   
+  //  Plugins are registered 
+  Popcorn.registry  = [];
   //  An interface for extending Popcorn 
   //  with plugin functionality
   Popcorn.plugin = function( name, definition ) {
@@ -219,13 +221,16 @@
     Popcorn.extend( Popcorn.p, plugin );
     
     
-    
-    
-    
+    if ( Popcorn.registry ) {
+      Popcorn.registry.push({ 
+        name: name,
+        plugin: plugin
+      });
+    }
     
     //  within the context of a plugin, the `timeupdate` or any of the events can be listened to 
-
   };
+  
 
   global.Popcorn = Popcorn;
   
