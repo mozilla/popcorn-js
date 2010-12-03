@@ -83,7 +83,7 @@ test("Popcorn Plugin", function () {
   Popcorn.plugin("subtitles", function ( ) {
   
     
-    //console.log(this);
+    console.log(this);
   
   
   

@@ -88,7 +88,7 @@
   // A Few reusable utils, memoized onto Popcorn
   Popcorn.extend( Popcorn, {
     guid: function() {
-      return +new Date();
+      return +new Date() + Math.floor(Math.random()*11);
     }, 
     sizeOf: function ( obj ) {
       var size = 0;
@@ -181,17 +181,14 @@
         }
         
         //  setup for custom event system
-        this.data.events[type][ fn.toString() ] = fn;
+        this.data.events[type][ fn.toString() + Popcorn.guid() ] = fn;
         
         if ( Popcorn.events.all.indexOf( type ) > -1 ) {
           
-          
           this.video.addEventListener( type, function( event ) {
-          
+            
             Popcorn.forEach( self.data.events[type], function ( obj, key ) {
-
               obj.call(self, event);
-
             });            
           
           }, false);
@@ -220,6 +217,10 @@
     plugin[ name ] = definition;
     
     Popcorn.extend( Popcorn.p, plugin );
+    
+    
+    
+    
     
     
     //  within the context of a plugin, the `timeupdate` or any of the events can be listened to 
