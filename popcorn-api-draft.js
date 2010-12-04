@@ -6,7 +6,6 @@
 //  reference to the window context
 (function(global) {
 
-
   //  Cache refs to speed up calls to native utils
   var  
   forEach = Array.prototype.forEach, 
@@ -138,6 +137,27 @@
     })()
   );
   
+  Popcorn.extend(Popcorn.p, {
+    
+    setCommand: function() {
+    
+    }, 
+    getCommand: function() {
+    
+    }, 
+    toTrack: function( setup ) {
+      /*
+      {
+        in: ts,
+        out: ts, 
+        command: f()
+      }
+      */
+      // stores the command in a track
+    }
+  
+  });
+  
   var nativeEvents = "loadstart progress suspend emptied stalled play pause " + 
                      "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
                      "seeking seeked timeupdate ended ratechange durationchange volumechange";
@@ -194,8 +214,13 @@
           }, false);
         
         }
-        
         return this;
+      }, 
+      special: {
+        // handles timeline controllers
+        play: function () {
+          //  renders all of the interally stored track commands
+        }
       }
     }
   };
@@ -220,7 +245,6 @@
     
     Popcorn.extend( Popcorn.p, plugin );
     
-    
     if ( Popcorn.registry ) {
       Popcorn.registry.push({ 
         name: name,
@@ -228,7 +252,8 @@
       });
     }
     
-    //  within the context of a plugin, the `timeupdate` or any of the events can be listened to 
+    //  within the context of a plugin
+    //  any of the events can be listened to 
   };
   
 

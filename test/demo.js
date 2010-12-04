@@ -1,17 +1,12 @@
-
 // EXAMPLE PLUGIN: SUBTITLER
 
 (function (Popcorn) {
-  
-  
-  
   
   Popcorn.plugin( "subtitler" , function ( options ) {
     
     var subtitles = [], 
         context = this.video, 
         div = document.getElementById("subtitle-container");
-        
     
     //  Check for existing frame
     if ( !div ) {
@@ -44,7 +39,6 @@
     
     this.listen("timeupdate", function (event) {
       
-      
       Popcorn.forEach(subtitles, function ( subtitle ) {
         
         var temp  = div.querySelectorAll( subtitle.id );
@@ -61,7 +55,6 @@
             });
           }
         }
-        
       }, this);
     });
   });
@@ -74,22 +67,17 @@
 
 $(function () {
 
-  
-  
   var p = Popcorn('#video');
-  
   
   p.play();  
   
-  
+ 
   p.subtitler({
     id: "#subtitle-a", 
     start: 2, // seconds
     end: 5, // seconds
     html: '<p id="subtitle-a">Appear at 2 second mark, dissappear at 5 second mark</p>'
   });
-  
-  
   
   // Butter would generate the data to populate this api function call's argument
   
