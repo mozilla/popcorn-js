@@ -257,7 +257,6 @@
       plugin: plugin
     });
     
-    
     //  within the context of a plugin
     //  any of the events can be listened to 
   };

@@ -122,6 +122,7 @@ test("Popcorn Events Stored By Type", function () {
       ;
 
   function plus(){ 
+
     if ( ++count == 4 ) {
       
       if ( fired === 4 ) {
@@ -178,7 +179,9 @@ test("Popcorn Events Stored By Type", function () {
 
 
 test("Popcorn Events Simulated", function () {
-
+  
+  QUnit.reset();
+  
   var p = Popcorn("#video"),
       completed = [], 
       eventtest = "loadstart progress suspend emptied stalled play pause " + 
