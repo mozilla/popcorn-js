@@ -118,19 +118,15 @@ test("Popcorn Events Stored By Type", function () {
   
   var p = Popcorn("#video"), 
       count = 0,
-      fired = 0
+      fired = 0, 
+      wants = 4
       ;
 
   function plus(){ 
 
     if ( ++count == 4 ) {
       
-      if ( fired === 4 ) {
-        ok( true, fired + " callbacks fired from 1 handler" );
-      }
-      else {
-        ok( false, fired + " callbacks fired - CHECK HANDLERS" );
-      }
+      equals( fired, wants, "Number of callbacks fired from 1 handler" );
 
       p.unlisten("play");
   
@@ -146,34 +142,32 @@ test("Popcorn Events Stored By Type", function () {
   p.listen("play", function () {
     fired++;
     
-    ok(true, "Play fired");
+    ok(true, "Play fired " + fired);
     plus();
   });
       
   p.listen("play", function () {
     fired++;
 
-    ok(true, "Play fired");    
+    ok(true, "Play fired " + fired);    
     plus();
   });
 
   p.listen("play", function () {
     fired++;
 
-    ok(true, "Play fired");    
+    ok(true, "Play fired " + fired);    
     plus();
   });
 
   p.listen("play", function () {
     fired++;
 
-    ok(true, "Play fired");
+    ok(true, "Play fired " + fired);
     plus();
   });
   
   p.trigger("play");
-  
-
   
 });
 

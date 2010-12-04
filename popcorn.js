@@ -246,7 +246,7 @@
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p 
     
-    var plugin  = {};
+    var plugin = {};
     
     plugin[ name ] = definition;
     
