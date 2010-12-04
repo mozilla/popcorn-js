@@ -1,14 +1,9 @@
-
-
 test("Popcorn API", function () {
   
   var expects = 3, 
       count = 0;
   
   expect(expects);
-  
-  
-  
   
   function plus(){ if ( ++count == expects ) start(); }
 
@@ -44,7 +39,6 @@ test("Popcorn Utility", function () {
   
   equals( typeof Popcorn.forEach, "function" , "Popcorn.forEach is a provided utility function");
   equals( typeof Popcorn.extend, "function" , "Popcorn.extend is a provided utility function");
-  
 
 });
 
