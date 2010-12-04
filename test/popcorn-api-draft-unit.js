@@ -118,19 +118,83 @@ test("Popcorn Plugin", function () {
   
 });
 
+test("Popcorn Events Stored By Type", function () {
+  
+  expect(6)
+  
+  var p = Popcorn("#video"), 
+      count = 0,
+      fired = 0
+      ;
 
+  function plus(){ 
+    if ( ++count == 4 ) {
+      
+      if ( fired === 4 ) {
+        ok( true, fired + " callbacks fired from 1 handler" );
+      }
+      else {
+        ok( false, fired + " callbacks fired - CHECK HANDLERS" );
+      }
+
+
+      p.unlisten("play");
+  
+  
+      ok( !p.data.events["play"], "play handlers removed" );
+  
+        
+      start();
+    } 
+  }
+
+  stop();  
+  
+  
+  p.listen("play", function () {
+    fired++;
+    
+    ok(true, "Play fired");
+    plus();
+  });
+      
+  p.listen("play", function () {
+    fired++;
+
+    ok(true, "Play fired");    
+    plus();
+  });
+
+  p.listen("play", function () {
+    fired++;
+
+    ok(true, "Play fired");    
+    plus();
+  });
+
+  p.listen("play", function () {
+    fired++;
+
+    ok(true, "Play fired");
+    plus();
+  });
+  
+  p.trigger("play");
+  
+
+  
+});
 
 
 test("Popcorn Events Simulated", function () {
 
-
   var p = Popcorn("#video"),
       completed = [], 
       eventtest = "loadstart progress suspend emptied stalled play pause " + 
-                        "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
-                        "seeking seeked timeupdate ended ratechange durationchange volumechange", 
+                  "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
+                  "seeking seeked timeupdate ended ratechange durationchange volumechange", 
       events = eventtest.split(/\s+/g);                              
-  
+
   
   var expects = events.length, 
       count = 0;

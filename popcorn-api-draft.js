@@ -194,28 +194,35 @@
       }, 
       listen: function ( type, fn ) {
         
-        var self = this;
+        var self = this, hasEvents = true;
         
         if ( !this.data.events[type] ) {
           this.data.events[type] = {};
+          hasEvents = false;
         }
         
         //  Register 
         this.data.events[type][ fn.toString() + Popcorn.guid() ] = fn;
         
-        if ( Popcorn.events.all.indexOf( type ) > -1 ) {
-          
+        // only attach one event of any type          
+        if (!hasEvents && Popcorn.events.all.indexOf( type ) > -1 ) {
+
           this.video.addEventListener( type, function( event ) {
             
             Popcorn.forEach( self.data.events[type], function ( obj, key ) {
               obj.call(self, event);
-            });            
+            });
+            
+            //fn.call( self, event );
           
-          }, false);
-        
+          }, false);          
         }
         return this;
       }, 
+      unlisten: function( type ) {
+        this.data.events[type] = null;
+        return this;        
+      },      
       special: {
         // handles timeline controllers
         play: function () {
@@ -226,7 +233,7 @@
   };
   
   //  Extend listen and trigger to all Popcorn instances
-  Popcorn.forEach( ["trigger", "listen"], function ( key ) {
+  Popcorn.forEach( ["trigger", "listen", "unlisten"], function ( key ) {
     Popcorn.p[key] = Popcorn.events.fn[key];
   });  
   
