@@ -137,13 +137,10 @@ test("Popcorn Events Stored By Type", function () {
         ok( false, fired + " callbacks fired - CHECK HANDLERS" );
       }
 
-
       p.unlisten("play");
-  
   
       ok( !p.data.events["play"], "play handlers removed" );
   
-        
       start();
     } 
   }
