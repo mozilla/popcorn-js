@@ -250,7 +250,10 @@
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p 
     
-    var plugin = {}, setup;
+    var natives = nativeEvents.split(/\s+/g), 
+        reserved = [ "start", "end", "timeupdate" ], 
+        plugin = {},
+        setup;
     
     
     
@@ -267,6 +270,7 @@
           return this;
         } 
         
+        //  Checks for expected properties
         if ( !( "start" in options ) ) {
           options.start = 0;
         }
@@ -279,12 +283,15 @@
           options.timeupdate = Popcorn.nop;
         }        
         
+        //  If a _setup was declared, then call it before 
+        //  the events commence
+        
         if ( "_setup" in setup && typeof setup._setup === "function" ) {
           setup._setup.call(self, options);
         }
         
-        
-        this.addEventListener( "timeupdate", function( event ) {
+        //  Plugin timeline handler 
+        this.video.addEventListener( "timeupdate", function( event ) {
           
           
           if ( ~~self.currentTime() === options.start || 
@@ -307,6 +314,16 @@
           }
           
         }, false);
+        
+
+        //  Future support plugin definitions for all of the native events
+        Popcorn.forEach( options, function ( key ) {
+          
+          console.log(key);
+        });
+        
+
+              
       
         
         return this;
