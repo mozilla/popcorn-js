@@ -295,7 +295,6 @@
                   self.currentTime() === options.start ) {
             
             !fired.start && setup.start.call(self, event, options);
-            
             fired.start++;
           }
 
@@ -303,14 +302,12 @@
                 self.currentTime() < options.end ) {
             
             setup.timeupdate.call(self, event, options);
-            
           }
 
           if ( ~~self.currentTime() === options.end || 
                   self.currentTime() === options.end ) {
                 
             !fired.end && setup.end.call(self, event, options);
-            
             fired.end++;
           }
           
