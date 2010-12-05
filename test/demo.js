@@ -7,41 +7,29 @@
   
   
   
-  Popcorn.plugin( "complicator", {
+  Popcorn.plugin( "complicator", (function () {
     
-    
-    
-    start: function () {
+      //create your fucking dom elements here.
+  
+  
+      return {
 
-      var $qhead  = document.getElementById("qunit-header");
+        start: function () {
+
+        },
+
+        end: function () {
+
+        }, 
+
+        timeupdate: function () {
+
+        }
+      }; 
+
     
-      $qhead.innerHTML = "complicator STARTED!";
-      
-    },
-    
-    
-    
-    end: function () {
-    
-      var $qhead  = document.getElementById("qunit-header");
-    
-      $qhead.innerHTML = "complicator ENDED!";
-    
-    }, 
-    
-    
-    
-    timeupdate: function () {
-    
-      var $qhead  = document.getElementById("qunit-header");
-    
-      $qhead.innerHTML = $qhead.innerHTML + " " + this.currentTime();
-    
-    }
-    
-    
-    
-  });
+    })() 
+  );
   
   
   

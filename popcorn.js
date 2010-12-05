@@ -280,20 +280,20 @@
           if ( ~~self.currentTime() === options.start || 
                   self.currentTime() === options.start ) {
           
-            setup.start.call(self, event);
+            setup.start.call(self, event, options);
           }
 
           if ( self.currentTime() > options.start && 
                 self.currentTime() < options.end ) {
             
-            setup.timeupdate.call(self, event);
+            setup.timeupdate.call(self, event, options);
             
           }
 
           if ( ~~self.currentTime() === options.end || 
                   self.currentTime() === options.end ) {
                 
-            setup.end.call(self, event);
+            setup.end.call(self, event, options);
           }
           
         });
