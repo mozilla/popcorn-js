@@ -198,7 +198,7 @@
       }, 
       listen: function ( type, fn ) {
         
-        var self = this, hasEvents = true;
+        var self = this, hasEvents = true, ns = '';
         
         if ( !this.data.events[type] ) {
           this.data.events[type] = {};
@@ -261,7 +261,10 @@
       
       setup = definition;
       
-      
+      if ( !( "timeupdate" in setup ) ) {
+        setup.timeupdate = Popcorn.nop;
+      }         
+
       definition  = function ( options ) {
         
         var self = this;
@@ -279,10 +282,6 @@
           options.end = this.duration();
         }
 
-        if ( !( "timeupdate" in options ) ) {
-          options.timeupdate = Popcorn.nop;
-        }        
-        
         //  If a _setup was declared, then call it before 
         //  the events commence
         
@@ -291,7 +290,7 @@
         }
         
         //  Plugin timeline handler 
-        this.video.addEventListener( "timeupdate", function( event ) {
+        this.listen( "timeupdate", function( event ) {
           
           
           if ( ~~self.currentTime() === options.start || 
@@ -313,18 +312,19 @@
             setup.end.call(self, event, options);
           }
           
-        }, false);
-        
-
-        //  Future support plugin definitions for all of the native events
-        Popcorn.forEach( options, function ( key ) {
-          
-          console.log(key);
         });
         
 
-              
-      
+        //  Future support for plugin event definitions 
+        //  for all of the native events
+        Popcorn.forEach( setup, function ( callback, type ) {
+          
+          if ( reserved.indexOf(type) === -1 ) {
+            
+            this.listen( type, callback );
+          }
+          
+        }, this);
         
         return this;
       };
