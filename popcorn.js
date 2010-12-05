@@ -134,12 +134,19 @@
   
   Popcorn.extend(Popcorn.p, {
     
-    setCommand: function() {
+    //  getting properties
+    roundTime: function () {
+      return -~this.video.currentTime;
+    },
     
-    }, 
-    getCommand: function() {
     
-    }, 
+    
+    
+    
+
+
+
+
     toTrack: function( setup ) {
       /*
       {
