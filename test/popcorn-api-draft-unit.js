@@ -73,14 +73,18 @@ test("Popcorn Object", function () {
 
 test("Popcorn Plugin", function () {
   
+  QUnit.reset();
   
   // needs expectation
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume";
+      
+  
+  stop();
   
   
-  Popcorn.plugin("subtitles", function ( ) {
+  Popcorn.plugin("subtitles", function () {
     
     var self = this;
     
@@ -101,18 +105,71 @@ test("Popcorn Plugin", function () {
   });
   
   
-  
-  
-  ok( "subtitles" in popped, "plugin is now available to instance" );
-  
+  //  Call plugin to test scope within 
   popped.subtitles();
   
   
+  
+  ok( "subtitles" in popped, "subtitles plugin is now available to instance" );
   ok( Popcorn.registry.length === 1, "One item in the registry");
+  
+  
+  
+  
+  
+  Popcorn.plugin("complicator", {
+    
+    start: function ( event ) {
+      
+      console.log(this );
+      equals( ~~this.currentTime(), 1, "~~this.currentTime() === 1");
+      
+      var self = this;
+
+      // These ensure that a popcorn instance is the value of `this` inside a plugin definition
+
+      methods.split(/\s+/g).forEach(function (k,v) {
+        ok( k in self, "instance has method: " + k );
+      });
+
+      ok( "video" in this, "instance has `video` property" );
+      ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
+
+      ok( "data" in this, "instance has `data` property" );
+      ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
+
+      ok( "tracks" in this.data, "instance has `tracks` property" );
+      ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )      
+      
+    },
+    end: function () {
+    
+      start();
+    
+    }, 
+    timeupdate: function () {
+    }    
+  });
+  
+  
+  ok( "complicator" in popped, "complicator plugin is now available to instance" );
+  ok( Popcorn.registry.length === 2, "Two items in the registry");
+  
+  
+  
+  popped.currentTime(0);
+  
+  popped.complicator({
+    start: 1, 
+    end: 2
+  });  
+  
   
 });
 
 test("Popcorn Events Stored By Type", function () {
+  
+  QUnit.reset();
   
   expect(6)
   

@@ -2,6 +2,52 @@
 
 (function (Popcorn) {
   
+  
+  
+  
+  
+  
+  Popcorn.plugin( "complicator", {
+    
+    
+    
+    start: function () {
+
+      var $qhead  = document.getElementById("qunit-header");
+    
+      $qhead.innerHTML = "complicator STARTED!";
+      
+    },
+    
+    
+    
+    end: function () {
+    
+      var $qhead  = document.getElementById("qunit-header");
+    
+      $qhead.innerHTML = "complicator ENDED!";
+    
+    }, 
+    
+    
+    
+    timeupdate: function () {
+    
+      var $qhead  = document.getElementById("qunit-header");
+    
+      $qhead.innerHTML = $qhead.innerHTML + " " + this.currentTime();
+    
+    }
+    
+    
+    
+  });
+  
+  
+  
+  
+  
+  
   Popcorn.plugin( "subtitler" , function ( options ) {
     
     var subtitles = [], 
@@ -12,12 +58,14 @@
     if ( !div ) {
       // if no existing frame, create it.
       div = document.createElement("div");
-      div.id  = "subtitle-container";
+      div.id = "subtitle-container";
+      
+      context.parentNode.appendChild(div);
       
       Popcorn.extend(div.style, {
         //border: "1px solid red",
-        width: context.clientWidth + "px", 
-        height: context.clientHeight + "px", 
+        width: context.clientWidth + "px",  //offsetWidth
+        height: context.clientHeight + "px", //offsetHeight
         top: context.offsetTop + "px", 
         left: context.offsetLeft + "px",         
         position: "absolute",
@@ -28,7 +76,7 @@
         textAlign: "center"
       });
       
-      context.parentNode.appendChild(div);
+      
     }
     
     if ( typeof options === "object" && "join" in options ) {
@@ -47,15 +95,18 @@
           div.innerHTML = div.innerHTML + subtitle.html;
         }
 
-        if ( this.currentTime() >= subtitle.end ) {
-          
-          if ( temp.length ) {
-            Popcorn.forEach(temp, function ( title ) {
+        if ( temp.length && this.currentTime() >= subtitle.end ) {
+
+          Popcorn.forEach(temp, function ( title ) {
+            if ( title && title.style ) {
               title.style.display = "none";
-            });
-          }
+            }
+            
+          });
+
         }
       }, this);
+      
     });
   });
 
@@ -68,6 +119,9 @@
 $(function () {
 
   var p = Popcorn('#video');
+  
+
+  
   
   p.play();  
   
@@ -107,6 +161,14 @@ $(function () {
     }
     
   ]);
+  
+  
+  
+  
+  p.complicator({
+    start: 1, 
+    end: 10
+  });
 
   
 

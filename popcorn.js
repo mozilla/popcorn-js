@@ -108,7 +108,7 @@
   Popcorn.extend(Popcorn.p, (function () {
       
       // todo: play, pause, mute should toggle
-      var methods = "load play pause currentTime playbackRate mute volume", 
+      var methods = "load play pause currentTime playbackRate mute volume duration", 
           ret = {};
       
       //  Build methods, store in object that is returned and passed to extend
@@ -122,7 +122,10 @@
             return this;
           }
           
-          if ( arg ) {
+          
+          
+          if ( arg !== false && arg !== null && typeof arg !== "undefined" ) {
+            
             this.video[ name ] = arg;
             
             return this;
@@ -246,7 +249,68 @@
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p 
     
-    var plugin = {};
+    var plugin = {}, setup;
+    
+    
+    
+    if ( typeof definition === "object" ) {
+      
+      setup = definition;
+      
+      
+      definition  = function ( options ) {
+        
+        var self = this;
+        
+        if ( !options ) {
+          return this;
+        } 
+        
+        if ( !( "start" in options ) ) {
+          options.start = 0;
+        }
+        
+        if ( !( "end" in options ) ) {
+          options.end = this.duration();
+        }
+        
+        this.video.addEventListener( "timeupdate", function( event ) {
+          
+          
+          if ( ~~self.currentTime() === options.start || 
+                  self.currentTime() === options.start ) {
+          
+            setup.start.call(self, event);
+          }
+
+          if ( self.currentTime() > options.start && 
+                self.currentTime() < options.end ) {
+            
+            setup.timeupdate.call(self, event);
+            
+          }
+
+          if ( ~~self.currentTime() === options.end || 
+                  self.currentTime() === options.end ) {
+                
+            setup.end.call(self, event);
+          }
+          
+          
+
+        });
+      
+        
+        return this;
+      };
+      
+      
+      console.log("setup", setup);
+      console.log("definition", definition);
+      
+    
+    }
+
     
     plugin[ name ] = definition;
     
