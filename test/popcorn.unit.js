@@ -54,20 +54,10 @@ test("Object", function () {
 
   
   var popped = Popcorn("#video"), 
-      methods = "load play pause currentTime mute volume";
+      methods = "load play pause currentTime mute volume roundTime exec";
   
   
   
-  console.log(popped);
-  
-  popped.play();
-
-  methods.split(/\s+/g).forEach(function (k,v) {
-
-    ok( k in popped, "instance has method: " + k );
-
-  });
-
   ok( "video" in popped, "instance has `video` property" );
   ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
 
@@ -76,8 +66,68 @@ test("Object", function () {
 
   ok( "tracks" in popped.data, "instance has `tracks` property" );
   ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )
+
+  
+  popped.play();
+
+
+  methods.split(/\s+/g).forEach(function (k,v) {
+
+    ok( k in popped, "instance has method: " + k );
+    
+  });
+  
   
 });
+
+module("Popcorn Methods");
+
+
+
+test("roundTime", function () {
+  
+  QUnit.reset();
+  
+  var popped = Popcorn("#video");
+  
+  popped.play().pause().currentTime( 0.98 );
+  
+  equals( 1, popped.roundTime(), ".roundTime() returns 1 when currentTime is 0.98s" );
+
+
+});
+
+
+test("exec", function () {
+  
+  QUnit.reset();
+  
+  var popped = Popcorn("#video"),
+      expects = 1, 
+      count = 0;
+
+  expect(expects);
+  
+  function plus(){ 
+    if ( ++count == expects ) start(); 
+  }
+  
+  stop(); 
+  
+
+
+  popped.exec( 4, function () {
+    
+    
+    ok(true, "exec function");
+    plus();
+    
+  }).currentTime(3).play();
+  
+  
+
+});
+
 
 module("Popcorn Events");
 
@@ -195,11 +245,10 @@ test("Real", function () {
       completed = [];                              
   
   
-  var expects = 11, 
+  var expects = 10, 
       count = 0;
 
-  //expect(expects);
-  // not in full use
+
   function plus(){ 
     if ( ++count == expects ) start(); 
   }
@@ -208,8 +257,9 @@ test("Real", function () {
   
   
   Setup.events.forEach(function ( name ) {
+    
     p.listen( name, function (event) {
-      
+    
       if ( completed.indexOf(name) === -1 ) {
         ok(true, name + " fired");
         plus();
@@ -232,6 +282,61 @@ test("Real", function () {
   p.volume(0.9);
   
   p.currentTime(49);
+
+  
+  
+});
+
+test("Custom", function () {
+
+  var expects = 1, 
+      count = 0;
+  
+  expect(expects);
+  
+  function plus(){ if ( ++count == expects ) start(); }
+
+  stop();
+  
+  var p = Popcorn("#video");
+  
+  
+  p.listen("eventz0rz", function ( event ) {
+  
+    ok( true, "Custom event fired" );
+    plus();
+
+  });
+  
+  p.trigger("eventz0rz");
+
+  
+  
+});
+
+
+test("UI/Mouse", function () {
+
+  var expects = 1, 
+      count = 0;
+  
+  expect(expects);
+  
+  function plus(){ if ( ++count == expects ) start(); }
+
+  stop();
+  
+  var p = Popcorn("#video");
+  
+  
+  p.listen("click", function ( event ) {
+  
+    ok( true, "click event fired" );
+    plus();
+
+  });
+  
+  p.trigger("click");
 
   
   
@@ -435,6 +540,7 @@ test("Events Extended", function () {
   
   
 });
+
 
 /*
 module("Popcorn Video Object")
