@@ -121,7 +121,7 @@ test("Popcorn Plugin", function () {
     
     start: function ( event ) {
       
-      console.log(this );
+      
       equals( ~~this.currentTime(), 1, "~~this.currentTime() === 1");
       
       var self = this;

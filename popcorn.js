@@ -296,19 +296,11 @@
             setup.end.call(self, event);
           }
           
-          
-
         });
       
         
         return this;
       };
-      
-      
-      console.log("setup", setup);
-      console.log("definition", definition);
-      
-    
     }
 
     
