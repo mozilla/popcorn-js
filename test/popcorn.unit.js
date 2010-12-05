@@ -140,14 +140,10 @@ test("Popcorn Events Simulated", function () {
   QUnit.reset();
   
   var p = Popcorn("#video"),
-      completed = [], 
-      eventtest = "loadstart progress suspend emptied stalled play pause " + 
-                  "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
-                  "seeking seeked timeupdate ended ratechange durationchange volumechange", 
-      events = eventtest.split(/\s+/g);                              
+      completed = [];
 
   
-  var expects = events.length, 
+  var expects = Setup.events.length, 
       count = 0;
 
   expect(expects);
@@ -159,7 +155,7 @@ test("Popcorn Events Simulated", function () {
   stop();  
   
   
-  events.forEach(function ( name ) {
+  Setup.events.forEach(function ( name ) {
     p.listen( name, function (event) {
       
       if ( completed.indexOf(name) === -1 ) {
@@ -173,7 +169,7 @@ test("Popcorn Events Simulated", function () {
     });  
   });
 
-  events.forEach(function ( name ) {
+  Setup.events.forEach(function ( name ) {
     p.trigger( name );  
   });
   
@@ -186,11 +182,7 @@ test("Popcorn Events Real", function () {
   QUnit.reset();
 
   var p = Popcorn("#video"),
-      completed = [], 
-      eventtest = "loadstart progress suspend emptied stalled play pause " + 
-                        "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
-                        "seeking seeked timeupdate ended ratechange durationchange volumechange", 
-      events = eventtest.split(/\s+/g);                              
+      completed = [];                              
   
   
   var expects = 11, 
@@ -205,7 +197,7 @@ test("Popcorn Events Real", function () {
   stop();  
   
   
-  events.forEach(function ( name ) {
+  Setup.events.forEach(function ( name ) {
     p.listen( name, function (event) {
       
       if ( completed.indexOf(name) === -1 ) {
@@ -308,7 +300,7 @@ test("Popcorn Plugin", function () {
     },
     end: function () {
     
-      start();
+      //start();
     
     }, 
     timeupdate: function () {
@@ -328,5 +320,132 @@ test("Popcorn Plugin", function () {
     end: 2
   });  
   
+
+  Popcorn.plugin("breaker", {
+    
+    start: function () {
+      ok(true, "plugin:breaker started");
+    },
+    end: function () {
+      ok(true, "plugin:ended started");
+      start();
+    } 
+  });
+
+  
+  
+  popped.currentTime(0);
+  
+  popped.breaker({
+    start: 1, 
+    end: 2
+  });    
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+test("Popcorn Plugin Extended Events", function () {
+  
+  //QUnit.reset();
+  
+  // needs expectation
+
+  var popped = Popcorn("#video"), 
+      expects = 11, 
+      count = 0;
+
+  //expect(expects);
+  // not in full use
+  function plus(){ 
+    if ( ++count == expects ) start(); 
+  }
+  
+  stop();  
+  
+  
+  Popcorn.plugin("extendedEvents", (function () {
+  
+
+    var pluginObj = {
+
+      start: function() {
+
+      },
+      end: function() {
+
+      }
+    };
+    
+    $.each( Setup.events, function ( k, type ) {
+      
+      pluginObj[type]  = function (event, opts) {
+        ok( true, type + " fired!" );
+        
+        plus();
+      };
+    
+    });
+    
+    return pluginObj;
+    
+  })());
+  
+  
+  
+  
+  popped.extendedEvents({
+    
+    start: 20,
+    end: 21
+    
+  });
+  
+  
+  popped.currentTime(19).play();
+  
   
 });
+
+/*
+module("Popcorn Video Object")
+test("wait()", function () {
+  
+  //QUnit.reset();
+  
+  // needs expectation
+
+  var popped = Popcorn("#video"), 
+      startat = +new Date();
+
+
+  
+  
+  popped.play().wait(2).exec(function () {
+    
+    console.log( +new Date() - startat );
+    
+    ok(true)
+    
+  }).pause();
+  
+  
+});
+*/

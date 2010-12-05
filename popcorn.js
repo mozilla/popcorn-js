@@ -97,7 +97,8 @@
       }
 
       return size;
-    }
+    }, 
+    nop: function () {}
   });    
   
   //  Simple Factory pattern to implement native 
@@ -108,7 +109,7 @@
   Popcorn.extend(Popcorn.p, (function () {
       
       // todo: play, pause, mute should toggle
-      var methods = "load play pause currentTime playbackRate mute volume", 
+      var methods = "load play pause currentTime playbackRate mute volume duration", 
           ret = {};
       
       //  Build methods, store in object that is returned and passed to extend
@@ -122,7 +123,10 @@
             return this;
           }
           
-          if ( arg ) {
+          
+          
+          if ( arg !== false && arg !== null && typeof arg !== "undefined" ) {
+            
             this.video[ name ] = arg;
             
             return this;
@@ -194,7 +198,7 @@
       }, 
       listen: function ( type, fn ) {
         
-        var self = this, hasEvents = true;
+        var self = this, hasEvents = true, ns = '';
         
         if ( !this.data.events[type] ) {
           this.data.events[type] = {};
@@ -246,7 +250,86 @@
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p 
     
-    var plugin  = {};
+    var natives = nativeEvents.split(/\s+/g), 
+        reserved = [ "start", "end", "timeupdate" ], 
+        plugin = {},
+        setup;
+    
+    
+    
+    if ( typeof definition === "object" ) {
+      
+      setup = definition;
+      
+      if ( !( "timeupdate" in setup ) ) {
+        setup.timeupdate = Popcorn.nop;
+      }         
+
+      definition  = function ( options ) {
+        
+        var self = this;
+        
+        if ( !options ) {
+          return this;
+        } 
+        
+        //  Checks for expected properties
+        if ( !( "start" in options ) ) {
+          options.start = 0;
+        }
+        
+        if ( !( "end" in options ) ) {
+          options.end = this.duration();
+        }
+
+        //  If a _setup was declared, then call it before 
+        //  the events commence
+        
+        if ( "_setup" in setup && typeof setup._setup === "function" ) {
+          setup._setup.call(self, options);
+        }
+        
+        //  Plugin timeline handler 
+        this.listen( "timeupdate", function( event ) {
+          
+          
+          if ( ~~self.currentTime() === options.start || 
+                  self.currentTime() === options.start ) {
+          
+            setup.start.call(self, event, options);
+          }
+
+          if ( self.currentTime() > options.start && 
+                self.currentTime() < options.end ) {
+            
+            setup.timeupdate.call(self, event, options);
+            
+          }
+
+          if ( ~~self.currentTime() === options.end || 
+                  self.currentTime() === options.end ) {
+                
+            setup.end.call(self, event, options);
+          }
+          
+        });
+        
+
+        //  Future support for plugin event definitions 
+        //  for all of the native events
+        Popcorn.forEach( setup, function ( callback, type ) {
+          
+          if ( reserved.indexOf(type) === -1 ) {
+            
+            this.listen( type, callback );
+          }
+          
+        }, this);
+        
+        return this;
+      };
+    }
+
     
     plugin[ name ] = definition;
     
