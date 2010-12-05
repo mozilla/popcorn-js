@@ -71,6 +71,170 @@ test("Popcorn Object", function () {
 });
 
 
+test("Popcorn Events Stored By Type", function () {
+  
+  QUnit.reset();
+  
+  expect(6)
+  
+  var p = Popcorn("#video"), 
+      count = 0,
+      fired = 0, 
+      wants = 4
+      ;
+
+  function plus(){ 
+
+    if ( ++count == 4 ) {
+      
+      equals( fired, wants, "Number of callbacks fired from 1 handler" );
+
+      p.unlisten("play");
+  
+      ok( !p.data.events["play"], "play handlers removed" );
+  
+      start();
+    } 
+  }
+
+  stop();  
+  
+  
+  p.listen("play", function () {
+    fired++;
+    
+    ok(true, "Play fired " + fired);
+    plus();
+  });
+      
+  p.listen("play", function () {
+    fired++;
+
+    ok(true, "Play fired " + fired);    
+    plus();
+  });
+
+  p.listen("play", function () {
+    fired++;
+
+    ok(true, "Play fired " + fired);    
+    plus();
+  });
+
+  p.listen("play", function () {
+    fired++;
+
+    ok(true, "Play fired " + fired);
+    plus();
+  });
+  
+  p.trigger("play");
+  
+  p.unlisten("play");
+  
+});
+
+
+test("Popcorn Events Simulated", function () {
+  
+  QUnit.reset();
+  
+  var p = Popcorn("#video"),
+      completed = [], 
+      eventtest = "loadstart progress suspend emptied stalled play pause " + 
+                  "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
+                  "seeking seeked timeupdate ended ratechange durationchange volumechange", 
+      events = eventtest.split(/\s+/g);                              
+
+  
+  var expects = events.length, 
+      count = 0;
+
+  expect(expects);
+  
+  function plus(){ 
+    if ( ++count == expects ) start(); 
+  }
+  
+  stop();  
+  
+  
+  events.forEach(function ( name ) {
+    p.listen( name, function (event) {
+      
+      if ( completed.indexOf(name) === -1 ) {
+        ok(true, name + " fired");
+        plus();
+        
+        completed.push(name);
+      }
+      
+      
+    });  
+  });
+
+  events.forEach(function ( name ) {
+    p.trigger( name );  
+  });
+  
+  
+});
+
+
+test("Popcorn Events Real", function () {
+  
+  QUnit.reset();
+
+  var p = Popcorn("#video"),
+      completed = [], 
+      eventtest = "loadstart progress suspend emptied stalled play pause " + 
+                        "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
+                        "seeking seeked timeupdate ended ratechange durationchange volumechange", 
+      events = eventtest.split(/\s+/g);                              
+  
+  
+  var expects = 11, 
+      count = 0;
+
+  //expect(expects);
+  // not in full use
+  function plus(){ 
+    if ( ++count == expects ) start(); 
+  }
+  
+  stop();  
+  
+  
+  events.forEach(function ( name ) {
+    p.listen( name, function (event) {
+      
+      if ( completed.indexOf(name) === -1 ) {
+        ok(true, name + " fired");
+        plus();
+        
+        completed.push(name);
+      }
+      
+      
+    });  
+  });
+
+
+  
+  p.pause();
+  
+  p.mute(true);
+  
+  p.play();
+  
+  p.volume(0.9);
+  
+  p.currentTime(49);
+
+  
+  
+});
+
 test("Popcorn Plugin", function () {
   
   QUnit.reset();
@@ -166,176 +330,3 @@ test("Popcorn Plugin", function () {
   
   
 });
-
-test("Popcorn Events Stored By Type", function () {
-  
-  QUnit.reset();
-  
-  expect(6)
-  
-  var p = Popcorn("#video"), 
-      count = 0,
-      fired = 0, 
-      wants = 4
-      ;
-
-  function plus(){ 
-
-    if ( ++count == 4 ) {
-      
-      equals( fired, wants, "Number of callbacks fired from 1 handler" );
-
-      p.unlisten("play");
-  
-      ok( !p.data.events["play"], "play handlers removed" );
-  
-      start();
-    } 
-  }
-
-  stop();  
-  
-  
-  p.listen("play", function () {
-    fired++;
-    
-    ok(true, "Play fired " + fired);
-    plus();
-  });
-      
-  p.listen("play", function () {
-    fired++;
-
-    ok(true, "Play fired " + fired);    
-    plus();
-  });
-
-  p.listen("play", function () {
-    fired++;
-
-    ok(true, "Play fired " + fired);    
-    plus();
-  });
-
-  p.listen("play", function () {
-    fired++;
-
-    ok(true, "Play fired " + fired);
-    plus();
-  });
-  
-  p.trigger("play");
-  
-});
-
-
-test("Popcorn Events Simulated", function () {
-  
-  QUnit.reset();
-  
-  var p = Popcorn("#video"),
-      completed = [], 
-      eventtest = "loadstart progress suspend emptied stalled play pause " + 
-                  "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
-                  "seeking seeked timeupdate ended ratechange durationchange volumechange", 
-      events = eventtest.split(/\s+/g);                              
-
-  
-  var expects = events.length, 
-      count = 0;
-
-  expect(expects);
-  
-  function plus(){ 
-    if ( ++count == expects ) start(); 
-  }
-  
-  stop();  
-  
-  
-  events.forEach(function ( name ) {
-    p.listen( name, function (event) {
-      
-      if ( completed.indexOf(name) === -1 ) {
-        ok(true, name + " fired");
-        plus();
-        
-        completed.push(name);
-      }
-      
-      
-    });  
-  });
-
-  events.forEach(function ( name ) {
-    p.trigger( name );  
-  });
-  
-  
-});
-
-
-test("Popcorn Events Real", function () {
-
-
-  var p = Popcorn("#video"),
-      completed = [], 
-      eventtest = "loadstart progress suspend emptied stalled play pause " + 
-                        "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
-                        "seeking seeked timeupdate ended ratechange durationchange volumechange", 
-      events = eventtest.split(/\s+/g);                              
-  
-  
-  var expects = events.length, 
-      count = 0;
-
-  //expect(expects);
-  // not in full use
-  function plus(){ 
-    if ( ++count == expects ) start(); 
-  }
-  
-  stop();  
-  
-  
-  events.forEach(function ( name ) {
-    p.listen( name, function (event) {
-      
-      if ( completed.indexOf(name) === -1 ) {
-        ok(true, name + " fired");
-        plus();
-        
-        completed.push(name);
-      }
-      
-      
-    });  
-  });
-
-
-  
-  p.pause();
-  
-  p.mute(true);
-  
-  p.play();
-  
-  p.volume(0.9);
-  
-  p.currentTime(49);
-
-  
-  
-  
-  setTimeout(function() {
-  
-    //console.log(completed);
-  
-    start();
-    
-  }, 5000);
-  
-  
-  
-});
-

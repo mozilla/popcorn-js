@@ -155,7 +155,8 @@ $(function () {
   
   p.complicator({
     start: 1, 
-    end: 10
+    end: 10, 
+    wtf: "throws exception?"
   });
 
   

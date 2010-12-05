@@ -279,7 +279,7 @@
         }
         
         
-        this.video.addEventListener( "timeupdate", function( event ) {
+        this.listen( "timeupdate", function( event ) {
           
           
           if ( ~~self.currentTime() === options.start || 
