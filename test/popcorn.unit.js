@@ -54,17 +54,8 @@ test("Object", function () {
 
   
   var popped = Popcorn("#video"), 
-      methods = "load play pause currentTime mute volume";
+      methods = "load play pause currentTime mute volume roundTime";
   
-  
-  popped.play();
-
-  methods.split(/\s+/g).forEach(function (k,v) {
-
-    ok( k in popped, "instance has method: " + k );
-
-  });
-
   ok( "video" in popped, "instance has `video` property" );
   ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
 
@@ -73,8 +64,35 @@ test("Object", function () {
 
   ok( "tracks" in popped.data, "instance has `tracks` property" );
   ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )
+
+  
+  popped.play();
+
+
+  methods.split(/\s+/g).forEach(function (k,v) {
+
+    ok( k in popped, "instance has method: " + k );
+    
+  });
+  
   
 });
+
+module("Popcorn Object Instance");
+test("Methods", function () {
+  
+  QUnit.reset();
+  
+  var popped = Popcorn("#video");
+  
+  popped.play().pause().currentTime( 0.98 );
+  
+  equals( 1, popped.roundTime(), ".roundTime() returns 1 when currentTime is 0.98s" );
+  
+
+
+});
+
 
 module("Popcorn Events");
 
