@@ -331,15 +331,31 @@ test("Plugin API", function () {
     end: 2
   });  
   
+  
+  var breaker = {
+    
+    start: 0, 
+    end: 0
+    
+  };
 
   Popcorn.plugin("breaker", {
     
     start: function () {
+      
+      breaker.start++;
+    
       ok(true, "plugin:breaker started");
     },
     end: function () {
+      
+      breaker.end++;
+    
       ok(true, "plugin:ended started");
       start();
+      
+      equals( 1, breaker.start, "plugin start method fires only once");
+      equals( 1, breaker.end, "plugin end method fires only once");
     } 
   });
 
