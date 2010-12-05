@@ -1,3 +1,15 @@
+//  suppress console log errors
+if ( !window['console'] ) {
+  var console = {}, 
+      methods = 'log debug info warn error exception assert dir dirxml trace group groupEnd groupCollapsed time timeEnd profile profileEnd count clear notifyFirebug getFirebugElement firebug element'.split(' ');
+  
+  for ( var m in methods ) {
+    console[ methods[m] ] = function () {
+      //Array.prototype.slice.call(arguments)
+    };
+  }  
+}
+
 
 (function (global) { 
   
@@ -44,3 +56,4 @@
 
 
 Setup.getGlobalSize();
+
