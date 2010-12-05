@@ -1,4 +1,6 @@
-test("Popcorn API", function () {
+
+module("Popcorn");
+test("API", function () {
   
   var expects = 3, 
       count = 0;
@@ -35,21 +37,28 @@ test("Popcorn API", function () {
   
 });
 
-test("Popcorn Utility", function () {
+test("Utility", function () {
+  
+  //  TODO: comprehensive tests for these utilities
   
   equals( typeof Popcorn.forEach, "function" , "Popcorn.forEach is a provided utility function");
   equals( typeof Popcorn.extend, "function" , "Popcorn.extend is a provided utility function");
+  equals( typeof Popcorn.guid, "function" , "Popcorn.guid is a provided utility function");
+  equals( typeof Popcorn.sizeOf, "function" , "Popcorn.sizeOf is a provided utility function");
+  equals( typeof Popcorn.nop, "function" , "Popcorn.nop is a provided utility function");
 
 });
 
 
-test("Popcorn Object", function () {
+test("Object", function () {
 
   
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume";
   
-  //console.log(popped);
+  
+  
+  console.log(popped);
   
   popped.play();
 
@@ -70,8 +79,9 @@ test("Popcorn Object", function () {
   
 });
 
+module("Popcorn Events");
 
-test("Popcorn Events Stored By Type", function () {
+test("Stored By Type", function () {
   
   QUnit.reset();
   
@@ -135,7 +145,7 @@ test("Popcorn Events Stored By Type", function () {
 });
 
 
-test("Popcorn Events Simulated", function () {
+test("Simulated", function () {
   
   QUnit.reset();
   
@@ -177,7 +187,7 @@ test("Popcorn Events Simulated", function () {
 });
 
 
-test("Popcorn Events Real", function () {
+test("Real", function () {
   
   QUnit.reset();
 
@@ -227,7 +237,8 @@ test("Popcorn Events Real", function () {
   
 });
 
-test("Popcorn Plugin", function () {
+module("Popcorn Plugin")
+test("Plugin API", function () {
   
   QUnit.reset();
   
@@ -320,15 +331,31 @@ test("Popcorn Plugin", function () {
     end: 2
   });  
   
+  
+  var breaker = {
+    
+    start: 0, 
+    end: 0
+    
+  };
 
   Popcorn.plugin("breaker", {
     
     start: function () {
+      
+      breaker.start++;
+    
       ok(true, "plugin:breaker started");
     },
     end: function () {
+      
+      breaker.end++;
+    
       ok(true, "plugin:ended started");
       start();
+      
+      equals( 1, breaker.start, "plugin start method fires only once");
+      equals( 1, breaker.end, "plugin end method fires only once");
     } 
   });
 
@@ -347,22 +374,7 @@ test("Popcorn Plugin", function () {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-test("Popcorn Plugin Extended Events", function () {
+test("Events Extended", function () {
   
   //QUnit.reset();
   
