@@ -54,7 +54,9 @@ test("Object", function () {
 
   
   var popped = Popcorn("#video"), 
-      methods = "load play pause currentTime mute volume roundTime";
+      methods = "load play pause currentTime mute volume roundTime exec";
+  
+  
   
   ok( "video" in popped, "instance has `video` property" );
   ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
@@ -78,8 +80,11 @@ test("Object", function () {
   
 });
 
-module("Popcorn Object Instance");
-test("Methods", function () {
+module("Popcorn Methods");
+
+
+
+test("roundTime", function () {
   
   QUnit.reset();
   
@@ -88,8 +93,38 @@ test("Methods", function () {
   popped.play().pause().currentTime( 0.98 );
   
   equals( 1, popped.roundTime(), ".roundTime() returns 1 when currentTime is 0.98s" );
+
+
+});
+
+
+test("exec", function () {
+  
+  QUnit.reset();
+  
+  var popped = Popcorn("#video"),
+      expects = 1, 
+      count = 0;
+
+  expect(expects);
+  
+  function plus(){ 
+    if ( ++count == expects ) start(); 
+  }
+  
+  stop(); 
   
 
+
+  popped.exec( 4, function () {
+    
+    
+    ok(true, "exec function");
+    plus();
+    
+  }).currentTime(3).play();
+  
+  
 
 });
 

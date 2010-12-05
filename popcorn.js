@@ -140,10 +140,33 @@
     },
     
     
-    
-    
-    
-
+    exec: function ( time, fn ) {
+      
+      !fn && ( fn = Popcorn.nop );
+      
+      
+      var timer = 0, 
+          self  = this, 
+          callback = function execCallback( event ) {
+            
+            if ( this.currentTime() >= time && !timer ) {
+              
+              fn.call(self, event);
+              
+              this.unlisten("execCallback");
+              
+              timer++;
+            }
+          };
+      
+      
+      
+      this.listen("timeupdate", callback);
+      
+      
+      
+      return this;
+    },
 
 
 
@@ -247,7 +270,7 @@
         }
         
         //  Register 
-        this.data.events[type][ fn.toString() + Popcorn.guid() ] = fn;
+        this.data.events[type][ fn.name || ( fn.toString() + Popcorn.guid() ) ] = fn;
         
         // only attach one event of any type          
         if ( !hasEvents && Popcorn.events.all.indexOf( type ) > -1 ) {
@@ -255,7 +278,11 @@
           this.video.addEventListener( type, function( event ) {
             
             Popcorn.forEach( self.data.events[type], function ( obj, key ) {
-              obj.call(self, event);
+
+              if ( typeof obj === "function" ) {
+                obj.call(self, event);
+              }
+
             });
             
             //fn.call( self, event );
@@ -264,7 +291,13 @@
         }
         return this;
       }, 
-      unlisten: function( type ) {
+      unlisten: function( type, fn ) {
+        
+        if ( this.data.events[type] && this.data.events[type][fn] ) {
+          this.data.events[type][fn]  = null;
+          return this;
+        }
+      
         this.data.events[type] = null;
         return this;        
       },      
