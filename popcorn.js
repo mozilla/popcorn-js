@@ -1,9 +1,3 @@
-//  Immediately invoked function expression is used to 
-//  create a pseudo-private scope for our api definition
-//  a reference to the `window` object is passed into the
-//  closure and referenced as `global`. This is both 
-//  beneficial for compressors and provides a fast 
-//  reference to the window context
 (function(global) {
 
   //  Cache refs to speed up calls to native utils
@@ -267,7 +261,11 @@
 
       definition  = function ( options ) {
         
-        var self = this;
+        var self = this, 
+            fired = {
+              start: 0, 
+              end: 0
+            };
         
         if ( !options ) {
           return this;
@@ -295,8 +293,10 @@
           
           if ( ~~self.currentTime() === options.start || 
                   self.currentTime() === options.start ) {
-          
-            setup.start.call(self, event, options);
+            
+            !fired.start && setup.start.call(self, event, options);
+            
+            fired.start++;
           }
 
           if ( self.currentTime() > options.start && 
@@ -309,7 +309,9 @@
           if ( ~~self.currentTime() === options.end || 
                   self.currentTime() === options.end ) {
                 
-            setup.end.call(self, event, options);
+            !fired.end && setup.end.call(self, event, options);
+            
+            fired.end++;
           }
           
         });
