@@ -274,6 +274,10 @@
         if ( !( "end" in options ) ) {
           options.end = this.duration();
         }
+
+        if ( !( "timeupdate" in options ) ) {
+          options.timeupdate = Popcorn.nop;
+        }        
         
         if ( "_setup" in setup && typeof setup._setup === "function" ) {
           setup._setup.call(self, options);
