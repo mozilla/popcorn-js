@@ -97,7 +97,8 @@
       }
 
       return size;
-    }
+    }, 
+    nop: function () {}
   });    
   
   //  Simple Factory pattern to implement native 
@@ -279,7 +280,7 @@
         }
         
         
-        this.listen( "timeupdate", function( event ) {
+        this.addEventListener( "timeupdate", function( event ) {
           
           
           if ( ~~self.currentTime() === options.start || 
@@ -301,7 +302,7 @@
             setup.end.call(self, event, options);
           }
           
-        });
+        }, false);
       
         
         return this;
