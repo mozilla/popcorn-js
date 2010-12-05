@@ -12,8 +12,7 @@
   //  Declare a pseudo-private constructor
   //  This constructor returns the instance object.    
   Popcorn = function( entity ) {
-    //  Return new instance of
-    //  Popcorn.prototype.instance constructor
+    //  Return new Popcorn object
     return new Popcorn.p.init( entity );
   };
 
