@@ -7,11 +7,9 @@
   <script src="popcorn.webpage.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video');
-
-      p.play();  
-
-      p.webpages({
+      var p = Popcorn('#video')
+      .play() 
+      .webpages({
         id: "webpages-a", 
         start: 0, // seconds
         end: 5, // seconds
