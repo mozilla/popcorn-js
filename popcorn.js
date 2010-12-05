@@ -95,11 +95,9 @@
     nop: function () {}
   });    
   
-  //  Simple Factory pattern to implement native 
-  //  getters/setters and controllers 
-  //  as methods of the returned Popcorn instance
-  //  The immediately invoked function creates 
-  //  and returns an object of methods
+  //  Simple Factory pattern to implement getters, setters and controllers 
+  //  as methods of the returned Popcorn instance. The immediately invoked function 
+  //  creates and returns an object of methods
   Popcorn.extend(Popcorn.p, (function () {
       
       // todo: play, pause, mute should toggle
@@ -116,7 +114,6 @@
             
             return this;
           }
-          
           
           
           if ( arg !== false && arg !== null && typeof arg !== "undefined" ) {
@@ -155,40 +152,83 @@
     }
   
   });
-  
-  var nativeEvents = "loadstart progress suspend emptied stalled play pause " + 
-                     "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
-                     "seeking seeked timeupdate ended ratechange durationchange volumechange";
+
+  Popcorn.Events  = {
+    UIEvents: "blur focus focusin focusout load resize scroll unload  ", 
+    MouseEvents: "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave click dblclick", 
+    Events: "loadstart progress suspend emptied stalled play pause " + 
+           "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
+           "seeking seeked timeupdate ended ratechange durationchange volumechange"
+  };
+    
+  Popcorn.Events.Natives = Popcorn.Events.UIEvents + " " + 
+                            Popcorn.Events.MouseEvents + " " +
+                              Popcorn.Events.Events,
   
   Popcorn.events  = {
-    //todo, fix types to be custom, natives will be native only
-    types: nativeEvents.split(/\s+/g),
-    natives: nativeEvents.split(/\s+/g),
-    custom: [ "frame" ], 
-    all: [ "frame" ].concat( nativeEvents.split(/\s+/g) ), 
+  
+
+    isNative: function( type ) {
+      
+      var checks = Popcorn.Events.Natives.split(/\s+/g);
+      
+      for ( var i = 0; i < checks.length; i++ ) {
+        if ( checks[i] === type ) {
+          return true;
+        }
+      }
+      
+      return false;
+    },  
+    getInterface: function( type ) {
+      
+      if ( !Popcorn.events.isNative( type ) ) {
+        return false;
+      }
+      
+      var natives = Popcorn.Events, proto;
+      
+      for ( var p in natives ) {
+        if ( p !== "Natives" && natives[p].indexOf(type) > -1 ) {
+          proto = p;
+        }
+      }
+      
+      return proto;
+    
+    }, 
+    
+    
+    all: Popcorn.Events.Natives.split(/\s+/g), 
+    
     fn: {
       trigger: function ( type, data ) {
         
         //  setup checks for custom event system
         if ( this.data.events[type] && Popcorn.sizeOf(this.data.events[type]) ) {
           
-          var evt = document.createEvent("Events");
-              evt.initEvent(type, true, true, window, 1);
+          var interface  = Popcorn.events.getInterface(type);
           
-          this.video.dispatchEvent(evt);
-        
-          /*
+          if ( interface ) {
           
-          TODO: implement some form of custom event system
+            var evt = document.createEvent( interface );
+                evt.initEvent(type, true, true, window, 1);          
+          
+            this.video.dispatchEvent(evt);
+            
+            return this;
+          }        
+
+          //  Custom events          
           Popcorn.forEach(this.data.events[type], function ( obj, key ) {
 
-            //obj.call(_target, _data);
+            obj.call( this, evt, data );
             
-            // update to dispatch an event
-
-          });
-          */
+          }, this);
+          
         }
+        
+        return this;
       }, 
       listen: function ( type, fn ) {
         
@@ -203,7 +243,7 @@
         this.data.events[type][ fn.toString() + Popcorn.guid() ] = fn;
         
         // only attach one event of any type          
-        if (!hasEvents && Popcorn.events.all.indexOf( type ) > -1 ) {
+        if ( !hasEvents && Popcorn.events.all.indexOf( type ) > -1 ) {
 
           this.video.addEventListener( type, function( event ) {
             
@@ -244,7 +284,7 @@
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p 
     
-    var natives = nativeEvents.split(/\s+/g), 
+    var natives = Popcorn.events.all, 
         reserved = [ "start", "end", "timeupdate" ], 
         plugin = {},
         setup;
@@ -313,7 +353,6 @@
           
         });
         
-
         //  Future support for plugin event definitions 
         //  for all of the native events
         Popcorn.forEach( setup, function ( callback, type ) {

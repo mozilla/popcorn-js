@@ -57,9 +57,6 @@ test("Object", function () {
       methods = "load play pause currentTime mute volume";
   
   
-  
-  console.log(popped);
-  
   popped.play();
 
   methods.split(/\s+/g).forEach(function (k,v) {
@@ -195,11 +192,10 @@ test("Real", function () {
       completed = [];                              
   
   
-  var expects = 11, 
+  var expects = 10, 
       count = 0;
 
-  //expect(expects);
-  // not in full use
+
   function plus(){ 
     if ( ++count == expects ) start(); 
   }
@@ -208,8 +204,9 @@ test("Real", function () {
   
   
   Setup.events.forEach(function ( name ) {
+    
     p.listen( name, function (event) {
-      
+    
       if ( completed.indexOf(name) === -1 ) {
         ok(true, name + " fired");
         plus();
@@ -232,6 +229,61 @@ test("Real", function () {
   p.volume(0.9);
   
   p.currentTime(49);
+
+  
+  
+});
+
+test("Custom", function () {
+
+  var expects = 1, 
+      count = 0;
+  
+  expect(expects);
+  
+  function plus(){ if ( ++count == expects ) start(); }
+
+  stop();
+  
+  var p = Popcorn("#video");
+  
+  
+  p.listen("eventz0rz", function ( event ) {
+  
+    ok( true, "Custom event fired" );
+    plus();
+
+  });
+  
+  p.trigger("eventz0rz");
+
+  
+  
+});
+
+
+test("UI/Mouse", function () {
+
+  var expects = 1, 
+      count = 0;
+  
+  expect(expects);
+  
+  function plus(){ if ( ++count == expects ) start(); }
+
+  stop();
+  
+  var p = Popcorn("#video");
+  
+  
+  p.listen("click", function ( event ) {
+  
+    ok( true, "click event fired" );
+    plus();
+
+  });
+  
+  p.trigger("click");
 
   
   
@@ -435,6 +487,7 @@ test("Events Extended", function () {
   
   
 });
+
 
 /*
 module("Popcorn Video Object")
