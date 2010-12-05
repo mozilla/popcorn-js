@@ -274,6 +274,11 @@
           options.end = this.duration();
         }
         
+        if ( "_setup" in setup && typeof setup._setup === "function" ) {
+          setup._setup.call(self, options);
+        }
+        
+        
         this.video.addEventListener( "timeupdate", function( event ) {
           
           
