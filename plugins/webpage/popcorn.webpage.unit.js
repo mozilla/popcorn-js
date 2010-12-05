@@ -1,38 +1,39 @@
 test("Popcorn Webpage Plugin", function () {
   
+  var popped = Popcorn("#video")
+      expects = 2, 
+      count = 0
+    ;
   
-  // needs expectation
-
-  var popped = Popcorn("#video"),
-      expects = 4,
-      count = 0;
-      
   expect(expects);
-      
-  function plus (){
-    if(++count === expects){
-      stop();
+  
+  function plus() {
+    if( ++count===expects) {
+      start();
     }
   }
   
-  popped.webpages({
-      id: "webpages-a", 
-      start: 0, // seconds
-      end: 5, // seconds
-      src: 'http://www.webmademovies.org',
-      target: 'webpagediv'
-    });
-    
-  popped.play();
+  stop();
   
-  
-  ok( 'data' in popped, "popped has the data prop and therefore is a Popcorn object" )
   
   ok( 'webpages' in popped, "webpages is a mehtod of the popped instance");
+  plus();
   
-  ok( typeof popped.webpages === "function" , "webpages is a function");
+  popped.webpages({
+      id: "webpages-a", 
+      start: 1, // seconds
+      end: 30, // seconds
+      src: 'http://www.webmademovies.org',
+      target: 'webpagediv'
+    }).play();
   
-  popped.exec(2, function(){
-    ok( document.getElementById('webpages-a') , "iframe exists");  
-  })
+  
+  
+  setTimeout(function() {
+    ok( !!document.getElementsByTagName('iframe')[0], "iframe was created" );
+    plus();
+  }, 5000);
+  
+  
+  
 });

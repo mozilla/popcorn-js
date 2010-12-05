@@ -19,9 +19,10 @@
     // set the style of the iframe
     iframe.setAttribute('width', "100%");
     iframe.setAttribute('height', "100%");
-    
-    
-    
+    iframe.id= options.id;
+    iframe.src = options.src;
+    var temp  = document.getElementById( options.target );
+        
     // get the options that the user included
     if ( typeof options === "object" && "join" in options ) {
       page = options;
@@ -33,14 +34,13 @@
       // loop threw all of the webpages 
       Popcorn.forEach(page, function ( thispage ) {
                
-        var temp  = document.getElementById( thispage.target );
-        iframe.setAttribute('id', thispage.id);
+        
         var exists  = document.getElementById( thispage.id );
         
         if ( this.currentTime() >= thispage.start && !exists &&  this.currentTime() <= thispage.end) {
           //div.innerHTML = div.innerHTML + thispage.html;
           // set the source of the webpage that this plugin should display
-          iframe.setAttribute('src', thispage.src);
+          
           temp.appendChild(iframe);
         }
 
@@ -49,6 +49,8 @@
         }
       }, this);
     });
+    
+    return this;
   });
 
 })(Popcorn);
