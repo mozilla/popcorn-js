@@ -11,11 +11,18 @@
       .play() 
       .webpages({
         id: "webpages-a", 
-        start: 0, // seconds
-        end: 5, // seconds
+        start: 5, // seconds
+        end: 15, // seconds
         src: 'http://www.webmademovies.org',
         target: 'webpagediv'
-      });
+      } )
+      .webpages({
+        id: "webpages-b", 
+        start: 20, // seconds
+        end: 25, // seconds
+        src: 'http://zenit.senecac.on.ca/wiki/index.php/Processing.js',
+        target: 'webpagediv2'
+      } );
 
     }, false);
 
@@ -42,8 +49,8 @@
 
     </video> 
   </div>
-  <div id="webpagediv">
-  
+  <div id="webpagediv" width="50%" height="50%">
+  <div id="webpagediv2">
   </div>
 </body>
 </html>

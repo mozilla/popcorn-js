@@ -7,47 +7,39 @@
    * Out is the time that you want this plug-in to stop executing [not currently implemented]
    * Duration can be used instead of out to state how long you want the plug-in to execute for
    * Target is the id of the document element that the iframe needs to be attached to
+   *
    * @param {Object} options
-   * @param {Object} object element to be added to the list
+   *
    */
   Popcorn.plugin( "webpages" , function ( options ) {
     
-    var iframe = document.createElement('iframe'),
-        page = [], 
-        context = this.video;
-    
+    var exists,
+        iframe  = document.createElement( 'iframe' ),
+        page    = [], 
+        temp    = document.getElementById( options.target );
+          
     // set the style of the iframe
     iframe.setAttribute('width', "100%");
     iframe.setAttribute('height', "100%");
-    iframe.id= options.id;
+    iframe.id  = options.id;
     iframe.src = options.src;
-    var temp  = document.getElementById( options.target );
-        
-    // get the options that the user included
-    if ( typeof options === "object" && "join" in options ) {
-      page = options;
-    } else {
-      page.push(options);
-    }
-    
+   
+    // listen function will add/remove the iframe from the page at the appropriate times
     this.listen("timeupdate", function (event) {
-      // loop threw all of the webpages 
-      Popcorn.forEach(page, function ( thispage ) {
-               
-        
-        var exists  = document.getElementById( thispage.id );
-        
-        if ( this.currentTime() >= thispage.start && !exists &&  this.currentTime() <= thispage.end) {
-          //div.innerHTML = div.innerHTML + thispage.html;
-          // set the source of the webpage that this plugin should display
-          
-          temp.appendChild(iframe);
-        }
-
-        if ( this.currentTime() >= thispage.end  && exists) {         
-          temp.removeChild(iframe);
-        }
-      }, this);
+      exists  = document.getElementById( options.id );
+      if ( this.currentTime() >= options.start && !exists &&  this.currentTime() <= options.end ) {
+        temp.appendChild(iframe);
+      }
+      // remove the iframe if the current time of the video is greater than 
+      // the end time specified by the user 
+      if ( this.currentTime() >= options.end  && exists ) {           
+        temp.removeChild(iframe);
+      }
+      // if the user seeks to a time before the webpage command
+      // ensure that the iframe was removed
+      if ( this.currentTime() < options.start && exists ) {
+        temp.removeChild(iframe);
+      }
     });
     
     return this;
