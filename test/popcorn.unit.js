@@ -350,51 +350,28 @@ test("Plugin API", function () {
   // needs expectation
 
   var popped = Popcorn("#video"), 
-      methods = "load play pause currentTime mute volume";
-      
+      methods = "load play pause currentTime mute volume roundTime exec",
+      expects = 21, 
+      count = 0;
   
+  expect(expects);
+  
+  function plus() { 
+    if ( ++count == expects ) {
+      start(); 
+    }
+  }
+
   stop();
-  
-  
-  Popcorn.plugin("subtitles", function () {
-    
-    var self = this;
-    
-    // These ensure that a popcorn instance is the value of `this` inside a plugin definition
-    
-    methods.split(/\s+/g).forEach(function (k,v) {
-      ok( k in self, "instance has method: " + k );
-    });
-
-    ok( "video" in this, "instance has `video` property" );
-    ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
-
-    ok( "data" in this, "instance has `data` property" );
-    ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
-
-    ok( "tracks" in this.data, "instance has `tracks` property" );
-    ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )
-  });
-  
-  
-  //  Call plugin to test scope within 
-  popped.subtitles();
-  
-  
-  
-  ok( "subtitles" in popped, "subtitles plugin is now available to instance" );
-  ok( Popcorn.registry.length === 1, "One item in the registry");
-  
-  
-  
-  
+ 
   
   Popcorn.plugin("complicator", {
     
     start: function ( event ) {
       
-      
+
       equals( ~~this.currentTime(), 1, "~~this.currentTime() === 1");
+      plus();
       
       var self = this;
 
@@ -402,16 +379,24 @@ test("Plugin API", function () {
 
       methods.split(/\s+/g).forEach(function (k,v) {
         ok( k in self, "instance has method: " + k );
+        
+        plus();
       });
 
       ok( "video" in this, "instance has `video` property" );
+      plus();
       ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
+      plus();
 
       ok( "data" in this, "instance has `data` property" );
+      plus();
       ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
+      plus();
 
       ok( "tracks" in this.data, "instance has `tracks` property" );
+      plus();
       ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )      
+      plus();
       
     },
     end: function () {
@@ -425,17 +410,21 @@ test("Plugin API", function () {
   
   
   ok( "complicator" in popped, "complicator plugin is now available to instance" );
-  ok( Popcorn.registry.length === 2, "Two items in the registry");
+  plus();
+  ok( Popcorn.registry.length === 1, "Two items in the registry");
+  plus();
   
   
   
-  popped.currentTime(0);
+  
   
   popped.complicator({
     start: 1, 
-    end: 2
+    end: 20
   });  
   
+  
+  popped.currentTime(0).play();
   
   var breaker = {
     
@@ -451,16 +440,22 @@ test("Plugin API", function () {
       breaker.start++;
     
       ok(true, "plugin:breaker started");
+      plus();
     },
     end: function () {
       
       breaker.end++;
     
       ok(true, "plugin:ended started");
-      start();
+      plus();
+
       
       equals( 1, breaker.start, "plugin start method fires only once");
+      plus();
       equals( 1, breaker.end, "plugin end method fires only once");
+      plus();
+      
+      start()
     } 
   });
 
