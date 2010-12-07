@@ -65,7 +65,7 @@ test("Object", function () {
   ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
 
   ok( "tracks" in popped.data, "instance has `tracks` property" );
-  ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )
+  ok( Object.prototype.toString.call(popped.data.tracks) === "[object Object]", "tracks property is an object" )
 
   
   popped.play();
@@ -373,7 +373,7 @@ test("Plugin API", function () {
     ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
 
     ok( "tracks" in this.data, "instance has `tracks` property" );
-    ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )
+    ok( Object.prototype.toString.call(popped.data.tracks) === "[object Object]", "tracks property is an object" )
   });
   
   
@@ -411,7 +411,7 @@ test("Plugin API", function () {
       ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
 
       ok( "tracks" in this.data, "instance has `tracks` property" );
-      ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )      
+      ok( Object.prototype.toString.call(popped.data.tracks) === "[object Object]", "tracks property is an object" )      
       
     },
     end: function () {
