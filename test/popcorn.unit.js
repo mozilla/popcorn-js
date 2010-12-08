@@ -39,15 +39,24 @@ test("API", function () {
 
 test("Utility", function () {
   
+  expect(6);
   //  TODO: comprehensive tests for these utilities
   
   equals( typeof Popcorn.forEach, "function" , "Popcorn.forEach is a provided utility function");
   equals( typeof Popcorn.extend, "function" , "Popcorn.extend is a provided utility function");
+  equals( typeof Popcorn.error, "function" , "Popcorn.error is a provided utility function");  
   equals( typeof Popcorn.guid, "function" , "Popcorn.guid is a provided utility function");
   equals( typeof Popcorn.sizeOf, "function" , "Popcorn.sizeOf is a provided utility function");
   equals( typeof Popcorn.nop, "function" , "Popcorn.nop is a provided utility function");
-
+  
+  
+  
+  
 });
+
+
+
+
 
 
 test("Object", function () {

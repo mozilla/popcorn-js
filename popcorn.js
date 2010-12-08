@@ -79,6 +79,9 @@
 
   // A Few reusable utils, memoized onto Popcorn
   Popcorn.extend( Popcorn, {
+  	error: function( msg ) {
+	  	throw msg;
+  	},
     guid: function() {
       return +new Date() + Math.floor(Math.random()*11);
     }, 
