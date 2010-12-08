@@ -361,7 +361,7 @@ test("UI/Mouse", function () {
 });
 
 module("Popcorn Plugin")
-test("Plugin API", function () {
+test("Plugin Factory", function () {
   
   QUnit.reset();
   
@@ -369,7 +369,7 @@ test("Plugin API", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec",
-      expects = 21, 
+      expects = 34, 
       count = 0;
   
   expect(expects);
@@ -381,7 +381,53 @@ test("Plugin API", function () {
   }
 
   stop();
+
+  Popcorn.plugin("executor", function () {
+    
+    return {
+      
+      start: function () {
+        var self = this;
+
+        // These ensure that a popcorn instance is the value of `this` inside a plugin definition
+
+        methods.split(/\s+/g).forEach(function (k,v) {
+          ok( k in self, "executor instance has method: " + k );
+          
+          plus();
+        });
+
+        ok( "video" in this, "executor instance has `video` property" );
+        plus();
+        ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
+        plus();
+
+        ok( "data" in this, "executor instance has `data` property" );
+        plus();
+        ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
+        plus();
+
+        ok( "tracks" in this.data, "executor instance has `tracks` property" );
+        plus();
+        ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "executor tracks property is an array" )      
+        plus();      
+      }, 
+      end: function () {
+      
+      }
+    };
+  });
  
+  ok( "executor" in popped, "executor plugin is now available to instance" );
+  plus();
+  ok( Popcorn.registry.length === 1, "One item in the registry");
+  plus();    
+
+  popped.executor({
+    start: 1, 
+    end: 20
+  });
+  
   
   Popcorn.plugin("complicator", {
     
@@ -396,24 +442,24 @@ test("Plugin API", function () {
       // These ensure that a popcorn instance is the value of `this` inside a plugin definition
 
       methods.split(/\s+/g).forEach(function (k,v) {
-        ok( k in self, "instance has method: " + k );
+        ok( k in self, "complicator instance has method: " + k );
         
         plus();
       });
 
-      ok( "video" in this, "instance has `video` property" );
+      ok( "video" in this, "complicator instance has `video` property" );
       plus();
       ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
       plus();
 
-      ok( "data" in this, "instance has `data` property" );
+      ok( "data" in this, "complicator instance has `data` property" );
       plus();
-      ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
+      ok( Object.prototype.toString.call(popped.data) === "[object Object]", "complicator data property is an object" );
       plus();
 
-      ok( "tracks" in this.data, "instance has `tracks` property" );
+      ok( "tracks" in this.data, " complicatorinstance has `tracks` property" );
       plus();
-      ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )      
+      ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "complicator tracks property is an array" )      
       plus();
       
     },
@@ -429,12 +475,8 @@ test("Plugin API", function () {
   
   ok( "complicator" in popped, "complicator plugin is now available to instance" );
   plus();
-  ok( Popcorn.registry.length === 1, "Two items in the registry");
+  ok( Popcorn.registry.length === 2, "Two items in the registry");
   plus();
-  
-  
-  
-  
   
   popped.complicator({
     start: 1, 
@@ -457,14 +499,14 @@ test("Plugin API", function () {
       
       breaker.start++;
     
-      ok(true, "plugin:breaker started");
+      ok(true, "breaker started");
       plus();
     },
     end: function () {
       
       breaker.end++;
     
-      ok(true, "plugin:ended started");
+      ok(true, "breaker started");
       plus();
 
       
@@ -485,6 +527,11 @@ test("Plugin API", function () {
     start: 1, 
     end: 2
   });    
+  
+
+
+
+  
 });
 
 test("Protected Names", function () {
