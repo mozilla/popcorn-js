@@ -317,11 +317,20 @@
     Popcorn.p[key] = Popcorn.events.fn[key];
   });  
   
+  Popcorn.protect = {
+    natives: "load play pause currentTime playbackRate mute volume duration".toLowerCase().split(/\s+/)
+  };
+  
   //  Plugins are registered 
   Popcorn.registry = [];
   //  An interface for extending Popcorn 
   //  with plugin functionality
   Popcorn.plugin = function( name, definition ) {
+
+    if ( Popcorn.protect.natives.indexOf( name.toLowerCase() ) >= 0 ) {
+      Popcorn.error("'" + name + "' is a protected function name");
+      return;
+    }
 
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p 

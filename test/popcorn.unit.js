@@ -55,6 +55,15 @@ test("Utility", function () {
 });
 
 
+test("Protected", function () {
+  
+  expect(1);
+  //  TODO: comprehensive tests for these utilities
+  
+  ok( !!Popcorn.protect , "Popcorn.protect exists");
+  
+  
+});
 
 
 
@@ -478,14 +487,32 @@ test("Plugin API", function () {
   });    
 });
 
-
-
-
-
-
-test("Events Extended", function () {
+test("Protected Names", function () {
   
   //QUnit.reset();
+  
+  expect(8);
+
+  var popped = Popcorn("#video");
+
+  $.each( "load play pause currentTime playbackRate mute volume duration".split(/\s+/), function (k, name) {
+    try {
+
+      Popcorn.plugin( name, {});
+    }   catch (e) {
+
+      ok( name, "Attempting to overwrite '" + name + "' threw an exception " );
+
+    };
+  });
+});
+
+
+
+/*
+test("Events Extended", function () {
+  
+  QUnit.reset();
   
   // needs expectation
 
@@ -493,7 +520,7 @@ test("Events Extended", function () {
       expects = 11, 
       count = 0;
 
-  //expect(expects);
+  expect(expects);
   // not in full use
   function plus(){ 
     if ( ++count == expects ) start(); 
@@ -504,6 +531,7 @@ test("Events Extended", function () {
   
   Popcorn.plugin("extendedEvents", (function () {
   
+    var fired = [];
 
     var pluginObj = {
 
@@ -518,9 +546,17 @@ test("Events Extended", function () {
     $.each( Setup.events, function ( k, type ) {
       
       pluginObj[type]  = function (event, opts) {
-        ok( true, type + " fired!" );
+      
+        if ( fired.indexOf(type) === -1 ) {
+          fired.push(type);
+          
+          ok( true, type + " fired" );
+          
+          plus();
         
-        plus();
+        
+          
+        }
       };
     
     });
@@ -542,9 +578,14 @@ test("Events Extended", function () {
   
   popped.currentTime(19).play();
   
-  
-});
+  $.each( Setup.events, function ( k, type ) {
+    
+    popped.trigger(type);
+      
+  });
 
+});
+*/
 
 /*
 module("Popcorn Video Object")
