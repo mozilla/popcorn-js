@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HTML5 Video Demo Using popcorn.js</title>
+  <meta charset="UTF-8" />
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <script src="http://google.com/jsapi"></script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script src="http://widgets.twimg.com/j/2/widget.js"></script>
+  <script>google.load("language", "1");</script>
+  <script>google.load("elements", "1", {packages : ["newsshow"]});</script>
+  <script src="../../popcorn.js"></script>
+
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript">
+    $(document).ready(function () {
+      //Show hide the contents
+      $(".collapse").click(function () {
+        $(this).next(".content").slideToggle("fast");
+      });
+      //Swap class names
+      $(".collapse").toggle(function () {
+        $(this).addClass("expand");
+      }, function () {
+        $(this).removeClass("expand");
+      });
+      $(".collapse").toggle(function () {
+        $("span", this).text('Expand');
+      }, function () {
+        $("span", this).text('Collapse');
+      });
+      $('section').hover(function() {
+          $(this).addClass('hover')
+      }, function() {
+          $(this).removeClass('hover')
+      })
+      setInterval(function() {
+        $('section.hover').each(function() {
+            if ($(this).attr('hoveron')) {
+                if ($('video')[0].currentTime-$(this).attr('hoveron')>1) {
+                    $(this).removeAttr('hoveron').removeClass('hover');
+                }
+            }
+        })
+      }, 500);
+
+      $('.clickhere').click(function(){
+        $('.popup').fadeIn();
+        $('.pop-overlay').fadeIn()
+      });
+
+      $('.pop-overlay').click(function(){
+        $('.pop-overlay').fadeOut();
+        $('.popup').fadeOut();
+      });
+
+      $('.close_btn').click(function(){
+        $('.pop-overlay').fadeOut();
+        $('.popup').fadeOut();
+      });
+
+    });
+  </script>
+</head>
+
+<body>
+  <!-- Start First Container Div -->
+  <div class="container-top">
+    <!-- Start Second Container Div -->
+    <div class="container-bot">
+      <!-- Start Wrapper Div -->
+      <div class="wrapper">
+        <!-- Start Header -->
+        <header id="global-header">
+          <a href="http://www.drumbeat.org/" class="logo"><img src="images/drumbeat_logo.png" alt="drumbeat_logo" width="255" height="87" /></a>
+
+          <!-- Start Login/Signup -->
+          <!--nav id="login">
+            <ul>
+              <li><a href="#">log in</a></li>
+              <li><a href="#">sign up</a></li>
+            </ul>
+          </nav-->
+          <!-- End Login/Signup -->
+
+          <!-- Start Primary Links -->
+          <nav id="demo-info">
+            <ul>
+              <li><a href="#" onClick="javascript:void();" class="clickhere green"><img src="images/video_icon.png" alt="" width="18" height="14" />watch a video and learn more about this demo</a></li>
+            </ul>
+          </nav>
+          <!-- End Primary Links -->
+
+        </header>
+        <!-- End Header -->
+        <!-- Start Contents -->
+        <div id="contents">
+          <!-- Start Left Contents -->
+          <div class="left-content">
+            <!-- Start Video Div -->
+            <div id="videoContainer" class="video-div">
+              <div id="credits" style="display:none">
+                <div id="credit_inner">
+                </div>
+              </div>
+                <script>
+
+                ////////////////////////////////////////////////////////////////////////////
+                // Credits
+                ////////////////////////////////////////////////////////////////////////////
+
+                  $("#credits")
+                      .width(530)
+                      .height(299);
+                  var displayCredits = function() {
+                      $("#credits").show();
+                      $("#choices").animate({ right:'+=200px' }, 1000);
+                      add( [
+                          { 
+                              text: "Play Again",
+                              click:function() {
+                                  killCol(0);
+                                  $('video')[0].currentTime=0;
+                              }
+                          },
+                          {
+                              text: "People",
+                              next :[
+                                  {
+                                      text: "Steve Song", href: "http://www.google.ca/"
+                                  },
+                                  {
+                                      text: "Jeffrey Warren"
+                                  },
+                                  {
+                                      text: "Michael Adeyeye"
+                                  },
+                                  {
+                                      text: "Charlie Schmidt"
+                                  },
+                                  {
+                                      text: "Jonathan Zittrain"
+                                  },
+                                  {
+                                      text: "Mona Kasra"
+                                  },
+                                  {
+                                      text: "Noah Workman"
+                                  },
+                                  {
+                                      text: "Wilken Sanches"
+                                  },
+                                  {
+                                      text: "Keechang Kim"
+                                  },
+                                  {
+                                      text: "Celine Celines"
+                                  }
+                              ]
+                          },
+                          {
+                              text: "Places",
+                              next: [
+                                  {
+                                      text: "Sao Paulo", href: "http://en.wikipedia.org/wiki/S%C3%A3o_Paulo"
+                                  },
+                                  {
+                                      text: "Cape Town", href: "http://en.wikipedia.org/wiki/Cape_Town"
+                                  },
+                                  {
+                                      text: "Grande Isle, Louisiana", href: "http://en.wikipedia.org/wiki/Grand_Isle,_Louisiana"
+                                  },
+                                  {
+                                      text: "MIT Media Lab", href: "http://www.media.mit.edu/"
+                                  },
+                                  {
+                                      text: "Austin, Texas", href: "http://en.wikipedia.org/wiki/Austin,_Texas"
+                                  },
+                                  {
+                                      text: "New York, New York", href: "http://en.wikipedia.org/wiki/New_York_City"
+                                  },
+                                  {
+                                      text: "Seoul, Republic of South Korea", href: "http://en.wikipedia.org/wiki/Seoul"
+                                  },
+                                  {
+                                      text: "Montreal, Quebec", href: "http://en.wikipedia.org/wiki/Montreal"
+                                  },
+                                  {
+                                      text: "Harvard Law School", href: "http://www.law.harvard.edu/index.html"
+                                  }
+                              ]
+                          },
+                          {
+                              text: "Articles",
+                              next: [
+                                  {
+                                      text: "The Internet", href: "http://en.wikipedia.org/wiki/internet"
+                                  },
+                                  {
+                                      text: "The Village Telco", href: "http://en.wikipedia.org/wiki/Village_telco"
+                                  },
+                                  {
+                                      text: "Deepwater Horizon Oil Spill", href: "http://en.wikipedia.org/wiki/Deepwater_Horizon_oil_spill"
+                                  },
+                                  {
+                                      text: "Jonathan Zittrain", href: "http://en.wikipedia.org/wiki/Jonathan_Zittrain"
+                                  },
+                                  {
+                                      text: "Compuserve", href: "http://en.wikipedia.org/wiki/Compuserve"
+                                  },
+                                  {
+                                      text: "AOL", href: "http://en.wikipedia.org/wiki/AOL"
+                                  },
+                                  {
+                                      text: "Prodigy", href: "http://en.wikipedia.org/wiki/Prodigy_%28online_service%29"
+                                  },
+                                  {
+                                      text: "Internet Protocol", href: "http://en.wikipedia.org/wiki/Internet_Protocol"
+                                  },
+                                  {
+                                      text: "Tim Berners-Lee", href: "http://en.wikipedia.org/wiki/Tim_Berners-Lee"
+                                  },
+                                  {
+                                      text: "World Wide Web", href: "http://en.wikipedia.org/wiki/World_wide_web"
+                                  },
+                                  {
+                                      text: "Wikipedia", href: "http://en.wikipedia.org/wiki/Wikipedia"
+                                  },
+                                  {
+                                      text: "Open Standards", href: "http://en.wikipedia.org/wiki/Open_Standards"
+                                  }
+                              ]    
+                          },
+                          {
+                              text: "Developers",
+                              next: [
+                                  {
+                                      text: "Brett Gaylor",
+                                      next: [
+                                          { text: "Twitter", href: "http://twitter.com/remixmanifesto"},
+                                          { text: "Email", href: "mailto:brett@eyesteelfilm.com"}
+                                      ]
+                                  },
+                                  {
+                                       text: "Scott Downe",
+                                       next:  [{ text: "Email", href: "mailto:scott.downe@senecac.on.ca" }]
+                                  },
+                                  
+                                  {
+                                      text: "Nick Cammarata",
+                                      next: [
+                                          { text: "Twitter", href: "http://twitter.com/nicklovescode"},
+                                          { text: "Email", href: "mailto:nick@nickcammarata.com"}
+                                      ]
+                                  },
+                                  {
+                                      text: "Anna Sobiepanek",
+                                      next: [
+                                          { text: "Twitter", href: "http://twitter.com/annasob"},
+                                          { text: "Email", href: "mailto:anna.sobiepanek@gmail.com"}
+                                      ]
+                                  },
+                                  {
+                                      text: "Daniel Hodgin",
+                                      next: [
+                                          { text: "Twitter", href: "http://twitter.com/dhhodgin"},
+                                          { text: "Email", href: "mailto:daniel.hodgin@senecac.on.ca"}
+                                      ]
+                                  },
+                                  {
+                                      text: "David Humphrey",
+                                      next: [
+                                          { text: "Twitter", href: "http://twitter.com/humphd"},
+                                          { text: "Email", href: "mailto:david.humphrey@senecac.on.ca"}
+                                      ]
+                                  }
+                              ]
+                          },
+                          { 
+                              text: "Sources",
+                              next: [
+                                  
+                              ]
+                          }
+                      ]);
+                  };
+                  var removeCredits = function() {
+                      $("#choices").css("right","-200px");
+                      $("#credits").hide();
+                  };
+                  var colIndex = 0;
+                  var killCol = function(index, callback) {
+                    $(".column").each(function() {
+                      if ($(this).attr("colindex")>index) {
+                        $(this).addClass("removing").animate( { left: -$(this).outerWidth() + "px" }, 1200, function() {
+                          $(this).remove(); 
+                        });
+                      }
+                    });
+                    if (callback) {
+                      callback();
+                    }
+                  };
+
+                  var add =  function(items) {
+                        colIndex++;
+                        var ul = $("<ul></ul>")
+                            .addClass('column')
+                            .attr('colindex',parseInt(colIndex, 10));
+                        $.each(items, function(i, val) {
+                            var li = $(document.createElement('li'))
+                                .append($(document.createElement('a'))
+                                    .text(val.text)
+                                    .attr("href",val.href||"#")
+                                    .attr("target",val.href?"_blank":""))
+                                .appendTo(ul)
+                                .addClass('play')
+                                .click(function() {
+                                    if (val.href) {
+                                      return true;
+                                    }
+                                    var colIndex2 = $(this).parent().attr('colindex');
+                                    if (colIndex>colIndex2) {
+                                        killCol(colIndex2);
+                                        colIndex = colIndex2;
+                                    }
+                                    var hasClass = $(this).hasClass('selected');
+                                    if (!hasClass) {
+                                        if (val.click) {
+                                          val.click();
+                                        }
+                                        if (val.next) {
+                                          add(val.next);
+                                        }
+                                    }  
+                                    $(this)
+                                       .parent()
+                                       .find('.selected')
+                                       .removeClass('selected');
+                                    if (!hasClass) {
+                                      $(this).addClass('selected');
+                                    }
+                                });
+                        });
+                        var width = 0;
+                        $(".column:not(.removing)").each(function() {
+                            width+=$(this).outerWidth();    
+                        });
+                        ul
+                            .appendTo("#credit_inner")
+                            .css("z-index",1000 - colIndex)
+                            .css("left",-ul.outerWidth())
+                            .animate({ 
+                                left: width + "px"
+                            },750);
+                  };
+              </script>
+              <video width="530" height="299" data-timeline-sources="xml/webMadeMovies.xml" controls>
+                <source src="http://webmademovies.etherworks.ca/popcorndemo/wmmjuly6.ogv" type='video/ogg; codecs="theora, vorbis"'>
+                <source src="http://webmademovies.etherworks.ca/popcorndemo/wmmjuly6.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+              </video>
+              <div id="overlaydiv" style="position:absolute;top:1px;left:1px"></div>
+              <script>
+                overlayDiv = document.getElementById("overlaydiv");
+                var createImage = function(src) {
+                  var image = document.createElement('img');
+                  image.setAttribute('src', src);
+                  image.setAttribute('style', "display:none");
+                  overlayDiv.appendChild(image);
+                  return image;
+                };
+                popcorn.VideoManager.prototype.loaded = function() {
+                  for (var i in this.commandObjects) {
+                    if (this.commandObjects[i].name === 'flickr' || this.commandObjects[i].name === 'footnote' || this.commandObjects[i].name === 'location' || this.commandObjects[i].name === 'twitter' || this.commandObjects[i].name === 'wiki' || this.commandObjects[i].name === 'lastfm') {
+                      this.commandObjects[i].extension.image = createImage("images/overlay/" + this.commandObjects[i].name + ".png");
+                      this.commandObjects[i].extension.onIn = function() {
+                        this.image.setAttribute('style', "display:inline");
+                      };
+                      this.commandObjects[i].extension.onOut = function() {
+                        this.image.setAttribute('style', "display:none");
+                      };
+                    }
+                  }
+                };
+              </script>
+              <!-- Start Video Info -->
+              <div class="video-info">
+                <!-- Start Choose Language -->
+                <div class="choose-language">
+                  <h2>Choose your language</h2>
+                  <select id="language">
+                      <option value="zh">Chinese</option>
+                      <option value="en" selected="selected">English</option>
+                      <option value="fr">French</option>
+                      <option value="de">German</option>
+                      <option value="it">Italian</option>
+                      <option value="ja">Japanese</option>
+                      <option value="ko">Korean</option>
+                      <option value="fa">Persian</option>
+                      <option value="pl">Polish</option>
+                      <option value="pt">Portuguese</option>
+                      <option value="es">Spanish</option>
+                  </select>
+                  <div id="credit">
+                      with help from
+                      <br />
+                      <a href="http://google.com/translate">Google Translate</a> and <a href="http://jquery.com">
+                      jQuery</a><br />
+                      <input type="checkbox" id="accessibility" checked="checked" />All subtitles (accessibility)
+                  </div>
+                </div>
+                <!-- End Choose Language -->
+
+                <!-- Start Foot Notes -->
+                <div class="foot-notes">
+                  <h2>This video's footnotes</h2>
+                  <p id="footnotediv"></p>
+                </div>
+                <!-- End Foot Notes -->
+              </div>
+              <!-- End Video Info -->
+            </div>
+            <!-- End Video Div -->
+            
+            <div>
+              <section>
+                <a href="#" class="collapse"><span>Collapse</span></a>
+                <div id="iframes" class="content"><div class="overlay"></div><div class="inactive"></div></div>
+              </section>
+            </div>
+            
+            <h1>
+              <span>In this video: <strong id="inthisvideo"></strong></span>
+            </h1>
+            <!-- Start Column A -->
+            <div class="columna">
+              <section>
+                <h3><img src="images/logo_twitter.png" alt="Twitter Updates" width="80" height="19" />
+                <span>&nbsp;</span></h3>
+                <a href="#" class="collapse"><span>Collapse</span></a>
+                <div id="personaltwitter" class="content"><div class="overlay"></div><div class="inactive"></div></div>
+              </section>
+            </div>
+            <!-- End Column A -->
+
+            <!-- Start Column B -->
+            <div class="columnb">
+              <section>
+                <h3><img src="images/logo_flickr.png" alt="Flickr Images" width="53" height="16" />
+                                    <span>&nbsp;</span></h3>
+                <a href="#" class="collapse"><span>Collapse</span></a>
+                <div id="personalflickr" class="content"><div class="overlay"></div><div class="inactive"></div></div>
+              </section>
+            </div>
+            <!-- End Column B -->
+          </div>
+          <!-- End Left Contents -->
+          <!-- Start Right Contents -->
+          <div class="right-content">
+            <h1><span>Related to this video</span></h1>
+            <!-- Start Column A -->
+            <div class="columna">
+              <section>
+                <div id="container3" class="google-map-title">
+                  <h4>Filmed in:</h4>
+                  <span id="mapinfo"></span>
+                </div>
+
+                <div id="container2" class="google-map"></div>
+
+              </section>
+              <section>
+                <h3><img src="images/logo_twitter.png" alt="Twitter" width="80" height="19" /></h3>
+                <a href="#" class="collapse"><span>Collapse</span></a>
+                <div id="twitter" class="content"><div class="overlay"></div><div class="inactive"></div></div>
+              </section>
+			  
+            </div>
+            <!-- End Column A -->
+            <!-- Start Column B -->
+            <div class="columnb">
+              <section>
+                <h3><img src="images/logo_wiki.png" alt="Wikipedia" width="92" height="13" /></h3>
+                <a href="#" class="collapse"><span>Collapse</span></a>
+                <div class="content" id="wikidiv"><div class="overlay"></div><div class="inactive"></div></div>
+              </section>
+              <section>
+                <h3><img src="images/logo_google_news.png" alt="Google News" width="74" height="33" />
+                </h3>
+                <div id="googlenewsdiv"><div class="overlay"></div><div class="inactive"></div></div>
+              </section>
+			  <section>
+                <h3><img src="images/logo_lastfm.png" alt="Lastfm" width="80" height="24" /></h3>
+                <a href="#" class="collapse"><span>Collapse</span></a>
+                <div class="content" id="lastfmdiv"><div class="overlay"></div><div class="inactive"></div></div>
+              </section>
+            </div>
+            <!-- End Column B -->
+            <h1><span>This video's copyright information</span></h1>
+            <section>
+              <div id="container5"></div>
+            </section>
+          </div>
+          <!-- End Right Contents -->
+        </div>
+        <!-- End Contents -->
+        <footer>
+          <div class="footer_drumbeat">
+          <img src="images/footer_webmade.png" alt="footer_drumbeat" width="115" height="91" />
+          <p>Web Made Movies is Mozilla's<br /> Open video lab<br />
+          <a href="http://www.drumbeat.org/webmademovies">Learn More and find the source code for this demo<span>&raquo;</span></a>
+          </p>
+          </div>
+          <div class="footer_drumbeat">
+          <img src="images/footer_drumbeat.png" alt="footer_drumbeat" width="200" height="68" /><p>Innovation on the open web,<br />powered by everybody.</p>
+          </div>
+          <div class="copyright">Portions of this content are &copy;2010 by individual drumbeat.org contributors. Content available under a Creative Commons license.</div>
+        </footer>
+      </div>
+      <!-- End Wrapper Div -->
+    </div>
+    <!-- End Second Container Div -->
+  </div>
+  <!-- End First Container Div -->
+
+  <!-- Start Popup -->
+  <div class="pop-overlay">
+  </div>
+
+  <div class="popup">
+    <span class="close_btn">x</span>
+
+    <div class="popup-content">
+      <h1>Info about this page</h1>
+      <p>This demo was created by Scott Downe, Anna Sobiepanek, Daniel Hodgin, Nick Cammarata, and Brett Gaylor as part of Web Made Movies. To download the source code and find out how you can contribute, click on the Web Made Movies logo at the bottom of this page.</p>
+
+      <p>
+        <strong>Are you having trouble getting this demo to play?</strong><br />
+        This video will only play in modern browsers, such as Firefox 3.5+ or Safari 3+. Unfortunately, Internet Explorer does not currently support open video codecs, so the won't work in that browser.
+      </p>
+    </div>
+  </div>
+  <!-- End Popup -->
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="../../popcorn.js"></script>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  
+  <!-- This is needed for google maps api -->
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <!-- These two are needed for google news api -->
+  <script src="http://google.com/jsapi"></script>
+  <script>google.load("elements", "1", {packages : ["newsshow"]});</script>
+  <!-- This is needed for language translation -->
+  <script>google.load("language", "1");</script>
+</head>
+<body>
+  <!-- Start Contents -->
+  <div id="contents">
+    <!-- Start Left Contents -->
+    <div class="left-content">
+      <!-- Start Video Div -->
+      <br />
+      <div id="videoContainer" class="video-div">
+        <video src="demo.ogg" data-timeline-sources="xml/data.xml" style="-moz-transform: scaleX(1.2); height:300px;" controls></video>
+      <div id="translateinfo"style="z-index:2;position:absolute;color:white;textShadow:black 2px 2px 6px;font-size:18px;font-family:arial;max-width:480px;font-weight:bold;top: 230px;left:10px"></div>
+      <div id="translateinfofrench" style="z-index:2;position:absolute;color:white;textShadow:black 2px 2px 6px;font-style:italic;font-family:arial;max-width:480px;font-size:18px;font-weight:bold;top:260px;left:10px"></div>
+      </div>
+      
+      <div class="video-info" style="display:none">
+        <!-- Start Choose Language -->
+        <div class="choose-language">
+          <h2>Choose your language</h2>
+          <select id="language">
+              <option value="zh">Chinese</option>
+              <option value="fr" selected="selected">French</option>
+              <option value="de">German</option>
+              <option value="it">Italian</option>
+              <option value="ja">Japanese</option>
+              <option value="ko">Korean</option>
+              <option value="fa">Persian</option>
+              <option value="pl">Polish</option>
+              <option value="pt">Portuguese</option>
+              <option value="es">Spanish</option>
+          </select>
+          <span id="credit">
+              with help from
+              <a href="http://google.com/translate">Google Translate</a> and <a href="http://jquery.com">
+              jQuery</a>
+          </span>
+        </div>
+        <!-- End Choose Language -->
+      </div>
+      <!-- End Video Info -->
+      <div id="attribinfo" style="display:none;background:white;width:409px;height:100px;text-align:left;padding-left:4px;"></div>  
+      </div><br />
+      
+    </div><!-- End Video Div -->
+    <div class="right-content">
+      <h1>Google Maps</h1>
+      <div id="mapinfo" style="width:400px;height:250px" ></div>     
+  
+      <div id="imageinfo" style="display:none;top:330px;width:400px;text-align:left;"> <!--needed for imageCommand -->
+        <h1>Popcorn-js Team</h1>
+      </div>
+  
+      <div id="wikiinfo" style="display:none;top:330px;background:black;color:white;width:400px;height:220px;text-align:left;padding-left:4px;position:absolute;">
+     <h1>Wikipedia</h1><br>
+      </div>
+      <div id="flickrinfo" style="display:none;top:330px;color:white;background:black;width:400px;height:220px;text-align:left;position:absolute">
+        <h1>Flickr</h1>
+      </div>
+      <div id="twitterinfo" style="display:none;top:330px;color:white;background:white;width:400px;height:100px;text-align:left;align:left">
+      <br />
+      </div>
+      
+    </div>
+    <br />
+    <div class="full-content">
+    
+       <div id="iframeinfo"></div>
+       <div id="iframeinfo"></div>
+ 
+    </div>
+  </div>
+  </body>
+</html>
+

@@ -84,11 +84,11 @@
     for (var j in vid.videoManager.commandObjects) {
       if (vid.videoManager.commandObjects.hasOwnProperty(j)) {
         commandObject = vid.videoManager.commandObjects[j];
-        if (!commandObject.loaded && (commandObject.params["in"] - 5) <= t && commandObject.params["out"] > t) {
+        if (!commandObject.loaded && (commandObject.params["in"] - 5) < t && commandObject.params["out"] > t) {
           commandObject.loaded = true;
           commandObject.preload();
         }
-        if (!commandObject.running && commandObject.params["in"] <= t && commandObject.params["out"] > t) {
+        if (!commandObject.running && commandObject.params["in"] < t && commandObject.params["out"] > t) {
           commandObject.running = true;
           
           $("#" + commandObject.params.target + " .inactive").hide();
@@ -345,9 +345,11 @@
       $("a").each(function() {
         this.setAttribute('target', '_blank');
       });
+      document.getElementById(this.params.target).style.display = "inline";
     };
     this.onOut = function() {
       this.target.setAttribute('style', 'display:none');
+      document.getElementById(this.params.target).style.display = "none";
     };
   };
 
@@ -532,10 +534,12 @@
         }
       }).render().start();
       that.onIn = function() {
-        that.target.setAttribute('style', 'display:inline');
+        that.target.style.display = "inline";//.setAttribute('style', 'display:inline');
+        document.getElementById(this.params.target).style.display = "inline";
       };
       that.onOut = function() {
-        that.target.setAttribute('style', 'display:none');
+        that.target.style.display = "none";//.setAttribute('style', 'display:none');
+        document.getElementById(this.params.target).style.display = "none";
       };
       that.preload = function() {}; // Probably going to need to preload this.
     });
@@ -582,10 +586,12 @@
     this.target = target;
 
     this.onIn = function() {
-      this.target.setAttribute('style', 'display:inline');
+      this.target.style.display = "inline";//.setAttribute('style', 'display:inline');
+      document.getElementById(this.params.target).style.display = "inline";
     };
     this.onOut = function() {
-      this.target.setAttribute('style', 'display:none');
+      this.target.style.display = "none";//.setAttribute('style', 'display:none');
+       document.getElementById(this.params.target).style.display = "none";
     };
   };
 	
@@ -625,7 +631,7 @@
         link.setAttribute('href', src);
         link.setAttribute('target', '_blank');
         var p = document.createElement('p');
-        popcorn.innerHTML = data.parse.displaytitle;
+        p.innerHTML = data.parse.displaytitle;
         link.appendChild(p);
         // get the first 140 characters of the wiki content
         var desc = document.createElement('p');
@@ -640,9 +646,12 @@
     this.target = target;
     this.onIn = function() {
       this.target.setAttribute('style', 'display:inline');
+      document.getElementById(this.params.target).style.display = "block";
+      
     };
     this.onOut = function() {
       this.target.setAttribute('style', 'display:none');
+      document.getElementById(this.params.target).style.display = "none";
     };
   };
   ////////////////////////////////////////////////////////////////////////////
@@ -715,9 +724,11 @@
     }
     this.onIn = function() {
       document.getElementById(this.params.target).innerHTML = attribution;
+      document.getElementById(this.params.target).style.display = "block";//setAttribute('style', 'display:inline');
     };
     this.onOut = function() {
       document.getElementById(this.params.target).innerHTML = "";
+      document.getElementById(this.params.target).style.display = "none";//.setAttribute('style', 'display:none');
     };
   };
 
@@ -761,8 +772,9 @@
     // Setup a default, iframe to hold the website
     var target = document.createElement('iframe');
     target.setAttribute('src', this.params.src);
-    target.setAttribute('width', "100%");
-    target.setAttribute('height', "100%");
+    target.setAttribute('width', this.params.width);
+    target.setAttribute('height', this.params.height);
+    target.setAttribute('id', this.id);
     document.getElementById(this.params.target).appendChild(target);
     // iframe is hidden by default
     target.setAttribute('style', 'display:none');
@@ -775,7 +787,39 @@
       this.target.setAttribute('style', 'display:none');
     };
   };
+  ////////////////////////////////////////////////////////////////////////////
+  // Image Command
+  ////////////////////////////////////////////////////////////////////////////
   
+  popcorn.ImageCommand = function(name, params, text, videoManager) {
+    popcorn.VideoCommand.call(this, name, params, text, videoManager);
+
+    var src = this.params.src;
+    // Setup a default, hidden div to hold the image
+    var target = document.createElement('div');
+    target.setAttribute('id', this.id);
+    
+    // Div is hidden by default
+    target.setAttribute('style', 'display:none');
+    var image = document.createElement('img');
+    image.setAttribute('src', this.params.src);
+    image.setAttribute('height', this.params.height);
+    image.setAttribute('width', this.params.width);
+    target.appendChild(image);
+    //apend to the target div provided in the xml
+    document.getElementById(this.params.target).appendChild(target);
+
+    this.target = target;
+    this.onIn = function() {
+      this.target.setAttribute('style', 'display:inline');
+      document.getElementById(this.params.target).style.display = "block";
+      
+    };
+    this.onOut = function() {
+      this.target.setAttribute('style', 'display:none');
+      document.getElementById(this.params.target).style.display = "none";
+    };
+  };
   // Wrapper for accessing commands by name
   // commands[name].create() returns a new command of type name
   // Not sure if this is the best way; maybe it's too fancy?
@@ -849,6 +893,11 @@
     webpage: {
       create: function(name, params, text, videoManager) {
         return new popcorn.WebPageCommand(name, params, text, videoManager);
+      }
+    },
+    image: {
+      create: function(name, params, text, videoManager) {
+        return new popcorn.ImageCommand(name, params, text, videoManager);
       }
     }
   };
@@ -936,7 +985,6 @@
         clearInterval(si);
         convert(data, manager, type);
         manager.loaded();
-        popcorn.update(video);
     }, 50);
   };
 

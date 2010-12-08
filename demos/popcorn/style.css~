@@ -1,0 +1,92 @@
+html, body{
+height: 100%;
+}
+
+body {
+	line-height: 1;
+	font-family: Helvetica, Arial, "Lucida Grande";
+	font-size: 15px;
+}
+a{
+  text-decoration: none;
+  color: #cc433d;
+}
+
+a:hover{
+  color: #f27c77;
+}
+/* Layout */
+
+body{
+  background-color: #000000;
+}
+
+.left-content{
+  width:400px;
+  float: left;
+}
+.right-content{
+  float: left;
+  width:380px;
+  padding-left: 20px;
+  padding-top: 0px;
+}
+.full-content{
+  width:790px;
+}
+.video-div{
+  position:relative;
+  border-style: "groove";
+  margin-bottom: 15px;
+  margin-right: 15px;
+  clear: both;
+  font-size: 15px !important;
+}
+
+h1{
+  border: 1px solid #9f9f9f;
+  background-color:#1c749d;
+  -moz-border-radius:8px;
+  border-radius:8px;
+  -webkit-border-radius:8px;
+  background-image: -moz-linear-gradient(top, #3d96c0, #1a729b);/* Firefox 3.6 */
+  background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #1a729b),color-stop(1, #3d96c0));/* Safari & Chrome */
+  padding: 5px 20px 6px 12px;
+  min-width:325px;
+  font-size:15px;
+  color: #FFF;
+  font-weight: normal;
+  display: inline-block;
+  border-bottom-color: #1c749d;
+  /*box-shadow:inset 0 0 1px #FFF;
+  -moz-box-shadow:inset 0 1px 0 #6fb9db;*/
+}
+.choose-language h2, .choose-language div{
+color: #FFF;
+opacity:.8;
+}
+
+.choose-language h2{
+font-size: 12px;
+padding-bottom: 3px;
+}
+
+.choose-language a{
+font-weight: bold;
+color: #FFF;
+text-decoration: underline;
+}
+
+.choose-language a:hover{
+opacity:1;
+}
+
+#credit{
+padding: 5px 0;
+font-size: 10px;
+color: #FFF;
+}
+.choose-language select,.choose-language span, .choose-language select *{
+color: #000;
+font-size: 12px;
+}

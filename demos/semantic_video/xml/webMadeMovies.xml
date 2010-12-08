@@ -316,8 +316,8 @@
       </subtitles>
     </subtitles>
     <webpages>
-      <webpage in="00:04:00:08" out="00:04:19:00" target="iframes" resourceid="monahomepage" />
-      <webpage in="00:04:19:06" out="00:04:24:01" target="iframes" resourceid="celinehomepage" />
+      <webpage in="00:04:00:08" out="00:04:19:00" target="iframes" resourceid="monahomepage" width="100"/>
+      <webpage in="00:04:19:06" out="00:04:24:01" target="iframes" resourceid="celinehomepage" width="100"/>
     </webpages>
     <script in="4:45:00" start="displayCredits" stop="removeCredits"/>
   </timeline>
