@@ -1,48 +1,64 @@
+// PLUGIN: WEBPAGE
+
 (function (Popcorn) {
+  
   /**
    * Webpages popcorn plug-in 
    * Creates an iframe showing a website specified by the user
-   * Options parameter will need a start, duration or out, and src.
+   * Options parameter will need a start, end, id, target and src.
    * Start is the time that you want this plug-in to execute
-   * Out is the time that you want this plug-in to stop executing [not currently implemented]
-   * Duration can be used instead of out to state how long you want the plug-in to execute for
-   * Target is the id of the document element that the iframe needs to be attached to
+   * End is the time that you want this plug-in to stop executing 
+   * Id is the id that you want assigned to the iframe
+   * Target is the id of the document element that the iframe needs to be attached to, 
+   * this target element must exist on the DOM
+   * Src is the url of the website that you want the iframe to display
    *
    * @param {Object} options
+   * 
+   * Example:
+     var p = Popcorn('#video')
+        .webpage({
+          id: "webpages-a", 
+          start: 5, // seconds
+          end: 15, // seconds
+          src: 'http://www.webmademovies.org',
+          target: 'webpagediv'
+        } )
    *
    */
-  Popcorn.plugin( "webpages" , function ( options ) {
-    
-    var exists,
-        iframe  = document.createElement( 'iframe' ),
-        page    = [], 
-        temp    = document.getElementById( options.target );
-          
-    // set the style of the iframe
+  Popcorn.plugin( "webpage" , (function(){
+      
+    var exists, iframe, temp;
+    iframe  = document.createElement( 'iframe' ),
     iframe.setAttribute('width', "100%");
     iframe.setAttribute('height', "100%");
-    iframe.id  = options.id;
-    iframe.src = options.src;
-   
-    // listen function will add/remove the iframe from the page at the appropriate times
-    this.listen("timeupdate", function (event) {
-      exists  = document.getElementById( options.id );
-      if ( this.currentTime() >= options.start && !exists &&  this.currentTime() <= options.end ) {
-        temp.appendChild(iframe);
-      }
-      // remove the iframe if the current time of the video is greater than 
-      // the end time specified by the user 
-      if ( this.currentTime() >= options.end  && exists ) {           
-        temp.removeChild(iframe);
-      }
-      // if the user seeks to a time before the webpage command
-      // ensure that the iframe was removed
-      if ( this.currentTime() < options.start && exists ) {
-        temp.removeChild(iframe);
-      }
-    });
     
-    return this;
-  });
+    
+    return {
+      /**
+       * @member webpage 
+       * The start function will be executed when the currentTime 
+       * of the video  reaches the start time provided by the 
+       * options variable
+       */
+      start: function(event, options){
+        temp    = document.getElementById( options.target );
+        iframe.id  = options.id;
+        iframe.src = options.src;
+        temp.appendChild(iframe);
+      },
+      /**
+       * @member webpage 
+       * The end function will be executed when the currentTime 
+       * of the video  reaches the end time provided by the 
+       * options variable
+       */
+      end: function(event, options){
+        temp.removeChild(iframe);
+      }
+      
+    };
+    
+  })());
 
-})(Popcorn);
+})( Popcorn );
