@@ -12,8 +12,7 @@
   //  Declare a pseudo-private constructor
   //  This constructor returns the instance object.    
   Popcorn = function( entity ) {
-    //  Return new instance of
-    //  Popcorn.prototype.instance constructor
+    //  Return new Popcorn object
     return new Popcorn.p.init( entity );
   };
 
@@ -80,6 +79,9 @@
 
   // A Few reusable utils, memoized onto Popcorn
   Popcorn.extend( Popcorn, {
+  	error: function( msg ) {
+	  	throw msg;
+  	},
     guid: function() {
       return +new Date() + Math.floor(Math.random()*11);
     }, 
@@ -315,21 +317,29 @@
     Popcorn.p[key] = Popcorn.events.fn[key];
   });  
   
+  Popcorn.protect = {
+    natives: "load play pause currentTime playbackRate mute volume duration".toLowerCase().split(/\s+/)
+  };
+  
   //  Plugins are registered 
   Popcorn.registry = [];
   //  An interface for extending Popcorn 
   //  with plugin functionality
   Popcorn.plugin = function( name, definition ) {
 
+    if ( Popcorn.protect.natives.indexOf( name.toLowerCase() ) >= 0 ) {
+      Popcorn.error("'" + name + "' is a protected function name");
+      return;
+    }
+
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p 
     
     var natives = Popcorn.events.all, 
         reserved = [ "start", "end", "timeupdate" ], 
-        plugin = {},
+        plugin = {}, 
+        pluginFn, 
         setup;
-    
-    
     
     if ( typeof definition === "object" ) {
       
@@ -339,7 +349,7 @@
         setup.timeupdate = Popcorn.nop;
       }         
 
-      definition  = function ( options ) {
+      pluginFn  = function ( options ) {
         
         var self = this, 
             fired = {
@@ -407,19 +417,34 @@
         return this;
       };
     }
-
     
-    plugin[ name ] = definition;
+    //  If a function is passed... 
+    if ( typeof definition === "function" ) {
+      
+      //  Execute and capture returned object
+      setup = definition.call(this);
+      
+      //  Ensure an object was returned 
+      //  it has properties and isnt an array
+      if ( typeof setup === "object" && 
+            !( "length" in setup )  ) {
+        
+        Popcorn.plugin( name, setup );                
+      }
+      return;
+    }
     
+    //  Assign new named definition     
+    plugin[ name ] = pluginFn;
+    
+    //  Extend Popcorn.p with new named definition
     Popcorn.extend( Popcorn.p, plugin );
     
-    Popcorn.registry.push({ 
-      name: name,
-      plugin: plugin
-    });
+    //  Push into the registry
+    Popcorn.registry.push(plugin);
     
-    //  within the context of a plugin
-    //  any of the events can be listened to 
+    
+    return plugin;
   };
   
 

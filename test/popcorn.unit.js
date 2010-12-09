@@ -39,15 +39,33 @@ test("API", function () {
 
 test("Utility", function () {
   
+  expect(6);
   //  TODO: comprehensive tests for these utilities
   
   equals( typeof Popcorn.forEach, "function" , "Popcorn.forEach is a provided utility function");
   equals( typeof Popcorn.extend, "function" , "Popcorn.extend is a provided utility function");
+  equals( typeof Popcorn.error, "function" , "Popcorn.error is a provided utility function");  
   equals( typeof Popcorn.guid, "function" , "Popcorn.guid is a provided utility function");
   equals( typeof Popcorn.sizeOf, "function" , "Popcorn.sizeOf is a provided utility function");
   equals( typeof Popcorn.nop, "function" , "Popcorn.nop is a provided utility function");
-
+  
+  
+  
+  
 });
+
+
+test("Protected", function () {
+  
+  expect(1);
+  //  TODO: comprehensive tests for these utilities
+  
+  ok( !!Popcorn.protect , "Popcorn.protect exists");
+  
+  
+});
+
+
 
 
 test("Object", function () {
@@ -343,75 +361,105 @@ test("UI/Mouse", function () {
 });
 
 module("Popcorn Plugin")
-test("Plugin API", function () {
+test("Plugin Factory", function () {
   
   QUnit.reset();
   
   // needs expectation
 
   var popped = Popcorn("#video"), 
-      methods = "load play pause currentTime mute volume";
-      
+      methods = "load play pause currentTime mute volume roundTime exec",
+      expects = 22, 
+      count = 0;
   
+  //expect(expects);
+  
+  function plus() { 
+    console.log(count);
+    if ( ++count == expects ) {
+      start(); 
+    }
+  }
+
   stop();
-  
-  
-  Popcorn.plugin("subtitles", function () {
-    
-    var self = this;
-    
-    // These ensure that a popcorn instance is the value of `this` inside a plugin definition
-    
-    methods.split(/\s+/g).forEach(function (k,v) {
-      ok( k in self, "instance has method: " + k );
-    });
 
-    ok( "video" in this, "instance has `video` property" );
-    ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
+  Popcorn.plugin("executor", function () {
+    
+    return {
+      
+      start: function () {
+        var self = this;
 
-    ok( "data" in this, "instance has `data` property" );
-    ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
+        // These ensure that a popcorn instance is the value of `this` inside a plugin definition
 
-    ok( "tracks" in this.data, "instance has `tracks` property" );
-    ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )
+        methods.split(/\s+/g).forEach(function (k,v) {
+          ok( k in self, "executor instance has method: " + k );
+          
+          plus();
+        });
+
+        ok( "video" in this, "executor instance has `video` property" );
+        plus();
+        ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
+        plus();
+
+        ok( "data" in this, "executor instance has `data` property" );
+        plus();
+        ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
+        plus();
+
+        ok( "tracks" in this.data, "executor instance has `tracks` property" );
+        plus();
+        ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "executor tracks property is an array" )      
+        plus();      
+      }, 
+      end: function () {
+      
+      }
+    };
   });
-  
-  
-  //  Call plugin to test scope within 
-  popped.subtitles();
-  
-  
-  
-  ok( "subtitles" in popped, "subtitles plugin is now available to instance" );
+ 
+  ok( "executor" in popped, "executor plugin is now available to instance" );
+  plus();
   ok( Popcorn.registry.length === 1, "One item in the registry");
+  plus();    
   
   
   
+  popped.executor({
+    start: 1, 
+    end: 2
+  });
   
   
   Popcorn.plugin("complicator", {
     
     start: function ( event ) {
-      
-      
-      equals( ~~this.currentTime(), 1, "~~this.currentTime() === 1");
-      
+
       var self = this;
 
       // These ensure that a popcorn instance is the value of `this` inside a plugin definition
 
       methods.split(/\s+/g).forEach(function (k,v) {
-        ok( k in self, "instance has method: " + k );
+        ok( k in self, "complicator instance has method: " + k );
+        
+        plus();
       });
 
-      ok( "video" in this, "instance has `video` property" );
+      ok( "video" in this, "complicator instance has `video` property" );
+      plus();
       ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
+      plus();
 
-      ok( "data" in this, "instance has `data` property" );
-      ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
+      ok( "data" in this, "complicator instance has `data` property" );
+      plus();
+      ok( Object.prototype.toString.call(popped.data) === "[object Object]", "complicator data property is an object" );
+      plus();
 
-      ok( "tracks" in this.data, "instance has `tracks` property" );
-      ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )      
+      ok( "tracks" in this.data, " complicatorinstance has `tracks` property" );
+      plus();
+      ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "complicator tracks property is an array" )      
+      plus();
       
     },
     end: function () {
@@ -425,18 +473,16 @@ test("Plugin API", function () {
   
   
   ok( "complicator" in popped, "complicator plugin is now available to instance" );
+  plus();
   ok( Popcorn.registry.length === 2, "Two items in the registry");
-  
-  
-  
-  popped.currentTime(0);
+  plus();
   
   popped.complicator({
-    start: 1, 
-    end: 2
+    start: 3, 
+    end: 4
   });  
-  
-  
+
+
   var breaker = {
     
     start: 0, 
@@ -450,38 +496,71 @@ test("Plugin API", function () {
       
       breaker.start++;
     
-      ok(true, "plugin:breaker started");
+      ok(true, "breaker started");
+      plus();
     },
     end: function () {
       
       breaker.end++;
     
-      ok(true, "plugin:ended started");
-      start();
+      ok(true, "breaker started");
+      plus();
+
       
-      equals( 1, breaker.start, "plugin start method fires only once");
-      equals( 1, breaker.end, "plugin end method fires only once");
+      equals( breaker.start, 1, "plugin start method fires only once");
+      plus();
+      equals( breaker.end, 1, "plugin end method fires only once");
+      plus();
+      
+      
     } 
   });
 
   
-  
-  popped.currentTime(0);
-  
   popped.breaker({
     start: 1, 
     end: 2
-  });    
+  });      
+  
+  
+  popped.currentTime(0).play();
+
+  
+});
+
+test("Protected Names", function () {
+  
+  //QUnit.reset();
+  
+  expect(8);
+
+  var popped = Popcorn("#video");
+
+  $.each( "load play pause currentTime playbackRate mute volume duration".split(/\s+/), function (k, name) {
+    try {
+
+      Popcorn.plugin( name, {});
+    }   catch (e) {
+
+      ok( name, "Attempting to overwrite '" + name + "' threw an exception " );
+
+    };
+  });
 });
 
 
 
+/*
 
+
+  
+
+  
 
 
 test("Events Extended", function () {
   
-  //QUnit.reset();
+  QUnit.reset();
   
   // needs expectation
 
@@ -489,7 +568,7 @@ test("Events Extended", function () {
       expects = 11, 
       count = 0;
 
-  //expect(expects);
+  expect(expects);
   // not in full use
   function plus(){ 
     if ( ++count == expects ) start(); 
@@ -500,6 +579,7 @@ test("Events Extended", function () {
   
   Popcorn.plugin("extendedEvents", (function () {
   
+    var fired = [];
 
     var pluginObj = {
 
@@ -514,9 +594,17 @@ test("Events Extended", function () {
     $.each( Setup.events, function ( k, type ) {
       
       pluginObj[type]  = function (event, opts) {
-        ok( true, type + " fired!" );
+      
+        if ( fired.indexOf(type) === -1 ) {
+          fired.push(type);
+          
+          ok( true, type + " fired" );
+          
+          plus();
         
-        plus();
+        
+          
+        }
       };
     
     });
@@ -538,9 +626,14 @@ test("Events Extended", function () {
   
   popped.currentTime(19).play();
   
-  
-});
+  $.each( Setup.events, function ( k, type ) {
+    
+    popped.trigger(type);
+      
+  });
 
+});
+*/
 
 /*
 module("Popcorn Video Object")
