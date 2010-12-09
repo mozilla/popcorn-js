@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn API Draft DEMO</title>
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.image.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      Popcorn('#video')
+        .image({
+          start   : 1,
+          end     : 8,
+          target  : 'image-container',
+          src     : 'http://nutrihealth.in/wp-content/uploads/2010/04/popcorn-250x300.jpg',
+          alt     : 'Bucket of Popcorn',
+          title   : 'Popcorn.js!',
+          click   : function(){
+            alert('Re-directing you to Popcorn.js web site.');
+            window.location = 'http://mozilla.github.com/popcorn-js/';
+          }
+        });
+    }, false);
+  </script>
+  
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Image Demo</h1>
+  
+  <video id='video'
+    style="float:left"
+    controls preload='none' 
+    poster="http://media.w3.org/2010/05/sintel/poster.png"> 
+  
+    <source id='mp4'
+      src="http://media.w3.org/2010/05/sintel/trailer.mp4"
+      type='video/mp4; codecs="avc1, mp4a"'> 
+  
+    <source id='ogv'
+      src="http://media.w3.org/2010/05/sintel/trailer.ogv"
+      type='video/ogg; codecs="theora, vorbis"'> 
+  
+    <p>Your browser does not support the HTML5 Video element.</p>
+  
+  </video> 
+  
+  <div id="image-container" style="border:1px solid black"></div>
+  
+</body>
+</html>

@@ -83,7 +83,7 @@ test("Object", function () {
   ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
 
   ok( "tracks" in popped.data, "instance has `tracks` property" );
-  ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "tracks property is an array" )
+  ok( Object.prototype.toString.call(popped.data.tracks) === "[object Object]", "tracks property is an object" )
 
   
   popped.play();
@@ -417,6 +417,7 @@ test("Plugin Factory", function () {
       
       }
     };
+
   });
  
   ok( "executor" in popped, "executor plugin is now available to instance" );
@@ -459,8 +460,7 @@ test("Plugin Factory", function () {
       ok( "tracks" in this.data, " complicatorinstance has `tracks` property" );
       plus();
       ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "complicator tracks property is an array" )      
-      plus();
-      
+      plus();     
     },
     end: function () {
     

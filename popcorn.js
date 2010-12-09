@@ -22,7 +22,7 @@
 
     init: function( entity ) {
 
-      var elem, matches;
+      var elem, matches, that = this;
 
       matches = rIdExp.exec( entity );
       
@@ -34,8 +34,75 @@
       
       this.data = {
         events: {},
-        tracks: []
+        tracks: {
+          byStart: [],
+          byEnd:   [],
+          startIndex: 0,
+          endIndex: 0,
+          previousUpdateTime: 0
+        }
       };
+
+      // adding padding to the front and end of the arrays
+      // this is so we do not fall off either end
+      this.data.tracks.byStart.push( {start: -1, end: -1} );
+      this.data.tracks.byEnd.push( {start: -1, end: -1} );
+      this.data.tracks.byStart.push( {start: 9999, end: 9999} );
+      this.data.tracks.byEnd.push( {start: 9999, end: 9999} );
+      
+      this.video.addEventListener( "timeupdate", function( event ) {
+
+        var currentTime    = this.currentTime,
+            previousTime   = that.data.tracks.previousUpdateTime,
+            tracksByEnd    = that.data.tracks.byEnd,
+            tracksByStart  = that.data.tracks.byStart;
+
+        // Playbar advancing
+        if (previousTime < currentTime) {
+
+          while (tracksByEnd[that.data.tracks.endIndex].end <= currentTime) {
+            if (tracksByEnd[that.data.tracks.endIndex].running === true) {
+              tracksByEnd[that.data.tracks.endIndex].running = false;
+              tracksByEnd[that.data.tracks.endIndex].natives.end(event, tracksByEnd[that.data.tracks.endIndex]);
+            }
+            that.data.tracks.endIndex++;
+          }
+          
+          while (tracksByStart[that.data.tracks.startIndex].start <= currentTime) {
+            if (tracksByStart[that.data.tracks.startIndex].end > currentTime && tracksByStart[that.data.tracks.startIndex].running === false) {
+              tracksByStart[that.data.tracks.startIndex].running = true;
+              tracksByStart[that.data.tracks.startIndex].natives.start(event, tracksByStart[that.data.tracks.startIndex]);
+            }
+            that.data.tracks.startIndex++;
+          }
+
+        // Playbar receding
+        } else if (previousTime > currentTime) {
+
+          while (tracksByStart[that.data.tracks.startIndex].start > currentTime) {
+            if (tracksByStart[that.data.tracks.startIndex].running === true) {
+              tracksByStart[that.data.tracks.startIndex].running = false;
+              tracksByStart[that.data.tracks.startIndex].natives.end(event, tracksByStart[that.data.tracks.startIndex]);
+            }
+            that.data.tracks.startIndex--;
+          }
+          
+          while (tracksByEnd[that.data.tracks.endIndex].end > currentTime) {
+            if (tracksByEnd[that.data.tracks.endIndex].start <= currentTime && tracksByEnd[that.data.tracks.endIndex].running === false) {
+              tracksByEnd[that.data.tracks.endIndex].running = true;
+              tracksByEnd[that.data.tracks.endIndex].natives.start(event, tracksByEnd[that.data.tracks.endIndex]);
+            }
+            that.data.tracks.endIndex--;
+          }
+        } else {
+          // When user seeks, currentTime can be equal to previousTime on the
+          // timeUpdate event. We are not doing anything with this right now, but we
+          // may need this at a later point and should be aware that this behavior
+          // happens in both Chrome and Firefox.
+        }
+
+        that.data.tracks.previousUpdateTime = currentTime;
+      }, false);
       
       return this;
     }
@@ -336,8 +403,9 @@
     //  the definition into Popcorn.p 
     
     var natives = Popcorn.events.all, 
-        reserved = [ "start", "end", "timeupdate" ], 
-        plugin = {}, 
+
+        reserved = [ "start", "end"], 
+        plugin = {},
         pluginFn, 
         setup;
     
@@ -345,22 +413,21 @@
       
       setup = definition;
       
-      if ( !( "timeupdate" in setup ) ) {
+      /*if ( !( "timeupdate" in setup ) ) {
         setup.timeupdate = Popcorn.nop;
-      }         
+      }*/        
 
       pluginFn  = function ( options ) {
-        
-        var self = this, 
-            fired = {
-              start: 0, 
-              end: 0
-            };
         
         if ( !options ) {
           return this;
         } 
         
+        // storing the plugin natives
+        options.natives = setup;
+        options.natives.type = name;
+        options.running = false;
+
         //  Checks for expected properties
         if ( !( "start" in options ) ) {
           options.start = 0;
@@ -377,30 +444,14 @@
           setup._setup.call(self, options);
         }
         
-        //  Plugin timeline handler 
-        this.listen( "timeupdate", function( event ) {
-          
-          
-          if ( ~~self.currentTime() === options.start || 
-                  self.currentTime() === options.start ) {
-            
-            !fired.start && setup.start.call(self, event, options);
-            fired.start++;
-          }
-
-          if ( self.currentTime() > options.start && 
-                self.currentTime() < options.end ) {
-            
-            setup.timeupdate.call(self, event, options);
-          }
-
-          if ( ~~self.currentTime() === options.end || 
-                  self.currentTime() === options.end ) {
-                
-            !fired.end && setup.end.call(self, event, options);
-            fired.end++;
-          }
-          
+        // Store this definition in an array sorted by times
+        this.data.tracks.byStart.push( options );
+        this.data.tracks.byEnd.push( options );
+        this.data.tracks.byStart.sort( function( a, b ){
+          return ( a.start - b.start );
+        });
+        this.data.tracks.byEnd.sort( function( a, b ){
+          return ( a.end - b.end );
         });
         
         //  Future support for plugin event definitions 
