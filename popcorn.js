@@ -35,64 +35,60 @@
       this.data = {
         events: {},
         tracks: {
-          byStart: [],
-          byEnd:   [],
+          // adding padding to the front and end of the arrays
+          // this is so we do not fall off either end
+          byStart: [{start: -1, end: -1}, {start: 9999, end: 9999}],
+          byEnd:   [{start: -1, end: -1}, {start: 9999, end: 9999}],
           startIndex: 0,
           endIndex: 0,
           previousUpdateTime: 0
         }
       };
 
-      // adding padding to the front and end of the arrays
-      // this is so we do not fall off either end
-      this.data.tracks.byStart.push( {start: -1, end: -1} );
-      this.data.tracks.byEnd.push( {start: -1, end: -1} );
-      this.data.tracks.byStart.push( {start: 9999, end: 9999} );
-      this.data.tracks.byEnd.push( {start: 9999, end: 9999} );
-      
       this.video.addEventListener( "timeupdate", function( event ) {
 
         var currentTime    = this.currentTime,
-            previousTime   = that.data.tracks.previousUpdateTime,
-            tracksByEnd    = that.data.tracks.byEnd,
-            tracksByStart  = that.data.tracks.byStart;
+            previousTime   = that.data.tracks.previousUpdateTime
+            tracks         = that.data.tracks,
+            tracksByEnd    = tracks.byEnd,
+            tracksByStart  = tracks.byStart;
 
         // Playbar advancing
         if (previousTime < currentTime) {
 
-          while (tracksByEnd[that.data.tracks.endIndex].end <= currentTime) {
-            if (tracksByEnd[that.data.tracks.endIndex].running === true) {
-              tracksByEnd[that.data.tracks.endIndex].running = false;
-              tracksByEnd[that.data.tracks.endIndex].natives.end(event, tracksByEnd[that.data.tracks.endIndex]);
+          while (tracksByEnd[tracks.endIndex].end <= currentTime) {
+            if (tracksByEnd[tracks.endIndex].running === true) {
+              tracksByEnd[tracks.endIndex].running = false;
+              tracksByEnd[tracks.endIndex].natives.end(event, tracksByEnd[tracks.endIndex]);
             }
-            that.data.tracks.endIndex++;
+            tracks.endIndex++;
           }
           
-          while (tracksByStart[that.data.tracks.startIndex].start <= currentTime) {
-            if (tracksByStart[that.data.tracks.startIndex].end > currentTime && tracksByStart[that.data.tracks.startIndex].running === false) {
-              tracksByStart[that.data.tracks.startIndex].running = true;
-              tracksByStart[that.data.tracks.startIndex].natives.start(event, tracksByStart[that.data.tracks.startIndex]);
+          while (tracksByStart[tracks.startIndex].start <= currentTime) {
+            if (tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex].running === false) {
+              tracksByStart[tracks.startIndex].running = true;
+              tracksByStart[tracks.startIndex].natives.start(event, tracksByStart[tracks.startIndex]);
             }
-            that.data.tracks.startIndex++;
+            tracks.startIndex++;
           }
 
         // Playbar receding
         } else if (previousTime > currentTime) {
 
-          while (tracksByStart[that.data.tracks.startIndex].start > currentTime) {
-            if (tracksByStart[that.data.tracks.startIndex].running === true) {
-              tracksByStart[that.data.tracks.startIndex].running = false;
-              tracksByStart[that.data.tracks.startIndex].natives.end(event, tracksByStart[that.data.tracks.startIndex]);
+          while (tracksByStart[tracks.startIndex].start > currentTime) {
+            if (tracksByStart[tracks.startIndex].running === true) {
+              tracksByStart[tracks.startIndex].running = false;
+              tracksByStart[tracks.startIndex].natives.end(event, tracksByStart[tracks.startIndex]);
             }
-            that.data.tracks.startIndex--;
+            tracks.startIndex--;
           }
           
-          while (tracksByEnd[that.data.tracks.endIndex].end > currentTime) {
-            if (tracksByEnd[that.data.tracks.endIndex].start <= currentTime && tracksByEnd[that.data.tracks.endIndex].running === false) {
-              tracksByEnd[that.data.tracks.endIndex].running = true;
-              tracksByEnd[that.data.tracks.endIndex].natives.start(event, tracksByEnd[that.data.tracks.endIndex]);
+          while (tracksByEnd[tracks.endIndex].end > currentTime) {
+            if (tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex].running === false) {
+              tracksByEnd[tracks.endIndex].running = true;
+              tracksByEnd[tracks.endIndex].natives.start(event, tracksByEnd[tracks.endIndex]);
             }
-            that.data.tracks.endIndex--;
+            tracks.endIndex--;
           }
         } else {
           // When user seeks, currentTime can be equal to previousTime on the
@@ -101,7 +97,7 @@
           // happens in both Chrome and Firefox.
         }
 
-        that.data.tracks.previousUpdateTime = currentTime;
+        tracks.previousUpdateTime = currentTime;
       }, false);
       
       return this;
