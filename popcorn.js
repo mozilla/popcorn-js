@@ -22,7 +22,7 @@
 
     init: function( entity ) {
 
-      var elem, matches, that = this;
+      var elem, matches;
 
       matches = rIdExp.exec( entity );
       
@@ -35,71 +35,83 @@
       this.data = {
         events: {},
         tracks: {
-          // adding padding to the front and end of the arrays
-          // this is so we do not fall off either end
-          byStart: [{start: -1, end: -1}, {start: 9999, end: 9999}],
-          byEnd:   [{start: -1, end: -1}, {start: 9999, end: 9999}],
+          byStart: [{start: -1, end: -1}],
+          byEnd:   [{start: -1, end: -1}],
           startIndex: 0,
-          endIndex: 0,
+          endIndex:   0,
           previousUpdateTime: 0
         }
       };
-
-      this.video.addEventListener( "timeupdate", function( event ) {
-
-        var currentTime    = this.currentTime,
-            previousTime   = that.data.tracks.previousUpdateTime
-            tracks         = that.data.tracks,
-            tracksByEnd    = tracks.byEnd,
-            tracksByStart  = tracks.byStart;
-
-        // Playbar advancing
-        if (previousTime < currentTime) {
-
-          while (tracksByEnd[tracks.endIndex].end <= currentTime) {
-            if (tracksByEnd[tracks.endIndex].running === true) {
-              tracksByEnd[tracks.endIndex].running = false;
-              tracksByEnd[tracks.endIndex].natives.end(event, tracksByEnd[tracks.endIndex]);
-            }
-            tracks.endIndex++;
-          }
-          
-          while (tracksByStart[tracks.startIndex].start <= currentTime) {
-            if (tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex].running === false) {
-              tracksByStart[tracks.startIndex].running = true;
-              tracksByStart[tracks.startIndex].natives.start(event, tracksByStart[tracks.startIndex]);
-            }
-            tracks.startIndex++;
-          }
-
-        // Playbar receding
-        } else if (previousTime > currentTime) {
-
-          while (tracksByStart[tracks.startIndex].start > currentTime) {
-            if (tracksByStart[tracks.startIndex].running === true) {
-              tracksByStart[tracks.startIndex].running = false;
-              tracksByStart[tracks.startIndex].natives.end(event, tracksByStart[tracks.startIndex]);
-            }
-            tracks.startIndex--;
-          }
-          
-          while (tracksByEnd[tracks.endIndex].end > currentTime) {
-            if (tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex].running === false) {
-              tracksByEnd[tracks.endIndex].running = true;
-              tracksByEnd[tracks.endIndex].natives.start(event, tracksByEnd[tracks.endIndex]);
-            }
-            tracks.endIndex--;
-          }
-        } else {
-          // When user seeks, currentTime can be equal to previousTime on the
-          // timeUpdate event. We are not doing anything with this right now, but we
-          // may need this at a later point and should be aware that this behavior
-          // happens in both Chrome and Firefox.
-        }
-
-        tracks.previousUpdateTime = currentTime;
-      }, false);
       
+      var waitForVideo = function(that) {
+        if (that.video.readyState >= 1) {
+          // adding padding to the front and end of the arrays
+          // this is so we do not fall off either end
+          var videoDurationPlus = that.video.duration + 1;
+          that.data.tracks.byStart.push({start: videoDurationPlus, end: videoDurationPlus});
+          that.data.tracks.byEnd.push({start: videoDurationPlus, end: videoDurationPlus});
+          
+          that.video.addEventListener( "timeupdate", function( event ) {
+
+            var currentTime    = this.currentTime,
+                previousTime   = that.data.tracks.previousUpdateTime
+                tracks         = that.data.tracks,
+                tracksByEnd    = tracks.byEnd,
+                tracksByStart  = tracks.byStart;
+
+            // Playbar advancing
+            if (previousTime < currentTime) {
+
+              while (tracksByEnd[tracks.endIndex].end <= currentTime) {
+                if (tracksByEnd[tracks.endIndex].running === true) {
+                  tracksByEnd[tracks.endIndex].running = false;
+                  tracksByEnd[tracks.endIndex].natives.end(event, tracksByEnd[tracks.endIndex]);
+                }
+                tracks.endIndex++;
+              }
+              
+              while (tracksByStart[tracks.startIndex].start <= currentTime) {
+                if (tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex].running === false) {
+                  tracksByStart[tracks.startIndex].running = true;
+                  tracksByStart[tracks.startIndex].natives.start(event, tracksByStart[tracks.startIndex]);
+                }
+                tracks.startIndex++;
+              }
+
+            // Playbar receding
+            } else if (previousTime > currentTime) {
+
+              while (tracksByStart[tracks.startIndex].start > currentTime) {
+                if (tracksByStart[tracks.startIndex].running === true) {
+                  tracksByStart[tracks.startIndex].running = false;
+                  tracksByStart[tracks.startIndex].natives.end(event, tracksByStart[tracks.startIndex]);
+                }
+                tracks.startIndex--;
+              }
+              
+              while (tracksByEnd[tracks.endIndex].end > currentTime) {
+                if (tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex].running === false) {
+                  tracksByEnd[tracks.endIndex].running = true;
+                  tracksByEnd[tracks.endIndex].natives.start(event, tracksByEnd[tracks.endIndex]);
+                }
+                tracks.endIndex--;
+              }
+            } else {
+              // When user seeks, currentTime can be equal to previousTime on the
+              // timeUpdate event. We are not doing anything with this right now, but we
+              // may need this at a later point and should be aware that this behavior
+              // happens in both Chrome and Firefox.
+            }
+
+            tracks.previousUpdateTime = currentTime;
+          }, false);
+        } else {
+          window.setTimeout(function() { waitForVideo(that); }, 1);
+        }
+      };
+      
+      waitForVideo(this);
+
       return this;
     }
   };
