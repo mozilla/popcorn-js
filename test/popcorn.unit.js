@@ -163,7 +163,7 @@ test("Stored By Type", function () {
 
   function plus(){ 
 
-    if ( ++count == 4 ) {
+    if ( ++count === 4 ) {
       
       equals( fired, wants, "Number of callbacks fired from 1 handler" );
 
@@ -207,6 +207,10 @@ test("Stored By Type", function () {
   });
   
   p.trigger("play");
+
+  if (fired < 4) {
+    start();
+  }
   
   p.unlisten("play");
   
@@ -369,7 +373,7 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec",
-      expects = 22, 
+      expects = 24, 
       count = 0;
   
   //expect(expects);
@@ -459,7 +463,7 @@ test("Plugin Factory", function () {
 
       ok( "tracks" in this.data, " complicatorinstance has `tracks` property" );
       plus();
-      ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "complicator tracks property is an array" )      
+      ok( Object.prototype.toString.call(popped.data.tracks) === "[object Object]", "complicator tracks property is an object" )      
       plus();     
     },
     end: function () {
@@ -503,7 +507,7 @@ test("Plugin Factory", function () {
       
       breaker.end++;
     
-      ok(true, "breaker started");
+      ok(true, "breaker ended");
       plus();
 
       
@@ -522,11 +526,29 @@ test("Plugin Factory", function () {
     end: 2
   });      
   
-  
-  popped.currentTime(0).play();
+  /*Popcorn.plugin("updater", function () {
+    
+    return {
+      
+      start: function () {
+        ok( true, "start correctly called at " + popped.currentTime());
+        plus();
+      }, 
+      end: function () {
+        ok( true, "end correctly called");
+        plus();
+      }
+    };
+  });
 
-  
+  popped.updater({
+    start: 2, 
+    end: 3
+  });*/
+
+  popped.currentTime(0).play();
 });
+
 
 test("Protected Names", function () {
   
