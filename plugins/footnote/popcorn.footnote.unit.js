@@ -3,10 +3,10 @@ test("Popcorn Footnote Plugin", function () {
   var popped = Popcorn("#video"),
       expects = 5, 
       count = 0,
-      iframeInterval,
-      iframeInterval2,
-      iframeInterval3,
-      iframeInterval4;
+      interval,
+      interval2,
+      interval3,
+      footnotediv = document.getElementById('footnotediv');
   
   expect(expects);
   
@@ -21,7 +21,7 @@ test("Popcorn Footnote Plugin", function () {
   ok ('footnote' in popped, "footnote is a mehtod of the popped instance");
   plus();
   
-  ok ( document.getElementById('footnotediv').innerHTML === "", "initially, there is nothing inside the footnotediv" );
+  equals ( footnotediv.innerHTML, "", "initially, there is nothing inside the footnotediv" );
   plus();
   
   popped.footnote({
@@ -41,7 +41,7 @@ test("Popcorn Footnote Plugin", function () {
   
   interval = setInterval( function() {
     if( popped.currentTime() > 5 && popped.currentTime() <= 15 ) {
-      ok (document.getElementById('footnotediv').innerHTML === "This video made exclusively for drumbeat.org", "footnote displaing correct information" );
+      equals (footnotediv.innerHTML , "This video made exclusively for drumbeat.org", "footnote displaing correct information" );
       plus();
       clearInterval( interval );
     }
@@ -49,7 +49,7 @@ test("Popcorn Footnote Plugin", function () {
   
   interval2 = setInterval( function() {
     if( popped.currentTime() > 15 && popped.currentTime() < 35  ) {
-      ok (document.getElementById('footnotediv').innerHTML === "", "footnote cleared properly" );
+      equals (footnotediv.innerHTML , "", "footnote cleared properly" );
       plus();
       clearInterval( interval2 );
     }
@@ -57,7 +57,7 @@ test("Popcorn Footnote Plugin", function () {
   
   interval3 = setInterval( function() {
     if( popped.currentTime() > 35 && popped.currentTime() < 45 ) {
-      ok (document.getElementById('footnotediv').innerHTML === "Visit webmademovies.org for more details", "footnote displaing correct information" );
+      equals (footnotediv.innerHTML ,"Visit webmademovies.org for more details", "footnote displaing correct information" );
       plus();
       clearInterval( interval3 );
     }
