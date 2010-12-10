@@ -43,13 +43,14 @@
         }
       };
       
-      var waitForVideo = function(that) {
-        if (that.video.readyState >= 1) {
+      var isReady = function(that) {
+
+        if (that.video.readyState >= 3) {
           // adding padding to the front and end of the arrays
           // this is so we do not fall off either end
+
           var videoDurationPlus = that.video.duration + 1;
-          that.data.tracks.byStart.push({start: videoDurationPlus, end: videoDurationPlus});
-          that.data.tracks.byEnd.push({start: videoDurationPlus, end: videoDurationPlus});
+          Popcorn.addTrack(that, {start: videoDurationPlus, end: videoDurationPlus});
           
           that.video.addEventListener( "timeupdate", function( event ) {
 
@@ -106,11 +107,11 @@
             tracks.previousUpdateTime = currentTime;
           }, false);
         } else {
-          window.setTimeout(function() { waitForVideo(that); }, 1);
+          window.setTimeout(function() { isReady(that); }, 1);
         }
       };
-      
-      waitForVideo(this);
+
+      isReady(this);
 
       return this;
     }
@@ -150,6 +151,19 @@
       }
     });
     return dest;      
+  };
+
+  Popcorn.addTrack = function( obj, track ) {
+    console.log(obj);
+    // Store this definition in an array sorted by times
+    obj.data.tracks.byStart.push( track );
+    obj.data.tracks.byEnd.push( track );
+    obj.data.tracks.byStart.sort( function( a, b ){
+      return ( a.start - b.start );
+    });
+    obj.data.tracks.byEnd.sort( function( a, b ){
+      return ( a.end - b.end );
+    });
   };
 
   // A Few reusable utils, memoized onto Popcorn
@@ -452,15 +466,9 @@
           setup._setup.call(self, options);
         }
         
-        // Store this definition in an array sorted by times
-        this.data.tracks.byStart.push( options );
-        this.data.tracks.byEnd.push( options );
-        this.data.tracks.byStart.sort( function( a, b ){
-          return ( a.start - b.start );
-        });
-        this.data.tracks.byEnd.sort( function( a, b ){
-          return ( a.end - b.end );
-        });
+
+        Popcorn.addTrack( this, options );
+
         
         //  Future support for plugin event definitions 
         //  for all of the native events
