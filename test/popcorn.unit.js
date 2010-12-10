@@ -373,7 +373,7 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec",
-      expects = 24, 
+      expects = 22, 
       count = 0;
   
   //expect(expects);
@@ -524,27 +524,7 @@ test("Plugin Factory", function () {
   popped.breaker({
     start: 1, 
     end: 2
-  });      
-  
-  /*Popcorn.plugin("updater", function () {
-    
-    return {
-      
-      start: function () {
-        ok( true, "start correctly called at " + popped.currentTime());
-        plus();
-      }, 
-      end: function () {
-        ok( true, "end correctly called");
-        plus();
-      }
-    };
-  });
-
-  popped.updater({
-    start: 2, 
-    end: 3
-  });*/
+  });     
 
   popped.currentTime(0).play();
 });
