@@ -107,7 +107,7 @@
             tracks.previousUpdateTime = currentTime;
           }, false);
         } else {
-          window.setTimeout(function() { isReady(that); }, 1);
+          setTimeout(function() { isReady(that); }, 1);
         }
       };
 
