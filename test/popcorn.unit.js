@@ -410,7 +410,7 @@ test("Plugin Factory", function () {
 
         ok( "tracks" in this.data, "executor instance has `tracks` property" );
         plus();
-        ok( Object.prototype.toString.call(popped.data.tracks) === "[object Array]", "executor tracks property is an array" )      
+        ok( Object.prototype.toString.call(popped.data.tracks) === "[object Object]", "executor tracks property is an object" )      
         plus();      
       }, 
       end: function () {

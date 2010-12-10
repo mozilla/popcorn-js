@@ -66,7 +66,7 @@
               while (tracksByEnd[tracks.endIndex].end <= currentTime) {
                 if (tracksByEnd[tracks.endIndex].running === true) {
                   tracksByEnd[tracks.endIndex].running = false;
-                  tracksByEnd[tracks.endIndex].natives.end(event, tracksByEnd[tracks.endIndex]);
+                  tracksByEnd[tracks.endIndex].natives.end.call(that, event, tracksByEnd[tracks.endIndex]);
                 }
                 tracks.endIndex++;
               }
@@ -74,7 +74,7 @@
               while (tracksByStart[tracks.startIndex].start <= currentTime) {
                 if (tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex].running === false) {
                   tracksByStart[tracks.startIndex].running = true;
-                  tracksByStart[tracks.startIndex].natives.start(event, tracksByStart[tracks.startIndex]);
+                  tracksByStart[tracks.startIndex].natives.start.call(that, event, tracksByStart[tracks.startIndex]);
                 }
                 tracks.startIndex++;
               }
@@ -85,7 +85,7 @@
               while (tracksByStart[tracks.startIndex].start > currentTime) {
                 if (tracksByStart[tracks.startIndex].running === true) {
                   tracksByStart[tracks.startIndex].running = false;
-                  tracksByStart[tracks.startIndex].natives.end(event, tracksByStart[tracks.startIndex]);
+                  tracksByStart[tracks.startIndex].natives.end.call(that, event, tracksByStart[tracks.startIndex]);
                 }
                 tracks.startIndex--;
               }
@@ -93,7 +93,7 @@
               while (tracksByEnd[tracks.endIndex].end > currentTime) {
                 if (tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex].running === false) {
                   tracksByEnd[tracks.endIndex].running = true;
-                  tracksByEnd[tracks.endIndex].natives.start(event, tracksByEnd[tracks.endIndex]);
+                  tracksByEnd[tracks.endIndex].natives.start.call(that, event, tracksByEnd[tracks.endIndex]);
                 }
                 tracks.endIndex--;
               }
@@ -107,7 +107,9 @@
             tracks.previousUpdateTime = currentTime;
           }, false);
         } else {
-          setTimeout(function() { isReady(that); }, 1);
+          setTimeout(function() {
+            isReady(that);
+          }, 1);
         }
       };
 
@@ -257,21 +259,7 @@
       
       
       return this;
-    },
-
-
-
-    toTrack: function( setup ) {
-      /*
-      {
-        in: ts,
-        out: ts, 
-        command: f()
-      }
-      */
-      // stores the command in a track
     }
-  
   });
 
   Popcorn.Events  = {
