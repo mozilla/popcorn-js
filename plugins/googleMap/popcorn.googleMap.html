@@ -10,22 +10,20 @@
       var p = Popcorn('#video')
       .play() 
       .googleMap({
-        start: 15, // seconds
-        end: 50, // seconds
+        start: 5, // seconds
+        end: 45, // seconds
         type: 'ROADMAP',
         target: 'map',
-        lat: "29.2720",
-        long: "-90.0233"
-      } )
-
+        lat: 43.665429,
+        long: -79.403323,
+        zoom: 10
+      } );
     }, false);
-
   </script>
 </head>
 <body>
   <h1 id="qunit-header">Popcorn google Map Plug-in Demo</h1>
-  <p> A footnote displaying This video made exclusively for drumbeat.org' will appear at 5 seconds and disappear at 15 seconds.</p>
-  <p> A footnote displaying 'Visit webmademovies.org for more details' will appear at 20 seconds and disappear at 45 seconds.</p>
+  <p> A Google Map  displaying Toronto, Ontario will appear at 5 seconds and disappear at 45 seconds.</p>
   <div>
     <video id='video' 
       controls preload='none' 
@@ -44,7 +42,7 @@
 
     </video> 
   </div>
-  <div id="map" width="50%" height="50%">
+  <div id="map" style="width:400px;height:400px"><p>Locations in this video:</p>
   </div>
 </body>
 </html>
