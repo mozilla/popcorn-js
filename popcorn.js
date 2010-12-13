@@ -66,7 +66,7 @@
             // Playbar advancing
             if (previousTime < currentTime) {
 
-              while (tracksByEnd[tracks.endIndex].end <= currentTime) {
+              while (tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end <= currentTime) {
                 if (tracksByEnd[tracks.endIndex].running === true) {
                   tracksByEnd[tracks.endIndex].running = false;
                   tracksByEnd[tracks.endIndex].natives.end.call(that, event, tracksByEnd[tracks.endIndex]);
@@ -74,7 +74,7 @@
                 tracks.endIndex++;
               }
               
-              while (tracksByStart[tracks.startIndex].start <= currentTime) {
+              while (tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start <= currentTime) {
                 if (tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex].running === false) {
                   tracksByStart[tracks.startIndex].running = true;
                   tracksByStart[tracks.startIndex].natives.start.call(that, event, tracksByStart[tracks.startIndex]);
@@ -85,7 +85,7 @@
             // Playbar receding
             } else if (previousTime > currentTime) {
 
-              while (tracksByStart[tracks.startIndex].start > currentTime) {
+              while (tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start > currentTime) {
                 if (tracksByStart[tracks.startIndex].running === true) {
                   tracksByStart[tracks.startIndex].running = false;
                   tracksByStart[tracks.startIndex].natives.end.call(that, event, tracksByStart[tracks.startIndex]);
@@ -93,7 +93,7 @@
                 tracks.startIndex--;
               }
               
-              while (tracksByEnd[tracks.endIndex].end > currentTime) {
+              while (tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end > currentTime) {
                 if (tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex].running === false) {
                   tracksByEnd[tracks.endIndex].running = true;
                   tracksByEnd[tracks.endIndex].natives.start.call(that, event, tracksByEnd[tracks.endIndex]);
