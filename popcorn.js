@@ -6,6 +6,9 @@
   hasOwn = Object.prototype.hasOwnProperty, 
   slice = Array.prototype.slice,
 
+  // intentionally left undefined
+  undef,
+
   //  ID string matching
   rIdExp  = /^(#([\w\-\_\.]+))$/, 
 
@@ -34,9 +37,90 @@
       
       this.data = {
         events: {},
-        tracks: []
+        trackEvents: {
+          byStart: [{start: -1, end: -1}],
+          byEnd:   [{start: -1, end: -1}],
+          startIndex: 0,
+          endIndex:   0,
+          previousUpdateTime: 0
+        }
       };
       
+      var isReady = function( that ) {
+
+        if ( that.video.readyState >= 3 ) {
+          // adding padding to the front and end of the arrays
+          // this is so we do not fall off either end
+
+          var videoDurationPlus = that.video.duration + 1;
+          Popcorn.addTrackEvent( that, {
+            start: videoDurationPlus,
+            end: videoDurationPlus
+          });
+          
+          that.video.addEventListener( "timeupdate", function( event ) {
+
+            var currentTime    = this.currentTime,
+                previousTime   = that.data.trackEvents.previousUpdateTime
+                tracks         = that.data.trackEvents,
+                tracksByEnd    = tracks.byEnd,
+                tracksByStart  = tracks.byStart;
+
+            // Playbar advancing
+            if ( previousTime < currentTime ) {
+
+              while ( tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end <= currentTime ) {
+                if ( tracksByEnd[tracks.endIndex].running === true ) {
+                  tracksByEnd[tracks.endIndex].running = false;
+                  tracksByEnd[tracks.endIndex].natives.end.call( that, event, tracksByEnd[tracks.endIndex] );
+                }
+                tracks.endIndex++;
+              }
+              
+              while ( tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start <= currentTime ) {
+                if ( tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex].running === false ) {
+                  tracksByStart[tracks.startIndex].running = true;
+                  tracksByStart[tracks.startIndex].natives.start.call( that, event, tracksByStart[tracks.startIndex] );
+                }
+                tracks.startIndex++;
+              }
+
+            // Playbar receding
+            } else if ( previousTime > currentTime ) {
+
+              while ( tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start > currentTime ) {
+                if ( tracksByStart[tracks.startIndex].running === true ) {
+                  tracksByStart[tracks.startIndex].running = false;
+                  tracksByStart[tracks.startIndex].natives.end.call( that, event, tracksByStart[tracks.startIndex] );
+                }
+                tracks.startIndex--;
+              }
+              
+              while ( tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end > currentTime ) {
+                if ( tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex].running === false ) {
+                  tracksByEnd[tracks.endIndex].running = true;
+                  tracksByEnd[tracks.endIndex].natives.start.call( that, event, tracksByEnd[tracks.endIndex] );
+                }
+                tracks.endIndex--;
+              }
+            } else {
+              // When user seeks, currentTime can be equal to previousTime on the
+              // timeUpdate event. We are not doing anything with this right now, but we
+              // may need this at a later point and should be aware that this behavior
+              // happens in both Chrome and Firefox.
+            }
+
+            tracks.previousUpdateTime = currentTime;
+          }, false);
+        } else {
+          setTimeout( function() {
+            isReady( that );
+          }, 1);
+        }
+      };
+
+      isReady( this );
+
       return this;
     }
   };
@@ -75,6 +159,18 @@
       }
     });
     return dest;      
+  };
+
+  Popcorn.addTrackEvent = function( obj, track ) {
+    // Store this definition in an array sorted by times
+    obj.data.trackEvents.byStart.push( track );
+    obj.data.trackEvents.byEnd.push( track );
+    obj.data.trackEvents.byStart.sort( function( a, b ){
+      return ( a.start - b.start );
+    });
+    obj.data.trackEvents.byEnd.sort( function( a, b ){
+      return ( a.end - b.end );
+    });
   };
 
   // A Few reusable utils, memoized onto Popcorn
@@ -169,20 +265,42 @@
       
       return this;
     },
+    removePlugin: function( name ) {
 
-
-
-    toTrack: function( setup ) {
-      /*
-      {
-        in: ts,
-        out: ts, 
-        command: f()
-      }
-      */
-      // stores the command in a track
-    }
+      var byStart = this.data.trackEvents.byStart, 
+          byEnd = this.data.trackEvents.byEnd;        
   
+      this[name] = undef;
+  
+      // remove plugin reference from registry
+      for ( var i = 0, rl = Popcorn.registry.length; i < rl; i++ ) {
+        if ( Popcorn.registry[i].type === name ) {
+          Popcorn.registry.splice(i, 1);
+          break; // plugin found, stop checking
+        }
+      }
+
+      // remove all trackEvents
+      for ( var i = 0, sl = byStart.length; i < sl; i++ ) {
+        if ( byStart[i] && byStart[i].natives && byStart[i].natives.type === name ) {
+          byStart.splice( i, 1 );
+          i--; sl--; // update for loop if something removed, but keep checking
+          if ( this.data.trackEvents.startIndex <= i ) {
+            this.data.trackEvents.startIndex--; // write test for this
+          }
+        }
+      }
+      for ( var i = 0, el = byEnd.length; i < el; i++ ) {
+        if ( byEnd[i] && byEnd[i].natives && byEnd[i].natives.type === name ) {
+          byEnd.splice( i, 1 );
+          i--; el--; // update for loop if something removed, but keep checking
+          if ( this.data.trackEvents.endIndex <= i ) {
+            this.data.trackEvents.endIndex--; // write test for this
+          }
+        }
+      }
+      return this;
+    }
   });
 
   Popcorn.Events  = {
@@ -280,7 +398,6 @@
           this.video.addEventListener( type, function( event ) {
             
             Popcorn.forEach( self.data.events[type], function ( obj, key ) {
-
               if ( typeof obj === "function" ) {
                 obj.call(self, event);
               }
@@ -336,8 +453,9 @@
     //  the definition into Popcorn.p 
     
     var natives = Popcorn.events.all, 
-        reserved = [ "start", "end", "timeupdate" ], 
-        plugin = {}, 
+
+        reserved = [ "start", "end"], 
+        plugin = {type: name},
         pluginFn, 
         setup;
     
@@ -345,22 +463,21 @@
       
       setup = definition;
       
-      if ( !( "timeupdate" in setup ) ) {
+      /*if ( !( "timeupdate" in setup ) ) {
         setup.timeupdate = Popcorn.nop;
-      }         
+      }*/        
 
       pluginFn  = function ( options ) {
-        
-        var self = this, 
-            fired = {
-              start: 0, 
-              end: 0
-            };
         
         if ( !options ) {
           return this;
         } 
         
+        // storing the plugin natives
+        options.natives = setup;
+        options.natives.type = name;
+        options.running = false;
+
         //  Checks for expected properties
         if ( !( "start" in options ) ) {
           options.start = 0;
@@ -377,31 +494,9 @@
           setup._setup.call(self, options);
         }
         
-        //  Plugin timeline handler 
-        this.listen( "timeupdate", function( event ) {
-          
-          
-          if ( ~~self.currentTime() === options.start || 
-                  self.currentTime() === options.start ) {
-            
-            !fired.start && setup.start.call(self, event, options);
-            fired.start++;
-          }
 
-          if ( self.currentTime() > options.start && 
-                self.currentTime() < options.end ) {
-            
-            setup.timeupdate.call(self, event, options);
-          }
+        Popcorn.addTrackEvent( this, options );
 
-          if ( ~~self.currentTime() === options.end || 
-                  self.currentTime() === options.end ) {
-                
-            !fired.end && setup.end.call(self, event, options);
-            fired.end++;
-          }
-          
-        });
         
         //  Future support for plugin event definitions 
         //  for all of the native events
