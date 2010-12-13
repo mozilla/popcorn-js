@@ -53,7 +53,10 @@
           // this is so we do not fall off either end
 
           var videoDurationPlus = that.video.duration + 1;
-          Popcorn.addTrackEvent(that, {start: videoDurationPlus, end: videoDurationPlus});
+          Popcorn.addTrackEvent( that, {
+            start: videoDurationPlus,
+            end: videoDurationPlus
+          });
           
           that.video.addEventListener( "timeupdate", function( event ) {
 
@@ -64,39 +67,39 @@
                 tracksByStart  = tracks.byStart;
 
             // Playbar advancing
-            if (previousTime < currentTime) {
+            if ( previousTime < currentTime ) {
 
-              while (tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end <= currentTime) {
-                if (tracksByEnd[tracks.endIndex].running === true) {
+              while ( tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end <= currentTime ) {
+                if ( tracksByEnd[tracks.endIndex].running === true ) {
                   tracksByEnd[tracks.endIndex].running = false;
-                  tracksByEnd[tracks.endIndex].natives.end.call(that, event, tracksByEnd[tracks.endIndex]);
+                  tracksByEnd[tracks.endIndex].natives.end.call( that, event, tracksByEnd[tracks.endIndex] );
                 }
                 tracks.endIndex++;
               }
               
-              while (tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start <= currentTime) {
-                if (tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex].running === false) {
+              while ( tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start <= currentTime ) {
+                if ( tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex].running === false ) {
                   tracksByStart[tracks.startIndex].running = true;
-                  tracksByStart[tracks.startIndex].natives.start.call(that, event, tracksByStart[tracks.startIndex]);
+                  tracksByStart[tracks.startIndex].natives.start.call( that, event, tracksByStart[tracks.startIndex] );
                 }
                 tracks.startIndex++;
               }
 
             // Playbar receding
-            } else if (previousTime > currentTime) {
+            } else if ( previousTime > currentTime ) {
 
-              while (tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start > currentTime) {
-                if (tracksByStart[tracks.startIndex].running === true) {
+              while ( tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start > currentTime ) {
+                if ( tracksByStart[tracks.startIndex].running === true ) {
                   tracksByStart[tracks.startIndex].running = false;
-                  tracksByStart[tracks.startIndex].natives.end.call(that, event, tracksByStart[tracks.startIndex]);
+                  tracksByStart[tracks.startIndex].natives.end.call( that, event, tracksByStart[tracks.startIndex] );
                 }
                 tracks.startIndex--;
               }
               
-              while (tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end > currentTime) {
-                if (tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex].running === false) {
+              while ( tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end > currentTime ) {
+                if ( tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex].running === false ) {
                   tracksByEnd[tracks.endIndex].running = true;
-                  tracksByEnd[tracks.endIndex].natives.start.call(that, event, tracksByEnd[tracks.endIndex]);
+                  tracksByEnd[tracks.endIndex].natives.start.call( that, event, tracksByEnd[tracks.endIndex] );
                 }
                 tracks.endIndex--;
               }
@@ -110,13 +113,13 @@
             tracks.previousUpdateTime = currentTime;
           }, false);
         } else {
-          setTimeout(function() {
-            isReady(that);
+          setTimeout( function() {
+            isReady( that );
           }, 1);
         }
       };
 
-      isReady(this);
+      isReady( this );
 
       return this;
     }
