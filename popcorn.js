@@ -6,6 +6,9 @@
   hasOwn = Object.prototype.hasOwnProperty, 
   slice = Array.prototype.slice,
 
+  // intentionally left undefined
+  undef,
+
   //  ID string matching
   rIdExp  = /^(#([\w\-\_\.]+))$/, 
 
@@ -34,7 +37,7 @@
       
       this.data = {
         events: {},
-        tracks: {
+        trackEvents: {
           byStart: [{start: -1, end: -1}],
           byEnd:   [{start: -1, end: -1}],
           startIndex: 0,
@@ -50,13 +53,13 @@
           // this is so we do not fall off either end
 
           var videoDurationPlus = that.video.duration + 1;
-          Popcorn.addTrack(that, {start: videoDurationPlus, end: videoDurationPlus});
+          Popcorn.addTrackEvent(that, {start: videoDurationPlus, end: videoDurationPlus});
           
           that.video.addEventListener( "timeupdate", function( event ) {
 
             var currentTime    = this.currentTime,
-                previousTime   = that.data.tracks.previousUpdateTime
-                tracks         = that.data.tracks,
+                previousTime   = that.data.trackEvents.previousUpdateTime
+                tracks         = that.data.trackEvents,
                 tracksByEnd    = tracks.byEnd,
                 tracksByStart  = tracks.byStart;
 
@@ -155,15 +158,15 @@
     return dest;      
   };
 
-  Popcorn.addTrack = function( obj, track ) {
+  Popcorn.addTrackEvent = function( obj, track ) {
     console.log(obj);
     // Store this definition in an array sorted by times
-    obj.data.tracks.byStart.push( track );
-    obj.data.tracks.byEnd.push( track );
-    obj.data.tracks.byStart.sort( function( a, b ){
+    obj.data.trackEvents.byStart.push( track );
+    obj.data.trackEvents.byEnd.push( track );
+    obj.data.trackEvents.byStart.sort( function( a, b ){
       return ( a.start - b.start );
     });
-    obj.data.tracks.byEnd.sort( function( a, b ){
+    obj.data.trackEvents.byEnd.sort( function( a, b ){
       return ( a.end - b.end );
     });
   };
@@ -357,7 +360,6 @@
           this.video.addEventListener( type, function( event ) {
             
             Popcorn.forEach( self.data.events[type], function ( obj, key ) {
-
               if ( typeof obj === "function" ) {
                 obj.call(self, event);
               }
@@ -385,12 +387,30 @@
         play: function () {
           //  renders all of the interally stored track commands
         }
+      },
+      removePlugin: function( name ) {
+        
+        this[name] = undef;
+        
+        // remove plugin reference from registry
+        for (var i = 0, rl = Popcorn.registry.length; i < rl; i++) {
+          if (Popcorn.registry[i].type === name) {
+            Popcorn.registry.splice(i, 1);
+            break; // plugin found, stop checking
+          }
+        }
+
+        // remove all trackEvents
+        for (var trackEvent in this.data.trackEvents) {
+          // still working on this, need to clear tracks, failing one test because of it
+        }
+
       }
     }
   };
   
   //  Extend listen and trigger to all Popcorn instances
-  Popcorn.forEach( ["trigger", "listen", "unlisten"], function ( key ) {
+  Popcorn.forEach( ["trigger", "listen", "unlisten", "removePlugin"], function ( key ) {
     Popcorn.p[key] = Popcorn.events.fn[key];
   });  
   
@@ -415,7 +435,7 @@
     var natives = Popcorn.events.all, 
 
         reserved = [ "start", "end"], 
-        plugin = {},
+        plugin = {type: name},
         pluginFn, 
         setup;
     
@@ -455,7 +475,7 @@
         }
         
 
-        Popcorn.addTrack( this, options );
+        Popcorn.addTrackEvent( this, options );
 
         
         //  Future support for plugin event definitions 
