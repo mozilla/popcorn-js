@@ -281,7 +281,7 @@
       }
 
       // remove all trackEvents
-      for ( ar i = 0, sl = byStart.length; i < sl; i++ ) {
+      for ( var i = 0, sl = byStart.length; i < sl; i++ ) {
         if ( byStart[i] && byStart[i].natives && byStart[i].natives.type === name ) {
           byStart.splice( i, 1 );
           i--; sl--; // update for loop if something removed, but keep checking
