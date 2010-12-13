@@ -46,9 +46,9 @@
         }
       };
       
-      var isReady = function(that) {
+      var isReady = function( that ) {
 
-        if (that.video.readyState >= 3) {
+        if ( that.video.readyState >= 3 ) {
           // adding padding to the front and end of the arrays
           // this is so we do not fall off either end
 
@@ -261,6 +261,42 @@
       
       
       return this;
+    },
+    removePlugin: function( name ) {
+
+      var byStart = this.data.trackEvents.byStart, 
+          byEnd = this.data.trackEvents.byEnd;        
+  
+      this[name] = undef;
+  
+      // remove plugin reference from registry
+      for (var i = 0, rl = Popcorn.registry.length; i < rl; i++) {
+        if (Popcorn.registry[i].type === name) {
+          Popcorn.registry.splice(i, 1);
+          break; // plugin found, stop checking
+        }
+      }
+
+      // remove all trackEvents
+      for (var i = 0, sl = byStart.length; i < sl; i++) {
+        if (byStart[i] && byStart[i].natives && byStart[i].natives.type === name) {
+          byStart.splice(i, 1);
+          i--; sl--; // update for loop if something removed, but keep checking
+          if (this.data.trackEvents.startIndex <= i) {
+            this.data.trackEvents.startIndex--; // write test for this
+          }
+        }
+      }
+      for (var i = 0, el = byEnd.length; i < el; i++) {
+        if (byEnd[i] && byEnd[i].natives && byEnd[i].natives.type === name) {
+          byEnd.splice(i, 1);
+          i--; el--; // update for loop if something removed, but keep checking
+          if (this.data.trackEvents.endIndex <= i) {
+            this.data.trackEvents.endIndex--; // write test for this
+          }
+        }
+      }
+      return this;
     }
   });
 
@@ -386,48 +422,12 @@
         play: function () {
           //  renders all of the interally stored track commands
         }
-      },
-      removePlugin: function( name ) {
-
-        var byStart = this.data.trackEvents.byStart, 
-            byEnd = this.data.trackEvents.byEnd;        
-
-        this[name] = undef;
-        
-        // remove plugin reference from registry
-        for (var i = 0, rl = Popcorn.registry.length; i < rl; i++) {
-          if (Popcorn.registry[i].type === name) {
-            Popcorn.registry.splice(i, 1);
-            break; // plugin found, stop checking
-          }
-        }
-
-        // remove all trackEvents
-        for (var i = 0, sl = byStart.length; i < sl; i++) {
-          if (byStart[i] && byStart[i].natives && byStart[i].natives.type === name) {
-            byStart.splice(i, 1);
-            i--; sl--; // update for loop if something removed, but keep checking
-            if (this.data.trackEvents.startIndex <= i) {
-              this.data.trackEvents.startIndex--; // write test for this
-            }
-          }
-        }
-        for (var i = 0, el = byEnd.length; i < el; i++) {
-          if (byEnd[i] && byEnd[i].natives && byEnd[i].natives.type === name) {
-            byEnd.splice(i, 1);
-            i--; el--; // update for loop if something removed, but keep checking
-            if (this.data.trackEvents.endIndex <= i) {
-              this.data.trackEvents.endIndex--; // write test for this
-            }
-          }
-        }
-
       }
     }
   };
   
   //  Extend listen and trigger to all Popcorn instances
-  Popcorn.forEach( ["trigger", "listen", "unlisten", "removePlugin"], function ( key ) {
+  Popcorn.forEach( ["trigger", "listen", "unlisten"], function ( key ) {
     Popcorn.p[key] = Popcorn.events.fn[key];
   });  
   
