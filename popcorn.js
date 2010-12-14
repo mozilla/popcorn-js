@@ -435,7 +435,7 @@
   });  
   
   Popcorn.protect = {
-    natives: "load play pause currentTime playbackRate mute volume duration".toLowerCase().split(/\s+/)
+    natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten".toLowerCase().split(/\s+/)
   };
   
   //  Plugins are registered 
