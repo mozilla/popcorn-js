@@ -175,9 +175,9 @@
 
   // A Few reusable utils, memoized onto Popcorn
   Popcorn.extend( Popcorn, {
-  	error: function( msg ) {
-	  	throw msg;
-  	},
+    error: function( msg ) {
+      throw msg;
+    },
     guid: function() {
       return +new Date() + Math.floor(Math.random()*11);
     }, 
@@ -270,7 +270,7 @@
       var byStart = this.data.trackEvents.byStart, 
           byEnd = this.data.trackEvents.byEnd;        
   
-      this[name] = undef;
+      delete Popcorn.p[ name ];
   
       // remove plugin reference from registry
       for ( var i = 0, rl = Popcorn.registry.length; i < rl; i++ ) {
