@@ -8,14 +8,24 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
+      .volume(0)
       .play() 
       .googleMap({
-        start: 5, // seconds
-        end: 45, // seconds
+        start: 0, // seconds
+        end: 10, // seconds
         type: 'ROADMAP',
         target: 'map',
         lat: 43.665429,
         long: -79.403323,
+        zoom: 10
+      } )
+      .googleMap({
+        start: 15, // seconds
+        end: 50, // seconds
+        type: 'SATELLITE',
+        target: 'map2',
+        lat: -23.5489,
+        long: -46.6388,
         zoom: 10
       } );
     }, false);
@@ -23,7 +33,8 @@
 </head>
 <body>
   <h1 id="qunit-header">Popcorn google Map Plug-in Demo</h1>
-  <p> A Google Map  displaying Toronto, Ontario will appear at 5 seconds and disappear at 45 seconds.</p>
+  <p> A Google Map  displaying Toronto, Ontario will appear at 0 seconds and disappear at 10 seconds.</p>
+  <p> A Google Map  displaying Toronto, Ontario will appear at 15 seconds and disappear at 25 seconds.</p>
   <div>
     <video id='video' 
       controls preload='none' 
@@ -42,7 +53,9 @@
 
     </video> 
   </div>
-  <div id="map" style="width:400px;height:400px"><p>Locations in this video:</p>
+  <div style="width:700px">
+    <div id="map" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
+    <div id="map2" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
   </div>
 </body>
 </html>
