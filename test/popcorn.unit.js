@@ -73,7 +73,7 @@ test("Object", function () {
 
   
   var popped = Popcorn("#video"), 
-      methods = "load play pause currentTime mute volume roundTime exec";
+      methods = "load play pause currentTime mute volume roundTime exec removePlugin";
   
   
   
@@ -444,14 +444,13 @@ test("Plugin Factory", function () {
   // needs expectation
 
   var popped = Popcorn("#video"), 
-      methods = "load play pause currentTime mute volume roundTime exec",
-      expects = 22, 
+      methods = "load play pause currentTime mute volume roundTime exec removePlugin",
+      expects = 24, 
       count = 0;
   
   //expect(expects);
   
   function plus() { 
-    console.log(count);
     if ( ++count == expects ) {
       start(); 
     }
@@ -592,6 +591,10 @@ test("Plugin Factory", function () {
     } 
   });
 
+  ok( "breaker" in popped, "breaker plugin is now available to instance" );
+  plus();
+  ok( Popcorn.registry.length === 3, "Three items in the registry");
+  plus();
   
   popped.breaker({
     start: 1, 
@@ -600,6 +603,44 @@ test("Plugin Factory", function () {
 
   popped.currentTime(0).play();
 });
+
+test("removePlugin", function () {
+  
+  expect(10);
+  
+  var p = Popcorn("#video"), 
+      rlen = Popcorn.registry.length;
+  
+  equals( rlen, 3, "Popcorn.registry.length is 3");
+  
+  
+  equals( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is initialized and has 2 entries");
+  equals( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is initialized and has 2 entries");
+  
+  p.breaker({
+    start: 2, 
+    end: 30
+  });     
+  
+  equals( p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart is updated and has 3 entries");
+  equals( p.data.trackEvents.byEnd.length, 3, "p.data.trackEvents.byEnd is updated and has 3 entries");
+  
+  
+  p.removePlugin("breaker");
+  
+  
+  ok( !("breaker" in p), "breaker plugin is no longer available to instance" );
+  ok( !("breaker" in Popcorn.prototype), "breaker plugin is no longer available to Popcorn.prototype" );
+  
+  
+  equals( Popcorn.registry.length, 2, "Popcorn.registry.length is 2");
+  
+  equals( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is updated and has 2 entries");
+  equals( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is updated and has 2 entries");
+  
+});
+
+
 
 
 test("Protected Names", function () {
