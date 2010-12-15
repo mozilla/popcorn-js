@@ -577,7 +577,7 @@
         
     onreadystatechange = settings.ajax.onreadystatechange = function() {
 
-      if ( settings.ajax.readyState == 4 ) { 
+      if ( settings.ajax.readyState === 4 ) { 
         
         try {
           json = JSON.parse(settings.ajax.responseText);
