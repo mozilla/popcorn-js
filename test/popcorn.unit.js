@@ -664,6 +664,19 @@ test("Protected Names", function () {
 });
 
 
+test("Last Check", function () {
+  
+  //   ALWAYS RUN LAST
+  
+  expect(1)
+  try {  
+    
+    equals( Setup.getGlobalSize(), Setup.globalSize + 1 , "Popcorn API did not leak");
+    plus();
+    
+  } catch (e) {};
+  
+});
 
 /*
 

@@ -61,7 +61,7 @@
           that.video.addEventListener( "timeupdate", function( event ) {
 
             var currentTime    = this.currentTime,
-                previousTime   = that.data.trackEvents.previousUpdateTime
+                previousTime   = that.data.trackEvents.previousUpdateTime,
                 tracks         = that.data.trackEvents,
                 tracksByEnd    = tracks.byEnd,
                 tracksByStart  = tracks.byStart;
