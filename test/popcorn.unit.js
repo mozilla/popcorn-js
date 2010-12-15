@@ -675,7 +675,7 @@ test("Basic", function () {
 
 });
 
-test("Parsing text", function () {
+test("Text Response", function () {
 
   var expects = 2, 
       count = 0;
@@ -704,7 +704,7 @@ test("Parsing text", function () {
   });
 });
 
-test("Parsing JSON", function () {
+test("JSON Response", function () {
 
   var expects = 2, 
       count = 0;
@@ -738,7 +738,7 @@ test("Parsing JSON", function () {
 
 });
 
-test("Parsing XML", function () {
+test("XML Response", function () {
 
   var expects = 2, 
       count = 0;
