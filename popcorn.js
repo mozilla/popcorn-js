@@ -313,7 +313,7 @@
     
   Popcorn.Events.Natives = Popcorn.Events.UIEvents + " " + 
                             Popcorn.Events.MouseEvents + " " +
-                              Popcorn.Events.Events,
+                              Popcorn.Events.Events;
   
   Popcorn.events  = {
   
