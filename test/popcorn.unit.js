@@ -662,8 +662,120 @@ test("Protected Names", function () {
     };
   });
 });
+Popcorn.xhr.httpData
+
+module("Popcorn XHR");
+test("Basic", function () {
+  
+  expect(2);
+  
+  equals( typeof Popcorn.xhr, "function" , "Popcorn.xhr is a provided utility function");
+  equals( typeof Popcorn.xhr.httpData, "function" , "Popcorn.xhr.httpData is a provided utility function");
+  
+
+});
+
+test("Parsing text", function () {
+
+  var expects = 2, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop();
+
+  Popcorn.xhr({
+    url: 'data/test.txt', 
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      equals( data.text, "This is a text test", "test.txt returns the string 'This is a text test'");
+      plus();
+      
+    }
+  });
+});
+
+test("Parsing JSON", function () {
+
+  var expects = 2, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop();
 
 
+  var testObj = { "data": {"lang": "en", "length": 25} };  
+
+  Popcorn.xhr({
+    url: 'data/test.js', 
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      
+      ok( QUnit.equiv(data.json, testObj) , "data.json returns an object of data");
+      plus();
+      
+    }
+  });
+
+});
+
+test("Parsing XML", function () {
+
+  var expects = 2, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop();
+
+
+  Popcorn.xhr({
+    url: 'data/test.xml', 
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      var parser = new DOMParser(), 
+      xml = parser.parseFromString('<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml");
+      
+      
+      equals( data.xml.toString(), xml.toString(), "data.xml returns a document of xml");
+      plus();
+      
+    }
+  });
+
+});
+
+
+
+module("Popcorn Test Runner End");
 test("Last Check", function () {
   
   //   ALWAYS RUN LAST
