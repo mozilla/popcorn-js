@@ -267,7 +267,7 @@ test("Real", function () {
       completed = [];                              
   
   
-  var expects = 10, 
+  var expects = 5, 
       count = 0;
 
 
@@ -278,7 +278,7 @@ test("Real", function () {
   stop();  
   
   
-  Setup.events.forEach(function ( name ) {
+  [ "play", "pause", "volumechange", "seeking", "seeked" ].forEach(function ( name ) {
     
     p.listen( name, function (event) {
     
@@ -296,8 +296,6 @@ test("Real", function () {
 
   
   p.pause();
-  
-  p.mute(true);
   
   p.play();
   
