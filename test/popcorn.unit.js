@@ -666,7 +666,7 @@ test("Functions", function () {
 
   //  TODO: break this into sep. units per function
 
-  var popped = Popcorn("#video"), ffTrackId, rwTrackId, rw2TrackId, historyRef, trackEvents;
+  var popped = Popcorn("#video"), ffTrackId, rwTrackId, rw2TrackId, rw3TrackId, historyRef, trackEvents;
   
 
   Popcorn.plugin("ff", function () {
@@ -749,7 +749,24 @@ test("Functions", function () {
   equals( trackEvents.length, 2, "2 user created trackEvents returned by popped.getTrackEvents()" )
   
   
+  popped.rw({
+    id: "my-track-id", 
+    start: 3, 
+    end: 10
+  });  
   
+  
+  rw3TrackId = popped.getLastTrackEventId();
+  
+  equals( popped.data.history.length, 3, "3 TrackEvents in history index - after new track added ");
+  equals( popped.data.trackEvents.byStart.length, 5, "5 TrackEvents in popped.data.trackEvents.byStart  - after new track added");
+  equals( popped.data.trackEvents.byEnd.length, 5, "5 TrackEvents in popped.data.trackEvents.byEnd  - after new track added");  
+  
+  equals( rw3TrackId, "my-track-id", "TrackEvent has user defined id");
+  
+  trackEvents = popped.getTrackEvents();
+  
+  equals( trackEvents.length, 3, "3 user created trackEvents returned by popped.getTrackEvents()" )  
   
 
 });

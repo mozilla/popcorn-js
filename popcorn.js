@@ -431,8 +431,9 @@
   
   Popcorn.addTrackEvent = function( obj, track ) {
   
-    if ( "natives" in track ) {
-      track["_id"] = track.natives.type + Popcorn.guid();
+    if ( track.natives ) {
+      // supports user defined track event id
+      track["_id"] = !track.id ? track.natives.type + Popcorn.guid() : track.id;
 
       //  Push track event ids into the history
       obj.data.history.push( track["_id"] );      
