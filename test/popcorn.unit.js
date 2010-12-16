@@ -665,7 +665,8 @@ module("Popcorn TrackEvents");
 test("Functions", function () {
 
   //  TODO: break this into sep. units per function
-
+  expect(19);
+  
   var popped = Popcorn("#video"), ffTrackId, rwTrackId, rw2TrackId, rw3TrackId, historyRef, trackEvents;
   
 
@@ -755,7 +756,6 @@ test("Functions", function () {
     end: 10
   });  
   
-  
   rw3TrackId = popped.getLastTrackEventId();
   
   equals( popped.data.history.length, 3, "3 TrackEvents in history index - after new track added ");
@@ -768,60 +768,85 @@ test("Functions", function () {
   
   equals( trackEvents.length, 3, "3 user created trackEvents returned by popped.getTrackEvents()" )  
   
-  /*popped.rw({
-    start: 1, 
-    end: 2
-  });  
 
-  var newTrackId = popped.getLastTrackEventId();
-
-  popped.currentTime(1).play();*/
+  
   
 });
 
-
-test("Update Index", function () {
-
-  QUnit.reset();
-
-  var p3 = Popcorn("#video"),                         
-      expects = 4, 
-      count   = 0;
-
-  function plus() {
-    if ( ++count === expects ) {
-      start(); 
-      // clean up added events after tests
-      p2.removePlugin("track");
-    }
-  }
+test("Index Integrity", function () {
   
-  stop();  
+  stop();
+  
+  var popped = Popcorn("#video"), trackLen;
+  
+  popped.currentTime(0).pause();
 
-  Popcorn.plugin("track", function () {
+  Popcorn.plugin("ff", function () {
     return {
       start: function () {
-        forwardStart = !forwardStart;
-        ok( forwardStart, "forward's start fired");
-        plus();
+        var div = document.createElement('div');
+        div.id = "index-test";
+        div.innerHTML = "foo";
+        
+        document.body.appendChild(div);
       },
       end: function () {
-        forwardEnd = !forwardEnd;
-        p2.currentTime(1).play();
-        ok( forwardEnd, "forward's end fired");
-        plus();
+        document.getElementById('index-test').parentNode.removeChild(document.getElementById('index-test'));
       }
     };
   });
-
-  p3.track({
+  
+  popped.ff({
+    id: "removeable-track-event",
     start: 1, 
-    end: 2
+    end: 3
   });
+  
+  equals(popped.data.trackEvents.endIndex, 0, "popped.data.trackEvents.endIndex is 0");
+  equals(popped.data.trackEvents.startIndex, 0, "popped.data.trackEvents.startIndex is 0");
+  equals(popped.data.trackEvents.byStart.length, 3, "popped.data.trackEvents.byStart.length is 3 - before play" );
+  
 
-  p3.currentTime(1).play().currentTime(1).play().removeTrackEvent(p3.getLastTrackEventId());
+  popped.listen("timeupdate", function () {
+    
+    if ( this.roundTime() >= 5 ) {
+    
+      this.pause();
+      
+      equals(popped.data.trackEvents.byStart.length, 3, "popped.data.trackEvents.byStart.length is 3 - after play, before removeTrackEvent" );
+      
+      equals(popped.data.trackEvents.endIndex, 2, "popped.data.trackEvents.endIndex is 2 - after play, before removeTrackEvent");
+      equals(popped.data.trackEvents.startIndex, 2, "popped.data.trackEvents.startIndex is 2 - after play, before removeTrackEvent");      
 
+      
+      this.removeTrackEvent("removeable-track-event");
+      
+      equals(popped.data.trackEvents.byStart.length, 2, "popped.data.trackEvents.byStart.length is 2 - after removeTrackEvent" );
+      equals(popped.data.trackEvents.endIndex, 1, "popped.data.trackEvents.endIndex is 1 - after removeTrackEvent");
+      equals(popped.data.trackEvents.startIndex, 1, "popped.data.trackEvents.startIndex is 1 - after removeTrackEvent");
+      
+      this.listen("timeupdate", function () {
+        
+        if ( this.roundTime() >= 4 ) {
+          
+          this.pause();
+          start();
+        
+        }
+      });
+      
+      this.currentTime(0).play();
+    }
+  
+  });
+  
+  popped.play();
+
+  
 });
+
+
+
 
 module("Popcorn XHR");
 test("Basic", function () {
