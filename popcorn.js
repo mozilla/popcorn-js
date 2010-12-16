@@ -36,6 +36,7 @@
       this.video = elem ? elem : null;
       
       this.data = {
+        history: [],
         events: {},
         trackEvents: {
           byStart: [{start: -1, end: -1}],
@@ -161,17 +162,6 @@
     return dest;      
   };
 
-  Popcorn.addTrackEvent = function( obj, track ) {
-    // Store this definition in an array sorted by times
-    obj.data.trackEvents.byStart.push( track );
-    obj.data.trackEvents.byEnd.push( track );
-    obj.data.trackEvents.byStart.sort( function( a, b ){
-      return ( a.start - b.start );
-    });
-    obj.data.trackEvents.byEnd.sort( function( a, b ){
-      return ( a.end - b.end );
-    });
-  };
 
   // A Few reusable utils, memoized onto Popcorn
   Popcorn.extend( Popcorn, {
@@ -437,6 +427,103 @@
   Popcorn.protect = {
     natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten".toLowerCase().split(/\s+/)
   };
+  
+  
+  Popcorn.addTrackEvent = function( obj, track ) {
+  
+    if ( "natives" in track ) {
+      track["_id"] = track.natives.type + Popcorn.guid();
+
+      //  Push track event ids into the history
+      obj.data.history.push( track["_id"] );      
+    }
+  
+    // Store this definition in an array sorted by times
+    obj.data.trackEvents.byStart.push( track );
+    obj.data.trackEvents.byEnd.push( track );
+    obj.data.trackEvents.byStart.sort( function( a, b ){
+      return ( a.start - b.start );
+    });
+    obj.data.trackEvents.byEnd.sort( function( a, b ){
+      return ( a.end - b.end );
+    });
+
+  };
+
+  Popcorn.removeTrackEvent  = function( obj, trackId ) {
+    
+    var trackLen = obj.data.trackEvents.byStart.length, 
+        historyLen = obj.data.history.length, 
+        byStart = [], 
+        byEnd = [], 
+        history = []; 
+    
+    
+    Popcorn.forEach( obj.data.trackEvents.byStart, function( o, i, context) {
+      
+      // Preserve the original start/end trackEvents
+      if ( !o._id ) {
+        byStart.push( obj.data.trackEvents.byStart[i] );
+        byEnd.push( obj.data.trackEvents.byEnd[i] );
+      }  
+      
+      // Filter for the trackevent to remove
+      if ( o._id && o._id !== trackId ) {
+        byStart.push( obj.data.trackEvents.byStart[i] );
+        byEnd.push( obj.data.trackEvents.byEnd[i] );
+      }
+    });
+    
+    obj.data.trackEvents.byStart = byStart;
+    obj.data.trackEvents.byEnd = byEnd;
+
+
+    for ( var i = 0; i < historyLen; i++ ) {
+      if ( obj.data.history[i] !== trackId ) {
+        history.push( obj.data.history[i] );
+      }
+    }    
+    
+    obj.data.history = history;
+
+  };
+  
+  Popcorn.getTrackEvents = function( obj ) {
+    
+    var trackevents = [];
+    
+    Popcorn.forEach( obj.data.trackEvents.byStart, function(o, i, context) {    
+      if ( o._id ) {
+        trackevents.push(o);
+      } 
+    });
+    
+    return trackevents;
+  };
+  
+  
+  Popcorn.getLastTrackEventId = function( obj ) {
+    return obj.data.history[ obj.data.history.length - 1 ];
+  };
+  
+  //  Map TrackEvents functions to the {popcorn}.prototype
+  Popcorn.extend( Popcorn.p, {
+    
+    getTrackEvents: function() {
+      return Popcorn.getTrackEvents.call( null, this );
+    },
+  
+    getLastTrackEventId: function() {
+      return Popcorn.getLastTrackEventId.call( null, this );
+    }, 
+    
+    removeTrackEvent: function( id ) {
+      Popcorn.removeTrackEvent.call( null, this, id );
+      return this;
+    }
+  
+  });
+  
   
   //  Plugins are registered 
   Popcorn.registry = [];

@@ -660,7 +660,100 @@ test("Protected Names", function () {
     };
   });
 });
-Popcorn.xhr.httpData
+
+module("Popcorn TrackEvents");
+test("Functions", function () {
+
+  //  TODO: break this into sep. units per function
+
+  var popped = Popcorn("#video"), ffTrackId, rwTrackId, rw2TrackId, historyRef, trackEvents;
+  
+
+  Popcorn.plugin("ff", function () {
+    return {
+      start: function () {},
+      end: function () {}
+    };
+  });
+
+  popped.ff({
+    start: 3, 
+    end: 4
+  });
+  
+  
+  ffTrackId = popped.getLastTrackEventId();
+  
+  
+
+  Popcorn.plugin("rw", function () {
+    return {
+      start: function () {},
+      end: function () {}
+    };
+  });
+
+  popped.rw({
+    start: 1, 
+    end: 2
+  });  
+  
+  
+  rwTrackId = popped.getLastTrackEventId();
+  
+  historyRef = popped.data.history;
+  
+  
+  equals( historyRef.length, 2, "2 TrackEvents in history index");
+  
+  equals( popped.data.trackEvents.byStart.length, 4, "4 TrackEvents in popped.data.trackEvents.byStart ");
+  equals( popped.data.trackEvents.byEnd.length, 4, "4 TrackEvents in popped.data.trackEvents.byEnd ");
+  
+  
+  trackEvents = popped.getTrackEvents();
+  
+  equals( trackEvents.length, 2, "2 user created trackEvents returned by popped.getTrackEvents()" )
+  
+
+  ok( ffTrackId !== rwTrackId, "Track Events have different ids" );
+  
+  popped.removeTrackEvent( rwTrackId );
+  
+  equals( popped.data.history.length, 1, "1 TrackEvent in history index - after popped.removeTrackEvent( rwTrackId ); ");
+  equals( popped.data.trackEvents.byStart.length, 3, "3 TrackEvents in popped.data.trackEvents.byStart ");
+  equals( popped.data.trackEvents.byEnd.length, 3, "3 TrackEvents in popped.data.trackEvents.byEnd ");  
+  
+  trackEvents = popped.getTrackEvents();
+  
+  equals( trackEvents.length, 1, "1 user created trackEvents returned by popped.getTrackEvents()" )
+
+  popped.rw({
+    start: 1, 
+    end: 2
+  });  
+  
+  
+  rw2TrackId = popped.getLastTrackEventId();
+  
+  equals( popped.data.history.length, 2, "2 TrackEvents in history index - after new track added ");
+  
+  
+  ok( rw2TrackId !== rwTrackId, "rw2TrackId !== rwTrackId" );
+  
+  equals( popped.data.trackEvents.byStart.length, 4, "4 TrackEvents in popped.data.trackEvents.byStart  - after new track added");
+  equals( popped.data.trackEvents.byEnd.length, 4, "4 TrackEvents in popped.data.trackEvents.byEnd  - after new track added");  
+  
+  
+  trackEvents = popped.getTrackEvents();
+  
+  equals( trackEvents.length, 2, "2 user created trackEvents returned by popped.getTrackEvents()" )
+  
+  
+  
+  
+
+});
+
 
 module("Popcorn XHR");
 test("Basic", function () {
