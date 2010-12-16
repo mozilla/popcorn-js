@@ -455,6 +455,7 @@
     
     var trackLen = obj.data.trackEvents.byStart.length, 
         historyLen = obj.data.history.length, 
+        indexWasAt = 0, 
         byStart = [], 
         byEnd = [], 
         history = []; 
@@ -468,12 +469,32 @@
         byEnd.push( obj.data.trackEvents.byEnd[i] );
       }  
       
-      // Filter for the trackevent to remove
-      if ( o._id && o._id !== trackId ) {
-        byStart.push( obj.data.trackEvents.byStart[i] );
-        byEnd.push( obj.data.trackEvents.byEnd[i] );
+      // Filter for user track events (vs system track events)
+      if ( o._id ) {
+        
+        // Filter for the trackevent to remove
+        if ( o._id !== trackId ) {
+          byStart.push( obj.data.trackEvents.byStart[i] );
+          byEnd.push( obj.data.trackEvents.byEnd[i] );
+        }      
+      
+        //  Capture the position of the track being removed.
+        if ( o._id === trackId ) {
+          indexAt = i;
+        }      
       }
     });
+    
+    
+    //  Update 
+    if ( indexWasAt <= obj.data.trackEvents.startIndex ) {
+      obj.data.trackEvents.startIndex--;
+    }
+
+    if ( indexWasAt <= obj.data.trackEvents.endIndex ) {
+      obj.data.trackEvents.endIndex--;
+    }
+    
     
     obj.data.trackEvents.byStart = byStart;
     obj.data.trackEvents.byEnd = byEnd;
