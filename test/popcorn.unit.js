@@ -9,7 +9,7 @@ test("API", function () {
   
   function plus(){ if ( ++count == expects ) start(); }
 
-  stop();
+  stop( 10000 );
 
   
   try {
@@ -131,7 +131,7 @@ test("exec", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop(); 
+  stop( 10000 ); 
   
 
 
@@ -175,7 +175,7 @@ test("Stored By Type", function () {
     } 
   }
 
-  stop();  
+  stop( 10000 );  
   
   
   p.listen("play", function () {
@@ -234,7 +234,7 @@ test("Simulated", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop();  
+  stop( 10000 );  
   
   
   Setup.events.forEach(function ( name ) {
@@ -275,7 +275,7 @@ test("Real", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop();  
+  stop( 10000 );  
   
   
   [ "play", "pause", "volumechange", "seeking", "seeked" ].forEach(function ( name ) {
@@ -316,7 +316,7 @@ test("Custom", function () {
   
   function plus(){ if ( ++count == expects ) start(); }
 
-  stop();
+  stop( 10000 );
   
   var p = Popcorn("#video");
   
@@ -344,7 +344,7 @@ test("UI/Mouse", function () {
   
   function plus(){ if ( ++count == expects ) start(); }
 
-  stop();
+  stop( 10000 );
   
   var p = Popcorn("#video");
   
@@ -387,7 +387,7 @@ test("Update Timer", function () {
     }
   }
   
-  stop();  
+  stop( 10000 );  
 
   Popcorn.plugin("forwards", function () {
     return {
@@ -454,7 +454,7 @@ test("Plugin Factory", function () {
     }
   }
 
-  stop();
+  stop( 10000 );
 
   Popcorn.plugin("executor", function () {
     
@@ -686,7 +686,7 @@ test("Text Response", function () {
   
   expect(expects);
   
-  stop();
+  stop( 10000 );
 
   Popcorn.xhr({
     url: 'data/test.txt', 
@@ -715,7 +715,7 @@ test("JSON Response", function () {
   
   expect(expects);
   
-  stop();
+  stop( 10000 );
 
 
   var testObj = { "data": {"lang": "en", "length": 25} };  
@@ -749,7 +749,7 @@ test("XML Response", function () {
   
   expect(expects);
   
-  stop();
+  stop( 10000 );
 
 
   Popcorn.xhr({
@@ -812,7 +812,7 @@ test("Events Extended", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop();  
+  stop( 10000 );  
   
   
   Popcorn.plugin("extendedEvents", (function () {
