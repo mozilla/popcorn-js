@@ -768,9 +768,60 @@ test("Functions", function () {
   
   equals( trackEvents.length, 3, "3 user created trackEvents returned by popped.getTrackEvents()" )  
   
+  /*popped.rw({
+    start: 1, 
+    end: 2
+  });  
 
+  var newTrackId = popped.getLastTrackEventId();
+
+  popped.currentTime(1).play();*/
+  
 });
 
+
+test("Update Index", function () {
+
+  QUnit.reset();
+
+  var p3 = Popcorn("#video"),                         
+      expects = 4, 
+      count   = 0;
+
+  function plus() {
+    if ( ++count === expects ) {
+      start(); 
+      // clean up added events after tests
+      p2.removePlugin("track");
+    }
+  }
+  
+  stop();  
+
+  Popcorn.plugin("track", function () {
+    return {
+      start: function () {
+        forwardStart = !forwardStart;
+        ok( forwardStart, "forward's start fired");
+        plus();
+      },
+      end: function () {
+        forwardEnd = !forwardEnd;
+        p2.currentTime(1).play();
+        ok( forwardEnd, "forward's end fired");
+        plus();
+      }
+    };
+  });
+
+  p3.track({
+    start: 1, 
+    end: 2
+  });
+
+  p3.currentTime(1).play().currentTime(1).play().removeTrackEvent(p3.getLastTrackEventId());
+
+});
 
 module("Popcorn XHR");
 test("Basic", function () {
