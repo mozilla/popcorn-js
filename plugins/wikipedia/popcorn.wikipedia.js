@@ -1,4 +1,12 @@
-// PLUGIN: WEBPAGE
+// PLUGIN: WIKIPEDIA
+
+
+// wikipedia callback functions executes when data is retrieved from the wiki
+// stores the data in a global variable
+var wikidatastring;
+var wikiCallback = function (data) { 
+  wikidatastring = data; 
+};
 
 (function (Popcorn) {
   
@@ -11,28 +19,71 @@
    * Target is the id of the document element that the iframe needs to be attached to, 
    * this target element must exist on the DOM
    * Lang (optional, defaults to english)is the language in which the article is in.
-   * Src is the url of the article
-   * NumOfWords (optional, defaults to 200) is  the number of words you want displaid. 
+   * Src is the url of the article 
+   * Title (optional) is the title of the article
+   * NumOfWords (optional, defaults to 200) is  the number of words you want displaid.  
    *
    * @param {Object} options
    * 
    * Example:
      var p = Popcorn('#video')
         .wikipedia({
-          id: "webpages-a", 
           start: 5, // seconds
           end: 15, // seconds
-          src: 'http://www.webmademovies.org',
+          src: 'http://en.wikipedia.org/wiki/Cape_Town',
           target: 'webpagediv'
         } )
    *
    */
+   
+  
   Popcorn.plugin( "wikipedia" , (function(){
       
-    var temp, length;
+    var temp, length, link, p, desc, text;
     
     
     return {
+      /**
+       * @member wikipedia 
+       * The setup function will get all of the needed 
+       * items in place before the start function is called
+       */
+      _setup : function( options ) {
+        // if no language was specified default to english
+        if (typeof options.lang === 'undefined') { options.lang ="en"; }
+        temp    = document.getElementById( options.target );
+        length  = options.numOfWords || 200;
+        
+        //get the wiki article on a separate thread
+        setTimeout(function() {
+          getJson("http://"+options.lang+".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( options.title || options.src.slice(options.src.lastIndexOf("/")+1)) + "&format=json&callback=wikiCallback");
+        }, 1000);
+        var getJson  = function(url) {
+          var head   = document.getElementsByTagName("head")[0];
+          var script = document.createElement("script");
+          // once you get the data store it
+          script.onload = function () {
+            if (wikidatastring) {
+              // create a link that the user can use to view the whole article
+              link = document.createElement('a');
+              link.setAttribute('href', options.src);
+              link.setAttribute('target', '_blank');
+              // create a paragraph that the title of the article can go into
+              p = document.createElement('p');
+              p.innerHTML = wikidatastring.parse.displaytitle;
+              link.appendChild(p);
+              // get the first 140 characters of the wiki content
+              desc = document.createElement('p');
+              text = wikidatastring.parse.text["*"].substr(wikidatastring.parse.text["*"].indexOf('<p>'));
+              text = text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
+              desc.innerHTML = text.substr(0,  length ) + " ...";
+            }
+          };  
+          script.src = url;
+          head.insertBefore( script, head.firstChild );
+        };
+        
+      },
       /**
        * @member wikipedia 
        * The start function will be executed when the currentTime 
@@ -40,10 +91,8 @@
        * options variable
        */
       start: function(event, options){
-        if (typeof options.lang === 'undefined') {options.lang="en";}
-        temp    = document.getElementById( options.target );
-        length = options.numOfWords || 200;
-        
+        temp.appendChild(link);
+        temp.appendChild(desc);
       },
       /**
        * @member wikipedia 
@@ -52,7 +101,8 @@
        * options variable
        */
       end: function(event, options){
-        temp.removeChild(iframe);
+        temp.removeChild(link);
+        temp.removeChild(desc);
       }
       
     };

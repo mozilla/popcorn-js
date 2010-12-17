@@ -4,24 +4,17 @@
   <title>Popcorn WebPage Plug-in Demo</title>
   
   <script src="../../popcorn.js"></script>
-  <script src="popcorn.webpage.js"></script>
+  <script src="popcorn.wikipedia.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
+      .volume(0)
       .play() 
-      .webpage({
-        id: "webpages-a", 
-        start: 5, // seconds
-        end: 15, // seconds
-        src: 'http://www.webmademovies.org',
-        target: 'webpagediv'
-      } )
-      .webpage({
-        id: "webpages-b", 
-        start: 20, // seconds
-        end: 45, // seconds
-        src: 'http://zenit.senecac.on.ca/wiki/index.php/Processing.js',
-        target: 'webpagediv2'
+      .wikipedia({
+        start: 10, // seconds
+        end: 50, // seconds
+        src: 'http://en.wikipedia.org/wiki/Cape_Town',
+        target: 'wikidiv'
       } );
 
     }, false);
@@ -50,8 +43,7 @@
 
     </video> 
   </div>
-  <div id="webpagediv" width="50%" height="50%">
-  <div id="webpagediv2">
+  <div id="wikidiv" width="50%" height="50%">
   </div>
 </body>
 </html>
