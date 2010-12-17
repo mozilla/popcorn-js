@@ -774,12 +774,11 @@ test("Functions", function () {
 
 test("Index Integrity", function () {
   
-  stop();
   
-  var popped = Popcorn("#video"), trackLen;
   
-  popped.currentTime(0).pause();
-
+  var trackLen, hasrun = false, lastrun = false;
+  
+  
   Popcorn.plugin("ff", function () {
     return {
       start: function () {
@@ -795,51 +794,67 @@ test("Index Integrity", function () {
     };
   });
   
-  popped.ff({
+  
+  var p = Popcorn("#video");
+  
+  p.ff({
     id: "removeable-track-event",
-    start: 1, 
-    end: 3
+    start: 40, 
+    end: 45
   });
   
-  equals(popped.data.trackEvents.endIndex, 0, "popped.data.trackEvents.endIndex is 0");
-  equals(popped.data.trackEvents.startIndex, 0, "popped.data.trackEvents.startIndex is 0");
-  equals(popped.data.trackEvents.byStart.length, 3, "popped.data.trackEvents.byStart.length is 3 - before play" );
+  p.currentTime(39).pause();  
   
-
-  popped.listen("timeupdate", function () {
-    
-    if ( this.roundTime() >= 5 ) {
-    
-      this.pause();
-      
-      equals(popped.data.trackEvents.byStart.length, 3, "popped.data.trackEvents.byStart.length is 3 - after play, before removeTrackEvent" );
-      
-      equals(popped.data.trackEvents.endIndex, 2, "popped.data.trackEvents.endIndex is 2 - after play, before removeTrackEvent");
-      equals(popped.data.trackEvents.startIndex, 2, "popped.data.trackEvents.startIndex is 2 - after play, before removeTrackEvent");      
-
-      
-      this.removeTrackEvent("removeable-track-event");
-      
-      equals(popped.data.trackEvents.byStart.length, 2, "popped.data.trackEvents.byStart.length is 2 - after removeTrackEvent" );
-      equals(popped.data.trackEvents.endIndex, 1, "popped.data.trackEvents.endIndex is 1 - after removeTrackEvent");
-      equals(popped.data.trackEvents.startIndex, 1, "popped.data.trackEvents.startIndex is 1 - after removeTrackEvent");
-      
-      this.listen("timeupdate", function () {
-        
-        if ( this.roundTime() >= 4 ) {
-          
-          this.pause();
-          start();
-        
-        }
-      });
-      
-      this.currentTime(0).play();
+  stop();
+  
+  equals(p.data.trackEvents.endIndex, 0, "p.data.trackEvents.endIndex is 0");
+  equals(p.data.trackEvents.startIndex, 0, "p.data.trackEvents.startIndex is 0");
+  equals(p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart.length is 3 - before play" );
+  
+  
+  
+  
+  p.listen("timeupdate", function () {
+  
+    if ( p.roundTime() > 40 && p.roundTime() < 46 && !hasrun ) {
     }
-  
+    
+    if ( p.roundTime() > 40 && p.roundTime() < 46 && hasrun && !lastrun ) {
+      
+      lastrun = true;
+      
+      equals( document.getElementById('index-test'), null, "document.getElementById('index-test') is null on second run - after removeTrackEvent" );
+      
+      start();
+    }
+    
+    if ( p.roundTime() >= 46 && !hasrun ) {
+      
+      hasrun  = true;
+      p.pause();
+      
+      equals(p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart.length is 3 - after play, before removeTrackEvent" );
+      equals(p.data.trackEvents.startIndex, 2, "p.data.trackEvents.startIndex is 2 - after play, before removeTrackEvent");      
+      equals(p.data.trackEvents.endIndex, 2, "p.data.trackEvents.endIndex is 2 - after play, before removeTrackEvent");
+      
+
+      
+      p.removeTrackEvent("removeable-track-event");
+      
+      equals(p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart.length is 2 - after removeTrackEvent" );
+      equals(p.data.trackEvents.startIndex, 1, "p.data.trackEvents.startIndex is 1 - after removeTrackEvent");
+      equals(p.data.trackEvents.endIndex, 1, "p.data.trackEvents.endIndex is 1 - after removeTrackEvent");
+      
+      
+      
+      p.currentTime(39).play();
+      
+      
+      
+    }
   });
   
-  popped.play();
+  p.play();
 
 });
 
