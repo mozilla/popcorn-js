@@ -801,10 +801,10 @@ test("Index Integrity", function () {
   p.ff({
     id: "removeable-track-event",
     start: 40, 
-    end: 45
+    end: 41
   });
   
-  p.currentTime(39).pause();  
+  p.currentTime(40).pause();  
   
   stop();
   
@@ -817,10 +817,10 @@ test("Index Integrity", function () {
   
   p.listen("timeupdate", function () {
   
-    if ( p.roundTime() > 40 && p.roundTime() < 46 && !hasrun ) {
+    if ( p.roundTime() > 40 && p.roundTime() < 42 && !hasrun ) {
     }
     
-    if ( p.roundTime() > 40 && p.roundTime() < 46 && hasrun && !lastrun ) {
+    if ( p.roundTime() > 40 && p.roundTime() < 42 && hasrun && !lastrun ) {
       
       lastrun = true;
       
@@ -829,7 +829,7 @@ test("Index Integrity", function () {
       start();
     }
     
-    if ( p.roundTime() >= 46 && !hasrun ) {
+    if ( p.roundTime() >= 42 && !hasrun ) {
       
       hasrun  = true;
       p.pause();
@@ -848,7 +848,7 @@ test("Index Integrity", function () {
       
       
       
-      p.currentTime(39).play();
+      p.currentTime(40).play();
       
       
       
