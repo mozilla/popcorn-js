@@ -1,4 +1,4 @@
-(function(global) {
+(function(global, document) {
 
   //  Cache refs to speed up calls to native utils
   var  
@@ -156,7 +156,9 @@
 
     Popcorn.forEach( src, function( copy ) {
       for ( var prop in copy ) {
-        dest[prop] = copy[prop];
+        if ( copy[prop] ) {
+          dest[prop] = copy[prop];
+        }
       }
     });
     return dest;      
@@ -175,7 +177,9 @@
       var size = 0;
 
       for ( var prop in obj  ) {
-        size++;
+        if ( obj[prop] ) {
+          size++;
+        }
       }
 
       return size;
@@ -347,11 +351,11 @@
         //  setup checks for custom event system
         if ( this.data.events[type] && Popcorn.sizeOf(this.data.events[type]) ) {
           
-          var interface  = Popcorn.events.getInterface(type);
+          var eventInterface  = Popcorn.events.getInterface(type);
           
-          if ( interface ) {
+          if ( eventInterface ) {
           
-            var evt = document.createEvent( interface );
+            var evt = document.createEvent( eventInterface );
                 evt.initEvent(type, true, true, window, 1);          
           
             this.video.dispatchEvent(evt);
@@ -362,7 +366,7 @@
           //  Custom events          
           Popcorn.forEach(this.data.events[type], function ( obj, key ) {
 
-            obj.call( this, evt, data );
+            obj.call( this, data );
             
           }, this);
           
@@ -433,10 +437,10 @@
   
     if ( track.natives ) {
       // supports user defined track event id
-      track["_id"] = !track.id ? track.natives.type + Popcorn.guid() : track.id;
+      track._id = !track.id ? track.natives.type + Popcorn.guid() : track.id;
 
       //  Push track event ids into the history
-      obj.data.history.push( track["_id"] );      
+      obj.data.history.push( track._id );      
     }
   
     // Store this definition in an array sorted by times
@@ -480,7 +484,7 @@
       
         //  Capture the position of the track being removed.
         if ( o._id === trackId ) {
-          indexAt = i;
+          indexWasAt = i;
         }      
       }
     });
@@ -610,10 +614,13 @@
         //  Future support for plugin event definitions 
         //  for all of the native events
         Popcorn.forEach( setup, function ( callback, type ) {
+        
+          if ( type !== "type" ) {
           
-          if ( reserved.indexOf(type) === -1 ) {
-            
-            this.listen( type, callback );
+            if ( reserved.indexOf(type) === -1 ) {
+
+              this.listen( type, callback );
+            }
           }
           
         }, this);
@@ -692,7 +699,7 @@
           json = JSON.parse(settings.ajax.responseText);
         } catch(e) {
           //suppress
-        };
+        }
 
         data = {
           xml: settings.ajax.responseXML, 
@@ -710,4 +717,4 @@
 
   global.Popcorn = Popcorn;
   
-})(window);
+})(window, document);
