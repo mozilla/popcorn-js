@@ -56,6 +56,45 @@ test("Utility", function () {
 });
 
 
+test("guid", function () {
+  
+  expect(10);
+  
+  var count = 3, 
+      guids = [], 
+      temp;
+  
+  for ( var i = 0; i < count; i++ ) {
+    
+    temp = Popcorn.guid();
+    
+    ok( temp, "Popcorn.guid() returns value" );
+    
+    if ( i > 0 ) {
+      notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+    }
+    
+    guids.push(temp);
+  }
+
+  guids = [];
+  
+  for ( var i = 0; i < count; i++ ) {
+    
+    temp = Popcorn.guid( "pre" );
+    
+    ok( temp, "Popcorn.guid( 'pre' ) returns value" );
+    
+    if ( i > 0 ) {
+      notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+    }
+    
+    guids.push(temp);
+  }  
+  
+});
+
+
 test("Protected", function () {
   
   expect(1);
