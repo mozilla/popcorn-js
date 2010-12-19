@@ -1,12 +1,7 @@
 // PLUGIN: WIKIPEDIA
 
 
-// wikipedia callback functions executes when data is retrieved from the wiki
-// stores the data in a global variable
-var wikidatastring;
-var wikiCallback = function (data) { 
-  wikidatastring = data; 
-};
+var wikiCallback;
 
 (function (Popcorn) {
   
@@ -61,28 +56,22 @@ var wikiCallback = function (data) {
         var getJson  = function(url) {
           var head   = document.getElementsByTagName("head")[0];
           var script = document.createElement("script");
-          // once you get the data store it
-          script.onload = function () {
-            if (wikidatastring) {
-              // create a link that the user can use to view the whole article
-              link = document.createElement('a');
-              link.setAttribute('href', options.src);
-              link.setAttribute('target', '_blank');
-              // create a paragraph that the title of the article can go into
-              p = document.createElement('p');
-              p.innerHTML = wikidatastring.parse.displaytitle;
-              link.appendChild(p);
-              // get the first 140 characters of the wiki content
-              desc = document.createElement('p');
-              text = wikidatastring.parse.text["*"].substr(wikidatastring.parse.text["*"].indexOf('<p>'));
-              text = text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
-              desc.innerHTML = text.substr(0,  length ) + " ...";
-            }
-          };  
           script.src = url;
           head.insertBefore( script, head.firstChild );
         };
-        
+        wikiCallback     = function (data) { 
+          wikidatastring = data; 
+          link = document.createElement('a');
+          link.setAttribute('href', options.src);
+          link.setAttribute('target', '_blank');
+          // add the title of the article to the link
+          link.innerHTML = wikidatastring.parse.displaytitle;
+          // get the content of the wiki article
+          desc = document.createElement('p');
+          text = wikidatastring.parse.text["*"].substr(wikidatastring.parse.text["*"].indexOf('<p>'));
+          text = text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
+          desc.innerHTML = text.substr(0,  length ) + " ...";
+        };
       },
       /**
        * @member wikipedia 

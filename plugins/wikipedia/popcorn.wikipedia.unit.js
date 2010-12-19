@@ -1,13 +1,14 @@
-test("Popcorn Webpage Plugin", function () {
+test("Popcorn wikipedia Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 11, 
+      expects = 5, 
       count = 0,
-      iframeInterval,
-      iframeInterval2,
-      iframeInterval3,
-      iframeInterval4;
-      theiFrame = document.getElementsByTagName('iframe');
+      wikiInterval,
+      wikiInterval2,
+      wikiInterval3,
+      wikiInterval4;
+      theArticle = document.getElementById('wikidiv');
+      
   expect(expects);
   
   function plus() {
@@ -18,63 +19,57 @@ test("Popcorn Webpage Plugin", function () {
   
   stop();
    
-  ok ('webpage' in popped, "webpages is a mehtod of the popped instance");
+  ok ('wikipedia' in popped, "wikipedia is a mehtod of the popped instance");
   plus();
   
-  equals (theiFrame.length, 0, "initially, there is no iframes on the page" );
+  equals (theArticle.innerHTML, "", "initially, there is nothing in the wikidiv" );
   plus();
   
-  popped.webpage({
-      id: "webpages-a", 
+  popped.wikipedia({
       start: 5, // seconds
-      end: 25, // seconds
-      src: 'http://webmademovies.org',
-      target: 'webpagediv'
-    })
-    .webpage({
-      id: "webpages-b", 
-      start: 35, // seconds
-      end: 50, // seconds
-      src: 'http://zenit.senecac.on.ca/wiki/index.php/Processing.js',
-      target: 'webpagediv'
-    })
+      end: 10, // seconds
+      src: 'http://en.wikipedia.org/wiki/Cape_Town',
+      target: 'wikidiv'
+    } )
+    .wikipedia({
+      start: 12, // seconds
+      end: 20, // seconds
+      src: 'http://en.wikipedia.org/wiki/S%C3%A3o_Paulo',
+      target: 'wikidiv'
+    } )
     .play();
   
   
-  iframeInterval = setInterval( function() {
-    if( popped.currentTime() > 7 && popped.currentTime() <= 25 ) {
-      ok (!!theiFrame[0], "iframe was created" );
+  wikiInterval = setInterval( function() {
+    if( popped.currentTime() > 7 && popped.currentTime() <= 10 ) {
+      ok (theArticle.innerHTML !== "", "wikidiv now contains information" );
       plus();
-      equals (theiFrame.length, 1, "there is only one iframe on the page" );
+      equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
       plus();
-      equals (theiFrame[0].id, "webpages-a", "iframe has the id 'webpages-a'" );
-      plus();
-      equals (theiFrame[0].src, "http://webmademovies.org/", "iframe has the src 'http://webmademovies.org/'" );
-      plus();
-      clearInterval( iframeInterval );
+      
+      clearInterval( wikiInterval );
     }
   }, 5000);
   
-  iframeInterval2 = setInterval( function() {
-    if( popped.currentTime() > 27 && popped.currentTime() < 35  ) {
-      equals (theiFrame.length, 0, "the iframe has been removed" );
+  wikiInterval2 = setInterval( function() {
+    if( popped.currentTime() > 10 && popped.currentTime() < 12  ) {
+      equals (theArticle.innerHTML, "", "wikidiv was cleared properly" );
       plus();
-      clearInterval( iframeInterval2 );
+      clearInterval( wikiInterval2 );
     }
   }, 5000);
   
-  iframeInterval3 = setInterval( function() {
-    if( popped.currentTime() > 37 && popped.currentTime() <= 50 ) {
-      ok (!!theiFrame[0], "iframe was created" );
+  wikiInterval3 = setInterval( function() {
+    if( popped.currentTime() > 13 && popped.currentTime() <= 20 ) {
+      ok (theArticle.innerHTML !== "", "wikidiv now contains information" );
       plus();
-      equals (theiFrame.length, 1, "there is only one iframe on the page" );
+      equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
       plus();
-      equals (theiFrame[0].id, "webpages-b", "iframe has the id 'webpages-b'" );
-      plus();
-      equals (theiFrame[0].src,"http://zenit.senecac.on.ca/wiki/index.php/Processing.js", "iframe has the src 'http://zenit.senecac.on.ca/wiki/index.php/Processing.js'" );
-      plus();
-      clearInterval( iframeInterval3 );
+      
+      clearInterval( wikiInterval3 );
     }
   }, 5000);
+  
+  
   
 });

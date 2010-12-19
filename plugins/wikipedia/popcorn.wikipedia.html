@@ -11,10 +11,16 @@
       .volume(0)
       .play() 
       .wikipedia({
-        start: 10, // seconds
-        end: 50, // seconds
+        start: 5, // seconds
+        end: 10, // seconds
         src: 'http://en.wikipedia.org/wiki/Cape_Town',
         target: 'wikidiv'
+      } )
+      .wikipedia({
+        start: 12, // seconds
+        end: 20, // seconds
+        src: 'http://en.wikipedia.org/wiki/S%C3%A3o_Paulo',
+        target: 'wikidiv2'
       } );
 
     }, false);
@@ -23,11 +29,11 @@
 </head>
 <body>
   <h1 id="qunit-header">Popcorn WebPage Plug-in Demo</h1>
-  <p> A Webpage displaying webmademovies.org will appear at 5 seconds and disappear at 15 seconds.</p>
-  <p> A Webpage displaying zenit Processing.js wiki will appear at 20 seconds and disappear at 45 seconds.</p>
+  <p> A Wiki article about Cape Town will appear at 5 seconds and disappear at 10 seconds.</p>
+  <p> A Wiki article about Sao Paolo will appear at 12 seconds and disappear at 20 seconds.</p>
   <div>
     <video id='video' 
-      controls preload='none' 
+      controls 
       width= '250px'
       poster="../../test/poster.png"> 
 
@@ -44,6 +50,9 @@
     </video> 
   </div>
   <div id="wikidiv" width="50%" height="50%">
+    
+
   </div>
+  <div id="wikidiv2" width="50%" height="50%"></div>
 </body>
 </html>
