@@ -56,6 +56,45 @@ test("Utility", function () {
 });
 
 
+test("guid", function () {
+  
+  expect(6);
+  
+  var count = 3, 
+      guids = [], 
+      temp;
+  
+  for ( var i = 0; i < count; i++ ) {
+    
+    temp = Popcorn.guid();
+    
+    if ( i > 0 ) {
+      notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+    } else {
+      ok( temp, "Popcorn.guid() returns value" );
+    }
+    
+    guids.push(temp);
+  }
+
+  guids = [];
+  
+  for ( var i = 0; i < count; i++ ) {
+    
+    temp = Popcorn.guid( "pre" );
+    
+    if ( i > 0 ) {
+      notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+    } else {
+      ok( temp, "Popcorn.guid( 'pre' ) returns value" );
+    }
+    
+    guids.push(temp);
+  }  
+  
+});
+
+
 test("Protected", function () {
   
   expect(1);
