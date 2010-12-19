@@ -58,7 +58,7 @@ test("Utility", function () {
 
 test("guid", function () {
   
-  expect(10);
+  expect(6);
   
   var count = 3, 
       guids = [], 
@@ -68,10 +68,10 @@ test("guid", function () {
     
     temp = Popcorn.guid();
     
-    ok( temp, "Popcorn.guid() returns value" );
-    
     if ( i > 0 ) {
       notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+    } else {
+      ok( temp, "Popcorn.guid() returns value" );
     }
     
     guids.push(temp);
@@ -83,10 +83,10 @@ test("guid", function () {
     
     temp = Popcorn.guid( "pre" );
     
-    ok( temp, "Popcorn.guid( 'pre' ) returns value" );
-    
     if ( i > 0 ) {
       notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+    } else {
+      ok( temp, "Popcorn.guid( 'pre' ) returns value" );
     }
     
     guids.push(temp);
