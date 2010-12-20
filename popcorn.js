@@ -554,7 +554,8 @@
   
   });
   
-  
+  //  Plugin manifests
+  Popcorn.manifest = {};
   //  Plugins are registered 
   Popcorn.registry = [];
   //  An interface for extending Popcorn 
@@ -658,6 +659,12 @@
     //  Push into the registry
     Popcorn.registry.push(plugin);
     
+    
+    if ( !!( "manifest" in setup ) ) {
+      
+      //  Augment the manifest object
+      Popcorn.manifest[ name ] = setup.manifest;
+    }    
     
     return plugin;
   };
