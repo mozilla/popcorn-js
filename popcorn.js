@@ -11,7 +11,8 @@
   
   // ready fn cache
   readyStack = [], 
-  readyBound = false, 
+  readyBound = false,
+  readyFired = false,
   
 
   //  Declare a pseudo-private constructor
@@ -33,32 +34,45 @@
       //  Originally proposed by Daniel Brooks
       
       if ( typeof entity === "function" ) {
+      
+        //  If document ready has already fired
+        if ( document.readyState === "interactive" || document.readyState === "complete" ) {
+          
+          entity(document, Popcorn);
+          
+          return;
+        }
+        
         
         readyStack.push( entity );
-        
+
         //  This process should happen once per page load
         if ( !readyBound ) {
 
           //  set readyBound flag
           readyBound = true;
-          
+
           var DOMContentLoaded  = function () {
+            
+            readyFired = true;
             
             //  remove this listener
             document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
-            
+
             //  Execute all ready function in the stack
             for ( var i = 0; i < readyStack.length; i++ ) {
-            
+
               readyStack[i].call( document, Popcorn );
-            
+
             }
             //  GC readyStack
             readyStack = null;  
           };
-          
+
           document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false);
         }
+
+        
         
         return;  
       }
