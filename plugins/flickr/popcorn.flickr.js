@@ -30,6 +30,27 @@
    *
    */
   Popcorn.plugin( "flickr" , {
+
+      manifest: {
+        about:{
+          name:    "Popcorn Flickr Plugin",
+          version: "0.1",
+          author:  "Scott Downe",
+          website: "http://scottdowne.wordpress.com/"
+        },
+        options:{
+          start   : {elem:'input', type:'number', label:'In'},
+          end     : {elem:'input', type:'number', label:'Out'},
+          userid  : {elem:'input', type:'text',   label:'Source'},
+          target  : {elem:'input', type:'text',   label:'HTML Element id'},
+          height  : {elem:'input', type:'text', label:'Style'},
+          width   : {elem:'input', type:'text', label:'Style'},
+          padding : {elem:'input', type:'text', label:'Style'},
+          border  : {elem:'input', type:'text', label:'Style'},
+          numberofimages : {elem:'input', type:'text', label:'Style'}
+        }
+      },
+
       _setup: function( options ) {
         options.container = document.createElement( 'div' );
         options.container.style.display = "none";
