@@ -2,7 +2,7 @@
 module("Popcorn");
 test("API", function () {
   
-  var expects = 3, 
+  var expects = 4, 
       count = 0;
   
   expect(expects);
@@ -33,6 +33,19 @@ test("API", function () {
     plus();
     
   } catch (e) {};
+  
+  
+  try {  
+  
+    Popcorn(function() { 
+    
+      ok(1, "Popcorn calls its function argument"); 
+      plus();
+      
+      
+    });
+    
+  } catch (e) {};  
 
   
 });

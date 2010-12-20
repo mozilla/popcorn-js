@@ -6,14 +6,17 @@
   hasOwn = Object.prototype.hasOwnProperty, 
   slice = Array.prototype.slice,
 
-  // intentionally left undefined
-  undef,
-
   //  ID string matching
   rIdExp  = /^(#([\w\-\_\.]+))$/, 
+  
+  // ready fn cache
+  readyStack = [], 
+  readyBound = false,
+  readyFired = false,
+  
 
   //  Declare a pseudo-private constructor
-  //  This constructor returns the instance object.    
+  //  Returns an instance object.    
   Popcorn = function( entity ) {
     //  Return new Popcorn object
     return new Popcorn.p.init( entity );
@@ -26,12 +29,61 @@
     init: function( entity ) {
 
       var elem, matches;
+      
+      //  Supports Popcorn(function () { /../ }) 
+      //  Originally proposed by Daniel Brooks
+      
+      if ( typeof entity === "function" ) {
+      
+        //  If document ready has already fired
+        if ( document.readyState === "interactive" || document.readyState === "complete" ) {
+          
+          entity(document, Popcorn);
+          
+          return;
+        }
+        
+        
+        readyStack.push( entity );
 
+        //  This process should happen once per page load
+        if ( !readyBound ) {
+
+          //  set readyBound flag
+          readyBound = true;
+
+          var DOMContentLoaded  = function () {
+            
+            readyFired = true;
+            
+            //  remove this listener
+            document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
+
+            //  Execute all ready function in the stack
+            for ( var i = 0; i < readyStack.length; i++ ) {
+
+              readyStack[i].call( document, Popcorn );
+
+            }
+            //  GC readyStack
+            readyStack = null;  
+          };
+
+          document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false);
+        }
+
+        
+        
+        return;  
+      }
+ 
+      
       matches = rIdExp.exec( entity );
       
       if ( matches.length && matches[2]  ) {
         elem = document.getElementById(matches[2]);
       }
+      
       
       this.video = elem ? elem : null;
       
@@ -104,17 +156,22 @@
                 }
                 tracks.endIndex--;
               }
-            } else {
+            } 
+            /*
+            //  This empty block causes errors with jslint
+            
+            else {
               // When user seeks, currentTime can be equal to previousTime on the
               // timeUpdate event. We are not doing anything with this right now, but we
               // may need this at a later point and should be aware that this behavior
               // happens in both Chrome and Firefox.
             }
-
+            */
             tracks.previousUpdateTime = currentTime;
+            
           }, false);
         } else {
-          setTimeout( function() {
+          global.setTimeout( function() {
             isReady( that );
           }, 1);
         }
@@ -200,6 +257,7 @@
       var methods = "load play pause currentTime playbackRate mute volume duration", 
           ret = {};
       
+      
       //  Build methods, store in object that is returned and passed to extend
       Popcorn.forEach( methods.split(/\s+/g), function( name ) {
         
@@ -266,33 +324,33 @@
     removePlugin: function( name ) {
 
       var byStart = this.data.trackEvents.byStart, 
-          byEnd = this.data.trackEvents.byEnd;        
+          byEnd = this.data.trackEvents.byEnd;
   
       delete Popcorn.p[ name ];
   
       // remove plugin reference from registry
-      for ( var i = 0, rl = Popcorn.registry.length; i < rl; i++ ) {
-        if ( Popcorn.registry[i].type === name ) {
-          Popcorn.registry.splice(i, 1);
+      for ( var r = 0, rl = Popcorn.registry.length; r < rl; r++ ) {
+        if ( Popcorn.registry[r].type === name ) {
+          Popcorn.registry.splice(r, 1);
           break; // plugin found, stop checking
         }
       }
 
       // remove all trackEvents
-      for ( var i = 0, sl = byStart.length; i < sl; i++ ) {
-        if ( byStart[i] && byStart[i].natives && byStart[i].natives.type === name ) {
-          byStart.splice( i, 1 );
-          i--; sl--; // update for loop if something removed, but keep checking
-          if ( this.data.trackEvents.startIndex <= i ) {
+      for ( var s = 0, sl = byStart.length; s < sl; s++ ) {
+        if ( byStart[s] && byStart[s].natives && byStart[s].natives.type === name ) {
+          byStart.splice( s, 1 );
+          s--; sl--; // update for loop if something removed, but keep checking
+          if ( this.data.trackEvents.startIndex <= s ) {
             this.data.trackEvents.startIndex--; // write test for this
           }
         }
       }
-      for ( var i = 0, el = byEnd.length; i < el; i++ ) {
-        if ( byEnd[i] && byEnd[i].natives && byEnd[i].natives.type === name ) {
-          byEnd.splice( i, 1 );
-          i--; el--; // update for loop if something removed, but keep checking
-          if ( this.data.trackEvents.endIndex <= i ) {
+      for ( var e = 0, el = byEnd.length; e < el; e++ ) {
+        if ( byEnd[e] && byEnd[e].natives && byEnd[e].natives.type === name ) {
+          byEnd.splice( e, 1 );
+          e--; el--; // update for loop if something removed, but keep checking
+          if ( this.data.trackEvents.endIndex <= e ) {
             this.data.trackEvents.endIndex--; // write test for this
           }
         }
@@ -360,7 +418,7 @@
           if ( eventInterface ) {
           
             var evt = document.createEvent( eventInterface );
-                evt.initEvent(type, true, true, window, 1);          
+                evt.initEvent(type, true, true, global, 1);          
           
             this.video.dispatchEvent(evt);
             
@@ -380,7 +438,7 @@
       }, 
       listen: function ( type, fn ) {
         
-        var self = this, hasEvents = true, ns = '';
+        var self = this, hasEvents = true;
         
         if ( !this.data.events[type] ) {
           this.data.events[type] = {};
@@ -461,8 +519,7 @@
 
   Popcorn.removeTrackEvent  = function( obj, trackId ) {
     
-    var trackLen = obj.data.trackEvents.byStart.length, 
-        historyLen = obj.data.history.length, 
+    var historyLen = obj.data.history.length, 
         indexWasAt = 0, 
         byStart = [], 
         byEnd = [], 
@@ -569,9 +626,7 @@
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p 
     
-    var natives = Popcorn.events.all, 
-
-        reserved = [ "start", "end"], 
+    var reserved = [ "start", "end"], 
         plugin = {type: name},
         pluginFn, 
         setup;
@@ -608,7 +663,7 @@
         //  the events commence
         
         if ( "_setup" in setup && typeof setup._setup === "function" ) {
-          setup._setup.call(this, options);
+          setup._setup.call( this, options );
         }
         
 
@@ -671,7 +726,7 @@
     type: 'GET',
     async: true, 
     xhr: function()  {
-      return new XMLHttpRequest();
+      return new global.XMLHttpRequest();
     }
   };   
   
@@ -693,9 +748,9 @@
   
   Popcorn.xhr.httpData = function ( settings ) {
   
-    var data, json = null,  
+    var data, json = null;  
         
-    onreadystatechange = settings.ajax.onreadystatechange = function() {
+    settings.ajax.onreadystatechange = function() {
 
       if ( settings.ajax.readyState === 4 ) { 
         
@@ -718,7 +773,9 @@
     return data;  
   };
   
-
+  
+  
+  //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
   
-})(window, document);
+})(window, window.document);
