@@ -9,7 +9,7 @@ test("API", function () {
   
   function plus(){ if ( ++count == expects ) start(); }
 
-  stop();
+  stop( 10000 );
 
   
   try {
@@ -56,6 +56,45 @@ test("Utility", function () {
 });
 
 
+test("guid", function () {
+  
+  expect(6);
+  
+  var count = 3, 
+      guids = [], 
+      temp;
+  
+  for ( var i = 0; i < count; i++ ) {
+    
+    temp = Popcorn.guid();
+    
+    if ( i > 0 ) {
+      notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+    } else {
+      ok( temp, "Popcorn.guid() returns value" );
+    }
+    
+    guids.push(temp);
+  }
+
+  guids = [];
+  
+  for ( var i = 0; i < count; i++ ) {
+    
+    temp = Popcorn.guid( "pre" );
+    
+    if ( i > 0 ) {
+      notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+    } else {
+      ok( temp, "Popcorn.guid( 'pre' ) returns value" );
+    }
+    
+    guids.push(temp);
+  }  
+  
+});
+
+
 test("Protected", function () {
   
   expect(1);
@@ -73,7 +112,7 @@ test("Object", function () {
 
   
   var popped = Popcorn("#video"), 
-      methods = "load play pause currentTime mute volume roundTime exec";
+      methods = "load play pause currentTime mute volume roundTime exec removePlugin";
   
   
   
@@ -131,7 +170,7 @@ test("exec", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop(); 
+  stop( 10000 ); 
   
 
 
@@ -175,7 +214,7 @@ test("Stored By Type", function () {
     } 
   }
 
-  stop();  
+  stop( 10000 );  
   
   
   p.listen("play", function () {
@@ -234,7 +273,7 @@ test("Simulated", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop();  
+  stop( 10000 );  
   
   
   Setup.events.forEach(function ( name ) {
@@ -267,7 +306,7 @@ test("Real", function () {
       completed = [];                              
   
   
-  var expects = 10, 
+  var expects = 5, 
       count = 0;
 
 
@@ -275,10 +314,10 @@ test("Real", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop();  
+  stop( 10000 );  
   
   
-  Setup.events.forEach(function ( name ) {
+  [ "play", "pause", "volumechange", "seeking", "seeked" ].forEach(function ( name ) {
     
     p.listen( name, function (event) {
     
@@ -296,8 +335,6 @@ test("Real", function () {
 
   
   p.pause();
-  
-  p.mute(true);
   
   p.play();
   
@@ -318,7 +355,7 @@ test("Custom", function () {
   
   function plus(){ if ( ++count == expects ) start(); }
 
-  stop();
+  stop( 10000 );
   
   var p = Popcorn("#video");
   
@@ -346,7 +383,7 @@ test("UI/Mouse", function () {
   
   function plus(){ if ( ++count == expects ) start(); }
 
-  stop();
+  stop( 10000 );
   
   var p = Popcorn("#video");
   
@@ -389,7 +426,7 @@ test("Update Timer", function () {
     }
   }
   
-  stop();  
+  stop( 10000 );  
 
   Popcorn.plugin("forwards", function () {
     return {
@@ -444,20 +481,19 @@ test("Plugin Factory", function () {
   // needs expectation
 
   var popped = Popcorn("#video"), 
-      methods = "load play pause currentTime mute volume roundTime exec",
-      expects = 22, 
+      methods = "load play pause currentTime mute volume roundTime exec removePlugin",
+      expects = 24, 
       count = 0;
   
   //expect(expects);
   
   function plus() { 
-    console.log(count);
     if ( ++count == expects ) {
       start(); 
     }
   }
 
-  stop();
+  stop( 10000 );
 
   Popcorn.plugin("executor", function () {
     
@@ -592,6 +628,10 @@ test("Plugin Factory", function () {
     } 
   });
 
+  ok( "breaker" in popped, "breaker plugin is now available to instance" );
+  plus();
+  ok( Popcorn.registry.length === 3, "Three items in the registry");
+  plus();
   
   popped.breaker({
     start: 1, 
@@ -600,6 +640,44 @@ test("Plugin Factory", function () {
 
   popped.currentTime(0).play();
 });
+
+test("removePlugin", function () {
+  
+  expect(10);
+  
+  var p = Popcorn("#video"), 
+      rlen = Popcorn.registry.length;
+  
+  equals( rlen, 3, "Popcorn.registry.length is 3");
+  
+  
+  equals( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is initialized and has 2 entries");
+  equals( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is initialized and has 2 entries");
+  
+  p.breaker({
+    start: 2, 
+    end: 30
+  });     
+  
+  equals( p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart is updated and has 3 entries");
+  equals( p.data.trackEvents.byEnd.length, 3, "p.data.trackEvents.byEnd is updated and has 3 entries");
+  
+  
+  p.removePlugin("breaker");
+  
+  
+  ok( !("breaker" in p), "breaker plugin is no longer available to instance" );
+  ok( !("breaker" in Popcorn.prototype), "breaker plugin is no longer available to Popcorn.prototype" );
+  
+  
+  equals( Popcorn.registry.length, 2, "Popcorn.registry.length is 2");
+  
+  equals( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is updated and has 2 entries");
+  equals( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is updated and has 2 entries");
+  
+});
+
+
 
 
 test("Protected Names", function () {
@@ -622,7 +700,333 @@ test("Protected Names", function () {
   });
 });
 
+module("Popcorn TrackEvents");
+test("Functions", function () {
 
+  //  TODO: break this into sep. units per function
+  expect(19);
+  
+  var popped = Popcorn("#video"), ffTrackId, rwTrackId, rw2TrackId, rw3TrackId, historyRef, trackEvents;
+  
+
+  Popcorn.plugin("ff", function () {
+    return {
+      start: function () {},
+      end: function () {}
+    };
+  });
+
+  popped.ff({
+    start: 3, 
+    end: 4
+  });
+  
+  
+  ffTrackId = popped.getLastTrackEventId();
+  
+  
+
+  Popcorn.plugin("rw", function () {
+    return {
+      start: function () {},
+      end: function () {}
+    };
+  });
+
+  popped.rw({
+    start: 1, 
+    end: 2
+  });  
+  
+  
+  rwTrackId = popped.getLastTrackEventId();
+  
+  historyRef = popped.data.history;
+  
+  
+  equals( historyRef.length, 2, "2 TrackEvents in history index");
+  
+  equals( popped.data.trackEvents.byStart.length, 4, "4 TrackEvents in popped.data.trackEvents.byStart ");
+  equals( popped.data.trackEvents.byEnd.length, 4, "4 TrackEvents in popped.data.trackEvents.byEnd ");
+  
+  
+  trackEvents = popped.getTrackEvents();
+  
+  equals( trackEvents.length, 2, "2 user created trackEvents returned by popped.getTrackEvents()" )
+  
+
+  ok( ffTrackId !== rwTrackId, "Track Events have different ids" );
+  
+  popped.removeTrackEvent( rwTrackId );
+  
+  equals( popped.data.history.length, 1, "1 TrackEvent in history index - after popped.removeTrackEvent( rwTrackId ); ");
+  equals( popped.data.trackEvents.byStart.length, 3, "3 TrackEvents in popped.data.trackEvents.byStart ");
+  equals( popped.data.trackEvents.byEnd.length, 3, "3 TrackEvents in popped.data.trackEvents.byEnd ");  
+  
+  trackEvents = popped.getTrackEvents();
+  
+  equals( trackEvents.length, 1, "1 user created trackEvents returned by popped.getTrackEvents()" )
+
+  popped.rw({
+    start: 1, 
+    end: 2
+  });  
+  
+  
+  rw2TrackId = popped.getLastTrackEventId();
+  
+  equals( popped.data.history.length, 2, "2 TrackEvents in history index - after new track added ");
+  
+  
+  ok( rw2TrackId !== rwTrackId, "rw2TrackId !== rwTrackId" );
+  
+  equals( popped.data.trackEvents.byStart.length, 4, "4 TrackEvents in popped.data.trackEvents.byStart  - after new track added");
+  equals( popped.data.trackEvents.byEnd.length, 4, "4 TrackEvents in popped.data.trackEvents.byEnd  - after new track added");  
+  
+  
+  trackEvents = popped.getTrackEvents();
+  
+  equals( trackEvents.length, 2, "2 user created trackEvents returned by popped.getTrackEvents()" )
+  
+  
+  popped.rw({
+    id: "my-track-id", 
+    start: 3, 
+    end: 10
+  });  
+  
+  rw3TrackId = popped.getLastTrackEventId();
+  
+  equals( popped.data.history.length, 3, "3 TrackEvents in history index - after new track added ");
+  equals( popped.data.trackEvents.byStart.length, 5, "5 TrackEvents in popped.data.trackEvents.byStart  - after new track added");
+  equals( popped.data.trackEvents.byEnd.length, 5, "5 TrackEvents in popped.data.trackEvents.byEnd  - after new track added");  
+  
+  equals( rw3TrackId, "my-track-id", "TrackEvent has user defined id");
+  
+  trackEvents = popped.getTrackEvents();
+  
+  equals( trackEvents.length, 3, "3 user created trackEvents returned by popped.getTrackEvents()" )  
+  
+
+  
+  
+});
+
+test("Index Integrity", function () {
+  
+  
+  
+  var trackLen, hasrun = false, lastrun = false;
+  
+  
+  Popcorn.plugin("ff", function () {
+    return {
+      start: function () {
+        var div = document.createElement('div');
+        div.id = "index-test";
+        div.innerHTML = "foo";
+        
+        document.body.appendChild(div);
+      },
+      end: function () {
+        document.getElementById('index-test').parentNode.removeChild(document.getElementById('index-test'));
+      }
+    };
+  });
+  
+  
+  var p = Popcorn("#video");
+  
+  p.ff({
+    id: "removeable-track-event",
+    start: 40, 
+    end: 41
+  });
+  
+  p.currentTime(40).pause();  
+  
+  stop( 10000 );
+  
+  equals(p.data.trackEvents.endIndex, 0, "p.data.trackEvents.endIndex is 0");
+  equals(p.data.trackEvents.startIndex, 0, "p.data.trackEvents.startIndex is 0");
+  equals(p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart.length is 3 - before play" );
+  
+  
+  
+  
+  p.listen("timeupdate", function () {
+  
+    if ( p.roundTime() > 40 && p.roundTime() < 42 && !hasrun ) {
+    }
+    
+    if ( p.roundTime() > 40 && p.roundTime() < 42 && hasrun && !lastrun ) {
+      
+      lastrun = true;
+      
+      equals( document.getElementById('index-test'), null, "document.getElementById('index-test') is null on second run - after removeTrackEvent" );
+      
+      start();
+    }
+    
+    if ( p.roundTime() >= 42 && !hasrun ) {
+      
+      hasrun  = true;
+      p.pause();
+      
+      equals(p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart.length is 3 - after play, before removeTrackEvent" );
+      equals(p.data.trackEvents.startIndex, 2, "p.data.trackEvents.startIndex is 2 - after play, before removeTrackEvent");      
+      equals(p.data.trackEvents.endIndex, 2, "p.data.trackEvents.endIndex is 2 - after play, before removeTrackEvent");
+      
+
+      
+      p.removeTrackEvent("removeable-track-event");
+      
+      equals(p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart.length is 2 - after removeTrackEvent" );
+      equals(p.data.trackEvents.startIndex, 1, "p.data.trackEvents.startIndex is 1 - after removeTrackEvent");
+      equals(p.data.trackEvents.endIndex, 1, "p.data.trackEvents.endIndex is 1 - after removeTrackEvent");
+      
+      
+      
+      p.currentTime(40).play();
+      
+      
+      
+    }
+  });
+  
+  p.play();
+
+  
+});
+
+
+
+
+module("Popcorn XHR");
+test("Basic", function () {
+  
+  expect(2);
+  
+  equals( typeof Popcorn.xhr, "function" , "Popcorn.xhr is a provided utility function");
+  equals( typeof Popcorn.xhr.httpData, "function" , "Popcorn.xhr.httpData is a provided utility function");
+  
+
+});
+
+test("Text Response", function () {
+
+  var expects = 2, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop( 10000 );
+
+  Popcorn.xhr({
+    url: 'data/test.txt', 
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      equals( data.text, "This is a text test", "test.txt returns the string 'This is a text test'");
+      plus();
+      
+    }
+  });
+});
+
+test("JSON Response", function () {
+
+  var expects = 2, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop( 10000 );
+
+
+  var testObj = { "data": {"lang": "en", "length": 25} };  
+
+  Popcorn.xhr({
+    url: 'data/test.js', 
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      
+      ok( QUnit.equiv(data.json, testObj) , "data.json returns an object of data");
+      plus();
+      
+    }
+  });
+
+});
+
+test("XML Response", function () {
+
+  var expects = 2, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop( 10000 );
+
+
+  Popcorn.xhr({
+    url: 'data/test.xml', 
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      var parser = new DOMParser(), 
+      xml = parser.parseFromString('<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml");
+      
+      
+      equals( data.xml.toString(), xml.toString(), "data.xml returns a document of xml");
+      plus();
+      
+    }
+  });
+
+});
+
+
+
+module("Popcorn Test Runner End");
+test("Last Check", function () {
+  
+  //   ALWAYS RUN LAST
+  
+  expect(1)
+  try {  
+    
+    equals( Setup.getGlobalSize(), Setup.globalSize + 1 , "Popcorn API did not leak");
+    plus();
+    
+  } catch (e) {};
+  
+});
 
 /*
 
@@ -648,7 +1052,7 @@ test("Events Extended", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop();  
+  stop( 10000 );  
   
   
   Popcorn.plugin("extendedEvents", (function () {
