@@ -608,7 +608,7 @@
         //  the events commence
         
         if ( "_setup" in setup && typeof setup._setup === "function" ) {
-          setup._setup.call(self, options);
+          setup._setup.call(this, options);
         }
         
 
