@@ -1,4 +1,4 @@
-// PLUGIN: FLICKR
+// PLUGIN: TWITTER
 
 (function (Popcorn) {
 
