@@ -28,6 +28,23 @@
    */
   Popcorn.plugin( "twitter" , {
 
+      manifest: {
+        about:{
+          name:    "Popcorn Twitter Plugin",
+          version: "0.1",
+          author:  "Scott Downe",
+          website: "http://scottdowne.wordpress.com/"
+        },
+        options:{
+          start   : {elem:'input', type:'number', label:'In'},
+          end     : {elem:'input', type:'number', label:'Out'},
+          src     : {elem:'input', type:'text',   label:'Source'},
+          target  : {elem:'input', type:'text',   label:'HTML Element id'},
+          height  : {elem:'input', type:'number', label:'Style'},
+          width   : {elem:'input', type:'number', label:'Style'}
+        }
+      },
+
       _setup: function( options ) {
 
         // setup widget div that is unique per track
@@ -37,11 +54,11 @@
         document.getElementById( options.target ).appendChild( options.container ); // add the widget's div to the target div
 
         // setup info for the widget
-        var src  = options.src || "",
-            width = options.width || 250,
+        var src     = options.src || "",
+            width   = options.width || 250,
             height  = options.height || 200,
             profile = /^@/.test( src ),
-            hash = /^#/.test( src );
+            hash    = /^#/.test( src );
 
         // create widget
         if ( profile ) {
