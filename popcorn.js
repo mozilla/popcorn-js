@@ -178,8 +178,9 @@
     error: function( msg ) {
       throw msg;
     },
-    guid: function() {
-      return +new Date() + Math.floor(Math.random()*11);
+    guid: function( prefix ) {
+      Popcorn.guid.counter++;
+      return  ( prefix ? prefix : '' ) + ( +new Date() + Popcorn.guid.counter );
     }, 
     sizeOf: function ( obj ) {
       var size = 0;
@@ -194,6 +195,9 @@
     }, 
     nop: function () {}
   });    
+  
+  //  Memoization property
+  Popcorn.guid.counter  = 1;
   
   //  Simple Factory pattern to implement getters, setters and controllers 
   //  as methods of the returned Popcorn instance. The immediately invoked function 
@@ -445,7 +449,7 @@
   
     if ( track.natives ) {
       // supports user defined track event id
-      track._id = !track.id ? track.natives.type + Popcorn.guid() : track.id;
+      track._id = !track.id ? Popcorn.guid( track.natives.type ) : track.id;
 
       //  Push track event ids into the history
       obj.data.history.push( track._id );      
