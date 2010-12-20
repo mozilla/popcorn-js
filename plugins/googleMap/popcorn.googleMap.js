@@ -6,15 +6,16 @@
    * googleMap popcorn plug-in 
    * Adds a map to the target div centered on the location specified 
    * by the user
-   * Options parameter will need a start, end, target, lat and long, zoom
-   * Start is the time that you want this plug-in to execute
-   * End is the time that you want this plug-in to stop executing 
-   * Target is the id of the document element that the text needs to be 
-   * Type either: HYBRID (default), ROADMAP, SATELLITE, TERRAIN
+   * Options parameter will need a start, end, target, type, lat and long, zoom
+   * -Start is the time that you want this plug-in to execute
+   * -End is the time that you want this plug-in to stop executing 
+   * -Target is the id of the DOM element that you want the map to 
+   * appear in. This element must be in the DOM
+   * -Type [optional] either: HYBRID (default), ROADMAP, SATELLITE, TERRAIN
    * attached to, this target element must exist on the DOM
-   * Zoom [optional] defaults to 0
-   * Src [optional]
-   * MapInfo [optional]
+   * -Zoom [optional] defaults to 0
+   * -Lat and Long: the coordinates of the map
+   * 
    * Note: 
    * @param {Object} options
    * 
@@ -56,20 +57,36 @@
   // IMPORTANT ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   Popcorn.plugin( "googleMap" , (function(){
       
-    var location, map, link,opt,target, newdiv;
+    var newdiv, i = 1;
     
     return {
+      manifest: {
+        about:{
+          name: "Popcorn Google Map Plugin",
+          version: "0.1",
+          author: "@annasob",
+          website: "annasob.wordpress.com"
+        },
+        options:{
+          start   : {elem:'input', type:'text', label:'In'},
+          end     : {elem:'input', type:'text', label:'Out'},
+          text    : {elem:'input', type:'text', label:'Text'}
+        }
+      },
       _setup : function( options ) {
         
-        target  = document.getElementById(options.target),
+        
+        
+       
+        options.target  = document.getElementById(options.target),
         // create a new div this way anything in the target div
         // will stay intack 
-        newdiv              = document.createElement('div');
-        newdiv.id           = "actualmap";
-        newdiv.style.width  = "100%";
-        newdiv.style.height = "100%";
-        
-        target.appendChild(newdiv);
+        options._newdiv              = document.createElement('div');
+        options._newdiv.id           = "actualmap"+i;
+        options._newdiv.style.width  = "100%";
+        options._newdiv.style.height = "100%";
+        i++;
+        options.target.appendChild(options._newdiv);
       },
       /**
        * @member webpage 
@@ -78,11 +95,32 @@
        * options variable
        */
       start: function(event, options){
-        location = new google.maps.LatLng(options.lat, options.long);
-        map = new google.maps.Map(newdiv, {mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID });
-        
-        map.setCenter(location);
-        map.setZoom(options.zoom || 0);
+        var that = this,
+            renderMap = function(){
+            var location = new google.maps.LatLng(options.lat, options.long);
+            options._map = new google.maps.Map(options._newdiv, {mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID });
+            
+            options._map.setCenter(location);
+            options._map.setZoom(options.zoom || 0);
+          }
+        // If there is no lat/long, and there is location, geocode the location
+        if ( (!options.lat || !options.long || options.lat == 'null' || options.long == 'null') && options.location) {
+          var location ='boston',
+              geocoder = new google.maps.Geocoder(),
+              lat,
+              long;
+
+          geocoder.geocode({
+              address: options.location
+            }, function(results, status) {
+               options.lat = results[0].geometry.location.va;
+               options.long = results[0].geometry.location.wa;
+               renderMap.call(that);  
+          })
+        } else {
+          renderMap();
+        }
+      
       },
       /**
        * @member webpage 
@@ -92,7 +130,7 @@
        */
       end: function(event, options){
         // remove the map from the target div
-        target.removeChild(map.getDiv());
+        options.target.removeChild(options._map.getDiv());
       }
       
     };

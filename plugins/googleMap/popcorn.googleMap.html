@@ -24,9 +24,8 @@
         end: 50, // seconds
         type: 'SATELLITE',
         target: 'map2',
-        lat: -23.5489,
-        long: -46.6388,
-        zoom: 10
+        location:'boston',
+        zoom: 15
       } );
     }, false);
   </script>
@@ -34,10 +33,10 @@
 <body>
   <h1 id="qunit-header">Popcorn google Map Plug-in Demo</h1>
   <p> A Google Map  displaying Toronto, Ontario will appear at 0 seconds and disappear at 10 seconds.</p>
-  <p> A Google Map  displaying Toronto, Ontario will appear at 15 seconds and disappear at 25 seconds.</p>
+  <p> A Google Map  displaying Sao Paulo will appear at 15 seconds and disappear at 50 seconds.</p>
   <div>
     <video id='video' 
-      controls preload='none' 
+      controls 
       width= '250px'
       poster="../../test/poster.png"> 
 
