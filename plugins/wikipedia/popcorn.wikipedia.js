@@ -69,21 +69,28 @@ var wikiCallback;
           _text = data.parse.text["*"].substr(data.parse.text["*"].indexOf('<p>'));
           _text = _text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
           options._desc.innerHTML = _text.substr(0,  options.numOfWords ) + " ...";
+          
+          options._fired = true;
         };
         
         // get the wiki article on a separate thread
         // call the wikiCallback function above once the script is loaded
-        setTimeout(function() {
-          getJson("http://"+options.lang+".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( options.title || options.src.slice(options.src.lastIndexOf("/")+1)) + "&format=json&callback=wikiCallback"+ _guid);
-        }, 500);
+        //setTimeout(function() {
+         // getJson("http://"+options.lang+".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( options.title || options.src.slice(options.src.lastIndexOf("/")+1)) + "&format=json&callback=wikiCallback"+ _guid);
+        //}, 500);
         
         // add the script to the DOM
-        var getJson  = function(url) {
+        /*var getJson  = function(url) {
           var head   = document.getElementsByTagName("head")[0];
           var script = document.createElement("script");
           script.src = url;
           head.insertBefore( script, head.firstChild );
-        };        
+        };  */
+          var head   = document.getElementsByTagName("head")[0];
+          var script = document.createElement("script");
+          script.src = "http://"+options.lang+".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( options.title || options.src.slice(options.src.lastIndexOf("/")+1)) + "&format=json&callback=wikiCallback"+ _guid;
+
+          head.insertBefore( script, head.firstChild );        
       },
       /**
        * @member wikipedia 
@@ -93,11 +100,23 @@ var wikiCallback;
        */
       start: function(event, options){
         // dont do anything if the information didn't come back from wiki
-        if (options._link && options._desc) {
-          options.target.appendChild(options._link);
-          options.target.appendChild(options._desc);
-          options._added = true;
-        }
+        var isReady = function () {
+          
+          if ( !options._fired ) {
+            setTimeout(function () {
+              isReady();
+            }, 13);
+          } else {
+        
+            if (options._link && options._desc) {
+              options.target.appendChild(options._link);
+              options.target.appendChild(options._desc);
+              options._added = true;
+            }
+          }
+        };
+        
+        isReady();
       },
       /**
        * @member wikipedia 
@@ -106,6 +125,8 @@ var wikiCallback;
        * options variable
        */
       end: function(event, options){
+        // ensure that the data was actually added to the 
+        // DOM before removal
         if (options._added) {
           options.target.removeChild(options._link);
           options.target.removeChild(options._desc);
