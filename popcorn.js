@@ -11,9 +11,14 @@
 
   //  ID string matching
   rIdExp  = /^(#([\w\-\_\.]+))$/, 
+  
+  // ready fn cache
+  readyStack = [], 
+  readyBound = false, 
+  
 
   //  Declare a pseudo-private constructor
-  //  This constructor returns the instance object.    
+  //  Returns an instance object.    
   Popcorn = function( entity ) {
     //  Return new Popcorn object
     return new Popcorn.p.init( entity );
@@ -27,19 +32,47 @@
 
       var elem, matches;
       
+      //  Supports Popcorn(function () { /../ }) 
+      //  Originally proposed by Daniel Brooks
       
       if ( typeof entity === "function" ) {
         
-        document.addEventListener( "DOMContentLoaded", entity, false);
+        readyStack.push( entity );
+        
+        //  This process should happen once per page load
+        if ( !readyBound ) {
+
+          //  set readyBound flag
+          readyBound = true;
+          
+          var DOMContentLoaded  = function () {
+            
+            //  remove this listener
+            document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
+            
+            //  Execute all ready function in the stack
+            for ( var i = 0; i < readyStack.length; i++ ) {
+            
+              readyStack[i].call( document, Popcorn );
+            
+            }
+            //  GC readyStack
+            readyStack = null;  
+          };
+          
+          document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false);
+        }
         
         return;  
       }
+ 
       
       matches = rIdExp.exec( entity );
       
       if ( matches.length && matches[2]  ) {
         elem = document.getElementById(matches[2]);
       }
+      
       
       this.video = elem ? elem : null;
       
@@ -207,6 +240,7 @@
       // todo: play, pause, mute should toggle
       var methods = "load play pause currentTime playbackRate mute volume duration", 
           ret = {};
+      
       
       //  Build methods, store in object that is returned and passed to extend
       Popcorn.forEach( methods.split(/\s+/g), function( name ) {
@@ -728,7 +762,7 @@
   
   
   
-
-  global.Popcorn = Popcorn;
+  //  Exposes Popcorn and a shorthand to global context
+  global.Popcorn = global.$P = Popcorn;
   
 })(window, document);
