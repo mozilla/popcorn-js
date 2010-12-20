@@ -19,7 +19,7 @@
         .twitter({
           start:          5,                // seconds, mandatory
           end:            15,               // seconds, mandatory
-          source:         'from:stevesong', // mandatory
+          source:         '@stevesong', // mandatory
           title:          'title',          // optional
           subject:        'subject',        // optional
           height:         200,              // optional
@@ -39,7 +39,7 @@
         document.getElementById( options.target ).appendChild( options.container ); // add the widget's div to the target div
 
         // setup info for the widget
-        var source  = options.source || "",
+        var source  = options.source.replace(/^@/, "from:") || "",
             title   = options.title || null,
             subject   = options.subject || null,
             width = options.width || 250,
