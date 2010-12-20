@@ -17,10 +17,10 @@
         target: 'wikidiv'
       } )
       .wikipedia({
-        start: 12, // seconds
+        start: 7, // seconds
         end: 20, // seconds
         src: 'http://en.wikipedia.org/wiki/S%C3%A3o_Paulo',
-        target: 'wikidiv2'
+        target: 'wikidiv'
       } );
 
     }, false);
@@ -30,7 +30,7 @@
 <body>
   <h1 id="qunit-header">Popcorn WebPage Plug-in Demo</h1>
   <p> A Wiki article about Cape Town will appear at 5 seconds and disappear at 10 seconds.</p>
-  <p> A Wiki article about Sao Paolo will appear at 12 seconds and disappear at 20 seconds.</p>
+  <p> A Wiki article about Sao Paolo will appear at 7 seconds and disappear at 20 seconds.</p>
   <div>
     <video id='video' 
       controls 
@@ -49,10 +49,6 @@
 
     </video> 
   </div>
-  <div id="wikidiv" width="50%" height="50%">
-    
-
-  </div>
-  <div id="wikidiv2" width="50%" height="50%"></div>
+  <div id="wikidiv"> </div>
 </body>
 </html>

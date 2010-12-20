@@ -7,16 +7,17 @@ var wikiCallback;
   
   /**
    * Wikipedia popcorn plug-in 
-   * Displays a wikipedia aricle in the target specified by the user
+   * Displays a wikipedia aricle in the target specified by the user by using
+   * new DOM element instead overwriting them
    * Options parameter will need a start, end, target, lang, src, and numOfWords.
-   * Start is the time that you want this plug-in to execute
-   * End is the time that you want this plug-in to stop executing 
-   * Target is the id of the document element that the iframe needs to be attached to, 
+   * -Start is the time that you want this plug-in to execute
+   * -End is the time that you want this plug-in to stop executing 
+   * -Target is the id of the document element that the iframe needs to be attached to, 
    * this target element must exist on the DOM
-   * Lang (optional, defaults to english)is the language in which the article is in.
-   * Src is the url of the article 
-   * Title (optional) is the title of the article
-   * NumOfWords (optional, defaults to 200) is  the number of words you want displaid.  
+   * -Lang (optional, defaults to english) is the language in which the article is in.
+   * -Src is the url of the article 
+   * -Title (optional) is the title of the article
+   * -NumOfWords (optional, defaults to 200) is  the number of words you want displaid.  
    *
    * @param {Object} options
    * 
@@ -30,48 +31,59 @@ var wikiCallback;
         } )
    *
    */
-   
-  
   Popcorn.plugin( "wikipedia" , (function(){
       
-    var temp, length, link, p, desc, text;
-    
-    
     return {
       /**
        * @member wikipedia 
        * The setup function will get all of the needed 
-       * items in place before the start function is called
+       * items in place before the start function is called. 
+       * This includes getting data from wikipedia, if the data
+       * is not received and processed before start is called start 
+       * will not do anything
        */
       _setup : function( options ) {
-        // if no language was specified default to english
-        if (typeof options.lang === 'undefined') { options.lang ="en"; }
-        temp    = document.getElementById( options.target );
-        length  = options.numOfWords || 200;
+        // declare needed variables
+        // get a guid to use for the global wikicallback function
+        var  _text, _guid = Popcorn.guid(); 
         
-        //get the wiki article on a separate thread
+        // if the user didn't specify a language default to english
+        if (typeof options.lang === 'undefined') { options.lang ="en"; }
+        // if the user didn't specify number of words to use default to 200 
+        options.numOfWords  = options.numOfWords || 200;
+        // replace the user specified target with the actual DOM element
+        options.target      = document.getElementById( options.target );
+        
+        // wiki global callback function with a unique id
+        // function gets the needed information from wikipedia
+        // and stores it by appending values to the options object
+        window["wikiCallback"+ _guid]  = function (data) { 
+          options._link = document.createElement('a');
+          options._link.setAttribute('href', options.src);
+          options._link.setAttribute('target', '_blank');
+          // add the title of the article to the link
+          options._link.innerHTML = data.parse.displaytitle;
+          // get the content of the wiki article
+          options._desc = document.createElement('p');
+          // get the article text and remove any special characters
+          _text = data.parse.text["*"].substr(data.parse.text["*"].indexOf('<p>'));
+          _text = _text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
+          options._desc.innerHTML = _text.substr(0,  options.numOfWords ) + " ...";
+        };
+        
+        // get the wiki article on a separate thread
+        // call the wikiCallback function above once the script is loaded
         setTimeout(function() {
-          getJson("http://"+options.lang+".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( options.title || options.src.slice(options.src.lastIndexOf("/")+1)) + "&format=json&callback=wikiCallback");
-        }, 1000);
+          getJson("http://"+options.lang+".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( options.title || options.src.slice(options.src.lastIndexOf("/")+1)) + "&format=json&callback=wikiCallback"+ _guid);
+        }, 500);
+        
+        // add the script to the DOM
         var getJson  = function(url) {
           var head   = document.getElementsByTagName("head")[0];
           var script = document.createElement("script");
           script.src = url;
           head.insertBefore( script, head.firstChild );
-        };
-        wikiCallback     = function (data) { 
-          wikidatastring = data; 
-          link = document.createElement('a');
-          link.setAttribute('href', options.src);
-          link.setAttribute('target', '_blank');
-          // add the title of the article to the link
-          link.innerHTML = wikidatastring.parse.displaytitle;
-          // get the content of the wiki article
-          desc = document.createElement('p');
-          text = wikidatastring.parse.text["*"].substr(wikidatastring.parse.text["*"].indexOf('<p>'));
-          text = text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
-          desc.innerHTML = text.substr(0,  length ) + " ...";
-        };
+        };        
       },
       /**
        * @member wikipedia 
@@ -80,8 +92,12 @@ var wikiCallback;
        * options variable
        */
       start: function(event, options){
-        temp.appendChild(link);
-        temp.appendChild(desc);
+        // dont do anything if the information didn't come back from wiki
+        if (options._link && options._desc) {
+          options.target.appendChild(options._link);
+          options.target.appendChild(options._desc);
+          options._added = true;
+        }
       },
       /**
        * @member wikipedia 
@@ -90,8 +106,10 @@ var wikiCallback;
        * options variable
        */
       end: function(event, options){
-        temp.removeChild(link);
-        temp.removeChild(desc);
+        if (options._added) {
+          options.target.removeChild(options._link);
+          options.target.removeChild(options._desc);
+        }
       }
       
     };
