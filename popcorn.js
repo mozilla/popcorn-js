@@ -26,7 +26,15 @@
     init: function( entity ) {
 
       var elem, matches;
-
+      
+      
+      if ( typeof entity === "function" ) {
+        
+        document.addEventListener( "DOMContentLoaded", entity, false);
+        
+        return;  
+      }
+      
       matches = rIdExp.exec( entity );
       
       if ( matches.length && matches[2]  ) {
@@ -713,6 +721,8 @@
     }; 
     return data;  
   };
+  
+  
   
 
   global.Popcorn = Popcorn;
