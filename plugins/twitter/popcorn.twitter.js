@@ -8,7 +8,7 @@
    * Options parameter will need a start, end, target and source.
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing
-   * Source is the hash tag or twitter user to get tweets from
+   * Src is the hash tag or twitter user to get tweets from
    * Target is the id of the document element that the images are
    *  appended to, this target element must exist on the DOM
    * 
@@ -19,9 +19,7 @@
         .twitter({
           start:          5,                // seconds, mandatory
           end:            15,               // seconds, mandatory
-          source:         '@stevesong', // mandatory
-          title:          'title',          // optional
-          subject:        'subject',        // optional
+          src:            '@stevesong',     // mandatory, also accepts hash tags
           height:         200,              // optional
           width:          250,              // optional
           target:         'twitterdiv'      // mandatory
@@ -39,48 +37,86 @@
         document.getElementById( options.target ).appendChild( options.container ); // add the widget's div to the target div
 
         // setup info for the widget
-        var source  = options.source.replace(/^@/, "from:") || "",
-            title   = options.title || null,
-            subject   = options.subject || null,
+        var src  = options.src || "",
             width = options.width || 250,
-            height  = options.height || 200;
+            height  = options.height || 200,
+            profile = /^@/.test( src ),
+            hash = /^#/.test( src );
 
         // create widget
-        var widget = new TWTR.Widget({
-          version: 2,
-          type: 'search',
-          id: options.container.getAttribute('id'),  // use this id to connect it to the div
-          search: source,
-          title: title,
-          subject: subject,
-          rpp: 30,
-          width: width,
-          height: height,
-          interval: 6000,
+        if ( profile ) {
 
-          theme: {
-            shell: {
-              background: '#ffffff',
-              color: '#000000'
+          var widget = new TWTR.Widget({
+            version: 2,
+            type: 'profile',
+            id: options.container.getAttribute( 'id' ),  // use this id to connect it to the div
+            rpp: 30,
+            width: width,
+            height: height,
+            interval: 6000,
+
+            theme: {
+              shell: {
+                background: '#ffffff',
+                color: '#000000'
+              },
+              tweets: {
+                background: '#ffffff',
+                color: '#444444',
+                links: '#1985b5'
+              }
             },
-            tweets: {
-              background: '#ffffff',
-              color: '#444444',
-              links: '#1985b5'
-            }
-          },
 
-          features: {
-            loop: true,
-            timestamp: true,
-            avatars: true,
-            hashtags: true,
-            toptweets: true,
-            live: true,
-            scrollbar: false,
-            behavior: 'default'
-          }
-        }).render().start();
+            features: {
+              loop: true,
+              timestamp: true,
+              avatars: true,
+              hashtags: true,
+              toptweets: true,
+              live: true,
+              scrollbar: false,
+              behavior: 'default'
+            }
+          }).render().setUser( src.replace( /^@/, "" ) ).start();
+
+        } else if ( hash ) {    
+      
+          var widget = new TWTR.Widget({
+            version: 2,
+            type: 'search',
+            id: options.container.getAttribute( 'id' ),  // use this id to connect it to the div
+            search: src,
+            subject: src,
+            rpp: 30,
+            width: width,
+            height: height,
+            interval: 6000,
+
+            theme: {
+              shell: {
+                background: '#ffffff',
+                color: '#000000'
+              },
+              tweets: {
+                background: '#ffffff',
+                color: '#444444',
+                links: '#1985b5'
+              }
+            },
+
+            features: {
+              loop: true,
+              timestamp: true,
+              avatars: true,
+              hashtags: true,
+              toptweets: true,
+              live: true,
+              scrollbar: false,
+              behavior: 'default'
+            }
+          }).render().start();
+
+        }
       },
 
       /**
