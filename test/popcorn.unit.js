@@ -415,6 +415,45 @@ test("UI/Mouse", function () {
 });
 
 module("Popcorn Plugin")
+test("Manifest", function () {
+
+  Popcorn.plugin( "footnote" , (function(){
+      
+    return {
+      manifest: {
+        about:{
+          name: "Popcorn Manifest Plugin",
+          version: "0.0",
+          author: "Rick Waldron",
+          website: ""
+        },
+        options: {
+          start   : { elem:'input', type:'text', label:'In' },
+          end     : { elem:'input', type:'text', label:'Out' },
+          text    : { elem:'input', type:'text', label:'Manifest Text' }, 
+          target  : 'text-container'
+        }
+      },    
+      start: function(event, options){
+      },
+
+      end: function(event, options){
+
+      }
+      
+    };
+    
+  })());
+  
+  
+  expect(1);
+  
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 1, "One manifest stored" );
+  
+  // add more tests
+  
+  Popcorn("#video").removePlugin("footnote");
+});
 
 test("Update Timer", function () {
 
