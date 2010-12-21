@@ -1,19 +1,16 @@
 test("Popcorn Flickr Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 6, 
+      expects = 5, 
       count = 0,
       interval,
       interval2,
-      interval3,
       flickrdiv = document.getElementById('flickrdiv');
-
-  var images = document.getElementsByTagName('img');
   
-  expect(expects);
+  expect( expects );
   
   function plus() {
-    if ( ++count===expects) {
+    if ( ++count === expects) {
       start();
     }
   }
@@ -27,42 +24,31 @@ test("Popcorn Flickr Plugin", function () {
   plus();
   
   popped.flickr({
-    start: 5, // seconds
-    end: 15, // seconds
+    start: 1, // seconds
+    end: 3, // seconds
     userid: '35034346917@N01',
     numberofimages: '1',
     target: 'flickrdiv'
   } );
 
-  console.log(images);
-
-  /*interval = setInterval( function() {
-    if( popped.currentTime() > 5 && popped.currentTime() <= 15 ) {
-      console.log(images[0].style);
-      ok( images[0].style.display === "inline" && images[1].style.display === "none", "first image is displayed, second is not" );
+  interval = setInterval( function() {
+    if( popped.currentTime() > 1 && popped.currentTime() < 3 ) {
+      ok( /display: inline;/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
+      plus();
+      ok( /img/.test( flickrdiv.innerHTML ), "An image exists" );
       plus();
       clearInterval( interval );
     }
-  }, 5000);
+  }, 500);
   
   interval2 = setInterval( function() {
-    if( popped.currentTime() > 15 && popped.currentTime() < 35  ) {
-      console.log(images);
-      ok( images[0].style.display === "none" && images[1].style.display === "none", "neither image is displayed" );
+    if( popped.currentTime() > 3 ) {
+      ok( /display: none;/.test( flickrdiv.innerHTML ), "Div contents are hidden again" );
       plus();
       clearInterval( interval2 );
     }
-  }, 5000);
+  }, 500);
   
-  interval3 = setInterval( function() {
-    if( popped.currentTime() > 35 && popped.currentTime() < 45 ) {
-      console.log(images);
-      ok( images[0].style.display === "none" && images[1].style.display === "inline", "second image is displayed, first is not" );
-      plus();
-      clearInterval( interval3 );
-    }
-  }, 5000);*/
-
   popped.play();
   
 });

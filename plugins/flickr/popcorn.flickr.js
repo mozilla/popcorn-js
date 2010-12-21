@@ -74,6 +74,7 @@
               image.setAttribute( 'width', width );
               image.setAttribute( 'style', 'border:' + border + ';padding:' + padding );
               link.appendChild( image );
+              
               options.container.appendChild( link );
             } else {
               return false;
