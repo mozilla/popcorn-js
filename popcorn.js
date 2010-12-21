@@ -724,6 +724,82 @@
     return plugin;
   };
   
+  // stores parsers keyed on filetype
+  Popcorn.parsers = {};
+
+  // An interface for extending Popcorn
+  // with parser functionality
+  Popcorn.parser = function( name, type, definition ) {
+
+    if ( Popcorn.protect.natives.indexOf( name.toLowerCase() ) >= 0 ) {
+      Popcorn.error("'" + name + "' is a protected function name");
+      return;
+    }
+
+    if ( typeof definition !== "function" ) {
+      return;
+    }
+
+    // Provides some sugar, but ultimately extends
+    // the definition into Popcorn.p
+    
+    var natives = Popcorn.events.all,
+        parseFn,
+        parser = {};
+    
+    parseFn = function ( filename ) {
+        
+      if ( !filename ) {
+        return this;
+      }
+
+      var that = this;
+
+      Popcorn.xhr({
+        url: filename,
+        success: function( data ) {
+
+          var tracksObject = definition( data );
+
+          // creating tracks out of parsed object
+          for ( var key in tracksObject ) {
+            if ( tracksObject.hasOwnProperty(key) ) {
+
+              // an array of tracks of all one type
+              if ( tracksObject[key].constructor === Array ) {
+
+                for (var i = 0, tol = tracksObject[key].length; i < tol; i++) {
+                  if ( typeof that[key] === "function") {
+                    that[key]( tracksObject[key][i] );
+                  }
+                }
+
+              // one single track
+              } else if ( typeof tracksObject[key] === "object" ) {
+                if ( typeof that[key] === "function") {
+                  that[key]( tracksObject[key] );
+                }
+              }
+            }
+          }
+        }
+      });
+
+      return this;
+    };
+
+    // Assign new named definition
+    parser[ name ] = parseFn;
+    
+    // Extend Popcorn.p with new named definition
+    Popcorn.extend( Popcorn.p, parser );
+    
+    // keys the function name by filetype extension
+    Popcorn.parsers[type] = name;
+
+    return parser;
+  };
+  
   
   var setup = {
     url: '',

@@ -1063,6 +1063,85 @@ test("XML Response", function () {
 
 });
 
+module("Popcorn Parser");
+
+test("Parsing Functions", function () {
+
+  var expects = 3,
+      count = 0,
+      popperly = Popcorn("#video");
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop( 10000 );
+
+  ok(typeof Popcorn.parser === "function", "Popcorn.parser is a function");
+  plus();
+
+  Popcorn.parser( "parseJSON" , "json", function( data ){
+    return data.json;
+  });
+
+  ok(typeof popperly.parseJSON === "function", "Popcorn.parser created a parserJSON function");
+  plus();
+
+  ok(typeof popperly.parseJSON().parseJSON("data/test.js").parseJSON === "function" , "parseJSON function is chainable");
+  plus();
+
+});
+
+test("Parsing Integrity", function () {
+
+  var expects = 2,
+      count = 0,
+      timeOut = 0,
+      interval,
+      poppercore = Popcorn( "#video" );
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+      // clean up added events after tests
+      clearInterval( interval );
+      poppercore.removePlugin( "parserTest" );
+    }
+  }
+  
+  expect(expects);
+  
+  stop( 10000 );
+
+  Popcorn.parser( "parseJSON2" , "json", function( data ){
+    return data.json;
+  });
+
+  Popcorn.plugin("parserTest", {
+    
+    start: function () {
+      ok(true, "parserTest started");
+      plus();
+    },
+    end: function () {
+      ok(true, "parserTest ended");
+      plus();
+    }
+  });
+
+  poppercore.parseJSON2("data/parserData.json");
+
+  // interval used to wait for data to be parsed
+  interval = setInterval( function() {
+    poppercore.currentTime(5).play().currentTime(6);
+  }, 2000);
+
+});
+
 
 
 module("Popcorn Test Runner End");
