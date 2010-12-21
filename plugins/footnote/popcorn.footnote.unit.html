@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn API</title>
+  <link rel="stylesheet" href="../../test/qunit/qunit.css" type="text/css" media="screen">
+  <script src="../../test/qunit/qunit.js"></script>
+  <!-- 
+    do not move - this must be called immediately prior to 
+    popcorn-api-draft.js
+  -->
+  
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.footnote.js"></script>
+
+  <script src="popcorn.footnote.unit.js"></script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Footnote Plugin</h1>
+  <h2 id="qunit-banner"></h2>
+  <div id="qunit-testrunner-toolbar"></div>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+  <div id="qunit-fixture">  </div>
+  
+  <video id='video' 
+    controls preload='none' 
+    width= '250px'
+    poster="../../test/poster.png"> 
+
+    <source id='mp4'
+      src="../../test/trailer.mp4"
+      type='video/mp4; codecs="avc1, mp4a"'> 
+
+    <source id='ogv'
+      src="../../test/trailer.ogv"
+      type='video/ogg; codecs="theora, vorbis"'> 
+
+    <p>Your user agent does not support the HTML5 Video element.</p> 
+
+  </video> 
+  <div id="footnotediv"></div>  
+</body>
+</html>
