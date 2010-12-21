@@ -2,14 +2,14 @@
 module("Popcorn");
 test("API", function () {
   
-  var expects = 3, 
+  var expects = 4, 
       count = 0;
   
   expect(expects);
   
   function plus(){ if ( ++count == expects ) start(); }
 
-  stop();
+  stop( 10000 );
 
   
   try {
@@ -33,6 +33,19 @@ test("API", function () {
     plus();
     
   } catch (e) {};
+  
+  
+  try {  
+  
+    Popcorn(function() { 
+    
+      ok(1, "Popcorn calls its function argument"); 
+      plus();
+      
+      
+    });
+    
+  } catch (e) {};  
 
   
 });
@@ -58,7 +71,7 @@ test("Utility", function () {
 
 test("guid", function () {
   
-  expect(10);
+  expect(6);
   
   var count = 3, 
       guids = [], 
@@ -68,10 +81,10 @@ test("guid", function () {
     
     temp = Popcorn.guid();
     
-    ok( temp, "Popcorn.guid() returns value" );
-    
     if ( i > 0 ) {
       notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+    } else {
+      ok( temp, "Popcorn.guid() returns value" );
     }
     
     guids.push(temp);
@@ -83,10 +96,10 @@ test("guid", function () {
     
     temp = Popcorn.guid( "pre" );
     
-    ok( temp, "Popcorn.guid( 'pre' ) returns value" );
-    
     if ( i > 0 ) {
       notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+    } else {
+      ok( temp, "Popcorn.guid( 'pre' ) returns value" );
     }
     
     guids.push(temp);
@@ -170,7 +183,7 @@ test("exec", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop(); 
+  stop( 10000 ); 
   
 
 
@@ -214,7 +227,7 @@ test("Stored By Type", function () {
     } 
   }
 
-  stop();  
+  stop( 10000 );  
   
   
   p.listen("play", function () {
@@ -273,7 +286,7 @@ test("Simulated", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop();  
+  stop( 10000 );  
   
   
   Setup.events.forEach(function ( name ) {
@@ -314,7 +327,7 @@ test("Real", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop();  
+  stop( 10000 );  
   
   
   [ "play", "pause", "volumechange", "seeking", "seeked" ].forEach(function ( name ) {
@@ -355,7 +368,7 @@ test("Custom", function () {
   
   function plus(){ if ( ++count == expects ) start(); }
 
-  stop();
+  stop( 10000 );
   
   var p = Popcorn("#video");
   
@@ -383,7 +396,7 @@ test("UI/Mouse", function () {
   
   function plus(){ if ( ++count == expects ) start(); }
 
-  stop();
+  stop( 10000 );
   
   var p = Popcorn("#video");
   
@@ -402,6 +415,45 @@ test("UI/Mouse", function () {
 });
 
 module("Popcorn Plugin")
+test("Manifest", function () {
+
+  Popcorn.plugin( "footnote" , (function(){
+      
+    return {
+      manifest: {
+        about:{
+          name: "Popcorn Manifest Plugin",
+          version: "0.0",
+          author: "Rick Waldron",
+          website: ""
+        },
+        options: {
+          start   : { elem:'input', type:'text', label:'In' },
+          end     : { elem:'input', type:'text', label:'Out' },
+          text    : { elem:'input', type:'text', label:'Manifest Text' }, 
+          target  : 'text-container'
+        }
+      },    
+      start: function(event, options){
+      },
+
+      end: function(event, options){
+
+      }
+      
+    };
+    
+  })());
+  
+  
+  expect(1);
+  
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 1, "One manifest stored" );
+  
+  // add more tests
+  
+  Popcorn("#video").removePlugin("footnote");
+});
 
 test("Update Timer", function () {
 
@@ -426,7 +478,7 @@ test("Update Timer", function () {
     }
   }
   
-  stop();  
+  stop( 10000 );  
 
   Popcorn.plugin("forwards", function () {
     return {
@@ -493,7 +545,7 @@ test("Plugin Factory", function () {
     }
   }
 
-  stop();
+  stop( 10000 );
 
   Popcorn.plugin("executor", function () {
     
@@ -807,6 +859,7 @@ test("Functions", function () {
   
   equals( trackEvents.length, 3, "3 user created trackEvents returned by popped.getTrackEvents()" )  
   
+
   
   
 });
@@ -839,12 +892,12 @@ test("Index Integrity", function () {
   p.ff({
     id: "removeable-track-event",
     start: 40, 
-    end: 45
+    end: 41
   });
   
-  p.currentTime(39).pause();  
+  p.currentTime(40).pause();  
   
-  stop();
+  stop( 10000 );
   
   equals(p.data.trackEvents.endIndex, 0, "p.data.trackEvents.endIndex is 0");
   equals(p.data.trackEvents.startIndex, 0, "p.data.trackEvents.startIndex is 0");
@@ -855,10 +908,10 @@ test("Index Integrity", function () {
   
   p.listen("timeupdate", function () {
   
-    if ( p.roundTime() > 40 && p.roundTime() < 46 && !hasrun ) {
+    if ( p.roundTime() > 40 && p.roundTime() < 42 && !hasrun ) {
     }
     
-    if ( p.roundTime() > 40 && p.roundTime() < 46 && hasrun && !lastrun ) {
+    if ( p.roundTime() > 40 && p.roundTime() < 42 && hasrun && !lastrun ) {
       
       lastrun = true;
       
@@ -867,7 +920,7 @@ test("Index Integrity", function () {
       start();
     }
     
-    if ( p.roundTime() >= 46 && !hasrun ) {
+    if ( p.roundTime() >= 42 && !hasrun ) {
       
       hasrun  = true;
       p.pause();
@@ -886,7 +939,7 @@ test("Index Integrity", function () {
       
       
       
-      p.currentTime(39).play();
+      p.currentTime(40).play();
       
       
       
@@ -895,7 +948,9 @@ test("Index Integrity", function () {
   
   p.play();
 
+  
 });
+
 
 
 
@@ -923,7 +978,7 @@ test("Text Response", function () {
   
   expect(expects);
   
-  stop();
+  stop( 10000 );
 
   Popcorn.xhr({
     url: 'data/test.txt', 
@@ -952,7 +1007,7 @@ test("JSON Response", function () {
   
   expect(expects);
   
-  stop();
+  stop( 10000 );
 
 
   var testObj = { "data": {"lang": "en", "length": 25} };  
@@ -986,7 +1041,7 @@ test("XML Response", function () {
   
   expect(expects);
   
-  stop();
+  stop( 10000 );
 
 
   Popcorn.xhr({
@@ -1049,7 +1104,7 @@ test("Events Extended", function () {
     if ( ++count == expects ) start(); 
   }
   
-  stop();  
+  stop( 10000 );  
   
   
   Popcorn.plugin("extendedEvents", (function () {
