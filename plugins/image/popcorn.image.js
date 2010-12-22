@@ -39,7 +39,7 @@
           start :  {elem:'input', type:'number', label:'In'},
           end :    {elem:'input', type:'number', label:'Out'},
           href :   {elem:'input', type:'text',   label:'Link URL'},
-          target : {elem:'input', type:'text',   label:'Target Element'},
+          target : {elem:'input', type:'text',   label:'Image-container'},
           src :    {elem:'input', type:'text',   label:'Source URL'}
         }
       },
