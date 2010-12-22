@@ -8,18 +8,19 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
+      .volume(0)
       .play() 
       .webpage({
         id: "webpages-a", 
-        start: 5, // seconds
-        end: 15, // seconds
-        src: 'http://www.webmademovies.org',
+        start: 0, // seconds
+        end: 5, // seconds
+        src: 'http://webmademovies.org/',
         target: 'webpagediv'
       } )
       .webpage({
         id: "webpages-b", 
-        start: 20, // seconds
-        end: 45, // seconds
+        start: 0, // seconds
+        end: 10, // seconds
         src: 'http://zenit.senecac.on.ca/wiki/index.php/Processing.js',
         target: 'webpagediv2'
       } );
@@ -30,8 +31,8 @@
 </head>
 <body>
   <h1 id="qunit-header">Popcorn WebPage Plug-in Demo</h1>
-  <p> A Webpage displaying webmademovies.org will appear at 5 seconds and disappear at 15 seconds.</p>
-  <p> A Webpage displaying zenit Processing.js wiki will appear at 20 seconds and disappear at 45 seconds.</p>
+  <p> A Webpage displaying webmademovies.org will appear at 0 seconds and disappear at 5 seconds.</p>
+  <p> A Webpage displaying zenit Processing.js wiki will appear at 0 seconds and disappear at 15 seconds.</p>
   <div>
     <video id='video' 
       controls preload='none' 
