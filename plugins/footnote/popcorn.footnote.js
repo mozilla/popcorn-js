@@ -31,8 +31,22 @@
     var temp;
     
     return {
+      manifest: {
+        about:{
+          name: "Popcorn Footnote Plugin",
+          version: "0.1",
+          author: "@annasob",
+          website: "annasob.wordpress.com"
+        },
+        options:{
+          start    : {elem:'input', type:'text', label:'In'},
+          end      : {elem:'input', type:'text', label:'Out'},
+          target   : 'map-container',
+          text     : {elem:'input', type:'text', label:'Text'}
+        }
+      },
       /**
-       * @member webpage 
+       * @member footnote 
        * The start function will be executed when the currentTime 
        * of the video  reaches the start time provided by the 
        * options variable
@@ -42,7 +56,7 @@
         temp.innerHTML  = options.text;
       },
       /**
-       * @member webpage 
+       * @member footnote 
        * The end function will be executed when the currentTime 
        * of the video  reaches the end time provided by the 
        * options variable
