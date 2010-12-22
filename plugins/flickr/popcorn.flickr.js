@@ -42,7 +42,7 @@
           start   : {elem:'input', type:'number', label:'In'},
           end     : {elem:'input', type:'number', label:'Out'},
           userid  : {elem:'input', type:'text',   label:'Source'},
-          target  : {elem:'input', type:'text',   label:'Target Element'},
+          target  : {elem:'input', type:'text',   label:'Flickr-container'},
           height  : {elem:'input', type:'text', label:'Height'},
           width   : {elem:'input', type:'text', label:'Width'},
           padding : {elem:'input', type:'text', label:'Padding'},
