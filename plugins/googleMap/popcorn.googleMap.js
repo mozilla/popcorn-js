@@ -23,7 +23,9 @@ var googleCallback;
           start: 5, // seconds
           end: 15, // seconds
           type: 'ROADMAP',
-          target: 'map'
+          target: 'map',
+          lat: 43.665429,
+          long: -79.403323
         } )
    *
    */
