@@ -39,9 +39,9 @@
           start   : {elem:'input', type:'number', label:'In'},
           end     : {elem:'input', type:'number', label:'Out'},
           src     : {elem:'input', type:'text',   label:'Source'},
-          target  : {elem:'input', type:'text',   label:'HTML Element id'},
-          height  : {elem:'input', type:'number', label:'Style'},
-          width   : {elem:'input', type:'number', label:'Style'}
+          target  : {elem:'input', type:'text',   label:'Twitter-container'},
+          height  : {elem:'input', type:'number', label:'Height'},
+          width   : {elem:'input', type:'number', label:'Width'}
         }
       },
 
