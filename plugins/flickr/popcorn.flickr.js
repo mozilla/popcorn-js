@@ -42,12 +42,12 @@
           start   : {elem:'input', type:'number', label:'In'},
           end     : {elem:'input', type:'number', label:'Out'},
           userid  : {elem:'input', type:'text',   label:'Source'},
-          target  : {elem:'input', type:'text',   label:'HTML Element id'},
-          height  : {elem:'input', type:'text', label:'Style'},
-          width   : {elem:'input', type:'text', label:'Style'},
-          padding : {elem:'input', type:'text', label:'Style'},
-          border  : {elem:'input', type:'text', label:'Style'},
-          numberofimages : {elem:'input', type:'text', label:'Style'}
+          target  : {elem:'input', type:'text',   label:'Target Element'},
+          height  : {elem:'input', type:'text', label:'Height'},
+          width   : {elem:'input', type:'text', label:'Width'},
+          padding : {elem:'input', type:'text', label:'Padding'},
+          border  : {elem:'input', type:'text', label:'Border'},
+          numberofimages : {elem:'input', type:'text', label:'Number of Images'}
         }
       },
 
