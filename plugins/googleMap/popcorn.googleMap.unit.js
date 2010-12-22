@@ -1,12 +1,12 @@
 test("Popcorn Google Map Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 5, 
+      expects = 10, 
       count = 0,
-      iframeInterval,
-      iframeInterval2,
-      iframeInterval3,
-      iframeInterval4;
+      mapInterval,
+      mapInterval2,
+      mapInterval3,
+      mapInterval4;
   
   expect(expects);
   
@@ -18,49 +18,65 @@ test("Popcorn Google Map Plugin", function () {
   
   stop();
    
-  ok ('footnote' in popped, "footnote is a mehtod of the popped instance");
+  ok ('googleMap' in popped, "googleMap is a mehtod of the popped instance");
   plus();
   
-  ok ( document.getElementById('footnotediv').innerHTML === "", "initially, there is nothing inside the footnotediv" );
+  ok ( document.getElementById('map').innerHTML === "", "initially, there is nothing inside the map" );
   plus();
-  //equals( actual, expected, message ) instead of ok( boolean true, message )
-  popped.footnote({
-      start: 5, // seconds
-      end: 15, // seconds
-      text: 'This video made exclusively for drumbeat.org',
-      target: 'footnotediv'
-    } )
-    .footnote({
-      start: 35, // seconds
-      end: 45, // seconds
-      text: 'Visit webmademovies.org for more details',
-      target: 'footnotediv'
-    } )
+  
+  ok ( document.getElementById('map2').innerHTML === "", "initially, there is nothing inside the map2" );
+  plus();
+  
+  popped.googleMap({
+        start: 0, // seconds
+        end: 5, // seconds
+        type: 'ROADMAP',
+        target: 'map',
+        lat: 43.665429,
+        long: -79.403323,
+        zoom: 10
+      } )
+      .googleMap({
+        start: 0, // seconds
+        end: 5, // seconds
+        type: 'SATELLITE',
+        target: 'map2',
+        location:'boston',
+        zoom: 15
+      } )
+    .volume(0)
     .play();
   
   
-  interval = setInterval( function() {
-    if( popped.currentTime() > 5 && popped.currentTime() <= 15 ) {
-      ok (document.getElementById('footnotediv').innerHTML === "This video made exclusively for drumbeat.org", "footnote displaing correct information" );
+  mapInterval = setInterval( function() {
+    if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
+      ok(google.maps, "Google maps is available");
       plus();
-      clearInterval( interval );
-    }
-  }, 5000);
-  
-  interval2 = setInterval( function() {
-    if( popped.currentTime() > 15 && popped.currentTime() < 35  ) {
-      ok (document.getElementById('footnotediv').innerHTML === "", "footnote cleared properly" );
+      ok(google.maps.Geocoder, "Google maps Geocoder is available");
       plus();
-      clearInterval( interval2 );
-    }
-  }, 5000);
-  
-  interval3 = setInterval( function() {
-    if( popped.currentTime() > 35 && popped.currentTime() < 45 ) {
-      ok (document.getElementById('footnotediv').innerHTML === "Visit webmademovies.org for more details", "footnote displaing correct information" );
+      ok (document.getElementById('actualmap1'), "First map is on the page" );
       plus();
-      clearInterval( interval3 );
+      equals (document.getElementById('actualmap1').offsetParent.id, "map", "First map is inside the 'map' div" );
+      plus();
+      clearInterval( mapInterval );
     }
-  }, 5000);
+  }, 1000);
+  mapInterval2 = setInterval( function() {
+    if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
+      ok (document.getElementById('actualmap2'), "Second map is on the page" );
+      plus();
+      equals (document.getElementById('actualmap2').offsetParent.id, "map2", "Second map is inside the 'map2' div" );
+      plus();
+      clearInterval( mapInterval2 );
+    }
+  }, 1000);
+  mapInterval3 = setInterval( function() {
+    if( popped.currentTime() > 5  ) {
+      ok (document.getElementById('actualmap2').style.display === "none" && 
+          document.getElementById('actualmap1').style.display === "none", "Both maps are no longer visible" );
+      plus();
+      clearInterval( mapInterval3 );
+    }
+  }, 1000);
   
 });

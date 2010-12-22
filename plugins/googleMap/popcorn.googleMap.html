@@ -12,7 +12,7 @@
       .play() 
       .googleMap({
         start: 0, // seconds
-        end: 10, // seconds
+        end: 20, // seconds
         type: 'ROADMAP',
         target: 'map',
         lat: 43.665429,
@@ -20,9 +20,9 @@
         zoom: 10
       } )
       .googleMap({
-        start: 15, // seconds
-        end: 50, // seconds
-        type: 'SATELLITE',
+        start: 0, // seconds
+        end: 30, // seconds
+        type: 'ROADMAP',
         target: 'map2',
         location:'boston',
         zoom: 15
@@ -32,8 +32,8 @@
 </head>
 <body>
   <h1 id="qunit-header">Popcorn google Map Plug-in Demo</h1>
-  <p> A Google Map  displaying Toronto, Ontario will appear at 0 seconds and disappear at 10 seconds.</p>
-  <p> A Google Map  displaying Sao Paulo will appear at 15 seconds and disappear at 50 seconds.</p>
+  <p> A Google Map displaying Toronto, Ontario will appear at 0 seconds and disappear at 20 seconds.</p>
+  <p> A Google Map displaying Boston will appear at 0 seconds and disappear at 30 seconds.</p>
   <div>
     <video id='video' 
       controls 
