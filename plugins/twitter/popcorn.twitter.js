@@ -61,7 +61,6 @@
             hash    = /^#/.test( src ),
             widgetOptions = {
               version: 2,
-              type: ( profile ? 'profile' : 'search' ),
               id: options.container.getAttribute( 'id' ),  // use this id to connect it to the div
               rpp: 30,
               width: width,
@@ -93,10 +92,13 @@
         // create widget
         if ( profile ) {
 
+          widgetOptions.type = "profile";
+
           new TWTR.Widget( widgetOptions ).render().setUser( src ).start();
 
         } else if ( hash ) {
 
+          widgetOptions.type = "search";
           widgetOptions.search = src;
           widgetOptions.subject = src;
 
