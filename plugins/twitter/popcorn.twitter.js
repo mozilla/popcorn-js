@@ -6,11 +6,14 @@
    * Twitter popcorn plug-in 
    * Appends a Twitter widget to an element on the page.
    * Options parameter will need a start, end, target and source.
+   * Optional parameters are height and width.
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing
    * Src is the hash tag or twitter user to get tweets from
    * Target is the id of the document element that the images are
    *  appended to, this target element must exist on the DOM
+   * Height is the height of the widget, defaults to 200
+   * Width is the width of the widget, defaults to 250
    * 
    * @param {Object} options
    * 
