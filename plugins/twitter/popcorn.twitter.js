@@ -58,80 +58,49 @@
             width   = options.width || 250,
             height  = options.height || 200,
             profile = /^@/.test( src ),
-            hash    = /^#/.test( src );
+            hash    = /^#/.test( src ),
+            widgetOptions = {
+              version: 2,
+              type: ( profile ? 'profile' : 'search' ),
+              id: options.container.getAttribute( 'id' ),  // use this id to connect it to the div
+              rpp: 30,
+              width: width,
+              height: height,
+              interval: 6000,
+              theme: {
+                shell: {
+                  background: '#ffffff',
+                  color: '#000000'
+                },
+                tweets: {
+                  background: '#ffffff',
+                  color: '#444444',
+                  links: '#1985b5'
+                }
+              },
+              features: {
+                loop: true,
+                timestamp: true,
+                avatars: true,
+                hashtags: true,
+                toptweets: true,
+                live: true,
+                scrollbar: false,
+                behavior: 'default'
+              }
+            };
 
         // create widget
         if ( profile ) {
 
-          var widget = new TWTR.Widget({
-            version: 2,
-            type: 'profile',
-            id: options.container.getAttribute( 'id' ),  // use this id to connect it to the div
-            rpp: 30,
-            width: width,
-            height: height,
-            interval: 6000,
+          new TWTR.Widget( widgetOptions ).render().setUser( src ).start();
 
-            theme: {
-              shell: {
-                background: '#ffffff',
-                color: '#000000'
-              },
-              tweets: {
-                background: '#ffffff',
-                color: '#444444',
-                links: '#1985b5'
-              }
-            },
+        } else if ( hash ) {
 
-            features: {
-              loop: true,
-              timestamp: true,
-              avatars: true,
-              hashtags: true,
-              toptweets: true,
-              live: true,
-              scrollbar: false,
-              behavior: 'default'
-            }
-          }).render().setUser( src.replace( /^@/, "" ) ).start();
+          widgetOptions.search = src;
+          widgetOptions.subject = src;
 
-        } else if ( hash ) {    
-      
-          var widget = new TWTR.Widget({
-            version: 2,
-            type: 'search',
-            id: options.container.getAttribute( 'id' ),  // use this id to connect it to the div
-            search: src,
-            subject: src,
-            rpp: 30,
-            width: width,
-            height: height,
-            interval: 6000,
-
-            theme: {
-              shell: {
-                background: '#ffffff',
-                color: '#000000'
-              },
-              tweets: {
-                background: '#ffffff',
-                color: '#444444',
-                links: '#1985b5'
-              }
-            },
-
-            features: {
-              loop: true,
-              timestamp: true,
-              avatars: true,
-              hashtags: true,
-              toptweets: true,
-              live: true,
-              scrollbar: false,
-              behavior: 'default'
-            }
-          }).render().start();
+          new TWTR.Widget( widgetOptions ).render().start();
 
         }
       },
