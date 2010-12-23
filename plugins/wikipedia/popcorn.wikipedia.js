@@ -33,6 +33,23 @@ var wikiCallback;
    */
   Popcorn.plugin( "wikipedia" , {
       
+    manifest: {
+      about:{
+        name: "Popcorn Wikipedia Plugin",
+        version: "0.1",
+        author: "@annasob",
+        website: "annasob.wordpress.com"
+      },
+      options:{
+        start      : {elem:'input', type:'text', label:'In'},
+        end        : {elem:'input', type:'text', label:'Out'},
+        lang       : {elem:'input', type:'text', label:'Language'},
+        src        : {elem:'input', type:'text', label:'Src'},
+        title      : {elem:'input', type:'text', label:'Title'},
+        numOfWords : {elem:'input', type:'text', label:'Num Of Words'},
+        target     : 'wiki-container'
+      }
+    },
     /**
      * @member wikipedia 
      * The setup function will get all of the needed 
