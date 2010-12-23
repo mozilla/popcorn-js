@@ -48,7 +48,7 @@ test("Popcorn Flickr Plugin", function () {
       clearInterval( interval2 );
     }
   }, 500);
-  
+  popped.volume(0);
   popped.play();
   
 });
