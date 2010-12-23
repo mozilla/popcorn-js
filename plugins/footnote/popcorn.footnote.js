@@ -1,4 +1,4 @@
-// PLUGIN: WEBPAGE
+// PLUGIN: Footnote
 
 (function (Popcorn) {
   
@@ -12,8 +12,6 @@
    * Target is the id of the document element that the text needs to be 
    * attached to, this target element must exist on the DOM
    * 
-   * Note: anything in the target element will be overwritten by the text 
-   * specified by the user
    * @param {Object} options
    * 
    * Example:
@@ -26,33 +24,48 @@
         } )
    *
    */
-  Popcorn.plugin( "footnote" , (function(){
-      
-    var temp;
+  Popcorn.plugin( "footnote" , {
     
-    return {
-      /**
-       * @member webpage 
-       * The start function will be executed when the currentTime 
-       * of the video  reaches the start time provided by the 
-       * options variable
-       */
-      start: function(event, options){
-        temp  = document.getElementById( options.target );
-        temp.innerHTML  = options.text;
+    manifest: {
+      about:{
+        name: "Popcorn Footnote Plugin",
+        version: "0.1",
+        author: "@annasob",
+        website: "annasob.wordpress.com"
       },
-      /**
-       * @member webpage 
-       * The end function will be executed when the currentTime 
-       * of the video  reaches the end time provided by the 
-       * options variable
-       */
-      end: function(event, options){
-        temp.innerHTML  = "";
+      options:{
+        start    : {elem:'input', type:'text', label:'In'},
+        end      : {elem:'input', type:'text', label:'Out'},
+        target   : 'footnote-container',
+        text     : {elem:'input', type:'text', label:'Text'}
       }
-      
-    };
-    
-  })());
+    },
+    _setup: function(options) {
+      options._container = document.createElement( 'div' );
+      options._container.style.display = "none";
+      options._container.innerHTML  = options.text;
+      options.target =  document.getElementById( options.target );
+      options.target.appendChild( options._container );
+    },
+    /**
+     * @member footnote 
+     * The start function will be executed when the currentTime 
+     * of the video  reaches the start time provided by the 
+     * options variable
+     */
+    start: function(event, options){
+      options._container.style.display = "inline";
+    },
+    /**
+     * @member footnote 
+     * The end function will be executed when the currentTime 
+     * of the video  reaches the end time provided by the 
+     * options variable
+     */
+    end: function(event, options){
+      options._container.style.display = "none";
+    }
+   
+  });
 
 })( Popcorn );
