@@ -6,11 +6,17 @@
    * Flickr popcorn plug-in 
    * Appends a users Flickr images to an element on the page.
    * Options parameter will need a start, end, target and userid.
+   * Optional parameters are numberofimages, height, width, padding, and border
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing
    * Userid is the id of who's Flickr images you wish to show
    * Target is the id of the document element that the images are
    *  appended to, this target element must exist on the DOM
+   * Numberofimages specify the number of images to retreive from flickr, defaults to 8
+   * Height the height of the component, defaults to '50px'
+   * Width the width of the component, defaults to '50px'
+   * Padding number of pixels between images, defaults to '5px'
+   * Border border size in pixels around images, defaults to '0px'
    * 
    * @param {Object} options
    * 
