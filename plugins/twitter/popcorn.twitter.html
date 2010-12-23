@@ -4,6 +4,9 @@
   <title>Popcorn Twitter Plug-in Demo</title>
   
   <script src="../../popcorn.js"></script>
+  <!-- 
+    script "http://widgets.twimg.com/j/2/widget.js" is needed for the Twitter widget
+  -->
   <script src="http://widgets.twimg.com/j/2/widget.js"></script>
   <script src="popcorn.twitter.js"></script>
   <script>
@@ -30,8 +33,9 @@
 </head>
 <body>
   <h1 id="qunit-header">Popcorn Twitter Plug-in Demo</h1>
-  <p>Twitter widget will appear at 5 seconds and disappear at 15 seconds.</p>
-  <p>More Twitter widget will appear at 20 seconds and disappear at 45 seconds.</p>
+  <p>A script src="http://widgets.twimg.com/j/2/widget.js" must be loaded before popcorn.twitter.js</p>
+  <p>Twitter profile '@stevesong' widget will appear at 5 seconds and disappear at 15 seconds.</p>
+  <p>More Twitter hash '#oilspill' widget will appear at 20 seconds and disappear at 45 seconds.</p>
   <div>
     <video id='video' 
       controls
