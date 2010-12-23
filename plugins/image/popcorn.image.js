@@ -4,8 +4,8 @@
   
   /**
    * Images popcorn plug-in 
-   * Creates an iframe showing a website specified by the user
-   * Options parameter will need a start, end, id, target and src.
+   * Shows an image element
+   * Options parameter will need a start, end, href, target and src.
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing 
    * href is the url of the destination of a link
@@ -48,13 +48,16 @@
 
         options.link = document.createElement( 'a' );
         options.link.style.display = "none"; // display none by default
-        options.link.href = options.href;
+        if ( options.href ) {
+          options.link.href = options.href;
+        }
         options.link.target = "_blank";
 
         document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
 
         var img = document.createElement( 'img' );
         img.src = options.src;
+        img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
 
         options.link.appendChild( img );
         
