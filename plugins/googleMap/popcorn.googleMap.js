@@ -49,7 +49,7 @@ var googleCallback;
           zoom     : {elem:'input', type:'text', label:'Zoom'},
           lat      : {elem:'input', type:'text', label:'Lat'},
           long     : {elem:'input', type:'text', label:'Long'},
-          location : {elem:'input', type:'text', label:'Location'},
+          location : {elem:'input', type:'text', label:'Location'}
         }
       },
       _setup : function( options ) {
@@ -62,12 +62,10 @@ var googleCallback;
          
           script.src = "http://maps.google.com/maps/api/js?sensor=false&callback=googleCallback";
           script.type = "text/javascript";
-          head.appendChild( script, head.firstChild ); 
+          head.insertBefore( script, head.firstChild ); 
         }
         // callback function fires when the script is run
         googleCallback = function() {
-          window.google = window.google || {};
-          google.maps   = google.maps || {};
           _mapLoaded    = true;
         };
         // If there is no lat/long, and there is location, geocode the location
@@ -91,7 +89,6 @@ var googleCallback;
           }
         };
         isGeoReady();
-        options.target  = document.getElementById(options.target);
         // create a new div this way anything in the target div
         // will stay intack 
         options._newdiv              = document.createElement('div');
@@ -99,9 +96,9 @@ var googleCallback;
         options._newdiv.style.width  = "100%";
         options._newdiv.style.height = "100%";
         i++;
-        options.target.appendChild(options._newdiv);
-        
-        /**/
+        if (document.getElementById(options.target)) {
+          document.getElementById(options.target).appendChild(options._newdiv);
+        }
       },
       /**
        * @member webpage 
@@ -143,9 +140,7 @@ var googleCallback;
         // if the map exists hide it do not delete the map just in 
         // case the user seeks back to time b/w start and end
         if (options._map) {
-          options._map.getDiv().style.display = 'none';
-          //options._map = null;
-          
+          options._map.getDiv().style.display = 'none';          
         }
       }
       
