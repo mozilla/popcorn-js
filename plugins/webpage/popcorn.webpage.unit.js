@@ -1,7 +1,7 @@
 test("Popcorn Webpage Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 11, 
+      expects = 10, 
       count = 0,
       iframeInterval,
       iframeInterval2,
@@ -26,28 +26,29 @@ test("Popcorn Webpage Plugin", function () {
   
   popped.webpage({
       id: "webpages-a", 
-      start: 5, // seconds
-      end: 25, // seconds
+      start: 0, // seconds
+      end: 5, // seconds
       src: 'http://webmademovies.org',
       target: 'webpagediv'
     })
     .webpage({
       id: "webpages-b", 
-      start: 35, // seconds
-      end: 50, // seconds
+      start: 7, // seconds
+      end: 10, // seconds
       src: 'http://zenit.senecac.on.ca/wiki/index.php/Processing.js',
       target: 'webpagediv'
     })
+    .volume(0)
     .play();
   
   
   iframeInterval = setInterval( function() {
-    if( popped.currentTime() > 7 && popped.currentTime() <= 25 ) {
+    if( popped.currentTime() > 1 && popped.currentTime() <= 5 ) {
       ok (!!theiFrame[0], "iframe was created" );
       plus();
-      equals (theiFrame.length, 1, "there is only one iframe on the page" );
+      equals (theiFrame.length, 2, "there is only two iframes on the page" );
       plus();
-      equals (theiFrame[0].id, "webpages-a", "iframe has the id 'webpages-a'" );
+      equals (theiFrame[0].id, "webpages-a", "the first iframe has the id 'webpages-a'" );
       plus();
       equals (theiFrame[0].src, "http://webmademovies.org/", "iframe has the src 'http://webmademovies.org/'" );
       plus();
@@ -56,22 +57,20 @@ test("Popcorn Webpage Plugin", function () {
   }, 5000);
   
   iframeInterval2 = setInterval( function() {
-    if( popped.currentTime() > 27 && popped.currentTime() < 35  ) {
-      equals (theiFrame.length, 0, "the iframe has been removed" );
+    if( popped.currentTime() > 10 ) {
+      ok (theiFrame[0].style.display === 'none' && theiFrame[1].style.display === 'none', "both iframes are hidden" );
       plus();
       clearInterval( iframeInterval2 );
     }
-  }, 5000);
+  }, 15000);
   
   iframeInterval3 = setInterval( function() {
-    if( popped.currentTime() > 37 && popped.currentTime() <= 50 ) {
-      ok (!!theiFrame[0], "iframe was created" );
+    if( popped.currentTime() > 8 && popped.currentTime() <= 10 ) {
+      ok (!!theiFrame[1], "iframe was created" );
       plus();
-      equals (theiFrame.length, 1, "there is only one iframe on the page" );
+      equals (theiFrame[1].id, "webpages-b", "iframe second has the id 'webpages-b'" );
       plus();
-      equals (theiFrame[0].id, "webpages-b", "iframe has the id 'webpages-b'" );
-      plus();
-      equals (theiFrame[0].src,"http://zenit.senecac.on.ca/wiki/index.php/Processing.js", "iframe has the src 'http://zenit.senecac.on.ca/wiki/index.php/Processing.js'" );
+      equals (theiFrame[1].src,"http://zenit.senecac.on.ca/wiki/index.php/Processing.js", "iframe has the src 'http://zenit.senecac.on.ca/wiki/index.php/Processing.js'" );
       plus();
       clearInterval( iframeInterval3 );
     }
