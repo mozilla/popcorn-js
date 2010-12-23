@@ -213,9 +213,7 @@
 
     Popcorn.forEach( src, function( copy ) {
       for ( var prop in copy ) {
-        if ( copy[prop] ) {
-          dest[prop] = copy[prop];
-        }
+        dest[prop] = copy[prop];
       }
     });
     return dest;      
@@ -235,9 +233,7 @@
       var size = 0;
 
       for ( var prop in obj  ) {
-        if ( obj[prop] ) {
-          size++;
-        }
+        size++;
       }
 
       return size;
@@ -664,7 +660,11 @@
         //  the events commence
         
         if ( "_setup" in setup && typeof setup._setup === "function" ) {
-          setup._setup.call( this, options );
+
+          setup._setup.call( this, Popcorn.extend( {}, options, {
+                                      target: setup.manifest.options.target || "" 
+                                   })
+                            );
         }
         
 

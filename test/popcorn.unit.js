@@ -417,6 +417,21 @@ test("UI/Mouse", function () {
 module("Popcorn Plugin")
 test("Manifest", function () {
 
+
+
+  var p = Popcorn("#video"),                         
+      expects = 2, 
+      count   = 0;
+
+  function plus() {
+    if ( ++count === expects ) {
+      start(); 
+      // clean up added events after tests
+      p.removePlugin("footnote");
+    }
+  }
+  
+  stop( 10000 );
   Popcorn.plugin( "footnote" , (function(){
       
     return {
@@ -434,6 +449,10 @@ test("Manifest", function () {
           target  : 'text-container'
         }
       },    
+      _setup: function( options ) {
+         ok( options.target, "`options.target exists`" );
+         plus();
+      },
       start: function(event, options){
       },
 
@@ -446,13 +465,16 @@ test("Manifest", function () {
   })());
   
   
-  expect(1);
+  expect(expects);
   
   equal( Popcorn.sizeOf( Popcorn.manifest ), 1, "One manifest stored" );
+  plus();
   
   // add more tests
   
-  Popcorn("#video").removePlugin("footnote");
+  p.footnote({});
+  
+  
 });
 
 test("Update Timer", function () {
