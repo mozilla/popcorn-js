@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Image Plug-in Demo</title>
+  
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.image.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var p = Popcorn('#video')
+      .play() 
+      .image({
+        start: 5, // seconds
+        end: 15, // seconds
+        href: 'http://www.drumbeat.org/',
+        src: 'http://www.drumbeat.org/sites/default/files/domain-2/drumbeat_logo.png',
+        target: 'imagediv'
+      } )
+      .image({
+        start: 20, // seconds
+        end: 45, // seconds
+        // no href
+        src: 'http://patriciabergeron.net/wp-content/uploads/web.made_.movie_marquee.gif',
+        target: 'imagediv'
+      } );
+
+    }, false);
+
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Image Plug-in Demo</h1>
+  <p> An image will appear at 5 seconds and disappear at 15 seconds.</p>
+  <p> An image will appear at 20 seconds and disappear at 45 seconds.</p>
+  <div>
+    <video id='video' 
+      controls
+      width= '250px'
+      poster="../../test/poster.png"> 
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'> 
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'> 
+
+      <p>Your user agent does not support the HTML5 Video element.</p> 
+
+    </video> 
+  </div>
+  <div id="imagediv">
+  </div>
+</body>
+</html>
