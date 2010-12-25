@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Wikipedia Plug-in Demo</title>
+  
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.wikipedia.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var p = Popcorn('#video')
+      .volume(0)
+      .play() 
+      .wikipedia({
+        start: 0, // seconds
+        end: 10, // seconds
+        src: 'http://en.wikipedia.org/wiki/Cape_Town',
+        target: 'wikidiv'
+      } )
+      .wikipedia({
+        start: 7, // seconds
+        end: 20, // seconds
+        src: 'http://en.wikipedia.org/wiki/S%C3%A3o_Paulo',
+        target: 'wikidiv'
+      } );
+
+    }, false);
+
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Wikipedia Plug-in Demo</h1>
+  <p> A Wiki article about Cape Town will appear at 0 seconds and disappear at 10 seconds.</p>
+  <p> A Wiki article about Sao Paolo will appear at 7 seconds and disappear at 20 seconds.</p>
+  <div>
+    <video id='video' 
+      controls 
+      width= '250px'
+      poster="../../test/poster.png"> 
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'> 
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'> 
+
+      <p>Your user agent does not support the HTML5 Video element.</p> 
+
+    </video> 
+  </div>
+  <div id="wikidiv"> </div>
+</body>
+</html>

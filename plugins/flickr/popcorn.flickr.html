@@ -1,38 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Popcorn footnote Plug-in Demo</title>
+  <title>Popcorn Flickr Plug-in Demo</title>
   
   <script src="../../popcorn.js"></script>
-  <script src="popcorn.footnote.js"></script>
+  <script src="../../test/jquery.js"></script>
+  <script src="popcorn.flickr.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
-      .play() 
-      .footnote({
+      .flickr({
         start: 5, // seconds
         end: 15, // seconds
-        text: 'This video made exclusively for drumbeat.org',
-        target: 'footnotediv'
+        userid: '35034346917@N01',
+        numberofimages: '8',
+        target: 'flickrdiv'
       } )
-      .footnote({
+      .flickr({
         start: 20, // seconds
         end: 45, // seconds
-        text: 'Visit webmademovies.org for more details',
-        target: 'footnotediv'
+        userid: '78868639@N00',
+        target: 'flickrdiv'
       } )
-
+      .play();
     }, false);
 
   </script>
 </head>
 <body>
-  <h1 id="qunit-header">Popcorn Footnote Plug-in Demo</h1>
-  <p> A footnote displaying This video made exclusively for drumbeat.org' will appear at 5 seconds and disappear at 15 seconds.</p>
-  <p> A footnote displaying 'Visit webmademovies.org for more details' will appear at 20 seconds and disappear at 45 seconds.</p>
+  <h1 id="qunit-header">Popcorn Flickr Plug-in Demo</h1>
+  <p>This plugin requires jquery</p>
+  <p>Flickr images will appear at 5 seconds and disappear at 15 seconds.</p>
+  <p>More Flickr images will appear at 20 seconds and disappear at 45 seconds.</p>
   <div>
     <video id='video' 
-      controls preload='none' 
+      controls
       width= '250px'
       poster="../../test/poster.png"> 
 
@@ -48,7 +50,6 @@
 
     </video> 
   </div>
-  <div id="footnotediv" width="50%" height="50%">
-  </div>
+  <div id="flickrdiv"></div>
 </body>
 </html>
