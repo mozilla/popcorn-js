@@ -420,7 +420,8 @@ test("Manifest", function () {
 
 
   var p = Popcorn("#video"),                         
-      expects = 2, 
+      expects = 5,
+      run = 1,  
       count   = 0;
 
   function plus() {
@@ -450,8 +451,20 @@ test("Manifest", function () {
         }
       },    
       _setup: function( options ) {
-         ok( options.target, "`options.target exists`" );
-         plus();
+        ok( options.target, "`options.target exists`" );
+        plus();
+         
+        if ( run === 2 ) {
+          equals( options.target, 'custom-target', "Uses custom target if one is specified" );
+          plus();
+        }         
+
+        if ( run === 1 ) {
+          equals( options.target, 'text-container', "Uses manifest target by default" );
+          plus();
+          
+          run++; 
+        }
       },
       start: function(event, options){
       },
@@ -473,6 +486,10 @@ test("Manifest", function () {
   // add more tests
   
   p.footnote({});
+  
+  p.footnote({
+    target: "custom-target"
+  })
   
   
 });
