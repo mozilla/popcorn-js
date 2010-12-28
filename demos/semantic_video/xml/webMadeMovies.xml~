@@ -1,0 +1,324 @@
+<popcorn>
+  <manifest>
+    <people>
+      <person id="celine" name="Celine" salutation="Miss." >
+        <resource id="celinehomepage" src="http://www.celinecelines.com/" description="Celine's Homepage" />
+      </person>
+      <person id="brian" name="brian" >
+      </person>
+      <person id="SteveSong" name="Steve Song" >
+      </person>
+      <person id="mona" name="Mona" >
+        <resource id="monahomepage" src="http://www.monakasra.com/" description="Mona's Homepage"/>
+      </person>
+      <person id="dave" name="Dave" >
+      </person>
+      <person id="noah" name="Noah" >
+      </person>
+    </people>
+    <places>
+      <place id="saopaulo" type="city" name="Sao Paulo">
+        <resource id="saopaulowiki" src="http://en.wikipedia.org/wiki/S%C3%A3o_Paulo" description="Sao Paulo city, Brazil"/>
+      </place>
+
+      <place id="CapeTown" type="city" name="Cape Town">
+        <resource id="capetownwiki" src="http://en.wikipedia.org/wiki/Cape_Town" description="Cape Town, South Africa"/>
+      </place>
+
+      <place id="GrandIsle" type="city" name="Grande Isle, Louisiana">
+        <resource id="grandeislewiki" src="http://en.wikipedia.org/wiki/Grand_Isle,_Louisiana" description="Grande Isle, Louisiana"/>
+      </place>
+
+      <place id="MITMediaLab" type="building" name="MIT Media Lab">
+        <resource id="mitmedialabhome" src="http://www.media.mit.edu/" description="MIT Media Lab"/>
+      </place>
+
+      <place id="Austin" type="city" name="Austin, Texas">
+        <resource id="austinwiki" src="http://en.wikipedia.org/wiki/Austin,_Texas" description="Austin, Texas"/>
+      </place>
+
+      <place id="NewYork" type="city" name="New York, New York">
+        <resource id="newyorkwiki" src="http://en.wikipedia.org/wiki/New_York_City" description="New York, New York"/>
+      </place>
+
+      <place id="Seoul" type="city" name="Seoul, Republic of South Korea">
+        <resource id="seoulwiki" src="http://en.wikipedia.org/wiki/Seoul" description="Seoul, Republic of South Korea"/>
+      </place>
+
+      <place id="Montreal" type="city" name="Montreal, Quebec">
+        <resource id="montrealwiki" src="http://en.wikipedia.org/wiki/Montreal" description="Montreal, Quebec"/>
+      </place>
+
+      <place id="harvard" type="building" name="Harvard Law School">
+        <resource id="harvardlawhome" src="http://www.law.harvard.edu/index.html" description="Harvard Law School"/>
+      </place>
+
+    </places>
+    <attributions>
+      <attribution id="attrib" nameofwork="A Shared Culture" copyrightholder="Jesse Dylan" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
+      <attribution id="villagetelcoattrib" nameofwork="Village Telco" copyrightholder="Richard Mills" license="CC-BY-NC" licenseurl="http://creativecommons.org/licenses/by-nc/2.0/"/>
+      <attribution id="prodigyattrib" nameofwork="Prodigy Commercial" nameofworkurl="http://www.youtube.com/watch?v=TSlb7-FJr3k" />
+      <attribution id="compuserveattrib" nameofwork="1991 Compuserve Internet" nameworkurl="http://www.youtube.com/watch?v=TSlb7-FJr3k" />
+      <attribution id="aolattrib" nameofwork="1996 AOL Commercial" nameworkurl="http://www.youtube.com/watch?v=0kf1DBg5vJs" />
+      <attribution id="chronicles1attrib" nameofwork="Internet" nameworkurl="http://www.archive.org/details/CC1232_internet" copyrightholder="The Computer Chronicles" license="CC-BY-NC-ND" licenseurl="http://creativecommons.org/licenses/by-nc-nd/2.0/" />
+      <attribution id="chronicles2attrib" nameofwork="The Internet" nameworkurl="http://www.archive.org/details/episode_1134" copyrightholder="The Computer Chronicles" license="CC-BY-NC-ND" licenseurl="http://creativecommons.org/licenses/by-nc-nd/2.0/" />
+      <attribution id="bankattrib" nameofwork="Using the Bank (1947)" nameworkurl="http://www.archive.org/details/Usingthe1947" copyrightholder="The Prelinger Archives" />
+      <attribution id="networksattrib" nameofwork="Computer Networks - The Heralds of Resource Sharing" nameofworkurl="http://video.google.com/videoplay?docid=4989933629762859961#" copyrightholder="MIT"/>
+    </attributions>
+    <articles>
+      <resource id="theinternet" src="http://en.wikipedia.org/wiki/internet" description="The Internet"/>
+      <resource id="villagetelco" src="http://en.wikipedia.org/wiki/Village_telco" description="The Village Telco"/>
+      <resource id="oilspill" src="http://en.wikipedia.org/wiki/Deepwater_Horizon_oil_spill" description="Deepwater Horizon Oil Spill"/>
+      <resource id="zittrain" src="http://en.wikipedia.org/wiki/Jonathan_Zittrain" description="Jonathan Zittrain"/>
+      <resource id="compuserve" src="http://en.wikipedia.org/wiki/Compuserve" description="Compuserve"/>
+      <resource id="aol" src="http://en.wikipedia.org/wiki/AOL" description="AOL"/>
+      <resource id="prodigy" src="http://en.wikipedia.org/wiki/Prodigy_%28online_service%29" description="Prodigy"/>
+      <resource id="internetprotocol" src="http://en.wikipedia.org/wiki/Internet_Protocol" description="Internet Protocol"/>
+      <resource id="timbernerslee" src="http://en.wikipedia.org/wiki/Tim_Berners-Lee" description="Tim Berners-Lee"/>
+      <resource id="worldwideweb" src="http://en.wikipedia.org/wiki/World_wide_web" description="World Wide Web"/>
+      <resource id="wikipedia" src="http://en.wikipedia.org/wiki/Wikipedia" description="Wikipedia"/>
+      <resource id="openstandards" src="http://en.wikipedia.org/wiki/Open_Standards" description="Open Standards"/>
+    </articles>
+  </manifest>
+
+  <timeline>
+
+    <footnotes>
+      <footnote in="00:00:00" out="00:14:00" target="footnotediv">Look around the page as info is updated!</footnote>
+    </footnotes>
+    <resources>
+      <footnote in="00:00:00" out="00:15:00" target="footnotediv">This video made exclusively for drumbeat.org </footnote>
+      <videotag target="inthisvideo" in="00:00:05:02" out="00:00:10:07">Steve Song</videotag>
+      <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>
+      <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
+      <wiki in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberOfWords="200" lang="en" target="wikidiv"/>
+      <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
+      <googlenews in="00:00:05:02" out="00:00:10:07" target="googlenewsdiv" topic="Village Telco"/>
+
+      <twitter in="00:00:10:07" out="00:00:18:04" title="Oil Spill" source="#oilspill" target="twitter" width="238" height="120"/>
+      <googlenews in="00:00:10:07" out="00:00:18:04" target="googlenewsdiv" topic="Oil Spill"/>
+      <attribution in="00:00:10:07" out="00:00:18:04" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>
+
+      <videotag target="inthisvideo" in="00:00:18:04" out="00:00:25:02">Keyboard Cat</videotag>
+      <twitter in="00:00:18:04" out="00:00:25:02" title="Keyboard Cat" source="#keyboardcat" target="twitter" width="238" height="120"/>
+      <attribution in="00:00:18:04" out="00:00:25:02" target="container5">KeyBoard Cat, Charlie Schmidt</attribution>
+      <googlenews in="00:00:18:04" out="00:00:25:02" target="googlenewsdiv" topic="Keyboard Cat"/>
+
+      <videotag target="inthisvideo" in="00:00:28:09" out="00:00:29:07">Jeffrey Warren</videotag>
+      <attribution in="00:00:28:09" out="00:00:29:07" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>
+      <videotag target="inthisvideo" in="00:00:29:08" out="00:00:31:00">Village Telco Guy</videotag>
+
+      <wiki in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberOfWords="200" target="wikidiv"/>
+      <googlenews in="00:00:32:00" out="00:00:41:00" target="googlenewsdiv" topic="the internet"/>
+
+      <videotag target="inthisvideo" in="00:00:41:00" out="00:01:07:09">Jeffrey Warren</videotag>
+      <flickr in="00:00:41:00" out="00:01:07:09" target="personalflickr" userid="35034346917@N01" numberofimages="8" padding="4px"/>
+      <twitter in="00:00:41:00" out="00:01:07:09" title="Oil Spill" source="#oilspill" target="twitter" width="238" height="120"/>
+      <googlenews in="00:00:41:00" out="00:01:07:09" target="googlenewsdiv" topic="Oil Spill"/>
+      <location resourceid="grandislewiki" in="00:00:41:00" out="00:01:07:09" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>
+      <wiki in="00:00:41:00" out="00:01:07:09" resourceid="oilspill" numberOfWords="200" target="wikidiv"/>
+      <footnote in="00:00:41:00" out="00:01:07:09" target="footnotediv">Learn more about Grass Roots mapping at www.grassrootsmapping.org</footnote>
+      <twitter in="00:01:07:10" out="00:01:25:07" title="Steve Song" source="from:stevesong" target="personaltwitter" width="238" height="120"/>
+      <flickr in="00:01:07:10" out="00:01:25:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
+      <location id="CapeTown" resourceid="capetownwiki" in="00:01:07:10" out="00:01:32:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
+      <wiki in="00:01:07:10" out="00:01:32:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv"/>
+      <videotag target="inthisvideo" in="00:01:25:08" out="00:01:32:07">Michael Adeyeye</videotag>
+
+      <videotag target="inthisvideo" in="00:01:32:08" out="00:01:38:02">Charlie Schmidt</videotag>
+      <twitter in="00:01:32:08" out="00:01:57:11" title="Charlie Schmidt" source="from:chuckieart" target="personaltwitter" width="238" height="120"/>
+      <location id="MITMediaLab" resourceid="mitmedialabhome" in="00:01:32:08" out="00:01:57:11" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>
+      <videotag target="inthisvideo" in="00:01:38:02" out="00:01:41:10">Keyboard Cat</videotag>
+      <videotag target="inthisvideo" in="00:01:41:11" out="00:01:57:11">Charlie Schmidt</videotag>
+
+      <videotag target="inthisvideo" in="00:02:09:00" out="00:03:07:05">Jonathan Zittrain</videotag>
+      <twitter in="00:02:09:00" out="00:03:07:05" title="Jonathan Zittrain" source="from:zittrain" target="personaltwitter" width="238" height="120"/>
+      <location resourceid="harvardlawhome" in="00:02:09:00" out="00:03:07:05" lat="42.4222" long="-88.6137" target="container2" zoom="12"/>
+      <wiki in="00:02:09:00" out="00:02:20:00" resourceid="zittrain" numberOfWords="200" target="wikidiv"/>
+      <wiki in="00:02:20:01" out="00:02:23:00" resourceid="compuserve" numberOfWords="200" target="wikidiv"/>
+      <wiki in="00:02:23:01" out="00:02:26:00" resourceid="aol" numberOfWords="200" target="wikidiv"/>
+      <wiki in="00:02:26:01" out="00:02:33:00" resourceid="prodigy" numberOfWords="200" target="wikidiv"/>
+
+      <attribution in="00:02:15:09" out="00:02:17:00" target="container5" resourceid="compuserveattrib"></attribution>
+      <attribution in="00:02:17:01" out="00:02:20:00" target="container5" resourceid="aolattrib"></attribution>
+      <attribution in="00:02:20:01" out="00:02:17:00" target="container5" resourceid="compuserveattrib"></attribution>
+      <attribution in="00:02:17:01" out="00:02:26:00" target="container5" resourceid="aolattrib"></attribution>
+      <attribution in="00:02:26:01" out="00:02:33:00" target="container5" resourceid="prodigyattrib"></attribution>
+      <attribution in="00:02:37:00" out="00:02:47:00" target="container5" resourceid="networksattrib"></attribution>
+      <attribution in="00:02:47:01" out="00:02:55:00" target="container5" resourceid="bankattrib"></attribution>
+      <attribution in="00:03:07:10" out="00:03:29:00" target="container5" resourceid="bankattrib"></attribution>
+
+      <wiki in="00:02:41:00" out="00:02:57:00" resourceid="internetprotocol" numberOfWords="200" target="wikidiv"/>
+      <wiki in="00:02:57:01" out="00:03:03:00" resourceid="timbernerslee" numberOfWords="200" target="wikidiv"/>
+      <twitter in="00:02:57:01" out="00:03:03:00" title="Tim Berners-Lee" source="from:timberners_lee" target="twitter" width="238" height="120"/>
+
+      <googlenews in="00:02:57:01" out="00:03:03:00" target="googlenewsdiv" topic="Tim Berners-Lee"/>
+
+      <wiki in="00:03:03:01" out="00:03:28:00" resourceid="worldwideweb" numberOfWords="200" target="wikidiv"/>
+      <googlenews in="00:03:03:01" out="00:03:28:00" target="googlenewsdiv" topic="World Wide Web"/>
+
+      <googlenews in="00:03:28:00" out="00:03:32:00" target="googlenewsdiv" topic="Wikipedia"/>
+      <wiki in="00:03:28:01" out="00:03:32:00" resourceid="wikipedia" numberOfWords="200" target="wikidiv"/>
+
+      <wiki in="00:03:36:00" out="00:03:43:00" resourceid="openstandards" numberOfWords="200" target="wikidiv"/>
+
+      <videotag target="inthisvideo" in="00:03:09:00" out="00:03:16:00">NCSA guy</videotag>
+      <videotag target="inthisvideo" in="00:03:16:01" out="00:03:18:05">Computer Chronicles guy #1</videotag>
+      <videotag target="inthisvideo" in="00:03:16:02" out="00:03:21:00">Computer Chronicles guy #2</videotag>
+      <videotag target="inthisvideo" in="00:03:21:01" out="00:03:28:06">Computer Chronicles guy #3</videotag>
+
+      <videotag target="inthisvideo" in="00:03:43:00" out="00:03:56:00">Jonathan Zittrain</videotag>
+      <twitter in="00:03:43:00" out="00:03:56:00" title="Jonathan Zittrain" source="from:zittrain" target="personaltwitter" width="238" height="120"/>
+      <footnote in="00:03:43:00" out="00:03:57:00" target="footnotediv">Read Zittrain's book 'The Future of the Internet — And How to Stop It'</footnote>
+
+      <videotag target="inthisvideo" in="00:03:59:00" out="00:04:03:05">Mona Kasra</videotag>
+      <videotag target="inthisvideo" in="00:04:03:06" out="00:04:07:00">Noah Workman</videotag>
+      <twitter in="00:04:03:06" out="00:04:07:00" title="Noah Workman" source="from:noahworkman" target="personaltwitter" width="238" height="120"/>
+      <videotag target="inthisvideo" in="00:04:03:06" out="00:04:13:01">Wilken Sanches</videotag>
+      <attribution in="00:04:10:00" out="00:04:13:00" target="container5" resourceid="attrib"></attribution>
+      <videotag target="inthisvideo" in="00:04:13:02" out="00:04:19:05">Keechang Kim</videotag>
+      <twitter in="00:04:19:06" out="00:04:24:01" title="Celine Celines" source="from:celinecelines" target="personaltwitter" width="238" height="120"/>
+      <videotag target="inthisvideo" in="00:04:19:06" out="00:04:24:01">Celine Celines</videotag>
+      <flickr in="00:04:19:06" out="00:04:24:01" target="personalflickr" userid="13072070@N00" numberofimages="8" padding="4px"/>
+      <lastfm in="00:40:00" out="01:24:00" artist="yacht" target="lastfmdiv"/>
+	  
+    </resources>
+
+    <map>
+      <location resourceid="capetownwiki" in="00:00:03:00" out="00:00:11:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
+      <location resourceid="grandislewiki" in="00:00:11:07" out="00:00:19:07" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>
+      <location resourceid="mitmedialabhome" in="00:00:19:08" out="00:00:27:00" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>
+
+      <location resourceid="austinwiki" in="00:03:59:00" out="00:04:03:05" lat="45.5089" long="-73.5542" target="container2" zoom="8"/>
+      <location resourceid="newyorkwiki" in="00:04:03:06" out="00:04:07:01" lat="40.7143" long="-74.0060" target="container2" zoom="8"/>
+      <location resourceid="saopaulowiki" in="00:04:07:02" out="00:04:13:01" lat="-23.5489" long="-46.6388 " target="container2" zoom="8"/>
+      <location resourceid="seoulwiki" in="00:04:13:02" out="00:04:19:05" lat="37.5665" long="126.9780" target="container2" zoom="8"/>
+      <location resourceid="montrealwiki" in="00:04:19:06" out="00:04:24:01" lat="45.5089" long="-73.5542 " target="container2" zoom="8"/>
+    </map>
+
+    <subtitles languagesrc="language" accessibilitysrc="accessibility">
+      <subtitles language="en" align="center">
+        <subtitle in="00:00:00:03" out="00:00:01:06">All right let's take a look and show me some</subtitle>
+        <subtitle in="00:00:01:06" out="00:00:03:00">of the neat things you can do on the Internet</subtitle>
+        <subtitle in="00:00:05:00" out="00:00:07:00">Have you ever wondered if there is a common thread</subtitle>
+        <subtitle in="00:00:07:01" out="00:00:09:00">that exists between open source</subtitle>
+        <subtitle in="00:00:09:01" out="00:00:11:00">phone hackers in South Africa, </subtitle>
+        <subtitle in="00:00:12.5:00" out="00:00:16:00">adventurers using kites to map an oil spill, </subtitle>
+        <subtitle in="00:00:19:00" out="00:00:22:03">and a video of a cat seen by tens of millions of people?</subtitle>
+        <subtitle in="00:00:27:00" out="00:00:28:06">Well it's the Internet</subtitle>
+        <subtitle in="00:00:28:06" out="00:00:31:06">the cat, the kite, and the phone hackers</subtitle>
+        <subtitle in="00:00:31:07" out="00:00:33:06">would all be impossible without the Internet</subtitle>
+        <subtitle in="00:00:33:07" out="00:00:35:09">an open network that lets anyone</subtitle>
+        <subtitle in="00:00:35:10" out="00:00:37:11">participate without asking permission.</subtitle>
+        <subtitle in="00:00:39:00" out="00:00:41:11">The Internet is what lets M.I.T student Jeffrey Warren</subtitle>
+        <subtitle in="00:00:42:00" out="00:00:45:06">use kites to map an oil spill. </subtitle>
+        <subtitle in="00:00:47:06" out="00:00:48:07">well wait a second why do we have to go all the way</subtitle>
+        <subtitle in="00:00:48:08" out="00:00:50:00">into space to take pictures of things</subtitle>
+        <subtitle in="00:00:50:02" out="00:00:52:00">that are right, literally right next to us, you know. </subtitle>
+        <subtitle in="00:00:53:00" out="00:00:55:00">We can use simple tools like balloons or kites.</subtitle>
+        <subtitle in="00:00:55:06" out="00:00:57:00">Have the camera taking pictures every five seconds </subtitle>
+        <subtitle in="00:00:58:00" out="00:01:00:00">the idea is to get a lot of people involved </subtitle>
+        <subtitle in="00:01:00:06" out="00:01:03:00">in producing maps and then share all of the information</subtitle>
+        <subtitle in="00:01:03:03" out="00:01:05:00">like Wikipedia style you know?</subtitle>
+        <subtitle in="00:01:06:00" out="00:01:08:09">The Internet is what allows Steve Song and his friends</subtitle>
+        <subtitle in="00:01:08:10" out="00:01:10:11">to create a D.I.Y. phone network</subtitle>
+        <subtitle in="00:01:11:00" out="00:01:12:00">called the Village Telco.</subtitle>
+        <subtitle in="00:01:12:00" out="00:01:16:00">Everyone that has a device, that we call a mesh potato,</subtitle>
+        <subtitle in="00:01:16:00" out="00:01:18:00">actually has a phone number</subtitle>
+        <subtitle in="00:01:18:06" out="00:01:20:06">and can call anyone else on the mesh at no charge.</subtitle>
+        <subtitle in="00:01:21:06" out="00:01:24:06">So taking open-source principles to a telephone company.</subtitle>
+        <subtitle in="00:01:25:00" out="00:01:28:05">Everything is open, anyone can come and anyone can join</subtitle>
+        <subtitle in="00:01:29:05" out="00:01:31:00">anyone can make contributions </subtitle>
+        <subtitle in="00:01:31:00" out="00:01:32:00">and that's why I'm here.</subtitle>
+        <subtitle in="00:01:32:05" out="00:01:34:05">The Internet is what allowed Charlie Schmidt</subtitle>
+        <subtitle in="00:01:35:00" out="00:01:36:05">to film his cat on his keyboard</subtitle>
+        <subtitle in="00:01:37:00" out="00:01:38:00">and the rest is history. </subtitle>
+        <subtitle in="00:01:41:00" out="00:01:45:00">I remember having two profound thoughts back to back </subtitle>
+        <subtitle in="00:01:45:05" out="00:01:47:08">and the first one was any pervert in his basement </subtitle>
+        <subtitle in="00:01:48:02" out="00:01:51:00">can compete with NBC. </subtitle>
+        <subtitle in="00:01:52:04" out="00:01:58:00">And then I thought, ohh I am that pervert in his basement.</subtitle>
+        <subtitle in="00:01:58:04" out="00:01:59:05">It wasn't always this way</subtitle>
+        <subtitle in="00:02:00:05" out="00:02:02:05">before the web our computers could only network</subtitle>
+        <subtitle in="00:02:02:08" out="00:02:05:05">through a series of walled gardens, and we had to ask</subtitle>
+        <subtitle in="00:02:06:00" out="00:02:08:00">permission to publish our content or create new services.</subtitle>
+        <subtitle in="00:02:08:05" out="00:02:10:05">There were some big companies in there that thought</subtitle>
+        <subtitle in="00:02:11:00" out="00:02:13:01">they would run the mainframes that we </subtitle>
+        <subtitle in="00:02:13:02" out="00:02:16:05">might be mediating data through.</subtitle>
+        <subtitle in="00:02:15:00" out="00:02:18:03">CompuServe, America Online, The Source,</subtitle>
+        <subtitle in="00:02:18:04" out="00:02:19:12">MCI Mail,Prodigy.</subtitle>
+        <subtitle in="00:02:20:00" out="00:02:21:00">if you go to CompuServe,</subtitle>
+        <subtitle in="00:02:21:00" out="00:02:23:00">you'll get whatever CompuServe has put under its roof.</subtitle>
+        <subtitle in="00:02:23:00" out="00:02:26:00">If you subscribe to AOL you'll get whatever AOL has.</subtitle>
+        <subtitle in="00:02:26:00" out="00:02:28:06">Prodigy even has a twenty-one volume electronic</subtitle>
+        <subtitle in="00:02:28:06" out="00:02:30:00">encyclopedia that's updated quarterly</subtitle>
+        <subtitle in="00:02:30:00" out="00:02:32:00">including thirty messages.</subtitle>
+        <subtitle in="00:02:32:00" out="00:02:33:06">Alright, Prodigy :D</subtitle>
+        <subtitle in="00:02:33:06" out="00:02:37:00">No one really factored in that off in a quiet corner,</subtitle>
+        <subtitle in="00:02:37:00" out="00:02:40.5:00">there were tinkerers doing foundational technologies</subtitle>
+        <subtitle in="00:02:40:06" out="00:02:41:06">for networking,</subtitle>
+        <subtitle in="00:02:42:00" out="00:02:46:06">and they had a certain freedom that the firms didn't have.</subtitle>
+        <subtitle in="00:02:46:06" out="00:02:50:00">You didn't have to do a business development deal</subtitle>
+        <subtitle in="00:02:50:00" out="00:02:53:06">with the owner of the Internet...</subtitle>
+        <subtitle in="00:02:53:06" out="00:02:55:00">before you could put up a website.</subtitle>
+        <subtitle in="00:02:55:00" out="00:02:58:00">So that's what allowed Tim Berners-Lee</subtitle>
+        <subtitle in="00:02:58:00" out="00:03:00:00">to develop a protocol for an application,</subtitle>
+        <subtitle in="00:03:00:00" out="00:03:03:00">that would just run on top of the Internet,</subtitle>
+        <subtitle in="00:03:03:00" out="00:03:04:00">called the web.</subtitle>
+        <subtitle in="00:03:04:06" out="00:03:07:00">And then he was like, OK world go to it.</subtitle>
+        <subtitle in="00:03:09:00" out="00:03:11:00">Ordinary people are becoming electronic publishers.</subtitle>
+        <subtitle in="00:03:11:01" out="00:03:12:06">They are putting up the things</subtitle>
+        <subtitle in="00:03:12:07" out="00:03:14:00">that mean something to them</subtitle>
+        <subtitle in="00:03:14:01" out="00:03:16:00">and they want to share it with the rest of the world.</subtitle>
+        <subtitle in="00:03:16:01" out="00:03:18:00">Why is it better than CompuServe or Prodigy?</subtitle>
+        <subtitle in="00:03:18:01" out="00:03:19:09">That anyone can put any servers on </subtitle>
+        <subtitle in="00:03:19:10" out="00:03:21:06">and have it do anything they want.</subtitle>
+        <subtitle in="00:03:21:07" out="00:03:23:00">In fact most browsers have the ability</subtitle>
+        <subtitle in="00:03:23:01" out="00:03:24:06">for you to view that source code.</subtitle>
+        <subtitle in="00:03:24:07" out="00:03:26:02">I can go in then and start changing it</subtitle>
+        <subtitle in="00:03:26:03" out="00:03:27:10">myself for free. Ok great.</subtitle>
+        <subtitle in="00:03:27:11" out="00:03:29:09">Listen there’s even an encyclopedia</subtitle>
+        <subtitle in="00:03:29:10" out="00:03:31:06">Awesome. All right.</subtitle>
+        <subtitle in="00:03:31:09" out="00:03:34:00">We owe everything about the Internet</subtitle>
+        <subtitle in="00:03:34:01" out="00:03:36:00">to the fact that its open.</subtitle>
+        <subtitle in="00:03:36:01" out="00:03:38:00">And the hacker spirit that the people</subtitle>
+        <subtitle in="00:03:38:01" out="00:03:40:00">who created it believed it.</subtitle>
+        <subtitle in="00:03:40:01" out="00:03:42:04">But all that could change.</subtitle>
+        <subtitle in="00:03:42:06" out="00:03:44:10">The way things are…  are not the way</subtitle>
+        <subtitle in="00:03:44:11" out="00:03:47:00">things will inevitably be.</subtitle>
+        <subtitle in="00:03:48:00" out="00:03:50:01">The Internet itself is evolving</subtitle>
+        <subtitle in="00:03:50:02" out="00:03:51:01">and can be pushed</subtitle>
+        <subtitle in="00:03:51:02" out="00:03:53:06">in one direction or another.</subtitle>
+        <subtitle in="00:03:53:07" out="00:03:55:09">And some futures are much better than others.</subtitle>
+        <subtitle in="00:03:55:10" out="00:03:57:06">It’s great to have the example of the World Wide Web.</subtitle>
+        <subtitle in="00:03:57:07" out="00:03:58:11">It’s great to have the example of Wikipedia.</subtitle>
+        <subtitle in="00:03:59:00" out="00:04:00:01">There’s more where that came from.</subtitle>
+
+        <subtitle in="00:04:17:00" out="00:04:19:00">And I help make a better Internet</subtitle>
+        <subtitle in="00:04:19:01" out="00:04:21:06">By making things easier to use</subtitle>
+        <subtitle in="00:04:22:09" out="00:04:24:00">At Web Made Movies</subtitle>
+        <subtitle in="00:04:24:01" out="00:04:26:03">we want to build a better Internet</subtitle>
+        <subtitle in="00:04:26:04" out="00:04:28:04">by making video more open.</subtitle>
+        <subtitle in="00:04:28:06" out="00:04:31:00">The page your watching is a good example</subtitle>
+        <subtitle in="00:04:31:06" out="00:04:34:05">We’re going to keep exploring how video</subtitle>
+        <subtitle in="00:04:34:06" out="00:04:35:06">can be more like the web.</subtitle>
+        <subtitle in="00:04:35:07" out="00:04:37:06">And tell the story of some web heroes</subtitle>
+        <subtitle in="00:04:37:07" out="00:04:38:06">along the way.</subtitle>
+        <subtitle in="00:04:39:02" out="00:04:40:08">Explore our credits section to see</subtitle>
+        <subtitle in="00:04:41:00" out="00:04:45:00">how you can get involved.</subtitle>
+      </subtitles>
+      <subtitles language="fa" align="center">
+        <subtitle in="00:04:00:08" out="00:04:01:09">My name is Mona Kasra</subtitle>
+        <subtitle in="00:04:01:10" out="00:04:03:11">and I'm building a better Internet</subtitle>
+      </subtitles>
+      <subtitles language="pt" align="center">
+        <subtitle in="00:04:05:03" out="00:04:07:00">I make the Internet better</subtitle>
+        <subtitle in="00:04:07:01" out="00:04:08:06">producing and sharing music</subtitle>
+        <subtitle in="00:04:08:07" out="00:04:10:01">using Creative Commons</subtitle>
+      </subtitles>
+    </subtitles>
+    <webpages>
+      <webpage in="00:04:00:08" out="00:04:19:00" target="iframes" resourceid="monahomepage" />
+      <webpage in="00:04:19:06" out="00:04:24:01" target="iframes" resourceid="celinehomepage" />
+    </webpages>
+    <script in="4:45:00" start="displayCredits" stop="removeCredits"/>
+  </timeline>
+</popcorn>
