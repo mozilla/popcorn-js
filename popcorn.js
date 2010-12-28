@@ -661,11 +661,13 @@
         //  the events commence
         
         if ( "_setup" in setup && typeof setup._setup === "function" ) {
+          
+          // Resolves 239, 241, 242
+          options.target || 
+            ( setup.manifest.options.target && 
+                ( options.target = setup.manifest.options.target ) );
 
-          setup._setup.call( this, Popcorn.extend( {}, options, {
-                                      target: setup.manifest.options.target || "" 
-                                   })
-                            );
+          setup._setup.call( this, options );
         }
         
 
