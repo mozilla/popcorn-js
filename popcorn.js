@@ -123,17 +123,17 @@
             if ( previousTime < currentTime ) {
 
               while ( tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end <= currentTime ) {
-                if ( tracksByEnd[tracks.endIndex].running === true ) {
-                  tracksByEnd[tracks.endIndex].running = false;
-                  tracksByEnd[tracks.endIndex].natives.end.call( that, event, tracksByEnd[tracks.endIndex] );
+                if ( tracksByEnd[tracks.endIndex]._running === true ) {
+                  tracksByEnd[tracks.endIndex]._running = false;
+                  tracksByEnd[tracks.endIndex]._natives.end.call( that, event, tracksByEnd[tracks.endIndex] );
                 }
                 tracks.endIndex++;
               }
               
               while ( tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start <= currentTime ) {
-                if ( tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex].running === false ) {
-                  tracksByStart[tracks.startIndex].running = true;
-                  tracksByStart[tracks.startIndex].natives.start.call( that, event, tracksByStart[tracks.startIndex] );
+                if ( tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex]._running === false ) {
+                  tracksByStart[tracks.startIndex]._running = true;
+                  tracksByStart[tracks.startIndex]._natives.start.call( that, event, tracksByStart[tracks.startIndex] );
                 }
                 tracks.startIndex++;
               }
@@ -142,17 +142,17 @@
             } else if ( previousTime > currentTime ) {
 
               while ( tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start > currentTime ) {
-                if ( tracksByStart[tracks.startIndex].running === true ) {
-                  tracksByStart[tracks.startIndex].running = false;
-                  tracksByStart[tracks.startIndex].natives.end.call( that, event, tracksByStart[tracks.startIndex] );
+                if ( tracksByStart[tracks.startIndex]._running === true ) {
+                  tracksByStart[tracks.startIndex]._running = false;
+                  tracksByStart[tracks.startIndex]._natives.end.call( that, event, tracksByStart[tracks.startIndex] );
                 }
                 tracks.startIndex--;
               }
               
               while ( tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end > currentTime ) {
-                if ( tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex].running === false ) {
-                  tracksByEnd[tracks.endIndex].running = true;
-                  tracksByEnd[tracks.endIndex].natives.start.call( that, event, tracksByEnd[tracks.endIndex] );
+                if ( tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex]._running === false ) {
+                  tracksByEnd[tracks.endIndex]._running = true;
+                  tracksByEnd[tracks.endIndex]._natives.start.call( that, event, tracksByEnd[tracks.endIndex] );
                 }
                 tracks.endIndex--;
               }
@@ -334,7 +334,7 @@
 
       // remove all trackEvents
       for ( var s = 0, sl = byStart.length; s < sl; s++ ) {
-        if ( byStart[s] && byStart[s].natives && byStart[s].natives.type === name ) {
+        if ( byStart[s] && byStart[s]._natives && byStart[s]._natives.type === name ) {
           byStart.splice( s, 1 );
           s--; sl--; // update for loop if something removed, but keep checking
           if ( this.data.trackEvents.startIndex <= s ) {
@@ -343,7 +343,7 @@
         }
       }
       for ( var e = 0, el = byEnd.length; e < el; e++ ) {
-        if ( byEnd[e] && byEnd[e].natives && byEnd[e].natives.type === name ) {
+        if ( byEnd[e] && byEnd[e]._natives && byEnd[e]._natives.type === name ) {
           byEnd.splice( e, 1 );
           e--; el--; // update for loop if something removed, but keep checking
           if ( this.data.trackEvents.endIndex <= e ) {
@@ -493,9 +493,9 @@
   
   Popcorn.addTrackEvent = function( obj, track ) {
   
-    if ( track.natives ) {
+    if ( track._natives ) {
       // supports user defined track event id
-      track._id = !track.id ? Popcorn.guid( track.natives.type ) : track.id;
+      track._id = !track.id ? Popcorn.guid( track._natives.type ) : track.id;
 
       //  Push track event ids into the history
       obj.data.history.push( track._id );      
@@ -643,9 +643,9 @@
         } 
         
         // storing the plugin natives
-        options.natives = setup;
-        options.natives.type = name;
-        options.running = false;
+        options._natives = setup;
+        options._natives.type = name;
+        options._running = false;
 
         //  Checks for expected properties
         if ( !( "start" in options ) ) {
