@@ -417,6 +417,22 @@ test("UI/Mouse", function () {
 module("Popcorn Plugin")
 test("Manifest", function () {
 
+
+
+  var p = Popcorn("#video"),                         
+      expects = 5,
+      run = 1,  
+      count   = 0;
+
+  function plus() {
+    if ( ++count === expects ) {
+      start(); 
+      // clean up added events after tests
+      p.removePlugin("footnote");
+    }
+  }
+  
+  stop( 10000 );
   Popcorn.plugin( "footnote" , (function(){
       
     return {
@@ -434,6 +450,22 @@ test("Manifest", function () {
           target  : 'text-container'
         }
       },    
+      _setup: function( options ) {
+        ok( options.target, "`options.target exists`" );
+        plus();
+         
+        if ( run === 2 ) {
+          equals( options.target, 'custom-target', "Uses custom target if one is specified" );
+          plus();
+        }         
+
+        if ( run === 1 ) {
+          equals( options.target, 'text-container', "Uses manifest target by default" );
+          plus();
+          
+          run++; 
+        }
+      },
       start: function(event, options){
       },
 
@@ -446,13 +478,20 @@ test("Manifest", function () {
   })());
   
   
-  expect(1);
+  expect(expects);
   
   equal( Popcorn.sizeOf( Popcorn.manifest ), 1, "One manifest stored" );
+  plus();
   
   // add more tests
   
-  Popcorn("#video").removePlugin("footnote");
+  p.footnote({});
+  
+  p.footnote({
+    target: "custom-target"
+  })
+  
+  
 });
 
 test("Update Timer", function () {
