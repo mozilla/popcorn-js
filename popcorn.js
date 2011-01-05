@@ -852,4 +852,19 @@
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
   
+  document.addEventListener('DOMContentLoaded', function () {
+
+    var video = document.getElementsByTagName( 'video' );
+    for ( var i = 0, l = video.length; i < l; i++ ) {
+      var ind = i,
+          videoSources = video[ind].getAttribute( 'data-timeline-sources' );
+      if (videoSources) {
+        var p = Popcorn('#' + video[ind].getAttribute( 'id' ) )
+        .parseXML( videoSources )
+        .play();
+      }
+    }
+
+  }, false);
+
 })(window, window.document);

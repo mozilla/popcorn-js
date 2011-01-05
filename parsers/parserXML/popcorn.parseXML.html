@@ -7,22 +7,14 @@
   <script src="../../test/jquery.js"></script>
   <script src="../../plugins/flickr/popcorn.flickr.js"></script>
   <script src="popcorn.parseXML.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
-      .parseXML("data/data.XML")
-      .play();
 
-    }, false);
-
-  </script>
 </head>
 <body>
   <h1 id="qunit-header">Popcorn 0.1 parser Plug-in Demo</h1>
   <p></p>
   <div>
-    <video id='video' 
-      controls preload='none' 
+    <video id='video' data-timeline-sources="data/data.XML"
+      controls
       width= '250px'
       poster="../../test/poster.png"> 
 
@@ -40,5 +32,6 @@
   </div>
   
   <div id="flickrdiv"></div>
+
 </body>
 </html>
