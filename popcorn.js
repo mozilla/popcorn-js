@@ -764,23 +764,12 @@
           var tracksObject = definition( data );
 
           // creating tracks out of parsed object
-          for ( var key in tracksObject ) {
-            if ( tracksObject.hasOwnProperty(key) ) {
+          for ( var i = 0, todl = tracksObject.data.length; i < todl; i++ ) {
 
-              // an array of tracks of all one type
-              if ( tracksObject[key].constructor === Array ) {
+            for ( var key in tracksObject.data[i] ) {
 
-                for (var i = 0, tol = tracksObject[key].length; i < tol; i++) {
-                  if ( typeof that[key] === "function") {
-                    that[key]( tracksObject[key][i] );
-                  }
-                }
-
-              // one single track
-              } else if ( typeof tracksObject[key] === "object" ) {
-                if ( typeof that[key] === "function") {
-                  that[key]( tracksObject[key] );
-                }
+              if ( tracksObject.data[i].hasOwnProperty(key) ) {
+                that[key]( tracksObject.data[i][key] );
               }
             }
           }

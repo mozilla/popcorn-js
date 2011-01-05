@@ -1,7 +1,10 @@
 {
-  "parserTest":
+  "data": [
     {
-      "start": 5,
-      "end": 6
+      "parserTest": {
+        "start": 5,
+        "end": 6
+      }
     }
+  ]
 }

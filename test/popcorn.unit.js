@@ -1127,7 +1127,7 @@ test("Parsing Functions", function () {
     return data.json;
   });
 
-  ok(typeof popperly.parseJSON === "function", "Popcorn.parser created a parserJSON function");
+  ok(typeof popperly.parseJSON === "function", "Popcorn.parser created a parseJSON function");
   plus();
 
   ok(typeof popperly.parseJSON().parseJSON("data/test.js").parseJSON === "function" , "parseJSON function is chainable");
