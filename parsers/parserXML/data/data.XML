@@ -1,0 +1,9 @@
+<popcorn>
+  <manifest>
+    <somedata id="somedata" userid="13072070@N00" />
+  </manifest>
+  <timeline>
+    <flickr in="1" out="5" target="flickrdiv" numberofimages="4" padding="4px" resourceid="somedata"/>
+    <flickr in="10" out="11" target="flickrdiv" numberofimages="8" padding="4px" resourceid="somedata"/>
+  </timeline>
+</popcorn>
