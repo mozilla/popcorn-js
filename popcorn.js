@@ -295,25 +295,23 @@
       !fn && ( fn = Popcorn.nop );
       
       
-      var timer = 0, 
-          self  = this, 
+      var self  = this, 
           callback = function execCallback( event ) {
             
-            if ( this.currentTime() >= time && !timer ) {
+            if ( this.currentTime() >= time && !callback.fired ) {
               
-              fn.call(self, event);
+              callback.fired = true;
               
               this.unlisten("execCallback");
               
-              timer++;
+              fn.call(self, event);
+              
             }
           };
       
-      
+      callback.fired = false;
       
       this.listen("timeupdate", callback);
-      
-      
       
       return this;
     },
