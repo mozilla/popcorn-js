@@ -852,19 +852,34 @@
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
   
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener( "DOMContentLoaded", function () {
 
-    var video = document.getElementsByTagName( 'video' );
-    for ( var i = 0, l = video.length; i < l; i++ ) {
-      var ind = i,
-          videoSources = video[ind].getAttribute( 'data-timeline-sources' );
-      if (videoSources) {
-        var p = Popcorn('#' + video[ind].getAttribute( 'id' ) )
-        .parseXML( videoSources )
-        .play();
+    var videos = document.getElementsByTagName( "video" );
+
+    Popcorn.forEach( videos, function ( iter, key ) {
+
+      var video = videos[ key ],
+          dataSources, popcornVideo;
+
+      //  Ensure we're looking at a dom node and that it has an id
+      //  otherwise Popcorn won't be able to find the video element
+      if ( video.nodeType && video.nodeType === 1 && video.id ) {
+
+        dataSources = video.getAttribute( "data-timeline-sources" );
+      
+        //  If the video has data sources, continue to load
+        if ( dataSources ) {
+        
+          //  Set up the video and load in the datasources
+          popcornVideo = Popcorn( "#" + video.id ).parseXML( dataSources );
+
+          //  Only play the video if it was specified to do so
+          if ( !!popcornVideo.autoplay ) {
+            popcornVideo.play();
+          }
+        }
       }
-    }
-
-  }, false);
+    });
+  }, false );
 
 })(window, window.document);
