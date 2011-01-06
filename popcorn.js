@@ -726,6 +726,71 @@
     return plugin;
   };
   
+  // stores parsers keyed on filetype
+  Popcorn.parsers = {};
+
+  // An interface for extending Popcorn
+  // with parser functionality
+  Popcorn.parser = function( name, type, definition ) {
+
+    if ( Popcorn.protect.natives.indexOf( name.toLowerCase() ) >= 0 ) {
+      Popcorn.error("'" + name + "' is a protected function name");
+      return;
+    }
+
+    if ( typeof definition !== "function" ) {
+      return;
+    }
+
+    // Provides some sugar, but ultimately extends
+    // the definition into Popcorn.p
+    
+    var natives = Popcorn.events.all,
+        parseFn,
+        parser = {};
+    
+    parseFn = function ( filename ) {
+        
+      if ( !filename ) {
+        return this;
+      }
+
+      var that = this;
+
+      Popcorn.xhr({
+        url: filename,
+        success: function( data ) {
+
+          var tracksObject = definition( data );
+
+          // creating tracks out of parsed object
+          for ( var i = 0, todl = tracksObject.data.length; i < todl; i++ ) {
+
+            for ( var key in tracksObject.data[i] ) {
+
+              if ( tracksObject.data[i].hasOwnProperty(key) ) {
+                that[key]( tracksObject.data[i][key] );
+              }
+            }
+          }
+        }
+      });
+
+      return this;
+    };
+
+    // Assign new named definition
+    parser[ name ] = parseFn;
+    
+    // Extend Popcorn.p with new named definition
+    Popcorn.extend( Popcorn.p, parser );
+    
+    // keys the function name by filetype extension
+    Popcorn.parsers[type] = name;
+
+    return parser;
+  };
+  
   
   var setup = {
     url: '',
@@ -787,4 +852,34 @@
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
   
+  document.addEventListener( "DOMContentLoaded", function () {
+
+    var videos = document.getElementsByTagName( "video" );
+
+    Popcorn.forEach( videos, function ( iter, key ) {
+
+      var video = videos[ key ],
+          dataSources, popcornVideo;
+
+      //  Ensure we're looking at a dom node and that it has an id
+      //  otherwise Popcorn won't be able to find the video element
+      if ( video.nodeType && video.nodeType === 1 && video.id ) {
+
+        dataSources = video.getAttribute( "data-timeline-sources" );
+      
+        //  If the video has data sources, continue to load
+        if ( dataSources ) {
+        
+          //  Set up the video and load in the datasources
+          popcornVideo = Popcorn( "#" + video.id ).parseXML( dataSources );
+
+          //  Only play the video if it was specified to do so
+          if ( !!popcornVideo.autoplay ) {
+            popcornVideo.play();
+          }
+        }
+      }
+    });
+  }, false );
+
 })(window, window.document);

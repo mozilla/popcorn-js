@@ -1,0 +1,21 @@
+<popcorn>
+
+  <manifest>
+
+    <container item3="item3">
+      <somedata id="somedata" item2="item2"/>
+    </container>
+
+  </manifest>
+
+  <timeline>
+    <parserTest1 in="5" out="6" resourceid="somedata"/>
+
+    <container item1="item1">
+      <parserTest2 in="5" out="6">item4</parserTest2>
+      <parserTest3 in="5" out="6" resourceid="somedata"/>
+    </container>
+
+  </timeline>
+
+</popcorn>
