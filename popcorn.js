@@ -105,7 +105,7 @@
           // adding padding to the front and end of the arrays
           // this is so we do not fall off either end
 
-          var videoDurationPlus = that.video.duration + 1;
+          var videoDurationPlus = 9999; //that.video.duration + 1;
           Popcorn.addTrackEvent( that, {
             start: videoDurationPlus,
             end: videoDurationPlus
