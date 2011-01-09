@@ -7,19 +7,43 @@
 
   // just a little tool function
   // calculates the top and left position of an element
-  var offset = function(elem) {
-    if(!elem) elem = this;
-
-    var x = elem.offsetLeft;
-    var y = elem.offsetTop;
-
-    while (elem = elem.offsetParent) {
-      x += elem.offsetLeft;
-      y += elem.offsetTop;
+  var offset = function(obj) {
+    var left, top;
+    left = top = 0;
+    if (obj.offsetParent) {
+        do {
+            left += obj.offsetLeft;
+            top  += obj.offsetTop;
+        } while (obj = obj.offsetParent);
     }
+    return {
+        left : left,
+        top : top
+    };
+  };
 
-    return { left: x, top: y };
-  }
+  // translates whatever is in options.container into selected language
+  var translate = function( options, text ) {
+
+    options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
+
+    google.language.translate( text, '', options.selectedLanguage, function( result ) {
+
+      options.container.innerHTML = result.translation;
+
+    } );
+  };
+
+
+/*
+      // Find element offset
+      if (element.offsetParent) {
+        do {
+          offsetX += element.offsetLeft;
+          offsetY += element.offsetTop;
+        } while ((element = element.offsetParent));
+      }
+*/
 
   Popcorn.plugin( "subtitle" , {
     
@@ -53,7 +77,7 @@
 
           // the video element must have height and width defined
           this.container.style.width      = this.video.offsetWidth + "px";
-          //this.container.style.top        = offset( this.video ).top + "px";
+          this.container.style.top        = offset( this.video ).top + this.video.offsetHeight - 65 + "px";
           this.container.style.left       = offset( this.video ).left + "px";
 
           this.video.parentNode.appendChild( this.container );
@@ -66,60 +90,66 @@
           options.container = this.container;
         }
 
-        options.translatedText = options.text;
-        var selectedLanguage = ( options.language || "" ),
-            // declared as a function, it can be called, but does nothing if not needed
-            toggleSubtitles = function() {},
-            accessibility = document.getElementById( options.accessibilitysrc ),
+        var accessibility = document.getElementById( options.accessibilitysrc ),
             that = this;
 
+        options.showSubtitle = function() {
+          options.container.innerHTML = options.text;
+        };
+        options.toggleSubtitles = function() {};
+        options.that = this;
+        
+
         if ( options.languagesrc ) {
-          var languageSrc = document.getElementById( options.languagesrc );
+          options.showSubtitle = translate;
+          options.languageSrc = document.getElementById( options.languagesrc );
+          options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
 
-          var updateLanguage = function() {
+          if ( !this.languageSources ) {
+            this.languageSources = {};
+          }
 
-            selectedLanguage = document.getElementById( options.languagesrc ).options[ languageSrc.selectedIndex ].value;
+          
 
-            google.language.translate( options.text, '', selectedLanguage, function( result ) {
+          if ( !this.languageSources[ options.languagesrc ] ) {
+            this.languageSources[ options.languagesrc ] = {};
+            
+          }
 
-              options.translatedText = result.translation;
+          if ( !this.languageSources[ options.languagesrc ][ options.target ] ) {
+            this.languageSources[ options.languagesrc ][ options.target ] = true;
 
-            } );
+            options.languageSrc.addEventListener( "change", function() {
 
-            google.language.translate( options.container.innerHTML, '', selectedLanguage, function( result ) {
 
-              options.container.innerHTML = result.translation;
-              toggleSubtitles(); // update visuals if accessibility is used
+              options.toggleSubtitles();
+              options.showSubtitle( options, options.container.innerHTML );
 
-            } );
+            }, false );
 
-            that.container.style.top = offset( that.video ).top + that.video.offsetHeight - ( 40 + that.container.offsetHeight ) + "px";
+          }
 
-          };
-
-          languageSrc.addEventListener( "change", updateLanguage, false );
-
-          // initiate it once to set starting state
-          updateLanguage();
         }
 
         if ( accessibility ) {
+          options.accessibility = accessibility;
 
-          toggleSubtitles = function() {
-
-            if ( accessibility.checked || selectedLanguage !== ( options.language || "") ) {
-              options.container.style.display = "inline";
-            } else if ( selectedLanguage === ( options.language || "") ) {
-              options.container.style.display = "none";
+          options.toggleSubtitles = function() {
+            options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
+            if ( options.accessibility.checked || options.selectedLanguage !== ( options.language || "") ) {
+              options.display = "inline";
+              options.container.style.display = options.display;
+            } else if ( options.selectedLanguage === ( options.language || "") ) {
+              options.display = "none";
+              options.container.style.display = options.display;
             }
-            that.container.style.top = offset( that.video ).top + that.video.offsetHeight - ( 40 + that.container.offsetHeight ) + "px";
 
           };
 
-          accessibility.addEventListener( "change", toggleSubtitles, false );
+          options.accessibility.addEventListener( "change", options.toggleSubtitles, false );
 
           // initiate it once to set starting state
-          toggleSubtitles();
+          options.toggleSubtitles();
         }
 
       },
@@ -130,8 +160,8 @@
        * options variable
        */
       start: function(event, options){
-        options.container.innerHTML = options.translatedText;
-        this.container.style.top = offset( this.video ).top + this.video.offsetHeight - ( 40 + this.container.offsetHeight ) + "px";
+        options.container.style.display = options.display;
+        options.showSubtitle( options, options.text );
       },
       /**
        * @member subtitle 
@@ -140,6 +170,7 @@
        * options variable
        */
       end: function(event, options){
+        options.container.style.display = options.display;
         options.container.innerHTML = "";
       }
    

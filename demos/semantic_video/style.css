@@ -8,7 +8,7 @@ dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
 	margin: 0;
-	padding: 0;
+	padding: 0;video-div
 	border: 0;
 	outline: 0;
 	font-size: 100%;
@@ -304,7 +304,7 @@ background: url(images/arro.png) no-repeat right -21px;
 }
 
 .video-div{
-position:relative;
+
 border: 2px solid #cc433c;
 margin-bottom: 15px;
 -webkit-box-shadow: -1px 1px 1px #d9d9d9;
