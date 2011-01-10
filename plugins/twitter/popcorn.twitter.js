@@ -1,14 +1,5 @@
 // PLUGIN: TWITTER
 
-if ( !window.TWTR ) {
-  var head = document.getElementsByTagName("head")[0] || document.documentElement,
-      script = document.createElement("script");
-
-    script.src = "http://widgets.twimg.com/j/2/widget.js";
-
-    head.insertBefore( script, head.firstChild );
-}
-
 (function (Popcorn) {
 
   /**
@@ -38,6 +29,16 @@ if ( !window.TWTR ) {
         } )
    *
    */
+
+  if ( !window.TWTR ) {
+    var head = document.getElementsByTagName("head")[0] || document.documentElement,
+        script = document.createElement("script");
+
+    script.src = "http://widgets.twimg.com/j/2/widget.js";
+
+    head.insertBefore( script, head.firstChild );
+  }
+
   Popcorn.plugin( "twitter" , {
 
       manifest: {
