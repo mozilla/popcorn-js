@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Popcorn tagThisPerson Plug-in Demo</title>
+  <title>Popcorn tagthisperson Plug-in Demo</title>
   
   <script src="../../popcorn.js"></script>
   <script src="popcorn.tagThisPerson.js"></script>
@@ -10,19 +10,19 @@
       var p = Popcorn('#video')
       .play() 
       .volume(0)
-      .tagThisPerson({
+      .tagthisperson({
         start: 0, // seconds
         end: 10, // seconds
         person: 'Anna Sob',
         target: 'tagdiv'
       } )
-      .tagThisPerson({
+      .tagthisperson({
         start: 5, // seconds
         end: 15, // seconds
         person: 'Scott',
         target: 'tagdiv'
       } )
-      .tagThisPerson({
+      .tagthisperson({
         start: 0, // seconds
         end: 15, // seconds
         person: 'Scott',
@@ -33,7 +33,7 @@
   </script>
 </head>
 <body>
-  <h1 id="qunit-header">Popcorn tagThisPerson Plug-in Demo</h1>
+  <h1 id="qunit-header">Popcorn tagthisperson Plug-in Demo</h1>
   <p> A tag displaying Scott will appear at 0 seconds and disappear at 15 seconds.</p>
   <p> A separate tag displaying Anna Sob will appear at 0 seconds and disappear at 10 seconds. At 5 seconds Scott will be appended to this tag.</p>
   <div>

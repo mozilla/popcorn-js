@@ -88,7 +88,7 @@
     </footnotes>
     <resources>
       <footnote in="00:00:00" out="00:15:00" target="footnotediv">This video made exclusively for drumbeat.org </footnote>
-      <tagThisPerson target="inthisvideo" in="00:00:05:02" out="00:00:10:07" person="Steve Song" />
+      <tagthisperson target="inthisvideo" in="00:00:05:02" out="00:00:10:07" person="Steve Song" />
       <!--<attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>-->
       <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" src="@stevesong" target="personaltwitter" width="238" height="120"/>
       <wikipedia in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberofwords="200" lang="en" target="wikidiv"/>
@@ -99,40 +99,40 @@
       <googlenews in="00:00:10:07" out="00:00:18:04" target="googlenewsdiv" topic="Oil Spill"/>
       <!--<attribution in="00:00:10:07" out="00:00:18:04" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>-->
 
-      <tagThisPerson target="inthisvideo" in="00:00:18:04" out="00:00:25:02" person="Keyboard Cat"/>
+      <tagthisperson target="inthisvideo" in="00:00:18:04" out="00:00:25:02" person="Keyboard Cat"/>
       <twitter in="00:00:18:04" out="00:00:25:02" title="Keyboard Cat" src="#keyboardcat" target="twitter" width="238" height="120"/>
       <!--<attribution in="00:00:18:04" out="00:00:25:02" target="container5">KeyBoard Cat, Charlie Schmidt</attribution>-->
       <googlenews in="00:00:18:04" out="00:00:25:02" target="googlenewsdiv" topic="Keyboard Cat"/>
 
-      <tagThisPerson target="inthisvideo" in="00:00:28:09" out="00:00:29:07" person="Jeffrey Warren" />
+      <tagthisperson target="inthisvideo" in="00:00:28:09" out="00:00:29:07" person="Jeffrey Warren" />
       <!--<attribution in="00:00:28:09" out="00:00:29:07" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>-->
-      <tagThisPerson target="inthisvideo" in="00:00:29:08" out="00:00:31:00" person="Village Telco Guy" />
+      <tagthisperson target="inthisvideo" in="00:00:29:08" out="00:00:31:00" person="Village Telco Guy" />
 
       <wikipedia in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberofwords="200" target="wikidiv"/>
       <googlenews in="00:00:32:00" out="00:00:41:00" target="googlenewsdiv" topic="the internet"/>
 
-      <tagThisPerson target="inthisvideo" in="00:00:41:00" out="00:01:07:09" person="Jeffrey Warren" />
+      <tagthisperson target="inthisvideo" in="00:00:41:00" out="00:01:07:09" person="Jeffrey Warren" />
       <flickr in="00:00:41:00" out="00:01:07:09" target="personalflickr" userid="35034346917@N01" numberofimages="8" padding="4px"/>
       <twitter in="00:00:41:00" out="00:01:07:09" title="Oil Spill" src="#oilspill" target="twitter" width="238" height="120"/>
-      <googleNews in="00:00:41:00" out="00:01:07:09" target="googlenewsdiv" topic="Oil Spill"/>
-      <!--<location resourceid="grandislewiki" in="00:00:41:00" out="00:01:07:09" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>-->
+      <googlenews in="00:00:41:00" out="00:01:07:09" target="googlenewsdiv" topic="Oil Spill"/>
+      <!--<googlemap resourceid="grandislewiki" in="00:00:41:00" out="00:01:07:09" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>-->
       <wikipedia in="00:00:41:00" out="00:01:07:09" resourceid="oilspill" numberofwords="200" target="wikidiv"/>
       <footnote in="00:00:41:00" out="00:01:07:09" target="footnotediv">Learn more about Grass Roots mapping at www.grassrootsmapping.org</footnote>
       <twitter in="00:01:07:10" out="00:01:25:07" title="Steve Song" src="@stevesong" target="personaltwitter" width="238" height="120"/>
       <flickr in="00:01:07:10" out="00:01:25:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
-      <!--<location id="CapeTown" resourceid="capetownwiki" in="00:01:07:10" out="00:01:32:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>-->
+      <!--<googlemap id="CapeTown" resourceid="capetownwiki" in="00:01:07:10" out="00:01:32:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>-->
       <wikipedia in="00:01:07:10" out="00:01:32:07" resourceid="villagetelco" numberofwords="200" target="wikidiv"/>
-      <tagThisPerson target="inthisvideo" in="00:01:25:08" out="00:01:32:07" person="Michael Adeyeye" />
+      <tagthisperson target="inthisvideo" in="00:01:25:08" out="00:01:32:07" person="Michael Adeyeye" />
 
-      <tagThisPerson target="inthisvideo" in="00:01:32:08" out="00:01:38:02" person="Charlie Schmidt" />
+      <tagthisperson target="inthisvideo" in="00:01:32:08" out="00:01:38:02" person="Charlie Schmidt" />
       <twitter in="00:01:32:08" out="00:01:57:11" title="Charlie Schmidt" src="@chuckieart" target="personaltwitter" width="238" height="120"/>
-      <!--<location id="MITMediaLab" resourceid="mitmedialabhome" in="00:01:32:08" out="00:01:57:11" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>-->
-      <tagThisPerson target="inthisvideo" in="00:01:38:02" out="00:01:41:10" person="Keyboard Cat" />
-      <tagThisPerson target="inthisvideo" in="00:01:41:11" out="00:01:57:11" person="Charlie Schmidt" />
+      <!--<googlemap id="MITMediaLab" resourceid="mitmedialabhome" in="00:01:32:08" out="00:01:57:11" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>-->
+      <tagthisperson target="inthisvideo" in="00:01:38:02" out="00:01:41:10" person="Keyboard Cat" />
+      <tagthisperson target="inthisvideo" in="00:01:41:11" out="00:01:57:11" person="Charlie Schmidt" />
 
-      <tagThisPerson target="inthisvideo" in="00:02:09:00" out="00:03:07:05" person="Jonathan Zittrain" />
+      <tagthisperson target="inthisvideo" in="00:02:09:00" out="00:03:07:05" person="Jonathan Zittrain" />
       <twitter in="00:02:09:00" out="00:03:07:05" title="Jonathan Zittrain" source="@zittrain" target="personaltwitter" width="238" height="120"/>
-      <!--<location resourceid="harvardlawhome" in="00:02:09:00" out="00:03:07:05" lat="42.4222" long="-88.6137" target="container2" zoom="12"/>-->
+      <!--<googlemap resourceid="harvardlawhome" in="00:02:09:00" out="00:03:07:05" lat="42.4222" long="-88.6137" target="container2" zoom="12"/>-->
       <wikipedia in="00:02:09:00" out="00:02:20:00" resourceid="zittrain" numberofwords="200" target="wikidiv"/>
       <wikipedia in="00:02:20:01" out="00:02:23:00" resourceid="compuserve" numberofwords="200" target="wikidiv"/>
       <wikipedia in="00:02:23:01" out="00:02:26:00" resourceid="aol" numberofwords="200" target="wikidiv"/>
@@ -161,38 +161,38 @@
 
       <wikipedia in="00:03:36:00" out="00:03:43:00" resourceid="openstandards" numberofwords="200" target="wikidiv"/>
 
-      <tagThisPerson target="inthisvideo" in="00:03:09:00" out="00:03:16:00" person="NCSA guy" />
-      <tagThisPerson target="inthisvideo" in="00:03:16:01" out="00:03:18:05" person="Computer Chronicles guy #1" />
-      <tagThisPerson target="inthisvideo" in="00:03:16:02" out="00:03:21:00" person="Computer Chronicles guy #2" />
-      <tagThisPerson target="inthisvideo" in="00:03:21:01" out="00:03:28:06" person="Computer Chronicles guy #3" />
+      <tagthisperson target="inthisvideo" in="00:03:09:00" out="00:03:16:00" person="NCSA guy" />
+      <tagthisperson target="inthisvideo" in="00:03:16:01" out="00:03:18:05" person="Computer Chronicles guy #1" />
+      <tagthisperson target="inthisvideo" in="00:03:16:02" out="00:03:21:00" person="Computer Chronicles guy #2" />
+      <tagthisperson target="inthisvideo" in="00:03:21:01" out="00:03:28:06" person="Computer Chronicles guy #3" />
 
-      <tagThisPerson target="inthisvideo" in="00:03:43:00" out="00:03:56:00" person="Jonathan Zittrain" />
+      <tagthisperson target="inthisvideo" in="00:03:43:00" out="00:03:56:00" person="Jonathan Zittrain" />
       <twitter in="00:03:43:00" out="00:03:56:00" title="Jonathan Zittrain" src="@zittrain" target="personaltwitter" width="238" height="120"/>
       <footnote in="00:03:43:00" out="00:03:57:00" target="footnotediv">Read Zittrain's book 'The Future of the Internet — And How to Stop It'</footnote>
 
-      <tagThisPerson target="inthisvideo" in="00:03:59:00" out="00:04:03:05" person="Mona Kasra" />
-      <tagThisPerson target="inthisvideo" in="00:04:03:06" out="00:04:07:00" person="Noah Workman" />
+      <tagthisperson target="inthisvideo" in="00:03:59:00" out="00:04:03:05" person="Mona Kasra" />
+      <tagthisperson target="inthisvideo" in="00:04:03:06" out="00:04:07:00" person="Noah Workman" />
       <twitter in="00:04:03:06" out="00:04:07:00" title="Noah Workman" src="@noahworkman" target="personaltwitter" width="238" height="120"/>
-      <tagThisPerson target="inthisvideo" in="00:04:03:06" out="00:04:13:01" person="Wilken Sanches" />
+      <tagthisperson target="inthisvideo" in="00:04:03:06" out="00:04:13:01" person="Wilken Sanches" />
       <!--<attribution in="00:04:10:00" out="00:04:13:00" target="container5" resourceid="attrib"></attribution>-->
-      <tagThisPerson target="inthisvideo" in="00:04:13:02" out="00:04:19:05" person="Keechang Kim" />
+      <tagthisperson target="inthisvideo" in="00:04:13:02" out="00:04:19:05" person="Keechang Kim" />
       <twitter in="00:04:19:06" out="00:04:24:01" title="Celine Celines" src="from:celinecelines" target="personaltwitter" width="238" height="120"/>
-      <tagThisPerson target="inthisvideo" in="00:04:19:06" out="00:04:24:01" person="Celine Celines" />
+      <tagthisperson target="inthisvideo" in="00:04:19:06" out="00:04:24:01" person="Celine Celines" />
       <flickr in="00:04:19:06" out="00:04:24:01" target="personalflickr" userid="13072070@N00" numberofimages="8" padding="4px"/>
       <!--<lastfm in="00:40:00" out="01:24:00" artist="yacht" target="lastfmdiv"/>-->
 	  
     </resources>
 
     <!--<map>
-      <googleMap resourceid="capetownwiki" in="00:00:03:00" out="00:00:11:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
-      <googleMap resourceid="grandislewiki" in="00:00:11:07" out="00:00:19:07" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>
-      <googleMap resourceid="mitmedialabhome" in="00:00:19:08" out="00:00:27:00" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>
+      <googlemap resourceid="capetownwiki" in="00:00:03:00" out="00:00:11:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
+      <googlemap resourceid="grandislewiki" in="00:00:11:07" out="00:00:19:07" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>
+      <googlemap resourceid="mitmedialabhome" in="00:00:19:08" out="00:00:27:00" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>
 
-      <googleMap resourceid="austinwiki" in="00:03:59:00" out="00:04:03:05" lat="45.5089" long="-73.5542" target="container2" zoom="8"/>
-      <googleMap resourceid="newyorkwiki" in="00:04:03:06" out="00:04:07:01" lat="40.7143" long="-74.0060" target="container2" zoom="8"/>
-      <googleMap resourceid="saopaulowiki" in="00:04:07:02" out="00:04:13:01" lat="-23.5489" long="-46.6388 " target="container2" zoom="8"/>
-      <googleMap resourceid="seoulwiki" in="00:04:13:02" out="00:04:19:05" lat="37.5665" long="126.9780" target="container2" zoom="8"/>
-      <googleMap resourceid="montrealwiki" in="00:04:19:06" out="00:04:24:01" lat="45.5089" long="-73.5542 " target="container2" zoom="8"/>
+      <googlemap resourceid="austinwiki" in="00:03:59:00" out="00:04:03:05" lat="45.5089" long="-73.5542" target="container2" zoom="8"/>
+      <googlemap resourceid="newyorkwiki" in="00:04:03:06" out="00:04:07:01" lat="40.7143" long="-74.0060" target="container2" zoom="8"/>
+      <googlemap resourceid="saopaulowiki" in="00:04:07:02" out="00:04:13:01" lat="-23.5489" long="-46.6388 " target="container2" zoom="8"/>
+      <googlemap resourceid="seoulwiki" in="00:04:13:02" out="00:04:19:05" lat="37.5665" long="126.9780" target="container2" zoom="8"/>
+      <googlemap resourceid="montrealwiki" in="00:04:19:06" out="00:04:24:01" lat="45.5089" long="-73.5542 " target="container2" zoom="8"/>
     </map>-->
 
     <subtitles languagesrc="language" accessibilitysrc="accessibility">

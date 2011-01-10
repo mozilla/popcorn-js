@@ -1,9 +1,9 @@
-// PLUGIN: tagThisPerson
+// PLUGIN: tagthisperson
 
 (function (Popcorn) {
   
   /**
-   * tagThisPerson popcorn plug-in 
+   * tagthisperson popcorn plug-in 
    * Adds people's names to an element on the page.
    * Options parameter will need a start, end, target and person.
    * Start is the time that you want this plug-in to execute
@@ -16,7 +16,7 @@
    * 
    * Example:
      var p = Popcorn('#video')
-        .tagThisPerson({
+        .tagthisperson({
           start: 5, // seconds
           end: 15, // seconds
           person: '@annasob',
@@ -24,7 +24,7 @@
         } )
    *
    */
-  Popcorn.plugin( "tagThisPerson" , (function(){
+  Popcorn.plugin( "tagthisperson" , (function(){
     
     var peopleArray = [];
     var People = function(){
@@ -44,7 +44,7 @@
     return {
       manifest: {
         about:{
-          name: "Popcorn tagThisPerson Plugin",
+          name: "Popcorn tagthisperson Plugin",
           version: "0.1",
           author: "@annasob",
           website: "annasob.wordpress.com"
@@ -74,7 +74,7 @@
         }
       },
       /**
-       * @member tagThisPerson 
+       * @member tagthisperson 
        * The start function will be executed when the currentTime 
        * of the video  reaches the start time provided by the 
        * options variable
@@ -84,7 +84,7 @@
         document.getElementById(options.target).innerHTML  = options._p.toString();
       },
       /**
-       * @member tagThisPerson 
+       * @member tagthisperson 
        * The end function will be executed when the currentTime 
        * of the video  reaches the end time provided by the 
        * options variable
