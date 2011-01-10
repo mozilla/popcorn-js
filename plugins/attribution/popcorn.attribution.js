@@ -98,9 +98,8 @@
           attrib += ", <a href='" + options.licenseUrl + "' target='_blank'>license</a> ";
         }
         options._container.innerHTML  = attrib;
-        options.target =  document.getElementById( options.target );
-        if (options.target) {
-          options.target.appendChild( options._container );
+        if ( document.getElementById( options.target ) ) {
+          document.getElementById( options.target ).appendChild( options._container );
         }
       },
       /**
