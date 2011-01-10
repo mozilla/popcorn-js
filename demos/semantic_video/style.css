@@ -438,7 +438,7 @@ position: absolute;
 
 .inactive{
 z-index: 9001;
-display: inline;
+display: none;
 top: 0px;
 left: 0px;
 opacity: 0.2;
