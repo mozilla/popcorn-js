@@ -124,7 +124,14 @@ var googleCallback;
             }
             // reset the location and zoom just in case the user plaid with the map
             options._map.setCenter(location);
-            options._map.setZoom(options.zoom || 0);
+            if ( options.zoom ) {
+              if ( typeof options.zoom !== "Number" ) {
+                options.zoom = +options.zoom;
+              } 
+            } else {
+              options.zoom = 0;
+            }
+            options._map.setZoom( options.zoom );
           }
         };
         

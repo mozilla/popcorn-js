@@ -18,7 +18,7 @@ test("Popcorn Google Map Plugin", function () {
   
   stop();
    
-  ok ('googleMap' in popped, "googleMap is a mehtod of the popped instance");
+  ok ('googlemap' in popped, "googlemap is a mehtod of the popped instance");
   plus();
   
   ok ( document.getElementById('map').innerHTML === "", "initially, there is nothing inside the map" );
@@ -27,7 +27,7 @@ test("Popcorn Google Map Plugin", function () {
   ok ( document.getElementById('map2').innerHTML === "", "initially, there is nothing inside the map2" );
   plus();
   
-  popped.googleMap({
+  popped.googlemap({
         start: 0, // seconds
         end: 5, // seconds
         type: 'ROADMAP',
@@ -36,7 +36,7 @@ test("Popcorn Google Map Plugin", function () {
         long: -79.403323,
         zoom: 10
       } )
-      .googleMap({
+      .googlemap({
         start: 0, // seconds
         end: 5, // seconds
         type: 'SATELLITE',

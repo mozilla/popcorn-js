@@ -1,4 +1,4 @@
-test("Popcorn tagThisPerson Plugin", function () {
+test("Popcorn tagthisperson Plugin", function () {
   
   var popped = Popcorn("#video"),
       expects = 6, 
@@ -18,19 +18,19 @@ test("Popcorn tagThisPerson Plugin", function () {
   
   stop();
    
-  ok ('tagThisPerson' in popped, "tagThisPerson is a method of the popped instance");
+  ok ('tagthisperson' in popped, "tagthisperson is a method of the popped instance");
   plus();
   
   equals ( tagdiv.innerHTML, "", "initially, there is nothing inside the tagdiv" );
   plus();
   
-  popped.tagThisPerson({
+  popped.tagthisperson({
       start: 0, // seconds
       end: 5, // seconds
       person: 'Anna Sob',
       target: 'tagdiv'
     } )
-    .tagThisPerson({
+    .tagthisperson({
       start: 3, // seconds
       end: 10, // seconds
       person: 'Scott',
