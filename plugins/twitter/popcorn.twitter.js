@@ -29,6 +29,16 @@
         } )
    *
    */
+
+  if ( !window.TWTR ) {
+    var head = document.getElementsByTagName("head")[0] || document.documentElement,
+        script = document.createElement("script");
+
+    script.src = "http://widgets.twimg.com/j/2/widget.js";
+
+    head.insertBefore( script, head.firstChild );
+  }
+
   Popcorn.plugin( "twitter" , {
 
       manifest: {
@@ -93,21 +103,31 @@
             };
 
         // create widget
-        if ( profile ) {
+        var isReady = function( that ) {
+          if ( window.TWTR ) {
+            if ( profile ) {
 
-          widgetOptions.type = "profile";
+              widgetOptions.type = "profile";
 
-          new TWTR.Widget( widgetOptions ).render().setUser( src ).start();
+              new TWTR.Widget( widgetOptions ).render().setUser( src ).start();
 
-        } else if ( hash ) {
+            } else if ( hash ) {
 
-          widgetOptions.type = "search";
-          widgetOptions.search = src;
-          widgetOptions.subject = src;
+              widgetOptions.type = "search";
+              widgetOptions.search = src;
+              widgetOptions.subject = src;
 
-          new TWTR.Widget( widgetOptions ).render().start();
+              new TWTR.Widget( widgetOptions ).render().start();
 
-        }
+            }
+          } else {
+            setTimeout( function() {
+              isReady( that );
+            }, 1);
+          }
+        };
+
+        isReady( this );
       },
 
       /**
