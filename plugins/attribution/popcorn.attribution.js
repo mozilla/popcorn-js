@@ -6,7 +6,7 @@
    * Attribution popcorn plug-in 
    * Adds text to an element on the page.
    * Options parameter will need a mandatory start, end, target.
-   * Optional parameters include NameOfWork, NameOfWorkUrl, CopyrightHolder, CopyrightHolderUrl, licenseType & licenseUrl.
+   * Optional parameters include NameOfWork, NameOfWorkUrl, CopyrightHolder, CopyrightHolderUrl, license & licenseUrl.
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing 
    * Target is the id of the document element that the text needs to be attached to, this target element must exist on the DOM
@@ -14,7 +14,7 @@
    * NameOfWorkUrl is a url that provides more details about the attribution
    * CopyrightHolder is the name of the person/institution that holds the rights to the attribution
    * CopyrightHolderUrl is the url that provides more details about the copyrightholder
-   * LicenseType is the type of license that the work is copyrighted under
+   * license is the type of license that the work is copyrighted under
    * LicenseUrl is the url that provides more details about the ticense type
    * @param {Object} options
    * 
@@ -45,15 +45,15 @@
           website: "annasob.wordpress.com"
         },
         options:{
-          start    : {elem:'input', type:'text', label:'In'},
-          end      : {elem:'input', type:'text', label:'Out'},
-          nameOfWork     : {elem:'input', type:'text', label:'Name of Work'},
-          nameOfWorkUrl     : {elem:'input', type:'text', label:'Url of Work'},
-          copyrightHolder     : {elem:'input', type:'text', label:'Copyright Holder'},
-          copyrightHolderUrl     : {elem:'input', type:'text', label:'Copyright Holder Url'},
-          licenseType     : {elem:'input', type:'text', label:'License type'},
-          licenseType     : {elem:'input', type:'text', label:'License type'},
-          target   : 'attribution-container'
+          start              : {elem:'input', type:'text', label:'In'},
+          end                : {elem:'input', type:'text', label:'Out'},
+          nameOfWork         : {elem:'input', type:'text', label:'Name of Work'},
+          nameOfWorkUrl      : {elem:'input', type:'text', label:'Url of Work'},
+          copyrightHolder    : {elem:'input', type:'text', label:'Copyright Holder'},
+          copyrightHolderUrl : {elem:'input', type:'text', label:'Copyright Holder Url'},
+          license            : {elem:'input', type:'text', label:'License type'},
+          licenseUrl         : {elem:'input', type:'text', label:'License URL'},
+          target             : 'attribution-container'
         }
       },
       _setup: function(options) {
@@ -80,19 +80,23 @@
         if (options.copyrightHolderUrl) {
           attrib += "</a>";
         }
-        if (licenses[options.licenseType.toLowerCase()]) {
-          if (options.licenseUrl) {
-            attrib = "<a href='" + options.licenseUrl + "' target='_blank'><img src='"+ licenses[options.licenseType.toLowerCase()] +"' border='0'/></a>" + attrib;
+        if (options.license) {
+          if (licenses[options.license.toLowerCase()]) {
+            if (options.licenseUrl) {
+              attrib = "<a href='" + options.licenseUrl + "' target='_blank'><img src='"+ licenses[options.license.toLowerCase()] +"' border='0'/></a> " + attrib;
+            } else {
+              attrib = "<img src='"+ licenses[options.license.toLowerCase()] +"' />" + attrib;
+            }
           } else {
-            attrib = "<img src='"+ licenses[options.licenseType.toLowerCase()] +"' />" + attrib;
-          }
-        } else {
-          if (options.licenseUrl) {
-            attrib += ", license: <a href='" + options.licenseUrl + "' target='_blank'>" + options.licenseType + "</a>";
-          } else {
-            attrib += ", license: " + options.licenseType;
-          }
-        } 
+            if (options.licenseUrl) {
+              attrib += ", license: <a href='" + options.licenseUrl + "' target='_blank'>" + options.license + "</a> ";
+            } else {
+              attrib += ", license: " + options.license;
+            }
+          } 
+        } else if (options.licenseUrl) {
+          attrib += ", <a href='" + options.licenseUrl + "' target='_blank'>license</a> ";
+        }
         options._container.innerHTML  = attrib;
         options.target =  document.getElementById( options.target );
         if (options.target) {
