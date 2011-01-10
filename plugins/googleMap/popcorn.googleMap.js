@@ -3,7 +3,7 @@ var googleCallback;
 (function (Popcorn) {
   
   /**
-   * googleMap popcorn plug-in 
+   * googlemap popcorn plug-in 
    * Adds a map to the target div centered on the location specified by the user
    * Options parameter will need a start, end, target, type, zoom, lat and long, and location
    * -Start is the time that you want this plug-in to execute
@@ -19,7 +19,7 @@ var googleCallback;
    * 
    * Example:
      var p = Popcorn('#video')
-        .googleMap({
+        .googlemap({
           start: 5, // seconds
           end: 15, // seconds
           type: 'ROADMAP',
@@ -29,7 +29,7 @@ var googleCallback;
         } )
    *
    */
-  Popcorn.plugin( "googleMap" , (function(){
+  Popcorn.plugin( "googlemap" , (function(){
       
     var newdiv, i = 1, _mapFired = false, _mapLoaded = false;
     

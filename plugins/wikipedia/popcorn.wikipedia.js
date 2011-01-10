@@ -9,7 +9,7 @@ var wikiCallback;
    * Wikipedia popcorn plug-in 
    * Displays a wikipedia aricle in the target specified by the user by using
    * new DOM element instead overwriting them
-   * Options parameter will need a start, end, target, lang, src, title and numOfWords.
+   * Options parameter will need a start, end, target, lang, src, title and numberofwords.
    * -Start is the time that you want this plug-in to execute
    * -End is the time that you want this plug-in to stop executing 
    * -Target is the id of the document element that the text from the article needs to be  
@@ -17,7 +17,7 @@ var wikiCallback;
    * -Lang (optional, defaults to english) is the language in which the article is in.
    * -Src is the url of the article 
    * -Title (optional) is the title of the article
-   * -NumOfWords (optional, defaults to 200) is  the number of words you want displaid.  
+   * -numberofwords (optional, defaults to 200) is  the number of words you want displaid.  
    *
    * @param {Object} options
    * 
@@ -41,13 +41,13 @@ var wikiCallback;
         website: "annasob.wordpress.com"
       },
       options:{
-        start      : {elem:'input', type:'text', label:'In'},
-        end        : {elem:'input', type:'text', label:'Out'},
-        lang       : {elem:'input', type:'text', label:'Language'},
-        src        : {elem:'input', type:'text', label:'Src'},
-        title      : {elem:'input', type:'text', label:'Title'},
-        numOfWords : {elem:'input', type:'text', label:'Num Of Words'},
-        target     : 'wiki-container'
+        start         : {elem:'input', type:'text', label:'In'},
+        end           : {elem:'input', type:'text', label:'Out'},
+        lang          : {elem:'input', type:'text', label:'Language'},
+        src           : {elem:'input', type:'text', label:'Src'},
+        title         : {elem:'input', type:'text', label:'Title'},
+        numberofwords : {elem:'input', type:'text', label:'Num Of Words'},
+        target        : 'wiki-container'
       }
     },
     /**
@@ -66,7 +66,7 @@ var wikiCallback;
       // if the user didn't specify a language default to english
       if (typeof options.lang === 'undefined') { options.lang ="en"; }
       // if the user didn't specify number of words to use default to 200 
-      options.numOfWords  = options.numOfWords || 200;
+      options.numberofwords  = options.numberofwords || 200;
       // replace the user specified target with the actual DOM element
       options.target      = document.getElementById( options.target );
       
@@ -84,7 +84,7 @@ var wikiCallback;
         // get the article text and remove any special characters
         _text = data.parse.text["*"].substr(data.parse.text["*"].indexOf('<p>'));
         _text = _text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
-        options._desc.innerHTML = _text.substr(0,  options.numOfWords ) + " ...";
+        options._desc.innerHTML = _text.substr(0,  options.numberofwords ) + " ...";
         
         options._fired = true;
       };

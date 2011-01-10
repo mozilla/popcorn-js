@@ -4,7 +4,7 @@
   
   /**
    */
-  Popcorn.plugin( "googleNews" , {
+  Popcorn.plugin( "googlenews" , {
 
       manifest: {
         about:{
@@ -36,7 +36,7 @@
 
       },
       /**
-       * @member googleNews 
+       * @member googlenews 
        * The start function will be executed when the currentTime 
        * of the video  reaches the start time provided by the 
        * options variable
@@ -45,7 +45,7 @@
         options.container.setAttribute( 'style', 'display:inline' );
       },
       /**
-       * @member googleNews 
+       * @member googlenews 
        * The end function will be executed when the currentTime 
        * of the video  reaches the end time provided by the 
        * options variable

@@ -91,37 +91,37 @@
       <tagThisPerson target="inthisvideo" in="00:00:05:02" out="00:00:10:07" person="Steve Song" />
       <!--<attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>-->
       <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" src="@stevesong" target="personaltwitter" width="238" height="120"/>
-      <wikipedia in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberOfWords="200" lang="en" target="wikidiv"/>
+      <wikipedia in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberofwords="200" lang="en" target="wikidiv"/>
       <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
-      <googleNews in="00:00:05:02" out="00:00:10:07" target="googlenewsdiv" topic="Village Telco"/>
+      <googlenews in="00:00:05:02" out="00:00:10:07" target="googlenewsdiv" topic="Village Telco"/>
 
       <twitter in="00:00:10:07" out="00:00:18:04" title="Oil Spill" src="#oilspill" target="twitter" width="238" height="120"/>
-      <googleNews in="00:00:10:07" out="00:00:18:04" target="googlenewsdiv" topic="Oil Spill"/>
+      <googlenews in="00:00:10:07" out="00:00:18:04" target="googlenewsdiv" topic="Oil Spill"/>
       <!--<attribution in="00:00:10:07" out="00:00:18:04" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>-->
 
       <tagThisPerson target="inthisvideo" in="00:00:18:04" out="00:00:25:02" person="Keyboard Cat"/>
       <twitter in="00:00:18:04" out="00:00:25:02" title="Keyboard Cat" src="#keyboardcat" target="twitter" width="238" height="120"/>
       <!--<attribution in="00:00:18:04" out="00:00:25:02" target="container5">KeyBoard Cat, Charlie Schmidt</attribution>-->
-      <googleNews in="00:00:18:04" out="00:00:25:02" target="googlenewsdiv" topic="Keyboard Cat"/>
+      <googlenews in="00:00:18:04" out="00:00:25:02" target="googlenewsdiv" topic="Keyboard Cat"/>
 
       <tagThisPerson target="inthisvideo" in="00:00:28:09" out="00:00:29:07" person="Jeffrey Warren" />
       <!--<attribution in="00:00:28:09" out="00:00:29:07" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>-->
       <tagThisPerson target="inthisvideo" in="00:00:29:08" out="00:00:31:00" person="Village Telco Guy" />
 
-      <wikipedia in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberOfWords="200" target="wikidiv"/>
-      <googleNews in="00:00:32:00" out="00:00:41:00" target="googlenewsdiv" topic="the internet"/>
+      <wikipedia in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberofwords="200" target="wikidiv"/>
+      <googlenews in="00:00:32:00" out="00:00:41:00" target="googlenewsdiv" topic="the internet"/>
 
       <tagThisPerson target="inthisvideo" in="00:00:41:00" out="00:01:07:09" person="Jeffrey Warren" />
       <flickr in="00:00:41:00" out="00:01:07:09" target="personalflickr" userid="35034346917@N01" numberofimages="8" padding="4px"/>
       <twitter in="00:00:41:00" out="00:01:07:09" title="Oil Spill" src="#oilspill" target="twitter" width="238" height="120"/>
       <googleNews in="00:00:41:00" out="00:01:07:09" target="googlenewsdiv" topic="Oil Spill"/>
       <!--<location resourceid="grandislewiki" in="00:00:41:00" out="00:01:07:09" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>-->
-      <wikipedia in="00:00:41:00" out="00:01:07:09" resourceid="oilspill" numberOfWords="200" target="wikidiv"/>
+      <wikipedia in="00:00:41:00" out="00:01:07:09" resourceid="oilspill" numberofwords="200" target="wikidiv"/>
       <footnote in="00:00:41:00" out="00:01:07:09" target="footnotediv">Learn more about Grass Roots mapping at www.grassrootsmapping.org</footnote>
       <twitter in="00:01:07:10" out="00:01:25:07" title="Steve Song" src="@stevesong" target="personaltwitter" width="238" height="120"/>
       <flickr in="00:01:07:10" out="00:01:25:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
       <!--<location id="CapeTown" resourceid="capetownwiki" in="00:01:07:10" out="00:01:32:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>-->
-      <wikipedia in="00:01:07:10" out="00:01:32:07" resourceid="villagetelco" numberOfWords="200" target="wikidiv"/>
+      <wikipedia in="00:01:07:10" out="00:01:32:07" resourceid="villagetelco" numberofwords="200" target="wikidiv"/>
       <tagThisPerson target="inthisvideo" in="00:01:25:08" out="00:01:32:07" person="Michael Adeyeye" />
 
       <tagThisPerson target="inthisvideo" in="00:01:32:08" out="00:01:38:02" person="Charlie Schmidt" />
@@ -133,10 +133,10 @@
       <tagThisPerson target="inthisvideo" in="00:02:09:00" out="00:03:07:05" person="Jonathan Zittrain" />
       <twitter in="00:02:09:00" out="00:03:07:05" title="Jonathan Zittrain" source="@zittrain" target="personaltwitter" width="238" height="120"/>
       <!--<location resourceid="harvardlawhome" in="00:02:09:00" out="00:03:07:05" lat="42.4222" long="-88.6137" target="container2" zoom="12"/>-->
-      <wikipedia in="00:02:09:00" out="00:02:20:00" resourceid="zittrain" numberOfWords="200" target="wikidiv"/>
-      <wikipedia in="00:02:20:01" out="00:02:23:00" resourceid="compuserve" numberOfWords="200" target="wikidiv"/>
-      <wikipedia in="00:02:23:01" out="00:02:26:00" resourceid="aol" numberOfWords="200" target="wikidiv"/>
-      <wikipedia in="00:02:26:01" out="00:02:33:00" resourceid="prodigy" numberOfWords="200" target="wikidiv"/>
+      <wikipedia in="00:02:09:00" out="00:02:20:00" resourceid="zittrain" numberofwords="200" target="wikidiv"/>
+      <wikipedia in="00:02:20:01" out="00:02:23:00" resourceid="compuserve" numberofwords="200" target="wikidiv"/>
+      <wikipedia in="00:02:23:01" out="00:02:26:00" resourceid="aol" numberofwords="200" target="wikidiv"/>
+      <wikipedia in="00:02:26:01" out="00:02:33:00" resourceid="prodigy" numberofwords="200" target="wikidiv"/>
 
       <!--<attribution in="00:02:15:09" out="00:02:17:00" target="container5" resourceid="compuserveattrib"></attribution>
       <attribution in="00:02:17:01" out="00:02:20:00" target="container5" resourceid="aolattrib"></attribution>
@@ -147,19 +147,19 @@
       <attribution in="00:02:47:01" out="00:02:55:00" target="container5" resourceid="bankattrib"></attribution>
       <attribution in="00:03:07:10" out="00:03:29:00" target="container5" resourceid="bankattrib"></attribution>-->
 
-      <wikipedia in="00:02:41:00" out="00:02:57:00" resourceid="internetprotocol" numberOfWords="200" target="wikidiv"/>
-      <wikipedia in="00:02:57:01" out="00:03:03:00" resourceid="timbernerslee" numberOfWords="200" target="wikidiv"/>
+      <wikipedia in="00:02:41:00" out="00:02:57:00" resourceid="internetprotocol" numberofwords="200" target="wikidiv"/>
+      <wikipedia in="00:02:57:01" out="00:03:03:00" resourceid="timbernerslee" numberofwords="200" target="wikidiv"/>
       <twitter in="00:02:57:01" out="00:03:03:00" title="Tim Berners-Lee" src="@timberners_lee" target="twitter" width="238" height="120"/>
 
-      <googleNews in="00:02:57:01" out="00:03:03:00" target="googlenewsdiv" topic="Tim Berners-Lee"/>
+      <googlenews in="00:02:57:01" out="00:03:03:00" target="googlenewsdiv" topic="Tim Berners-Lee"/>
 
-      <wikipedia in="00:03:03:01" out="00:03:28:00" resourceid="worldwideweb" numberOfWords="200" target="wikidiv"/>
-      <googleNews in="00:03:03:01" out="00:03:28:00" target="googlenewsdiv" topic="World Wide Web"/>
+      <wikipedia in="00:03:03:01" out="00:03:28:00" resourceid="worldwideweb" numberofwords="200" target="wikidiv"/>
+      <googlenews in="00:03:03:01" out="00:03:28:00" target="googlenewsdiv" topic="World Wide Web"/>
 
-      <googleNews in="00:03:28:00" out="00:03:32:00" target="googlenewsdiv" topic="Wikipedia"/>
-      <wikipedia in="00:03:28:01" out="00:03:32:00" resourceid="wikipedia" numberOfWords="200" target="wikidiv"/>
+      <googlenews in="00:03:28:00" out="00:03:32:00" target="googlenewsdiv" topic="Wikipedia"/>
+      <wikipedia in="00:03:28:01" out="00:03:32:00" resourceid="wikipedia" numberofwords="200" target="wikidiv"/>
 
-      <wikipedia in="00:03:36:00" out="00:03:43:00" resourceid="openstandards" numberOfWords="200" target="wikidiv"/>
+      <wikipedia in="00:03:36:00" out="00:03:43:00" resourceid="openstandards" numberofwords="200" target="wikidiv"/>
 
       <tagThisPerson target="inthisvideo" in="00:03:09:00" out="00:03:16:00" person="NCSA guy" />
       <tagThisPerson target="inthisvideo" in="00:03:16:01" out="00:03:18:05" person="Computer Chronicles guy #1" />
