@@ -185,7 +185,7 @@
 
     <map>
       <googlemap resourceid="capetownwiki" in="00:00:03:00" out="00:00:11:07" lat="-33.9238" long="18.4233" target="container2" zoom="8"/>
-      <googlemap resourceid="grandislewiki" in="00:00:11:07" out="00:00:19:07" lat="29.2720" long="-90.0233 " target="container2" zoom="8"/>
+      <googlemap resourceid="grandislewiki" in="00:00:11:07" out="00:00:19:07" lat="29.2720" long="-90.0233" target="container2" zoom="8"/>
       <googlemap resourceid="mitmedialabhome" in="00:00:19:08" out="00:00:27:00" lat="42.3613" long="-71.0863" target="container2" zoom="12"/>
 
       <googlemap resourceid="austinwiki" in="00:03:59:00" out="00:04:03:05" lat="45.5089" long="-73.5542" target="container2" zoom="8"/>

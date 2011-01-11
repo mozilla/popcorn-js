@@ -17,7 +17,7 @@ test("Popcorn Google Map Plugin", function () {
   }
   
   stop();
-   
+
   ok ('googlemap' in popped, "googlemap is a mehtod of the popped instance");
   plus();
   

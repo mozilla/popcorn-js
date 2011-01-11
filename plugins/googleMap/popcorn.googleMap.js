@@ -53,6 +53,17 @@ var googleCallback;
         }
       },
       _setup : function( options ) {
+        // create a new div this way anything in the target div 
+        // this is later passed on to the maps api
+        options._newdiv               = document.createElement('div');
+        options._newdiv.id            = "actualmap"+i;
+        options._newdiv.style.width   = "100%";
+        options._newdiv.style.height  = "100%";
+        i++;
+        if (document.getElementById(options.target)) {
+          document.getElementById(options.target).appendChild(options._newdiv);
+        }
+        
         // insert google api script once
         if (!_mapFired) {
           _mapFired = true;
@@ -70,35 +81,33 @@ var googleCallback;
         };
         // If there is no lat/long, and there is location, geocode the location
         // you can only do this once google.maps exists
-        // however geocode takes a while so loop this function until lat/long is defined.
         var isGeoReady = function() {
-          if ( !_mapLoaded && !options.lat) {
+          if ( !_mapLoaded ) {
             setTimeout(function () {
               isGeoReady();
-            }, 13);
+            }, 5);
           } else {
             if (options.location) {
               var geocoder = new google.maps.Geocoder();
+              // calls an anonymous function called on separate thread
               geocoder.geocode({ 'address': options.location}, function(results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
-                  options.lat  = results[0].geometry.location.wa;
-                  options.long = results[0].geometry.location.ya; 
+                  options.lat  = results[0].geometry.location.lat();
+                  options.long = results[0].geometry.location.lng(); 
+                  options._location = new google.maps.LatLng(options.lat, options.long);
+                  options._map = new google.maps.Map(options._newdiv, {mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID }); 
+                  options._map.getDiv().style.display = 'none';
                 } 
               });
+            } else {
+              options._location = new google.maps.LatLng(options.lat, options.long);
+              options._map = new google.maps.Map(options._newdiv, {mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID });  
+              options._map.getDiv().style.display = 'none';
             }
           }
         };
         isGeoReady();
-        // create a new div this way anything in the target div
-        // will stay intack 
-        options._newdiv              = document.createElement('div');
-        options._newdiv.id           = "actualmap"+i;
-        options._newdiv.style.width  = "100%";
-        options._newdiv.style.height = "100%";
-        i++;
-        if (document.getElementById(options.target)) {
-          document.getElementById(options.target).appendChild(options._newdiv);
-        }
+        
       },
       /**
        * @member webpage 
@@ -108,24 +117,17 @@ var googleCallback;
        */
       start: function(event, options){
         // dont do anything if the information didn't come back from google map
-        var isReady = function () {
-          
-          if ( !google.maps || !options.lat) {
+        var isReady = function () {    
+          if (!options._map) {
             setTimeout(function () {
               isReady();
             }, 13);
           } else {
-             
-            if(options._map){
-              options._map.getDiv().style.display = 'block';
-            } else {
-              var location = new google.maps.LatLng(options.lat, options.long);
-              options._map = new google.maps.Map(options._newdiv, {mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID });      
-            }
+            options._map.getDiv().style.display = 'block';
             // reset the location and zoom just in case the user plaid with the map
-            options._map.setCenter(location);
+            options._map.setCenter(options._location);
             if ( options.zoom ) {
-              if ( typeof options.zoom !== "Number" ) {
+              if ( typeof options.zoom !== "number" ) {
                 options.zoom = +options.zoom;
               } 
             } else {
