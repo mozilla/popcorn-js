@@ -80,6 +80,12 @@
         if (options.copyrightHolderurl) {
           attrib += "</a>";
         }
+
+        //if the user did not specify any parameters just pull the text from the tag
+        if ( attrib === "" ) {
+          attrib = options.text;
+        }
+
         if (options.license) {
           if (licenses[options.license.toLowerCase()]) {
             if (options.licenseUrl) {
