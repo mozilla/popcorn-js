@@ -126,13 +126,13 @@ var googleCallback;
             options._map.getDiv().style.display = 'block';
             // reset the location and zoom just in case the user plaid with the map
             options._map.setCenter(options._location);
-            if ( options.zoom ) {
-              if ( typeof options.zoom !== "number" ) {
-                options.zoom = +options.zoom;
-              } 
-            } else {
-              options.zoom = 0;
+
+            // make sure options.zoom is a number
+            if ( options.zoom && isNaN( options.zoom ) ) {
+              options.zoom = +options.zoom;
             }
+            options.zoom = options.zoom || 0; // default to 0
+
             options._map.setZoom( options.zoom );
           }
         };
