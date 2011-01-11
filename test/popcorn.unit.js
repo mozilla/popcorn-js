@@ -174,7 +174,7 @@ test("exec", function () {
   QUnit.reset();
   
   var popped = Popcorn("#video"),
-      expects = 1, 
+      expects = 2, 
       count = 0;
 
   expect(expects);
@@ -190,7 +190,11 @@ test("exec", function () {
   popped.exec( 4, function () {
     
     
-    ok(true, "exec function");
+    ok(true, "exec callback fired");
+    plus();
+    
+    
+    equal( popped.data.events.timeupdate, null, "exec callback removed");
     plus();
     
   }).currentTime(3).play();

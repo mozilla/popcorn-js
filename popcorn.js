@@ -295,14 +295,15 @@
       !fn && ( fn = Popcorn.nop );
       
       
-      var self  = this, 
+      var self = this, 
+          guid = Popcorn.guid( "execCallback" ), 
           callback = function execCallback( event ) {
             
             if ( this.currentTime() >= time && !callback.fired ) {
               
               callback.fired = true;
               
-              this.unlisten("execCallback");
+              this.unlisten("timeupdate", guid );
               
               fn.call(self, event);
               
@@ -310,6 +311,7 @@
           };
       
       callback.fired = false;
+      callback.name = guid;
       
       this.listen("timeupdate", callback);
       
@@ -463,7 +465,9 @@
       unlisten: function( type, fn ) {
         
         if ( this.data.events[type] && this.data.events[type][fn] ) {
-          this.data.events[type][fn]  = null;
+          
+          delete this.data.events[type][ fn ];
+          
           return this;
         }
       
