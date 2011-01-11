@@ -81,7 +81,9 @@
        */
       start: function(event, options){
         options._p.contains[options.person] = options.person;
-        document.getElementById(options.target).innerHTML  = options._p.toString();
+        if (document.getElementById(options.target)) {
+          document.getElementById(options.target).innerHTML  = options._p.toString();
+        }
       },
       /**
        * @member tagthisperson 
@@ -91,7 +93,9 @@
        */
       end: function(event, options){
         delete options._p.contains[options.person];
-        document.getElementById(options.target).innerHTML  = options._p.toString();
+        if (document.getElementById(options.target)) {
+          document.getElementById(options.target).innerHTML  = options._p.toString();
+        }
       }
    };
   })());

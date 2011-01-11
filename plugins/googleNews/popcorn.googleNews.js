@@ -23,9 +23,9 @@
       _setup : function( options ) {
 
         options.container = document.createElement( 'div' );
-
-        document.getElementById( options.target ).appendChild( options.container );
-
+        if ( document.getElementById( options.target ) ) {
+          document.getElementById( options.target ).appendChild( options.container );
+        }
         var newsShow = new google.elements.NewsShow( options.container, {
           format : "300x250",
           queryList : [

@@ -44,8 +44,9 @@
       options._container = document.createElement( 'div' );
       options._container.style.display = "none";
       options._container.innerHTML  = options.text;
-      options.target =  document.getElementById( options.target );
-      options.target.appendChild( options._container );
+      if ( document.getElementById( options.target ) ) {
+        document.getElementById( options.target ).appendChild( options._container );
+      }
     },
     /**
      * @member footnote 

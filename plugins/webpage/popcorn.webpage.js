@@ -45,7 +45,6 @@
         }
       },
       _setup : function( options ) {
-        options.target    = document.getElementById( options.target );
         // make an iframe 
         options._iframe  = document.createElement( 'iframe' ),
         options._iframe.setAttribute('width', "100%");
@@ -53,8 +52,10 @@
         options._iframe.id  = options.id;
         options._iframe.src = options.src;
         options._iframe.style.display = 'none';
-        // add the hidden iframe to the DON
-        options.target.appendChild(options._iframe);
+        // add the hidden iframe to the DOM
+        if ( document.getElementById( options.target ) ) {
+          document.getElementById( options.target ).appendChild(options._iframe);
+        }
         
       },
       /**

@@ -52,9 +52,9 @@
           options.link.href = options.href;
         }
         options.link.target = "_blank";
-
-        document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
-
+        if ( document.getElementById( options.target ) ) {
+          document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
+        }
         var img = document.createElement( 'img' );
         img.src = options.src;
         img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target

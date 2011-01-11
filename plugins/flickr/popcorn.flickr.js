@@ -60,7 +60,9 @@
       _setup: function( options ) {
         options.container = document.createElement( 'div' );
         options.container.style.display = "none";
-        document.getElementById( options.target ).appendChild( options.container );
+        if ( document.getElementById( options.target ) ) {
+          document.getElementById( options.target ).appendChild( options.container );
+        }
         var height  = options.height || "50px",
             width   = options.width || "50px",
             count   = options.numberofimages || 4,

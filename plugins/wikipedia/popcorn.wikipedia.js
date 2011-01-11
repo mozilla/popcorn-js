@@ -67,9 +67,7 @@ var wikiCallback;
       if (typeof options.lang === 'undefined') { options.lang ="en"; }
       // if the user didn't specify number of words to use default to 200 
       options.numberofwords  = options.numberofwords || 200;
-      // replace the user specified target with the actual DOM element
-      options.target      = document.getElementById( options.target );
-      
+            
       // wiki global callback function with a unique id
       // function gets the needed information from wikipedia
       // and stores it by appending values to the options object
@@ -112,9 +110,11 @@ var wikiCallback;
         } else {
       
           if (options._link && options._desc) {
-            options.target.appendChild(options._link);
-            options.target.appendChild(options._desc);
-            options._added = true;
+            if ( document.getElementById( options.target ) ) {
+              document.getElementById( options.target ).appendChild(options._link);
+              document.getElementById( options.target ).appendChild(options._desc);
+              options._added = true;
+            }
           }
         }
       };
@@ -131,8 +131,8 @@ var wikiCallback;
       // ensure that the data was actually added to the 
       // DOM before removal
       if (options._added) {
-        options.target.removeChild(options._link);
-        options.target.removeChild(options._desc);
+        document.getElementById( options.target ).removeChild(options._link);
+        document.getElementById( options.target ).removeChild(options._desc);
       }
     }
      
