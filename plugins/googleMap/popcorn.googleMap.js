@@ -81,8 +81,8 @@ var googleCallback;
               var geocoder = new google.maps.Geocoder();
               geocoder.geocode({ 'address': options.location}, function(results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
-                  options.lat  = results[0].geometry.location.wa;
-                  options.long = results[0].geometry.location.ya; 
+                  options.lat  = results[0].geometry.location.lat();
+                  options.long = results[0].geometry.location.lng(); 
                 } 
               });
             }
