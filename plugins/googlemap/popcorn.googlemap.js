@@ -128,11 +128,10 @@ var googleCallback;
             options._map.setCenter(options._location);
 
             // make sure options.zoom is a number
-            if ( options.zoom && isNaN( options.zoom ) ) {
+            if ( options.zoom && typeof options.zoom !== "number" ) {
               options.zoom = +options.zoom;
             }
             options.zoom = options.zoom || 0; // default to 0
-
             options._map.setZoom( options.zoom );
           }
         };
