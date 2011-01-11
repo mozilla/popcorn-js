@@ -6,11 +6,11 @@
    * Attribution popcorn plug-in 
    * Adds text to an element on the page.
    * Options parameter will need a mandatory start, end, target.
-   * Optional parameters include NameOfWork, NameOfWorkUrl, CopyrightHolder, CopyrightHolderUrl, license & licenseUrl.
+   * Optional parameters include nameofwork, NameOfWorkUrl, CopyrightHolder, CopyrightHolderUrl, license & licenseUrl.
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing 
    * Target is the id of the document element that the text needs to be attached to, this target element must exist on the DOM
-   * NameOfWork is the title of the attribution 
+   * nameofwork is the title of the attribution 
    * NameOfWorkUrl is a url that provides more details about the attribution
    * CopyrightHolder is the name of the person/institution that holds the rights to the attribution
    * CopyrightHolderUrl is the url that provides more details about the copyrightholder
@@ -47,10 +47,10 @@
         options:{
           start              : {elem:'input', type:'text', label:'In'},
           end                : {elem:'input', type:'text', label:'Out'},
-          nameOfWork         : {elem:'input', type:'text', label:'Name of Work'},
-          nameOfWorkUrl      : {elem:'input', type:'text', label:'Url of Work'},
-          copyrightHolder    : {elem:'input', type:'text', label:'Copyright Holder'},
-          copyrightHolderUrl : {elem:'input', type:'text', label:'Copyright Holder Url'},
+          nameofwork         : {elem:'input', type:'text', label:'Name of Work'},
+          nameofworkurl      : {elem:'input', type:'text', label:'Url of Work'},
+          copyrightholder    : {elem:'input', type:'text', label:'Copyright Holder'},
+          copyrightHolderurl : {elem:'input', type:'text', label:'Copyright Holder Url'},
           license            : {elem:'input', type:'text', label:'License type'},
           licenseUrl         : {elem:'input', type:'text', label:'License URL'},
           target             : 'attribution-container'
@@ -62,22 +62,22 @@
         options._container = document.createElement( 'div' );
         options._container.style.display = "none";
               
-        if (options.nameOfWorkUrl) {
-          attrib += "<a href='" + options.nameOfWorkUrl + "' target='_blank'>";
+        if (options.nameofworkurl) {
+          attrib += "<a href='" + options.nameofworkurl + "' target='_blank'>";
         }
-        if (options.nameOfWork) {
-          attrib += options.nameOfWork;
+        if (options.nameofwork) {
+          attrib += options.nameofwork;
         }
-        if (options.nameOfWorkUrl) {
+        if (options.nameofworkurl) {
           attrib += "</a>";
         }
-        if (options.copyrightHolderUrl) {
-          attrib += "<a href='" + options.copyrightHolderUrl + "' target='_blank'>";
+        if (options.copyrightHolderurl) {
+          attrib += "<a href='" + options.copyrightHolderurl + "' target='_blank'>";
         }
-        if (options.copyrightHolder) {
-          attrib += ", " + options.copyrightHolder;
+        if (options.copyrightholder) {
+          attrib += ", " + options.copyrightholder;
         }
-        if (options.copyrightHolderUrl) {
+        if (options.copyrightHolderurl) {
           attrib += "</a>";
         }
         if (options.license) {

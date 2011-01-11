@@ -89,7 +89,7 @@
     <resources>
       <footnote in="00:00:00" out="00:15:00" target="footnotediv">This video made exclusively for drumbeat.org </footnote>
       <tagthisperson target="inthisvideo" in="00:00:05:02" out="00:00:10:07" person="Steve Song" />
-      <!--<attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>-->
+      <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>
       <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" src="@stevesong" target="personaltwitter" width="238" height="120"/>
       <wikipedia in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberofwords="200" lang="en" target="wikidiv"/>
       <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
@@ -97,15 +97,15 @@
 
       <twitter in="00:00:10:07" out="00:00:18:04" title="Oil Spill" src="#oilspill" target="twitter" width="238" height="120"/>
       <googlenews in="00:00:10:07" out="00:00:18:04" target="googlenewsdiv" topic="Oil Spill"/>
-      <!--<attribution in="00:00:10:07" out="00:00:18:04" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>-->
+      <attribution in="00:00:10:07" out="00:00:18:04" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>
 
       <tagthisperson target="inthisvideo" in="00:00:18:04" out="00:00:25:02" person="Keyboard Cat"/>
       <twitter in="00:00:18:04" out="00:00:25:02" title="Keyboard Cat" src="#keyboardcat" target="twitter" width="238" height="120"/>
-      <!--<attribution in="00:00:18:04" out="00:00:25:02" target="container5">KeyBoard Cat, Charlie Schmidt</attribution>-->
+      <attribution in="00:00:18:04" out="00:00:25:02" target="container5">KeyBoard Cat, Charlie Schmidt</attribution>
       <googlenews in="00:00:18:04" out="00:00:25:02" target="googlenewsdiv" topic="Keyboard Cat"/>
 
       <tagthisperson target="inthisvideo" in="00:00:28:09" out="00:00:29:07" person="Jeffrey Warren" />
-      <!--<attribution in="00:00:28:09" out="00:00:29:07" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>-->
+      <attribution in="00:00:28:09" out="00:00:29:07" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>
       <tagthisperson target="inthisvideo" in="00:00:29:08" out="00:00:31:00" person="Village Telco Guy" />
 
       <wikipedia in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberofwords="200" target="wikidiv"/>
@@ -138,14 +138,14 @@
       <wikipedia in="00:02:23:01" out="00:02:26:00" resourceid="aol" numberofwords="200" target="wikidiv"/>
       <wikipedia in="00:02:26:01" out="00:02:33:00" resourceid="prodigy" numberofwords="200" target="wikidiv"/>
 
-      <!--<attribution in="00:02:15:09" out="00:02:17:00" target="container5" resourceid="compuserveattrib"></attribution>
+      <attribution in="00:02:15:09" out="00:02:17:00" target="container5" resourceid="compuserveattrib"></attribution>
       <attribution in="00:02:17:01" out="00:02:20:00" target="container5" resourceid="aolattrib"></attribution>
       <attribution in="00:02:20:01" out="00:02:17:00" target="container5" resourceid="compuserveattrib"></attribution>
       <attribution in="00:02:17:01" out="00:02:26:00" target="container5" resourceid="aolattrib"></attribution>
       <attribution in="00:02:26:01" out="00:02:33:00" target="container5" resourceid="prodigyattrib"></attribution>
       <attribution in="00:02:37:00" out="00:02:47:00" target="container5" resourceid="networksattrib"></attribution>
       <attribution in="00:02:47:01" out="00:02:55:00" target="container5" resourceid="bankattrib"></attribution>
-      <attribution in="00:03:07:10" out="00:03:29:00" target="container5" resourceid="bankattrib"></attribution>-->
+      <attribution in="00:03:07:10" out="00:03:29:00" target="container5" resourceid="bankattrib"></attribution>
 
       <wikipedia in="00:02:41:00" out="00:02:57:00" resourceid="internetprotocol" numberofwords="200" target="wikidiv"/>
       <wikipedia in="00:02:57:01" out="00:03:03:00" resourceid="timbernerslee" numberofwords="200" target="wikidiv"/>
@@ -174,7 +174,7 @@
       <tagthisperson target="inthisvideo" in="00:04:03:06" out="00:04:07:00" person="Noah Workman" />
       <twitter in="00:04:03:06" out="00:04:07:00" title="Noah Workman" src="@noahworkman" target="personaltwitter" width="238" height="120"/>
       <tagthisperson target="inthisvideo" in="00:04:03:06" out="00:04:13:01" person="Wilken Sanches" />
-      <!--<attribution in="00:04:10:00" out="00:04:13:00" target="container5" resourceid="attrib"></attribution>-->
+      <attribution in="00:04:10:00" out="00:04:13:00" target="container5" resourceid="attrib"></attribution>
       <tagthisperson target="inthisvideo" in="00:04:13:02" out="00:04:19:05" person="Keechang Kim" />
       <twitter in="00:04:19:06" out="00:04:24:01" title="Celine Celines" src="from:celinecelines" target="personaltwitter" width="238" height="120"/>
       <tagthisperson target="inthisvideo" in="00:04:19:06" out="00:04:24:01" person="Celine Celines" />
