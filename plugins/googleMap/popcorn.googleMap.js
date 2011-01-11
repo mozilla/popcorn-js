@@ -93,7 +93,6 @@ var googleCallback;
               // calls an anonymous function called on separate thread
               geocoder.geocode({ 'address': options.location}, function(results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
-                  alert( "making geolocation");
                   options.lat  = results[0].geometry.location.lat();
                   options.long = results[0].geometry.location.lng(); 
                   options._location = new google.maps.LatLng(options.lat, options.long);
@@ -101,7 +100,6 @@ var googleCallback;
                 } 
               });
             } else {
-              alert("making regular map");
               options._location = new google.maps.LatLng(options.lat, options.long);
               options._map = new google.maps.Map(options._newdiv, {mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID });  
             }
