@@ -30,8 +30,8 @@ test("Popcorn attribution Plugin", function () {
       end: 5, // seconds
       nameofwork: "A Shared Culture",
       copyrightholder:"Jesse Dylan",
-      licenseType: "CC-BY-N6",
-      licenseUrl: "http://creativecommons.org/licenses/by-nc/2.0/",
+      license: "CC-BY-N6",
+      licenseurl: "http://creativecommons.org/licenses/by-nc/2.0/",
       target: 'attribdiv'
     } )
     .attribution({
@@ -40,8 +40,8 @@ test("Popcorn attribution Plugin", function () {
       nameofwork: "Internet",
       nameofworkurl:"http://www.archive.org/details/CC1232_internet",
       copyrightholder:"The Computer Chronicles",
-      licenseType:"CC-BY-NC-ND",
-      licenseUrl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
+      license:"CC-BY-NC-ND",
+      licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
       target: 'attribdiv'
     } )
     .volume(0)

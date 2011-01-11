@@ -50,9 +50,9 @@
           nameofwork         : {elem:'input', type:'text', label:'Name of Work'},
           nameofworkurl      : {elem:'input', type:'text', label:'Url of Work'},
           copyrightholder    : {elem:'input', type:'text', label:'Copyright Holder'},
-          copyrightHolderurl : {elem:'input', type:'text', label:'Copyright Holder Url'},
+          copyrightholderurl : {elem:'input', type:'text', label:'Copyright Holder Url'},
           license            : {elem:'input', type:'text', label:'License type'},
-          licenseUrl         : {elem:'input', type:'text', label:'License URL'},
+          licenseurl         : {elem:'input', type:'text', label:'License URL'},
           target             : 'attribution-container'
         }
       },
@@ -71,13 +71,13 @@
         if (options.nameofworkurl) {
           attrib += "</a>";
         }
-        if (options.copyrightHolderurl) {
-          attrib += "<a href='" + options.copyrightHolderurl + "' target='_blank'>";
+        if (options.copyrightholderurl) {
+          attrib += "<a href='" + options.copyrightholderurl + "' target='_blank'>";
         }
         if (options.copyrightholder) {
           attrib += ", " + options.copyrightholder;
         }
-        if (options.copyrightHolderurl) {
+        if (options.copyrightholderurl) {
           attrib += "</a>";
         }
 
@@ -88,14 +88,14 @@
 
         if (options.license) {
           if (licenses[options.license.toLowerCase()]) {
-            if (options.licenseUrl) {
-              attrib = "<a href='" + options.licenseUrl + "' target='_blank'><img src='"+ licenses[options.license.toLowerCase()] +"' border='0'/></a> " + attrib;
+            if (options.licenseurl) {
+              attrib = "<a href='" + options.licenseurl + "' target='_blank'><img src='"+ licenses[options.license.toLowerCase()] +"' border='0'/></a> " + attrib;
             } else {
               attrib = "<img src='"+ licenses[options.license.toLowerCase()] +"' />" + attrib;
             }
           } else {
-            if (options.licenseUrl) {
-              attrib += ", license: <a href='" + options.licenseUrl + "' target='_blank'>" + options.license + "</a> ";
+            if (options.licenseurl) {
+              attrib += ", license: <a href='" + options.licenseurl + "' target='_blank'>" + options.license + "</a> ";
             } else {
               attrib += ", license: " + options.license;
             }
