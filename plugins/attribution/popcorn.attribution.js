@@ -100,8 +100,8 @@
               attrib += ", license: " + options.license;
             }
           } 
-        } else if (options.licenseUrl) {
-          attrib += ", <a href='" + options.licenseUrl + "' target='_blank'>license</a> ";
+        } else if (options.licenseurl) {
+          attrib += ", <a href='" + options.licenseurl + "' target='_blank'>license</a> ";
         }
         options._container.innerHTML  = attrib;
         if ( document.getElementById( options.target ) ) {
