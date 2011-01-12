@@ -4,17 +4,17 @@ The HTML5 <video> framework
 
 Demos
 ------------
-* Original Mozilla Summit Demo: http://popcornjs.org/demos/semantic_video
-* Brendan Eich Demo: http://popcornjs.org/demos/brendan_eich (made with butter)
+* Original Mozilla Summit Demo: <http://popcornjs.org/demos/semantic_video>
+* Brendan Eich Demo: <http://popcornjs.org/demos/brendan_eich> (made with butter)
 
 Overview
 -------------
-Popcorn.js is an event system for <video>, with strong syntactic sugar for chaining <video> methods and adding events to the timeline.
+Popcorn.js is an event system for < video >, with strong syntactic sugar for chaining < video > methods and adding events to the timeline.
 
-Popcorn is a JavaScript Function that wraps the native <video> element and returns a Popcorn object which;
+Popcorn is a JavaScript Function that wraps the native < video > element and returns a Popcorn object which;
 
 1. maintains a reference to the original HTMLVideoElement
-2. provides a normalized interface to the <video> elements native methods and properties.
+2. provides a normalized interface to the < video > elements native methods and properties.
 3. adds a special data property which contains meta data about the <video> (this is where the magic happens)
 
 By normalizing the native methods, the framework allows developers to write chainable function executions off the returned Popcorn object.
