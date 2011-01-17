@@ -876,11 +876,21 @@
 
           Popcorn.forEach( dataSources, function ( source ) {
 
-            dataTemp = source.split( "." );
+            dataTemp = source.split( ":" );
 
-            dataType = ( dataTemp[ dataTemp.length - 1 ] ).toUpperCase(); 
-
-            parserFn = "parse" + ( dataTemp[ dataTemp.length - 1 ] ).toUpperCase();
+            dataType = dataTemp[0];
+            
+            if ( dataTemp.length === 1 ) {
+              
+              dataTemp = source.split( "." );
+              
+              dataType = dataTemp[ dataTemp.length - 1 ]; 
+              
+            }
+            
+            dataType.toUpperCase();
+            
+            parserFn = "parse" + dataType;
 
             //  If the video has data sources and the correct parser is registered, continue to load
             if ( dataSources && Popcorn.parsers[ dataType ] ) {
