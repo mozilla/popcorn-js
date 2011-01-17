@@ -9,10 +9,10 @@
     do not move - this must be called immediately prior to 
     popcorn-api-draft.js
   -->
-  <script src="popcorn-api-draft-unit-setup.js"></script>
+  <script src="popcorn.unit.setup.js"></script>
   
-  <script src="../popcorn-api-draft.js"></script>
-  <script src="popcorn-api-draft-unit.js"></script>
+  <script src="../popcorn.js"></script>
+  <script src="popcorn.unit.js"></script>
 </head>
 <body>
   <h1 id="qunit-header">Popcorn API</h1>
@@ -28,22 +28,20 @@
   
   </div>
   
-  
-  <video id='video'
-    controls preload='none' 
-    poster="http://media.w3.org/2010/05/sintel/poster.png"> 
+  <video id='video'style="display:" 
+    controls 
+    poster="poster.png"> 
 
     <source id='mp4'
-      src="http://media.w3.org/2010/05/sintel/trailer.mp4"
+      src="trailer.mp4"
       type='video/mp4; codecs="avc1, mp4a"'> 
 
     <source id='ogv'
-      src="http://media.w3.org/2010/05/sintel/trailer.ogv"
+      src="trailer.ogv"
       type='video/ogg; codecs="theora, vorbis"'> 
 
     <p>Your user agent does not support the HTML5 Video element.</p> 
 
-  </video> 
-  
+  </video>         
 </body>
 </html>

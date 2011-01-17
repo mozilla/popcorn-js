@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Lower Third Plug-in Demo</title>
+  
+  <script src="../../popcorn.js"></script>
+
+  <script src="popcorn.lowerthird.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var p = Popcorn('#video')
+      .play()
+      .lowerthird({
+        start: 5, // seconds
+        end: 15, // seconds
+        salutation: 'Mr',
+        name: 'Hyde',
+        role: 'Monster'
+      } )
+      .lowerthird({
+        start: 20, // seconds
+        end: 45, // seconds
+        salutation: 'Dr',
+        name: 'Jekyll',
+        role: 'Person'
+      } )
+
+    }, false);
+
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Lower Third Plug-in Demo</h1>
+  <p> At 5 seconds info will appear in the lower third of the video and disappear at 15 seconds.</p>
+  <p> At 20 seconds info will appear in the lower third of the video and disappear at 45 seconds.</p>
+  <div>
+
+    <video id='video'
+      controls height="480" width="854"
+      poster="../../test/poster.png">
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'>
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'>
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+
+    </video>
+  </div>
+
+</body>
+</html>

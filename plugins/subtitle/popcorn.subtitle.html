@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Subtitle Plug-in Demo</title>
+  
+  <script src="../../popcorn.js"></script>
+  <script src="http://google.com/jsapi"></script>
+  <script>google.load("language", "1");</script>
+
+  <script src="popcorn.subtitle.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var p = Popcorn('#video')
+      .volume(0)
+      .play() 
+      .subtitle({
+        start: 5, // seconds
+        end: 15, // seconds
+        text: 'this is the first subtitle of 2011',
+        language: "en",
+        languagesrc: "language",
+        accessibilitysrc: "accessibility"
+      } )
+      .subtitle({
+        start: 20, // seconds
+        end: 45, // seconds
+        text: 'this is the second subtitle of 2011',
+        language: "en",
+        languagesrc: "language",
+        accessibilitysrc: "accessibility"
+      } )
+
+    }, false);
+
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Subtitle Plug-in Demo</h1>
+  <p> A subtitle displaying 'this is the first subtitle of 2011' will appear at 5 seconds and disappear at 15 seconds.</p>
+  <p> A subtitle displaying 'this is the second subtitle of 2011' will appear at 20 seconds and disappear at 45 seconds.</p>
+  <div>
+
+    <video id='video' 
+      controls height="480" width="854"
+      poster="../../test/poster.png"> 
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'> 
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'> 
+
+      <p>Your user agent does not support the HTML5 Video element.</p> 
+
+    </video> 
+  </div>
+  <h2>Choose your language</h2>
+    <select id="language">
+      <option value="zh" selected="selected">Chinese</option>
+      <option value="en">English</option>
+      <option value="fr">French</option>
+      <option value="de">German</option>
+      <option value="it">Italian</option>
+      <option value="ja">Japanese</option>
+      <option value="ko">Korean</option>
+      <option value="fa">Persian</option>
+      <option value="pl">Polish</option>
+      <option value="pt">Portuguese</option>
+      <option value="es">Spanish</option>
+    </select>
+    <div>
+      with help from <a href="http://google.com/translate">Google Translate</a><br />
+      <input type="checkbox" id="accessibility" checked="checked" />All subtitles (accessibility)
+    </div>
+
+</body>
+</html>
