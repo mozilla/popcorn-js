@@ -948,7 +948,7 @@
             }
             
             dataType = dataType.toUpperCase();
-            
+     
             parserFn = "parse" + dataType;
 
             //  If the video has data sources and the correct parser is registered, continue to load
