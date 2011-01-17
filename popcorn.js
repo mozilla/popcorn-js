@@ -861,25 +861,41 @@
     Popcorn.forEach( videos, function ( iter, key ) {
 
       var video = videos[ key ],
-          dataSources, popcornVideo;
+          dataSources, dataTemp, dataType, parserFn, popcornVideo;
 
       //  Ensure we're looking at a dom node and that it has an id
       //  otherwise Popcorn won't be able to find the video element
       if ( video.nodeType && video.nodeType === 1 && video.id ) {
 
-        dataSources = video.getAttribute( "data-timeline-sources" );
-      
-        //  If the video has data sources, continue to load
-        if ( dataSources ) {
-        
-          //  Set up the video and load in the datasources
-          popcornVideo = Popcorn( "#" + video.id ).parseXML( dataSources );
+        dataSources = video.getAttribute( "data-timeline-sources" ).split(",");
 
-          //  Only play the video if it was specified to do so
-          if ( !!popcornVideo.autoplay ) {
-            popcornVideo.play();
-          }
-        }
+        if ( dataSources.length )  {
+
+          Popcorn.forEach( dataSources, function ( source ) {
+
+            dataTemp = source.split( "." );
+
+            dataType = ( dataTemp[ dataTemp.length - 1 ] ).toUpperCase(); 
+
+            parserFn = "parse" + ( dataTemp[ dataTemp.length - 1 ] ).toUpperCase();
+
+            //  If the video has data sources and the correct parser is registered, continue to load
+            if ( dataSources && Popcorn.parsers[ dataType ] ) {
+
+              //  Set up the video and load in the datasources
+              popcornVideo = Popcorn( "#" + video.id )[ parserFn ]( source );
+
+
+            }
+          });
+
+        }          
+
+        //  Only play the video if it was specified to do so
+        if ( !!popcornVideo.autoplay ) {
+          popcornVideo.play();
+        }           
+
       }
     });
   }, false );
