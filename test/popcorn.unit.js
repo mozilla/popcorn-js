@@ -1115,7 +1115,7 @@ test("JSONP Response", function () {
       plus();
       
       
-      console.log(data);
+      
       ok( QUnit.equiv(data, testObj) , "Popcorn.xhr.getJSONP data.json returns an object of data");
       plus();
       
