@@ -792,9 +792,12 @@
 
     return parser;
   };
-  
-  
-  var setup = {
+
+
+  //  Cache references to reused RegExps
+  var rparams = /\?/,
+  //  XHR Setup object
+  setup = {
     url: '',
     data: '',
     dataType: '',
@@ -807,15 +810,34 @@
   };   
   
   Popcorn.xhr = function ( options ) {
-
+    
+    if ( ( options.dataType || "" ).toLowerCase() === "jsonp" ) {
+      
+      Popcorn.xhr.getJSONP( 
+        options.url,
+        options.success
+      );
+      return;
+    }
+    
     var settings = Popcorn.extend( {}, setup, options );
 
     settings.ajax  = settings.xhr();
     
     if ( settings.ajax ) {
+    
+      if ( settings.type === "GET" && settings.data ) {
+        
+        //  append query string
+        settings.url += ( rparams.test( settings.url ) ? "&" : "?") + settings.data;
+        
+        //  Garbage collect and reset settings.data
+        settings.data = null;
+      }      
+    
 
       settings.ajax.open( settings.type, settings.url, settings.async ); 
-      settings.ajax.send( null ); 
+      settings.ajax.send( settings.data = null ? null : settings.data ); 
 
       return Popcorn.xhr.httpData( settings );
     }       
@@ -849,6 +871,43 @@
     return data;  
   };
   
+  
+  
+  Popcorn.xhr.getJSONP = function ( url, success ) {
+  
+    var head = document.getElementsByTagName("head")[0] || document.documentElement,
+      script = document.createElement("script"), 
+      paramStr = url.split("?")[1], 
+      fired = false, 
+      params, callback;
+
+    script.src = url; 
+
+    params = paramStr.split("&");
+    
+    callback = params.length ? params[ params.length - 1 ].split("=")[1] : Popcorn.guid("jsonp");
+    
+    if ( callback ) {
+      //  define the jsonp success callback globally
+      window[ callback ] = function ( data ) {
+        success( data );
+        fired = true;
+      };
+    }
+
+    script.onload = script.onreadystatechange = function() {
+
+      if ( fired || ( this.readyState === "loaded" || this.readyState === "complete") ) {
+
+        // cleanup in here
+        delete window[ callback ];
+        head.removeChild( script );
+      }
+    };  
+
+    head.insertBefore( script, head.firstChild );
+  
+  }
   
   
   //  Exposes Popcorn to global context

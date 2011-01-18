@@ -1071,6 +1071,60 @@ test("JSON Response", function () {
 
 });
 
+test("JSONP Response", function () {
+
+  var expects = 4, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop( 10000 );
+
+
+  var testObj = { "data": {"lang": "en", "length": 25} };  
+
+  Popcorn.xhr({
+    
+    url: 'data/jsonp.json?callback=jsonp',
+    dataType: 'jsonp', 
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      
+      console.log(data);
+      ok( QUnit.equiv(data, testObj) , "Popcorn.xhr({}) data.json returns an object of data");
+      plus();
+      
+    }
+  });
+
+  Popcorn.xhr.getJSONP(
+    'data/jsonp.json?callback=jsonp',
+
+    function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      
+      console.log(data);
+      ok( QUnit.equiv(data, testObj) , "Popcorn.xhr.getJSONP data.json returns an object of data");
+      plus();
+      
+    }
+  );
+  
+
+});
+
 test("XML Response", function () {
 
   var expects = 2, 
