@@ -888,7 +888,7 @@
               
             }
             
-            dataType.toUpperCase();
+            dataType = dataType.toUpperCase();
             
             parserFn = "parse" + dataType;
 
