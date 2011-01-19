@@ -1021,7 +1021,7 @@ test("Text Response", function () {
   
   expect(expects);
   
-  stop( 10000 );
+  stop()
 
   Popcorn.xhr({
     url: 'data/test.txt', 
@@ -1037,6 +1037,37 @@ test("Text Response", function () {
   });
 });
 
+test("dataType: Text Response", function () {
+
+  var expects = 2, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop()
+
+  Popcorn.xhr({
+    url: 'data/test.txt', 
+    dataType: "text",
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      equals( data, "This is a text test", "dataType: 'text', test.txt returns the string 'This is a text test'");
+      plus();
+      
+    }
+  });
+});
+
+
 test("JSON Response", function () {
 
   var expects = 2, 
@@ -1050,7 +1081,7 @@ test("JSON Response", function () {
   
   expect(expects);
   
-  stop( 10000 );
+  stop()
 
 
   var testObj = { "data": {"lang": "en", "length": 25} };  
@@ -1071,9 +1102,10 @@ test("JSON Response", function () {
 
 });
 
-test("JSONP Response", function () {
 
-  var expects = 4, 
+test("dataType: JSON Response", function () {
+
+  var expects = 2, 
       count = 0;
       
   function plus() {
@@ -1084,7 +1116,42 @@ test("JSONP Response", function () {
   
   expect(expects);
   
-  stop( 10000 );
+  stop()
+
+
+  var testObj = { "data": {"lang": "en", "length": 25} };  
+
+  Popcorn.xhr({
+    url: 'data/test.js', 
+    dataType: "json",
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      
+      ok( QUnit.equiv(data, testObj) , "dataType: 'json',  data returns an object of data");
+      plus();
+      
+    }
+  });
+
+});
+
+test("JSONP Response", function () {
+
+  var expects = 6, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop();
 
 
   var testObj = { "data": {"lang": "en", "length": 25} };  
@@ -1099,7 +1166,7 @@ test("JSONP Response", function () {
       plus();
       
       
-      console.log(data);
+      
       ok( QUnit.equiv(data, testObj) , "Popcorn.xhr({}) data.json returns an object of data");
       plus();
       
@@ -1123,6 +1190,22 @@ test("JSONP Response", function () {
   );
   
 
+  Popcorn.xhr.getJSONP(
+    'data/jsonp.json',
+
+    function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      
+      
+      ok( QUnit.equiv(data, testObj) , "Popcorn.xhr.getJSONP data.json returns an object of data");
+      plus();
+      
+    }
+  );  
+
 });
 
 test("XML Response", function () {
@@ -1138,7 +1221,7 @@ test("XML Response", function () {
   
   expect(expects);
   
-  stop( 10000 );
+  stop()
 
 
   Popcorn.xhr({
@@ -1159,6 +1242,43 @@ test("XML Response", function () {
   });
 
 });
+
+test("dataType: XML Response", function () {
+
+  var expects = 2, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop()
+
+
+  Popcorn.xhr({
+    url: 'data/test.xml', 
+    dataType: "xml",
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      var parser = new DOMParser(), 
+      xml = parser.parseFromString('<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml");
+      
+      
+      equals( data.toString(), xml.toString(), "dataType: 'xml', data.xml returns a document of xml");
+      plus();
+      
+    }
+  });
+
+});
+
 
 module("Popcorn Parser");
 
