@@ -626,7 +626,7 @@
     //  the definition into Popcorn.p 
     
     var reserved = [ "start", "end"], 
-        plugin = {type: name},
+        plugin = {},
         pluginFn, 
         setup;
     
@@ -716,7 +716,9 @@
     Popcorn.extend( Popcorn.p, plugin );
     
     //  Push into the registry
-    Popcorn.registry.push(plugin);
+    Popcorn.registry.push( Popcorn.extend( plugin, {
+      type: name
+    }) );
     
     
     if ( !!( "manifest" in setup ) ) {
