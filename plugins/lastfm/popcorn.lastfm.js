@@ -65,10 +65,10 @@ var lastFMcallback;
           script.type = "text/javascript";
           head.insertBefore( script, head.firstChild );
           
-          _artists[options.artist] = "Unknown information";
+          _artists[options.artist] = "Information unavailable";
         }
         
-        lastFMcallback = function(data){          
+        lastFMcallback = function(data){
           var htmlString = '<h3>'+data.artist.name+'</h3>';
           htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
           htmlString += '<p>'+ data.artist.bio.summary +'</p>';
