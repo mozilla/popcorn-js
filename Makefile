@@ -39,7 +39,7 @@ min: ${POPCORN_MIN}
 ${POPCORN_MIN}: ${POPCORN_DIST}
 	@@echo "Building" ${POPCORN_MIN}
 
-	@@head -11 ${POPCORN_DIST} > ${POPCORN_MIN}
+	@@head -0 ${POPCORN_DIST} > ${POPCORN_MIN}
 	@@${MINJAR} --js ${POPCORN_DIST} --warning_level QUIET --js_output_file ${POPCORN_MIN}.tmp
 	@@cat ${POPCORN_MIN}.tmp >> ${POPCORN_MIN}
 	@@rm -f ${POPCORN_MIN}.tmp	
