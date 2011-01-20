@@ -1,4 +1,5 @@
 // PLUGIN: LASTFM
+var lastFMcallback;
 
 (function (Popcorn) {
   
@@ -24,8 +25,11 @@
         } )
    *
    */
-  Popcorn.plugin( "lastfm" , {
-
+  Popcorn.plugin( "lastfm" , (function(){
+      
+    var _artists = [];
+    
+    return {
       manifest: {
         about:{
           name:    "Popcorn LastFM Plugin",
@@ -42,31 +46,49 @@
       },
 
       _setup: function( options ) {
-        options.container = document.createElement( 'div' );
-        options.container.style.display = "none";
+        options._container = document.createElement( 'div' );
+        options._container.style.display = "none";
+        options._container.innerHTML = "";
+        
+        options.artist = options.artist.toLowerCase();
+        
         if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).appendChild( options.container );
+          document.getElementById( options.target ).appendChild( options._container );
         }
-
-        var htmlString = "";;
-        $.getJSON("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ options.artist +"&api_key=30ac38340e8be75f9268727cb4526b3d&format=json&callback=?",
-          function(data){
-            htmlString += '<h3>'+data.artist.name+'</h3>';
-            htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
-            htmlString += '<p>'+ data.artist.bio.summary +'</p>';
-            htmlString += '<hr /><p><h4>Tags</h4><ul>';
-            $.each(data.artist.tags.tag, function(i,val) {
-              htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
-            });
-            htmlString += '</ul></p>';
-            htmlString += '<hr /><p><h4>Similar</h4><ul>';
-            $.each(data.artist.similar.artist, function(i,val) {
-              htmlString += '<li><a href="'+ this.url +'">'+ this.name +'</a></li>';
-            });
-            htmlString += '</ul></p>';
-            options.container.innerHTML = htmlString;
-          }
-        );
+        
+        if(!_artists[options.artist]) {
+          var loadScriptTime = (new Date).getTime();
+          var head = document.getElementsByTagName('head')[0];
+          var script = document.createElement('script');
+         
+          script.src = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ options.artist +"&api_key=30ac38340e8be75f9268727cb4526b3d&format=json&callback=lastFMcallback";
+          script.type = "text/javascript";
+          head.insertBefore( script, head.firstChild );
+          
+          _artists[options.artist] = "Unknown information";
+        }
+        
+        lastFMcallback = function(data){          
+          var htmlString = '<h3>'+data.artist.name+'</h3>';
+          htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
+          htmlString += '<p>'+ data.artist.bio.summary +'</p>';
+          htmlString += '<hr /><p><h4>Tags</h4><ul>';
+          
+          Popcorn.forEach( data.artist.tags.tag, function( val, i) {
+            htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
+          });
+          
+          htmlString += '</ul></p>';
+          htmlString += '<hr /><p><h4>Similar</h4><ul>';
+          
+          Popcorn.forEach( data.artist.similar.artist, function( val, i) {
+            htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
+          });
+          
+          htmlString += '</ul></p>';
+          
+          _artists[data.artist.name.toLowerCase()] = htmlString;
+        };
       },
       /**
        * @member LastFM 
@@ -75,7 +97,8 @@
        * options variable
        */
       start: function( event, options ) {
-        options.container.style.display = "inline";
+        options._container.innerHTML = _artists[options.artist];
+        options._container.style.display = "inline";
       },
       /**
        * @member LastFM 
@@ -84,8 +107,10 @@
        * options variable
        */
       end: function( event, options ) {
-        options.container.style.display = "none";
+        options._container.style.display = "none";
+        options._container.innerHTML = "";
       }
-    });
+    };
+  })());
 
 })( Popcorn );
