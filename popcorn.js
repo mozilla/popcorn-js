@@ -813,12 +813,8 @@
   
   Popcorn.xhr = function ( options ) {
     
-<<<<<<< HEAD
-    if ( ( options.dataType || "" ).toLowerCase() === "jsonp" ) {
-=======
     if ( options.dataType && options.dataType.toLowerCase() === "jsonp" ) {
->>>>>>> 742ed140bbafc94a08a0024346c62eeff8407d07
-      
+
       Popcorn.xhr.getJSONP( 
         options.url,
         options.success
@@ -896,15 +892,6 @@
       script = document.createElement("script"), 
       paramStr = url.split("?")[1], 
       fired = false, 
-<<<<<<< HEAD
-      params, callback;
-
-    script.src = url; 
-
-    params = paramStr.split("&");
-    
-    callback = params.length ? params[ params.length - 1 ].split("=")[1] : Popcorn.guid("jsonp");
-=======
       params = [], 
       callback;
 
@@ -921,8 +908,7 @@
     }
     
     script.src = url;
-    
->>>>>>> 742ed140bbafc94a08a0024346c62eeff8407d07
+
     
     if ( callback ) {
       //  define the jsonp success callback globally
@@ -944,12 +930,8 @@
 
     head.insertBefore( script, head.firstChild );
   
-<<<<<<< HEAD
-  }
-=======
   };
->>>>>>> 742ed140bbafc94a08a0024346c62eeff8407d07
-  
+
   
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
