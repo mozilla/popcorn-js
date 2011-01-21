@@ -1357,6 +1357,47 @@ test("Parsing Integrity", function () {
 });
 
 
+test("Parsing Handler - References unavailable plugin", function () {
+
+  var expects = 1,
+      count = 0,
+      timeOut = 0,
+      interval,
+      poppercore = Popcorn( "#video" );
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+      // clean up added events after tests
+      clearInterval( interval );
+      poppercore.removePlugin( "parserTest" );
+    }
+  }
+  
+  expect(expects);
+  
+  stop();
+
+  Popcorn.parser( "parseJson" , "json", function( data ){
+  
+    return data.json;
+  });
+
+  poppercore.parseJson("data/parseMissing.json");
+
+  // interval used to wait for data to be parsed
+  interval = setInterval( function() {
+    poppercore.currentTime(5).play().currentTime(6);
+    
+    ok( true, "Ignored call to missing plugin " );
+    plus();
+    
+  }, 2000);
+  
+});
+
+
+
 
 module("Popcorn Test Runner End");
 test("Last Check", function () {
