@@ -765,15 +765,31 @@
         url: filename,
         success: function( data ) {
 
-          var tracksObject = definition( data );
+          var tracksObject = definition( data ), 
+              tracksData, 
+              tracksDataLen, 
+              tracksDef, 
+              idx = 0;
+              
+          tracksData = tracksObject.data || [];
+          tracksDataLen = tracksData.length;
+          tracksDef = null;
+          
+          //  If no tracks to process, return immediately
+          if ( !tracksDataLen ) {
+            return;
+          }
+              
+          //  Create tracks out of parsed object
+          for ( ; idx < tracksDataLen; idx++ ) {
+            
+            tracksDef = tracksData[ idx ];
+            
+            for ( var key in tracksDef ) {
 
-          // creating tracks out of parsed object
-          for ( var i = 0, todl = tracksObject.data.length; i < todl; i++ ) {
-
-            for ( var key in tracksObject.data[i] ) {
-
-              if ( tracksObject.data[i].hasOwnProperty(key) ) {
-                that[key]( tracksObject.data[i][key] );
+              if ( hasOwn.call( tracksDef, key ) && !!that[ key ] ) {
+              
+                that[ key ]( tracksDef[ key ] );
               }
             }
           }
