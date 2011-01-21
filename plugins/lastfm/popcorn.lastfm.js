@@ -65,29 +65,31 @@ var lastFMcallback;
           script.type = "text/javascript";
           head.insertBefore( script, head.firstChild );
           
-          _artists[options.artist] = "Information unavailable";
+          _artists[options.artist] = "Unknown Artist";
         }
         
         lastFMcallback = function(data){
-          var htmlString = '<h3>'+data.artist.name+'</h3>';
-          htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
-          htmlString += '<p>'+ data.artist.bio.summary +'</p>';
-          htmlString += '<hr /><p><h4>Tags</h4><ul>';
-          
-          Popcorn.forEach( data.artist.tags.tag, function( val, i) {
-            htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
-          });
-          
-          htmlString += '</ul></p>';
-          htmlString += '<hr /><p><h4>Similar</h4><ul>';
-          
-          Popcorn.forEach( data.artist.similar.artist, function( val, i) {
-            htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
-          });
-          
-          htmlString += '</ul></p>';
-          
-          _artists[data.artist.name.toLowerCase()] = htmlString;
+          if (data.artist) {
+            var htmlString = '<h3>'+data.artist.name+'</h3>';
+            htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
+            htmlString += '<p>'+ data.artist.bio.summary +'</p>';
+            htmlString += '<hr /><p><h4>Tags</h4><ul>';
+            
+            Popcorn.forEach( data.artist.tags.tag, function( val, i) {
+              htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
+            });
+            
+            htmlString += '</ul></p>';
+            htmlString += '<hr /><p><h4>Similar</h4><ul>';
+            
+            Popcorn.forEach( data.artist.similar.artist, function( val, i) {
+              htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
+            });
+            
+            htmlString += '</ul></p>';
+            
+            _artists[data.artist.name.toLowerCase()] = htmlString;
+          }
         };
       },
       /**

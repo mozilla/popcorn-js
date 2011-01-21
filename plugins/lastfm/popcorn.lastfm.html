@@ -4,7 +4,6 @@
   <title>Popcorn LastFM Plug-in Demo</title>
   
   <script src="../../popcorn.js"></script>
-  <script src="../../test/jquery.js"></script>
   <script src="popcorn.lastfm.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -20,6 +19,12 @@
         start: 10, // seconds
         end: 20, // seconds
         artist: 'the beatles',
+        target: 'lastfmdiv'
+      } )
+      .lastfm({
+        start: 15, // seconds
+        end: 30, // seconds
+        artist: 'sdfsdfsdfdsddfsdfsdfsddfsf',
         target: 'lastfmdiv'
       } )
 	    .lastfm({
@@ -41,6 +46,7 @@
   <h1 id="qunit-header">Popcorn LastFM Plug-in Demo</h1>
   <p> Artist information for 'yacht' will appear at 5 seconds and disappear at 15 seconds.</p>
   <p> Artist information for 'The Beatles' will appear at 10 seconds and disappear at 20 seconds.</p>
+  <p> 'Unknown Artist' will appear at 15 seconds and disappear at 30 seconds.</p>
   <p> Artist information for 'Coldplay' will appear at 20 seconds and disappear at 45 seconds.</p>
   <p> Artist information for 'yacht' will appear at 25 seconds and disappear at 40 seconds.</p>
   <div>
