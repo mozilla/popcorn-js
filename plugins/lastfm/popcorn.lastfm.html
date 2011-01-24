@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn LastFM Plug-in Demo</title>
+  
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.lastfm.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var p = Popcorn('#video')
+      .play()
+      .lastfm({
+        start: 5, // seconds
+        end: 15, // seconds
+        artist: 'yacht',
+        target: 'lastfmdiv'
+      } )
+      .lastfm({
+        start: 10, // seconds
+        end: 20, // seconds
+        artist: 'the beatles',
+        target: 'lastfmdiv'
+      } )
+      .lastfm({
+        start: 15, // seconds
+        end: 30, // seconds
+        artist: 'sdfsdfsdfdsddfsdfsdfsddfsf',
+        target: 'lastfmdiv'
+      } )
+	    .lastfm({
+        start: 20, // seconds
+        end: 45, // seconds
+        artist: 'Coldplay',
+        target: 'lastfmdiv'
+      } )
+      .lastfm({
+        start: 25, // seconds
+        end: 40, // seconds
+        artist: 'yacht',
+        target: 'lastfmdiv'
+      } )
+    }, false);
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn LastFM Plug-in Demo</h1>
+  <p> Artist information for 'yacht' will appear at 5 seconds and disappear at 15 seconds.</p>
+  <p> Artist information for 'The Beatles' will appear at 10 seconds and disappear at 20 seconds.</p>
+  <p> 'Unknown Artist' will appear at 15 seconds and disappear at 30 seconds.</p>
+  <p> Artist information for 'Coldplay' will appear at 20 seconds and disappear at 45 seconds.</p>
+  <p> Artist information for 'yacht' will appear at 25 seconds and disappear at 40 seconds.</p>
+  <div>
+    <video id='video' 
+      controls preload='none' 
+      width= '250px'
+      poster="../../test/poster.png"> 
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'> 
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'> 
+
+      <p>Your user agent does not support the HTML5 Video element.</p> 
+
+    </video> 
+  </div>
+  <div id="lastfmdiv" width="50%" height="50%">
+  </div>
+</body>
+</html>
