@@ -14,7 +14,7 @@ var lastFMcallback;
    *  appended to, this target element must exist on the DOM
    * 
    * @param {Object} options
-   * 
+   *  
    * Example:
      var p = Popcorn('#video')
         .lastfm({
@@ -61,7 +61,7 @@ var lastFMcallback;
           var head = document.getElementsByTagName('head')[0];
           var script = document.createElement('script');
          
-          script.src = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ options.artist +"&api_key=30ac38340e8be75f9268727cb4526b3d&format=json&callback=lastFMcallback";
+          script.src = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ options.artist +"&api_key="+options.apikey+"&format=json&callback=lastFMcallback";
           script.type = "text/javascript";
           head.insertBefore( script, head.firstChild );
           

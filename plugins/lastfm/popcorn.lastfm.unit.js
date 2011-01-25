@@ -28,19 +28,22 @@ test("Popcorn LastFM Plugin", function () {
       start: 1, // seconds
       end: 4, // seconds
       artist: 'yacht',
-      target: 'lastfmdiv'
+      target: 'lastfmdiv',
+      apikey: '30ac38340e8be75f9268727cb4526b3d'
     } )
     .lastfm({
       start: 2.5, // seconds
       end: 7, // seconds
       artist: 'the beatles',
-      target: 'lastfmdiv'
+      target: 'lastfmdiv',
+      apikey: '30ac38340e8be75f9268727cb4526b3d'
     } )
     .lastfm({
       start: 4.5, // seconds
       end: 7, // seconds
       artist: '',
-      target: 'lastfmdiv'
+      target: 'lastfmdiv',
+      apikey: '30ac38340e8be75f9268727cb4526b3d'
     } );
 
   interval = setInterval( function() {
