@@ -22,14 +22,13 @@ test("Popcorn 0.3 SRT Parser Plugin", function () {
   expect(expects);
   
   stop( 10000 );
-
-  alert("HI");
+  
   // Allow load time
   setTimeout(function () {
     Popcorn.forEach(poppercorn.getTrackEvents(), function(evt) {
       if(evt._natives.type === "subtitle") {
         numSubs++;
-        key = Math.ceil(evt.start).toString();
+        key = evt.start.toString();
         equals(subs[key], evt.text , "Correct amounts" );
         plus();
       }
