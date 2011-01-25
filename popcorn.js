@@ -765,15 +765,31 @@
         url: filename,
         success: function( data ) {
 
-          var tracksObject = definition( data );
+          var tracksObject = definition( data ), 
+              tracksData, 
+              tracksDataLen, 
+              tracksDef, 
+              idx = 0;
+              
+          tracksData = tracksObject.data || [];
+          tracksDataLen = tracksData.length;
+          tracksDef = null;
+          
+          //  If no tracks to process, return immediately
+          if ( !tracksDataLen ) {
+            return;
+          }
+              
+          //  Create tracks out of parsed object
+          for ( ; idx < tracksDataLen; idx++ ) {
+            
+            tracksDef = tracksData[ idx ];
+            
+            for ( var key in tracksDef ) {
 
-          // creating tracks out of parsed object
-          for ( var i = 0, todl = tracksObject.data.length; i < todl; i++ ) {
-
-            for ( var key in tracksObject.data[i] ) {
-
-              if ( tracksObject.data[i].hasOwnProperty(key) ) {
-                that[key]( tracksObject.data[i][key] );
+              if ( hasOwn.call( tracksDef, key ) && !!that[ key ] ) {
+              
+                that[ key ]( tracksDef[ key ] );
               }
             }
           }
@@ -790,7 +806,7 @@
     Popcorn.extend( Popcorn.p, parser );
     
     // keys the function name by filetype extension
-    Popcorn.parsers[type] = name;
+    Popcorn.parsers[ type ] = name;
 
     return parser;
   };
@@ -814,7 +830,7 @@
   Popcorn.xhr = function ( options ) {
     
     if ( options.dataType && options.dataType.toLowerCase() === "jsonp" ) {
-      
+
       Popcorn.xhr.getJSONP( 
         options.url,
         options.success
@@ -908,7 +924,7 @@
     }
     
     script.src = url;
-    
+
     
     if ( callback ) {
       //  define the jsonp success callback globally
@@ -931,7 +947,7 @@
     head.insertBefore( script, head.firstChild );
   
   };
-  
+
   
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
@@ -971,7 +987,7 @@
             }
             
             dataType = dataType.toUpperCase();
-            
+     
             parserFn = "parse" + dataType;
 
             //  If the video has data sources and the correct parser is registered, continue to load
