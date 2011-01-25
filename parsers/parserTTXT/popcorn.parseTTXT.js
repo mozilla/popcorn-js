@@ -27,7 +27,7 @@
         time += parseFloat(t[1], 10)*60;      // minutes => seconds
         time += parseFloat(s[0], 10);
         time += parseFloat(s[1], 10)/1000;
-      } catch (e) { throw "Invalid time"; }
+      } catch (e) { time = 0; }
       
       return time;
     };
