@@ -27,10 +27,11 @@
   Popcorn.plugin( "tagthisperson" , (function(){
     
     var peopleArray = [];
+    // one People object per options.target
     var People = function(){
       this.name = "";
       this.contains = {};
-      this.toString = function(target) {
+      this.toString = function() {
         var r = [];
         for ( var j in this.contains) {
           if (this.contains.hasOwnProperty(j)) {
@@ -80,7 +81,12 @@
        * options variable
        */
       start: function(event, options){
-        options._p.contains[options.person] = options.person;
+        if ( options.image ) {
+          options._p.contains[options.person] = "<img src='" + options.image + "'/> " + options.person;
+        } else {
+          options._p.contains[options.person] = options.person;
+        }
+        //options._p.contains[options.person] = options.person;
         if (document.getElementById(options.target)) {
           document.getElementById(options.target).innerHTML  = options._p.toString();
         }

@@ -9,18 +9,103 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
+      .volume(0)
+      .twitter({
+        start: '00:00:00:01', // seconds
+        end: 5, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #bipartisanship',
+        target: 'twitterdiv'
+      } )
       .twitter({
         start: 5, // seconds
-        end: 15, // seconds
-        title: 'Steve Song',
-        src: '@stevesong',
-        target: 'twitterdiv',
+        end: 10, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #economy',
+        target: 'twitterdiv'
+      } )
+      .twitter({
+        start: 15, // seconds
+        end: 20, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #innovation',
+        target: 'twitterdiv'
+      } )
+      .twitter({
+        start: 20, // seconds
+        end: 25, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #energy',
+        target: 'twitterdiv'
+      } )
+      .twitter({
+        start: 30, // seconds
+        end: 35, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #education',
+        target: 'twitterdiv'
+      } )
+      .twitter({
+        start: 40, // seconds
+        end: 45, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #infrastructure',
+        target: 'twitterdiv'
+      } )
+      .twitter({
+        start: 50, // seconds
+        end: 55, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #spending',
+        target: 'twitterdiv'
+      } )
+      .twitter({
+        start: 55, // seconds
+        end: 60, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #taxes',
+        target: 'twitterdiv'
       } )
       .twitter({
         start: 20, // seconds
         end: 45, // seconds
         title: 'Oil Spill',
-        src: '#oilspill',
+        src: '#pbssotu #gov20',
+        target: 'twitterdiv'
+      } )
+      .twitter({
+        start: 20, // seconds
+        end: 45, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #military',
+        target: 'twitterdiv'
+      } )
+      .twitter({
+        start: 20, // seconds
+        end: 45, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #afghanistan',
+        target: 'twitterdiv'
+      } )
+      .twitter({
+        start: 20, // seconds
+        end: 45, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #foreignpolicy',
+        target: 'twitterdiv'
+      } )
+      .twitter({
+        start: 20, // seconds
+        end: 45, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #military',
+        target: 'twitterdiv'
+      } )
+      .twitter({
+        start: 20, // seconds
+        end: 45, // seconds
+        title: 'Oil Spill',
+        src: '#pbssotu #bigthings',
         target: 'twitterdiv'
       } )
       .play();
