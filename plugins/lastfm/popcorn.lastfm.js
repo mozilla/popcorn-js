@@ -12,18 +12,20 @@ var lastFMcallback;
    * Artist is the name of who's LastFM information you wish to show
    * Target is the id of the document element that the images are
    *  appended to, this target element must exist on the DOM
+   * ApiKey is the API key registered with LastFM for use with their API
    * 
    * @param {Object} options
    *  
    * Example:
      var p = Popcorn('#video')
         .lastfm({
-          start:          5,                 // seconds, mandatory
-          end:            15,                // seconds, mandatory
-          artist:         'yacht',           // mandatory
-          target:         'lastfmdiv'        // mandatory
+          start:          5,                                    // seconds, mandatory
+          end:            15,                                   // seconds, mandatory
+          artist:         'yacht',                              // mandatory
+          target:         'lastfmdiv',                          // mandatory
+          apikey:         '1234567890abcdef1234567890abcdef'    // mandatory
         } )
-   *
+   *9268727cb4526b3d
    */
   Popcorn.plugin( "lastfm" , (function(){
       
