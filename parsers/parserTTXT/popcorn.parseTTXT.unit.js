@@ -13,7 +13,6 @@ test("Popcorn 0.3 TTXT Parser Plugin", function () {
         "18": "",
         "26": "[Bird noises]",
         "31": ""
-        }
       };
       
   function plus() {
@@ -26,7 +25,7 @@ test("Popcorn 0.3 TTXT Parser Plugin", function () {
   
   expect(expects);
   
-  stop( 10000 );
+  stop( 5000 );
 
   // Allow load time
   setTimeout(function () {
