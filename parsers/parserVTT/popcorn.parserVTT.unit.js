@@ -34,7 +34,7 @@ test("Popcorn 0.3 VTT Parser Plugin", function () {
   
   expect(expects);
   
-  stop( 5000 );
+  stop( 10000 );
   
   // Allow load time
   setTimeout(function () {
