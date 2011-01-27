@@ -1,5 +1,10 @@
 test("Popcorn LastFM Plugin", function () {
+  /*
+    ATTENTION
   
+    This demo uses an API key obtained for testing the LastFM Popcorn.js
+    plugin. Please do not use it for other purposes.
+  */
   var popped = Popcorn("#video"),
       expects = 8, 
       count = 0,
