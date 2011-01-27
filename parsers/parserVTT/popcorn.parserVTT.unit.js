@@ -30,11 +30,11 @@ test("Popcorn 0.3 VTT Parser Plugin", function () {
     }
   }
   
-  poppercorn.parseVTT("data/unit.vtt");
+  poppercorn.parseVTT(document.getElementById('video').getAttribute('data-timeline-sources'));
   
   expect(expects);
   
-  stop( 10000 );
+  stop( 5000 );
   
   // Allow load time
   setTimeout(function () {

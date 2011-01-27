@@ -2,23 +2,27 @@
 
 (function (Popcorn) {
   Popcorn.parser( "parseVTT", "VTT", function( data ) {
-
+  
     // declare needed variables
     var retObj = {
           title: "",
           remote: "",
           data: []
         },
-        subs = [],
-        lines,
+        lines, time, text, sub,
+        subs = [],        
         i = 0, len = 0, idx = 0;
     
-    // [HH]:MM:SS.mmm string to SS.mmm
+    // [HH:]MM:SS.mmm string to SS.mmm float
+    // Throws exception if invalid
     var toSeconds = function(t_in) {
       var t = t_in.split(':');
-      var time, l = t.length-1;
+      var time, l = t_in.length;
       
-      try {
+      if (l !== 12 && l !== 9) throw "Bad cue";
+      l = t.length - 1;
+      
+      try {        
         time = parseInt(t[l-1], 10)*60 + parseFloat(t[l], 10);
         
         if (l === 2) // Hours given
@@ -40,14 +44,16 @@
     len = lines.length;
     
     while (i < len) {
-      var sub = {};
-      
-      sub.id = lines[i++];
-      
-      var time = lines[i++].split(" --> ");
-      var text = [];
+      sub = {};
+      text = [];
       
       try {
+        sub.id = lines[i++];
+        
+        if (!sub.id || sub.id.indexOf("-->") !== -1) throw "Bad cue";
+        
+        time = lines[i++].split(/[\t ]*-->[\t ]*/);
+        
         sub.start = toSeconds(time[0]);
         
         // Filter out any trailing styling info
