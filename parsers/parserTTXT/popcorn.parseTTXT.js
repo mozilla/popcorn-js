@@ -3,8 +3,16 @@
 (function (Popcorn) {
 
   /**
+   * TTXT popcorn parser plug-in 
+   * Parses subtitle files in the TTXT format.
+   * Style information is ignored.
+   * Data parameter is given by Popcorn, will need an xml.
+   * Xml is the file contents to be parsed as a DOM tree
    * 
-   *
+   * @param {Object} data
+   * 
+   * Example:
+     <TextSample sampleTime="00:00:00.000" text=""></TextSample>
    */
   Popcorn.parser( "parseTTXT", "TTXT", function( data ) {
 
@@ -20,13 +28,8 @@
       var t = t_in.split(":");
       var time = 0;
       
-      try {
-        var s = t[2].split('.');
-        
-        time += parseFloat(t[0], 10)*60*60;   // hours => seconds
-        time += parseFloat(t[1], 10)*60;      // minutes => seconds
-        time += parseFloat(s[0], 10);
-        time += parseFloat(s[1], 10)/1000;
+      try {        
+        return parseFloat(t[0], 10)*60*60 + parseFloat(t[1], 10)*60 + parseFloat(t[2], 10);
       } catch (e) { time = 0; }
       
       return time;
@@ -40,8 +43,6 @@
     };
 
     // this is where things actually start
-    // Timings should start at second element, but don't assume can jump right to children[1]
-    
     var node = data.xml.lastChild.lastChild; // Last Child of TextStreamHeader
     var lastStart = 3.4028235e+38;
     var cmds = [];

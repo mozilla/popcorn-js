@@ -2,17 +2,16 @@ test("Popcorn 0.3 TTXT Parser Plugin", function () {
   
   var expects = 8,
       count = 0,
-      key,
       numSubs = 0,
       poppercorn = Popcorn( "#video" ),
       subs = { // Expected values
         "0": "",
-        "3": "[Background Music Playing]",
-        "6": "",
-        "16": "Heay!!",
-        "18": "",
-        "26": "[Bird noises]",
-        "31": ""
+        "2.4": "[Background Music Playing]",
+        "5.2": "",
+        "15.712": "Heay!!",
+        "17.399": "",
+        "25.712": "[Bird noises]",
+        "30.399": ""
       };
       
   function plus() {
@@ -21,7 +20,7 @@ test("Popcorn 0.3 TTXT Parser Plugin", function () {
     }
   }
   
-  poppercorn.parseTTXT("data/data.ttxt");
+  poppercorn.parseTTXT(document.getElementById('video').getAttribute('data-timeline-sources'));
   
   expect(expects);
   
@@ -32,8 +31,7 @@ test("Popcorn 0.3 TTXT Parser Plugin", function () {
     Popcorn.forEach(poppercorn.getTrackEvents(), function(evt) {
       if(evt._natives.type === "subtitle") {
         numSubs++;
-        key = Math.ceil(evt.start).toString();
-        equals(subs[key],  evt.text , "Correct amounts" );
+        equals(subs[evt.start.toString()],  evt.text , "Correct text" );
         plus();
       }
     });
