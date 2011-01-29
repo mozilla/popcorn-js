@@ -24,6 +24,7 @@
         };
 
     // Simple function to convert HH:MM:SS.MMM to SS.MMM
+    // Assume valid, returns 0 on error
     var toSeconds = function(t_in) {
       var t = t_in.split(":");
       var time = 0;
@@ -44,20 +45,21 @@
 
     // this is where things actually start
     var node = data.xml.lastChild.lastChild; // Last Child of TextStreamHeader
-    var lastStart = 3.4028235e+38;
+    var lastStart = Number.MAX_VALUE;
     var cmds = [];
     
+    // Work backwards through DOM, processing TextSample nodes
     while (node) {
       if ( node.nodeType === 1 && node.nodeName === "TextSample") {
         var sub = {};
         sub.start = toSeconds(node.getAttribute('sampleTime'));
         sub.text = node.getAttribute('text');
         
-        // Infer end time, ms accuracy
-        sub.end = lastStart;
+        // Infer end time from prior element, ms accuracy
+        sub.end = lastStart - 0.001;
         
         cmds.push( createTrack("subtitle", sub) );
-        lastStart = sub.start - 0.001;
+        lastStart = sub.start;
       }
       node = node.previousSibling;
     }
