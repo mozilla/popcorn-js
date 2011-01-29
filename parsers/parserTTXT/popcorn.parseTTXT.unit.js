@@ -7,19 +7,9 @@ test("Popcorn 0.3 TTXT Parser Plugin", function () {
       poppercorn = Popcorn( "#video" ),
       subs = [ // Expected values
         {
-          start: 0,
-          end: 2.399,
-          text: ""
-        },
-        {
           start: 2.4,
           end: 5.199,
           text: "[Background Music Playing]"
-        },
-        {
-          start: 5.2,
-          end: 15.711,
-          text: ""
         },
         {
           start: 15.712,
@@ -27,19 +17,9 @@ test("Popcorn 0.3 TTXT Parser Plugin", function () {
           text: "Heay!!"
         },
         {
-          start: 17.399,
-          end: 25.711,
-          text: ""
-        },
-        {
           start: 25.712,
           end: 30.398,
           text: "[Bird noises]"
-        },
-        {
-          start: 30.399,
-          end: Number.MAX_VALUE,
-          text: ""
         }
       ];
       

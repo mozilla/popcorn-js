@@ -54,11 +54,12 @@
         var sub = {};
         sub.start = toSeconds(node.getAttribute('sampleTime'));
         sub.text = node.getAttribute('text');
-        
-        // Infer end time from prior element, ms accuracy
-        sub.end = lastStart - 0.001;
-        
-        cmds.push( createTrack("subtitle", sub) );
+      
+        if (sub.text) { // Only process if text to display
+          // Infer end time from prior element, ms accuracy
+          sub.end = lastStart - 0.001;
+          cmds.push( createTrack("subtitle", sub) );
+        }
         lastStart = sub.start;
       }
       node = node.previousSibling;
