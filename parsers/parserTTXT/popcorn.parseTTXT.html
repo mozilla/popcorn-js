@@ -6,7 +6,14 @@
   <script src="../../popcorn.js"></script>
   <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
   <script src="popcorn.parseTTXT.js"></script>
-
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var p = Popcorn('#video')
+      .volume(0)
+      .play()
+    }, false);
+  </script>
 </head>
 <body>
   <h1 id="qunit-header">Popcorn 0.3 TTXT parser Plug-in Demo</h1>
