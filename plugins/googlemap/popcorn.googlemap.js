@@ -133,6 +133,8 @@ var googleCallback;
             }
             options.zoom = options.zoom || 0; // default to 0
             options._map.setZoom( options.zoom );
+
+            google.maps.event.trigger(options._map, 'resize');
           }
         };
         
