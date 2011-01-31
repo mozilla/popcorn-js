@@ -80,7 +80,7 @@ var wikiCallback;
         // get the content of the wiki article
         options._desc = document.createElement( 'p' );
         // get the article text and remove any special characters
-        _text = data.parse.text[ "*" ].substr( data.parse.text["*"].indexOf('<p>') );
+        _text = data.parse.text[ "*" ].substr( data.parse.text[ "*" ].indexOf('<p>') );
         _text = _text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
         options._desc.innerHTML = _text.substr( 0,  options.numberofwords ) + " ...";
         
@@ -132,7 +132,7 @@ var wikiCallback;
       // DOM before removal
       if ( options._added ) {
         document.getElementById( options.target ).removeChild( options._link );
-        document.getElementById( options.target ).removeChild( options._desc it );
+        document.getElementById( options.target ).removeChild( options._desc );
       }
     }
      
