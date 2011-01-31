@@ -33,9 +33,9 @@
       this.contains = {};
       this.toString = function() {
         var r = [];
-        for ( var j in this.contains) {
-          if (this.contains.hasOwnProperty(j)) {
-            r.push(" " + this.contains[j]);
+        for ( var j in this.contains ) {
+          if ( this.contains.hasOwnProperty(j) ) {
+            r.push( " " + this.contains[j] );
           }
         }
         return r.toString();
@@ -57,21 +57,21 @@
           text     : {elem:'input', type:'text', label:'Text'}
         }
       },
-      _setup: function(options) {
+      _setup: function( options ) {
         var exists = false;
         // loop through the existing objects to ensure no duplicates
         // the idea here is to have one object per unique options.target
-        for (var i = 0; i< peopleArray.length; i++) {
-          if (peopleArray[i].name === options.target ) {
-            options._p = peopleArray[i];  
+        for ( var i = 0; i< peopleArray.length; i++ ) {
+          if ( peopleArray[i].name === options.target ) {
+            options._p = peopleArray[ i ];  
             exists = true;
             break;
           }
         }
-        if (!exists) {
+        if ( !exists ) {
           options._p = new People();
           options._p.name = options.target;
-          peopleArray.push(options._p );
+          peopleArray.push( options._p );
         }
       },
       /**
@@ -80,15 +80,15 @@
        * of the video  reaches the start time provided by the 
        * options variable
        */
-      start: function(event, options){
+      start: function( event, options ){
         if ( options.image ) {
-          options._p.contains[options.person] = "<img src='" + options.image + "'/> " + options.person;
+          options._p.contains[ options.person ] = " <img src='" + options.image + "'/> " + options.person;
         } else {
-          options._p.contains[options.person] = options.person;
+          options._p.contains[ options.person ] = options.person;
         }
         //options._p.contains[options.person] = options.person;
-        if (document.getElementById(options.target)) {
-          document.getElementById(options.target).innerHTML  = options._p.toString();
+        if (document.getElementById( options.target )) {
+          document.getElementById( options.target ).innerHTML  = options._p.toString();
         }
       },
       /**
@@ -98,9 +98,9 @@
        * options variable
        */
       end: function(event, options){
-        delete options._p.contains[options.person];
-        if (document.getElementById(options.target)) {
-          document.getElementById(options.target).innerHTML  = options._p.toString();
+        delete options._p.contains[ options.person ];
+        if ( document.getElementById( options.target ) ) {
+          document.getElementById( options.target ).innerHTML  = options._p.toString();
         }
       }
    };
