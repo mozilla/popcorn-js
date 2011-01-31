@@ -76,7 +76,7 @@ var wikiCallback;
         options._link.setAttribute('href', options.src);
         options._link.setAttribute('target', '_blank');
         // add the title of the article to the link
-        options._link.innerHTML = data.parse.displaytitle;
+        options._link.innerHTML = options.title || data.parse.displaytitle;
         // get the content of the wiki article
         options._desc = document.createElement('p');
         // get the article text and remove any special characters
