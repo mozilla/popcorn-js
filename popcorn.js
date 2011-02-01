@@ -21,7 +21,27 @@
     //  Return new Popcorn object
     return new Popcorn.p.init( entity );
   };
+  
+  Popcorn.instances = [];
+  Popcorn.instanceIds = {};
+  Popcorn.removeInstance = function(id) {
+    Popcorn.instances.splice(Popcorn.instanceIds[id], 1);
+    delete Popcorn.instanceIds[id];
+  };
 
+  Popcorn.addInstance = function(popcornInstance) {
+    if (popcornInstance.video.id === "undefined" || !popcornInstance.video.id.length) {
+      popcornInstance.video.id = "__popcorn" + Popcorn.instances.length;
+    }
+    Popcorn.instanceIds[popcornInstance.video.id] = Popcorn.instances.length;
+    Popcorn.instances.push(popcornInstance);
+  };
+
+  Popcorn.getInstanceById = function(name) {
+    return Popcorn.instances[Popcorn.instanceIds[name]];
+  };
+  
+  
   //  Declare a shortcut (Popcorn.p) to and a definition of 
   //  the new prototype for our Popcorn constructor 
   Popcorn.p = Popcorn.prototype = {
@@ -86,7 +106,7 @@
       
       
       this.video = elem ? elem : null;
-      
+      Popcorn.addInstance(this);
       this.data = {
         history: [],
         events: {},
