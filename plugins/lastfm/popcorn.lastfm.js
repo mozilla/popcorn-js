@@ -6,22 +6,24 @@ var lastFMcallback;
   /**
    * LastFM popcorn plug-in
    * Appends information about a LastFM artist to an element on the page.
-   * Options parameter will need a start, end, target and artist.
+   * Options parameter will need a start, end, target, artist and apikey.
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing
    * Artist is the name of who's LastFM information you wish to show
    * Target is the id of the document element that the images are
    *  appended to, this target element must exist on the DOM
+   * ApiKey is the API key registered with LastFM for use with their API
    * 
    * @param {Object} options
-   * 
+   *  
    * Example:
      var p = Popcorn('#video')
         .lastfm({
-          start:          5,                 // seconds, mandatory
-          end:            15,                // seconds, mandatory
-          artist:         'yacht',           // mandatory
-          target:         'lastfmdiv'        // mandatory
+          start:          5,                                    // seconds, mandatory
+          end:            15,                                   // seconds, mandatory
+          artist:         'yacht',                              // mandatory
+          target:         'lastfmdiv',                          // mandatory
+          apikey:         '1234567890abcdef1234567890abcdef'    // mandatory
         } )
    *
    */
@@ -61,7 +63,7 @@ var lastFMcallback;
           var head = document.getElementsByTagName('head')[0];
           var script = document.createElement('script');
          
-          script.src = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ options.artist +"&api_key=30ac38340e8be75f9268727cb4526b3d&format=json&callback=lastFMcallback";
+          script.src = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ options.artist +"&api_key="+options.apikey+"&format=json&callback=lastFMcallback";
           script.type = "text/javascript";
           head.insertBefore( script, head.firstChild );
           

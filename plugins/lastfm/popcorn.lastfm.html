@@ -3,41 +3,54 @@
 <head>
   <title>Popcorn LastFM Plug-in Demo</title>
   
+  <!--
+    ATTENTION
+  
+    This demo uses an API key obtained for testing the LastFM Popcorn.js
+    plugin. Please do not use it for other purposes.
+  -->
+  
   <script src="../../popcorn.js"></script>
   <script src="popcorn.lastfm.js"></script>
-  <script>
+  <script> 
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
+      .volume(0)
       .play()
       .lastfm({
         start: 5, // seconds
         end: 15, // seconds
         artist: 'yacht',
-        target: 'lastfmdiv'
+        target: 'lastfmdiv',
+        apikey: '30ac38340e8be75f9268727cb4526b3d'
       } )
       .lastfm({
         start: 10, // seconds
         end: 20, // seconds
         artist: 'the beatles',
-        target: 'lastfmdiv'
+        target: 'lastfmdiv',
+        apikey: '30ac38340e8be75f9268727cb4526b3d'
       } )
       .lastfm({
         start: 15, // seconds
         end: 30, // seconds
         artist: 'sdfsdfsdfdsddfsdfsdfsddfsf',
-        target: 'lastfmdiv'
+        target: 'lastfmdiv',
+        apikey: '30ac38340e8be75f9268727cb4526b3d'
       } )
 	    .lastfm({
         start: 20, // seconds
         end: 45, // seconds
         artist: 'Coldplay',
-        target: 'lastfmdiv'
+        target: 'lastfmdiv',
+        apikey: '30ac38340e8be75f9268727cb4526b3d'
       } )
       .lastfm({
         start: 25, // seconds
         end: 40, // seconds
         artist: 'yacht',
-        target: 'lastfmdiv'
+        target: 'lastfmdiv',
+        apikey: '30ac38340e8be75f9268727cb4526b3d'
       } )
     }, false);
   </script>
