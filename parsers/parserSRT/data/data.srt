@@ -1,0 +1,16 @@
+1
+00:00:02.400 --> 00:00:05.200
+[Background Music Playing]
+
+2
+00:00:06.000 --> 00:00:13,700
+<true> To say that 2 is greater than three (3 > 2) would be lying<true>
+
+3
+00:00:15,712 --> 00:00:17,399 X1:000 X2:000 Y1:050 Y2:100
+Oh my god, Watch out!
+It's coming!!
+
+4
+00:00:25,712 --> 00:00:30,399
+[Bird noises]
