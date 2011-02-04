@@ -1,24 +1,24 @@
 test("Popcorn tagthisperson Plugin", function () {
   
-  var popped = Popcorn("#video"),
+  var popped = Popcorn( "#video" ),
       expects = 7, 
       count = 0,
       interval,
       interval2,
       interval3,
-      tagdiv = document.getElementById('tagdiv');
+      tagdiv = document.getElementById( 'tagdiv' );
   
   expect(expects);
   
   function plus() {
-    if ( ++count===expects) {
+    if ( ++count===expects ) {
       start();
     }
   }
   
   stop();
    
-  ok ('tagthisperson' in popped, "tagthisperson is a method of the popped instance");
+  ok ( 'tagthisperson' in popped, "tagthisperson is a method of the popped instance" );
   plus();
   
   equals ( tagdiv.innerHTML, "", "initially, there is nothing inside the tagdiv" );
@@ -43,7 +43,7 @@ test("Popcorn tagthisperson Plugin", function () {
   
   interval = setInterval( function() {
     if( popped.currentTime() > 0 && popped.currentTime() <= 5 ) {
-      equals (tagdiv.childElementCount, 1, "tagdiv now contains one child elements" );
+      equals ( tagdiv.childElementCount, 1, "tagdiv now contains one child elements" );
       plus();
       equals ( tagdiv.textContent.trim() , "Anna Sob" ,"tagdiv shows the first tag" );
       plus();
@@ -60,14 +60,14 @@ test("Popcorn tagthisperson Plugin", function () {
   }, 2000);
   
   interval3 = setInterval( function() {
-    if( popped.currentTime() > 5) {
+    if( popped.currentTime() > 5 ) {
       equals ( tagdiv.innerHTML.trim() , "Scott" ,"tagdiv shows the second tag only" );
       plus();
       clearInterval( interval3 );
     }
   }, 5000);
   interval4 = setInterval( function() {
-    if( popped.currentTime() > 10) {
+    if( popped.currentTime() > 10 ) {
       equals ( tagdiv.innerHTML , "" ,"tagdiv is now cleared" );
       plus();
       clearInterval( interval4 );
