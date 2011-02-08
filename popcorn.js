@@ -962,6 +962,11 @@
           hasDataSources = false, 
           dataSources, dataTemp, dataType, parserFn, popcornVideo;
       
+      //  Ensure that the DOM has an id, satisfies #310
+      if ( !video.id ) {
+        video.id = Popcorn.guid( "__popcorn" );
+      }
+      
       //  Ensure we're looking at a dom node and that it has an id
       //  otherwise Popcorn won't be able to find the video element
       if ( video.nodeType && video.nodeType === 1 && video.id ) {
