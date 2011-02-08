@@ -32,33 +32,31 @@
       .subtitle({
         start: 1, // seconds
         end: 15, // seconds
-        text: 'this is the first subtitle of 2011'
+        text: 'this is a subtitle'
       } )
-      // make the video play right automatically 
+      // make the video play automatically 
       .play();
     }, false);
 
   </script>
 </head>
 <body>
-  <h1 id="qunit-header">Popcorn Simple Demo</h1>
+  <h1>Popcorn Simple Demo</h1>
   <p>You should see a footnote "This video made exclusively for drumbeat.org" appear right away</p>
-  <p>You should see a subtitle "this is the first subtitle of 2011" appear at 1 sec away</p>
-  <div>
-	<!-- You need a video element with an id -->
-    <video id='video' 
-      controls preload='none' 
-      width= '250px'
-      poster="test/poster.png"> 
-      <source id='mp4'
-        src="test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
-      <source id='ogv'
-        src="test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
-    </video> 
-  </div>
+  <p>You should see a subtitle "this is a subtitle" appear at 1 sec away</p>
+  <!-- You need a video element with an id -->
+  <video id='video' 
+    controls 
+    width= '250px'
+    poster="test/poster.png"> 
+    <source id='mp4'
+      src="test/trailer.mp4"
+      type='video/mp4; codecs="avc1, mp4a"'> 
+    <source id='ogv'
+      src="test/trailer.ogv"
+      type='video/ogg; codecs="theora, vorbis"'> 
+    <p>Your user agent does not support the HTML5 Video element.</p> 
+  </video> 
   <!-- this is needed for the footnote plugin -->
   <div id="footnotediv"></div>
 </body>
