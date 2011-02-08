@@ -33,7 +33,7 @@ test("Popcorn Google Map Plugin", function () {
         type: 'ROADMAP',
         target: 'map',
         lat: 43.665429,
-        long: -79.403323,
+        lng: -79.403323,
         zoom: 10
       } )
       .googlemap({
@@ -73,7 +73,7 @@ test("Popcorn Google Map Plugin", function () {
   mapInterval3 = setInterval( function() {
     if( popped.currentTime() > 5  ) {
       ok (document.getElementById('actualmap2').style.display === "none" && 
-          document.getElementById('actualmap1').style.display === "none", "Both maps are no longer visible" );
+          document.getElementById('actualmap1').style.display === "none", "Both maps are no lnger visible" );
       plus();
       clearInterval( mapInterval3 );
     }
