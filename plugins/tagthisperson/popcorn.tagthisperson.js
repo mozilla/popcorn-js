@@ -55,7 +55,8 @@
           start    : {elem:'input', type:'text', label:'In'},
           end      : {elem:'input', type:'text', label:'Out'},
           target   : 'tag-container',
-          text     : {elem:'input', type:'text', label:'Text'}
+          person   : {elem:'input', type:'text', label:'Name'},
+          image    : {elem:'input', type:'text', label:'Image Src'}
         }
       },
       _setup: function( options ) {
