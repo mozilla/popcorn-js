@@ -131,7 +131,7 @@
       <tagthisperson target="inthisvideo" in="00:01:41:11" out="00:01:57:11" person="Charlie Schmidt" />
 
       <tagthisperson target="inthisvideo" in="00:02:09:00" out="00:03:07:05" person="Jonathan Zittrain" />
-      <twitter in="00:02:09:00" out="00:03:07:05" title="Jonathan Zittrain" source="@zittrain" target="personaltwitter" width="238" height="120"/>
+      <twitter in="00:02:09:00" out="00:03:07:05" title="Jonathan Zittrain" src="@zittrain" target="personaltwitter" width="238" height="120"/>
       <googlemap resourceid="harvardlawhome" in="00:02:09:00" out="00:03:07:05" lat="42.4222" long="-88.6137" target="container2" zoom="12"/>
       <wikipedia in="00:02:09:00" out="00:02:20:00" resourceid="zittrain" numberofwords="200" target="wikidiv"/>
       <wikipedia in="00:02:20:01" out="00:02:23:00" resourceid="compuserve" numberofwords="200" target="wikidiv"/>
