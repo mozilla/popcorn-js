@@ -951,7 +951,7 @@
   
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
-  
+
   document.addEventListener( "DOMContentLoaded", function () {
 
     var videos = document.getElementsByTagName( "video" );
@@ -959,12 +959,18 @@
     Popcorn.forEach( videos, function ( iter, key ) {
 
       var video = videos[ key ],
-          hasDataSources = false, 
+          hasDataSources = false,
           dataSources, dataTemp, dataType, parserFn, popcornVideo;
+
+      //  Ensure that the DOM has an id
+      if ( !video.id ) {
+
+        video.id = Popcorn.guid( "__popcorn" );
+
+      }
       
-      //  Ensure we're looking at a dom node and that it has an id
-      //  otherwise Popcorn won't be able to find the video element
-      if ( video.nodeType && video.nodeType === 1 && video.id ) {
+      //  Ensure we're looking at a dom node
+      if ( video.nodeType && video.nodeType === 1 ) {
       
         popcornVideo = Popcorn( "#" + video.id );
 
@@ -977,17 +983,17 @@
             dataTemp = source.split( ":" );
 
             dataType = dataTemp[0];
-            
+
             if ( dataTemp.length === 1 ) {
-              
+
               dataTemp = source.split( "." );
-              
+
               dataType = dataTemp[ dataTemp.length - 1 ]; 
-              
+
             }
-            
+
             dataType = dataType.toUpperCase();
-     
+
             parserFn = "parse" + dataType;
 
             //  If the video has data sources and the correct parser is registered, continue to load
