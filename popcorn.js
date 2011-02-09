@@ -320,34 +320,34 @@
     removePlugin: function( name ) {
 
       var byStart = this.data.trackEvents.byStart, 
-          byEnd = this.data.trackEvents.byEnd;
+          byEnd = this.data.trackEvents.byEnd, 
+          idx, rl, sl;
   
       delete Popcorn.p[ name ];
   
       // remove plugin reference from registry
-      for ( var r = 0, rl = Popcorn.registry.length; r < rl; r++ ) {
-        if ( Popcorn.registry[r].type === name ) {
-          Popcorn.registry.splice(r, 1);
+      for ( idx = 0, rl = Popcorn.registry.length; idx < rl; idx++ ) {
+        if ( Popcorn.registry[ idx ].type === name ) {
+          Popcorn.registry.splice( idx, 1 );
           break; // plugin found, stop checking
         }
       }
 
       // remove all trackEvents
-      for ( var s = 0, sl = byStart.length; s < sl; s++ ) {
-        if ( byStart[s] && byStart[s]._natives && byStart[s]._natives.type === name ) {
-          byStart.splice( s, 1 );
-          s--; sl--; // update for loop if something removed, but keep checking
-          if ( this.data.trackEvents.startIndex <= s ) {
-            this.data.trackEvents.startIndex--; // write test for this
-          }
-        }
-      }
-      for ( var e = 0, el = byEnd.length; e < el; e++ ) {
-        if ( byEnd[e] && byEnd[e]._natives && byEnd[e]._natives.type === name ) {
-          byEnd.splice( e, 1 );
-          e--; el--; // update for loop if something removed, but keep checking
-          if ( this.data.trackEvents.endIndex <= e ) {
-            this.data.trackEvents.endIndex--; // write test for this
+      for ( idx = 0, sl = byStart.length; idx < sl; idx++ ) {
+        
+        if ( ( byStart[ idx ] && byEnd[ idx ] ) && 
+                ( byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) && 
+                  ( byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) ) {
+          
+          byStart.splice( idx, 1 );
+          byEnd.splice( idx, 1 );
+          
+          // update for loop if something removed, but keep checking
+          idx--; sl--; 
+          if ( this.data.trackEvents.startIndex <= idx ) {
+            this.data.trackEvents.startIndex--;
+            this.data.trackEvents.endIndex--;
           }
         }
       }
