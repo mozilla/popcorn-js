@@ -68,6 +68,28 @@ test("Utility", function () {
   
 });
 
+test("Instances", function() {
+  expect(8);
+  
+  equals( typeof Popcorn.addInstance, "function" , "Popcorn.addInstance is a provided utility function");
+  equals( typeof Popcorn.removeInstance, "function" , "Popcorn.removeInstance is a provided utility function");
+  equals( typeof Popcorn.getInstanceById, "function" , "Popcorn.getInstanceById is a provided utility function");
+  equals( typeof Popcorn.instanceIds, "object" , "Popcorn.instanceIds is a provided cache object");
+  ok( "length" in Popcorn.instances && "join" in Popcorn.instances, "Popcorn.error is a provided cache array");  
+  
+  var instance;
+  
+  for ( var prop in Popcorn.instanceIds ) {
+    
+    instance = Popcorn.getInstanceById( prop );
+    
+    ok( instance.video, "Stored instance as a `video` property" );
+    ok( instance.data, "Stored instance as a `data` property" );
+    ok( instance instanceof Popcorn, "instance instanceof Popcorn" );
+  
+  }
+
+});
 
 test("guid", function () {
   
