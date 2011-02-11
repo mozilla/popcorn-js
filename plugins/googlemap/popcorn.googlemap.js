@@ -9,8 +9,10 @@ var googleCallback;
    * -Start is the time that you want this plug-in to execute
    * -End is the time that you want this plug-in to stop executing 
    * -Target is the id of the DOM element that you want the map to appear in. This element must be in the DOM
-   * -Type [optional] either: HYBRID (default), ROADMAP, SATELLITE, TERRAIN 
+   * -Type [optional] either: HYBRID (default), ROADMAP, SATELLITE, TERRAIN, STREETVIEW 
    * -Zoom [optional] defaults to 0
+   * -Heading [optional] STREETVIEW orientation of camera in degrees relative to true north (0 north, 90 true east, ect)
+   * -Pitch [optional] STREETVIEW vertical orientation of the camera (between 1 and 3 is recommended)
    * -Lat and Lng: the coordinates of the map must be present if location is not specified.
    * -Location: the adress you want the map to display, bust be present if lat and log are not specified.
    *  Note: using location requires extra loading time, also not specifying both lat/lng and location will
@@ -45,11 +47,13 @@ var googleCallback;
           start    : {elem:'input', type:'text', label:'In'},
           end      : {elem:'input', type:'text', label:'Out'},
           target   : 'map-container',
-          type     : {elem:'select', options:['ROADMAP','SATELLITE', 'HYBRID', 'TERRAIN'], label:'Type'},
+          type     : {elem:'select', options:['ROADMAP','SATELLITE', 'STREETVIEW', 'HYBRID', 'TERRAIN'], label:'Type'},
           zoom     : {elem:'input', type:'text', label:'Zoom'},
           lat      : {elem:'input', type:'text', label:'Lat'},
-          lng     : {elem:'input', type:'text', label:'Lng'},
-          location : {elem:'input', type:'text', label:'Location'}
+          lng      : {elem:'input', type:'text', label:'Lng'},
+          location : {elem:'input', type:'text', label:'Location'},
+		  heading  : {elem:'input', type:'text', label:'Heading'},
+		  pitch    : {elem:'input', type:'text', label:'Pitch'}
         }
       },
       _setup : function( options ) {
@@ -135,6 +139,19 @@ var googleCallback;
             options._map.setZoom( options.zoom );
 
             google.maps.event.trigger(options._map, 'resize');
+			
+			if(options.type === 'STREETVIEW'){
+			var streetViewOptions = {
+			  position: options._location,
+			  pov: {
+			    heading: options.heading,
+				pitch: options.pitch,
+				zoom: options.zoom
+				}
+			  };
+			  var streetView = new  google.maps.StreetViewPanorama(options._newdiv, streetViewOptions);
+			}
+			options._map.setStreetView(streetView);
           }
         };
         
