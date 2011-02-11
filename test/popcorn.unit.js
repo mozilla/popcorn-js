@@ -69,26 +69,37 @@ test("Utility", function () {
 });
 
 test("Instances", function() {
-  expect(8);
+  var popped = Popcorn("#video");
+  var popped2 = Popcorn("#video");
+  var popped3 = Popcorn("#video");
+  var expects = 9, 
+      count = 0;
   
-  equals( typeof Popcorn.addInstance, "function" , "Popcorn.addInstance is a provided utility function");
-  equals( typeof Popcorn.removeInstance, "function" , "Popcorn.removeInstance is a provided utility function");
-  equals( typeof Popcorn.getInstanceById, "function" , "Popcorn.getInstanceById is a provided utility function");
-  equals( typeof Popcorn.instanceIds, "object" , "Popcorn.instanceIds is a provided cache object");
-  ok( "length" in Popcorn.instances && "join" in Popcorn.instances, "Popcorn.error is a provided cache array");  
+  expect(expects);
   
-  var instance;
-  
-  for ( var prop in Popcorn.instanceIds ) {
-    
-    instance = Popcorn.getInstanceById( prop );
-    
-    ok( instance.video, "Stored instance as a `video` property" );
-    ok( instance.data, "Stored instance as a `data` property" );
-    ok( instance instanceof Popcorn, "instance instanceof Popcorn" );
-  
-  }
+  function plus(){ if ( ++count == expects ) start(); }
 
+  stop();
+  ok( typeof Popcorn.addInstance === "function" , "Popcorn.addInstance is a provided utility function");
+  plus();
+  ok( typeof Popcorn.removeInstance === "function" , "Popcorn.removeInstance is a provided utility function");
+  plus();
+  ok( typeof Popcorn.getInstanceById === "function" , "Popcorn.getInstanceById is a provided utility function");
+  plus();
+  ok( typeof Popcorn.instanceIds === "object" , "Popcorn.instanceIds is a provided cache object");
+  plus();
+  ok( "length" in Popcorn.instances && "join" in Popcorn.instances, "Popcorn.instances is a provided cache array");  
+  plus();
+  var instance;
+  instance = Popcorn.getInstanceById("video");
+  ok( instance.video, "Stored instance as a `video` property" );
+   plus();
+  ok( instance.data, "Stored instance as a `data` property" );
+   plus();
+  ok( instance instanceof Popcorn, "instance instanceof Popcorn" );
+   plus();
+  ok( 3 === Popcorn.instances.length, "There are 3 instances of Popcorn" );
+   plus();
 });
 
 test("guid", function () {
