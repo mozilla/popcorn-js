@@ -69,37 +69,52 @@ test("Utility", function () {
 });
 
 test("Instances", function() {
-  var popped = Popcorn("#video");
+  var popped =  Popcorn("#video");
   var popped2 = Popcorn("#video");
   var popped3 = Popcorn("#video");
   var expects = 9, 
-      count = 0;
+      count   = 0;
   
   expect(expects);
   
-  function plus(){ if ( ++count == expects ) start(); }
+  function plus(){ 
+    if ( ++count == expects ) {
+      start();      
+    }   
+  }
 
   stop();
+  
   ok( typeof Popcorn.addInstance === "function" , "Popcorn.addInstance is a provided utility function");
   plus();
+  
   ok( typeof Popcorn.removeInstance === "function" , "Popcorn.removeInstance is a provided utility function");
   plus();
+  
   ok( typeof Popcorn.getInstanceById === "function" , "Popcorn.getInstanceById is a provided utility function");
   plus();
+  
   ok( typeof Popcorn.instanceIds === "object" , "Popcorn.instanceIds is a provided cache object");
   plus();
+  
   ok( "length" in Popcorn.instances && "join" in Popcorn.instances, "Popcorn.instances is a provided cache array");  
   plus();
+  
   var instance;
   instance = Popcorn.getInstanceById("video");
+  
   ok( instance.video, "Stored instance as a `video` property" );
-   plus();
+  plus();
+   
   ok( instance.data, "Stored instance as a `data` property" );
-   plus();
+  plus();
+   
   ok( instance instanceof Popcorn, "Instance instanceof Popcorn" );
-   plus();
+  plus();
+   
   ok( 3 === Popcorn.instances.length, "There are the correct number of Popcorn instances" );
-   plus();
+  plus();
+   
 });
 
 test("guid", function () {

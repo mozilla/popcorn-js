@@ -25,11 +25,13 @@
   Popcorn.instances = [];
   Popcorn.instanceIds = {};
   
-  Popcorn.removeInstance = function(id) {
+  Popcorn.removeInstance = function( id ) {
     //  If called prior to any instances being created
     //  Return early to avoid splicing on nothing
     if ( !Popcorn.instances.length ) {
+      
       return;
+      
     }
   
     Popcorn.instances.splice( Popcorn.instanceIds[ id ], 1 );
@@ -39,22 +41,25 @@
   };
 
   //addes a Popcorn instance to the Popcorn instance array
-  Popcorn.addInstance = function(popcornInstance) {
-    if (!popcornInstance.video.id ) { 
+  Popcorn.addInstance = function( popcornInstance ) {
+  
+    if ( !popcornInstance.video.id ) { 
     
       popcornInstance.video.id = "__popcorn" + Popcorn.instances.length;
     
     }
     
-    Popcorn.instanceIds[popcornInstance.video.id] = Popcorn.instances.length;
+    Popcorn.instanceIds[ popcornInstance.video.id ] = Popcorn.instances.length;
     
-    Popcorn.instances.push(popcornInstance);
+    Popcorn.instances.push( popcornInstance );
     
   };
 
   //User passes in the name of the Popcorn instance and receive a popcorn object
-  Popcorn.getInstanceById = function(name) {
-    return Popcorn.instances[Popcorn.instanceIds[name]];
+  Popcorn.getInstanceById = function( name ) {
+  
+    return Popcorn.instances[ Popcorn.instanceIds[ name ] ];
+    
   };
   
   
@@ -122,7 +127,9 @@
       
       
       this.video = elem ? elem : null;
+      
       Popcorn.addInstance(this);
+      
       this.data = {
         history: [],
         events: {},
