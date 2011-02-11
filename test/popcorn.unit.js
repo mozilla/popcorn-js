@@ -96,9 +96,9 @@ test("Instances", function() {
    plus();
   ok( instance.data, "Stored instance as a `data` property" );
    plus();
-  ok( instance instanceof Popcorn, "instance instanceof Popcorn" );
+  ok( instance instanceof Popcorn, "Instance instanceof Popcorn" );
    plus();
-  ok( 3 === Popcorn.instances.length, "There are 3 instances of Popcorn" );
+  ok( 3 === Popcorn.instances.length, "There are the correct number of Popcorn instances" );
    plus();
 });
 
