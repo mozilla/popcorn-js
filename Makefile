@@ -84,8 +84,10 @@ PLUGINS_SRC = ${PLUGINS_DIR}/attribution/popcorn.attribution.js\
     ${PLUGINS_DIR}/tagthisperson/popcorn.tagthisperson.js\
     ${PLUGINS_DIR}/twitter/popcorn.twitter.js\
     ${PLUGINS_DIR}/webpage/popcorn.webpage.js\
-    ${PLUGINS_DIR}/wikipedia/popcorn.wikipedia.js
-    ${PLUGINS_DIR}/mustache/popcorn.mustache.js
+    ${PLUGINS_DIR}/wikipedia/popcorn.wikipedia.js\
+    ${PLUGINS_DIR}/mustache/popcorn.mustache.js\
+    $(NULL)
+
 
 
 
