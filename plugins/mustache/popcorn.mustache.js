@@ -154,8 +154,6 @@
           }
 
           self = this;
-
-          console.log(options.start, data, getData, template, getTemplate);
         },
 
         start: function( event, options ) {
