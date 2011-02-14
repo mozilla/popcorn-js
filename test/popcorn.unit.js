@@ -437,23 +437,8 @@ test("Manifest", function () {
   }
   
   stop( 10000 );
-  Popcorn.plugin( "footnote" , (function(){
-      
+  Popcorn.plugin( "footnote" , function(){
     return {
-      manifest: {
-        about:{
-          name: "Popcorn Manifest Plugin",
-          version: "0.0",
-          author: "Rick Waldron",
-          website: ""
-        },
-        options: {
-          start   : { elem:'input', type:'text', label:'In' },
-          end     : { elem:'input', type:'text', label:'Out' },
-          text    : { elem:'input', type:'text', label:'Manifest Text' }, 
-          target  : 'text-container'
-        }
-      },    
       _setup: function( options ) {
         ok( options.target, "`options.target exists`" );
         plus();
@@ -479,7 +464,21 @@ test("Manifest", function () {
       
     };
     
-  })());
+  },
+  {
+    about:{
+      name: "Popcorn Manifest Plugin",
+      version: "0.0",
+      author: "Rick Waldron",
+      website: ""
+    },
+    options: {
+      start   : { elem:'input', type:'text', label:'In' },
+      end     : { elem:'input', type:'text', label:'Out' },
+      text    : { elem:'input', type:'text', label:'Manifest Text' }, 
+      target  : 'text-container'
+    }
+  });
   
   
   expect(expects);
@@ -493,7 +492,7 @@ test("Manifest", function () {
   
   p.footnote({
     target: "custom-target"
-  })
+  });
   
   
 });

@@ -1,49 +1,49 @@
 (function(global, document) {
 
   //  Cache refs to speed up calls to native utils
-  var  
-  forEach = Array.prototype.forEach, 
-  hasOwn = Object.prototype.hasOwnProperty, 
+  var
+  forEach = Array.prototype.forEach,
+  hasOwn = Object.prototype.hasOwnProperty,
   slice = Array.prototype.slice,
 
   //  ID string matching
-  rIdExp  = /^(#([\w\-\_\.]+))$/, 
-  
+  rIdExp  = /^(#([\w\-\_\.]+))$/,
+
   // ready fn cache
-  readyStack = [], 
+  readyStack = [],
   readyBound = false,
   readyFired = false,
-  
+
 
   //  Declare a pseudo-private constructor
-  //  Returns an instance object.    
+  //  Returns an instance object.
   Popcorn = function( entity ) {
     //  Return new Popcorn object
     return new Popcorn.p.init( entity );
   };
 
-  //  Declare a shortcut (Popcorn.p) to and a definition of 
-  //  the new prototype for our Popcorn constructor 
+  //  Declare a shortcut (Popcorn.p) to and a definition of
+  //  the new prototype for our Popcorn constructor
   Popcorn.p = Popcorn.prototype = {
 
     init: function( entity ) {
 
       var elem, matches;
-      
-      //  Supports Popcorn(function () { /../ }) 
+
+      //  Supports Popcorn(function () { /../ })
       //  Originally proposed by Daniel Brooks
-      
+
       if ( typeof entity === "function" ) {
-      
+
         //  If document ready has already fired
         if ( document.readyState === "interactive" || document.readyState === "complete" ) {
-          
+
           entity(document, Popcorn);
-          
+
           return;
         }
-        
-        
+
+
         readyStack.push( entity );
 
         //  This process should happen once per page load
@@ -53,9 +53,9 @@
           readyBound = true;
 
           var DOMContentLoaded  = function () {
-            
+
             readyFired = true;
-            
+
             //  remove this listener
             document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
 
@@ -66,27 +66,27 @@
 
             }
             //  GC readyStack
-            readyStack = null;  
+            readyStack = null;
           };
 
           document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false);
         }
 
-        
-        
-        return;  
+
+
+        return;
       }
- 
-      
+
+
       matches = rIdExp.exec( entity );
-      
+
       if ( matches.length && matches[2]  ) {
         elem = document.getElementById(matches[2]);
       }
-      
-      
+
+
       this.video = elem ? elem : null;
-      
+
       this.data = {
         history: [],
         events: {},
@@ -98,7 +98,7 @@
           previousUpdateTime: 0
         }
       };
-      
+
       var isReady = function( that ) {
 
         if ( that.video.readyState >= 3 ) {
@@ -110,7 +110,7 @@
             start: videoDurationPlus,
             end: videoDurationPlus
           });
-          
+
           that.video.addEventListener( "timeupdate", function( event ) {
 
             var currentTime    = this.currentTime,
@@ -129,7 +129,7 @@
                 }
                 tracks.endIndex++;
               }
-              
+
               while ( tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start <= currentTime ) {
                 if ( tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex]._running === false ) {
                   tracksByStart[tracks.startIndex]._running = true;
@@ -148,7 +148,7 @@
                 }
                 tracks.startIndex--;
               }
-              
+
               while ( tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end > currentTime ) {
                 if ( tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex]._running === false ) {
                   tracksByEnd[tracks.endIndex]._running = true;
@@ -156,10 +156,10 @@
                 }
                 tracks.endIndex--;
               }
-            } 
+            }
             /*
             //  This empty block causes errors with jslint
-            
+
             else {
               // When user seeks, currentTime can be equal to previousTime on the
               // timeUpdate event. We are not doing anything with this right now, but we
@@ -168,7 +168,7 @@
             }
             */
             tracks.previousUpdateTime = currentTime;
-            
+
           }, false);
         } else {
           global.setTimeout( function() {
@@ -183,8 +183,8 @@
     }
   };
 
-  //  This trick allows our api methods to be chained to 
-  //  instance references.    
+  //  This trick allows our api methods to be chained to
+  //  instance references.
   Popcorn.p.init.prototype = Popcorn.p;
 
   Popcorn.forEach = function( obj, fn, context ) {
@@ -197,17 +197,17 @@
     // Use native whenever possible
     if ( forEach && obj.forEach === forEach ) {
       return obj.forEach(fn, context);
-    } 
+    }
 
     for ( var key in obj ) {
       if ( hasOwn.call(obj, key) ) {
         fn.call(context, obj[key], key, obj);
-      } 
-    }        
+      }
+    }
 
     return obj;
-  };    
-  
+  };
+
   Popcorn.extend = function( obj ) {
     var dest = obj, src = slice.call(arguments, 1);
 
@@ -216,7 +216,7 @@
         dest[prop] = copy[prop];
       }
     });
-    return dest;      
+    return dest;
   };
 
 
@@ -228,7 +228,7 @@
     guid: function( prefix ) {
       Popcorn.guid.counter++;
       return  ( prefix ? prefix : '' ) + ( +new Date() + Popcorn.guid.counter );
-    }, 
+    },
     sizeOf: function ( obj ) {
       var size = 0;
 
@@ -237,94 +237,94 @@
       }
 
       return size;
-    }, 
+    },
     nop: function () {}
-  });    
-  
+  });
+
   //  Memoization property
   Popcorn.guid.counter  = 1;
-  
-  //  Simple Factory pattern to implement getters, setters and controllers 
-  //  as methods of the returned Popcorn instance. The immediately invoked function 
+
+  //  Simple Factory pattern to implement getters, setters and controllers
+  //  as methods of the returned Popcorn instance. The immediately invoked function
   //  creates and returns an object of methods
   Popcorn.extend(Popcorn.p, (function () {
-      
+
       // todo: play, pause, mute should toggle
-      var methods = "load play pause currentTime playbackRate mute volume duration", 
+      var methods = "load play pause currentTime playbackRate mute volume duration",
           ret = {};
-      
-      
+
+
       //  Build methods, store in object that is returned and passed to extend
       Popcorn.forEach( methods.split(/\s+/g), function( name ) {
-        
+
         ret[ name ] = function( arg ) {
-          
+
           if ( typeof this.video[name] === "function" ) {
             this.video[ name ]();
-            
+
             return this;
           }
-          
-          
+
+
           if ( arg !== false && arg !== null && typeof arg !== "undefined" ) {
-            
+
             this.video[ name ] = arg;
-            
+
             return this;
           }
-          
+
           return this.video[ name ];
         };
       });
-      
+
       return ret;
-  
+
     })()
   );
-  
+
   Popcorn.extend(Popcorn.p, {
-    
+
     //  getting properties
     roundTime: function () {
       return -~this.video.currentTime;
     },
-    
-    
+
+
     exec: function ( time, fn ) {
-      
+
       !fn && ( fn = Popcorn.nop );
-      
-      
-      var self = this, 
-          guid = Popcorn.guid( "execCallback" ), 
+
+
+      var self = this,
+          guid = Popcorn.guid( "execCallback" ),
           callback = function execCallback( event ) {
-            
+
             if ( this.currentTime() >= time && !callback.fired ) {
-              
+
               callback.fired = true;
-              
+
               this.unlisten("timeupdate", guid );
-              
+
               fn.call(self, event);
-              
+
             }
           };
-      
+
       callback.fired = false;
       callback.name = guid;
-      
+
       this.listen("timeupdate", callback);
-      
+
       return this;
     },
     removePlugin: function( name ) {
 
-      var byStart = this.data.trackEvents.byStart, 
-          byEnd = this.data.trackEvents.byEnd, 
+      var byStart = this.data.trackEvents.byStart,
+          byEnd = this.data.trackEvents.byEnd,
           idx, rl, sl;
-  
+
       delete Popcorn.p[ name ];
-  
+
       // remove plugin reference from registry
       for ( idx = 0, rl = Popcorn.registry.length; idx < rl; idx++ ) {
         if ( Popcorn.registry[ idx ].type === name ) {
@@ -335,15 +335,15 @@
 
       // remove all trackEvents
       for ( idx = 0, sl = byStart.length; idx < sl; idx++ ) {
-        
-        if ( ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) && 
+
+        if ( ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) &&
                   ( byEnd[ idx ] && byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) ) {
-          
+
           byStart.splice( idx, 1 );
           byEnd.splice( idx, 1 );
-          
+
           // update for loop if something removed, but keep checking
-          idx--; sl--; 
+          idx--; sl--;
           if ( this.data.trackEvents.startIndex <= idx ) {
             this.data.trackEvents.startIndex--;
             this.data.trackEvents.endIndex--;
@@ -355,124 +355,124 @@
   });
 
   Popcorn.Events  = {
-    UIEvents: "blur focus focusin focusout load resize scroll unload  ", 
-    MouseEvents: "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave click dblclick", 
-    Events: "loadstart progress suspend emptied stalled play pause " + 
-           "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
+    UIEvents: "blur focus focusin focusout load resize scroll unload  ",
+    MouseEvents: "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave click dblclick",
+    Events: "loadstart progress suspend emptied stalled play pause " +
+           "loadedmetadata loadeddata waiting playing canplay canplaythrough " +
            "seeking seeked timeupdate ended ratechange durationchange volumechange"
   };
-    
-  Popcorn.Events.Natives = Popcorn.Events.UIEvents + " " + 
+
+  Popcorn.Events.Natives = Popcorn.Events.UIEvents + " " +
                             Popcorn.Events.MouseEvents + " " +
                               Popcorn.Events.Events;
-  
+
   Popcorn.events  = {
-  
+
 
     isNative: function( type ) {
-      
+
       var checks = Popcorn.Events.Natives.split(/\s+/g);
-      
+
       for ( var i = 0; i < checks.length; i++ ) {
         if ( checks[i] === type ) {
           return true;
         }
       }
-      
+
       return false;
-    },  
+    },
     getInterface: function( type ) {
-      
+
       if ( !Popcorn.events.isNative( type ) ) {
         return false;
       }
-      
+
       var natives = Popcorn.Events, proto;
-      
+
       for ( var p in natives ) {
         if ( p !== "Natives" && natives[p].indexOf(type) > -1 ) {
           proto = p;
         }
       }
-      
+
       return proto;
-    
-    }, 
-    
-    
-    all: Popcorn.Events.Natives.split(/\s+/g), 
-    
+
+    },
+
+
+    all: Popcorn.Events.Natives.split(/\s+/g),
+
     fn: {
       trigger: function ( type, data ) {
-        
+
         //  setup checks for custom event system
         if ( this.data.events[type] && Popcorn.sizeOf(this.data.events[type]) ) {
-          
-          var eventInterface  = Popcorn.events.getInterface(type);
-          
-          if ( eventInterface ) {
-          
-            var evt = document.createEvent( eventInterface );
-                evt.initEvent(type, true, true, global, 1);          
-          
-            this.video.dispatchEvent(evt);
-            
-            return this;
-          }        
 
-          //  Custom events          
+          var eventInterface  = Popcorn.events.getInterface(type);
+
+          if ( eventInterface ) {
+
+            var evt = document.createEvent( eventInterface );
+                evt.initEvent(type, true, true, global, 1);
+
+            this.video.dispatchEvent(evt);
+
+            return this;
+          }
+
+          //  Custom events
           Popcorn.forEach(this.data.events[type], function ( obj, key ) {
 
             obj.call( this, data );
-            
+
           }, this);
-          
+
         }
-        
+
         return this;
-      }, 
+      },
       listen: function ( type, fn ) {
-        
+
         var self = this, hasEvents = true;
-        
+
         if ( !this.data.events[type] ) {
           this.data.events[type] = {};
           hasEvents = false;
         }
-        
-        //  Register 
+
+        //  Register
         this.data.events[type][ fn.name || ( fn.toString() + Popcorn.guid() ) ] = fn;
-        
-        // only attach one event of any type          
+
+        // only attach one event of any type
         if ( !hasEvents && Popcorn.events.all.indexOf( type ) > -1 ) {
 
           this.video.addEventListener( type, function( event ) {
-            
+
             Popcorn.forEach( self.data.events[type], function ( obj, key ) {
               if ( typeof obj === "function" ) {
                 obj.call(self, event);
               }
 
             });
-            
+
             //fn.call( self, event );
-          
-          }, false);          
+
+          }, false);
         }
         return this;
-      }, 
+      },
       unlisten: function( type, fn ) {
-        
+
         if ( this.data.events[type] && this.data.events[type][fn] ) {
-          
+
           delete this.data.events[type][ fn ];
-          
+
           return this;
         }
-      
+
         this.data.events[type] = null;
-        return this;        
-      },      
+        return this;
+      },
       special: {
         // handles timeline controllers
         play: function () {
@@ -481,27 +481,27 @@
       }
     }
   };
-  
+
   //  Extend listen and trigger to all Popcorn instances
   Popcorn.forEach( ["trigger", "listen", "unlisten"], function ( key ) {
     Popcorn.p[key] = Popcorn.events.fn[key];
-  });  
-  
+  });
+
   Popcorn.protect = {
     natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten".toLowerCase().split(/\s+/)
   };
-  
-  
+
+
   Popcorn.addTrackEvent = function( obj, track ) {
-  
+
     if ( track._natives ) {
       // supports user defined track event id
       track._id = !track.id ? Popcorn.guid( track._natives.type ) : track.id;
 
       //  Push track event ids into the history
-      obj.data.history.push( track._id );      
+      obj.data.history.push( track._id );
     }
-  
+
     // Store this definition in an array sorted by times
     obj.data.trackEvents.byStart.push( track );
     obj.data.trackEvents.byEnd.push( track );
@@ -515,40 +515,40 @@
   };
 
   Popcorn.removeTrackEvent  = function( obj, trackId ) {
-    
-    var historyLen = obj.data.history.length, 
-        indexWasAt = 0, 
-        byStart = [], 
-        byEnd = [], 
-        history = []; 
-    
-    
+
+    var historyLen = obj.data.history.length,
+        indexWasAt = 0,
+        byStart = [],
+        byEnd = [],
+        history = [];
+
+
     Popcorn.forEach( obj.data.trackEvents.byStart, function( o, i, context) {
-      
+
       // Preserve the original start/end trackEvents
       if ( !o._id ) {
         byStart.push( obj.data.trackEvents.byStart[i] );
         byEnd.push( obj.data.trackEvents.byEnd[i] );
-      }  
-      
+      }
+
       // Filter for user track events (vs system track events)
       if ( o._id ) {
-        
+
         // Filter for the trackevent to remove
         if ( o._id !== trackId ) {
           byStart.push( obj.data.trackEvents.byStart[i] );
           byEnd.push( obj.data.trackEvents.byEnd[i] );
-        }      
-      
+        }
+
         //  Capture the position of the track being removed.
         if ( o._id === trackId ) {
           indexWasAt = i;
-        }      
+        }
       }
     });
-    
-    
-    //  Update 
+
+
+    //  Update
     if ( indexWasAt <= obj.data.trackEvents.startIndex ) {
       obj.data.trackEvents.startIndex--;
     }
@@ -556,8 +556,8 @@
     if ( indexWasAt <= obj.data.trackEvents.endIndex ) {
       obj.data.trackEvents.endIndex--;
     }
-    
-    
+
+
     obj.data.trackEvents.byStart = byStart;
     obj.data.trackEvents.byEnd = byEnd;
 
@@ -566,55 +566,55 @@
       if ( obj.data.history[i] !== trackId ) {
         history.push( obj.data.history[i] );
       }
-    }    
-    
+    }
+
     obj.data.history = history;
 
   };
-  
+
   Popcorn.getTrackEvents = function( obj ) {
-    
+
     var trackevents = [];
-    
-    Popcorn.forEach( obj.data.trackEvents.byStart, function(o, i, context) {    
+
+    Popcorn.forEach( obj.data.trackEvents.byStart, function(o, i, context) {
       if ( o._id ) {
         trackevents.push(o);
-      } 
+      }
     });
-    
+
     return trackevents;
   };
-  
-  
+
+
   Popcorn.getLastTrackEventId = function( obj ) {
     return obj.data.history[ obj.data.history.length - 1 ];
   };
-  
+
   //  Map TrackEvents functions to the {popcorn}.prototype
   Popcorn.extend( Popcorn.p, {
-    
+
     getTrackEvents: function() {
       return Popcorn.getTrackEvents.call( null, this );
     },
-  
+
     getLastTrackEventId: function() {
       return Popcorn.getLastTrackEventId.call( null, this );
-    }, 
-    
+    },
+
     removeTrackEvent: function( id ) {
       Popcorn.removeTrackEvent.call( null, this, id );
       return this;
     }
-  
+
   });
-  
+
   //  Plugin manifests
   Popcorn.manifest = {};
-  //  Plugins are registered 
+  //  Plugins are registered
   Popcorn.registry = [];
-  //  An interface for extending Popcorn 
+  //  An interface for extending Popcorn
   //  with plugin functionality
-  Popcorn.plugin = function( name, definition ) {
+  Popcorn.plugin = function( name, definition, manifest ) {
 
     if ( Popcorn.protect.natives.indexOf( name.toLowerCase() ) >= 0 ) {
       Popcorn.error("'" + name + "' is a protected function name");
@@ -622,18 +622,18 @@
     }
 
     //  Provides some sugar, but ultimately extends
-    //  the definition into Popcorn.p 
-    
-    var reserved = [ "start", "end"], 
+    //  the definition into Popcorn.p
+
+    var reserved = [ "start", "end"],
         plugin = {},
         setup;
-    
+
     function pluginFn ( setup, options ) {
-      
+
       if ( !options ) {
         return this;
-      } 
-      
+      }
+
       // storing the plugin natives
       options._natives = setup;
       options._natives.type = name;
@@ -643,71 +643,72 @@
       if ( !( "start" in options ) ) {
         options.start = 0;
       }
-      
+
       if ( !( "end" in options ) ) {
         options.end = this.duration();
       }
 
-      //  If a _setup was declared, then call it before 
+      //  If a _setup was declared, then call it before
       //  the events commence
-      
+
       if ( "_setup" in setup && typeof setup._setup === "function" ) {
-        
+
         // Resolves 239, 241, 242
-        options.target || 
-          ( setup.manifest.options.target && 
-              ( options.target = setup.manifest.options.target ) );
+        if ( !options.target )
+          options.target = manifest.options.target || ("manifest" in setup && setup.manifest.options.target);
 
         setup._setup.call( this, options );
       }
-      
+
 
       Popcorn.addTrackEvent( this, options );
 
-      
-      //  Future support for plugin event definitions 
+
+      //  Future support for plugin event definitions
       //  for all of the native events
       Popcorn.forEach( setup, function ( callback, type ) {
-      
+
         if ( type !== "type" ) {
-        
+
           if ( reserved.indexOf(type) === -1 ) {
 
             this.listen( type, callback );
           }
         }
-        
+
       }, this);
-      
+
       return this;
     };
 
-    //  Assign new named definition     
+    //  Augment the manifest object
+    if ( manifest || ("manifest" in definition) ) {
+      Popcorn.manifest[ name ] = manifest || definition.manifest;
+    }
+
+    //  Assign new named definition
     if ( typeof definition === "object" ) {
-      plugin[ name ] = function(options) { return pluginFn(definition, options); };
+      plugin[ name ] = function( options ) {
+        return pluginFn.call( this, definition, options );
+      };
     }
     else if ( typeof definition === "function" ) {
-      plugin[ name ] = function(options) { return pluginFn(definition(), options); };
+      plugin[ name ] = function( options ) {
+        return pluginFn.call( this, definition.call( this ), options );
+      };
     }
-    
+
     //  Extend Popcorn.p with new named definition
     Popcorn.extend( Popcorn.p, plugin );
-    
+
     //  Push into the registry
     Popcorn.registry.push( Popcorn.extend( plugin, {
       type: name
     }) );
-    
-    
-    if ( !!( "manifest" in setup ) ) {
-      
-      //  Augment the manifest object
-      Popcorn.manifest[ name ] = setup.manifest;
-    }    
-    
+
     return plugin;
   };
-  
+
   // stores parsers keyed on filetype
   Popcorn.parsers = {};
 
@@ -726,13 +727,13 @@
 
     // Provides some sugar, but ultimately extends
     // the definition into Popcorn.p
-    
+
     var natives = Popcorn.events.all,
         parseFn,
         parser = {};
-    
+
     parseFn = function ( filename ) {
-        
+
       if ( !filename ) {
         return this;
       }
@@ -743,30 +744,30 @@
         url: filename,
         success: function( data ) {
 
-          var tracksObject = definition( data ), 
-              tracksData, 
-              tracksDataLen, 
-              tracksDef, 
+          var tracksObject = definition( data ),
+              tracksData,
+              tracksDataLen,
+              tracksDef,
               idx = 0;
-              
+
           tracksData = tracksObject.data || [];
           tracksDataLen = tracksData.length;
           tracksDef = null;
-          
+
           //  If no tracks to process, return immediately
           if ( !tracksDataLen ) {
             return;
           }
-              
+
           //  Create tracks out of parsed object
           for ( ; idx < tracksDataLen; idx++ ) {
-            
+
             tracksDef = tracksData[ idx ];
-            
+
             for ( var key in tracksDef ) {
 
               if ( hasOwn.call( tracksDef, key ) && !!that[ key ] ) {
-              
+
                 that[ key ]( tracksDef[ key ] );
               }
             }
@@ -779,10 +780,10 @@
 
     // Assign new named definition
     parser[ name ] = parseFn;
-    
+
     // Extend Popcorn.p with new named definition
     Popcorn.extend( Popcorn.p, parser );
-    
+
     // keys the function name by filetype extension
     Popcorn.parsers[ type ] = name;
 
@@ -799,60 +800,60 @@
     dataType: '',
     success: Popcorn.nop,
     type: 'GET',
-    async: true, 
+    async: true,
     xhr: function()  {
       return new global.XMLHttpRequest();
     }
-  };   
-  
+  };
+
   Popcorn.xhr = function ( options ) {
-    
+
     if ( options.dataType && options.dataType.toLowerCase() === "jsonp" ) {
 
-      Popcorn.xhr.getJSONP( 
+      Popcorn.xhr.getJSONP(
         options.url,
         options.success
       );
       return;
     }
-    
+
     var settings = Popcorn.extend( {}, setup, options );
-    
+
     //  Create new XMLHttpRequest object
     settings.ajax  = settings.xhr();
-    
+
     //  Normalize dataType
     settings.dataType  = settings.dataType.toLowerCase();
-    
-    
+
+
     if ( settings.ajax ) {
-    
+
       if ( settings.type === "GET" && settings.data ) {
-        
+
         //  append query string
         settings.url += ( rparams.test( settings.url ) ? "&" : "?") + settings.data;
-        
+
         //  Garbage collect and reset settings.data
         settings.data = null;
-      }      
-    
+      }
 
-      settings.ajax.open( settings.type, settings.url, settings.async ); 
-      settings.ajax.send( settings.data = null ? null : settings.data ); 
+
+      settings.ajax.open( settings.type, settings.url, settings.async );
+      settings.ajax.send( settings.data = null ? null : settings.data );
 
       return Popcorn.xhr.httpData( settings );
-    }       
+    }
   };
 
-  
+
   Popcorn.xhr.httpData = function ( settings ) {
-  
-    var data, json = null;  
-        
+
+    var data, json = null;
+
     settings.ajax.onreadystatechange = function() {
 
-      if ( settings.ajax.readyState === 4 ) { 
-        
+      if ( settings.ajax.readyState === 4 ) {
+
         try {
           json = JSON.parse(settings.ajax.responseText);
         } catch(e) {
@@ -860,50 +861,50 @@
         }
 
         data = {
-          xml: settings.ajax.responseXML, 
-          text: settings.ajax.responseText, 
+          xml: settings.ajax.responseXML,
+          text: settings.ajax.responseText,
           json: json
         };
-        
+
         //  If a dataType was specified, return that type of data
         if ( settings.dataType ) {
           data = data[ settings.dataType ];
         }
-        
+
 
         settings.success.call( settings.ajax, data );
-        
-      } 
-    }; 
-    return data;  
+
+      }
+    };
+    return data;
   };
-  
-  
-  
+
+
+
   Popcorn.xhr.getJSONP = function ( url, success ) {
-  
+
     var head = document.getElementsByTagName("head")[0] || document.documentElement,
-      script = document.createElement("script"), 
-      paramStr = url.split("?")[1], 
-      fired = false, 
-      params = [], 
+      script = document.createElement("script"),
+      paramStr = url.split("?")[1],
+      fired = false,
+      params = [],
       callback;
 
     if ( paramStr ) {
       params = paramStr.split("&");
     }
-    
-    
+
+
     callback = params.length ? params[ params.length - 1 ].split("=")[1] : "jsonp";
-    
-    
+
+
     if ( !paramStr ) {
       url += "?callback=" + callback;
     }
-    
+
     script.src = url;
 
-    
+
     if ( callback ) {
       //  define the jsonp success callback globally
       window[ callback ] = function ( data ) {
@@ -920,13 +921,13 @@
         delete window[ callback ];
         head.removeChild( script );
       }
-    };  
+    };
 
     head.insertBefore( script, head.firstChild );
-  
+
   };
 
-  
+
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
 
@@ -946,10 +947,10 @@
         video.id = Popcorn.guid( "__popcorn" );
 
       }
-      
+
       //  Ensure we're looking at a dom node
       if ( video.nodeType && video.nodeType === 1 ) {
-      
+
         popcornVideo = Popcorn( "#" + video.id );
 
         dataSources = ( video.getAttribute( "data-timeline-sources" ) || "" ).split(",");
@@ -966,7 +967,7 @@
 
               dataTemp = source.split( "." );
 
-              dataType = dataTemp[ dataTemp.length - 1 ]; 
+              dataType = dataTemp[ dataTemp.length - 1 ];
 
             }
 
@@ -984,12 +985,12 @@
             }
           });
 
-        }          
+        }
 
         //  Only play the video if it was specified to do so
         if ( !!popcornVideo.autoplay ) {
           popcornVideo.play();
-        }           
+        }
 
       }
     });
