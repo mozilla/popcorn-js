@@ -626,90 +626,69 @@
     
     var reserved = [ "start", "end"], 
         plugin = {},
-        pluginFn, 
         setup;
     
-    if ( typeof definition === "object" ) {
+    function pluginFn ( setup, options ) {
       
-      setup = definition;
-      
-      /*if ( !( "timeupdate" in setup ) ) {
-        setup.timeupdate = Popcorn.nop;
-      }*/        
-
-      pluginFn  = function ( options ) {
-        
-        if ( !options ) {
-          return this;
-        } 
-        
-        // storing the plugin natives
-        options._natives = setup;
-        options._natives.type = name;
-        options._running = false;
-
-        //  Checks for expected properties
-        if ( !( "start" in options ) ) {
-          options.start = 0;
-        }
-        
-        if ( !( "end" in options ) ) {
-          options.end = this.duration();
-        }
-
-        //  If a _setup was declared, then call it before 
-        //  the events commence
-        
-        if ( "_setup" in setup && typeof setup._setup === "function" ) {
-          
-          // Resolves 239, 241, 242
-          options.target || 
-            ( setup.manifest.options.target && 
-                ( options.target = setup.manifest.options.target ) );
-
-          setup._setup.call( this, options );
-        }
-        
-
-        Popcorn.addTrackEvent( this, options );
-
-        
-        //  Future support for plugin event definitions 
-        //  for all of the native events
-        Popcorn.forEach( setup, function ( callback, type ) {
-        
-          if ( type !== "type" ) {
-          
-            if ( reserved.indexOf(type) === -1 ) {
-
-              this.listen( type, callback );
-            }
-          }
-          
-        }, this);
-        
+      if ( !options ) {
         return this;
-      };
-    }
-    
-    //  If a function is passed... 
-    if ( typeof definition === "function" ) {
+      } 
       
-      //  Execute and capture returned object
-      setup = definition.call(this);
-      
-      //  Ensure an object was returned 
-      //  it has properties and isnt an array
-      if ( typeof setup === "object" && 
-            !( "length" in setup )  ) {
-        
-        Popcorn.plugin( name, setup );                
+      // storing the plugin natives
+      options._natives = setup;
+      options._natives.type = name;
+      options._running = false;
+
+      //  Checks for expected properties
+      if ( !( "start" in options ) ) {
+        options.start = 0;
       }
-      return;
-    }
-    
+      
+      if ( !( "end" in options ) ) {
+        options.end = this.duration();
+      }
+
+      //  If a _setup was declared, then call it before 
+      //  the events commence
+      
+      if ( "_setup" in setup && typeof setup._setup === "function" ) {
+        
+        // Resolves 239, 241, 242
+        options.target || 
+          ( setup.manifest.options.target && 
+              ( options.target = setup.manifest.options.target ) );
+
+        setup._setup.call( this, options );
+      }
+      
+
+      Popcorn.addTrackEvent( this, options );
+
+      
+      //  Future support for plugin event definitions 
+      //  for all of the native events
+      Popcorn.forEach( setup, function ( callback, type ) {
+      
+        if ( type !== "type" ) {
+        
+          if ( reserved.indexOf(type) === -1 ) {
+
+            this.listen( type, callback );
+          }
+        }
+        
+      }, this);
+      
+      return this;
+    };
+
     //  Assign new named definition     
-    plugin[ name ] = pluginFn;
+    if ( typeof definition === "object" ) {
+      plugin[ name ] = function(options) { return pluginFn(definition, options); };
+    }
+    else if ( typeof definition === "function" ) {
+      plugin[ name ] = function(options) { return pluginFn(definition(), options); };
+    }
     
     //  Extend Popcorn.p with new named definition
     Popcorn.extend( Popcorn.p, plugin );
