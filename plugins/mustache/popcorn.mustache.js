@@ -39,9 +39,8 @@
    *   data: the data to be rendered using the mustache template.  This can be a JSON String,
    *         a JavaScript Object literal, or a Function returning a String or Literal.
    *
-   *   static: an optional argument indicating that the template and json data are static
-   *           and can be safely preloaded and cached.  Defaults to False (i.e., json data
-   *           will be loaded only when needed, and every time needed vs. at setup).
+   *   dynamic: an optional argument indicating that the template and json data are dynamic
+   *            and need to be loaded dynamically on every use.  Defaults to True.
    *
    * Example:
      var p = Popcorn('#video')
@@ -77,7 +76,7 @@
                     '  ],'                                                     +
                     '  "empty": false'                                         +
                     '}',
-          static: true // The json is not going to change, load it early.
+          dynamic: false // The json is not going to change, load it early.
         } )
 
         // Example showing Functions instead of Strings.
@@ -99,11 +98,13 @@
 
   Popcorn.plugin( "mustache" , function() {
 
-      var getData,
-          data,
-          getTemplate,
-          template,
-          self;
+      function get( name, options ) {
+        return options._instance[name];
+      }
+
+      function set( name, options, value ) {
+        options._instance[name] = value;
+      }
 
       return {
         manifest: {
@@ -119,54 +120,58 @@
             target   : 'mustache-container',
             template : {elem:'input', type:'text', label:'Template'},
             data     : {elem:'input', type:'text', label:'Data'},
-            static   : {elem:'input', type:'checkbox', label:'Static'} /* TODO: how to show a checkbox/boolean? */
+            dynamic  : {elem:'input', type:'text', label:'Dynamic'} /* TODO: how to show a checkbox/boolean? */
           }
         },
 
         _setup : function( options ) {
-          this.start = options.start;
-          this.end = options.end;
+          options._instance = { getData:     null,
+                                data:        null,
+                                getTemplate: null,
+                                template:    null };
+
+          var shouldReload = !!options.dynamic;
 
           if (typeof options.template === 'function') {
-            if (options.static) {
-              template = options.template(this, options);
+            if (!shouldReload) {
+              set('template', options, options.template(options));
             } else {
-              getTemplate = options.template;
+              set('getTemplate', options, options.template);
             }
           } else if (typeof options.template === 'string') {
-            template = options.template;
+            set('template', options, options.template);
           } else {
             throw "Mustache Plugin Error: options.template must be a String or a Function.";
           }
 
           if (typeof options.data === 'function') {
-            if (options.static) {
-              data = options.data(this, options);
+            if (!shouldReload) {
+              set('data', options, options.data(options));
             } else {
-              getData = options.data;
+              set('getData', options, options.data);
             }
           } else if (typeof options.data === 'string') {
-            data = JSON.parse(options.data);
+            set('data', options, JSON.parse(options.data));
           } else if (typeof options.data === 'object') {
-            data = options.data;
+            set('data', options, options.data);
           } else {
             throw "Mustache Plugin Error: options.data must be a String, Object, or Function.";
           }
-
-          self = this;
         },
 
         start: function( event, options ) {
-          // if not static=true, freshen json data on every call to start, just in case.
-          if (getData) {
-            data = getData(this, options);
+          // if dynamic, freshen json data on every call to start, just in case.
+          if (get('getData', options)) {
+            set('data', options, get('getData', options)(options));
           }
 
-          if (getTemplate) {
-            template = getTemplate(this, options);
+          if (get('getTemplate', options)) {
+            set('template', options, get('getTemplate', options)(options));
           }
 
-          var html = Mustache.to_html(template, data).replace(/^\s*/mg, '');
+          var html = Mustache.to_html( get('template', options),
+                                       get('data', options)
+                                     ).replace(/^\s*/mg, '');
           document.getElementById(options.target).innerHTML = html;
         },
 

@@ -26,9 +26,9 @@ test("Popcorn Mustache Plugin", function () {
     start: 1, // seconds
     end: 3, // seconds
     template: "<h1>{{heading}}</h1>",
-    data: '{"heading": "mustache"}',
+    data: '{"heading": "mustache - test 1/3"}',
     target: 'mustache-div',
-    static: true
+    dynamic: false
   } );
 
   // Dynamic functions
@@ -39,7 +39,7 @@ test("Popcorn Mustache Plugin", function () {
       return "<h1>{{heading}}</h1>";
     },
     data: function(plugin, options) {
-      return JSON.parse('{"heading": "mustache"}');
+      return JSON.parse('{"heading": "mustache - test 2/3"}');
     },
     target: 'mustache-div',
   } );
@@ -51,9 +51,9 @@ test("Popcorn Mustache Plugin", function () {
     template: function(plugin, options) {
       return "<h1>{{heading}}</h1>";
     },
-    data: { heading: "mustache" },
+    data: { heading: "mustache - test 3/3" },
     target: 'mustache-div',
-    static: true
+    dynamic: false
   } );
 
   var video = document.getElementById('video');
@@ -61,21 +61,21 @@ test("Popcorn Mustache Plugin", function () {
 
   video.addEventListener('timeupdate', function() {
 
-    function pass() {
-      ok( /<h1>mustache<\/h1>/.test( mustacheDiv.innerHTML ), "Mustache template rendered" );
+    function pass(a, b) {
+      ok( "<h1>mustache - test " + a + "/" + b + "<\/h1>" === mustacheDiv.innerHTML, "Mustache template rendered" );
       plus();
     }
 
     var t = Math.floor(video.currentTime);
 
     if (t === 2 && !two) {
-      pass();
+      pass(1, 3);
       two = true;
     } else if (t === 6 && !six) {
-      pass();
+      pass(2, 3);
       six = true;
     } else if (t === 10 && !ten) {
-      pass();
+      pass(3, 3);
       ten = true;
     }
 
