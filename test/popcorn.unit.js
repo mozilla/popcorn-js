@@ -432,7 +432,7 @@ test("Manifest", function () {
     if ( ++count === expects ) {
       start(); 
       // clean up added events after tests
-      p.removePlugin("footnote");
+      Popcorn.removePlugin("footnote");
     }
   }
   
@@ -516,12 +516,12 @@ test("Update Timer", function () {
     if ( ++count === expects ) {
       start(); 
       // clean up added events after tests
-      p2.removePlugin("forwards");
-      p2.removePlugin("backwards");
+      Popcorn.removePlugin("forwards");
+      Popcorn.removePlugin("backwards");
     }
   }
   
-  stop( 10000 );  
+  stop();  
 
   Popcorn.plugin("forwards", function () {
     return {
@@ -577,13 +577,16 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 24, 
+      expects = 26, 
       count = 0;
   
   //expect(expects);
   
   function plus() { 
     if ( ++count == expects ) {
+      Popcorn.removePlugin("breaker");
+      Popcorn.removePlugin("executor");
+      Popcorn.removePlugin("complicator");
       start(); 
     }
   }
@@ -736,39 +739,105 @@ test("Plugin Factory", function () {
   popped.currentTime(0).play();
 });
 
-test("removePlugin", function () {
+test("Remove Plugin", function () {
   
-  expect(10);
+  var p = Popcorn("#video"),
+      p2 = Popcorn("#video"),
+      rlen = Popcorn.registry.length,
+      count = 0,
+      expects = 19,
+      interval;
   
-  var p = Popcorn("#video"), 
-      rlen = Popcorn.registry.length;
-  
-  equals( rlen, 3, "Popcorn.registry.length is 3");
-  
-  
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 10000 );
+  p.currentTime(0).pause();
+
+  equals( rlen, 0, "Popcorn.registry.length is empty");
+  plus();
+
   equals( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is initialized and has 2 entries");
+  plus();
   equals( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is initialized and has 2 entries");
+  plus();
+
+  Popcorn.plugin("removeme", {
+    
+    start: function () {
+
+    },
+    end: function () {
+
+    }
+  });
+
+  p.removeme({
+    start: 2,
+    end: 3
+  });    
+
+  p2.removeme({
+    start: 2,
+    end: 3
+  });
   
-  p.breaker({
-    start: 2, 
-    end: 30
-  });     
-  
+  equals( Popcorn.registry.length, 1, "Popcorn.registry.length is 1");
+  plus();
   equals( p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart is updated and has 3 entries");
+  plus();
   equals( p.data.trackEvents.byEnd.length, 3, "p.data.trackEvents.byEnd is updated and has 3 entries");
+  plus();
   
+  p.removePlugin("removeme");
   
-  p.removePlugin("breaker");
-  
-  
-  ok( !("breaker" in p), "breaker plugin is no longer available to instance" );
-  ok( !("breaker" in Popcorn.prototype), "breaker plugin is no longer available to Popcorn.prototype" );
-  
-  
-  equals( Popcorn.registry.length, 2, "Popcorn.registry.length is 2");
-  
+  // p.removeme still exists on the prototype, even though we said to remove it
+  // the tracks of that type though, are removed.
+  // think of it as removing all tracks of plugin type attached to an instance
+  ok( typeof p.removeme === "function", "removeme plugin is still defined to p instance" );
+  plus();
+  ok( ( "removeme" in Popcorn.prototype ), "removeme plugin is still available to Popcorn.prototype" );
+  plus();
+  equals( Popcorn.registry.length, 1, "Popcorn.registry.length has not changed");
+  plus();
+
+  ok( (typeof p2.removeme === "function"), "removeme plugin is defined to p2 instance" );
+  plus();
+
+  equals( p2.data.trackEvents.byStart.length, 3, "p2.data.trackEvents.byStart is updated and has 3 entries");
+  plus();
+  equals( p2.data.trackEvents.byEnd.length, 3, "p2.data.trackEvents.byEnd is updated and has 3 entries");
+  plus();
+
   equals( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is updated and has 2 entries");
+  plus();
   equals( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is updated and has 2 entries");
+  plus();
+  Popcorn.removePlugin("removeme");
+  
+  ok( !("removeme" in p2), "removeme plugin is no longer available to p2 instance" );
+  plus();
+  ok( !("removeme" in Popcorn.prototype), "removeme plugin is no longer available to Popcorn.prototype" );
+  plus();
+  equals( Popcorn.registry.length, 0, "Popcorn.registry.length is empty again");
+  plus();
+  
+
+  interval = setInterval( function() {
+    if( p2.currentTime() > 3 ) {
+
+      equals( p2.data.trackEvents.byStart.length, 2, "p2.data.trackEvents.byStart is updated and has 2 entries");
+      plus();
+      equals( p2.data.trackEvents.byEnd.length, 2, "p2.data.trackEvents.byEnd is updated and has 2 entries");
+      plus();
+      clearInterval( interval );
+    }
+  }, 1);
+  p2.currentTime( 2 ).play();
   
 });
 
@@ -776,7 +845,6 @@ test("removePlugin", function () {
 
 
 test("Protected Names", function () {
-  
   //QUnit.reset();
   
   expect(8);
@@ -840,7 +908,6 @@ test("Functions", function () {
   
   
   equals( historyRef.length, 2, "2 TrackEvents in history index");
-  
   equals( popped.data.trackEvents.byStart.length, 4, "4 TrackEvents in popped.data.trackEvents.byStart ");
   equals( popped.data.trackEvents.byEnd.length, 4, "4 TrackEvents in popped.data.trackEvents.byEnd ");
   
@@ -1323,7 +1390,7 @@ test("Parsing Integrity", function () {
       start();
       // clean up added events after tests
       clearInterval( interval );
-      poppercore.removePlugin( "parserTest" );
+      Popcorn.removePlugin( "parserTest" );
     }
   }
   
@@ -1351,7 +1418,7 @@ test("Parsing Integrity", function () {
 
   // interval used to wait for data to be parsed
   interval = setInterval( function() {
-    poppercore.currentTime(5).play().currentTime(6);
+    poppercore.currentTime(5).play();
   }, 2000);
 
 });
