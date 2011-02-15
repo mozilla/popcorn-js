@@ -1064,6 +1064,9 @@ test("Index Integrity", function () {
 
 
 
+
+
+
 module("Popcorn XHR");
 test("Basic", function () {
   
@@ -1255,8 +1258,8 @@ test("JSONP Response", function () {
   );
   
 
-  Popcorn.xhr.getJSONP(
-    'data/jsonp.json',
+  Popcorn.getJSONP(
+    'data/jsonp.json?callback=jsonp',
 
     function( data ) {
       
@@ -1271,6 +1274,107 @@ test("JSONP Response", function () {
     }
   );  
 });
+
+test("Popcorn.getScript()", function () {
+
+  var expects = 8,  
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop();
+
+
+  Popcorn.xhr({
+    
+    url: "data/remoteA.js",
+    
+    dataType: "script", 
+    
+    success: function() {
+      
+      ok( true, "getScript A returned");
+      plus();
+      
+      
+      
+      ok( Popcorn.AlphaLib, "Popcorn.xhr.getScript remoteA.js loaded: `Popcorn.AlphaLib` is available");
+      plus();
+      
+    }
+  });
+
+  Popcorn.getScript(
+    
+    "data/remoteB.js", 
+    
+    function() {
+      
+      ok( true, "getScript B returned");
+      plus();
+
+      
+      ok( Popcorn.BetaLib , "Popcorn.getScript remoteB.js loaded: `Popcorn.BetaLib` is available ");
+      plus();
+      
+    }
+  );
+
+
+  Popcorn.getScript(
+    
+    "http://processingjs.org/content/download/processing-js-1.0.0/processing-1.0.0.min.js", 
+    
+    function() {
+      
+      ok( true, "getScript C returned");
+      plus();
+      
+
+      ok( ("Processing" in window) , "Popcorn.getScript http://processingjs.org/content/download/processing-js-1.0.0/processing-1.0.0.min.js loaded: `Processing` is available");
+      plus();
+      
+      
+      delete window["Processing"];
+    }
+  );
+  
+
+
+  Popcorn.xhr({
+    
+    url: "data/remoteA.js",
+    
+    dataType: "script", 
+    
+    success: function( exists ) {
+      
+      ok( exists, "Success, remoteA loaded once");
+      plus()
+    }
+  });
+
+  Popcorn.getScript(
+    
+    "data/remoteB.js", 
+    
+    function( exists ) {
+      
+      ok( exists, "Success, remoteB loaded once");
+      plus()
+      
+    }
+  );  
+
+
+});
+
 
 test("XML Response", function () {
 
@@ -1342,6 +1446,7 @@ test("dataType: XML Response", function () {
   });
 
 });
+
 
 
 module("Popcorn Parser");

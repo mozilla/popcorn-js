@@ -884,12 +884,15 @@
   };   
   
   Popcorn.xhr = function ( options ) {
-    
-    if ( options.dataType && options.dataType.toLowerCase() === "jsonp" ) {
+
+    if ( options.dataType && 
+          ( options.dataType.toLowerCase() === "jsonp" || 
+              options.dataType.toLowerCase() === "script" ) ) {
 
       Popcorn.xhr.getJSONP( 
         options.url,
-        options.success
+        options.success, 
+        options.dataType.toLowerCase() === "script"
       );
       return;
     }
@@ -958,7 +961,23 @@
   
   
   
-  Popcorn.xhr.getJSONP = function ( url, success ) {
+  Popcorn.xhr.getJSONP = function ( url, success, isScript ) {
+    
+    //  If this is a script request, ensure that we do not call something that has already been loaded
+    if ( isScript ) {
+      
+      var scripts = document.querySelectorAll('script[src="' + url + '"]');
+      
+      //  If there are scripts with this url loaded, early return      
+      if ( scripts.length ) {
+      
+        //  Execute success callback and pass "exists" flag
+        success && success( true );
+
+        return;
+      }
+    }
+    
   
     var head = document.getElementsByTagName("head")[0] || document.documentElement,
       script = document.createElement("script"), 
@@ -966,43 +985,65 @@
       fired = false, 
       params = [], 
       callback;
-
-    if ( paramStr ) {
+    
+    
+    if ( paramStr && !isScript ) {
       params = paramStr.split("&");
     }
     
-    
     callback = params.length ? params[ params.length - 1 ].split("=")[1] : "jsonp";
-    
-    
-    if ( !paramStr ) {
+
+    if ( !paramStr && !isScript ) {
       url += "?callback=" + callback;
     }
     
     script.src = url;
 
     
-    if ( callback ) {
+    if ( callback && !isScript ) {
       //  define the jsonp success callback globally
       window[ callback ] = function ( data ) {
-        success( data );
+
+        success && success( data );
         fired = true;
+
       };
     }
 
     script.onload = script.onreadystatechange = function() {
 
-      if ( fired || ( this.readyState === "loaded" || this.readyState === "complete") ) {
+      //  Executing remote scripts
+      if ( isScript && ( !script.readyState || /loaded|complete/.test( script.readyState ) ) ) {
+
+        success && success();
+
+      }
+
+      //  Executing for JSONP requests
+      if ( fired || /loaded|complete/.test( script.readyState ) ) {
 
         // cleanup in here
         delete window[ callback ];
+        
         head.removeChild( script );
       }
+      
     };  
 
     head.insertBefore( script, head.firstChild );
+    
+    return;
   
   };
+  
+  Popcorn.getJSONP = Popcorn.xhr.getJSONP;
+  
+  Popcorn.getScript = Popcorn.xhr.getScript = function( url, success ) {
+
+    return Popcorn.xhr.getJSONP( url, success, true );
+
+  };
+
 
   
   //  Exposes Popcorn to global context
