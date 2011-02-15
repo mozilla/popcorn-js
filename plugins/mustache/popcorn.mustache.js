@@ -2,8 +2,8 @@
 
 (function (Popcorn) {
 
+  // TODO: swap to getScript()
   (function() {
-    // TODO: what's the right approach for referencing remote scripts vs. including?
     var mustacheUrl = "https://github.com/janl/mustache.js/raw/master/mustache.js";
 
     var head = document.getElementsByTagName('head')[0];
@@ -93,8 +93,8 @@
                       return json;
                     }
         } );
-   *
-   */
+  *
+  */
 
   Popcorn.plugin( "mustache" , function() {
 
@@ -108,52 +108,55 @@
 
       return {
         manifest: {
-          about:{
+          about: {
             name: "Popcorn Mustache Plugin",
             version: "0.1",
             author: "David Humphrey (@humphd)",
             website: "http://vocamus.net/dave"
           },
-          options:{
-            start    : {elem:'input', type:'text', label:'In'},
-            end      : {elem:'input', type:'text', label:'Out'},
-            target   : 'mustache-container',
-            template : {elem:'input', type:'text', label:'Template'},
-            data     : {elem:'input', type:'text', label:'Data'},
-            dynamic  : {elem:'input', type:'text', label:'Dynamic'} /* TODO: how to show a checkbox/boolean? */
+          options: {
+            start: {elem:'input', type:'text', label:'In'},
+            end: {elem:'input', type:'text', label:'Out'},
+            target: 'mustache-container',
+            template: {elem:'input', type:'text', label:'Template'},
+            data: {elem:'input', type:'text', label:'Data'},
+            /* TODO: how to show a checkbox/boolean? */
+            dynamic: {elem:'input', type:'text', label:'Dynamic'}
           }
         },
 
         _setup : function( options ) {
-          options._instance = { getData:     null,
-                                data:        null,
+          options._instance = { getData: null,
+                                data: null,
                                 getTemplate: null,
-                                template:    null };
+                                template: null };
 
-          var shouldReload = !!options.dynamic;
+          var shouldReload = !!options.dynamic,
+              typeOfTemplate = typeof options.template,
+              typeOfData = typeof options.data;
 
-          if (typeof options.template === 'function') {
-            if (!shouldReload) {
-              set('template', options, options.template(options));
+          if ( typeOfTemplate === 'function' ) {
+            if ( !shouldReload ) {
+              set( 'template', options, options.template( options ) );
             } else {
-              set('getTemplate', options, options.template);
+              set( 'getTemplate', options, options.template );
             }
-          } else if (typeof options.template === 'string') {
-            set('template', options, options.template);
+          } else if ( typeOfTemplate === 'string' ) {
+            set( 'template', options, options.template );
           } else {
             throw "Mustache Plugin Error: options.template must be a String or a Function.";
           }
 
-          if (typeof options.data === 'function') {
-            if (!shouldReload) {
-              set('data', options, options.data(options));
+          if ( typeOfData === 'function' ) {
+            if ( !shouldReload ) {
+              set( 'data', options, options.data(options) );
             } else {
-              set('getData', options, options.data);
+              set( 'getData', options, options.data );
             }
-          } else if (typeof options.data === 'string') {
-            set('data', options, JSON.parse(options.data));
-          } else if (typeof options.data === 'object') {
-            set('data', options, options.data);
+          } else if ( typeOfData === 'string' ) {
+            set( 'data', options, JSON.parse( options.data ) );
+          } else if ( typeOfData === 'object' ) {
+            set( 'data', options, options.data );
           } else {
             throw "Mustache Plugin Error: options.data must be a String, Object, or Function.";
           }
@@ -161,22 +164,22 @@
 
         start: function( event, options ) {
           // if dynamic, freshen json data on every call to start, just in case.
-          if (get('getData', options)) {
-            set('data', options, get('getData', options)(options));
+          if ( get('getData', options) ) {
+            set( 'data', options, get( 'getData', options )( options ) );
           }
 
-          if (get('getTemplate', options)) {
-            set('template', options, get('getTemplate', options)(options));
+          if ( get( 'getTemplate', options ) ) {
+            set( 'template', options, get( 'getTemplate', options )( options ) );
           }
 
-          var html = Mustache.to_html( get('template', options),
-                                       get('data', options)
-                                     ).replace(/^\s*/mg, '');
-          document.getElementById(options.target).innerHTML = html;
+          var html = Mustache.to_html( get( 'template', options ),
+                                       get( 'data', options )
+                                     ).replace( /^\s*/mg, '' );
+          document.getElementById( options.target ).innerHTML = html;
         },
 
         end: function( event, options ) {
-          document.getElementById(options.target).innerHTML = '';
+          document.getElementById( options.target ).innerHTML = '';
         }
 
       };
