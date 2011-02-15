@@ -48,6 +48,7 @@
           start   : {elem:'input', type:'number', label:'In'},
           end     : {elem:'input', type:'number', label:'Out'},
           userid  : {elem:'input', type:'text',   label:'Source'},
+          tags    : {elem:'input', type:'text',   label:'Tags'},
           target  :  'Flickr-container',
           height  : {elem:'input', type:'text', label:'Height'},
           width   : {elem:'input', type:'text', label:'Width'},
@@ -60,16 +61,56 @@
       _setup: function( options ) {
         options.container = document.createElement( 'div' );
         options.container.style.display = "none";
+        
         if ( document.getElementById( options.target ) ) {
           document.getElementById( options.target ).appendChild( options.container );
         }
+        
         var height  = options.height || "50px",
             width   = options.width || "50px",
             count   = options.numberofimages || 4,
             padding = options.padding || "5px",
-            border  = options.border || "0px";
+            tags    = options.tags || "",
+            userid  = options.userid || "",
+            border  = options.border || "0px",
+            uri = "http://api.flickr.com/services/feeds/photos_public.gne?";
+        
+        if ( userid ) {
+          uri += "id="+userid+"&";
+        }
+        
+        if ( tags ) {
+          uri += "tags="+tags+"&";
+        }
+        
+        /*uri += "lang=en-us&format=json&jsoncallback=jsonp";
+        
+        Popcorn.xhr.getJSONP( uri,
+          function( data ) {
+            options.container.innerHTML = "<p style='padding:" + padding + ";'>" + data.title + "<p/>";
+            
+            Popcorn.forEach( data.items, function ( item, i ) {
+              if ( i < count ) {
+                var link = document.createElement('a');
+                link.setAttribute( 'href', item.link );
+                link.setAttribute( "target", "_blank" );
+                var image = document.createElement( 'img' );
+                image.setAttribute( 'src', item.media.m );
+                image.setAttribute( 'height', height );
+                image.setAttribute( 'width', width );
+                image.setAttribute( 'style', 'border:' + border + ';padding:' + padding );
+                link.appendChild( image );
+                
+                options.container.appendChild( link );
+              } else {
+                return false;
+              }
+            });
+          }
+        );*/
 
-        $.getJSON( "http://api.flickr.com/services/feeds/photos_public.gne?id=" + options.userid + "&lang=en-us&format=json&jsoncallback=?", function( data ){
+        uri += "lang=en-us&format=json&jsoncallback=?";
+        $.getJSON( uri, function( data ){
           options.container.innerHTML = "<p style='padding:" + padding + ";'>" + data.title + "<p/>";
           $.each( data.items, function( i, item ) {
             if ( i < count ) {
