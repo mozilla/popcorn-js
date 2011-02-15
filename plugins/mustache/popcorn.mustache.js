@@ -4,12 +4,12 @@
 
   // TODO: swap to getScript()
   (function() {
-    var mustacheUrl = "https://github.com/janl/mustache.js/raw/master/mustache.js";
+    var mustacheUrl = 'https://github.com/janl/mustache.js/raw/master/mustache.js';
 
     var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
 
-    script.type = "text/javascript";
+    script.type = 'text/javascript';
     script.src = mustacheUrl;
     head.insertBefore( script, head.firstChild );
   })();
@@ -50,22 +50,22 @@
           start: 5, // seconds
           end:  15,  // seconds
           target: 'mustache',
-          template: "<h1>{{header}}</h1>"                         +
-                    "{{#bug}}"                                    +
-                    "{{/bug}}"                                    +
-                    ""                                            +
-                    "{{#items}}"                                  +
-                    "  {{#first}}"                                +
-                    "    <li><strong>{{name}}</strong></li>"      +
-                    "  {{/first}}"                                +
-                    "  {{#link}}"                                 +
+          template: '<h1>{{header}}</h1>'                         +
+                    '{{#bug}}'                                    +
+                    '{{/bug}}'                                    +
+                    ''                                            +
+                    '{{#items}}'                                  +
+                    '  {{#first}}'                                +
+                    '    <li><strong>{{name}}</strong></li>'      +
+                    '  {{/first}}'                                +
+                    '  {{#link}}'                                 +
                     '    <li><a href="{{url}}">{{name}}</a></li>' +
-                    "  {{/link}}"                                 +
-                    "{{/items}}"                                  +
-                    ""                                            +
-                    "{{#empty}}"                                  +
-                    "  <p>The list is empty.</p>"                 +
-                    "{{/empty}}"                                  ,
+                    '  {{/link}}'                                 +
+                    '{{/items}}'                                  +
+                    ''                                            +
+                    '{{#empty}}'                                  +
+                    '  <p>The list is empty.</p>'                 +
+                    '{{/empty}}'                                  ,
 
           data:     '{'                                                        +
                     '  "header": "Colors", '                                   +
@@ -74,7 +74,7 @@
                     '      {"name": "green", "link": true, "url": "#Green"}, ' +
                     '      {"name": "blue", "link": true, "url": "#Blue"} '    +
                     '  ],'                                                     +
-                    '  "empty": false'                                         +
+                    '  'empty': false'                                         +
                     '}',
           dynamic: false // The json is not going to change, load it early.
         } )
@@ -96,7 +96,7 @@
   *
   */
 
-  Popcorn.plugin( "mustache" , function() {
+  Popcorn.plugin( 'mustache' , function() {
 
       function get( name, options ) {
         return options._instance[name];
@@ -109,10 +109,10 @@
       return {
         manifest: {
           about: {
-            name: "Popcorn Mustache Plugin",
-            version: "0.1",
-            author: "David Humphrey (@humphd)",
-            website: "http://vocamus.net/dave"
+            name: 'Popcorn Mustache Plugin',
+            version: '0.1',
+            author: 'David Humphrey (@humphd)',
+            website: 'http://vocamus.net/dave'
           },
           options: {
             start: {elem:'input', type:'text', label:'In'},
@@ -144,7 +144,7 @@
           } else if ( typeOfTemplate === 'string' ) {
             set( 'template', options, options.template );
           } else {
-            throw "Mustache Plugin Error: options.template must be a String or a Function.";
+            throw 'Mustache Plugin Error: options.template must be a String or a Function.';
           }
 
           if ( typeOfData === 'function' ) {
@@ -158,7 +158,7 @@
           } else if ( typeOfData === 'object' ) {
             set( 'data', options, options.data );
           } else {
-            throw "Mustache Plugin Error: options.data must be a String, Object, or Function.";
+            throw 'Mustache Plugin Error: options.data must be a String, Object, or Function.';
           }
         },
 

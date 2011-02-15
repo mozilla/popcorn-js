@@ -1,6 +1,6 @@
-test("Popcorn Mustache Plugin", function () {
+test('Popcorn Mustache Plugin', function () {
 
-  var popped = Popcorn("#video"),
+  var popped = Popcorn('#video'),
       expects = 5,
       count = 0,
       mustacheDiv = document.getElementById('mustache-div');
@@ -15,17 +15,17 @@ test("Popcorn Mustache Plugin", function () {
 
   stop();
 
-  ok('mustache' in popped, "mustache is a method of the popped instance");
+  ok('mustache' in popped, 'mustache is a method of the popped instance');
   plus();
 
-  equals ( mustacheDiv.innerHTML, "", "initially, there is nothing inside the mustache-div" );
+  equals ( mustacheDiv.innerHTML, '', 'initially, there is nothing inside the mustache-div' );
   plus();
 
   // Static strings
   popped.mustache({
     start: 1, // seconds
     end: 3, // seconds
-    template: "<h1>{{heading}}</h1>",
+    template: '<h1>{{heading}}</h1>',
     data: '{"heading": "mustache - test 1/3"}',
     target: 'mustache-div',
     dynamic: false
@@ -36,7 +36,7 @@ test("Popcorn Mustache Plugin", function () {
     start: 5, // seconds
     end: 7, // seconds
     template: function(plugin, options) {
-      return "<h1>{{heading}}</h1>";
+      return '<h1>{{heading}}</h1>';
     },
     data: function(plugin, options) {
       return JSON.parse('{"heading": "mustache - test 2/3"}');
@@ -49,9 +49,9 @@ test("Popcorn Mustache Plugin", function () {
     start: 9, // seconds
     end: 11, // seconds
     template: function(plugin, options) {
-      return "<h1>{{heading}}</h1>";
+      return '<h1>{{heading}}</h1>';
     },
-    data: { heading: "mustache - test 3/3" },
+    data: { heading: 'mustache - test 3/3' },
     target: 'mustache-div',
     dynamic: false
   } );
@@ -62,7 +62,7 @@ test("Popcorn Mustache Plugin", function () {
   video.addEventListener('timeupdate', function() {
 
     function pass(a, b) {
-      ok( "<h1>mustache - test " + a + "/" + b + "<\/h1>" === mustacheDiv.innerHTML, "Mustache template rendered" );
+      equals( '<h1>mustache - test ' + a + '/' + b + '<\/h1>', mustacheDiv.innerHTML, 'Mustache template rendered' );
       plus();
     }
 

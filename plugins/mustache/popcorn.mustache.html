@@ -14,19 +14,19 @@
           start: 5,  // seconds
           end:  10,  // seconds
           target: 'mustache-div',
-          template: "<h1>{{header}}</h1>"                         +
-                    "{{#items}}"                                  +
-                    "  {{#first}}"                                +
-                    "    <li><strong>{{name}}</strong></li>"      +
-                    "  {{/first}}"                                +
-                    "  {{#link}}"                                 +
-                    '    <li><a href="{{url}}">{{name}}</a></li>' +
-                    "  {{/link}}"                                 +
-                    "{{/items}}"                                  +
-                    ""                                            +
-                    "{{#empty}}"                                  +
-                    "  <p>The list is empty.</p>"                 +
-                    "{{/empty}}"                                  ,
+          template: '<h1>{{header}}</h1>'                           +
+                    '{{#items}}'                                    +
+                    '  {{#first}}'                                  +
+                    '    <li><strong>{{name}}</strong></li>'        +
+                    '  {{/first}}'                                  +
+                    '  {{#link}}'                                   +
+                    '    <li><a href="{{url}}">{{name}}</a></li>'   +
+                    '  {{/link}}'                                   +
+                    '{{/items}}'                                    +
+                    '                                               +
+                    '{{#empty}}'                                    +
+                    '  <p>The list is empty.</p>'                   +
+                    '{{/empty}}'                                    ,
 
           data:     '{'                                                        +
                     '  "header": "Test 1", '                                   +
@@ -46,26 +46,26 @@
           end: 20,
           target: 'mustache-div',
           template: function(plugin, options) {
-            return  "<h1>{{header}}</h1>"                         +
-                    "{{#items}}"                                  +
-                    "  {{#first}}"                                +
-                    "    <li><strong>{{name}}</strong></li>"      +
-                    "  {{/first}}"                                +
-                    "  {{#link}}"                                 +
+            return  '<h1>{{header}}</h1>'                         +
+                    '{{#items}}'                                  +
+                    '  {{#first}}'                                +
+                    '    <li><strong>{{name}}</strong></li>'      +
+                    '  {{/first}}'                                +
+                    '  {{#link}}'                                 +
                     '    <li><a href="{{url}}">{{name}}</a></li>' +
-                    "  {{/link}}"                                 +
-                    "{{/items}}"                                  +
-                    ""                                            +
-                    "{{#empty}}"                                  +
-                    "  <p>The list is empty.</p>"                 +
-                    "{{/empty}}"                                  ;
+                    '  {{/link}}'                                 +
+                    '{{/items}}'                                  +
+                    ''                                            +
+                    '{{#empty}}'                                  +
+                    '  <p>The list is empty.</p>'                 +
+                    '{{/empty}}'                                  ;
           },
           data: {
-                  header: "Test 2",
+                  header: 'Test 2',
                   items: [
-                    { name: "red", first: true, url: "#Red" },
-                    { name: "green", link: true, url: "#Green" },
-                    { name: "blue", link: true, url: "#Blue"}
+                    { name: 'red', first: true, url: '#Red' },
+                    { name: 'green', link: true, url: '#Green' },
+                    { name: 'blue', link: true, url: '#Blue'}
                   ],
                   empty: false
                 }
@@ -77,19 +77,19 @@
           end: 30,
           target: 'mustache-div',
           template: function(plugin, options) {
-            return  "<h1>{{header}}</h1>"                         +
-                    "{{#items}}"                                  +
-                    "  {{#first}}"                                +
-                    "    <li><strong>{{name}}</strong></li>"      +
-                    "  {{/first}}"                                +
-                    "  {{#link}}"                                 +
+            return  '<h1>{{header}}</h1>'                         +
+                    '{{#items}}'                                  +
+                    '  {{#first}}'                                +
+                    '    <li><strong>{{name}}</strong></li>'      +
+                    '  {{/first}}'                                +
+                    '  {{#link}}'                                 +
                     '    <li><a href="{{url}}">{{name}}</a></li>' +
-                    "  {{/link}}"                                 +
-                    "{{/items}}"                                  +
-                    ""                                            +
-                    "{{#empty}}"                                  +
-                    "  <p>The list is empty.</p>"                 +
-                    "{{/empty}}"                                  ;
+                    '  {{/link}}'                                 +
+                    '{{/items}}'                                  +
+                    ''                                            +
+                    '{{#empty}}'                                  +
+                    '  <p>The list is empty.</p>'                 +
+                    '{{/empty}}'                                  ;
           },
           data: function(plugin, options) {
             return  JSON.parse('' +
