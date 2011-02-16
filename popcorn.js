@@ -111,7 +111,10 @@
           // adding padding to the front and end of the arrays
           // this is so we do not fall off either end
 
-          var videoDurationPlus = that.video.duration + 1;
+          var duration = that.video.duration;
+          // Check for no duration info (NaN)
+          var videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
+
           Popcorn.addTrackEvent( that, {
             start: videoDurationPlus,
             end: videoDurationPlus
