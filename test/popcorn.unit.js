@@ -1329,7 +1329,7 @@ test("Popcorn.getScript()", function () {
 
   Popcorn.getScript(
     
-    "https://github.com/rwldrn/q/raw/master/q.js", 
+    "https://github.com/rwldrn/has.js/raw/master/has.js", 
     
     function() {
       
@@ -1337,11 +1337,11 @@ test("Popcorn.getScript()", function () {
       plus();
       
 
-      ok( ("Q" in window) , "Popcorn.getScript https://github.com/rwldrn/q/raw/master/q.js loaded: `Q` is available");
+      ok( ("has" in window) , "Popcorn.getScript https://github.com/rwldrn/has.js/raw/master/has.js loaded: `has` is available");
       plus();
       
       
-      delete window["Q"];
+      delete window["has"];
     }
   );
   
