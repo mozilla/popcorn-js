@@ -1206,7 +1206,7 @@ test("dataType: JSON Response", function () {
 
 test("JSONP Response", function () {
 
-  var expects = 6, 
+  var expects = 8, 
       count = 0;
       
   function plus() {
@@ -1228,7 +1228,7 @@ test("JSONP Response", function () {
     dataType: 'jsonp', 
     success: function( data ) {
       
-      ok(data, "xhr returns data");
+      ok(data, "getJSONP returns data");
       plus();
       
       
@@ -1243,7 +1243,7 @@ test("JSONP Response", function () {
 
     function( data ) {
       
-      ok(data, "xhr returns data");
+      ok(data, "getJSONP returns data");
       plus();
       
       
@@ -1253,14 +1253,30 @@ test("JSONP Response", function () {
       
     }
   );
-  
+
+  Popcorn.xhr.getJSONP(
+    "http://api.flickr.com/services/feeds/photos_public.gne?id=35034346917@N01&lang=en-us&format=json&jsoncallback=flickr",
+
+    function( data ) {
+      
+      
+      
+      ok(data, "getJSONP returns flickr data");
+      plus();
+
+      equal( typeof data, "object", "getJSONP returns flickr data");
+      plus();      
+
+      
+    }
+  );  
 
   Popcorn.xhr.getJSONP(
     'data/jsonp.json',
 
     function( data ) {
       
-      ok(data, "xhr returns data");
+      ok(data, "getJSONP returns data");
       plus();
       
       
