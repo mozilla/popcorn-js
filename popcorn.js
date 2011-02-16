@@ -1000,17 +1000,16 @@
     
     callback = params.length ? ( parts[1] ? parts[1] : parts[0]  ) : "jsonp";    
     
-
     if ( !paramStr && !isScript ) {
       url += "?callback=" + callback;
     }
-    
     
     if ( callback && !isScript ) {
       
       //  If a callback name already exists...
       if ( !!window[ callback ] ) {
-        //  Create a unique new callback name
+      
+        //  Create a new unique callback name
         callback = Popcorn.guid( callback );
       }
       
@@ -1041,12 +1040,12 @@
       //  Executing for JSONP requests
       if ( fired || /loaded|complete/.test( script.readyState ) ) {
 
-        // cleanup in here
+        //  Garbage collect the callback
         delete window[ callback ];
         
+        //  Garbage collect the script resource
         head.removeChild( script );
       }
-      
     };  
 
     head.insertBefore( script, head.firstChild );

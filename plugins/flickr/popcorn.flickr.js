@@ -84,7 +84,7 @@
           uri += "tags="+tags+"&";
         }
 
-        uri += "lang=en-us&format=json&jsoncallback=?";
+        uri += "lang=en-us&format=json&jsoncallback=flickr";
         
         Popcorn.xhr.getJSONP( uri, function( data ) {
         //$.getJSON( uri, function( data ) {
