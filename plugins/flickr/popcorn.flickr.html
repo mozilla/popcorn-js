@@ -13,13 +13,21 @@
         start: 5, // seconds
         end: 15, // seconds
         userid: '35034346917@N01',
-        numberofimages: '8',
         target: 'flickrdiv'
       } )
       .flickr({
         start: 20, // seconds
+        end: 30, // seconds
+        tags: 'georgia',
+        numberofimages: '8',
+        target: 'flickrdiv'
+      } )
+      .flickr({
+        start: 35, // seconds
         end: 45, // seconds
-        userid: '78868639@N00',
+        userid: '35034346917@N01',
+        tags: 'georgia',
+        numberofimages: '8',
         target: 'flickrdiv'
       } )
       .play();
@@ -30,8 +38,9 @@
 <body>
   <h1 id="qunit-header">Popcorn Flickr Plug-in Demo</h1>
   <p>This plugin requires jquery</p>
-  <p>Flickr images will appear at 5 seconds and disappear at 15 seconds.</p>
-  <p>More Flickr images will appear at 20 seconds and disappear at 45 seconds.</p>
+  <p>Flickr images by '35034346917@N01' will appear at 5 seconds and disappear at 15 seconds.
+  <br />Flickr images tagged 'georgia' will appear at 20 seconds and disappear at 30 seconds.
+  <br />Flickr images by '35034346917@N01' and tagged 'georgia' will appear at 35 seconds and disappear at 45 seconds.</p>
   <div>
     <video id='video' 
       controls
