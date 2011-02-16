@@ -1227,7 +1227,7 @@ test("JSONP Response", function () {
 
   Popcorn.xhr({
     
-    url: 'data/jsonp.json?callback=jsonp',
+    url: 'data/jsonp.php?callback=jsonp',
     dataType: 'jsonp', 
     success: function( data ) {
       
@@ -1242,7 +1242,7 @@ test("JSONP Response", function () {
   });
 
   Popcorn.xhr.getJSONP(
-    'data/jsonp.json?callback=jsonp',
+    'data/jsonp.php?callback=jsonp',
 
     function( data ) {
       
@@ -1275,7 +1275,7 @@ test("JSONP Response", function () {
   );  
 
   Popcorn.getJSONP(
-    'data/jsonp.json?callback=jsonp',
+    'data/jsonp.php?callback=jsonp',
 
     function( data ) {
       
