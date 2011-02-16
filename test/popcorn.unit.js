@@ -1329,7 +1329,7 @@ test("Popcorn.getScript()", function () {
 
   Popcorn.getScript(
     
-    "http://processingjs.org/content/download/processing-js-1.0.0/processing-1.0.0.min.js", 
+    "https://github.com/rwldrn/q/raw/master/q.js", 
     
     function() {
       
@@ -1337,11 +1337,11 @@ test("Popcorn.getScript()", function () {
       plus();
       
 
-      ok( ("Processing" in window) , "Popcorn.getScript http://processingjs.org/content/download/processing-js-1.0.0/processing-1.0.0.min.js loaded: `Processing` is available");
+      ok( ("Q" in window) , "Popcorn.getScript https://github.com/rwldrn/q/raw/master/q.js loaded: `Q` is available");
       plus();
       
       
-      delete window["Processing"];
+      delete window["Q"];
     }
   );
   
