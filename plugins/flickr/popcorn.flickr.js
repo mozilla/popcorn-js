@@ -1,7 +1,6 @@
 // PLUGIN: FLICKR
 
 (function (Popcorn) {
-  
   /**
    * Flickr popcorn plug-in 
    * Appends a users Flickr images to an element on the page.
@@ -10,6 +9,7 @@
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing
    * Userid is the id of who's Flickr images you wish to show
+   * Tags is a mutually exclusive list of image descriptor tags
    * Target is the id of the document element that the images are
    *  appended to, this target element must exist on the DOM
    * Numberofimages specify the number of images to retreive from flickr, defaults to 8
@@ -25,7 +25,8 @@
         .footnote({
           start:          5,                 // seconds, mandatory
           end:            15,                // seconds, mandatory
-          userid:         '35034346917@N01', // mandatory
+          userid:         '35034346917@N01', // optional
+          tags:           'dogs,cats',       // optional
           numberofimages: '8',               // optional
           height:         '50px',            // optional
           width:          '50px',            // optional
@@ -40,8 +41,8 @@
       manifest: {
         about:{
           name:    "Popcorn Flickr Plugin",
-          version: "0.1",
-          author:  "Scott Downe",
+          version: "0.1.1",
+          author:  "Scott Downe, Steven Weerdenburg",
           website: "http://scottdowne.wordpress.com/"
         },
         options:{
@@ -82,37 +83,13 @@
         if ( tags ) {
           uri += "tags="+tags+"&";
         }
-        
-        /*uri += "lang=en-us&format=json&jsoncallback=jsonp";
-        
-        Popcorn.xhr.getJSONP( uri,
-          function( data ) {
-            options.container.innerHTML = "<p style='padding:" + padding + ";'>" + data.title + "<p/>";
-            
-            Popcorn.forEach( data.items, function ( item, i ) {
-              if ( i < count ) {
-                var link = document.createElement('a');
-                link.setAttribute( 'href', item.link );
-                link.setAttribute( "target", "_blank" );
-                var image = document.createElement( 'img' );
-                image.setAttribute( 'src', item.media.m );
-                image.setAttribute( 'height', height );
-                image.setAttribute( 'width', width );
-                image.setAttribute( 'style', 'border:' + border + ';padding:' + padding );
-                link.appendChild( image );
-                
-                options.container.appendChild( link );
-              } else {
-                return false;
-              }
-            });
-          }
-        );*/
 
         uri += "lang=en-us&format=json&jsoncallback=?";
-        $.getJSON( uri, function( data ){
+        
+        $.getJSON( uri, function( data ) {
           options.container.innerHTML = "<p style='padding:" + padding + ";'>" + data.title + "<p/>";
-          $.each( data.items, function( i, item ) {
+          
+          Popcorn.forEach( data.items, function ( item, i ) {
             if ( i < count ) {
               var link = document.createElement('a');
               link.setAttribute( 'href', item.link );
