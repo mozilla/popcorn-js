@@ -175,7 +175,9 @@ test("exec", function () {
   
   var popped = Popcorn("#video"),
       expects = 2, 
-      count = 0;
+      count = 0, 
+      hasLooped = false, 
+      loop = 0;
 
   expect(expects);
   
@@ -184,22 +186,18 @@ test("exec", function () {
   }
   
   stop( 10000 ); 
-  
-
 
   popped.exec( 4, function () {
-    
-    
-    ok(true, "exec callback fired");
+    ok(true, "exec callback fired " + loop++ );
     plus();
-    
-    
-    equal( popped.data.events.timeupdate, null, "exec callback removed");
-    plus();
-    
+
+    if ( !hasLooped ) {
+      
+      popped.currentTime(3).play();
+      
+      hasLooped = true;
+    }
   }).currentTime(3).play();
-  
-  
 
 });
 

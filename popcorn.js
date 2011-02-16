@@ -337,10 +337,13 @@
               
               callback.fired = true;
               
-              this.unlisten("timeupdate", guid );
-              
               fn.call(self, event);
               
+              setTimeout(function() {
+                
+                callback.fired = false;
+                
+              }, 500 );
             }
           };
       
