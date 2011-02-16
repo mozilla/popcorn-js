@@ -1064,6 +1064,9 @@ test("Index Integrity", function () {
 
 
 
+
+
+
 module("Popcorn XHR");
 test("Basic", function () {
   
@@ -1271,8 +1274,8 @@ test("JSONP Response", function () {
     }
   );  
 
-  Popcorn.xhr.getJSONP(
-    'data/jsonp.json',
+  Popcorn.getJSONP(
+    'data/jsonp.json?callback=jsonp',
 
     function( data ) {
       
@@ -1287,6 +1290,107 @@ test("JSONP Response", function () {
     }
   );  
 });
+
+test("Popcorn.getScript()", function () {
+
+  var expects = 8,  
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop();
+
+
+  Popcorn.xhr({
+    
+    url: "data/remoteA.js",
+    
+    dataType: "script", 
+    
+    success: function() {
+      
+      ok( true, "getScript A returned");
+      plus();
+      
+      
+      
+      ok( Popcorn.AlphaLib, "Popcorn.xhr.getScript remoteA.js loaded: `Popcorn.AlphaLib` is available");
+      plus();
+      
+    }
+  });
+
+  Popcorn.getScript(
+    
+    "data/remoteB.js", 
+    
+    function() {
+      
+      ok( true, "getScript B returned");
+      plus();
+
+      
+      ok( Popcorn.BetaLib , "Popcorn.getScript remoteB.js loaded: `Popcorn.BetaLib` is available ");
+      plus();
+      
+    }
+  );
+
+
+  Popcorn.getScript(
+    
+    "https://github.com/rwldrn/has.js/raw/master/has.js", 
+    
+    function() {
+      
+      ok( true, "getScript C returned");
+      plus();
+      
+
+      ok( ("has" in window) , "Popcorn.getScript https://github.com/rwldrn/has.js/raw/master/has.js loaded: `has` is available");
+      plus();
+      
+      
+      delete window["has"];
+    }
+  );
+  
+
+
+  Popcorn.xhr({
+    
+    url: "data/remoteA.js",
+    
+    dataType: "script", 
+    
+    success: function( exists ) {
+      
+      ok( exists, "Success, remoteA loaded once");
+      plus()
+    }
+  });
+
+  Popcorn.getScript(
+    
+    "data/remoteB.js", 
+    
+    function( exists ) {
+      
+      ok( exists, "Success, remoteB loaded once");
+      plus()
+      
+    }
+  );  
+
+
+});
+
 
 test("XML Response", function () {
 
@@ -1358,6 +1462,7 @@ test("dataType: XML Response", function () {
   });
 
 });
+
 
 
 module("Popcorn Parser");

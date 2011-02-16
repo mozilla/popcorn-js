@@ -111,7 +111,10 @@
           // adding padding to the front and end of the arrays
           // this is so we do not fall off either end
 
-          var videoDurationPlus = that.video.duration + 1;
+          var duration = that.video.duration;
+          // Check for no duration info (NaN)
+          var videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
+
           Popcorn.addTrackEvent( that, {
             start: videoDurationPlus,
             end: videoDurationPlus
@@ -884,12 +887,15 @@
   };   
   
   Popcorn.xhr = function ( options ) {
-    
-    if ( options.dataType && options.dataType.toLowerCase() === "jsonp" ) {
+
+    if ( options.dataType && 
+          ( options.dataType.toLowerCase() === "jsonp" || 
+              options.dataType.toLowerCase() === "script" ) ) {
 
       Popcorn.xhr.getJSONP( 
         options.url,
-        options.success
+        options.success, 
+        options.dataType.toLowerCase() === "script"
       );
       return;
     }
@@ -958,51 +964,105 @@
   
   
   
-  Popcorn.xhr.getJSONP = function ( url, success ) {
+  Popcorn.xhr.getJSONP = function ( url, success, isScript ) {
+    
+    //  If this is a script request, ensure that we do not call something that has already been loaded
+    if ( isScript ) {
+      
+      var scripts = document.querySelectorAll('script[src="' + url + '"]');
+      
+      //  If there are scripts with this url loaded, early return      
+      if ( scripts.length ) {
+      
+        //  Execute success callback and pass "exists" flag
+        success && success( true );
+
+        return;
+      }
+    }
+    
   
     var head = document.getElementsByTagName("head")[0] || document.documentElement,
       script = document.createElement("script"), 
       paramStr = url.split("?")[1], 
       fired = false, 
       params = [], 
-      callback;
-
-    if ( paramStr ) {
+      callback, parts, callparam;
+    
+    
+    if ( paramStr && !isScript ) {
       params = paramStr.split("&");
     }
+
+    if ( params.length ) {
+      parts = params[ params.length - 1 ].split("=");
+    }
     
+    callback = params.length ? ( parts[1] ? parts[1] : parts[0]  ) : "jsonp";    
     
-    callback = params.length ? params[ params.length - 1 ].split("=")[1] : "jsonp";
-    
-    
-    if ( !paramStr ) {
+
+    if ( !paramStr && !isScript ) {
       url += "?callback=" + callback;
     }
     
-    script.src = url;
-
     
-    if ( callback ) {
-      //  define the jsonp success callback globally
+    if ( callback && !isScript ) {
+      
+      //  If a callback name already exists...
+      if ( !!window[ callback ] ) {
+        //  Create a unique new callback name
+        callback = Popcorn.guid( callback );
+      }
+      
+      //  Define the jsonp success callback globally
       window[ callback ] = function ( data ) {
-        success( data );
-        fired = true;
-      };
-    }
 
+        success && success( data );
+        fired = true;
+
+      };
+      
+      //  Replace callback param and callback name
+      url = url.replace( parts.join("="), parts[0] + "=" + callback );
+      
+    }
+    
+    script.src = url;
+    
     script.onload = script.onreadystatechange = function() {
 
-      if ( fired || ( this.readyState === "loaded" || this.readyState === "complete") ) {
+      //  Executing remote scripts
+      if ( isScript && ( !script.readyState || /loaded|complete/.test( script.readyState ) ) ) {
+
+        success && success();
+
+      }
+
+      //  Executing for JSONP requests
+      if ( fired || /loaded|complete/.test( script.readyState ) ) {
 
         // cleanup in here
         delete window[ callback ];
+        
         head.removeChild( script );
       }
+      
     };  
 
     head.insertBefore( script, head.firstChild );
+    
+    return;
   
   };
+  
+  Popcorn.getJSONP = Popcorn.xhr.getJSONP;
+  
+  Popcorn.getScript = Popcorn.xhr.getScript = function( url, success ) {
+
+    return Popcorn.xhr.getJSONP( url, success, true );
+
+  };
+
 
   
   //  Exposes Popcorn to global context
