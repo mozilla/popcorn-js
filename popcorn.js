@@ -987,32 +987,48 @@
       paramStr = url.split("?")[1], 
       fired = false, 
       params = [], 
-      callback;
+      callback, parts, callparam;
     
     
     if ( paramStr && !isScript ) {
       params = paramStr.split("&");
     }
+
+    if ( params.length ) {
+      parts = params[ params.length - 1 ].split("=");
+    }
     
-    callback = params.length ? params[ params.length - 1 ].split("=")[1] : "jsonp";
+    callback = params.length ? ( parts[1] ? parts[1] : parts[0]  ) : "jsonp";    
+    
 
     if ( !paramStr && !isScript ) {
       url += "?callback=" + callback;
     }
     
-    script.src = url;
-
     
     if ( callback && !isScript ) {
-      //  define the jsonp success callback globally
+      
+      //  If a callback name already exists...
+      if ( !!window[ callback ] ) {
+        //  Create a unique new callback name
+        callback = Popcorn.guid( callback );
+      }
+      
+      //  Define the jsonp success callback globally
       window[ callback ] = function ( data ) {
 
         success && success( data );
         fired = true;
 
       };
+      
+      //  Replace callback param and callback name
+      url = url.replace( parts.join("="), parts[0] + "=" + callback );
+      
     }
-
+    
+    script.src = url;
+    
     script.onload = script.onreadystatechange = function() {
 
       //  Executing remote scripts
