@@ -28,7 +28,7 @@
    * Example:
      var p = Popcorn('#video')
 
-        /* onStart function only
+        // onStart function only
         .code({
           start: 1,
           end: 4,
@@ -37,7 +37,7 @@
           }
         })
 
-        /* onStart + onEnd only
+        // onStart + onEnd only
         .code({
           start: 6,
           end: 8,
@@ -49,7 +49,7 @@
           }
         })
 
-        /* onStart, onEnd, onFrame
+        // onStart, onEnd, onFrame
         .code({
           start: 10,
           end: 14,
@@ -68,7 +68,7 @@
   *
   */
 
-  Popcorn.plugin( "code" , function() {
+  Popcorn.plugin( 'code' , function() {
 
       function get( name, options ) {
         return options._instance[name];
@@ -82,20 +82,16 @@
       var step = ( function() {
 
         var buildFrameRunner = function( runner ) {
-          var _runner = runner;
-
           return function( f, options ) {
 
-            var _options = options;
             var _f = function() {
               f();
-              if ( get( 'running', _options ) ) {
-                _runner( _f );
+              if ( get( 'running', options ) ) {
+                runner( _f );
               }
             };
 
             _f();
-
           };
         };
 
@@ -116,10 +112,10 @@
       return {
         manifest: {
           about: {
-            name: "Popcorn Code Plugin",
-            version: "0.1",
-            author: "David Humphrey (@humphd)",
-            website: "http://vocamus.net/dave"
+            name: 'Popcorn Code Plugin',
+            version: '0.1',
+            author: 'David Humphrey (@humphd)',
+            website: 'http://vocamus.net/dave'
           },
           options: {
             start: {elem:'input', type:'text', label:'In'},
@@ -133,15 +129,15 @@
 
         _setup : function( options ) {
           if ( !options.onStart || !( typeof options.onStart === 'function' ) ) {
-            throw "Popcorn Code Plugin Error: onStart must be a function.";
+            throw 'Popcorn Code Plugin Error: onStart must be a function.';
           }
 
           if ( options.onEnd && !( typeof options.onEnd === 'function' ) ) {
-            throw "Popcorn Code Plugin Error: onEnd  must be a function.";
+            throw 'Popcorn Code Plugin Error: onEnd  must be a function.';
           }
 
           if ( options.onFrame && !( typeof options.onFrame === 'function' ) ) {
-            throw "Popcorn Code Plugin Error: onFrame  must be a function.";
+            throw 'Popcorn Code Plugin Error: onFrame  must be a function.';
           }
 
           options._instance = { running: false };

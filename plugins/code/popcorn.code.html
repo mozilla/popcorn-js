@@ -10,6 +10,9 @@
 
    document.addEventListener('DOMContentLoaded', function () {
      output = document.getElementById('output');
+     var $ = function( id ) {
+       return document.getElementById( id.substring( 1 ) );
+     };
 
      var p = Popcorn('#video')
 
@@ -17,7 +20,7 @@
         start: 1,
         end: 3,
         onStart: function( options ) {
-          output.innerHTML = 'Test 1 - onStart (no onEnd)';
+          $('#test1').innerHTML = 'Yes';
         }
       })
 
@@ -25,10 +28,10 @@
         start: 5,
         end: 8,
         onStart: function( options ) {
-          output.innerHTML = 'Test 2 - onStart';
+          $('#test2a').innerHTML = 'Yes';
         },
         onEnd: function ( options ) {
-          output.innerHTML = 'Test 2 - onEnd';
+          $('#test2b').innerHTML = 'Yes';
         }
       })
 
@@ -36,13 +39,16 @@
         start: 10,
         end: 14,
         onStart: function( options ) {
-          output.innerHTML = 'Test 3 - onStart [Frames: ';
+          $('#test3a').innerHTML = 'Yes';
         },
-        onFrame: function ( options ) {
-          output.innerHTML += '.';
-        },
+        onFrame: (function() {
+          var count = 0;
+          return function ( options ) {
+            $('#test3b').innerHTML = 'Yes (count = ' + ++count + ')';
+          }
+        })(),
         onEnd: function ( options ) {
-          output.innerHTML += '] Test 3 - onEnd';
+          $('#test3c').innerHTML = 'Yes';
         }
       })
 
@@ -76,7 +82,15 @@
   </div>
   <div style="width:700px">
     <div>Code Plugin Output</div>
-    <div id="output" style="position:relative;float:left;width:300px;height:400px"></div>
+    <table cellpadding="5px">
+      <tr><th>Test</th><th>Completed</th></tr>
+      <tr><td>Test 1 - onStart (1s)</td><td><span id="test1">No</span></td></tr>
+      <tr><td>Test 2a - onStart (5s)</td><td><span id="test2a">No</span></td></tr>
+      <tr><td>Test 2b - onEnd (8s)</td><td><span id="test2b">No</span></td></tr>
+      <tr><td>Test 3a - onStart (10s)</td><td><span id="test3a">No</span></td></tr>
+      <tr><td>Test 3b - onFrame (10s-14s)</td><td><span id="test3b">No</span></td></tr>
+      <tr><td>Test 3c - onEnd (14s)</td><td><span id="test3c">No</span></td></tr>
+    </table>
   </div>
 </body>
 </html>
