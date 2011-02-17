@@ -182,7 +182,13 @@ test("exec", function () {
   expect(expects);
   
   function plus(){ 
-    if ( ++count == expects ) start(); 
+    if ( ++count == expects ) {
+      
+      popped.unlisten( "timeupdate", "execCallback" );
+     
+    
+      start(); 
+    }
   }
   
   stop( 10000 ); 
@@ -1480,113 +1486,3 @@ test("Last Check", function () {
   
 });
 
-/*
-
-
-  
-
-  
-
-
-test("Events Extended", function () {
-  
-  QUnit.reset();
-  
-  // needs expectation
-
-  var popped = Popcorn("#video"), 
-      expects = 11, 
-      count = 0;
-
-  expect(expects);
-  // not in full use
-  function plus(){ 
-    if ( ++count == expects ) start(); 
-  }
-  
-  stop( 10000 );  
-  
-  
-  Popcorn.plugin("extendedEvents", (function () {
-  
-    var fired = [];
-
-    var pluginObj = {
-
-      start: function() {
-
-      },
-      end: function() {
-
-      }
-    };
-    
-    $.each( Setup.events, function ( k, type ) {
-      
-      pluginObj[type]  = function (event, opts) {
-      
-        if ( fired.indexOf(type) === -1 ) {
-          fired.push(type);
-          
-          ok( true, type + " fired" );
-          
-          plus();
-        
-        
-          
-        }
-      };
-    
-    });
-    
-    return pluginObj;
-    
-  })());
-  
-  
-  
-  
-  popped.extendedEvents({
-    
-    start: 20,
-    end: 21
-    
-  });
-  
-  
-  popped.currentTime(19).play();
-  
-  $.each( Setup.events, function ( k, type ) {
-    
-    popped.trigger(type);
-      
-  });
-
-});
-*/
-
-/*
-module("Popcorn Video Object")
-test("wait()", function () {
-  
-  //QUnit.reset();
-  
-  // needs expectation
-
-  var popped = Popcorn("#video"), 
-      startat = +new Date();
-
-
-  
-  
-  popped.play().wait(2).exec(function () {
-    
-    console.log( +new Date() - startat );
-    
-    ok(true)
-    
-  }).pause();
-  
-  
-});
-*/

@@ -473,13 +473,8 @@
         }
       
         this.data.events[type] = null;
+        
         return this;        
-      },      
-      special: {
-        // handles timeline controllers
-        play: function () {
-          //  renders all of the interally stored track commands
-        }
       }
     }
   };
