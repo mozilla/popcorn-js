@@ -655,7 +655,7 @@
 
         // Resolves 239, 241, 242
         if ( !options.target )
-          options.target = manifest.options.target || ("manifest" in setup && setup.manifest.options.target);
+          options.target = (manifest && manifest.options.target) || ("manifest" in setup && setup.manifest.options.target);
 
         setup._setup.call( this, options );
       }
