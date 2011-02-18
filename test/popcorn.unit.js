@@ -1366,7 +1366,7 @@ test("Parsing Functions", function () {
   plus();
 
   Popcorn.parser( "parseJSON" , "json", function( data ){
-    return data.json;
+    return data;
   });
 
   ok(typeof popperly.parseJSON === "function", "Popcorn.parser created a parseJSON function");
@@ -1379,27 +1379,33 @@ test("Parsing Functions", function () {
 
 test("Parsing Integrity", function () {
 
-  var expects = 2,
+  var expects = 6,
       count = 0,
       timeOut = 0,
-      interval,
       poppercore = Popcorn( "#video" );
       
   function plus() {
     if ( ++count === expects ) {
       start();
       // clean up added events after tests
-      clearInterval( interval );
       Popcorn.removePlugin( "parserTest" );
     }
   }
-  
+
   expect(expects);
-  
+
   stop( 10000 );
 
-  Popcorn.parser( "parseJSON2" , "json", function( data ){
+  Popcorn.parser( "parseJSON2", function( data ){
+    ok( typeof data.json === "object", "data.json exists");
+    plus();
     return data.json;
+  });
+
+  Popcorn.parser( "parseJSON3" , "json", function( data ){
+    ok( typeof data === "object", "data exists");
+    plus();
+    return data;
   });
 
   Popcorn.plugin("parserTest", {
@@ -1414,12 +1420,13 @@ test("Parsing Integrity", function () {
     }
   });
 
-  poppercore.parseJSON2("data/parserData.json");
+  poppercore.parseJSON2("data/parserData.json", function() {
+    
+    poppercore.parseJSON3("data/parserData.json", function() {
+      poppercore.currentTime(5).play();
+    });
 
-  // interval used to wait for data to be parsed
-  interval = setInterval( function() {
-    poppercore.currentTime(5).play();
-  }, 2000);
+  });
 
 });
 
@@ -1445,7 +1452,7 @@ test("Parsing Handler - References unavailable plugin", function () {
   
   stop();
 
-  Popcorn.parser( "parseJson" , "json", function( data ){
+  Popcorn.parser( "parseJson", function( data ){
   
     return data.json;
   });
