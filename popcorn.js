@@ -323,27 +323,26 @@
       return -~this.video.currentTime;
     },
     
-    
     exec: function ( time, fn ) {
       
       !fn && ( fn = Popcorn.nop );
       
-      
       var self = this, 
           guid = Popcorn.guid( "execCallback" ), 
           callback = function execCallback( event ) {
+
+            if ( Math.round( this.currentTime() ) === time && !callback.fired ) {
             
-            if ( this.currentTime() >= time && !callback.fired ) {
-              
               callback.fired = true;
               
               fn.call(self, event);
               
+              //  Enforce a once per second execution
               setTimeout(function() {
                 
                 callback.fired = false;
                 
-              }, 500 );
+              }, 1000 );
             }
           };
       
