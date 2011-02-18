@@ -326,24 +326,26 @@
       return -~this.video.currentTime;
     },
     
-    
     exec: function ( time, fn ) {
       
       !fn && ( fn = Popcorn.nop );
       
-      
       var self = this, 
           guid = Popcorn.guid( "execCallback" ), 
           callback = function execCallback( event ) {
+
+            if ( Math.round( this.currentTime() ) === time && !callback.fired ) {
             
-            if ( this.currentTime() >= time && !callback.fired ) {
-              
               callback.fired = true;
-              
-              this.unlisten("timeupdate", guid );
               
               fn.call(self, event);
               
+              //  Enforce a once per second execution
+              setTimeout(function() {
+                
+                callback.fired = false;
+                
+              }, 1000 );
             }
           };
       
@@ -473,13 +475,8 @@
         }
       
         this.data.events[type] = null;
+        
         return this;        
-      },      
-      special: {
-        // handles timeline controllers
-        play: function () {
-          //  renders all of the interally stored track commands
-        }
       }
     }
   };
