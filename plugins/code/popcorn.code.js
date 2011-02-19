@@ -68,102 +68,86 @@
   *
   */
 
-  Popcorn.plugin( 'code' , function() {
-
-      function get( name, options ) {
-        return options._instance[name];
-      }
-
-      function set( name, options, value ) {
-        options._instance[name] = value;
-      }
-
-      // Setup a proper frame interval function (60fps), favouring paint events.
-      var step = ( function() {
-
-        var buildFrameRunner = function( runner ) {
-          return function( f, options ) {
-
-            var _f = function() {
-              f();
-              if ( get( 'running', options ) ) {
-                runner( _f );
-              }
-            };
-
-            _f();
+  Popcorn.plugin( 'code' , function(options) {
+    var running = false;
+  
+    // Setup a proper frame interval function (60fps), favouring paint events.
+    var step = ( function() {
+    
+      var buildFrameRunner = function( runner ) {
+        return function( f, options ) {
+    
+          var _f = function() {
+            f();
+            if ( running ) {
+              runner( _f );
+            }
           };
+    
+          _f();
         };
-
-        // Figure out which level of browser support we have for this
-        if ( window.webkitRequestAnimationFrame ) {
-          return buildFrameRunner( window.webkitRequestAnimationFrame );
-        } else if ( window.mozRequestAnimationFrame ) {
-          return buildFrameRunner( window.mozRequestAnimationFrame );
-        } else {
-          return buildFrameRunner( function( f ) {
-            window.setTimeout( f, 16 );
-          } );
-        }
-
-      } )();
-
-
-      return {
-        manifest: {
-          about: {
-            name: 'Popcorn Code Plugin',
-            version: '0.1',
-            author: 'David Humphrey (@humphd)',
-            website: 'http://vocamus.net/dave'
-          },
-          options: {
-            start: {elem:'input', type:'text', label:'In'},
-            end: {elem:'input', type:'text', label:'Out'},
-            // TODO: how to deal with functions, eval strings?
-            onStart: {elem:'input', type:'text', label:'onStart'},
-            onFrame: {elem:'input', type:'text', label:'onFrame'},
-            onEnd: {elem:'input', type:'text', label:'onEnd'},
-          }
-        },
-
-        _setup : function( options ) {
-          if ( !options.onStart || !( typeof options.onStart === 'function' ) ) {
-            throw 'Popcorn Code Plugin Error: onStart must be a function.';
-          }
-
-          if ( options.onEnd && !( typeof options.onEnd === 'function' ) ) {
-            throw 'Popcorn Code Plugin Error: onEnd  must be a function.';
-          }
-
-          if ( options.onFrame && !( typeof options.onFrame === 'function' ) ) {
-            throw 'Popcorn Code Plugin Error: onFrame  must be a function.';
-          }
-
-          options._instance = { running: false };
-        },
-
-        start: function( event, options ) {
-          options.onStart( options );
-
-          if ( options.onFrame ) {
-            set( 'running', options, true );
-            step( options.onFrame, options );
-          }
-        },
-
-        end: function( event, options ) {
-          if ( options.onFrame ) {
-            set( 'running', options, false );
-          }
-
-          if ( options.onEnd ) {
-            options.onEnd( options );
-          }
-        }
-
       };
+    
+      // Figure out which level of browser support we have for this
+      if ( window.webkitRequestAnimationFrame ) {
+        return buildFrameRunner( window.webkitRequestAnimationFrame );
+      } else if ( window.mozRequestAnimationFrame ) {
+        return buildFrameRunner( window.mozRequestAnimationFrame );
+      } else {
+        return buildFrameRunner( function( f ) {
+          window.setTimeout( f, 16 );
+        } );
+      }
+    
+    } )();
 
-    });
+    if ( !options.onStart || !( typeof options.onStart === 'function' ) ) {
+      throw 'Popcorn Code Plugin Error: onStart must be a function.';
+    }
 
+    if ( options.onEnd && !( typeof options.onEnd === 'function' ) ) {
+      throw 'Popcorn Code Plugin Error: onEnd  must be a function.';
+    }
+
+    if ( options.onFrame && !( typeof options.onFrame === 'function' ) ) {
+      throw 'Popcorn Code Plugin Error: onFrame  must be a function.';
+    }
+
+    return {
+      start: function( event, options ) {
+        options.onStart( options );
+
+        if ( options.onFrame ) {
+          running = true;
+          step( options.onFrame, options );
+        }
+      },
+
+      end: function( event, options ) {
+        if ( options.onFrame ) {
+          running = false;
+        }
+
+        if ( options.onEnd ) {
+          options.onEnd( options );
+        }
+      }
+    };
+  },
+  {
+    about: {
+      name: 'Popcorn Code Plugin',
+      version: '0.1',
+      author: 'David Humphrey (@humphd)',
+      website: 'http://vocamus.net/dave'
+    },
+    options: {
+      start: {elem:'input', type:'text', label:'In'},
+      end: {elem:'input', type:'text', label:'Out'},
+      // TODO: how to deal with functions, eval strings?
+      onStart: {elem:'input', type:'text', label:'onStart'},
+      onFrame: {elem:'input', type:'text', label:'onFrame'},
+      onEnd: {elem:'input', type:'text', label:'onEnd'},
+    }
+  });
 })( Popcorn );
