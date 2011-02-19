@@ -96,94 +96,76 @@
   *
   */
 
-  Popcorn.plugin( 'mustache' , function() {
+  Popcorn.plugin( 'mustache' , function( options ) {
+    var getData, data, getTemplate, template;
 
-      function get( name, options ) {
-        return options._instance[name];
+    var shouldReload = !!options.dynamic,
+        typeOfTemplate = typeof options.template,
+        typeOfData = typeof options.data;
+
+    if ( typeOfTemplate === 'function' ) {
+      if ( !shouldReload ) {
+        template = options.template( options );
+      } else {
+        getTemplate = options.template;
       }
+    } else if ( typeOfTemplate === 'string' ) {
+      template = options.template;
+    } else {
+      throw 'Mustache Plugin Error: options.template must be a String or a Function.';
+    }
 
-      function set( name, options, value ) {
-        options._instance[name] = value;
+    if ( typeOfData === 'function' ) {
+      if ( !shouldReload ) {
+        data = options.data(options);
+      } else {
+        getData = options.data;
       }
+    } else if ( typeOfData === 'string' ) {
+      data = JSON.parse( options.data );
+    } else if ( typeOfData === 'object' ) {
+      data = options.data;
+    } else {
+      throw 'Mustache Plugin Error: options.data must be a String, Object, or Function.';
+    }
 
-      return {
-        manifest: {
-          about: {
-            name: 'Popcorn Mustache Plugin',
-            version: '0.1',
-            author: 'David Humphrey (@humphd)',
-            website: 'http://vocamus.net/dave'
-          },
-          options: {
-            start: {elem:'input', type:'text', label:'In'},
-            end: {elem:'input', type:'text', label:'Out'},
-            target: 'mustache-container',
-            template: {elem:'input', type:'text', label:'Template'},
-            data: {elem:'input', type:'text', label:'Data'},
-            /* TODO: how to show a checkbox/boolean? */
-            dynamic: {elem:'input', type:'text', label:'Dynamic'}
-          }
-        },
-
-        _setup : function( options ) {
-          options._instance = { getData: null,
-                                data: null,
-                                getTemplate: null,
-                                template: null };
-
-          var shouldReload = !!options.dynamic,
-              typeOfTemplate = typeof options.template,
-              typeOfData = typeof options.data;
-
-          if ( typeOfTemplate === 'function' ) {
-            if ( !shouldReload ) {
-              set( 'template', options, options.template( options ) );
-            } else {
-              set( 'getTemplate', options, options.template );
-            }
-          } else if ( typeOfTemplate === 'string' ) {
-            set( 'template', options, options.template );
-          } else {
-            throw 'Mustache Plugin Error: options.template must be a String or a Function.';
-          }
-
-          if ( typeOfData === 'function' ) {
-            if ( !shouldReload ) {
-              set( 'data', options, options.data(options) );
-            } else {
-              set( 'getData', options, options.data );
-            }
-          } else if ( typeOfData === 'string' ) {
-            set( 'data', options, JSON.parse( options.data ) );
-          } else if ( typeOfData === 'object' ) {
-            set( 'data', options, options.data );
-          } else {
-            throw 'Mustache Plugin Error: options.data must be a String, Object, or Function.';
-          }
-        },
-
-        start: function( event, options ) {
-          // if dynamic, freshen json data on every call to start, just in case.
-          if ( get('getData', options) ) {
-            set( 'data', options, get( 'getData', options )( options ) );
-          }
-
-          if ( get( 'getTemplate', options ) ) {
-            set( 'template', options, get( 'getTemplate', options )( options ) );
-          }
-
-          var html = Mustache.to_html( get( 'template', options ),
-                                       get( 'data', options )
-                                     ).replace( /^\s*/mg, '' );
-          document.getElementById( options.target ).innerHTML = html;
-        },
-
-        end: function( event, options ) {
-          document.getElementById( options.target ).innerHTML = '';
+    return {
+      start: function( event, options ) {
+        // if dynamic, freshen json data on every call to start, just in case.
+        if ( getData ) {
+          data = getData( options );
         }
 
-      };
+        if ( getTemplate ) {
+          template = getTemplate( options );
+        }
 
-    });
+        var html = Mustache.to_html( template,
+                                     data
+                                   ).replace( /^\s*/mg, '' );
+        document.getElementById( options.target ).innerHTML = html;
+      },
 
+      end: function( event, options ) {
+        document.getElementById( options.target ).innerHTML = '';
+      }
+    };
+  },
+  {
+    about: {
+      name: 'Popcorn Mustache Plugin',
+      version: '0.1',
+      author: 'David Humphrey (@humphd)',
+      website: 'http://vocamus.net/dave'
+    },
+    options: {
+      start: {elem:'input', type:'text', label:'In'},
+      end: {elem:'input', type:'text', label:'Out'},
+      target: 'mustache-container',
+      template: {elem:'input', type:'text', label:'Template'},
+      data: {elem:'input', type:'text', label:'Data'},
+      /* TODO: how to show a checkbox/boolean? */
+      dynamic: {elem:'input', type:'text', label:'Dynamic'}
+    }
+  });
 })( Popcorn );
