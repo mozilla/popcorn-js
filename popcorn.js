@@ -751,7 +751,7 @@
     }
     else if ( typeof definition === "function" ) {
       plugin[ name ] = function( options ) {
-        return pluginFn.call( this, definition.call( this ), options );
+        return pluginFn.call( this, definition.call( this, options ), options );
       };
     }
 
