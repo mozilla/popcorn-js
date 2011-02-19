@@ -91,8 +91,14 @@
         history: [],
         events: {},
         trackEvents: {
-          byStart: [{start: -1, end: -1}],
-          byEnd:   [{start: -1, end: -1}],
+          byStart: [{
+            start: -1,
+            end: -1
+          }],
+          byEnd:   [{
+            start: -1,
+            end: -1
+          }],
           startIndex: 0,
           endIndex:   0,
           previousUpdateTime: 0
@@ -101,11 +107,14 @@
 
       var isReady = function( that ) {
 
-        if ( that.video.readyState >= 3 ) {
+        if ( that.video.readyState >= 2 ) {
           // adding padding to the front and end of the arrays
           // this is so we do not fall off either end
 
-          var videoDurationPlus = that.video.duration + 1;
+          var duration = that.video.duration;
+          // Check for no duration info (NaN)
+          var videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
+
           Popcorn.addTrackEvent( that, {
             start: videoDurationPlus,
             end: videoDurationPlus
@@ -122,39 +131,67 @@
             // Playbar advancing
             if ( previousTime < currentTime ) {
 
-              while ( tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end <= currentTime ) {
-                if ( tracksByEnd[tracks.endIndex]._running === true ) {
-                  tracksByEnd[tracks.endIndex]._running = false;
-                  tracksByEnd[tracks.endIndex]._natives.end.call( that, event, tracksByEnd[tracks.endIndex] );
+              while ( tracksByEnd[ tracks.endIndex ] && tracksByEnd[ tracks.endIndex ].end <= currentTime ) {
+                // if plugin does not exist on this instance, remove it
+                if ( !tracksByEnd[ tracks.endIndex ]._natives || !!that[ tracksByEnd[ tracks.endIndex ]._natives.type ] ) {
+                  if ( tracksByEnd[ tracks.endIndex ]._running === true ) {
+                    tracksByEnd[ tracks.endIndex ]._running = false;
+                    tracksByEnd[ tracks.endIndex ]._natives.end.call( that, event, tracksByEnd[ tracks.endIndex ] );
+                  }
+                  tracks.endIndex++;
+                } else {
+                  // remove track event
+                  Popcorn.removeTrackEvent( that, tracksByEnd[ tracks.endIndex ]._id );
+                  return;
                 }
-                tracks.endIndex++;
               }
-
-              while ( tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start <= currentTime ) {
-                if ( tracksByStart[tracks.startIndex].end > currentTime && tracksByStart[tracks.startIndex]._running === false ) {
-                  tracksByStart[tracks.startIndex]._running = true;
-                  tracksByStart[tracks.startIndex]._natives.start.call( that, event, tracksByStart[tracks.startIndex] );
+              
+              while ( tracksByStart[ tracks.startIndex ] && tracksByStart[ tracks.startIndex ].start <= currentTime ) {
+                // if plugin does not exist on this instance, remove it
+                if ( !tracksByStart[ tracks.startIndex ]._natives || !!that[ tracksByStart[ tracks.startIndex ]._natives.type ] ) {
+                  if ( tracksByStart[ tracks.startIndex ].end > currentTime && tracksByStart[ tracks.startIndex ]._running === false ) {
+                    tracksByStart[ tracks.startIndex ]._running = true;
+                    tracksByStart[ tracks.startIndex ]._natives.start.call( that, event, tracksByStart[ tracks.startIndex ] );
+                  }
+                  tracks.startIndex++;
+                } else {
+                  // remove track event
+                  Popcorn.removeTrackEvent( that, tracksByStart[ tracks.startIndex ]._id );
+                  return;
                 }
-                tracks.startIndex++;
               }
 
             // Playbar receding
             } else if ( previousTime > currentTime ) {
 
-              while ( tracksByStart[tracks.startIndex] && tracksByStart[tracks.startIndex].start > currentTime ) {
-                if ( tracksByStart[tracks.startIndex]._running === true ) {
-                  tracksByStart[tracks.startIndex]._running = false;
-                  tracksByStart[tracks.startIndex]._natives.end.call( that, event, tracksByStart[tracks.startIndex] );
+              while ( tracksByStart[ tracks.startIndex ] && tracksByStart[ tracks.startIndex ].start > currentTime ) {
+                // if plugin does not exist on this instance, remove it
+                if ( !tracksByStart[ tracks.startIndex ]._natives || !!that[ tracksByStart[ tracks.startIndex ]._natives.type ] ) {
+                  if ( tracksByStart[ tracks.startIndex ]._running === true ) {
+                    tracksByStart[ tracks.startIndex ]._running = false;
+                    tracksByStart[ tracks.startIndex ]._natives.end.call( that, event, tracksByStart[ tracks.startIndex ] );
+                  }
+                  tracks.startIndex--;
+                } else {
+                  // remove track event
+                  Popcorn.removeTrackEvent( that, tracksByStart[ tracks.startIndex ]._id );
+                  return;
                 }
-                tracks.startIndex--;
               }
 
-              while ( tracksByEnd[tracks.endIndex] && tracksByEnd[tracks.endIndex].end > currentTime ) {
-                if ( tracksByEnd[tracks.endIndex].start <= currentTime && tracksByEnd[tracks.endIndex]._running === false ) {
-                  tracksByEnd[tracks.endIndex]._running = true;
-                  tracksByEnd[tracks.endIndex]._natives.start.call( that, event, tracksByEnd[tracks.endIndex] );
+              while ( tracksByEnd[ tracks.endIndex ] && tracksByEnd[ tracks.endIndex ].end > currentTime ) {
+                // if plugin does not exist on this instance, remove it
+                if ( !tracksByEnd[ tracks.endIndex ]._natives || !!that[ tracksByEnd[ tracks.endIndex ]._natives.type ] ) {
+                  if ( tracksByEnd[ tracks.endIndex ].start <= currentTime && tracksByEnd[ tracks.endIndex ]._running === false ) {
+                    tracksByEnd[ tracks.endIndex ]._running = true;
+                    tracksByEnd[ tracks.endIndex ]._natives.start.call( that, event, tracksByEnd[tracks.endIndex] );
+                  }
+                  tracks.endIndex--;
+                } else {
+                  // remove track event
+                  Popcorn.removeTrackEvent( that, tracksByEnd[ tracks.endIndex ]._id );
+                  return;
                 }
-                tracks.endIndex--;
               }
             }
             /*
@@ -288,25 +325,27 @@
     roundTime: function () {
       return -~this.video.currentTime;
     },
-
-
+    
     exec: function ( time, fn ) {
 
       !fn && ( fn = Popcorn.nop );
-
-
-      var self = this,
-          guid = Popcorn.guid( "execCallback" ),
+      
+      var self = this, 
+          guid = Popcorn.guid( "execCallback" ), 
           callback = function execCallback( event ) {
 
-            if ( this.currentTime() >= time && !callback.fired ) {
-
+            if ( Math.round( this.currentTime() ) === time && !callback.fired ) {
+            
               callback.fired = true;
-
-              this.unlisten("timeupdate", guid );
-
+              
               fn.call(self, event);
-
+              
+              //  Enforce a once per second execution
+              setTimeout(function() {
+                
+                callback.fired = false;
+                
+              }, 1000 );
             }
           };
 
@@ -315,41 +354,6 @@
 
       this.listen("timeupdate", callback);
 
-      return this;
-    },
-    removePlugin: function( name ) {
-
-      var byStart = this.data.trackEvents.byStart,
-          byEnd = this.data.trackEvents.byEnd,
-          idx, rl, sl;
-
-      delete Popcorn.p[ name ];
-
-      // remove plugin reference from registry
-      for ( idx = 0, rl = Popcorn.registry.length; idx < rl; idx++ ) {
-        if ( Popcorn.registry[ idx ].type === name ) {
-          Popcorn.registry.splice( idx, 1 );
-          break; // plugin found, stop checking
-        }
-      }
-
-      // remove all trackEvents
-      for ( idx = 0, sl = byStart.length; idx < sl; idx++ ) {
-
-        if ( ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) &&
-                  ( byEnd[ idx ] && byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) ) {
-
-          byStart.splice( idx, 1 );
-          byEnd.splice( idx, 1 );
-
-          // update for loop if something removed, but keep checking
-          idx--; sl--;
-          if ( this.data.trackEvents.startIndex <= idx ) {
-            this.data.trackEvents.startIndex--;
-            this.data.trackEvents.endIndex--;
-          }
-        }
-      }
       return this;
     }
   });
@@ -471,13 +475,8 @@
         }
 
         this.data.events[type] = null;
-        return this;
-      },
-      special: {
-        // handles timeline controllers
-        play: function () {
-          //  renders all of the interally stored track commands
-        }
+        
+        return this;        
       }
     }
   };
@@ -514,6 +513,60 @@
 
   };
 
+  // removePlugin( type ) removes all tracks of that from all instances of popcorn
+  // removePlugin( obj, type ) removes all tracks of type from obj, where obj is a single instance of popcorn
+  Popcorn.removePlugin = function( obj, name ) {
+
+    // check if we are removing plugin from an instance or from all of Popcorn
+    if ( !name ) {
+
+      // all of Popcorn it is
+
+      // fix the order
+      name = obj;
+      obj = Popcorn.p;
+
+      var registryLength = Popcorn.registry.length,
+          registryIndex;
+
+      // remove plugin reference from registry
+      for ( registryIndex = 0; registryIndex < registryLength; registryIndex++ ) {
+        if ( Popcorn.registry[ registryIndex ].type === name ) {
+          Popcorn.registry.splice( registryIndex, 1 );
+
+          // delete the plugin
+          delete obj[ name ];
+
+          // plugin found and removed, stop checking, we are done
+          return;
+        }
+      }
+
+    }
+
+    var byStart = obj.data.trackEvents.byStart, 
+        byEnd = obj.data.trackEvents.byEnd, 
+        idx, sl;
+
+    // remove all trackEvents
+    for ( idx = 0, sl = byStart.length; idx < sl; idx++ ) {
+
+      if ( ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) && 
+                ( byEnd[ idx ] && byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) ) {
+          
+        byStart.splice( idx, 1 );
+        byEnd.splice( idx, 1 );
+          
+        // update for loop if something removed, but keep checking
+        idx--; sl--;
+        if ( obj.data.trackEvents.startIndex <= idx ) {
+          obj.data.trackEvents.startIndex--;
+          obj.data.trackEvents.endIndex--;
+        }
+      }
+    }
+  };
+
   Popcorn.removeTrackEvent  = function( obj, trackId ) {
 
     var historyLen = obj.data.history.length,
@@ -524,7 +577,6 @@
 
 
     Popcorn.forEach( obj.data.trackEvents.byStart, function( o, i, context) {
-
       // Preserve the original start/end trackEvents
       if ( !o._id ) {
         byStart.push( obj.data.trackEvents.byStart[i] );
@@ -603,6 +655,11 @@
 
     removeTrackEvent: function( id ) {
       Popcorn.removeTrackEvent.call( null, this, id );
+      return this;
+    }, 
+    
+    removePlugin: function( name ) {
+      Popcorn.removePlugin.call( null, this, name );
       return this;
     }
 
@@ -808,11 +865,14 @@
 
   Popcorn.xhr = function ( options ) {
 
-    if ( options.dataType && options.dataType.toLowerCase() === "jsonp" ) {
+    if ( options.dataType && 
+          ( options.dataType.toLowerCase() === "jsonp" || 
+              options.dataType.toLowerCase() === "script" ) ) {
 
       Popcorn.xhr.getJSONP(
         options.url,
-        options.success
+        options.success, 
+        options.dataType.toLowerCase() === "script"
       );
       return;
     }
@@ -878,10 +938,23 @@
     };
     return data;
   };
+  
+  Popcorn.xhr.getJSONP = function ( url, success, isScript ) {
+    
+    //  If this is a script request, ensure that we do not call something that has already been loaded
+    if ( isScript ) {
+      
+      var scripts = document.querySelectorAll('script[src="' + url + '"]');
+      
+      //  If there are scripts with this url loaded, early return      
+      if ( scripts.length ) {
+      
+        //  Execute success callback and pass "exists" flag
+        success && success( true );
 
-
-
-  Popcorn.xhr.getJSONP = function ( url, success ) {
+        return;
+      }
+    }
 
     var head = document.getElementsByTagName("head")[0] || document.documentElement,
       script = document.createElement("script"),
@@ -889,42 +962,60 @@
       fired = false,
       params = [],
       callback;
-
-    if ( paramStr ) {
+    
+    
+    if ( paramStr && !isScript ) {
       params = paramStr.split("&");
     }
 
-
     callback = params.length ? params[ params.length - 1 ].split("=")[1] : "jsonp";
 
-
-    if ( !paramStr ) {
+    if ( !paramStr && !isScript ) {
       url += "?callback=" + callback;
     }
 
     script.src = url;
 
-
-    if ( callback ) {
+    if ( callback && !isScript ) {
       //  define the jsonp success callback globally
       window[ callback ] = function ( data ) {
-        success( data );
+
+        success && success( data );
         fired = true;
+
       };
     }
 
     script.onload = script.onreadystatechange = function() {
 
-      if ( fired || ( this.readyState === "loaded" || this.readyState === "complete") ) {
+      //  Executing remote scripts
+      if ( isScript && ( !script.readyState || /loaded|complete/.test( script.readyState ) ) ) {
+
+        success && success();
+
+      }
+
+      //  Executing for JSONP requests
+      if ( fired || /loaded|complete/.test( script.readyState ) ) {
 
         // cleanup in here
         delete window[ callback ];
+        
         head.removeChild( script );
       }
-    };
+    };  
 
     head.insertBefore( script, head.firstChild );
+    
+    return;
+  
+  };
+  
+  Popcorn.getJSONP = Popcorn.xhr.getJSONP;
+  
+  Popcorn.getScript = Popcorn.xhr.getScript = function( url, success ) {
 
+    return Popcorn.xhr.getJSONP( url, success, true );
   };
 
 

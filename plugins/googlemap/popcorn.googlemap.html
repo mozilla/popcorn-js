@@ -9,22 +9,33 @@
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
       .volume(0)
-      .play() 
+      .play()
       .googlemap({
         start: 0, // seconds
         end: 20, // seconds
-        type: 'ROADMAP',
-        target: 'map',
+        type: "ROADMAP",
+        target: "map",
         lat: 43.665429,
         lng: -79.403323,
         zoom: "10"
       } )
       .googlemap({
         start: 0, // seconds
+        end: 20, // seconds
+        type: "STREETVIEW",
+        target: "map1",
+        lat: 43.665429,
+        lng: -79.403323,
+        zoom: "1",
+        heading: "0",
+        pitch: "1"
+      } )
+      .googlemap({
+        start: 0, // seconds
         end: 30, // seconds
-        type: 'ROADMAP',
-        target: 'map2',
-        location:'boston',
+        type: "ROADMAP",
+        target: "map2",
+        location:"boston",
         zoom: 15
       } );
     }, false);
@@ -33,27 +44,29 @@
 <body>
   <h1 id="qunit-header">Popcorn google Map Plug-in Demo</h1>
   <p> A Google Map displaying Toronto, Ontario will appear at 0 seconds and disappear at 20 seconds.</p>
+  <p> A Google StreetView Map displaying Toronto, Ontario will appear at 0 seconds and disappear at 20 seconds.</p>
   <p> A Google Map displaying Boston will appear at 0 seconds and disappear at 30 seconds.</p>
   <div>
-    <video id='video' 
-      controls 
+    <video id='video'
+      controls
       width= '250px'
-      poster="../../test/poster.png"> 
+      poster="../../test/poster.png">
 
       <source id='mp4'
         src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+        type='video/mp4; codecs="avc1, mp4a"'>
 
       <source id='ogv'
         src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+        type='video/ogg; codecs="theora, vorbis"'>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+      <p>Your user agent does not support the HTML5 Video element.</p>
 
-    </video> 
+    </video>
   </div>
-  <div style="width:700px">
+  <div style="width:1000px">
     <div id="map" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
+    <div id="map1" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
     <div id="map2" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
   </div>
 </body>

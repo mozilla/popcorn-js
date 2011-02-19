@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Mustache Plugin Demo</title>
+
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.mustache.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var p = Popcorn('#video')
+
+        // Example using template and JSON strings.
+        .mustache({
+          start: 5,  // seconds
+          end:  10,  // seconds
+          target: 'mustache-div',
+          template: '<h1>{{header}}</h1>'                           +
+                    '{{#items}}'                                    +
+                    '  {{#first}}'                                  +
+                    '    <li><strong>{{name}}</strong></li>'        +
+                    '  {{/first}}'                                  +
+                    '  {{#link}}'                                   +
+                    '    <li><a href="{{url}}">{{name}}</a></li>'   +
+                    '  {{/link}}'                                   +
+                    '{{/items}}'                                    +
+                    ''                                              +
+                    '{{#empty}}'                                    +
+                    '  <p>The list is empty.</p>'                   +
+                    '{{/empty}}'                                    ,
+
+          data:     '{'                                                        +
+                    '  "header": "Test 1", '                                   +
+                    '  "items": [ '                                            +
+                    '      {"name": "red", "first": true, "url": "#Red"}, '    +
+                    '      {"name": "green", "link": true, "url": "#Green"}, ' +
+                    '      {"name": "blue", "link": true, "url": "#Blue"} '    +
+                    '  ],'                                                     +
+                    '  "empty": false'                                         +
+                    '}',
+          static: true /* The json is not going to change, load it early. */
+        } )
+
+        // Example mixing functions and literals.
+        .mustache({
+          start: 15,  // seconds
+          end: 20,
+          target: 'mustache-div',
+          template: function(plugin, options) {
+            return  '<h1>{{header}}</h1>'                         +
+                    '{{#items}}'                                  +
+                    '  {{#first}}'                                +
+                    '    <li><strong>{{name}}</strong></li>'      +
+                    '  {{/first}}'                                +
+                    '  {{#link}}'                                 +
+                    '    <li><a href="{{url}}">{{name}}</a></li>' +
+                    '  {{/link}}'                                 +
+                    '{{/items}}'                                  +
+                    ''                                            +
+                    '{{#empty}}'                                  +
+                    '  <p>The list is empty.</p>'                 +
+                    '{{/empty}}'                                  ;
+          },
+          data: {
+                  header: 'Test 2',
+                  items: [
+                    { name: 'red', first: true, url: '#Red' },
+                    { name: 'green', link: true, url: '#Green' },
+                    { name: 'blue', link: true, url: '#Blue'}
+                  ],
+                  empty: false
+                }
+        } )
+
+        // Example using functions, not static.
+        .mustache({
+          start: 25,  // seconds
+          end: 30,
+          target: 'mustache-div',
+          template: function(plugin, options) {
+            return  '<h1>{{header}}</h1>'                         +
+                    '{{#items}}'                                  +
+                    '  {{#first}}'                                +
+                    '    <li><strong>{{name}}</strong></li>'      +
+                    '  {{/first}}'                                +
+                    '  {{#link}}'                                 +
+                    '    <li><a href="{{url}}">{{name}}</a></li>' +
+                    '  {{/link}}'                                 +
+                    '{{/items}}'                                  +
+                    ''                                            +
+                    '{{#empty}}'                                  +
+                    '  <p>The list is empty.</p>'                 +
+                    '{{/empty}}'                                  ;
+          },
+          data: function(plugin, options) {
+            return  JSON.parse('' +
+                    '{'                                                        +
+                    '  "header": "Test 3", '                                   +
+                    '  "items": [ '                                            +
+                    '      {"name": "red", "first": true, "url": "#Red"}, '    +
+                    '      {"name": "green", "link": true, "url": "#Green"}, ' +
+                    '      {"name": "blue", "link": true, "url": "#Blue"} '    +
+                    '  ],'                                                     +
+                    '  "empty": false'                                         +
+                    '}');
+          }
+        } )
+      .volume(0)
+      .play();
+    }, false);
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Mustache Plugin Demo</h1>
+  <p>Mustache - <a href="http://mustache.github.com/">http://mustache.github.com/</a>
+  <p>Mustache generated HTML templates, created using various data methods, are shown at 5, 15, and 25 seconds.</p>
+  <div>
+    <video id='video'
+      autobuffer
+      preload="auto"
+      controls
+      width= '250px'
+      poster="../../test/poster.png">
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'>
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'>
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+
+    </video>
+  </div>
+  <div style="width:700px">
+    <div>Mustache Template</div>
+    <div id="mustache-div" style="position:relative;float:left;width:300px;height:400px"></div>
+  </div>
+</body>
+</html>
