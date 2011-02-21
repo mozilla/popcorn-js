@@ -47,7 +47,7 @@ ${POPCORN_MIN}: ${POPCORN_DIST}
 
 lint: ${POPCORN_DIST}
 	@@echo "Checking Popcorn against JSLint..."
-	@@${RHINO} build/jslint-check.js	
+	@@${RHINO} build/jslint-check.js popcorn.js ${PLUGINS_SRC}
 	
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
@@ -109,6 +109,3 @@ ${PLUGINS_MIN}: ${PLUGINS_DIST}
 	@@${MINJAR} --js ${PLUGINS_DIST} --warning_level QUIET --js_output_file ${PLUGINS_MIN}.tmp
 	@@cat ${PLUGINS_MIN}.tmp >> ${PLUGINS_MIN}
 	@@rm -f ${PLUGINS_MIN}.tmp	
-
-
-

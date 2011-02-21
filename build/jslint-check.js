@@ -1,9 +1,5 @@
 load("build/jslint.js");
 
-var src = readFile("popcorn.js");
-
-JSLINT(src, { evil: true, forin: true, maxerr: 100 });
-
 // All of the following are known issues that we think are 'ok'
 // (in contradiction with JSLint) more information here:
 // http://docs.jquery.com/JQuery_Core_Style_Guidelines
@@ -16,21 +12,31 @@ var ok = {
   "'e' is already defined.": true
 };
 
-var e = JSLINT.errors, found = 0, w;
+function check(src)
+{
+  var e = JSLINT.errors, found = 0, w;
 
-for ( var i = 0; i < e.length; i++ ) {
-  w = e[i];
+  JSLINT(src, { evil: true, forin: true, maxerr: 100 });
 
-  if ( !ok[ w.reason ] ) {
-    found++;
-    print( "\n" + w.evidence + "\n" );
-    print( "    Problem at line " + w.line + " character " + w.character + ": " + w.reason );
+  for ( var i = 0; e && i < e.length; i++ ) {
+    w = e[i];
+
+    if ( w && !ok[ w.reason ] ) {
+      found++;
+      print( "\n" + w.evidence + "\n" );
+      print( "    Problem at line " + w.line + " character " + w.character + ": " + w.reason );
+    }
+  }
+  
+  if ( found > 0 ) {
+    print( "\n" + found + " Error(s) found." );
+  } else {
+    print( "JSLint check passed." );
   }
 }
 
-if ( found > 0 ) {
-  print( "\n" + found + " Error(s) found." );
-
-} else {
-  print( "JSLint check passed." );
+for each (var f in arguments)
+{
+  print( "Linting "+ f );
+  check(readFile(f));
 }
