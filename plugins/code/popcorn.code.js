@@ -123,7 +123,7 @@
             // TODO: how to deal with functions, eval strings?
             onStart: {elem:'input', type:'text', label:'onStart'},
             onFrame: {elem:'input', type:'text', label:'onFrame'},
-            onEnd: {elem:'input', type:'text', label:'onEnd'},
+            onEnd: {elem:'input', type:'text', label:'onEnd'}
           }
         },
 
