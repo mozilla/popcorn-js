@@ -14,10 +14,9 @@ var ok = {
 
 function check(src)
 {
-  var e = JSLINT.errors, found = 0, w;
-
   JSLINT(src, { evil: true, forin: true, maxerr: 100 });
 
+  var e = JSLINT.errors, found = 0, w;
   for ( var i = 0; e && i < e.length; i++ ) {
     w = e[i];
 
