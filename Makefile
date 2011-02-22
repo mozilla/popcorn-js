@@ -72,27 +72,10 @@ PLUGINS_DIR = ${PREFIX}/plugins
 PLUGINS_DIST = ${DIST_DIR}/popcorn.plugins.js
 PLUGINS_MIN = ${DIST_DIR}/popcorn.plugins.min.js
 
-
-PLUGINS_SRC = ${PLUGINS_DIR}/attribution/popcorn.attribution.js\
-    ${PLUGINS_DIR}/flickr/popcorn.flickr.js\
-    ${PLUGINS_DIR}/footnote/popcorn.footnote.js\
-    ${PLUGINS_DIR}/googlemap/popcorn.googlemap.js\
-    ${PLUGINS_DIR}/googlenews/popcorn.googlenews.js\
-    ${PLUGINS_DIR}/image/popcorn.image.js\
-    ${PLUGINS_DIR}/lowerthird/popcorn.lowerthird.js\
-    ${PLUGINS_DIR}/subtitle/popcorn.subtitle.js\
-    ${PLUGINS_DIR}/tagthisperson/popcorn.tagthisperson.js\
-    ${PLUGINS_DIR}/twitter/popcorn.twitter.js\
-    ${PLUGINS_DIR}/webpage/popcorn.webpage.js\
-    ${PLUGINS_DIR}/wikipedia/popcorn.wikipedia.js\
-    ${PLUGINS_DIR}/mustache/popcorn.mustache.js\
-    $(NULL)
-
-
-
+# Grab all popcorn.<plugin-name>.js files from plugins dir
+PLUGINS_SRC := $(filter-out %unit.js, $(shell find ${PLUGINS_DIR} -name 'popcorn.*.js' -print))
 
 plugins: ${PLUGINS_DIST}
-
 
 ${PLUGINS_DIST}: ${PLUGINS_SRC} | ${DIST_DIR}
 	@@echo "Building" ${PLUGINS_DIST}

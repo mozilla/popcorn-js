@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Code Plugin Demo</title>
+
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.code.js"></script>
+  <script>
+   var output;
+
+   document.addEventListener('DOMContentLoaded', function () {
+     output = document.getElementById('output');
+     var $ = function( id ) {
+       return document.getElementById( id.substring( 1 ) );
+     };
+
+     var p = Popcorn('#video')
+
+     .code({
+        start: 1,
+        end: 3,
+        onStart: function( options ) {
+          $('#test1').innerHTML = 'Yes';
+        }
+      })
+
+      .code({
+        start: 5,
+        end: 8,
+        onStart: function( options ) {
+          $('#test2a').innerHTML = 'Yes';
+        },
+        onEnd: function ( options ) {
+          $('#test2b').innerHTML = 'Yes';
+        }
+      })
+
+      .code({
+        start: 10,
+        end: 14,
+        onStart: function( options ) {
+          $('#test3a').innerHTML = 'Yes';
+        },
+        onFrame: (function() {
+          var count = 0;
+          return function ( options ) {
+            $('#test3b').innerHTML = 'Yes (count = ' + ++count + ')';
+          }
+        })(),
+        onEnd: function ( options ) {
+          $('#test3c').innerHTML = 'Yes';
+        }
+      })
+
+      .volume(0)
+      .play();
+    }, false);
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Code Plugin Demo</h1>
+  <p>Arbitrary JavaScript functions are run.</p>
+  <div>
+    <video id='video'
+      autobuffer
+      preload="auto"
+      controls
+      width= '250px'
+      poster="../../test/poster.png">
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'>
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'>
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+
+    </video>
+  </div>
+  <div style="width:700px">
+    <div>Code Plugin Output</div>
+    <table cellpadding="5px">
+      <tr><th>Test</th><th>Completed</th></tr>
+      <tr><td>Test 1 - onStart (1s)</td><td><span id="test1">No</span></td></tr>
+      <tr><td>Test 2a - onStart (5s)</td><td><span id="test2a">No</span></td></tr>
+      <tr><td>Test 2b - onEnd (8s)</td><td><span id="test2b">No</span></td></tr>
+      <tr><td>Test 3a - onStart (10s)</td><td><span id="test3a">No</span></td></tr>
+      <tr><td>Test 3b - onFrame (10s-14s)</td><td><span id="test3b">No</span></td></tr>
+      <tr><td>Test 3c - onEnd (14s)</td><td><span id="test3c">No</span></td></tr>
+    </table>
+  </div>
+</body>
+</html>
