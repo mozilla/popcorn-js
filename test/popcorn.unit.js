@@ -1293,6 +1293,16 @@ if ( !/file/.test( location.protocol ) ) {
     );  
   });
 
+} else {
+  test("JSONP Response", function () {
+
+    expect(1);
+
+
+    stop(10000);
+    ok(false, "jsonp requests require a webserver with php");
+    start();
+  });
 }
 
 test("Popcorn.getScript()", function () {
