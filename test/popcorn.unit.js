@@ -1,4 +1,16 @@
 
+if ( /file/.test( location.protocol ) ) {
+
+  test("HTTP", function () {
+    
+    ok( false, "Please run test suite via an HTTP connection" );
+    
+  });
+  
+  throw "Please run test suite via an HTTP connection";
+}
+
+
 module("Popcorn");
 test("API", function () {
   
@@ -1220,7 +1232,7 @@ test("JSONP Response", function () {
   
   expect(expects);
   
-  stop();
+  stop(10000);
 
 
   var testObj = { "data": {"lang": "en", "length": 25} };  
