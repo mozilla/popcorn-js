@@ -34,7 +34,7 @@ POPCORN_COMPLETE_DIST = ${DIST_DIR}/popcorn-complete.js
 POPCORN_COMPLETE_MIN = ${DIST_DIR}/popcorn-complete.min.js
 
 
-all: lint popcorn plugins min complete
+all: lint lint-plugins popcorn plugins min complete
 	@@echo "Popcorn build complete."
 
 ${DIST_DIR}:
@@ -70,9 +70,13 @@ complete: ${POPCORN_SRC} ${PLUGINS_SRC} ${DIST_DIR}
 	@@echo "Building popcorn + plugins"
 	@@cat ${POPCORN_SRC} ${PLUGINS_SRC} > ${POPCORN_COMPLETE_DIST}
 
-lint: ${POPCORN_DIST}
+lint:
 	@@echo "Checking Popcorn against JSLint..."
-	@@${RHINO} build/jslint-check.js
+	@@${RHINO} build/jslint-check.js popcorn.js
+
+lint-plugins:
+	@@echo "Checking all plugins against JSLint..."
+	@@${RHINO} build/jslint-check.js ${PLUGINS_SRC}
 
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
