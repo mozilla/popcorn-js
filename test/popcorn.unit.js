@@ -580,7 +580,7 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 29, 
+      expects = 48, 
       count = 0;
   
   //expect(expects);
