@@ -327,32 +327,17 @@
     },
     
     exec: function ( time, fn ) {
-      
-      !fn && ( fn = Popcorn.nop );
-      
-      var self = this, 
-          guid = Popcorn.guid( "execCallback" ), 
-          callback = function execCallback( event ) {
 
-            if ( Math.round( this.currentTime() ) === time && !callback.fired ) {
-            
-              callback.fired = true;
-              
-              fn.call(self, event);
-              
-              //  Enforce a once per second execution
-              setTimeout(function() {
-                
-                callback.fired = false;
-                
-              }, 1000 );
-            }
-          };
-      
-      callback.fired = false;
-      callback.name = guid;
-      
-      this.listen("timeupdate", callback);
+      // creating a one second track event with an empty end
+      Popcorn.addTrackEvent( this, {
+        start: time,
+        end: time + 1,
+        _running: false,
+        _natives: {
+          start: fn,
+          type: "exec"
+        }
+      });
       
       return this;
     }
@@ -492,7 +477,7 @@
   
   
   Popcorn.addTrackEvent = function( obj, track ) {
-  
+
     if ( track._natives ) {
       // supports user defined track event id
       track._id = !track.id ? Popcorn.guid( track._natives.type ) : track.id;

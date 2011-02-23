@@ -179,22 +179,25 @@ test("exec", function () {
       hasLooped = false, 
       loop = 0;
 
-  expect(expects);
+  expect( expects + 1 );
   
   function plus(){ 
     if ( ++count == expects ) {
       
-      popped.unlisten( "timeupdate", "execCallback" );
-     
-    
-      start(); 
+      setTimeout( function() {
+
+        equals( loop, expects, "exec callback repeat check, only called twice" );
+        Popcorn.removePlugin( popped, "exec" );
+        start(); 
+
+      }, 1000 );
     }
   }
   
   stop( 10000 ); 
 
   popped.exec( 4, function () {
-    ok(true, "exec callback fired " + loop++ );
+    ok( loop < 2, "exec callback fired " + ++loop );
     plus();
 
     if ( !hasLooped ) {
