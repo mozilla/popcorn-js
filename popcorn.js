@@ -682,7 +682,8 @@
     //  the definition into Popcorn.p
     var reserved = [ "start", "end" ],
         plugin = {},
-        setup;
+        setup,
+        isfn = typeof definition === "function";
 
     var pluginFn = function ( setup, options ) {
 
@@ -744,7 +745,6 @@
       Popcorn.manifest[ name ] = manifest || definition.manifest;
     }
 
-    var isfn = typeof definition === "function";
     //  Assign new named definition
     plugin[ name ] = function( options ) {
       return pluginFn.call( this,
