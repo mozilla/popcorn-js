@@ -753,12 +753,12 @@ test("Plugin Factory", function () {
         options.endCount = 0;
       },
       start: function ( event, options ) {
-        // test is run four times. Two closure tracks, called twice each
+        // called once for each instance; the test will fail if startCount is not actually unique per instance
         equals( startCount++, options.startCount++, options.nick + " has correct start counts" );
         plus();
       },
       end: function ( event, options ) {
-        // test is run four times. Two closure tracks, called twice each
+        // likewise for endCount
         equals( endCount++, options.endCount++, options.nick + " has correct end counts" );
         plus();
         

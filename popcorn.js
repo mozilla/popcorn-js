@@ -684,7 +684,7 @@
         plugin = {},
         setup;
 
-    function pluginFn ( setup, options ) {
+    var pluginFn = function ( setup, options ) {
 
       if ( !options ) {
         return this;
@@ -744,11 +744,12 @@
       Popcorn.manifest[ name ] = manifest || definition.manifest;
     }
 
+    var isfn = typeof definition === "function";
     //  Assign new named definition
     plugin[ name ] = function( options ) {
-      return pluginFn.call( this, typeof definition === "function" ? 
-                                          definition.call( this, options ) :
-                                            definition, options );
+      return pluginFn.call( this,
+                            isfn ? definition.call( this, options )
+                                 : definition, options );
     };
 
     //  Extend Popcorn.p with new named definition
