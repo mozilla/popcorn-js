@@ -680,8 +680,7 @@
 
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p
-
-    var reserved = [ "start", "end"],
+    var reserved = [ "start", "end" ],
         plugin = {},
         setup;
 
@@ -691,12 +690,12 @@
         return this;
       }
 
-      // storing the plugin natives
+      //  Storing the plugin natives
       options._natives = setup;
       options._natives.type = name;
       options._running = false;
       
-      // ensure a manifest object
+      //  Ensure a manifest object, an empty object is a sufficient fallback
       options._natives.manifest = manifest || setup.manifest || {};
 
       //  Checks for expected properties
@@ -710,7 +709,6 @@
 
       //  If a _setup was declared, then call it before
       //  the events commence
-
       if ( "_setup" in setup && typeof setup._setup === "function" ) {
 
         // Resolves 239, 241, 242
@@ -719,13 +717,10 @@
                               ( "manifest" in setup && setup.manifest.options.target );
         }
         
-
         setup._setup.call( this, options );
       }
 
-
       Popcorn.addTrackEvent( this, options );
-
 
       //  Future support for plugin event definitions
       //  for all of the native events
