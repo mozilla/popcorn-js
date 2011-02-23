@@ -8,12 +8,13 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
+      .volume(0)
       .play() 
       .image({
         start: 5, // seconds
         end: 15, // seconds
         href: 'http://www.drumbeat.org/',
-        src: 'http://www.drumbeat.org/sites/default/files/domain-2/drumbeat_logo.png',
+        src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
         target: 'imagediv'
       } )
       .image({
