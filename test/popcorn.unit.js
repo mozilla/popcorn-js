@@ -580,7 +580,7 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 26, 
+      expects = 48, 
       count = 0;
   
   //expect(expects);
@@ -590,11 +590,13 @@ test("Plugin Factory", function () {
       Popcorn.removePlugin("breaker");
       Popcorn.removePlugin("executor");
       Popcorn.removePlugin("complicator");
+      Popcorn.removePlugin("closure");
       start(); 
     }
   }
 
   stop( 10000 );
+  expect(expects);
 
   Popcorn.plugin("executor", function () {
     
@@ -739,7 +741,46 @@ test("Plugin Factory", function () {
     end: 2
   });     
 
+  Popcorn.plugin("closure", function() {
+
+    var startCount = 0;
+    var endCount = 0;
+
+    return {
+
+      _setup: function( options ) {
+        options.startCount = 0;
+        options.endCount = 0;
+      },
+      start: function ( event, options ) {
+        // test is run four times. Two closure tracks, called twice each
+        equals( startCount++, options.startCount++, options.nick + " has correct start counts" );
+        plus();
+      },
+      end: function ( event, options ) {
+        // test is run four times. Two closure tracks, called twice each
+        equals( endCount++, options.endCount++, options.nick + " has correct end counts" );
+        plus();
+        
+        // running tracks again to make sure data increments uniquly
+        popped.currentTime(5).play();
+      }
+    }; 
+  });
+
+  popped.closure({
+    start: 5,
+    end: 6,
+    nick: "first closure track"
+  })
+  .closure({
+    start: 5,
+    end: 6,
+    nick: "second closure track"
+  });
+
   popped.currentTime(0).play();
+
 });
 
 test("Remove Plugin", function () {
