@@ -685,6 +685,11 @@
         setup,
         isfn = typeof definition === "function";
 
+    if (!manifest)
+    {
+      manifest = definition.manifest || {};
+    }
+
     var pluginFn = function ( setup, options ) {
 
       if ( !options ) {
@@ -697,7 +702,7 @@
       options._running = false;
       
       //  Ensure a manifest object, an empty object is a sufficient fallback
-      options._natives.manifest = manifest || setup.manifest || {};
+      options._natives.manifest = manifest;
 
       //  Checks for expected properties
       if ( !( "start" in options ) ) {
@@ -714,8 +719,8 @@
 
         // Resolves 239, 241, 242
         if ( !options.target ) {
-          options.target = ( manifest && manifest.options.target ) || 
-                              ( "manifest" in setup && setup.manifest.options.target );
+          var manifestopts = "options" in manifest && manifest.options;
+          options.target = manifestopts && "target" in manifestopts && manifestopts.target;
         }
         
         setup._setup.call( this, options );
