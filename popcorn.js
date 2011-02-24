@@ -685,12 +685,13 @@
         setup,
         isfn = typeof definition === "function";
 
-    if (!manifest)
-    {
+    //  If `manifest` arg is undefined, check for manifest within the `definition` object
+    //  If no `definition.manifest`, an empty object is a sufficient fallback
+    if ( !manifest ) {
       manifest = definition.manifest || {};
     }
 
-    var pluginFn = function ( setup, options ) {
+    var pluginFn = function( setup, options ) {
 
       if ( !options ) {
         return this;
@@ -719,7 +720,12 @@
 
         // Resolves 239, 241, 242
         if ( !options.target ) {
+
+          //  Sometimes the manifest may be missing entirely 
+          //  or it has an options object that doesn't have a `target` property
+
           var manifestopts = "options" in manifest && manifest.options;
+          
           options.target = manifestopts && "target" in manifestopts && manifestopts.target;
         }
         
