@@ -328,32 +328,17 @@
     
     exec: function ( time, fn ) {
 
-      !fn && ( fn = Popcorn.nop );
+      // creating a one second track event with an empty end
+      Popcorn.addTrackEvent( this, {
+        start: time,
+        end: time + 1,
+        _running: false,
+        _natives: {
+          start: fn || Popcorn.nop,
+          type: "exec"
+        }
+      });
       
-      var self = this, 
-          guid = Popcorn.guid( "execCallback" ), 
-          callback = function execCallback( event ) {
-
-            if ( Math.round( this.currentTime() ) === time && !callback.fired ) {
-            
-              callback.fired = true;
-              
-              fn.call(self, event);
-              
-              //  Enforce a once per second execution
-              setTimeout(function() {
-                
-                callback.fired = false;
-                
-              }, 1000 );
-            }
-          };
-
-      callback.fired = false;
-      callback.name = guid;
-
-      this.listen("timeupdate", callback);
-
       return this;
     }
   });
