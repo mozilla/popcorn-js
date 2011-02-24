@@ -1,4 +1,3 @@
-
 module("Popcorn");
 test("API", function () {
   
@@ -1251,73 +1250,104 @@ test("dataType: JSON Response", function () {
 
 });
 
-test("JSONP Response", function () {
 
-  var expects = 6, 
-      count = 0;
-      
-  function plus() {
-    if ( ++count === expects ) {
-      start();
+if ( !/file/.test( location.protocol ) ) {
+
+  test("JSONP Response", function () {
+
+    var expects = 8, 
+        count = 0;
+
+    function plus() {
+      if ( ++count === expects ) {
+        start();
+      }
     }
-  }
-  
-  expect(expects);
-  
-  stop();
+
+    expect(expects);
+
+    stop(10000);
 
 
-  var testObj = { "data": {"lang": "en", "length": 25} };  
+    var testObj = { "data": {"lang": "en", "length": 25} };  
 
-  Popcorn.xhr({
-    
-    url: 'data/jsonp.json?callback=jsonp',
-    dataType: 'jsonp', 
-    success: function( data ) {
-      
-      ok(data, "xhr returns data");
-      plus();
-      
-      
-      ok( QUnit.equiv(data, testObj) , "Popcorn.xhr({}) data.json returns an object of data");
-      plus();
-      
-    }
+    Popcorn.xhr({
+
+      url: 'data/jsonp.php?callback=jsonp',
+      dataType: 'jsonp', 
+      success: function( data ) {
+
+        ok(data, "getJSONP returns data");
+        plus();
+
+
+        ok( QUnit.equiv(data, testObj) , "Popcorn.xhr({}) data.json returns an object of data");
+        plus();
+
+      }
+    });
+
+    Popcorn.xhr.getJSONP(
+      'data/jsonp.php?callback=jsonp',
+
+      function( data ) {
+
+        ok(data, "getJSONP returns data");
+        plus();
+
+
+
+        ok( QUnit.equiv(data, testObj) , "Popcorn.xhr.getJSONP data.json returns an object of data");
+        plus();
+
+      }
+    );
+
+    Popcorn.xhr.getJSONP(
+      "http://api.flickr.com/services/feeds/photos_public.gne?id=35034346917@N01&lang=en-us&format=json&jsoncallback=flickr",
+
+      function( data ) {
+
+
+
+        ok(data, "getJSONP returns flickr data");
+        plus();
+
+        equal( typeof data, "object", "getJSONP returns flickr data");
+        plus();      
+
+
+      }
+    );  
+
+    Popcorn.getJSONP(
+      'data/jsonp.php?callback=jsonp',
+
+      function( data ) {
+
+        ok(data, "getJSONP returns data");
+        plus();
+
+
+
+        ok( QUnit.equiv(data, testObj) , "Popcorn.xhr.getJSONP data.json returns an object of data");
+        plus();
+
+      }
+    );  
   });
 
-  Popcorn.xhr.getJSONP(
-    'data/jsonp.json?callback=jsonp',
+} else {
+  test("JSONP Response", function () {
 
-    function( data ) {
-      
-      ok(data, "xhr returns data");
-      plus();
-      
-      
-      
-      ok( QUnit.equiv(data, testObj) , "Popcorn.xhr.getJSONP data.json returns an object of data");
-      plus();
-      
-    }
-  );
-  
+    expect(1);
 
-  Popcorn.getJSONP(
-    'data/jsonp.json?callback=jsonp',
 
-    function( data ) {
-      
-      ok(data, "xhr returns data");
-      plus();
-      
-      
-      
-      ok( QUnit.equiv(data, testObj) , "Popcorn.xhr.getJSONP data.json returns an object of data");
-      plus();
-      
-    }
-  );  
-});
+    stop(10000);
+    ok(false, "jsonp requests require a webserver with php");
+    start();
+  });
+}
 
 test("Popcorn.getScript()", function () {
 

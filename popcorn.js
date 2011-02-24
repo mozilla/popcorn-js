@@ -965,35 +965,50 @@
     }
 
     var head = document.getElementsByTagName("head")[0] || document.documentElement,
-      script = document.createElement("script"),
-      paramStr = url.split("?")[1],
-      fired = false,
-      params = [],
-      callback;
-    
+      script = document.createElement("script"), 
+      paramStr = url.split("?")[1], 
+      fired = false, 
+      params = [], 
+      callback, parts, callparam;    
     
     if ( paramStr && !isScript ) {
       params = paramStr.split("&");
     }
 
-    callback = params.length ? params[ params.length - 1 ].split("=")[1] : "jsonp";
-
+    if ( params.length ) {
+      parts = params[ params.length - 1 ].split("=");
+    }
+    
+    callback = params.length ? ( parts[1] ? parts[1] : parts[0]  ) : "jsonp";    
+    
     if ( !paramStr && !isScript ) {
       url += "?callback=" + callback;
     }
 
-    script.src = url;
-
     if ( callback && !isScript ) {
-      //  define the jsonp success callback globally
+      
+      //  If a callback name already exists...
+      if ( !!window[ callback ] ) {
+      
+        //  Create a new unique callback name
+        callback = Popcorn.guid( callback );
+      }
+      
+      //  Define the jsonp success callback globally
       window[ callback ] = function ( data ) {
 
         success && success( data );
         fired = true;
 
       };
+      
+      //  Replace callback param and callback name
+      url = url.replace( parts.join("="), parts[0] + "=" + callback );
+      
     }
-
+    
+    script.src = url;
+    
     script.onload = script.onreadystatechange = function() {
 
       //  Executing remote scripts
@@ -1006,9 +1021,10 @@
       //  Executing for JSONP requests
       if ( fired || /loaded|complete/.test( script.readyState ) ) {
 
-        // cleanup in here
+        //  Garbage collect the callback
         delete window[ callback ];
         
+        //  Garbage collect the script resource
         head.removeChild( script );
       }
     };  
