@@ -3,6 +3,27 @@
 (function (Popcorn) {
   
   /**
+   * Subtitle popcorn plug-in 
+   * Displays a subtitle over the video, or in the target div
+   * Options parameter will need a start, and end.
+   * Optional parameters are target and text.
+   * Start is the time that you want this plug-in to execute
+   * End is the time that you want this plug-in to stop executing
+   * Target is the id of the document element that the content is
+   *  appended to, this target element must exist on the DOM
+   * Text is the text of the subtitle you want to display.
+   * 
+   * @param {Object} options
+   * 
+   * Example:
+     var p = Popcorn('#video')
+        .footnote({
+          start:          5,                 // seconds, mandatory
+          end:            15,                // seconds, mandatory
+          text:           'Hellow world',    // optional
+          target:         'subtitlediv'      // optional
+        } )
+   *
    */
 
   // just a little tool function
@@ -33,17 +54,6 @@
 
     } );
   };
-
-
-/*
-      // Find element offset
-      if (element.offsetParent) {
-        do {
-          offsetX += element.offsetLeft;
-          offsetY += element.offsetTop;
-        } while ((element = element.offsetParent));
-      }
-*/
 
   Popcorn.plugin( "subtitle" , {
     
