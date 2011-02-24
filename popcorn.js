@@ -969,7 +969,7 @@
       paramStr = url.split("?")[1], 
       fired = false, 
       params = [], 
-      callback, parts, callparam;    
+      callback, parts, callparam;
     
     if ( paramStr && !isScript ) {
       params = paramStr.split("&");
