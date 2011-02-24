@@ -16,7 +16,7 @@
     0:00:02.400,0:00:07.200
     Senator, we're making our final approach into Coruscant.
    */
-  Popcorn.parser( "parseSBV", "SBV", function( data ) {
+  Popcorn.parser( "parseSBV", function( data ) {
   
     // declare needed variables
     var retObj = {

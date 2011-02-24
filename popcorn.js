@@ -785,8 +785,14 @@
       Popcorn.error("'" + name + "' is a protected function name");
       return;
     }
+    
+    // fixes parameters for overloaded function call
+    if ( typeof type === "function" && !definition ) {
+      definition = type;
+      type = "";
+    }
 
-    if ( typeof definition !== "function" ) {
+    if ( typeof definition !== "function" || typeof type !== "string" ) {
       return;
     }
 
@@ -796,9 +802,9 @@
     var natives = Popcorn.events.all,
         parseFn,
         parser = {};
-
-    parseFn = function ( filename ) {
-
+    
+    parseFn = function ( filename, callback ) {
+        
       if ( !filename ) {
         return this;
       }
@@ -807,6 +813,7 @@
 
       Popcorn.xhr({
         url: filename,
+        dataType: type,
         success: function( data ) {
 
           var tracksObject = definition( data ),
@@ -837,6 +844,9 @@
               }
             }
           }
+          if ( callback ) {
+            callback();
+          }
         }
       });
 
@@ -850,7 +860,7 @@
     Popcorn.extend( Popcorn.p, parser );
 
     // keys the function name by filetype extension
-    Popcorn.parsers[ type ] = name;
+    //Popcorn.parsers[ name ] = true;
 
     return parser;
   };
@@ -1054,7 +1064,7 @@
 
       var video = videos[ key ],
           hasDataSources = false,
-          dataSources, dataTemp, dataType, parserFn, popcornVideo;
+          dataSources, data, popcornVideo;
 
       //  Ensure that the DOM has an id
       if ( !video.id ) {
@@ -1070,32 +1080,27 @@
 
         dataSources = ( video.getAttribute( "data-timeline-sources" ) || "" ).split(",");
 
-        if ( dataSources.length )  {
+        if ( dataSources[ 0 ] ) {
 
           Popcorn.forEach( dataSources, function ( source ) {
 
-            dataTemp = source.split( ":" );
+            // split the parser and data as parser:file
+            data = source.split( ":" );
 
-            dataType = dataTemp[0];
+            // if no parser is defined for the file, assume "parse" + file extension
+            if ( data.length === 1 ) {
 
-            if ( dataTemp.length === 1 ) {
-
-              dataTemp = source.split( "." );
-
-              dataType = dataTemp[ dataTemp.length - 1 ];
-
+              data = source.split( "." );
+              data[ 0 ] = "parse" + data[ data.length - 1 ].toUpperCase();
+              data[ 1 ] = source;
+              
             }
 
-            dataType = dataType.toUpperCase();
-
-            parserFn = "parse" + dataType;
-
             //  If the video has data sources and the correct parser is registered, continue to load
-            if ( dataSources && Popcorn.parsers[ dataType ] ) {
+            if ( dataSources[ 0 ] && popcornVideo[ data[ 0 ] ] ) {
 
               //  Set up the video and load in the datasources
-              popcornVideo[ parserFn ]( source );
-
+              popcornVideo[ data[ 0 ] ]( data[ 1 ] );
 
             }
           });
