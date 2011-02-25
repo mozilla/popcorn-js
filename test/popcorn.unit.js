@@ -582,7 +582,7 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 48, 
+      expects = 50, 
       count = 0;
   
   //expect(expects);
@@ -593,6 +593,7 @@ test("Plugin Factory", function () {
       Popcorn.removePlugin("executor");
       Popcorn.removePlugin("complicator");
       Popcorn.removePlugin("closure");
+      Popcorn.removePlugin("empty");
       start(); 
     }
   }
@@ -780,6 +781,17 @@ test("Plugin Factory", function () {
     end: 6,
     nick: "second closure track"
   });
+
+  var testObj = {};
+
+  Popcorn.plugin("empty", testObj);
+
+  popped.empty({});
+
+  ok( testObj.start, "default start function is generated" );
+  plus();
+  ok( testObj.end, "default end function is generated" );
+  plus();
 
   popped.currentTime(0).play();
 
