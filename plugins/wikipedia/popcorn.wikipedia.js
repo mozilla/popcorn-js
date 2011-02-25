@@ -89,7 +89,7 @@ var wikiCallback;
       
       var head   = document.getElementsByTagName( "head" )[0];
       var script = document.createElement( "script" );
-      script.src = "http://" + options.lang + ".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( options.title || options.src.slice( options.src.lastIndexOf("/")+1) ) + "&format=json&callback=wikiCallback" + _guid;
+      script.src = "http://" + options.lang + ".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( options.src.slice( options.src.lastIndexOf("/")+1) ) + "&format=json&callback=wikiCallback" + _guid;
 
       head.insertBefore( script, head.firstChild );        
     },
