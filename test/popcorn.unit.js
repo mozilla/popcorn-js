@@ -582,7 +582,8 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 50, 
+      expects = 50,
+      testObj = {},
       count = 0;
   
   //expect(expects);
@@ -781,8 +782,6 @@ test("Plugin Factory", function () {
     end: 6,
     nick: "second closure track"
   });
-
-  var testObj = {};
 
   Popcorn.plugin("empty", testObj);
 
