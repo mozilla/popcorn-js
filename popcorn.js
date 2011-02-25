@@ -40,7 +40,7 @@
     
   };
 
-  //addes a Popcorn instance to the Popcorn instance array
+  //  Addes a Popcorn instance to the Popcorn instance array
   Popcorn.addInstance = function( popcornInstance ) {
   
     if ( !popcornInstance.video.id ) { 
@@ -55,7 +55,7 @@
     
   };
 
-  //User passes in the name of the Popcorn instance and receive a popcorn object
+  //  User passes in the name of the Popcorn instance and receive a popcorn object
   Popcorn.getInstanceById = function( name ) {
   
     return Popcorn.instances[ Popcorn.instanceIds[ name ] ];

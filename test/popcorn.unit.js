@@ -69,11 +69,10 @@ test("Utility", function () {
 });
 
 test("Instances", function() {
-  var popped =  Popcorn("#video");
-  var popped2 = Popcorn("#video");
-  var popped3 = Popcorn("#video");
-  var expects = 9, 
-      count   = 0;
+  var popped =  Popcorn("#video"),
+      expects = 9, 
+      count   = 0,
+      instance;
   
   expect(expects);
   
@@ -100,7 +99,6 @@ test("Instances", function() {
   ok( "length" in Popcorn.instances && "join" in Popcorn.instances, "Popcorn.instances is a provided cache array");  
   plus();
   
-  var instance;
   instance = Popcorn.getInstanceById("video");
   
   ok( instance.video, "Stored instance as a `video` property" );
@@ -112,7 +110,7 @@ test("Instances", function() {
   ok( instance instanceof Popcorn, "Instance instanceof Popcorn" );
   plus();
    
-  ok( 3 === Popcorn.instances.length, "There are the correct number of Popcorn instances" );
+  equal( Popcorn.instances.length, 1, "There are the correct number of Popcorn instances" );
   plus();
    
 });
