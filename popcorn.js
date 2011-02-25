@@ -484,6 +484,9 @@
 
       //  Push track event ids into the history
       obj.data.history.push( track._id );
+
+      track._natives.start = track._natives.start || Popcorn.nop;
+      track._natives.end = track._natives.end || Popcorn.nop;
     }
 
     // Store this definition in an array sorted by times
