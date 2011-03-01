@@ -1,7 +1,7 @@
 test("Popcorn wikipedia Plugin", function () {
   
   var popped        = Popcorn("#video"),
-      expects       = 10, 
+      expects       = 9, 
       count         = 0,
       theArticle    = document.getElementById('wikidiv'),
       wikiInterval,
@@ -49,9 +49,9 @@ test("Popcorn wikipedia Plugin", function () {
       plus();
       equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
       plus();
-      equals (theArticle.childNodes[0].innerHTML, "this is an article", "wikidiv has the right title" );
+      equals (theArticle.childElement[0].innerHTML, "this is an article", "wikidiv has the right title" );
       plus();
-      equals (theArticle.childNodes[1].innerHTML, "Cape Town is the second-most populous city in South Africa, and the largest in land area, forming part of the City of Cape Town metropolitan municipality. It is the provincial capital and primate city ...", "wikidiv has the right content" );
+      equals (theArticle.childElement[1].innerHTML, "Cape Town is the second-most populous city in South Africa, and the largest in land area, forming part of the City of Cape Town metropolitan municipality. It is the provincial capital and primate city ...", "wikidiv has the right content" );
       plus();
       clearInterval( wikiInterval );
     }
@@ -71,7 +71,7 @@ test("Popcorn wikipedia Plugin", function () {
       plus();
       equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
       plus();
-      equals (theArticle.childNodes[1].innerHTML, "São Paulo is the largest city in Brazil, the largest city in the southern hemisphere, and the world's 7th largest metropolitan area. The city is the capital of the state of São Paulo, the most populou ...", "wikidiv has the right content" );
+      equals (theArticle.childElement[1].innerHTML, "São Paulo is the largest city in Brazil, the largest city in the southern hemisphere, and the world's 7th largest metropolitan area. The city is the capital of the state of São Paulo, the most populou ...", "wikidiv has the right content" );
       plus();
       clearInterval( wikiInterval3 );
     }
