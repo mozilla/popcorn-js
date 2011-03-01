@@ -27,7 +27,7 @@ test("Popcorn Image Plugin", function () {
     start: 1, // seconds
     end: 3, // seconds
     href: 'http://www.drumbeat.org/',
-    src: 'http://www.drumbeat.org/sites/default/files/domain-2/drumbeat_logo.png',
+    src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
     target: 'imagediv'
   } );
 
@@ -48,7 +48,7 @@ test("Popcorn Image Plugin", function () {
       clearInterval( interval2 );
     }
   }, 500);
-  
+  popped.volume(0);
   popped.play();
   
 });

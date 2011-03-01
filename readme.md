@@ -27,7 +27,10 @@ Plugin Factory
 -------------
 Popcorn also offers a plugin factory. Popcorn plugins are a way for developers to wrap functionality that responds to a point in a video.
 
-
 Roadmap
 -------------
 We are working on the 0.3 & 1.0 Roadmaps at http://etherpad.mozilla.com:9000/popcornjs
+
+Changelog
+-------------
+A changelog can be found here: https://webmademovies.lighthouseapp.com/projects/63272/changelog

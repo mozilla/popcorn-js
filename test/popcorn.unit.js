@@ -1,4 +1,3 @@
-
 module("Popcorn");
 test("API", function () {
   
@@ -221,31 +220,38 @@ test("exec", function () {
   
   var popped = Popcorn("#video"),
       expects = 2, 
-      count = 0;
+      count = 0, 
+      hasLooped = false, 
+      loop = 0;
 
-  expect(expects);
+  expect( expects + 1 );
   
   function plus(){ 
-    if ( ++count == expects ) start(); 
+    if ( ++count == expects ) {
+      
+      setTimeout( function() {
+
+        equals( loop, expects, "exec callback repeat check, only called twice" );
+        Popcorn.removePlugin( popped, "exec" );
+        start(); 
+
+      }, 1000 );
+    }
   }
   
   stop( 10000 ); 
-  
-
 
   popped.exec( 4, function () {
-    
-    
-    ok(true, "exec callback fired");
+    ok( loop < 2, "exec callback fired " + ++loop );
     plus();
-    
-    
-    equal( popped.data.events.timeupdate, null, "exec callback removed");
-    plus();
-    
+
+    if ( !hasLooped ) {
+      
+      popped.currentTime(3).play();
+      
+      hasLooped = true;
+    }
   }).currentTime(3).play();
-  
-  
 
 });
 
@@ -478,28 +484,13 @@ test("Manifest", function () {
     if ( ++count === expects ) {
       start(); 
       // clean up added events after tests
-      p.removePlugin("footnote");
+      Popcorn.removePlugin("footnote");
     }
   }
   
   stop( 10000 );
-  Popcorn.plugin( "footnote" , (function(){
-      
+  Popcorn.plugin( "footnote" , function(){
     return {
-      manifest: {
-        about:{
-          name: "Popcorn Manifest Plugin",
-          version: "0.0",
-          author: "Rick Waldron",
-          website: ""
-        },
-        options: {
-          start   : { elem:'input', type:'text', label:'In' },
-          end     : { elem:'input', type:'text', label:'Out' },
-          text    : { elem:'input', type:'text', label:'Manifest Text' }, 
-          target  : 'text-container'
-        }
-      },    
       _setup: function( options ) {
         ok( options.target, "`options.target exists`" );
         plus();
@@ -525,7 +516,21 @@ test("Manifest", function () {
       
     };
     
-  })());
+  },
+  {
+    about:{
+      name: "Popcorn Manifest Plugin",
+      version: "0.0",
+      author: "Rick Waldron",
+      website: ""
+    },
+    options: {
+      start   : { elem:'input', type:'text', label:'In' },
+      end     : { elem:'input', type:'text', label:'Out' },
+      text    : { elem:'input', type:'text', label:'Manifest Text' }, 
+      target  : 'text-container'
+    }
+  });
   
   
   expect(expects);
@@ -539,7 +544,7 @@ test("Manifest", function () {
   
   p.footnote({
     target: "custom-target"
-  })
+  });
   
   
 });
@@ -562,12 +567,12 @@ test("Update Timer", function () {
     if ( ++count === expects ) {
       start(); 
       // clean up added events after tests
-      p2.removePlugin("forwards");
-      p2.removePlugin("backwards");
+      Popcorn.removePlugin("forwards");
+      Popcorn.removePlugin("backwards");
     }
   }
   
-  stop( 10000 );  
+  stop();  
 
   Popcorn.plugin("forwards", function () {
     return {
@@ -623,18 +628,23 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 24, 
+      expects = 48, 
       count = 0;
   
   //expect(expects);
   
   function plus() { 
     if ( ++count == expects ) {
+      Popcorn.removePlugin("breaker");
+      Popcorn.removePlugin("executor");
+      Popcorn.removePlugin("complicator");
+      Popcorn.removePlugin("closure");
       start(); 
     }
   }
 
   stop( 10000 );
+  expect(expects);
 
   Popcorn.plugin("executor", function () {
     
@@ -779,42 +789,147 @@ test("Plugin Factory", function () {
     end: 2
   });     
 
+  Popcorn.plugin("closure", function() {
+
+    var startCount = 0;
+    var endCount = 0;
+
+    return {
+
+      _setup: function( options ) {
+        options.startCount = 0;
+        options.endCount = 0;
+      },
+      start: function ( event, options ) {
+        // called once for each instance; the test will fail if startCount is not actually unique per instance
+        equals( startCount++, options.startCount++, options.nick + " has correct start counts" );
+        plus();
+      },
+      end: function ( event, options ) {
+        // likewise for endCount
+        equals( endCount++, options.endCount++, options.nick + " has correct end counts" );
+        plus();
+        
+        // running tracks again to make sure data increments uniquly
+        popped.currentTime(5).play();
+      }
+    }; 
+  });
+
+  popped.closure({
+    start: 5,
+    end: 6,
+    nick: "first closure track"
+  })
+  .closure({
+    start: 5,
+    end: 6,
+    nick: "second closure track"
+  });
+
   popped.currentTime(0).play();
+
 });
 
-test("removePlugin", function () {
+test("Remove Plugin", function () {
   
-  expect(10);
+  var p = Popcorn("#video"),
+      p2 = Popcorn("#video"),
+      rlen = Popcorn.registry.length,
+      count = 0,
+      expects = 19,
+      interval;
   
-  var p = Popcorn("#video"), 
-      rlen = Popcorn.registry.length;
-  
-  equals( rlen, 3, "Popcorn.registry.length is 3");
-  
-  
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 10000 );
+  p.currentTime(0).pause();
+
+  equals( rlen, 0, "Popcorn.registry.length is empty");
+  plus();
+
   equals( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is initialized and has 2 entries");
+  plus();
   equals( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is initialized and has 2 entries");
+  plus();
+
+  Popcorn.plugin("removeme", {
+    
+    start: function () {
+
+    },
+    end: function () {
+
+    }
+  });
+
+  p.removeme({
+    start: 2,
+    end: 3
+  });    
+
+  p2.removeme({
+    start: 2,
+    end: 3
+  });
   
-  p.breaker({
-    start: 2, 
-    end: 30
-  });     
-  
+  equals( Popcorn.registry.length, 1, "Popcorn.registry.length is 1");
+  plus();
   equals( p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart is updated and has 3 entries");
+  plus();
   equals( p.data.trackEvents.byEnd.length, 3, "p.data.trackEvents.byEnd is updated and has 3 entries");
+  plus();
   
+  p.removePlugin("removeme");
   
-  p.removePlugin("breaker");
-  
-  
-  ok( !("breaker" in p), "breaker plugin is no longer available to instance" );
-  ok( !("breaker" in Popcorn.prototype), "breaker plugin is no longer available to Popcorn.prototype" );
-  
-  
-  equals( Popcorn.registry.length, 2, "Popcorn.registry.length is 2");
-  
+  // p.removeme still exists on the prototype, even though we said to remove it
+  // the tracks of that type though, are removed.
+  // think of it as removing all tracks of plugin type attached to an instance
+  ok( typeof p.removeme === "function", "removeme plugin is still defined to p instance" );
+  plus();
+  ok( ( "removeme" in Popcorn.prototype ), "removeme plugin is still available to Popcorn.prototype" );
+  plus();
+  equals( Popcorn.registry.length, 1, "Popcorn.registry.length has not changed");
+  plus();
+
+  ok( (typeof p2.removeme === "function"), "removeme plugin is defined to p2 instance" );
+  plus();
+
+  equals( p2.data.trackEvents.byStart.length, 3, "p2.data.trackEvents.byStart is updated and has 3 entries");
+  plus();
+  equals( p2.data.trackEvents.byEnd.length, 3, "p2.data.trackEvents.byEnd is updated and has 3 entries");
+  plus();
+
   equals( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is updated and has 2 entries");
+  plus();
   equals( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is updated and has 2 entries");
+  plus();
+  Popcorn.removePlugin("removeme");
+  
+  ok( !("removeme" in p2), "removeme plugin is no longer available to p2 instance" );
+  plus();
+  ok( !("removeme" in Popcorn.prototype), "removeme plugin is no longer available to Popcorn.prototype" );
+  plus();
+  equals( Popcorn.registry.length, 0, "Popcorn.registry.length is empty again");
+  plus();
+  
+
+  interval = setInterval( function() {
+    if( p2.currentTime() > 3 ) {
+
+      equals( p2.data.trackEvents.byStart.length, 2, "p2.data.trackEvents.byStart is updated and has 2 entries");
+      plus();
+      equals( p2.data.trackEvents.byEnd.length, 2, "p2.data.trackEvents.byEnd is updated and has 2 entries");
+      plus();
+      clearInterval( interval );
+    }
+  }, 1);
+  p2.currentTime( 2 ).play();
   
 });
 
@@ -822,7 +937,6 @@ test("removePlugin", function () {
 
 
 test("Protected Names", function () {
-  
   //QUnit.reset();
   
   expect(8);
@@ -886,7 +1000,6 @@ test("Functions", function () {
   
   
   equals( historyRef.length, 2, "2 TrackEvents in history index");
-  
   equals( popped.data.trackEvents.byStart.length, 4, "4 TrackEvents in popped.data.trackEvents.byStart ");
   equals( popped.data.trackEvents.byEnd.length, 4, "4 TrackEvents in popped.data.trackEvents.byEnd ");
   
@@ -1043,6 +1156,9 @@ test("Index Integrity", function () {
 
 
 
+
+
+
 module("Popcorn XHR");
 test("Basic", function () {
   
@@ -1067,7 +1183,7 @@ test("Text Response", function () {
   
   expect(expects);
   
-  stop( 10000 );
+  stop()
 
   Popcorn.xhr({
     url: 'data/test.txt', 
@@ -1083,6 +1199,37 @@ test("Text Response", function () {
   });
 });
 
+test("dataType: Text Response", function () {
+
+  var expects = 2, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop()
+
+  Popcorn.xhr({
+    url: 'data/test.txt', 
+    dataType: "text",
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      equals( data, "This is a text test", "dataType: 'text', test.txt returns the string 'This is a text test'");
+      plus();
+      
+    }
+  });
+});
+
+
 test("JSON Response", function () {
 
   var expects = 2, 
@@ -1096,7 +1243,7 @@ test("JSON Response", function () {
   
   expect(expects);
   
-  stop( 10000 );
+  stop()
 
 
   var testObj = { "data": {"lang": "en", "length": 25} };  
@@ -1117,6 +1264,241 @@ test("JSON Response", function () {
 
 });
 
+test("dataType: JSON Response", function () {
+
+  var expects = 2, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop()
+
+
+  var testObj = { "data": {"lang": "en", "length": 25} };  
+
+  Popcorn.xhr({
+    url: 'data/test.js', 
+    dataType: "json",
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      
+      ok( QUnit.equiv(data, testObj) , "dataType: 'json',  data returns an object of data");
+      plus();
+      
+    }
+  });
+
+});
+
+
+if ( !/file/.test( location.protocol ) ) {
+
+  test("JSONP Response", function () {
+
+    var expects = 8, 
+        count = 0;
+
+    function plus() {
+      if ( ++count === expects ) {
+        start();
+      }
+    }
+
+    expect(expects);
+
+    stop(10000);
+
+
+    var testObj = { "data": {"lang": "en", "length": 25} };  
+
+    Popcorn.xhr({
+
+      url: 'data/jsonp.php?callback=jsonp',
+      dataType: 'jsonp', 
+      success: function( data ) {
+
+        ok(data, "getJSONP returns data");
+        plus();
+
+
+        ok( QUnit.equiv(data, testObj) , "Popcorn.xhr({}) data.json returns an object of data");
+        plus();
+
+      }
+    });
+
+    Popcorn.xhr.getJSONP(
+      'data/jsonp.php?callback=jsonp',
+
+      function( data ) {
+
+        ok(data, "getJSONP returns data");
+        plus();
+
+
+
+        ok( QUnit.equiv(data, testObj) , "Popcorn.xhr.getJSONP data.json returns an object of data");
+        plus();
+
+      }
+    );
+
+    Popcorn.xhr.getJSONP(
+      "http://api.flickr.com/services/feeds/photos_public.gne?id=35034346917@N01&lang=en-us&format=json&jsoncallback=flickr",
+
+      function( data ) {
+
+
+
+        ok(data, "getJSONP returns flickr data");
+        plus();
+
+        equal( typeof data, "object", "getJSONP returns flickr data");
+        plus();      
+
+
+      }
+    );  
+
+    Popcorn.getJSONP(
+      'data/jsonp.php?callback=jsonp',
+
+      function( data ) {
+
+        ok(data, "getJSONP returns data");
+        plus();
+
+
+
+        ok( QUnit.equiv(data, testObj) , "Popcorn.xhr.getJSONP data.json returns an object of data");
+        plus();
+
+      }
+    );  
+  });
+
+} else {
+  test("JSONP Response", function () {
+
+    expect(1);
+
+
+    stop(10000);
+    ok(false, "jsonp requests require a webserver with php");
+    start();
+  });
+}
+
+test("Popcorn.getScript()", function () {
+
+  var expects = 8,  
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop();
+
+
+  Popcorn.xhr({
+    
+    url: "data/remoteA.js",
+    
+    dataType: "script", 
+    
+    success: function() {
+      
+      ok( true, "getScript A returned");
+      plus();
+      
+      
+      
+      ok( Popcorn.AlphaLib, "Popcorn.xhr.getScript remoteA.js loaded: `Popcorn.AlphaLib` is available");
+      plus();
+      
+    }
+  });
+
+  Popcorn.getScript(
+    
+    "data/remoteB.js", 
+    
+    function() {
+      
+      ok( true, "getScript B returned");
+      plus();
+
+      
+      ok( Popcorn.BetaLib , "Popcorn.getScript remoteB.js loaded: `Popcorn.BetaLib` is available ");
+      plus();
+      
+    }
+  );
+
+
+  Popcorn.getScript(
+    
+    "https://github.com/rwldrn/has.js/raw/master/has.js", 
+    
+    function() {
+      
+      ok( true, "getScript C returned");
+      plus();
+      
+
+      ok( ("has" in window) , "Popcorn.getScript https://github.com/rwldrn/has.js/raw/master/has.js loaded: `has` is available");
+      plus();
+      
+      
+      delete window["has"];
+    }
+  );
+  
+
+
+  Popcorn.xhr({
+    
+    url: "data/remoteA.js",
+    
+    dataType: "script", 
+    
+    success: function( exists ) {
+      
+      ok( exists, "Success, remoteA loaded once");
+      plus()
+    }
+  });
+
+  Popcorn.getScript(
+    
+    "data/remoteB.js", 
+    
+    function( exists ) {
+      
+      ok( exists, "Success, remoteB loaded once");
+      plus()
+      
+    }
+  );  
+
+
+});
+
+
 test("XML Response", function () {
 
   var expects = 2, 
@@ -1130,7 +1512,7 @@ test("XML Response", function () {
   
   expect(expects);
   
-  stop( 10000 );
+  stop()
 
 
   Popcorn.xhr({
@@ -1151,6 +1533,44 @@ test("XML Response", function () {
   });
 
 });
+
+test("dataType: XML Response", function () {
+
+  var expects = 2, 
+      count = 0;
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  
+  expect(expects);
+  
+  stop()
+
+
+  Popcorn.xhr({
+    url: 'data/test.xml', 
+    dataType: "xml",
+    success: function( data ) {
+      
+      ok(data, "xhr returns data");
+      plus();
+      
+      var parser = new DOMParser(), 
+      xml = parser.parseFromString('<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml");
+      
+      
+      equals( data.toString(), xml.toString(), "dataType: 'xml', data.xml returns a document of xml");
+      plus();
+      
+    }
+  });
+
+});
+
+
 
 module("Popcorn Parser");
 
@@ -1174,7 +1594,7 @@ test("Parsing Functions", function () {
   plus();
 
   Popcorn.parser( "parseJSON" , "json", function( data ){
-    return data.json;
+    return data;
   });
 
   ok(typeof popperly.parseJSON === "function", "Popcorn.parser created a parseJSON function");
@@ -1187,7 +1607,61 @@ test("Parsing Functions", function () {
 
 test("Parsing Integrity", function () {
 
-  var expects = 2,
+  var expects = 6,
+      count = 0,
+      timeOut = 0,
+      poppercore = Popcorn( "#video" );
+      
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+      // clean up added events after tests
+      Popcorn.removePlugin( "parserTest" );
+    }
+  }
+
+  expect(expects);
+
+  stop( 10000 );
+
+  Popcorn.parser( "parseJSON2", function( data ){
+    ok( typeof data.json === "object", "data.json exists");
+    plus();
+    return data.json;
+  });
+
+  Popcorn.parser( "parseJSON3" , "json", function( data ){
+    ok( typeof data === "object", "data exists");
+    plus();
+    return data;
+  });
+
+  Popcorn.plugin("parserTest", {
+    
+    start: function () {
+      ok(true, "parserTest started");
+      plus();
+    },
+    end: function () {
+      ok(true, "parserTest ended");
+      plus();
+    }
+  });
+
+  poppercore.parseJSON2("data/parserData.json", function() {
+    
+    poppercore.parseJSON3("data/parserData.json", function() {
+      poppercore.currentTime(5).play();
+    });
+
+  });
+
+});
+
+
+test("Parsing Handler - References unavailable plugin", function () {
+
+  var expects = 1,
       count = 0,
       timeOut = 0,
       interval,
@@ -1204,32 +1678,26 @@ test("Parsing Integrity", function () {
   
   expect(expects);
   
-  stop( 10000 );
+  stop();
 
-  Popcorn.parser( "parseJSON2" , "json", function( data ){
+  Popcorn.parser( "parseJson", function( data ){
+  
     return data.json;
   });
 
-  Popcorn.plugin("parserTest", {
-    
-    start: function () {
-      ok(true, "parserTest started");
-      plus();
-    },
-    end: function () {
-      ok(true, "parserTest ended");
-      plus();
-    }
-  });
-
-  poppercore.parseJSON2("data/parserData.json");
+  poppercore.parseJson("data/parseMissing.json");
 
   // interval used to wait for data to be parsed
   interval = setInterval( function() {
     poppercore.currentTime(5).play().currentTime(6);
+    
+    ok( true, "Ignored call to missing plugin " );
+    plus();
+    
   }, 2000);
-
+  
 });
+
 
 
 
@@ -1237,124 +1705,15 @@ module("Popcorn Test Runner End");
 test("Last Check", function () {
   
   //   ALWAYS RUN LAST
-  
-  expect(1)
   try {  
     
     equals( Setup.getGlobalSize(), Setup.globalSize + 1 , "Popcorn API did not leak");
-    plus();
+    
+    if ( !Setup.globalDiff.length ) {
+      //console.log(Setup.globalDiff);
+    }
     
   } catch (e) {};
   
 });
 
-/*
-
-
-  
-
-  
-
-
-test("Events Extended", function () {
-  
-  QUnit.reset();
-  
-  // needs expectation
-
-  var popped = Popcorn("#video"), 
-      expects = 11, 
-      count = 0;
-
-  expect(expects);
-  // not in full use
-  function plus(){ 
-    if ( ++count == expects ) start(); 
-  }
-  
-  stop( 10000 );  
-  
-  
-  Popcorn.plugin("extendedEvents", (function () {
-  
-    var fired = [];
-
-    var pluginObj = {
-
-      start: function() {
-
-      },
-      end: function() {
-
-      }
-    };
-    
-    $.each( Setup.events, function ( k, type ) {
-      
-      pluginObj[type]  = function (event, opts) {
-      
-        if ( fired.indexOf(type) === -1 ) {
-          fired.push(type);
-          
-          ok( true, type + " fired" );
-          
-          plus();
-        
-        
-          
-        }
-      };
-    
-    });
-    
-    return pluginObj;
-    
-  })());
-  
-  
-  
-  
-  popped.extendedEvents({
-    
-    start: 20,
-    end: 21
-    
-  });
-  
-  
-  popped.currentTime(19).play();
-  
-  $.each( Setup.events, function ( k, type ) {
-    
-    popped.trigger(type);
-      
-  });
-
-});
-*/
-
-/*
-module("Popcorn Video Object")
-test("wait()", function () {
-  
-  //QUnit.reset();
-  
-  // needs expectation
-
-  var popped = Popcorn("#video"), 
-      startat = +new Date();
-
-
-  
-  
-  popped.play().wait(2).exec(function () {
-    
-    console.log( +new Date() - startat );
-    
-    ok(true)
-    
-  }).pause();
-  
-  
-});
-*/

@@ -71,25 +71,25 @@ var wikiCallback;
       // wiki global callback function with a unique id
       // function gets the needed information from wikipedia
       // and stores it by appending values to the options object
-      window["wikiCallback"+ _guid]  = function (data) { 
-        options._link = document.createElement('a');
-        options._link.setAttribute('href', options.src);
-        options._link.setAttribute('target', '_blank');
+      window["wikiCallback"+ _guid]  = function ( data ) { 
+        options._link = document.createElement( 'a' );
+        options._link.setAttribute( 'href', options.src );
+        options._link.setAttribute( 'target', '_blank' );
         // add the title of the article to the link
-        options._link.innerHTML = data.parse.displaytitle;
+        options._link.innerHTML = options.title || data.parse.displaytitle;
         // get the content of the wiki article
-        options._desc = document.createElement('p');
+        options._desc = document.createElement( 'p' );
         // get the article text and remove any special characters
-        _text = data.parse.text["*"].substr(data.parse.text["*"].indexOf('<p>'));
+        _text = data.parse.text[ "*" ].substr( data.parse.text[ "*" ].indexOf('<p>') );
         _text = _text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
-        options._desc.innerHTML = _text.substr(0,  options.numberofwords ) + " ...";
+        options._desc.innerHTML = _text.substr( 0,  options.numberofwords ) + " ...";
         
         options._fired = true;
       };
       
-      var head   = document.getElementsByTagName("head")[0];
-      var script = document.createElement("script");
-      script.src = "http://"+options.lang+".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( options.title || options.src.slice(options.src.lastIndexOf("/")+1)) + "&format=json&callback=wikiCallback"+ _guid;
+      var head   = document.getElementsByTagName( "head" )[0];
+      var script = document.createElement( "script" );
+      script.src = "http://" + options.lang + ".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( options.title || options.src.slice( options.src.lastIndexOf("/")+1) ) + "&format=json&callback=wikiCallback" + _guid;
 
       head.insertBefore( script, head.firstChild );        
     },
@@ -99,20 +99,20 @@ var wikiCallback;
      * of the video  reaches the start time provided by the 
      * options variable
      */
-    start: function(event, options){
+    start: function( event, options ){
       // dont do anything if the information didn't come back from wiki
       var isReady = function () {
         
         if ( !options._fired ) {
-          setTimeout(function () {
+          setTimeout( function () {
             isReady();
           }, 13);
         } else {
       
-          if (options._link && options._desc) {
+          if ( options._link && options._desc ) {
             if ( document.getElementById( options.target ) ) {
-              document.getElementById( options.target ).appendChild(options._link);
-              document.getElementById( options.target ).appendChild(options._desc);
+              document.getElementById( options.target ).appendChild( options._link );
+              document.getElementById( options.target ).appendChild( options._desc );
               options._added = true;
             }
           }
@@ -127,12 +127,12 @@ var wikiCallback;
      * of the video  reaches the end time provided by the 
      * options variable
      */
-    end: function(event, options){
+    end: function( event, options ){
       // ensure that the data was actually added to the 
       // DOM before removal
-      if (options._added) {
-        document.getElementById( options.target ).removeChild(options._link);
-        document.getElementById( options.target ).removeChild(options._desc);
+      if ( options._added ) {
+        document.getElementById( options.target ).removeChild( options._link );
+        document.getElementById( options.target ).removeChild( options._desc );
       }
     }
      
