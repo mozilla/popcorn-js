@@ -902,7 +902,7 @@
 
 
       settings.ajax.open( settings.type, settings.url, settings.async );
-      settings.ajax.send( settings.data = null ? null : settings.data );
+      settings.ajax.send( settings.data || null );
 
       return Popcorn.xhr.httpData( settings );
     }
