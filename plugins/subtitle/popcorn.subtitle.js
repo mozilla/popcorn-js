@@ -1,7 +1,13 @@
 // PLUGIN: Subtitle
 
 (function (Popcorn) {
-  
+
+  var scriptLoaded = false;
+
+  Popcorn.getScript( "http://www.google.com/jsapi", function() {
+    google.load("language", "1", {callback: function() {scriptLoaded = true;}});
+  });
+
   /**
    */
 
@@ -33,17 +39,6 @@
 
     } );
   };
-
-
-/*
-      // Find element offset
-      if (element.offsetParent) {
-        do {
-          offsetX += element.offsetLeft;
-          offsetY += element.offsetTop;
-        } while ((element = element.offsetParent));
-      }
-*/
 
   Popcorn.plugin( "subtitle" , {
     
@@ -99,58 +94,65 @@
         options.toggleSubtitles = function() {};
         options.that = this;
         
-
-        if ( options.languagesrc ) {
-          options.showSubtitle = translate;
-          options.languageSrc = document.getElementById( options.languagesrc );
-          options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
-
-          if ( !this.languageSources ) {
-            this.languageSources = {};
+        var readyCheck = setInterval(function() {
+          if ( !scriptLoaded ) {
+            return;
           }
+          clearInterval(readyCheck);
 
-          
-
-          if ( !this.languageSources[ options.languagesrc ] ) {
-            this.languageSources[ options.languagesrc ] = {};
-            
-          }
-
-          if ( !this.languageSources[ options.languagesrc ][ options.target ] ) {
-            this.languageSources[ options.languagesrc ][ options.target ] = true;
-
-            options.languageSrc.addEventListener( "change", function() {
-
-
-              options.toggleSubtitles();
-              options.showSubtitle( options, options.container.innerHTML );
-
-            }, false );
-
-          }
-
-        }
-
-        if ( accessibility ) {
-          options.accessibility = accessibility;
-
-          options.toggleSubtitles = function() {
+          if ( options.languagesrc ) {
+            options.showSubtitle = translate;
+            options.languageSrc = document.getElementById( options.languagesrc );
             options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
-            if ( options.accessibility.checked || options.selectedLanguage !== ( options.language || "") ) {
-              options.display = "inline";
-              options.container.style.display = options.display;
-            } else if ( options.selectedLanguage === ( options.language || "") ) {
-              options.display = "none";
-              options.container.style.display = options.display;
+
+            if ( !this.languageSources ) {
+              this.languageSources = {};
             }
 
-          };
+            if ( !this.languageSources[ options.languagesrc ] ) {
+              this.languageSources[ options.languagesrc ] = {};
+            
+            }
 
-          options.accessibility.addEventListener( "change", options.toggleSubtitles, false );
+            if ( !this.languageSources[ options.languagesrc ][ options.target ] ) {
+              this.languageSources[ options.languagesrc ][ options.target ] = true;
 
-          // initiate it once to set starting state
-          options.toggleSubtitles();
-        }
+              options.languageSrc.addEventListener( "change", function() {
+
+                options.toggleSubtitles();
+                options.showSubtitle( options, options.container.innerHTML );
+
+              }, false );
+
+            }
+
+          }
+          if ( accessibility ) {
+            options.accessibility = accessibility;
+
+            options.toggleSubtitles = function() {
+              options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
+              if ( options.accessibility.checked || options.selectedLanguage !== ( options.language || "") ) {
+                options.display = "inline";
+                options.container.style.display = options.display;
+              } else if ( options.selectedLanguage === ( options.language || "") ) {
+                options.display = "none";
+                options.container.style.display = options.display;
+              }
+
+            };
+
+            options.accessibility.addEventListener( "change", options.toggleSubtitles, false );
+
+            // initiate it once to set starting state
+            options.toggleSubtitles();
+          }
+        }, 5);
+
+
+
+
+
 
       },
       /**

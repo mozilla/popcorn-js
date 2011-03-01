@@ -1,7 +1,12 @@
 // PLUGIN: Google News
 
 (function (Popcorn) {
-  
+  var scriptLoaded = false;
+
+  Popcorn.getScript( "http://www.google.com/jsapi", function() {
+    google.load("elements", "1", {packages : ["newsshow"], callback: function() {scriptLoaded = true;}});
+  });
+
   /**
    */
   Popcorn.plugin( "googlenews" , {
@@ -26,12 +31,22 @@
         if ( document.getElementById( options.target ) ) {
           document.getElementById( options.target ).appendChild( options.container );
         }
-        var newsShow = new google.elements.NewsShow( options.container, {
-          format : "300x250",
-          queryList : [
-            { q: options.topic || "Top Stories" }
-          ]
-        } );
+
+        var readyCheck = setInterval(function() {
+          if ( !scriptLoaded ) {
+            return;
+          }
+          clearInterval(readyCheck);
+
+          var newsShow = new google.elements.NewsShow( options.container, {
+            format : "300x250",
+            queryList : [
+              { q: options.topic || "Top Stories" }
+            ]
+          } );
+
+        }, 5);
+
         options.container.style.display = "none";
 
       },
