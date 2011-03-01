@@ -68,8 +68,7 @@ test("Utility", function () {
 });
 
 test("Instances", function() {
-  var popped =  Popcorn("#video"),
-      expects = 9, 
+  var expects = 9, 
       count   = 0,
       instance;
   
@@ -108,7 +107,7 @@ test("Instances", function() {
    
   ok( instance instanceof Popcorn, "Instance instanceof Popcorn" );
   plus();
-   
+  
   equal( Popcorn.instances.length, 1, "There are the correct number of Popcorn instances" );
   plus();
    
