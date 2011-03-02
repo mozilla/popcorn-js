@@ -72,13 +72,16 @@ var openlayersCallback;
           var loadScriptTime = (new Date).getTime();
           var head = document.getElementsByTagName('head')[0];
           var script = document.createElement('script');
-         
           script.src = "http://openlayers.org/api/OpenLayers.js";
 		  script.onload = function() {
 				_mapLoaded    = true;
 			};
           script.type = "text/javascript";
           head.insertBefore( script, head.firstChild ); 
+		  /*Popcorn.getScript("http://openlayers.org/api/OpenLayers.js",
+			function() {
+				_mapLoaded    = true;
+			}); */
         }
         // callback function fires when the script is run
         // geolocation is not possible, only give lat and lng properties
