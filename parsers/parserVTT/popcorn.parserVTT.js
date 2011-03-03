@@ -17,7 +17,7 @@
     00:00:15.542 --> 00:00:18.542 A:start D:vertical L:98%
     It's a <i>trap!</i>
    */
-  Popcorn.parser( "parseVTT", "VTT", function( data ) {
+  Popcorn.parser( "parseVTT", function( data ) {
   
     // declare needed variables
     var retObj = {

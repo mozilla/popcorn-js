@@ -28,7 +28,7 @@
    */
   
   // Register for SSA extensions
-  Popcorn.parser( "parseSSA", "SSA", function( data ) {
+  Popcorn.parser( "parseSSA", function( data ) {
   
     // declare needed variables
     var retObj = {

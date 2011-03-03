@@ -10,7 +10,7 @@
           data: []
         },
         manifestData = {}, 
-        dataObj = data.json.data;
+        dataObj = data;
     
     
     /*
@@ -31,7 +31,7 @@
     */
     
         
-    Popcorn.forEach( dataObj, function ( obj, key ) {
+    Popcorn.forEach( dataObj.data, function ( obj, key ) {
       retObj.data.push( obj );
     });
 

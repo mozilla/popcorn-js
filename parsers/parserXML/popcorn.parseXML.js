@@ -99,7 +99,7 @@
     };
 
     // this is where things actually start
-    var x = data.xml.documentElement.childNodes;
+    var x = data.documentElement.childNodes;
 
     for ( var i = 0, xl = x.length; i < xl; i++ ) {
 
