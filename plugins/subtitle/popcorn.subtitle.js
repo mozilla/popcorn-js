@@ -3,6 +3,52 @@
 (function (Popcorn) {
   
   /**
+   * Subtitle popcorn plug-in 
+   * Displays a subtitle over the video, or in the target div
+   * Options parameter will need a start, and end.
+   * Optional parameters are target and text.
+   * Start is the time that you want this plug-in to execute
+   * End is the time that you want this plug-in to stop executing
+   * Target is the id of the document element that the content is
+   *  appended to, this target element must exist on the DOM
+   * Text is the text of the subtitle you want to display.
+   *
+   * Language is the expected language the subtitle text is in
+   * Languagesrc is the target id of the element that contains 
+   *  the language value ("en", "fr", etc.) to translate the text into
+   *  example:
+   *  <select id="language">
+   *    <option value="zh" selected="selected">Chinese</option>
+   *    <option value="en">English</option>
+   *    <option value="fr">French</option>
+   *    <option value="de">German</option>
+   *    <option value="it">Italian</option>
+   *    <option value="ja">Japanese</option>
+   *    <option value="ko">Korean</option>
+   *    <option value="fa">Persian</option>
+   *    <option value="pl">Polish</option>
+   *    <option value="pt">Portuguese</option>
+   *    <option value="es">Spanish</option>
+   *  </select>
+   * Accessibilitysrc is the target id of a checkbox element
+   *  checked means show all subtitles regardless of language and languagesrc
+   *  not checked means only translate if language and languagesrc are different
+   *  if no accessibilitysrc exists, default is to display all subtitles regardless
+   * 
+   * @param {Object} options
+   * 
+   * Example:
+     var p = Popcorn('#video')
+        .footnote({
+          start:            5,                 // seconds, mandatory
+          end:              15,                // seconds, mandatory
+          text:             'Hellow world',    // optional
+          target:           'subtitlediv',     // optional
+          language:         'en',              // optional
+          languagesrc:      'language',        // optional
+          accessibilitysrc: 'accessibility'    // optional
+        } )
+   *
    */
 
   // just a little tool function
@@ -33,17 +79,6 @@
 
     } );
   };
-
-
-/*
-      // Find element offset
-      if (element.offsetParent) {
-        do {
-          offsetX += element.offsetLeft;
-          offsetY += element.offsetTop;
-        } while ((element = element.offsetParent));
-      }
-*/
 
   Popcorn.plugin( "subtitle" , {
     
