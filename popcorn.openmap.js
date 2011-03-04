@@ -1,4 +1,4 @@
-// PLUGIN: Open Map
+// PLUGIN: OPENMAP
 var openlayersCallback;
 (function (Popcorn) {
   
@@ -119,7 +119,7 @@ var openlayersCallback;
         isGeoReady();
       },
       /**
-       * @member webpage 
+       * @member openmap 
        * The start function will be executed when the currentTime 
        * of the video  reaches the start time provided by the 
        * options variable
@@ -180,7 +180,7 @@ var openlayersCallback;
         isReady();
       },
       /**
-       * @member webpage
+       * @member openmap
        * The end function will be executed when the currentTime 
        * of the video  reaches the end time provided by the 
        * options variable
