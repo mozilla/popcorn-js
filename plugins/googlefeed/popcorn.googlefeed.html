@@ -13,16 +13,18 @@
       .googlefeed({
         start: 0, // seconds
         end: 15, // seconds
-        target: "map",
-		url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
-        title: "Planet Feed"
+        target: "feed",
+        url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
+        title: "Planet Feed",
+        orientation: "Vertical"
 	  } )
 	  .googlefeed({
         start: 5, // seconds
         end: 20, // seconds
-        target: "map1",
-		url: "http://blog.pikimal.com/geek/feed/",
-		title: "pikiGeek"
+        target: "feed1",
+        url: "http://blog.pikimal.com/geek/feed/",
+        title: "pikiGeek",
+        orientation: "Horizontal"
       } );
     }, false);
   </script>
@@ -50,8 +52,8 @@
     </video>
   </div>
   <div style="width:1000px">
-    <div id="map" style="position:relative;float:left;width:400px;height:600px"><p>Locations in this video:</p></div>
-    <div id="map1" style="position:relative;float:left;width:400px;height:600px"><p>Locations in this video:</p></div>
+    <div id="feed" style="position:relative;float:left;width:400px;height:600px"><p>Vertical Feed:</p></div>
+    <div id="feed1" style="position:relative;float:left;width:600px;height:200px"><p>Horizontal Feed:</p></div>
   </div>
 </body>
 </html>

@@ -1,93 +1,76 @@
 // PLUGIN: Google Feed
-var googleCallback;
 (function (Popcorn) {
 
   /**
-   * googlemap popcorn plug-in
-   * Adds a map to the target div centered on the location specified by the user
-   * Options parameter will need a start, end, target, type, zoom, lat and lng, and location
+   * googlefeed popcorn plug-in
+   * Adds a feed from the specified blog url at the target div
+   * Options parameter will need a start, end, target, url and title
    * -Start is the time that you want this plug-in to execute
    * -End is the time that you want this plug-in to stop executing
    * -Target is the id of the DOM element that you want the map to appear in. This element must be in the DOM
-   * -Type [optional] either: HYBRID (default), ROADMAP, SATELLITE, TERRAIN, STREETVIEW
-   * -Zoom [optional] defaults to 0
-   * -Heading [optional] STREETVIEW orientation of camera in degrees relative to true north (0 north, 90 true east, ect)
-   * -Pitch [optional] STREETVIEW vertical orientation of the camera (between 1 and 3 is recommended)
-   * -Lat and Lng: the coordinates of the map must be present if location is not specified.
-   * -Location: the adress you want the map to display, bust be present if lat and log are not specified.
-   * Note: using location requires extra loading time, also not specifying both lat/lng and location will
-   * cause and error.
+   * -Url is the url of the blog's feed you are trying to access
+   * -Title is the title of the blog you want displayed above the feed
    * @param {Object} options
    *
    * Example:
     var p = Popcorn("#video")
-      .googlemap({
+      .googlefeed({
        start: 5, // seconds
        end: 15, // seconds
-       type: "ROADMAP",
        target: "map",
-       lat: 43.665429,
-       lng: -79.403323
+       url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
+       title: "Planet Feed"
     } )
   *
   */
 
-  var newdiv, i = 1, _mapFired = false, _mapLoaded = false;
-
-  // callback function fires when the script is run
-  googleCallback = function() {
-  			google.load("feeds", "1", {"callback" : reallyLoaded});
-  };
+  var _feedFired = false,
+	  _feedLoaded = false;
   
-  var reallyLoaded = function() {
-				_mapLoaded = true;
-			};
-  
-  // insert google api script once
-  if (!_mapFired) {
-    _mapFired = true;
-    var loadScriptTime = (new Date).getTime();
+  // insert google api and dynamic feed control script once, as well as the dynamic feed css file
+  if ( !_feedFired ) {
+    _feedFired = true;
+    Popcorn.getScript( "https://www.google.com/jsapi", function () {
+      google.load( "feeds", "1", { callback: function () { _feedLoaded = true; } } );
+    });
+    Popcorn.getScript( "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js" );
+    //Doing this because I cannot find something similar to getScript() for css files
     var head = document.getElementsByTagName("head")[0];
-    var script = document.createElement("script");
-	var script2 = document.createElement("script");
-	var css = document.createElement('link');
-	
-    script.src = "https://www.google.com/jsapi?callback=googleCallback";
-    script.type = "text/javascript";
-	script2.src = "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js";
-    script2.type = "text/javascript";
-	css.type = "text/css";
-	css.rel = "stylesheet";
-	css.href =  "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css";
-	
-	head.insertBefore( script2, head.firstChild );	
-    head.insertBefore( script, head.firstChild );
-	head.insertBefore( css, head.firstChild );
+    var css = document.createElement('link');
+    css.type = "text/css";
+    css.rel = "stylesheet";
+    css.href =  "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css";
+    head.insertBefore( css, head.firstChild );
   }
 
 
   Popcorn.plugin( "googlefeed" , function( options ) {
-    // create a new div this way anything in the target div
-    // this is later passed on to the maps api
-    var newdiv = document.createElement("div");
-	newdiv.style.display = "none";
-    if (document.getElementById(options.target)) {
-      document.getElementById(options.target).appendChild(newdiv);
+    // create a new div and append it to the parent div so nothing
+    // that already exists in the parent div gets overwritten
+    var newdiv = document.createElement( "div" );
+    newdiv.style.display = "none";
+    if ( document.getElementById( options.target ) ) {
+      document.getElementById( options.target ).appendChild( newdiv );
     }
 
     var initialize = function() {
-	if ( !_mapLoaded ) {
+      //ensure that the script has been loaded
+      if ( !_feedLoaded ) {
         setTimeout(function () {
           initialize();
         }, 5);
       } else {
-      var container = new GFdynamicFeedControl(options.url, newdiv, {
-		vertical: true,
-		title: options.title
-		});
-	  }
-	};
-	initialize();
+        // Create the feed control using the user entered url and title
+        new GFdynamicFeedControl( options.url, newdiv, {
+          vertical:   options.orientation == "Vertical" ? true : false,
+          horizontal: options.orientation == "Horizontal" ? true : false,
+          title:      options.title = options.title || "Blog"
+        });
+      }
+    };
+    
+    initialize();
+    
     return {
       /**
        * @member webpage
@@ -95,8 +78,13 @@ var googleCallback;
        * of the video reaches the start time provided by the
        * options variable
        */
-      start: function(event, options){
-            newdiv.setAttribute( 'style', 'display:inline' );
+      start: function( event, options ){
+        newdiv.setAttribute( "style", "display:inline" );
+        
+        // Default to vertical orientation if empty or incorrect input
+        if( !options.orientation || ( options.orientation != "Vertical" && options.orientation != "Horizontal" ) ) {
+          options.orientation = "Vertical";
+        }
       },
       /**
        * @member webpage
@@ -105,7 +93,7 @@ var googleCallback;
        * options variable
        */
       end: function(event, options){
-          newdiv.setAttribute( 'style', 'display:none' );
+        newdiv.setAttribute( "style", "display:none" );
       }
     };
   },
@@ -117,11 +105,12 @@ var googleCallback;
       website: "dseifried.wordpress.com"
     },
     options: {
-      start    : {elem:"input", type:"text", label:"In"},
-      end      : {elem:"input", type:"text", label:"Out"},
-      target   : "map-container",
-      url      : {elem:"input", type:"text", label:"url"},
-	  title    : {elem:"input", type:"text", label:"title"}
+      start          : { elem:"input", type:"text", label:"In" },
+      end            : { elem:"input", type:"text", label:"Out" },
+      target         : "map-container",
+      url            : { elem:"input", type:"text", label:"url" },
+      title          : { elem:"input", type:"text", label:"title" },
+      orientation    : { elem:"input", type:"text", label:"orientation" }
     }
   });
 })( Popcorn );
