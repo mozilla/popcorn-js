@@ -10,6 +10,7 @@
    * -Target is the id of the DOM element that you want the map to appear in. This element must be in the DOM
    * -Url is the url of the blog's feed you are trying to access
    * -Title is the title of the blog you want displayed above the feed
+   * -Orientation is the orientation of the blog, accepts either Horizontal or Vertical, defaults to Vertical
    * @param {Object} options
    *
    * Example:
