@@ -63,8 +63,8 @@
       } else {
         // Create the feed control using the user entered url and title
         new GFdynamicFeedControl( options.url, newdiv, {
-          vertical:   options.orientation == "Vertical" ? true : false,
-          horizontal: options.orientation == "Horizontal" ? true : false,
+          vertical:   options.orientation.toLowerCase() == "vertical" ? true : false,
+          horizontal: options.orientation.toLowerCase() == "horizontal" ? true : false,
           title:      options.title = options.title || "Blog"
         });
       }
@@ -83,8 +83,9 @@
         newdiv.setAttribute( "style", "display:inline" );
         
         // Default to vertical orientation if empty or incorrect input
-        if( !options.orientation || ( options.orientation != "Vertical" && options.orientation != "Horizontal" ) ) {
-          options.orientation = "Vertical";
+        if( !options.orientation || ( options.orientation.toLowerCase() != "vertical" &&
+          options.orientation.toLowerCase() != "horizontal" ) ) {
+          options.orientation = "vertical";
         }
       },
       /**
@@ -108,7 +109,7 @@
     options: {
       start          : { elem:"input", type:"text", label:"In" },
       end            : { elem:"input", type:"text", label:"Out" },
-      target         : "map-container",
+      target         : "feed-container",
       url            : { elem:"input", type:"text", label:"url" },
       title          : { elem:"input", type:"text", label:"title" },
       orientation    : { elem:"input", type:"text", label:"orientation" }
