@@ -3,11 +3,10 @@ test("Popcorn attribution Plugin", function () {
   var popped = Popcorn("#video"),
       expects = 7, 
       count = 0,
-      interval,
-      interval2,
-      interval3,
       attributiondiv = document.getElementById('attribdiv');
   
+console.log(expects);
+
   expect(expects);
   
   function plus() {
@@ -44,36 +43,27 @@ test("Popcorn attribution Plugin", function () {
       licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
       target: 'attribdiv'
     } )
-    .volume(0)
-    .play();
+    .volume(0);
+
+  popped.exec( 1, function() {
+    equals ( attributiondiv.childElementCount, 2, "attributiondiv now has two inner elements" );
+    plus();
+    equals (attributiondiv.children[0].style.display , "inline", "attribution is visible on the page" );
+    plus();
+  });
   
+  popped.exec( 4, function() {
+    equals (attributiondiv.children[1].style.display , "inline", "second attribution is visible on the page" );
+    plus();
+  });
   
-  interval = setInterval( function() {
-    if( popped.currentTime() > 0 && popped.currentTime() <= 5 ) {
-      equals ( attributiondiv.childElementCount, 2, "attributiondiv now has two inner elements" );
-      plus();
-      equals (attributiondiv.children[0].style.display , "inline", "attribution is visible on the page" );
-      plus();
-      clearInterval( interval );
-    }
-  }, 2000);
+  popped.exec( 11, function() {
+    equals (attributiondiv.children[1].style.display , "none", "second attribution is no longer visible on the page" );
+    plus();
+    equals (attributiondiv.children[0].style.display , "none", "first attribution is no longer visible on the page" );
+    plus();
+  });
   
-  interval2 = setInterval( function() {
-    if( popped.currentTime() > 3 && popped.currentTime() < 10  ) {
-      equals (attributiondiv.children[1].style.display , "inline", "second attribution is visible on the page" );
-      plus();
-      clearInterval( interval2 );
-    }
-  }, 3000);
-  
-  interval3 = setInterval( function() {
-    if( popped.currentTime() > 10) {
-      equals (attributiondiv.children[1].style.display , "none", "second attribution is no longer visible on the page" );
-      plus();
-      equals (attributiondiv.children[0].style.display , "none", "first attribution is no longer visible on the page" );
-      plus();
-      clearInterval( interval3 );
-    }
-  }, 11000);
-  
+  popped.play();
+
 });
