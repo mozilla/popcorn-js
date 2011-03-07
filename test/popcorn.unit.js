@@ -585,10 +585,8 @@ test("Plugin Factory", function () {
 
   function plus() { 
     if ( ++count == expects ) {
-      //Popcorn.removePlugin("breaker");
       Popcorn.removePlugin("executor");
       Popcorn.removePlugin("complicator");
-      //Popcorn.removePlugin("closure");
       start();
     }
   }
