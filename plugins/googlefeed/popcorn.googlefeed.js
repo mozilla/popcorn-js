@@ -26,7 +26,8 @@
   */
 
   var _feedFired = false,
-	  _feedLoaded = false;
+	  _feedLoaded = false,
+	  i = 1;
   
   // insert google api and dynamic feed control script once, as well as the dynamic feed css file
   if ( !_feedFired ) {
@@ -50,6 +51,10 @@
     // that already exists in the parent div gets overwritten
     var newdiv = document.createElement( "div" );
     newdiv.style.display = "none";
+	newdiv.id = "_feed"+i;
+    newdiv.style.width = "100%";
+    newdiv.style.height = "100%";
+    i++;
     if ( document.getElementById( options.target ) ) {
       document.getElementById( options.target ).appendChild( newdiv );
     }
@@ -81,7 +86,6 @@
        */
       start: function( event, options ){
         newdiv.setAttribute( "style", "display:inline" );
-        
         // Default to vertical orientation if empty or incorrect input
         if( !options.orientation || ( options.orientation.toLowerCase() != "vertical" &&
           options.orientation.toLowerCase() != "horizontal" ) ) {
@@ -115,4 +119,5 @@
       orientation    : { elem:"input", type:"text", label:"orientation" }
     }
   });
+  
 })( Popcorn );
