@@ -577,28 +577,24 @@ test("Update Timer", function () {
 test("Plugin Factory", function () {
   
   QUnit.reset();
-  
-  // needs expectation
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 48, 
+      expects = 34, 
       count = 0;
-  
-  //expect(expects);
-  
+
   function plus() { 
     if ( ++count == expects ) {
-      Popcorn.removePlugin("breaker");
+      //Popcorn.removePlugin("breaker");
       Popcorn.removePlugin("executor");
       Popcorn.removePlugin("complicator");
-      Popcorn.removePlugin("closure");
-      start(); 
+      //Popcorn.removePlugin("closure");
+      start();
     }
   }
 
+  expect( expects );
   stop( 10000 );
-  expect(expects);
 
   Popcorn.plugin("executor", function () {
     
@@ -639,7 +635,7 @@ test("Plugin Factory", function () {
  
   ok( "executor" in popped, "executor plugin is now available to instance" );
   plus();
-  ok( Popcorn.registry.length === 1, "One item in the registry");
+  equals( Popcorn.registry.length, 1, "One item in the registry");
   plus();    
   
   
@@ -648,8 +644,7 @@ test("Plugin Factory", function () {
     start: 1, 
     end: 2
   });
-  
-  
+
   Popcorn.plugin("complicator", {
     
     start: function ( event ) {
@@ -687,18 +682,38 @@ test("Plugin Factory", function () {
     timeupdate: function () {
     }    
   });
-  
-  
+
   ok( "complicator" in popped, "complicator plugin is now available to instance" );
   plus();
-  ok( Popcorn.registry.length === 2, "Two items in the registry");
+  equals( Popcorn.registry.length, 2, "Two items in the registry");
   plus();
   
   popped.complicator({
     start: 3, 
     end: 4
-  });  
+  }); 
 
+  popped.currentTime(0).play();
+
+});
+
+test("Plugin Breaker", function () {
+  
+  QUnit.reset();
+
+  var popped = Popcorn("#video"), 
+      expects = 6, 
+      count = 0;
+
+  function plus() { 
+    if ( ++count == expects ) {
+      Popcorn.removePlugin("breaker");
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 10000 );
 
   var breaker = {
     
@@ -735,13 +750,36 @@ test("Plugin Factory", function () {
 
   ok( "breaker" in popped, "breaker plugin is now available to instance" );
   plus();
-  ok( Popcorn.registry.length === 3, "Three items in the registry");
+  equals( Popcorn.registry.length, 1, "Three items in the registry");
   plus();
   
   popped.breaker({
     start: 1, 
     end: 2
   });     
+
+  popped.currentTime(0).play();
+
+});
+
+test("Plugin Closure", function () {
+  
+  QUnit.reset();
+
+  var popped = Popcorn("#video"), 
+      methods = "load play pause currentTime mute volume roundTime exec removePlugin",
+      expects = 8, 
+      count = 0;
+
+  function plus() { 
+    if ( ++count == expects ) {
+      Popcorn.removePlugin("closure");
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 10000 );
 
   Popcorn.plugin("closure", function() {
 
@@ -781,7 +819,7 @@ test("Plugin Factory", function () {
     nick: "second closure track"
   });
 
-  popped.currentTime(0).play();
+  popped.currentTime(5).play();
 
 });
 
