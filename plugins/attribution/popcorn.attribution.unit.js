@@ -4,8 +4,6 @@ test("Popcorn attribution Plugin", function () {
       expects = 7, 
       count = 0,
       attributiondiv = document.getElementById('attribdiv');
-  
-console.log(expects);
 
   expect(expects);
   
