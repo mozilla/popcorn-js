@@ -58,6 +58,7 @@ test("Popcorn Google Feed Plugin", function () {
   popped.exec( 6, function() {
       ok (document.getElementById('_feed2').style.display === "none" && 
           document.getElementById('_feed1').style.display === "none", "Both feeds are no lnger visible" );
+		  plus();
   });
   
   popped.play();
