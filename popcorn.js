@@ -78,14 +78,17 @@
       }
 
 
-      matches = rIdExp.exec( entity );
+      if ( (typeof entity) == "string" ) {
+        matches = rIdExp.exec( entity );
 
-      if ( matches.length && matches[2]  ) {
-        elem = document.getElementById(matches[2]);
+        if ( matches.length && matches[2]  ) {
+          elem = document.getElementById(matches[2]);
+        }
+
+        this.video = elem ? elem : null;
+      } else if ( entity instanceof Object ) {
+        this.video = entity;
       }
-
-
-      this.video = elem ? elem : null;
 
       this.data = {
         history: [],
@@ -111,7 +114,7 @@
           // adding padding to the front and end of the arrays
           // this is so we do not fall off either end
 
-          var duration = that.video.duration;
+          var duration = typeof that.video.duration === "function" ? that.video.duration() : that.video.duration;
           // Check for no duration info (NaN)
           var videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
 
@@ -127,6 +130,11 @@
                 tracks         = that.data.trackEvents,
                 tracksByEnd    = tracks.byEnd,
                 tracksByStart  = tracks.byStart;
+
+
+            if (typeof this.currentTime === "function") {
+              currentTime = this.currentTime();
+            }
 
             // Playbar advancing
             if ( previousTime < currentTime ) {
@@ -214,7 +222,9 @@
         }
       };
 
-      isReady( this );
+      if ( this.video ) {
+        isReady( this );
+      }
 
       return this;
     }
@@ -293,27 +303,24 @@
 
       //  Build methods, store in object that is returned and passed to extend
       Popcorn.forEach( methods.split(/\s+/g), function( name ) {
-          
+
         ret[ name ] = function( arg ) {
 
-          if ( typeof this.video[name] === "function" ) {
-            // Looad, play, pause, mute do not reeturn a value when nothing is passed to them
-            if ( /load|play|pause|mute/.test( name ) || arg !== false && arg !== null && typeof arg !== "undefined" ) {
-            
-              this.video[ name ]();
-              return this;
-              
+          var isFunc = typeof this.video[name] === "function";
+
+          if ( /load|play|pause|mute/.test( name ) || ( arg !== false && arg !== null && typeof arg !== "undefined" ) ) {
+
+            if ( isFunc ) {
+              this.video[ name ]( arg );
+            } else {
+              this.video[ name ] = arg;
             }
-            
-            return this.video[ name ]( arg );
-          }
-
-
-          if ( arg !== false && arg !== null && typeof arg !== "undefined" ) {
-
-            this.video[ name ] = arg;
 
             return this;
+          }
+
+          if ( isFunc ) {
+            return this.video[ name ]();
           }
 
           return this.video[ name ];
@@ -908,7 +915,7 @@
 
 
       settings.ajax.open( settings.type, settings.url, settings.async );
-      settings.ajax.send( settings.data = null ? null : settings.data );
+      settings.ajax.send( settings.data || null );
 
       return Popcorn.xhr.httpData( settings );
     }
@@ -1108,3 +1115,4 @@
   }, false );
 
 })(window, window.document);
+

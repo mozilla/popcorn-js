@@ -83,6 +83,7 @@
   *   volume ( get only, set by calling setVolume() )
   *
   *   load() function
+  *   mute() function
   *
   * Unsupported media attributes:
   *   buffered
@@ -233,9 +234,9 @@
       // Better to store them here than on the DOM
       this.objVars = {
         paused: true,
-        duration: -1,
+        duration: Number.NaN,
         ended: 0,
-        currentTime: -1,
+        currentTime: Number.NaN,
         volume: 1,
         loop: 0,
         initialTime: 0,
@@ -419,6 +420,14 @@
     },
     duration: function() {
       return this.objVars.duration;
+    },
+    mute: function() {
+      if ( !this.muted() ) {
+        this.objVars.oldVol = this.objVars.volume;
+        this.volume( 0 );
+      } else {
+        this.volume( this.objVars.oldVol );
+      }
     },
     muted: function() {
       return this.objVars.volume === 0;

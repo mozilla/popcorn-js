@@ -20,7 +20,7 @@ test("Popcorn Vimeo Plugin", function () {
   }
   
   var popped = Popcorn.vimeo( "player_1", "http://vimeo.com/11127501" ),
-      expects = 21,
+      expects = 23,
       playCount = 0,
       pauseCount = 0,
       count = 0,
@@ -48,9 +48,19 @@ test("Popcorn Vimeo Plugin", function () {
               ok( popped.video.muted(), "Muted set when player volume 0" );
               plus();
               
-              popped.volume( 1 );
+              popped.volume( 0.333 );
             } else if ( timesCalled === 2 ) {
               ok( !popped.video.muted(), "Unmuted when volume not 0" );
+              plus();
+              
+              popped.mute();
+            } else if ( timesCalled === 3 ) {
+              ok( popped.video.muted(), "Mute mutes when volume is non-zero" );
+              plus();
+              
+              popped.mute();
+            } else if ( timesCalled === 4 ) {
+              equals( popped.volume(), 0.333, "Mute unmutes to last volume" );
               plus();
               
               popped.exec( 4, function() {
@@ -110,7 +120,7 @@ test("Popcorn Vimeo Plugin", function () {
   
   expect( expects );
   
-  stop( 20000 );
+  stop( /* 20000 */ );
   
   ok( "vimeo" in Popcorn, "Vimeo is a method of Popcorn" );
   plus();
