@@ -3,8 +3,6 @@ test("Popcorn Google Feed Plugin", function () {
   var popped = Popcorn("#video"),
       expects = 10, 
       count = 0;
-	  
-  console.log(expects);
   
   expect(expects);
   
@@ -60,7 +58,6 @@ test("Popcorn Google Feed Plugin", function () {
   popped.exec( 6, function() {
       ok (document.getElementById('_feed2').style.display === "none" && 
           document.getElementById('_feed1').style.display === "none", "Both feeds are no lnger visible" );
-      plus();
   });
   
   popped.play();
