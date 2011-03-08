@@ -78,14 +78,17 @@
       }
 
 
-      matches = rIdExp.exec( entity );
+      if ( (typeof entity) == "string" ) {
+        matches = rIdExp.exec( entity );
 
-      if ( matches.length && matches[2]  ) {
-        elem = document.getElementById(matches[2]);
+        if ( matches.length && matches[2]  ) {
+          elem = document.getElementById(matches[2]);
+        }
+
+        this.video = elem ? elem : null;
+      } else if ( entity instanceof Object ) {
+        this.video = entity;
       }
-
-
-      this.video = elem ? elem : null;
 
       this.data = {
         history: [],
@@ -127,6 +130,11 @@
                 tracks         = that.data.trackEvents,
                 tracksByEnd    = tracks.byEnd,
                 tracksByStart  = tracks.byStart;
+
+
+            if (typeof currentTime === "function") {
+              currentTime = this.currentTime();
+            }
 
             // Playbar advancing
             if ( previousTime < currentTime ) {
@@ -214,7 +222,9 @@
         }
       };
 
-      isReady( this );
+      if ( this.video ) {
+        isReady( this );
+      }
 
       return this;
     }
@@ -296,18 +306,21 @@
 
         ret[ name ] = function( arg ) {
 
-          if ( typeof this.video[name] === "function" ) {
-            this.video[ name ]();
+          var isFunc = typeof this.video[name] === "function";
+
+          if ( arg !== false && arg !== null && typeof arg !== "undefined" ) {
+
+            if ( isFunc ) {
+              this.video[ name ](arg);
+            } else {
+              this.video[ name ] = arg;
+            }
 
             return this;
           }
 
-
-          if ( arg !== false && arg !== null && typeof arg !== "undefined" ) {
-
-            this.video[ name ] = arg;
-
-            return this;
+          if ( isFunc ) {
+            return this.video[ name ]();
           }
 
           return this.video[ name ];
@@ -902,7 +915,7 @@
 
 
       settings.ajax.open( settings.type, settings.url, settings.async );
-      settings.ajax.send( settings.data = null ? null : settings.data );
+      settings.ajax.send( settings.data || null );
 
       return Popcorn.xhr.httpData( settings );
     }
@@ -1102,3 +1115,4 @@
   }, false );
 
 })(window, window.document);
+
