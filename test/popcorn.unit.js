@@ -68,7 +68,7 @@ test("Utility", function () {
 });
 
 test("Instances", function() {
-  var expects = 10, 
+  var expects = 11, 
       count   = 0,
       instance;
   
@@ -89,6 +89,9 @@ test("Instances", function() {
   plus();
   
   ok( typeof Popcorn.getInstanceById === "function" , "Popcorn.getInstanceById is a provided utility function");
+  plus();
+
+  ok( typeof Popcorn.removeInstanceById === "function" , "Popcorn.removeInstanceById is a provided utility function");  
   plus();
   
   ok( typeof Popcorn.instanceIds === "object" , "Popcorn.instanceIds is a provided cache object");
