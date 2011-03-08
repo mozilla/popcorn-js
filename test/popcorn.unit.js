@@ -68,7 +68,7 @@ test("Utility", function () {
 });
 
 test("Instances", function() {
-  var expects = 9, 
+  var expects = 10, 
       count   = 0,
       instance;
   
@@ -110,7 +110,20 @@ test("Instances", function() {
   
   equal( Popcorn.instances.length, 1, "There are the correct number of Popcorn instances" );
   plus();
-   
+
+
+  // Instance handling
+
+  //  Create another instance
+  Popcorn("#video");
+
+  //  Get a reference to remove
+  var remove = Popcorn.instances[1];
+
+  //  Remove and check the length of the currently cached instances
+  equal( Popcorn.removeInstanceById( remove.id ).length, 1, "Removing an instance by id: 1 instance remains" );
+  plus();
+
 });
 
 test("guid", function () {
