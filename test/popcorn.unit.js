@@ -111,9 +111,6 @@ test("Instances", function() {
   equal( Popcorn.instances.length, 1, "There are the correct number of Popcorn instances" );
   plus();
 
-
-  // Instance handling
-
   //  Create another instance
   Popcorn("#video");
 
@@ -123,7 +120,6 @@ test("Instances", function() {
   //  Remove and check the length of the currently cached instances
   equal( Popcorn.removeInstanceById( remove.id ).length, 1, "Removing an instance by id: 1 instance remains" );
   plus();
-
 });
 
 test("guid", function () {
@@ -1777,9 +1773,6 @@ test("Parsing Handler - References unavailable plugin", function () {
   }, 2000);
   
 });
-
-
-
 
 module("Popcorn Test Runner End");
 test("Last Check", function () {
