@@ -67,6 +67,51 @@ test("Utility", function () {
   
 });
 
+test("Instances", function() {
+  var expects = 9, 
+      count   = 0,
+      instance;
+  
+  expect(expects);
+  
+  function plus(){ 
+    if ( ++count == expects ) {
+      start();      
+    }   
+  }
+
+  stop();
+  
+  ok( typeof Popcorn.addInstance === "function" , "Popcorn.addInstance is a provided utility function");
+  plus();
+  
+  ok( typeof Popcorn.removeInstance === "function" , "Popcorn.removeInstance is a provided utility function");
+  plus();
+  
+  ok( typeof Popcorn.getInstanceById === "function" , "Popcorn.getInstanceById is a provided utility function");
+  plus();
+  
+  ok( typeof Popcorn.instanceIds === "object" , "Popcorn.instanceIds is a provided cache object");
+  plus();
+  
+  ok( "length" in Popcorn.instances && "join" in Popcorn.instances, "Popcorn.instances is a provided cache array");  
+  plus();
+  
+  instance = Popcorn.getInstanceById("video");
+  
+  ok( instance.video, "Stored instance as a `video` property" );
+  plus();
+   
+  ok( instance.data, "Stored instance as a `data` property" );
+  plus();
+   
+  ok( instance instanceof Popcorn, "Instance instanceof Popcorn" );
+  plus();
+  
+  equal( Popcorn.instances.length, 1, "There are the correct number of Popcorn instances" );
+  plus();
+   
+});
 
 test("guid", function () {
   
