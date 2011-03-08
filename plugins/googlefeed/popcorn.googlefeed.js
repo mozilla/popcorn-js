@@ -51,7 +51,7 @@
     // that already exists in the parent div gets overwritten
     var newdiv = document.createElement( "div" );
     newdiv.style.display = "none";
-	newdiv.id = "_feed"+i;
+    newdiv.id = "_feed"+i;
     newdiv.style.width = "100%";
     newdiv.style.height = "100%";
     i++;

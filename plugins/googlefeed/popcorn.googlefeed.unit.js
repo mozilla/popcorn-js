@@ -42,7 +42,7 @@ test("Popcorn Google Feed Plugin", function () {
   popped.exec( 1, function() {
       ok(google.load, "Google Feed is available");
       plus();
-	  ok(GFdynamicFeedControl, "Dynamic Feed Control Available");
+      ok(GFdynamicFeedControl, "Dynamic Feed Control Available");
       plus();
       ok (document.getElementById('_feed1'), "First feed is on the page" );
       plus();
