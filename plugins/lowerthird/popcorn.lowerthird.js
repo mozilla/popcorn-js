@@ -3,7 +3,32 @@
 (function (Popcorn) {
   
   /**
-  */
+   * Lower Third popcorn plug-in 
+   * Displays information about a speaker over the video, or in the target div
+   * Options parameter will need a start, and end.
+   * Optional parameters are target, salutation, name and role.
+   * Start is the time that you want this plug-in to execute
+   * End is the time that you want this plug-in to stop executing
+   * Target is the id of the document element that the content is
+   *  appended to, this target element must exist on the DOM
+   * salutation is the speaker's Mr. Ms. Dr. etc.
+   * name is the speaker's name.
+   * role is information about the speaker, example Engineer.
+   * 
+   * @param {Object} options
+   * 
+   * Example:
+     var p = Popcorn('#video')
+        .footnote({
+          start:          5,                 // seconds, mandatory
+          end:            15,                // seconds, mandatory
+          salutation:     'Mr',              // optional
+          name:           'Scott Downe',     // optional
+          role:           'Programmer',      // optional
+          target:         'subtitlediv'      // optional
+        } )
+   *
+   */
 
   // just a little tool function
   // calculates the top and left position of an element

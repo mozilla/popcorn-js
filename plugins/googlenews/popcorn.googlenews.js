@@ -3,6 +3,27 @@
 (function (Popcorn) {
   
   /**
+   * Google News popcorn plug-in 
+   * Displays Google News information on a topic in a targeted div.
+   * Options parameter will need a start, end and target.
+   * Optional parameters are topic. topic defaults to "top stories"
+   * Start is the time that you want this plug-in to execute
+   * End is the time that you want this plug-in to stop executing
+   * Target is the id of the document element that the content is
+   *  appended to, this target element must exist on the DOM
+   * Topic is the topic of news articles you want to display.
+   * 
+   * @param {Object} options
+   * 
+   * Example:
+     var p = Popcorn('#video')
+        .footnote({
+          start:          5,                 // seconds, mandatory
+          end:            15,                // seconds, mandatory
+          topic:          'oil spill',       // optional
+          target:         'newsdiv'        // mandatory
+        } )
+   *
    */
   Popcorn.plugin( "googlenews" , {
 
