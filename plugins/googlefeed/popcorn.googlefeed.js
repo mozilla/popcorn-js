@@ -116,7 +116,7 @@
       target         : "feed-container",
       url            : { elem:"input", type:"text", label:"url" },
       title          : { elem:"input", type:"text", label:"title" },
-      orientation    : { elem:"input", type:"text", label:"orientation" }
+      orientation    : {elem:"select", options:["Vertical","Horizontal"], label:"orientation"},
     }
   });
   
