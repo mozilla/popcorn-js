@@ -115,7 +115,7 @@
           this.container.style.top        = offset( this.video ).top + this.video.offsetHeight - 65 + "px";
           this.container.style.left       = offset( this.video ).left + "px";
 
-          this.video.parentNode.appendChild( this.container );
+          document.body.appendChild( this.container );
         }
 
         // if a target is specified, use that
