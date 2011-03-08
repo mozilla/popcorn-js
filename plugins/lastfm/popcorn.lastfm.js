@@ -1,5 +1,28 @@
 // PLUGIN: LASTFM
-var lastFMcallback;
+    var _artists = [],
+        lastFMcallback = function(data){
+          if (data.artist) {
+            var htmlString = '<h3>'+data.artist.name+'</h3>';
+            htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
+            htmlString += '<p>'+ data.artist.bio.summary +'</p>';
+            htmlString += '<hr /><p><h4>Tags</h4><ul>';
+            
+            Popcorn.forEach( data.artist.tags.tag, function( val, i) {
+              htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
+            });
+            
+            htmlString += '</ul></p>';
+            htmlString += '<hr /><p><h4>Similar</h4><ul>';
+            
+            Popcorn.forEach( data.artist.similar.artist, function( val, i) {
+              htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
+            });
+            
+            htmlString += '</ul></p>';
+            
+            _artists[data.artist.name.toLowerCase()] = htmlString;
+          }
+        };
 
 (function (Popcorn) {
   
@@ -29,7 +52,6 @@ var lastFMcallback;
    */
   Popcorn.plugin( "lastfm" , (function(){
       
-    var _artists = [];
     
     return {
       manifest: {
@@ -59,40 +81,12 @@ var lastFMcallback;
         }
         
         if(!_artists[options.artist]) {
-          var loadScriptTime = (new Date).getTime();
-          var head = document.getElementsByTagName('head')[0];
-          var script = document.createElement('script');
-         
-          script.src = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ options.artist +"&api_key="+options.apikey+"&format=json&callback=lastFMcallback";
-          script.type = "text/javascript";
-          head.insertBefore( script, head.firstChild );
-          
+
           _artists[options.artist] = "Unknown Artist";
+          Popcorn.getScript("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ options.artist +"&api_key="+options.apikey+"&format=json&callback=lastFMcallback");
+          
         }
         
-        lastFMcallback = function(data){
-          if (data.artist) {
-            var htmlString = '<h3>'+data.artist.name+'</h3>';
-            htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
-            htmlString += '<p>'+ data.artist.bio.summary +'</p>';
-            htmlString += '<hr /><p><h4>Tags</h4><ul>';
-            
-            Popcorn.forEach( data.artist.tags.tag, function( val, i) {
-              htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
-            });
-            
-            htmlString += '</ul></p>';
-            htmlString += '<hr /><p><h4>Similar</h4><ul>';
-            
-            Popcorn.forEach( data.artist.similar.artist, function( val, i) {
-              htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
-            });
-            
-            htmlString += '</ul></p>';
-            
-            _artists[data.artist.name.toLowerCase()] = htmlString;
-          }
-        };
       },
       /**
        * @member LastFM 

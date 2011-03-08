@@ -51,7 +51,7 @@ test("Popcorn wikipedia Plugin", function () {
       plus();
       equals (theArticle.childElement[0].innerHTML, "this is an article", "wikidiv has the right title" );
       plus();
-      equals (theArticle.childElement[1].innerHTML, "Cape Town metropolitan municipality. It is the provincial capital and primate city ...", "wikidiv has the right content" );
+      equals (theArticle.childElement[1].innerHTML, "Cape Town is the second-most populous city in South Africa, and the largest in land area, forming part of the City of Cape Town metropolitan municipality. It is the provincial capital and primate city ...", "wikidiv has the right content" );
       plus();
       clearInterval( wikiInterval );
     }

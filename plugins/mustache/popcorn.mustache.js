@@ -2,17 +2,7 @@
 
 (function (Popcorn) {
 
-  // TODO: swap to getScript()
-  (function() {
-    var mustacheUrl = 'https://github.com/janl/mustache.js/raw/master/mustache.js';
-
-    var head = document.getElementsByTagName('head')[0];
-    var script = document.createElement('script');
-
-    script.type = 'text/javascript';
-    script.src = mustacheUrl;
-    head.insertBefore( script, head.firstChild );
-  })();
+  Popcorn.getScript('https://github.com/janl/mustache.js/raw/master/mustache.js');
 
   /**
    * Mustache Popcorn Plug-in
