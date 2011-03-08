@@ -335,6 +335,7 @@
         _running: false,
         _natives: {
           start: fn || Popcorn.nop,
+          end: Popcorn.nop,
           type: "exec"
         }
       });
