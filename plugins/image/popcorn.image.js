@@ -22,6 +22,7 @@
           end: 15, // seconds
           href: 'http://www.drumbeat.org/',
           src: 'http://www.drumbeat.org/sites/default/files/domain-2/drumbeat_logo.png',
+          text: 'DRUMBEAT',
           target: 'imagediv'
         } )
    *
@@ -40,7 +41,8 @@
           end :    {elem:'input', type:'number', label:'Out'},
           href :   {elem:'input', type:'text',   label:'Link URL'},
           target : 'Image-container',
-          src :    {elem:'input', type:'text',   label:'Source URL'}
+          src :    {elem:'input', type:'text',   label:'Source URL'},
+          text:    {elem:'input', type:'text',   label:'TEXT'}
         }
       },
 
@@ -55,11 +57,35 @@
         if ( document.getElementById( options.target ) ) {
           document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
         }
-        var img = document.createElement( 'img' );
-        img.src = options.src;
-        img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
-
-        options.link.appendChild( img );
+        var div = document.createElement( 'div' );
+        divStyle = {
+          width : '200px',
+          height : '200px',
+          background : "url( " + options.src + " ) no-repeat ",
+          backgroundSize : '100%',
+          MozBackgroundSize: '100%',
+          borderStyle : 'none'
+        }
+        for (s in divStyle) {
+          div.style[s] = divStyle[s];
+        }
+        
+        var divText = document.createElement( 'div' ); // add the inner div for overlaying text
+        divTextStyle = {
+          width : '50%',
+          margin : 'auto',
+          marginTop : '20px',
+          color : 'black',
+          fontWeight : 'bold',
+          textAlign : 'center'
+        }
+        for (st in divTextStyle) {
+          divText.style[st] = divTextStyle[st];
+        }
+        divText.innerHTML = options.text
+        
+        div.appendChild( divText); 
+        options.link.appendChild( div );
         
       },
 
