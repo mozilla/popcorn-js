@@ -482,6 +482,9 @@
     },
     removeEventListener: function( evtName, fn ) {
       return this.evtHolder.removeEventListener( evtName, fn );
+    },
+    dispatchEvent: function( evtName ) {
+      return this.evtHolder.dispatchEvent( evtName );
     }
   });
 })( Popcorn );

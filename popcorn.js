@@ -114,7 +114,12 @@
           // adding padding to the front and end of the arrays
           // this is so we do not fall off either end
 
-          var duration = typeof that.video.duration === "function" ? that.video.duration() : that.video.duration;
+          var duration = that.video.duration;
+          
+          if( typeof that.video.duration === "function") {
+            duration = that.video.duration();
+          }
+          
           // Check for no duration info (NaN)
           var videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
 
@@ -298,6 +303,7 @@
 
       // todo: play, pause, mute should toggle
       var methods = "load play pause currentTime playbackRate mute volume duration",
+          noArgMethods = /load|play|pause|mute/,
           ret = {};
 
 
@@ -308,7 +314,7 @@
 
           var isFunc = typeof this.video[name] === "function";
 
-          if ( /load|play|pause|mute/.test( name ) || ( arg !== false && arg !== null && typeof arg !== "undefined" ) ) {
+          if ( noArgMethods.test( name ) || ( arg !== false && arg !== null && typeof arg !== "undefined" ) ) {
 
             if ( isFunc ) {
               this.video[ name ]( arg );

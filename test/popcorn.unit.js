@@ -279,6 +279,82 @@ test("Stored By Type", function () {
 });
 
 
+test("Passed an object", function () {
+  
+  QUnit.reset();
+  
+  var evtMethods = "addEventListener dispatchEvent".split(/\s+/),
+      methods = "load play pause currentTime playbackRate mute volume duration".split(/\s+/),
+      attributes = "readyState autoplay".split(/\s+/),
+      obj = {},
+      p,
+      playEvent,
+      count = 0,
+      wants;
+
+  function plus(){ 
+
+    if ( ++count === wants ) {  
+      start();
+    } 
+  }
+  
+  Popcorn.forEach( methods, function( method ) {
+    obj[method] = (function() {
+      var calledWithArgs = 0,
+          calledWithoutArgs = 0;
+          
+      return function( arg ) {
+        if ( arg && !calledWithArgs ) {
+          calledWithArgs = 1;
+          ok(true, method+" called with argument");
+          plus();
+        } else if ( !arg && !calledWithoutArgs ) {
+          calledWithoutArgs = 1;
+          ok(true, method+" called without argument");
+          plus();
+        }
+      }
+    })();
+  });
+  
+  Popcorn.forEach( evtMethods, function( method ) {
+    obj[method] = (function() {
+      var hasCalled = 0;
+      
+      return function() {
+        if ( hasCalled ) {
+          return;
+        }
+        
+        hasCalled = 1;
+        ok(true, method+" called");
+        plus();
+      };
+    })()
+  });
+  
+  Popcorn.forEach( attributes, function( attr ) {
+    obj[attr] = 3;
+  });
+  
+  p = Popcorn( obj );
+  wants = methods.length*2 + evtMethods.length;
+
+  expect( wants );
+  stop( 10000 );
+  
+  p.listen( "play", Popcorn.nop );
+  
+  Popcorn.forEach( methods, function( method ) {
+    p[method]();
+    p[method]( 1 );
+  });
+  
+  p.trigger( "play" );
+});
+
+
 test("Simulated", function () {
   
   QUnit.reset();
