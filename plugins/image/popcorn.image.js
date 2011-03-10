@@ -47,7 +47,8 @@
       },
 
       _setup: function( options ) {
-
+        var s, st; 
+        
         options.link = document.createElement( 'a' );
         options.link.style.display = "none"; // display none by default
         if ( options.href ) {
@@ -65,9 +66,9 @@
           backgroundSize : '100%',
           MozBackgroundSize: '100%',
           borderStyle : 'none'
-        }
-        for (s in divStyle) {
-          div.style[s] = divStyle[s];
+        };
+        for ( s in divStyle ) {
+          div.style[ s ] = divStyle[ s ];
         }
         
         var divText = document.createElement( 'div' ); // add the inner div for overlaying text
@@ -78,13 +79,13 @@
           color : 'black',
           fontWeight : 'bold',
           textAlign : 'center'
+        };
+        for ( st in divTextStyle ) {
+          divText.style[ st ] = divTextStyle[ st ];
         }
-        for (st in divTextStyle) {
-          divText.style[st] = divTextStyle[st];
-        }
-        divText.innerHTML = options.text
+        divText.innerHTML = options.text;
         
-        div.appendChild( divText); 
+        div.appendChild( divText ); 
         options.link.appendChild( div );
         
       },

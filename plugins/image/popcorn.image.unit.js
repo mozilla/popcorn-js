@@ -28,6 +28,7 @@ test("Popcorn Image Plugin", function () {
     end: 3, // seconds
     href: 'http://www.drumbeat.org/',
     src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
+    text: 'DRUMBEAT',
     target: 'imagediv'
   } );
 
@@ -35,7 +36,7 @@ test("Popcorn Image Plugin", function () {
     if( popped.currentTime() > 1 && popped.currentTime() < 3 ) {
       ok( /display: inline;/.test( imagediv.innerHTML ), "Div contents are displayed" );
       plus();
-      ok( /img/.test( imagediv.innerHTML ), "An image exists" );
+      equals (imagediv.children[0].children[0].style.backgroundImage.indexOf ( 'https' ), "4", "An image exists" );
       plus();
       clearInterval( interval );
     }
