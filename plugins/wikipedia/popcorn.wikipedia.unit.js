@@ -61,5 +61,4 @@ test("Popcorn wikipedia Plugin", function () {
     equals (theArticle.childElement[1].innerHTML, "São Paulo is the largest city in Brazil, the largest city in the southern hemisphere, and the world's 7th largest metropolitan area. The city is the capital of the state of São Paulo, the most populou ...", "wikidiv has the right content" );
     plus();
   });
-   
 });

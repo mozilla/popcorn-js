@@ -15,18 +15,20 @@
         end: 10, // seconds
         person: 'Anna Sob',
         image: 'http://newshour.s3.amazonaws.com/photos%2Fspeeches%2Fguests%2FRichardNSmith_thumbnail.jpg',
+        href: 'http://annasob.wordpress.com',   
         target: 'tagdiv'
       } )
       .tagthisperson({
         start: 5, // seconds
         end: 15, // seconds
         person: 'Scott',
+        href: 'http://scottdowne.wordpress.com/',
         target: 'tagdiv'
       } )
       .tagthisperson({
         start: 0, // seconds
         end: 15, // seconds
-        person: 'Scott',
+        person: 'Mike',
         target: 'tagdiv2'
       } )
     }, false);
@@ -35,8 +37,9 @@
 </head>
 <body>
   <h1 id="qunit-header">Popcorn tagthisperson Plug-in Demo</h1>
-  <p> A tag displaying Scott will appear at 0 seconds and disappear at 15 seconds.</p>
-  <p> A separate tag displaying Anna Sob  with an image will appear at 0 seconds and disappear at 10 seconds. At 5 seconds Scott will be appended to this tag.</p>
+  <p> A tag displaying Mike will appear at 0 seconds and disappear at 15 seconds.</p>
+  <p> A separate tag displaying Anna Sob  with an image and a URL attached will appear at 0 seconds and disappear at 10 seconds.</p>
+  <p> At 5 seconds Scott with a URL attached will be appended to this tag and disappear at 15 seconds.</p>
   <div>
     <video id='video' 
       controls preload='none' 

@@ -22,6 +22,59 @@
     return new Popcorn.p.init( entity );
   };
 
+  //  Instance caching
+  Popcorn.instances = [];
+  Popcorn.instanceIds = {};
+
+  Popcorn.removeInstance = function( instance ) {
+    //  If called prior to any instances being created
+    //  Return early to avoid splicing on nothing
+    if ( !Popcorn.instances.length ) {
+      return;
+    }
+
+    //  Remove instance from Popcorn.instances 
+    Popcorn.instances.splice( Popcorn.instanceIds[ instance.id ], 1 );
+
+    //  Delete the instance id key
+    delete Popcorn.instanceIds[ instance.id ];
+
+    //  Return current modified instances
+    return Popcorn.instances;
+  };
+
+  //  Addes a Popcorn instance to the Popcorn instance array
+  Popcorn.addInstance = function( instance ) {
+
+    var instanceLen = Popcorn.instances.length,
+        instanceId = instance.video.id && instance.video.id;
+
+    //  If the video element has its own `id` use it, otherwise provide one
+    //  Ensure that instances have unique ids and unique entries
+    //  Uses `in` operator to avoid false positives on 0
+    instance.id = !( instanceId in Popcorn.instanceIds ) && instanceId || 
+                      "__popcorn" + instanceLen;
+
+    //  Create a reference entry for this instance
+    Popcorn.instanceIds[ instance.id ] = instanceLen;
+
+    //  Add this instance to the cache
+    Popcorn.instances.push( instance );
+
+    //  Return the current modified instances
+    return Popcorn.instances;
+  };
+
+  //  Request Popcorn object instance by id
+  Popcorn.getInstanceById = function( id ) {
+    return Popcorn.instances[ Popcorn.instanceIds[ id ] ];
+  };
+
+  //  Remove Popcorn object instance by id
+  Popcorn.removeInstanceById = function( id ) {
+    return Popcorn.removeInstance( Popcorn.instances[ Popcorn.instanceIds[ id ] ] );
+  };
+
   //  Declare a shortcut (Popcorn.p) to and a definition of
   //  the new prototype for our Popcorn constructor
   Popcorn.p = Popcorn.prototype = {
@@ -86,6 +139,8 @@
 
 
       this.video = elem ? elem : null;
+      
+      Popcorn.addInstance(this);
 
       this.data = {
         history: [],
@@ -335,6 +390,7 @@
         _running: false,
         _natives: {
           start: fn || Popcorn.nop,
+          end: Popcorn.nop,
           type: "exec"
         }
       });
@@ -484,6 +540,9 @@
 
       //  Push track event ids into the history
       obj.data.history.push( track._id );
+
+      track._natives.start = track._natives.start || Popcorn.nop;
+      track._natives.end = track._natives.end || Popcorn.nop;
     }
 
     // Store this definition in an array sorted by times
@@ -902,7 +961,7 @@
 
 
       settings.ajax.open( settings.type, settings.url, settings.async );
-      settings.ajax.send( settings.data = null ? null : settings.data );
+      settings.ajax.send( settings.data || null );
 
       return Popcorn.xhr.httpData( settings );
     }

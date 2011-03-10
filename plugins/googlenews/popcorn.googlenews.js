@@ -1,8 +1,34 @@
 // PLUGIN: Google News
 
 (function (Popcorn) {
-  
+  var scriptLoaded = false;
+
+  Popcorn.getScript( "http://www.google.com/jsapi", function() {
+    google.load("elements", "1", {packages : ["newsshow"], callback: function() {scriptLoaded = true;}});
+  });
+
   /**
+   * Google News popcorn plug-in 
+   * Displays Google News information on a topic in a targeted div.
+   * Options parameter will need a start, end and target.
+   * Optional parameters are topic. topic defaults to "top stories"
+   * Start is the time that you want this plug-in to execute
+   * End is the time that you want this plug-in to stop executing
+   * Target is the id of the document element that the content is
+   *  appended to, this target element must exist on the DOM
+   * Topic is the topic of news articles you want to display.
+   * 
+   * @param {Object} options
+   * 
+   * Example:
+     var p = Popcorn('#video')
+        .footnote({
+          start:          5,                 // seconds, mandatory
+          end:            15,                // seconds, mandatory
+          topic:          'oil spill',       // optional
+          target:         'newsdiv'        // mandatory
+        } )
+   *
    */
   Popcorn.plugin( "googlenews" , {
 
@@ -26,12 +52,22 @@
         if ( document.getElementById( options.target ) ) {
           document.getElementById( options.target ).appendChild( options.container );
         }
-        var newsShow = new google.elements.NewsShow( options.container, {
-          format : "300x250",
-          queryList : [
-            { q: options.topic || "Top Stories" }
-          ]
-        } );
+
+        var readyCheck = setInterval(function() {
+          if ( !scriptLoaded ) {
+            return;
+          }
+          clearInterval(readyCheck);
+
+          var newsShow = new google.elements.NewsShow( options.container, {
+            format : "300x250",
+            queryList : [
+              { q: options.topic || "Top Stories" }
+            ]
+          } );
+
+        }, 5);
+
         options.container.style.display = "none";
 
       },
