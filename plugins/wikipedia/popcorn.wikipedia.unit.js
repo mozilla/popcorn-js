@@ -3,13 +3,8 @@ test("Popcorn wikipedia Plugin", function () {
   var popped        = Popcorn("#video"),
       expects       = 9, 
       count         = 0,
-      theArticle    = document.getElementById('wikidiv'),
-      wikiInterval,
-      wikiInterval2,
-      wikiInterval3,
-      wikiInterval4;
-      
-      
+      theArticle    = document.getElementById('wikidiv');
+       
   expect(expects);
   
   function plus() {
@@ -41,40 +36,30 @@ test("Popcorn wikipedia Plugin", function () {
     } )
     .volume(0)
     .play();
+    
+  popped.exec( 5, function() {
+    ok (theArticle.innerHTML !== "", "wikidiv now contains information" );
+    plus();
+    equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
+    plus();
+    equals (theArticle.childElement[0].innerHTML, "this is an article", "wikidiv has the right title" );
+    plus();
+    equals (theArticle.childElement[1].innerHTML, "Cape Town metropolitan municipality. It is the provincial capital and primate city ...", "wikidiv has the right content" );
+    plus();
+  });
   
+  popped.exec( 10, function() {
+    equals (theArticle.innerHTML, "", "wikidiv was cleared properly" );
+    plus();
+  });
   
-  wikiInterval = setInterval( function() {
-    if( popped.currentTime() > 5 && popped.currentTime() <= 10 ) {
-      ok (theArticle.innerHTML !== "", "wikidiv now contains information" );
-      plus();
-      equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
-      plus();
-      equals (theArticle.childElement[0].innerHTML, "this is an article", "wikidiv has the right title" );
-      plus();
-      equals (theArticle.childElement[1].innerHTML, "Cape Town metropolitan municipality. It is the provincial capital and primate city ...", "wikidiv has the right content" );
-      plus();
-      clearInterval( wikiInterval );
-    }
-  }, 3000);
-  
-  wikiInterval2 = setInterval( function() {
-    if( popped.currentTime() > 10 && popped.currentTime() < 12  ) {
-      equals (theArticle.innerHTML, "", "wikidiv was cleared properly" );
-      plus();
-      clearInterval( wikiInterval2 );
-    }
-  }, 3000);
-  
-  wikiInterval3 = setInterval( function() {
-    if( popped.currentTime() > 13 && popped.currentTime() <= 20 ) {
-      ok (theArticle.innerHTML !== "", "wikidiv now contains information" );
-      plus();
-      equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
-      plus();
-      equals (theArticle.childElement[1].innerHTML, "São Paulo is the largest city in Brazil, the largest city in the southern hemisphere, and the world's 7th largest metropolitan area. The city is the capital of the state of São Paulo, the most populou ...", "wikidiv has the right content" );
-      plus();
-      clearInterval( wikiInterval3 );
-    }
-  }, 3000);
- 
+  popped.exec( 13, function() {
+    ok (theArticle.innerHTML !== "", "wikidiv now contains information" );
+    plus();
+    equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
+    plus();
+    equals (theArticle.childElement[1].innerHTML, "São Paulo is the largest city in Brazil, the largest city in the southern hemisphere, and the world's 7th largest metropolitan area. The city is the capital of the state of São Paulo, the most populou ...", "wikidiv has the right content" );
+    plus();
+  });
+   
 });
