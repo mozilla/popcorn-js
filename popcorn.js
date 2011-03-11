@@ -81,7 +81,7 @@
 
     init: function( entity ) {
 
-      var elem, matches;
+      var matches;
 
       //  Supports Popcorn(function () { /../ })
       //  Originally proposed by Daniel Brooks
