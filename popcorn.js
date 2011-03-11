@@ -132,7 +132,9 @@
       matches = rIdExp.exec( entity );
 
       // get video element by id or reference
-      this.video = matches && matches.length && matches[ 2 ] ? document.getElementById( matches[ 2 ] ) : entity;
+      this.video = matches && matches.length && matches[ 2 ] ?
+                    document.getElementById( matches[ 2 ] ) :
+                    entity;
 
       Popcorn.addInstance( this );
 
