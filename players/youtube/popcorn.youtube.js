@@ -62,144 +62,156 @@
     this.registerInternalEventHandlers();
   }; // end Popcorn.youtube.init
 
-  // For internal use only.
-  Popcorn.youtube.init.p.registerYoutubeEventHandlers = function() {
-    var youcorn = this,
-        stateChangeHandler = 'Popcorn.youtube.stateChangeEventHandler',
-        errorHandler = 'Popcorn.youtube.errorEventHandler';
-    this.video.addEventListener( 'onStateChange', stateChangeHandler );
-    this.video.addEventListener( 'onError', errorHandler );
+  Popcorn.extend( Popcorn.youtube.init.prototype, {
+
+    // For internal use only.
+    // Register handlers to YouTube events.
+    registerYoutubeEventHandlers: function() {
+      var youcorn = this,
+          stateChangeHandler = 'Popcorn.youtube.stateChangeEventHandler',
+          errorHandler = 'Popcorn.youtube.errorEventHandler';
+      this.video.addEventListener( 'onStateChange', stateChangeHandler );
+      this.video.addEventListener( 'onError', errorHandler );
+
+      /**
+       * Since Flash can only call named functions, they are declared
+       * separately here.
+       */
+      Popcorn.youtube.stateChangeEventHandler = function( state ) {
+        if ( debug ) {
+          console.log( 'Youtube state updated: ' + state );
+        }
+        if ( state == YOUTUBE_STATE_UNSTARTED ) {
+          youcorn.readyState = READY_STATE_HAVE_METADATA;
+          youcorn.raiseEvent('loadedmetadata');
+        } else if ( state == YOUTUBE_STATE_ENDED ) {
+          youcorn.raiseEvent('ended');
+        } else if ( state == YOUTUBE_STATE_PLAYING ) {
+          // Being able to play means current data is loaded.
+          if ( !this.loadedData ) {
+            this.loadedData = true;
+            youcorn.raiseEvent( 'loadeddata' );
+          }
+
+          youcorn.readyState = READY_STATE_HAVE_CURRENT_DATA;
+          youcorn.raiseEvent( 'playing' );
+        } else if ( state == YOUTUBE_STATE_PAUSED ) {
+          youcorn.raiseEvent( 'pause' );
+        } else if ( state == YOUTUBE_STATE_BUFFERING ) {
+          youcorn.raiseEvent( 'waiting' );
+        } else if ( state == YOUTUBE_STATE_CUED ) {
+          // not handled
+        }
+      };
+
+      Popcorn.youtube.errorEventHandler = function( state ) {
+        if ( debug ) {
+          console.log( 'Youtube error encountered: ' + error );
+        }
+        youcorn.raiseEvent( 'error' );
+      };
+    },
+
+    // For internal use only.
+    // Start current time and loading progress syncing intervals.
+    registerInternalEventHandlers: function() {
+      this.addEventListener( 'playing', function() {
+        startTimeUpdater( this );
+      });
+      this.addEventListener( 'loadedmetadata', function() {
+        startProgressUpdater( this );
+      });
+    },
+
+    play: function() {
+      this.raiseEvent( 'play' );
+      this.video.playVideo();
+    },
+
+    pause: function() {
+      this.video.pauseVideo();
+      // pause event is raised by Youtube.
+    },
+
+    load: function() {
+      this.video.playVideo();
+      this.video.pauseVideo();
+    },
+
+    currentTime: function( time ) {
+      if ( time === undef ) {
+        return this.video.getCurrentTime();
+      }
+      var playing = this.video.getPlayerState() == YOUTUBE_STATE_PLAYING;
+      this.video.seekTo( time, true );
+
+      // Prevent Youtube's behaviour to start playing video after seeking.
+      if ( !playing ) {
+        this.video.pauseVideo();
+      }
+
+      // Data need to be loaded again.
+      if ( !this.fullyLoaded ) {
+        this.loadedData = false;
+      }
+
+      // Raise event.
+      this.raiseEvent( 'seeked' );
+    },
+
+    duration: function() {
+      return this.video.getDuration();
+    },
+
+    mute: function() {
+      if ( this.video.getVolume() != 0 ) {
+        this.video.mute();
+        this.raiseEvent( 'volumechange' );
+      }
+    },
+
+    volume: function( vol ) {
+      if ( vol == undef ) {
+        return this.video.getVolume() / 100;
+      }
+      if ( vol != this.volume() ) {
+        this.video.setVolume( vol * 100 );
+        this.raiseEvent( 'volumechange' );
+      }
+    },
+
+    addEventListener: function( eventName, func ) {
+      if ( !this.eventListeners[eventName] ) {
+        this.eventListeners[eventName] = [];
+      }
+      this.eventListeners[eventName].push( func );
+    },
 
     /**
-     * Since Flash can only call named functions, they are declared
-     * separately here.
+     * Notify event listeners about an event.
      */
-    Popcorn.youtube.stateChangeEventHandler = function( state ) {
+    raiseEvent: function( name ) {
       if ( debug ) {
-        console.log( 'Youtube state updated: ' + state );
+        console.log( 'Raising event: ' + name );
       }
-      if ( state == YOUTUBE_STATE_UNSTARTED ) {
-        youcorn.readyState = READY_STATE_HAVE_METADATA;
-        youcorn.raiseEvent('loadedmetadata');
-      } else if ( state == YOUTUBE_STATE_ENDED ) {
-        youcorn.raiseEvent('ended');
-      } else if ( state == YOUTUBE_STATE_PLAYING ) {
-        // Being able to play means current data is loaded.
-        if ( !this.loadedData ) {
-          this.loadedData = true;
-          youcorn.raiseEvent( 'loadeddata' );
-        }
-
-        youcorn.readyState = READY_STATE_HAVE_CURRENT_DATA;
-        youcorn.raiseEvent( 'playing' );
-      } else if ( state == YOUTUBE_STATE_PAUSED ) {
-        youcorn.raiseEvent( 'pause' );
-      } else if ( state == YOUTUBE_STATE_BUFFERING ) {
-        youcorn.raiseEvent( 'waiting' );
-      } else if ( state == YOUTUBE_STATE_CUED ) {
-        // not handled
+      if ( !this.eventListeners[name] ) {
+        return;
       }
-    };
-
-    Popcorn.youtube.errorEventHandler = function( state ) {
-      if ( debug ) {
-        console.log( 'Youtube error encountered: ' + error );
+      for ( var i in this.eventListeners[name] ) {
+        // @TODO should we mimic the event object sent by HTMLMediaElement?
+        this.eventListeners[name][i].call( this, null );
       }
-      youcorn.raiseEvent( 'error' );
-    };
-  };
+    },
 
-  Popcorn.youtube.init.p = Popcorn.youtube.init.prototype;
+    /* Unsupported methods. */
 
-  // For internal use only.
-  Popcorn.youtube.init.p.registerInternalEventHandlers = function() {
-    this.addEventListener( 'playing', function() {
-      startTimeUpdater( this );
-    });
-    this.addEventListener( 'loadedmetadata', function() {
-      startProgressUpdater( this );
-    });
-  };
+    defaultPlaybackRate: function( arg ) {
+    },
 
-  Popcorn.youtube.init.p.play = function() {
-    this.raiseEvent( 'play' );
-    this.video.playVideo();
-  };
-
-  Popcorn.youtube.init.p.pause = function() {
-    this.video.pauseVideo();
-    // pause event is raised by Youtube.
-  };
-
-  Popcorn.youtube.init.p.load = function() {
-    this.video.playVideo();
-    this.video.pauseVideo();
-  };
-
-  Popcorn.youtube.init.p.currentTime = function( time ) {
-    if ( time === undef ) {
-      return this.video.getCurrentTime();
-    }
-    var playing = this.video.getPlayerState() == YOUTUBE_STATE_PLAYING;
-    this.video.seekTo( time, true );
-
-    // Prevent Youtube's behaviour to start playing video after seeking.
-    if ( !playing ) {
-      this.video.pauseVideo();
+    playbackRate: function( arg ) {
     }
 
-    // Data need to be loaded again.
-    if ( !this.fullyLoaded ) {
-      this.loadedData = false;
-    }
-
-    // Raise event.
-    this.raiseEvent( 'seeked' );
-  };
-
-  Popcorn.youtube.init.p.duration = function() {
-    return this.video.getDuration();
-  };
-
-  Popcorn.youtube.init.p.mute = function() {
-    if ( this.video.getVolume() != 0 ) {
-      this.video.mute();
-      this.raiseEvent( 'volumechange' );
-    }
-  };
-
-  Popcorn.youtube.init.p.volume = function( vol ) {
-    if ( vol == undef ) {
-      return this.video.getVolume() / 100;
-    }
-    if ( vol != this.volume() ) {
-      this.video.setVolume( vol * 100 );
-      this.raiseEvent( 'volumechange' );
-    }
-  };
-
-  Popcorn.youtube.init.p.addEventListener = function( eventName, func ) {
-    if ( !this.eventListeners[eventName] ) {
-      this.eventListeners[eventName] = [];
-    }
-    this.eventListeners[eventName].push( func );
-  };
-
-  /**
-   * Notify event listeners about an event.
-   */
-  Popcorn.youtube.init.p.raiseEvent = function( name ) {
-    if ( debug ) {
-      console.log( 'Raising event: ' + name );
-    }
-    if ( !this.eventListeners[name] ) {
-      return;
-    }
-    for ( var i in this.eventListeners[name] ) {
-      // @TODO should we mimic the event object sent by HTMLMediaElement?
-      this.eventListeners[name][i].call( this, null );
-    }
-  }
+  }); // end Popcorn.extend
 
   function startTimeUpdater( youcorn ) {
     youcorn.timeUpdater = setInterval(function() {
@@ -245,13 +257,7 @@
     }, progressInterval);
   }
 
-  /* Unsupported properties, methods and events. */
-
-  Popcorn.youtube.init.p.defaultPlaybackRate = function( arg ) {
-  };
-
-  Popcorn.youtube.init.p.playbackRate = function( arg ) {
-  };
+  /* Unsupported properties and events. */
 
   /**
    * Unsupported events are:
