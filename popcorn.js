@@ -130,17 +130,21 @@
         return;
       }
 
-
+      // check if entity is a valid string id
       matches = rIdExp.exec( entity );
 
-      if ( matches.length && matches[2]  ) {
-        elem = document.getElementById(matches[2]);
+      // entity is a valid id
+      if ( matches ) {
+
+        // get video element by id
+        this.video = matches.length && matches[ 2 ] ? document.getElementById( matches[ 2 ] ) : null;
+      } else {
+
+        // get video like object by reference
+        this.video = entity;
       }
 
-
-      this.video = elem ? elem : null;
-      
-      Popcorn.addInstance(this);
+      Popcorn.addInstance( this );
 
       this.data = {
         history: [],

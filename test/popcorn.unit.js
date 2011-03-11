@@ -177,34 +177,73 @@ test("Protected", function () {
 
 
 
-test("Object", function () {
+test( "Object", function () {
 
+  var popped = Popcorn( "#video" ),
+      popObj = Popcorn( document.getElementById( "video" ) ),
+      methods = "load play pause currentTime mute volume roundTime exec removePlugin",
+      count = 0,
+      expects = 30;
   
-  var popped = Popcorn("#video"), 
-      methods = "load play pause currentTime mute volume roundTime exec removePlugin";
+  expect( expects );
   
-  
-  
-  ok( "video" in popped, "instance has `video` property" );
-  ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
+  function plus() {
 
-  ok( "data" in popped, "instance has `data` property" );
-  ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
+    if ( ++count === expects ) {
 
-  ok( "trackEvents" in popped.data, "instance has `trackEvents` property" );
-  ok( Object.prototype.toString.call(popped.data.trackEvents) === "[object Object]", "trackEvents property is an object" )
+      start(); 
+    }
+  }
 
-  
+  stop( 10000 ); 
+
+  // testing element passed by id
+  ok( "video" in popped, "instance by id has `video` property" );
+  plus();
+  equal( Object.prototype.toString.call( popped.video ), "[object HTMLVideoElement]", "instance by id video property is a HTMLVideoElement" );
+  plus();
+
+  ok( "data" in popped, "instance by id has `data` property" );
+  plus();
+  equal( Object.prototype.toString.call( popped.data ), "[object Object]", "instance by id data property is an object" );
+  plus();
+
+  ok( "trackEvents" in popped.data, "instance by id has `trackEvents` property" );
+  plus();
+  equal( Object.prototype.toString.call( popped.data.trackEvents ), "[object Object]", "instance by id trackEvents property is an object" );
+  plus();
+
   popped.play();
 
+  methods.split( /\s+/g ).forEach(function ( k,v ) {
 
-  methods.split(/\s+/g).forEach(function (k,v) {
-
-    ok( k in popped, "instance has method: " + k );
-    
+    ok( k in popped, "instance by id has method: " + k );
+    plus();
   });
-  
-  
+
+  // testing element passed by reference
+  ok( "video" in popObj, "instance by reference has `video` property" );
+  plus();
+  equal( Object.prototype.toString.call( popObj.video ), "[object HTMLVideoElement]", "instance by reference video property is a HTMLVideoElement" );
+  plus();
+
+  ok( "data" in popObj, "instance by reference has `data` property" );
+  plus();
+  equal( Object.prototype.toString.call( popObj.data ), "[object Object]", "instance by reference data property is an object" );
+  plus();
+
+  ok( "trackEvents" in popObj.data, "instance by reference has `trackEvents` property" );
+  plus();
+  equal( Object.prototype.toString.call( popObj.data.trackEvents ), "[object Object]", "instance by reference trackEvents property is an object" );
+  plus();
+
+  popObj.play();
+
+  methods.split( /\s+/g ).forEach(function ( k,v ) {
+
+    ok( k in popObj, "instance by reference has method: " + k );
+    plus();
+  });
 });
 
 module("Popcorn Methods");
