@@ -183,7 +183,7 @@ test( "Object", function () {
       popObj = Popcorn( document.getElementById( "video" ) ),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
       count = 0,
-      expects = 30;
+      expects = 34;
   
   expect( expects );
   
@@ -244,6 +244,46 @@ test( "Object", function () {
     ok( k in popObj, "instance by reference has method: " + k );
     plus();
   });
+
+  try {
+
+    Popcorn( document.getElementById( "videoNotHere" ) );
+    ok(false, "videoNotHere"); plus();
+  } catch ( e ) {
+
+    equal( e.toString() === "null is not a valid reference to a video", true, e );
+    plus();
+  }
+
+  try {
+
+    Popcorn( "videoNotHere" );
+    ok(false, "videoNotHere"); plus();
+  } catch ( e ) {
+
+    equal( e.toString() === "videoNotHere is not a valid reference to a video", true, e );
+    plus();
+  }
+
+  try {
+
+    Popcorn( 1 );
+    ok(false, 1); plus();
+  } catch ( e ) {
+
+    equal( e.toString() === "1 is not a valid reference to a video", true, e );
+    plus();
+  }
+
+  try {
+
+    Popcorn();
+    ok(false, "undefined"); plus();
+  } catch ( e ) {
+
+    equal( e.toString() === "undefined is not a valid reference to a video", true, e );
+    plus();
+  }
 });
 
 module("Popcorn Methods");

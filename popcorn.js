@@ -125,24 +125,22 @@
           document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false);
         }
 
-
-
         return;
       }
 
       // check if entity is a valid string id
       matches = rIdExp.exec( entity );
 
-      // entity is a valid id
-      if ( matches ) {
+      // get video element by id or reference
+      this.video = matches && matches.length && matches[ 2 ] ? document.getElementById( matches[ 2 ] ) : entity;
 
-        // get video element by id
-        this.video = matches.length && matches[ 2 ] ? document.getElementById( matches[ 2 ] ) : null;
-      } else {
+      this.video instanceof Object || Popcorn.error( entity + " is not a valid reference to a video");
 
-        // get video like object by reference
-        this.video = entity;
-      }
+      // if a required function does not exist, simply do nothing when it is called
+      this.video.play = this.video.play || Popcorn.nop;
+      this.video.pause = this.video.pause || Popcorn.nop;
+      this.video.addEventListener = this.video.addEventListener || Popcorn.nop;
+      this.video.dispatchEvent = this.video.dispatchEvent || Popcorn.nop;
 
       Popcorn.addInstance( this );
 
