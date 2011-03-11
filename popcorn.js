@@ -134,14 +134,6 @@
       // get video element by id or reference
       this.video = matches && matches.length && matches[ 2 ] ? document.getElementById( matches[ 2 ] ) : entity;
 
-      this.video instanceof Object || Popcorn.error( entity + " is not a valid reference to a video");
-
-      // if a required function does not exist, simply do nothing when it is called
-      this.video.play = this.video.play || Popcorn.nop;
-      this.video.pause = this.video.pause || Popcorn.nop;
-      this.video.addEventListener = this.video.addEventListener || Popcorn.nop;
-      this.video.dispatchEvent = this.video.dispatchEvent || Popcorn.nop;
-
       Popcorn.addInstance( this );
 
       this.data = {
