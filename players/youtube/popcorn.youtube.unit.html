@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn YouTube Player</title>
+  <link rel="stylesheet" href="../../test/qunit/qunit.css" type="text/css" media="screen">
+  <script src="../../test/qunit/qunit.js"></script>
+  <!-- 
+    do not move - this must be called immediately prior to popcorn.js.
+  -->
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.youtube.js"></script>
+  <script src="popcorn.youtube.unit.js"></script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn YouTube Player Plugin</h1>
+  <h2 id="qunit-banner"></h2>
+  <div id="qunit-testrunner-toolbar"></div>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+  <div id="qunit-fixture"></div>
+  
+  <p>
+    Note about this set of tests:
+  </p>
+  
+  <p>
+    The test assumes that the YouTube video is mostly loaded, before it is run.
+    Therefore, if failures occur for the first time, just run it again. Likely,
+    failures would disappear the second time.
+  </p>
+  <div>
+    <object id="video" type="application/x-shockwave-flash"
+      data="http://www.youtube.com/e/ac7KhViaVqc?enablejsapi=1&amp;version=3"
+      width="250" height="200">
+      <param name="allowFullScreen" value="true" />
+      <param name="allowscriptaccess" value="always" />
+    </object>
+  </div>
+</body>
+</html>
+
