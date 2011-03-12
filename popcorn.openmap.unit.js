@@ -1,12 +1,12 @@
 test("Popcorn Open Map Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 10, 
-      count = 0,
-      mapInterval,
-      mapInterval2,
-      mapInterval3,
-      mapInterval4;
+    expects = 10, 
+    count = 0,
+    mapInterval,
+    mapInterval2,
+    mapInterval3,
+    mapInterval4;
   
   expect(expects);
   
@@ -28,27 +28,26 @@ test("Popcorn Open Map Plugin", function () {
   plus();
   
   popped.openmap({
-        start: 0, // seconds
-        end: 5, // seconds
-        type: 'ROADMAP',
-        target: 'map',
-        lat: 43.665429,
-        lng: -79.403323,
-        zoom: 10
-      } )
-      .googlemap({
-        start: 0, // seconds
-        end: 5, // seconds
-        type: 'SATELLITE',
-        target: 'map2',
-        lat: 0,
-        lng: 0,
-        zoom: 4
-      } )
-    .volume(0)
-    .play();
-  
-  
+    start: 0, // seconds
+    end: 5, // seconds
+    type: 'ROADMAP',
+    target: 'map',
+    lat: 43.665429,
+    lng: -79.403323,
+    zoom: 10
+  } )
+  .googlemap({
+    start: 0, // seconds
+    end: 5, // seconds
+    type: 'SATELLITE',
+    target: 'map2',
+    lat: 0,
+    lng: 0,
+    zoom: 4
+  } )
+  .volume(0)
+  .play();
+
   mapInterval = setInterval( function() {
     if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
       ok(OpenLayers, "OpenLayers is available");
