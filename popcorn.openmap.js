@@ -259,8 +259,8 @@ var openmapCallback;
       zoom     : {elem:'input', type:'text', label:'Zoom'},
       lat      : {elem:'input', type:'text', label:'Lat'},
       lng      : {elem:'input', type:'text', label:'Lng'},
-      location : {elem:'input', type:'text', label:'Location'}
-      markers  : {elem:'input', type:'text', label:'List Markers'},
-    }	
+      location : {elem:'input', type:'text', label:'Location'},
+      markers  : {elem:'input', type:'text', label:'List Markers'}
+    }
   });
 })( Popcorn );
