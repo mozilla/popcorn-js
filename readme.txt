@@ -3,10 +3,10 @@ An open source JavaScript library which connects and synchronizes the <video> ta
 
 * Project page: https://wiki.mozilla.org/PopcornOpenVideoAPI
 
-* Source code on Github: https://github.com/mozilla/popcorn-js/
+* Source code on Github: https://github.com/annasob/popcorn-js/
 
 ## What does the OpenMap plugin add? ##
-You can add markers at any point during the video's runtime.  For example, you can map places you've traveled as you talk about them in a video, or give a "top 10" places to go in your city, revealing each point one by one along with your video..
+You can add clickable markers with custom icons
 
 As an alternative to Google Maps, the OpenMap plugin offers:
 
@@ -15,3 +15,31 @@ As an alternative to Google Maps, the OpenMap plugin offers:
 * ROADMAP using OpenStreetMap - a free, open data source which is editable by anyone.  Due to its free license, it has received data from many governmental, commercial, and academic sources.  Editors can use Yahoo and Bing Maps to trace information onto the map.  In many parts of the world, OpenStreetMap has better coverage and more up-to-date data than major providers such as Google Maps.  - http://opensteetmap.org
 
 * SATELLITE using NASA Landsat / World Wind - satellite images in the public domain
+
+## Sample code for Popcorn.js ##
+popped.openmap({
+  start: 0,
+  end: 15,
+  type: 'ROADMAP', // OpenStreetMap
+  target: 'map',
+  lat: 43.665429,
+  lng: -79.403323,
+  zoom: 10
+})
+.openmap( {
+  start: 0,
+  end: 30,
+  type: 'SATELLITE', // NASA World Wind / LANDSAT
+  target: 'map2',
+  location: 'Boston, MA',
+  zoom: 9,
+  markers: [
+    {
+      lat: 42.358544,
+      lng: -71.05957,
+      icon: 'http://google-maps-icons.googlecode.com/files/vegetarian.png',
+      text: 'Clickable markers',
+      size: 10
+    }
+  ]
+});

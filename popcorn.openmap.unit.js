@@ -1,4 +1,4 @@
-test("Popcorn Open Map Plugin", function () {
+test("Popcorn OpenMap Plugin", function () {
   
   var popped = Popcorn("#video"),
     expects = 10, 
@@ -28,17 +28,17 @@ test("Popcorn Open Map Plugin", function () {
   plus();
   
   popped.openmap({
-    start: 0, // seconds
-    end: 5, // seconds
+    start: 0,
+    end: 5,
     type: 'ROADMAP',
     target: 'map',
     lat: 43.665429,
     lng: -79.403323,
     zoom: 10
   } )
-  .googlemap({
-    start: 0, // seconds
-    end: 5, // seconds
+  .openmap({
+    start: 0,
+    end: 5,
     type: 'SATELLITE',
     target: 'map2',
     lat: 0,

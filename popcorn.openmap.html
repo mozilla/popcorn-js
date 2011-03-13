@@ -5,14 +5,13 @@
   <script src="../../popcorn.js"></script>
   <script src="popcorn.openmap.js"></script>
   <script>
-    this.popped="";
     document.addEventListener('DOMContentLoaded', function () {
-      this.popped = Popcorn('#video')
+      Popcorn('#video')
       .volume( 0 )
       .play()
       .openmap( {
-        start: 0, // seconds
-        end: 20, // seconds
+        start: 0,
+        end: 20,
         type: 'ROADMAP',
         target: 'map',
         lat: 43.665429,
@@ -20,21 +19,25 @@
         zoom: "10"
       } )
       .openmap( {
-        start: 0, // seconds
-        end: 30, // seconds
+        start: 0,
+        end: 30,
         type: 'SATELLITE',
         target: 'map2',
         lat: 42.358544,
         lng: -71.05957,
-        zoom: 8,
+        zoom: 9,
         markers: [
           {
-            start: 0,
-            end: 100000000000000,
-            popcorn: this,
-            lat: 42.358,
-            lng: -71.0595,
-            icon: "http://google-maps-icons.googlecode.com/files/palace.png"
+            location: "Cambridge, MA",
+            icon: "http://google-maps-icons.googlecode.com/files/vegetarian.png",
+            text: "Clickable markers",
+			size: 10
+          },
+          {
+            lat: 42.358544,
+            lng: -71.05957,
+            icon: "http://google-maps-icons.googlecode.com/files/walking-tour.png",
+            text: "Another clickable marker"
           }
         ]
       } );
