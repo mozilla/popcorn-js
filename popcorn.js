@@ -81,7 +81,7 @@
 
     init: function( entity ) {
 
-      var elem, matches;
+      var matches;
 
       //  Supports Popcorn(function () { /../ })
       //  Originally proposed by Daniel Brooks
@@ -125,22 +125,18 @@
           document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false);
         }
 
-
-
         return;
       }
 
-
+      // check if entity is a valid string id
       matches = rIdExp.exec( entity );
 
-      if ( matches.length && matches[2]  ) {
-        elem = document.getElementById(matches[2]);
-      }
+      // get video element by id or reference
+      this.video = matches && matches.length && matches[ 2 ] ?
+                    document.getElementById( matches[ 2 ] ) :
+                    entity;
 
-
-      this.video = elem ? elem : null;
-      
-      Popcorn.addInstance(this);
+      Popcorn.addInstance( this );
 
       this.data = {
         history: [],
