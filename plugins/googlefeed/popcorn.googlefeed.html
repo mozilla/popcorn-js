@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Google Feed Plug-in Demo</title>
+  
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.googlefeed.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var p = Popcorn('#video')
+      .volume(0)
+      .play()
+      .googlefeed({
+        start: 0, // seconds
+        end: 15, // seconds
+        target: "feed",
+        url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
+        title: "Planet Feed",
+        orientation: "Vertical"
+	  } )
+	  .googlefeed({
+        start: 5, // seconds
+        end: 20, // seconds
+        target: "feed1",
+        url: "http://blog.pikimal.com/geek/feed/",
+        title: "pikiGeek",
+        orientation: "Horizontal"
+      } );
+    }, false);
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Google Feed Plug-in Demo</h1>
+  <p>A Blog feed of Seneca's Planet Feed will be displayed from 0 seconds to 15 seconds</p>
+  <p> A Blog feed of pikiGeek's feed will be displayed from 5 seconds to 20 seconds</p>
+  <div>
+    <video id='video'
+      controls
+      width= '250px'
+      poster="../../test/poster.png">
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'>
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'>
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+
+    </video>
+  </div>
+  <div style="width:1000px">
+    <div id="feed" style="position:relative;float:left;width:400px;height:600px"><p>Vertical Feed:</p></div>
+    <div id="feed1" style="position:relative;float:left;width:600px;height:200px"><p>Horizontal Feed:</p></div>
+  </div>
+</body>
+</html>
