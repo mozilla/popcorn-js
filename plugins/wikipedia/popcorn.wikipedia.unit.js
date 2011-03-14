@@ -1,15 +1,10 @@
 test("Popcorn wikipedia Plugin", function () {
   
   var popped        = Popcorn("#video"),
-      expects       = 9, 
+      expects       = 10, 
       count         = 0,
-      theArticle    = document.getElementById('wikidiv'),
-      wikiInterval,
-      wikiInterval2,
-      wikiInterval3,
-      wikiInterval4;
-      
-      
+      theArticle    = document.getElementById('wikidiv');
+       
   expect(expects);
   
   function plus() {
@@ -27,54 +22,43 @@ test("Popcorn wikipedia Plugin", function () {
   plus();
   
   popped.wikipedia({
-      start: 5, // seconds
-      end: 10, // seconds
+      start: 1, // seconds
+      end: 3, // seconds
       src: 'http://en.wikipedia.org/wiki/Cape_Town',
       title: "this is an article",
       target: 'wikidiv'
     } )
     .wikipedia({
-      start: 12, // seconds
-      end: 20, // seconds
+      start: 4, // seconds
+      end: 8, // seconds
       src: 'http://en.wikipedia.org/wiki/S%C3%A3o_Paulo',
       target: 'wikidiv'
     } )
     .volume(0)
     .play();
+    
+  popped.exec( 2, function() {
+    ok (theArticle.innerHTML !== "", "wikidiv now contains information" );
+    plus();
+    equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
+    plus();
+    equals (theArticle.childNodes[0].innerHTML, "this is an article", "wikidiv has the right title" );
+    plus();
+    ok (theArticle.childNodes[1].innerHTML !=="", "wikidiv has some content" );
+    plus();
+  });
   
+  popped.exec( 3, function() {
+    equals (theArticle.innerHTML, "", "wikidiv was cleared properly" );
+    plus();
+  });
   
-  wikiInterval = setInterval( function() {
-    if( popped.currentTime() > 5 && popped.currentTime() <= 10 ) {
-      ok (theArticle.innerHTML !== "", "wikidiv now contains information" );
-      plus();
-      equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
-      plus();
-      equals (theArticle.childElement[0].innerHTML, "this is an article", "wikidiv has the right title" );
-      plus();
-      equals (theArticle.childElement[1].innerHTML, "Cape Town is the second-most populous city in South Africa, and the largest in land area, forming part of the City of Cape Town metropolitan municipality. It is the provincial capital and primate city ...", "wikidiv has the right content" );
-      plus();
-      clearInterval( wikiInterval );
-    }
-  }, 3000);
-  
-  wikiInterval2 = setInterval( function() {
-    if( popped.currentTime() > 10 && popped.currentTime() < 12  ) {
-      equals (theArticle.innerHTML, "", "wikidiv was cleared properly" );
-      plus();
-      clearInterval( wikiInterval2 );
-    }
-  }, 3000);
-  
-  wikiInterval3 = setInterval( function() {
-    if( popped.currentTime() > 13 && popped.currentTime() <= 20 ) {
-      ok (theArticle.innerHTML !== "", "wikidiv now contains information" );
-      plus();
-      equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
-      plus();
-      equals (theArticle.childElement[1].innerHTML, "São Paulo is the largest city in Brazil, the largest city in the southern hemisphere, and the world's 7th largest metropolitan area. The city is the capital of the state of São Paulo, the most populou ...", "wikidiv has the right content" );
-      plus();
-      clearInterval( wikiInterval3 );
-    }
-  }, 3000);
- 
+  popped.exec( 5, function() {
+    ok (theArticle.innerHTML !== "", "wikidiv now contains information" );
+    plus();
+    equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
+    plus();
+    ok (theArticle.childNodes[1].innerHTML !== "", "wikidiv has the right content" );
+    plus();
+  });
 });
