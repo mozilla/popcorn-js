@@ -63,6 +63,18 @@ var onYouTubePlayerReady;
     return !matches || matches[0].split( "=" )[1];
   };
   
+  // Extract the id from a player url
+  function extractIdFromUri( url ) {
+    if ( !url ) {
+      return;
+    }
+    
+    var matches = url.match( /^http:\/\/?www\.youtube\.[a-z]+\/e\/[a-z0-9]+/i );
+    
+    // Return id, which comes after first equals sign
+    return !matches || matches[0].split( "/e/" )[1];
+  };
+  
   function cueDelayedDurationCheck ( evt ) {
     var self = this,
         durSetEvt;
@@ -75,6 +87,36 @@ var onYouTubePlayerReady;
     this.eventListeners[evt] = this.eventListeners[evt] || [];
     
     this.eventListeners[evt].unshift(durSetEvt);
+  }
+  /*
+  <object id="video" type="application/x-shockwave-flash"
+        data="http://www.youtube.com/e/ac7KhViaVqc?enablejsapi=1&playerapiid=video&version=3"
+        width="250" height="200">
+        <param name="allowFullScreen" value="true" />
+        <param name="allowscriptaccess" value="always" />
+      </object>*/
+  
+  function createSWFObject( params ) {
+    var obj = document.createElement( "object" );
+    
+    obj.setAttribute( "id", params.playerId );
+    obj.setAttribute( "type", "application/x-shockwave-flash" );
+    obj.setAttribute( "data", getPlayerAddress( params.videoId ) + "?enablejsapi=1&playerapiid=" + params.playerId );
+    obj.setAttribute( "width", params.width );
+    obj.setAttribute( "height", params.height );
+    
+    var param1 = document.createElement( "param" );
+    param1.setAttribute( "name", "allowFullScreen" );
+    param1.setAttribute( "value", "true" );
+    
+    var param2 = document.createElement( "param" );
+    param2.setAttribute( "name", "allowscriptaccess" );
+    param2.setAttribute( "value", "always" );
+    
+    obj.appendChild( param1 );
+    obj.appendChild( param2 );
+    
+    return obj;
   }
   
   function getPlayerAddress( id ) {
@@ -112,12 +154,26 @@ var onYouTubePlayerReady;
   Popcorn.youtube.init = function( elementId, url ) {
     if ( !elementId ) {
       throw "Element id is invalid.";
+    } else if ( /file/.test( location.protocol ) ) {
+      throw "This must be run from a web server.";
     }
     
     var self = this,
+        container = document.getElementById( elementId ),
         durEvtType;
-
-    this.video = document.getElementById( elementId );
+        
+    if ( !container ) {
+      throw "Container ID could not be found";
+    }
+    
+    // The video id for youtube (web or player formats)
+    this.vidId = extractIdFromUrl( url ) || extractIdFromUri( url );
+    
+    if ( !this.vidId ) {
+      throw "Must supply a video url!";
+    }
+    
+    this.playerId = Popcorn.guid( elementId );
     this.readyState = READY_STATE_HAVE_NOTHING;
     this.eventListeners = {};
     this.loadStarted = false;
@@ -126,29 +182,30 @@ var onYouTubePlayerReady;
     this.timeUpdater = null;
     this.progressUpdater = null;
     
+    this.preMuteVol = 0;
     this.currentTime = 0;
     this.previousCurrentTime = 0;
     this.volume = 0;
-    this.previousVolume = 0;
-    
-    this.playerId = elementId;
+    this.previousVolume = 0;    
     this.duration = Number.MAX_VALUE;
     
-    // The video id for youtube
-    this.vidId = extractIdFromUrl( url );
+    this.addEventListener( "load", function() {
+      self.video.cueVideoByUrl( getPlayerAddress( self.vidId ) );
+      cueDelayedDurationCheck.call( self, "playing" );
+    });
     
-    if ( this.vidId ) {
-      this.addEventListener( "load", function() {
-        self.video.cueVideoByUrl( getPlayerAddress( self.vidId ) );
-        cueDelayedDurationCheck.call( self, "playing" );
-      });
-    } else {
-      cueDelayedDurationCheck.call( this, "load" );
-    }
+    this.video = createSWFObject({
+      playerId: this.playerId,
+      videoId: this.vidId,
+      width: container.getAttribute("width") || 460,
+      height: container.getAttribute("height") || 350
+    });
     
-    registry[elementId] = this;
+    container.appendChild( this.video );
     
-    if ( loadedPlayers[elementId] ) {
+    registry[this.playerId] = this;
+    
+    if ( loadedPlayers[this.playerId] ) {
       this.dispatchEvent( "load" );
     }
   };
@@ -253,14 +310,11 @@ var onYouTubePlayerReady;
 
     // Mute is toggleable
     mute: function() {
-      if ( this.video.isMuted() ) {
-        this.video.unMute();
-        this.volume = this.video.getVolume() / 100;
-        this.dispatchEvent( 'volumechange' );
+      if ( this.volume !== 0 ) {
+        this.preMuteVol = this.volume;        
+        this.setVolume( 0 );
       } else {
-        this.video.mute();
-        this.volume = 0;
-        this.dispatchEvent( 'volumechange' );
+        this.setVolume( this.preMuteVol );
       }
     },
 
