@@ -1,3 +1,11 @@
+/*
+ * popcorn.js version @VERSION
+ * http://popcornjs.org
+ *
+ * Copyright 2011, Mozilla Foundation
+ * Licensed under the MIT license
+ */
+
 (function(global, document) {
 
   //  Cache refs to speed up calls to native utils
