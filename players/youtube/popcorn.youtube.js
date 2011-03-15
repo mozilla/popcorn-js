@@ -126,6 +126,11 @@ var onYouTubePlayerReady;
     this.timeUpdater = null;
     this.progressUpdater = null;
     
+    this.currentTime = 0;
+    this.previousCurrentTime = 0;
+    this.volume = 0;
+    this.previousVolume = 0;
+    
     this.playerId = elementId;
     this.duration = Number.MAX_VALUE;
     
@@ -202,10 +207,10 @@ var onYouTubePlayerReady;
     // Start current time and loading progress syncing intervals.
     registerInternalEventHandlers: function() {
       this.addEventListener( 'playing', function() {
-        startTimeUpdater( this );
+        this.startTimeUpdater();
       });
       this.addEventListener( 'loadedmetadata', function() {
-        startProgressUpdater( this );
+        this.startProgressUpdater();
       });
     },
 
@@ -223,9 +228,6 @@ var onYouTubePlayerReady;
       this.video.playVideo();
       this.video.pauseVideo();
     },
-    
-    currentTime: 0,
-    previousCurrentTime: 0,
 
     seekTo: function( time ) {      
       var playing = this.video.getPlayerState() == YOUTUBE_STATE_PLAYING;
@@ -253,15 +255,14 @@ var onYouTubePlayerReady;
     mute: function() {
       if ( this.video.isMuted() ) {
         this.video.unMute();
+        this.volume = this.video.getVolume() / 100;
         this.dispatchEvent( 'volumechange' );
       } else {
         this.video.mute();
+        this.volume = 0;
         this.dispatchEvent( 'volumechange' );
       }
     },
-    
-    volume: 0,
-    previousVolume: 0,
 
     // Expects beteween 0 and 1
     setVolume: function( vol ) {
@@ -302,40 +303,42 @@ var onYouTubePlayerReady;
     },
 
     playbackRate: function( arg ) {
-    }
-
-  }); // end Popcorn.extend
-
-  function startTimeUpdater( youcorn ) {
-    youcorn.timeUpdater = setInterval(function() {
+    },
+    
+    startTimeUpdater: function() {
+      var state = this.video.getPlayerState(),
+          self = this,
+          seeked = 0;
       
-      var state = youcorn.video.getPlayerState();
-      
-      
-      
-      if ( state !== YOUTUBE_STATE_ENDED && state !== YOUTUBE_STATE_PAUSED ) {
-        if ( abs( youcorn.currentTime - youcorn.previousCurrentTime ) > timeCheckInterval ) {
-          // Has programatically set the currentTime
-          youcorn.previousCurrentTime = youcorn.currentTime - timeCheckInterval;
-          youcorn.seekTo( youcorn.currentTime );
-        } else {
-          youcorn.previousCurrentTime = youcorn.currentTime;
-          youcorn.currentTime = youcorn.video.getCurrentTime();
-        }
+      if ( abs( this.currentTime - this.previousCurrentTime ) > timeCheckInterval ) {
+        // Has programatically set the currentTime
+        this.previousCurrentTime = this.currentTime - timeCheckInterval;
+        this.seekTo( this.currentTime );
+        seeked = 1;
+      } else {
+        this.previousCurrentTime = this.currentTime;
+        this.currentTime = this.video.getCurrentTime();
       }
       
-      if ( youcorn.volume !== youcorn.previousVolume ) {
-        youcorn.setVolume( youcorn.volume );
+      if ( this.volume !== this.previousVolume ) {
+        this.setVolume( this.volume );
       }
       
-      youcorn.dispatchEvent( 'timeupdate' );
-    }, timeupdateInterval);
-  }
-
-  function startProgressUpdater( youcorn ) {
-    youcorn.progressUpdater = setInterval(function() {
-      var bytesLoaded = youcorn.video.getVideoBytesLoaded(),
-          bytesToLoad = youcorn.video.getVideoBytesTotal();
+      if ( state !== YOUTUBE_STATE_ENDED && state !== YOUTUBE_STATE_PAUSED || seeked ) {
+        this.dispatchEvent( 'timeupdate' );
+      }
+      
+      if( state !== YOUTUBE_STATE_ENDED ) {
+        setTimeout( function() {
+          self.startTimeUpdater.call(self);
+        }, timeupdateInterval);
+      }
+    },
+    
+    startProgressUpdater: function() {
+      var bytesLoaded = this.video.getVideoBytesLoaded(),
+          bytesToLoad = this.video.getVideoBytesTotal(),
+          self = this;
 
       // do nothing if size is not yet determined
       if ( bytesToLoad == 0 ) {
@@ -343,23 +346,26 @@ var onYouTubePlayerReady;
       }
 
       // raise an event if load has just started
-      if ( !youcorn.loadStarted ) {
-        youcorn.loadStarted = true;
-        youcorn.dispatchEvent( 'loadstart' );
+      if ( !this.loadStarted ) {
+        this.loadStarted = true;
+        this.dispatchEvent( 'loadstart' );
       }
 
       // fully loaded
       if ( bytesLoaded >= bytesToLoad ) {
-        youcorn.fullyLoaded = true;
-        youcorn.readyState = READY_STATE_HAVE_ENOUGH_DATA;
-        youcorn.dispatchEvent( 'canplaythrough' );
-        clearInterval( youcorn.progressUpdater );
+        this.fullyLoaded = true;
+        this.readyState = READY_STATE_HAVE_ENOUGH_DATA;
+        this.dispatchEvent( 'canplaythrough' );
         return;
       }
 
-      youcorn.dispatchEvent( 'progress' );
-    }, progressInterval);
-  }
+      this.dispatchEvent( 'progress' );
+        
+      setTimeout( function() {
+        self.startTimeUpdater.call( self );
+      }, progressInterval);
+    }
+  }); // end Popcorn.extend
 
   /* Unsupported properties and events. */
 
