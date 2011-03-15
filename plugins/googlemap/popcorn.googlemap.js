@@ -32,7 +32,10 @@ var googleCallback;
   *
   */
 
-  var newdiv, i = 1, _mapFired = false, _mapLoaded = false;
+  var newdiv,
+      i = 1,
+      _mapFired = false,
+      _mapLoaded = false;
 
   // callback function fires when the script is run
   googleCallback = function() {
@@ -41,23 +44,19 @@ var googleCallback;
   // insert google api script once
   if (!_mapFired) {
     _mapFired = true;
-    var loadScriptTime = (new Date).getTime();
-    var head = document.getElementsByTagName("head")[0];
-    var script = document.createElement("script");
-
-    script.src = "http://maps.google.com/maps/api/js?sensor=false&callback=googleCallback";
-    script.type = "text/javascript";
-    head.insertBefore( script, head.firstChild );
+    Popcorn.getScript("http://maps.google.com/maps/api/js?sensor=false&callback=googleCallback");
   }
 
 
   Popcorn.plugin( "googlemap" , function( options ) {
-    var newdiv, map, location;
+    var newdiv,
+        map,
+        location;
 
     // create a new div this way anything in the target div
     // this is later passed on to the maps api
     newdiv = document.createElement("div");
-    newdiv.id = "actualmap"+i;
+    newdiv.id = "actualmap" + i;
     newdiv.style.width = "100%";
     newdiv.style.height = "100%";
     i++;

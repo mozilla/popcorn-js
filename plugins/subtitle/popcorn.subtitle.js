@@ -1,7 +1,13 @@
 // PLUGIN: Subtitle
 
 (function (Popcorn) {
-  
+
+  var scriptLoaded = false;
+
+  Popcorn.getScript( "http://www.google.com/jsapi", function() {
+    google.load("language", "1", {callback: function() {scriptLoaded = true;}});
+  });
+
   /**
    * Subtitle popcorn plug-in 
    * Displays a subtitle over the video, or in the target div
@@ -102,7 +108,7 @@
         // Creates a div for all subtitles to use
         if ( !this.container ) {
           this.container = document.createElement('div');
-
+          this.container.id = "subtitlediv";
           this.container.style.position   = "absolute";
           this.container.style.color      = "white";
           this.container.style.textShadow = "black 2px 2px 6px";
@@ -115,7 +121,7 @@
           this.container.style.top        = offset( this.video ).top + this.video.offsetHeight - 65 + "px";
           this.container.style.left       = offset( this.video ).left + "px";
 
-          this.video.parentNode.appendChild( this.container );
+          document.body.appendChild( this.container );
         }
 
         // if a target is specified, use that
@@ -134,58 +140,65 @@
         options.toggleSubtitles = function() {};
         options.that = this;
         
-
-        if ( options.languagesrc ) {
-          options.showSubtitle = translate;
-          options.languageSrc = document.getElementById( options.languagesrc );
-          options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
-
-          if ( !this.languageSources ) {
-            this.languageSources = {};
+        var readyCheck = setInterval(function() {
+          if ( !scriptLoaded ) {
+            return;
           }
+          clearInterval(readyCheck);
 
-          
-
-          if ( !this.languageSources[ options.languagesrc ] ) {
-            this.languageSources[ options.languagesrc ] = {};
-            
-          }
-
-          if ( !this.languageSources[ options.languagesrc ][ options.target ] ) {
-            this.languageSources[ options.languagesrc ][ options.target ] = true;
-
-            options.languageSrc.addEventListener( "change", function() {
-
-
-              options.toggleSubtitles();
-              options.showSubtitle( options, options.container.innerHTML );
-
-            }, false );
-
-          }
-
-        }
-
-        if ( accessibility ) {
-          options.accessibility = accessibility;
-
-          options.toggleSubtitles = function() {
+          if ( options.languagesrc ) {
+            options.showSubtitle = translate;
+            options.languageSrc = document.getElementById( options.languagesrc );
             options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
-            if ( options.accessibility.checked || options.selectedLanguage !== ( options.language || "") ) {
-              options.display = "inline";
-              options.container.style.display = options.display;
-            } else if ( options.selectedLanguage === ( options.language || "") ) {
-              options.display = "none";
-              options.container.style.display = options.display;
+
+            if ( !this.languageSources ) {
+              this.languageSources = {};
             }
 
-          };
+            if ( !this.languageSources[ options.languagesrc ] ) {
+              this.languageSources[ options.languagesrc ] = {};
+            
+            }
 
-          options.accessibility.addEventListener( "change", options.toggleSubtitles, false );
+            if ( !this.languageSources[ options.languagesrc ][ options.target ] ) {
+              this.languageSources[ options.languagesrc ][ options.target ] = true;
 
-          // initiate it once to set starting state
-          options.toggleSubtitles();
-        }
+              options.languageSrc.addEventListener( "change", function() {
+
+                options.toggleSubtitles();
+                options.showSubtitle( options, options.container.innerHTML );
+
+              }, false );
+
+            }
+
+          }
+          if ( accessibility ) {
+            options.accessibility = accessibility;
+
+            options.toggleSubtitles = function() {
+              options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
+              if ( options.accessibility.checked || options.selectedLanguage !== ( options.language || "") ) {
+                options.display = "inline";
+                options.container.style.display = options.display;
+              } else if ( options.selectedLanguage === ( options.language || "") ) {
+                options.display = "none";
+                options.container.style.display = options.display;
+              }
+
+            };
+
+            options.accessibility.addEventListener( "change", options.toggleSubtitles, false );
+
+            // initiate it once to set starting state
+            options.toggleSubtitles();
+          }
+        }, 5);
+
+
+
+
+
 
       },
       /**

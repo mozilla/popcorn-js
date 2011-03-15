@@ -21,63 +21,67 @@
     //  Return new Popcorn object
     return new Popcorn.p.init( entity );
   };
-  
+
+  //  Instance caching
   Popcorn.instances = [];
-  
   Popcorn.instanceIds = {};
-  
-  Popcorn.id = null;
-  
-  Popcorn.removeInstance = function( popcornInstance ) {
+
+  Popcorn.removeInstance = function( instance ) {
     //  If called prior to any instances being created
     //  Return early to avoid splicing on nothing
     if ( !Popcorn.instances.length ) {
-      
       return;
-      
     }
-  
-    Popcorn.instances.splice( Popcorn.instanceIds[ popcornInstance.id ], 1 );
 
-    delete Popcorn.instanceIds[ popcornInstance.id ];
-    
+    //  Remove instance from Popcorn.instances 
+    Popcorn.instances.splice( Popcorn.instanceIds[ instance.id ], 1 );
+
+    //  Delete the instance id key
+    delete Popcorn.instanceIds[ instance.id ];
+
+    //  Return current modified instances
+    return Popcorn.instances;
   };
 
   //  Addes a Popcorn instance to the Popcorn instance array
-  Popcorn.addInstance = function( popcornInstance ) {
-  
-    if ( !popcornInstance.video.id ) { 
-    
-      popcornInstance.id = "__popcorn" + Popcorn.instances.length;
-    
-    }
-    
-    else {
-    
-      popcornInstance.id = popcornInstance.video.id;
-    
-    }
-    
-    Popcorn.instanceIds[ popcornInstance.id ] = Popcorn.instances.length;
-    
-    Popcorn.instances.push( popcornInstance );
-    
+  Popcorn.addInstance = function( instance ) {
+
+    var instanceLen = Popcorn.instances.length,
+        instanceId = instance.video.id && instance.video.id;
+
+    //  If the video element has its own `id` use it, otherwise provide one
+    //  Ensure that instances have unique ids and unique entries
+    //  Uses `in` operator to avoid false positives on 0
+    instance.id = !( instanceId in Popcorn.instanceIds ) && instanceId || 
+                      "__popcorn" + instanceLen;
+
+    //  Create a reference entry for this instance
+    Popcorn.instanceIds[ instance.id ] = instanceLen;
+
+    //  Add this instance to the cache
+    Popcorn.instances.push( instance );
+
+    //  Return the current modified instances
+    return Popcorn.instances;
   };
 
-  //  User passes in the name of the Popcorn instance and receive a popcorn object
-  Popcorn.getInstanceById = function( name ) {
-  
-    return Popcorn.instances[ Popcorn.instanceIds[ name ] ];
-    
+  //  Request Popcorn object instance by id
+  Popcorn.getInstanceById = function( id ) {
+    return Popcorn.instances[ Popcorn.instanceIds[ id ] ];
   };
-  
+
+  //  Remove Popcorn object instance by id
+  Popcorn.removeInstanceById = function( id ) {
+    return Popcorn.removeInstance( Popcorn.instances[ Popcorn.instanceIds[ id ] ] );
+  };
+
   //  Declare a shortcut (Popcorn.p) to and a definition of
   //  the new prototype for our Popcorn constructor
   Popcorn.p = Popcorn.prototype = {
 
     init: function( entity ) {
 
-      var elem, matches;
+      var matches;
 
       //  Supports Popcorn(function () { /../ })
       //  Originally proposed by Daniel Brooks
@@ -121,22 +125,18 @@
           document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false);
         }
 
-
-
         return;
       }
 
-
+      // check if entity is a valid string id
       matches = rIdExp.exec( entity );
 
-      if ( matches.length && matches[2]  ) {
-        elem = document.getElementById(matches[2]);
-      }
+      // get video element by id or reference
+      this.video = matches && matches.length && matches[ 2 ] ?
+                    document.getElementById( matches[ 2 ] ) :
+                    entity;
 
-
-      this.video = elem ? elem : null;
-      
-      Popcorn.addInstance(this);
+      Popcorn.addInstance( this );
 
       this.data = {
         history: [],

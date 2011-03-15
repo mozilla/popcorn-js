@@ -31,12 +31,7 @@
    */
 
   if ( !window.TWTR ) {
-    var head = document.getElementsByTagName("head")[0] || document.documentElement,
-        script = document.createElement("script");
-
-    script.src = "http://widgets.twimg.com/j/2/widget.js";
-
-    head.insertBefore( script, head.firstChild );
+    Popcorn.getScript("http://widgets.twimg.com/j/2/widget.js");
   }
 
   Popcorn.plugin( "twitter" , {
