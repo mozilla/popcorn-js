@@ -4,32 +4,36 @@
     <title>Popcorn Youtube Player Example</title>
       <script src="../../popcorn.js"></script>
       <script type="text/javascript" src="popcorn.youtube.js"></script>
+      <script src="../../plugins/footnote/popcorn.footnote.js"></script>
       <script>
-        // <![CDATA[
-
-        /* Some code on this page is taken from stevenaw's vimeo plug-in. */
-
         // Helper function to get elements
         function element(id) {
           return document.getElementById(id);
         }
-
-        // Register YouTube
-        function onYouTubePlayerReady() {
-          element( 'player-status' ).innerHTML = 'Ready';
-
-          var youcorn = Popcorn.youtube( 'video' );
-          var popcorn = Popcorn(youcorn);
-          element( 'player-duration' ).innerHTML = popcorn.duration();
-
+        
+        document.addEventListener( 'DOMContentLoaded', function() {
+          var popcorn = Popcorn( Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=9oar9glUCL0' ) );
+          
+          
+          popcorn.footnote({
+            start: 5, // seconds
+            end: 15, // seconds
+            text: 'Visit webmademovies.org for more details',
+            target: 'footnotediv'
+          });
+          
+          popcorn.listen( 'durationchange', function() {
+            element( 'player-duration' ).innerHTML = popcorn.duration();
+          });
+          
           // Update time
           popcorn.listen( 'timeupdate', function() {
             element( 'player-time' ).innerHTML = popcorn.currentTime();
           });
-
+          
           // Update button labels
           var paused = true;
-          popcorn.listen( 'play' , function() {
+          popcorn.listen( 'playing' , function() {
             paused = false;
             element( 'btn-play-pause' ).innerHTML = 'Pause';
           });
@@ -37,34 +41,42 @@
             paused = true;
             element( 'btn-play-pause' ).innerHTML = 'Play';
           });
+            
+          // Setup UI after loaded
+          popcorn.listen( 'load', function() {
+            element( 'player-status' ).innerHTML = 'Ready';
+            
+            // Single play/pause button
+            element( 'btn-play-pause' ).addEventListener( 'click', function() {
+              if ( paused ) {
+                popcorn.play();
+              } else {
+                popcorn.pause();
+              }
+            }, false);
 
-          // Single play/pause button
-          element( 'btn-play-pause' ).addEventListener( 'click', function() {
-            if (paused) {
-              popcorn.play();
-            } else {
-              popcorn.pause();
-            }
-          }, false);
+            // Seek
+            element('btn-seek').addEventListener('click', function() {
+              popcorn.currentTime( 30 );
+            }, false);
 
-          // Seek
-          element('btn-seek').addEventListener('click', function() {
-            popcorn.currentTime(30);
-          }, false);
-
-          // Volume
-          element('btn-volume').addEventListener('click', function() {
-            var volume = (popcorn.volume() === 1) ? 0.5 : 1;
-            popcorn.volume(volume);
-          }, false);
-        }
-      // ]]>
+            // Volume
+            element('btn-volume').addEventListener('click', function() {
+              var volume = (popcorn.volume() === 1) ? 0.5 : 1;
+              popcorn.volume(volume);
+            }, false);
+            
+            element('btn-mute').addEventListener('click', function() {
+              popcorn.mute();
+            }, false);
+          });
+        }, false );
     </script>
   </head>
   <body>
     <div>
       <object id="video" type="application/x-shockwave-flash"
-        data="http://www.youtube.com/e/ac7KhViaVqc?enablejsapi=1&amp;version=3"
+        data="http://www.youtube.com/e/ac7KhViaVqc?enablejsapi=1&playerapiid=video&version=3"
         width="250" height="200">
         <param name="allowFullScreen" value="true" />
         <param name="allowscriptaccess" value="always" />
@@ -74,6 +86,7 @@
       <button class="simple" id="btn-play-pause">Play</button>
       <button class="seek" id="btn-seek">Seek to 30</button>
       <button class="volume" id="btn-volume">Toggle Volume</button>
+      <button class="mute" id="btn-mute">Toggle Mute</button>
       <div>
         <ul>
           <li>Status: <span id="player-status">Not Ready</span></li>
@@ -81,6 +94,7 @@
           <li>Video Duration (s): <span id="player-duration"></span></li>
         </ul>
       </div>
+      Footnote:<br />
       <div id="footnotediv" width="50%" height="50%"></div>
     </div>
   </body>
