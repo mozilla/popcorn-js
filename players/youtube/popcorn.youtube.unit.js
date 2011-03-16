@@ -45,26 +45,6 @@ test( "Popcorn YouTube Plugin Event Tests", function() {
   
   QUnit.reset();
   
-  var count = 0,
-      expects = 19;
-      
-  stop( 15000 );
-  
-  popcorn.volume(1); // is muted later
-  
-  // check time sync
-  popcorn.exec(2, function() {
-    ok( popcorn.currentTime() >= 2, "Check time synchronization." );
-    plus();
-  });
-  popcorn.exec(49, function() {
-    ok( popcorn.currentTime() >= 49, "Check time synchronization." );
-    plus();
-  });
-  popcorn.exec(40, function() {
-    ok( false, "This should not be run." );
-  });
-
   // events must be fired in this order
   var expectedEvents = [
     'play',
@@ -82,13 +62,35 @@ test( "Popcorn YouTube Plugin Event Tests", function() {
     'pause',
     'ended'
   ];
+  
+  var count = 0,
+      eventCount = 0,
+      added = [],
+      set1Executed = false,
+      set2Executed = false,
+      set3Executed = false,
+      expects = expectedEvents.length + 5;
+      
+  stop( 15000 );
+  expect(expects);
+  
+  popcorn.volume(1); // is muted later
+  
+  // check time sync
+  popcorn.exec(2, function() {
+    ok( popcorn.currentTime() >= 2, "Check time synchronization." );
+    plus();
+  });
+  popcorn.exec(49, function() {
+    ok( popcorn.currentTime() >= 49, "Check time synchronization." );
+    plus();
+  });
+  popcorn.exec(40, function() {
+    ok( false, "This should not be run." );
+  });
 
-  var expectedEventCount = expectedEvents.length;
-  expect(expectedEventCount + 5);
-
+  
   // register each events
-  var eventCount = 0;
-  var added = [];
   for ( var i in expectedEvents ) {
     (function( event ) {
       // skip same listeners already added
@@ -113,7 +115,6 @@ test( "Popcorn YouTube Plugin Event Tests", function() {
   }
 
   // operations set1
-  var set1Executed = false;
   popcorn.listen( 'playing', function() {
     // prevent double calling
     if ( set1Executed ) {
@@ -137,7 +138,6 @@ test( "Popcorn YouTube Plugin Event Tests", function() {
   popcorn.play();
   
   // operations set2
-  var set2Executed = false;
   popcorn.listen( 'pause', function() {
     if ( set2Executed ) {
       return;
@@ -157,7 +157,6 @@ test( "Popcorn YouTube Plugin Event Tests", function() {
   });
   
   // operations set3
-  var set3Executed = false;
   popcorn.listen( 'seeked', function() {
     if ( set3Executed ) {
       return;
@@ -202,7 +201,7 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
   equals( rawTube.duration, Number.MAX_VALUE, 'Duration starts as Max Value');
   plus();
   
-  rawTube.addEventListener( "playing", function() {
+  rawTube.addEventListener( "durationchange", function() {
     notEqual( rawTube.duration, Number.MAX_VALUE, "Duration has been changed from max value" );
     plus();
     notEqual( rawTube.duration, 0, "Duration is non-zero" );

@@ -59,8 +59,12 @@ var onYouTubePlayerReady;
     
     var matches = url.match( /((http:\/\/)?www\.)?youtube\.[a-z]+\/watch\?v\=[a-z0-9]+/i );
     
+    if ( !matches ) {
+      return;
+    }
+    
     // Return id, which comes after first equals sign
-    return !matches || matches[0].split( "=" )[1];
+    return matches[0].split( "=" )[1];
   };
   
   // Extract the id from a player url
@@ -71,8 +75,12 @@ var onYouTubePlayerReady;
     
     var matches = url.match( /^http:\/\/?www\.youtube\.[a-z]+\/e\/[a-z0-9]+/i );
     
+    if ( !matches ) {
+      return;
+    }
+    
     // Return id, which comes after first equals sign
-    return !matches || matches[0].split( "/e/" )[1];
+    return matches[0].split( "/e/" )[1];
   };
   
   function cueDelayedDurationCheck ( evt ) {
@@ -160,20 +168,10 @@ var onYouTubePlayerReady;
     
     var self = this,
         container = document.getElementById( elementId ),
+        src,
         durEvtType;
-        
-    if ( !container ) {
-      throw "Container ID could not be found";
-    }
     
-    // The video id for youtube (web or player formats)
-    this.vidId = extractIdFromUrl( url ) || extractIdFromUri( url );
-    
-    if ( !this.vidId ) {
-      throw "Must supply a video url!";
-    }
-    
-    this.playerId = Popcorn.guid( elementId );
+    this.playerId = elementId;
     this.readyState = READY_STATE_HAVE_NOTHING;
     this.eventListeners = {};
     this.loadStarted = false;
@@ -189,19 +187,62 @@ var onYouTubePlayerReady;
     this.previousVolume = 0;    
     this.duration = Number.MAX_VALUE;
     
-    this.addEventListener( "load", function() {
-      self.video.cueVideoByUrl( getPlayerAddress( self.vidId ) );
-      cueDelayedDurationCheck.call( self, "playing" );
-    });
+    // The video id for youtube (web or player formats)
+    this.vidId = extractIdFromUrl( url ) || extractIdFromUri( url );
     
-    this.video = createSWFObject({
-      playerId: this.playerId,
-      videoId: this.vidId,
-      width: container.getAttribute("width") || 460,
-      height: container.getAttribute("height") || 350
-    });
+    var loadByctor = !!this.vidId;
     
-    container.appendChild( this.video );
+    // Container not yet loaded, load it on DOMDontentLoad
+    if ( container ) {
+      this.vidId = this.vidId || extractIdFromUrl( container.getAttribute( "src" ) ) || extractIdFromUri( container.getAttribute( "src" ) );
+      
+      if ( !this.vidId ) {
+        throw "Could not find video id";
+      }
+      
+      if ( container.children.length ) {
+        this.video = container.firstChild;
+      } else {
+        this.video = createSWFObject({
+          playerId: this.playerId,
+          videoId: this.vidId,
+          width: container.getAttribute("width") || 460,
+          height: container.getAttribute("height") || 350
+        });
+        
+        container.appendChild( this.video );
+      }
+    } else {
+      document.addEventListener( "DOMContentLoaded", function() {
+        container = document.getElementById( elementId );
+        
+        if ( !container ) {
+          throw "Could not find container!";
+        }
+        
+        self.vidId = self.vidId || extractIdFromUrl( container.getAttribute( "src" ) ) || extractIdFromUri( container.getAttribute( "src" ) );
+        
+        if ( !self.vidId ) {
+          throw "Could not find video id";
+        }
+        
+        self.video = createSWFObject({
+          playerId: self.playerId,
+          videoId: self.vidId,
+          width: container.getAttribute("width") || 460,
+          height: container.getAttribute("height") || 350
+        });
+        
+        container.appendChild( self.video );
+      }, false);
+    }
+    
+    if ( loadByctor ) {
+      this.addEventListener( "load", function() {
+        self.video.cueVideoByUrl( getPlayerAddress( self.vidId ) );
+        cueDelayedDurationCheck.call( self, "playing" );
+      });
+    }
     
     registry[this.playerId] = this;
     
