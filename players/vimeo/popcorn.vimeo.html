@@ -29,11 +29,9 @@
         <script src="../../plugins/flickr/popcorn.flickr.js"></script>
         <script src="../../plugins/attribution/popcorn.attribution.js"></script>
         <script src="../../plugins/webpage/popcorn.webpage.js"></script>
-        <!-- Either enable these OR subtitles for the time being -->
-        <!--<script src="../../plugins/googlenews/popcorn.googlenews.js"></script>
-         <script src="../../plugins/googlefeed/popcorn.googlefeed.js"></script>  Errors on first load in FF4 RC, can not either of these and subtitle at same time. -->
+         <script src="../../plugins/googlefeed/popcorn.googlefeed.js"></script>
         <script src="../../plugins/image/popcorn.image.js"></script>
-        <script src="../../plugins/subtitle/popcorn.subtitle.js"></script> <!-- getScript throws in FF4 RC -->
+        <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
         <script src="../../plugins/twitter/popcorn.twitter.js"></script>
         
         <script type="text/javascript">
@@ -149,12 +147,6 @@
                       src: 'http://webmademovies.org/',
                       target: 'webpagediv'
                     })
-                    /*.googlenews({
-                      start: 0, // seconds
-                      end: 20, // seconds
-                      topic: 'Oil Spill',
-                      target: 'newsdiv'
-                    })
                     .googlefeed({
                         start: 0, // seconds
                         end: 15, // seconds
@@ -162,7 +154,7 @@
                         url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
                         title: "Planet Feed",
                         orientation: "Vertical"
-                    })*/
+                    })
                     .image({
                       start: 5, // seconds
                       end: 15, // seconds
@@ -219,8 +211,7 @@
               <li>From 5 to 60 seconds, the Creative Commons license will appear below 'Attributions Area'.</li>
               <li>From 5 to 15 seconds, the Mozilla Drumbeat logo will appear below 'Image Area'.</li>
               <li>From 5 to 15 seconds, the subtitle 'This is overlaid on top of the video. You can hightlight it!' will appear in front of the video.</li>
-              <!-- <li>From 0 to 20 seconds, Google news about 'Oil Spill' will appear below 'Google News Area'.</li>
-              <li>From 0 to 20 seconds, blogs from 'http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml' will appear below 'Google Feed Area'.</li> -->
+              <li>From 0 to 20 seconds, blogs from 'http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml' will appear below 'Google Feed Area'.</li>
               <li>From 0 to 15 seconds, the site 'http://webmademovies.org/' will appear below 'Web Page Area'.</li>
             </ul>
             <br />
@@ -241,12 +232,9 @@
             <div id="imagediv" width="50%" height="50%">
               <strong>Image Area</strong><br />
             </div>
-            <!-- <div id="newsdiv" width="50%" height="50%">
-              <strong>Google News Area</strong><br />
-            </div>
             <div id="feeddiv" width="50%" height="50%">
               <strong>Google Feed Area</strong><br />
-            </div>-->
+            </div>
             <div id="webpagediv" width="100px" height="50px">
               <strong>Web Page Area</strong><br />
             </div>
