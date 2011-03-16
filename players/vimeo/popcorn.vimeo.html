@@ -95,7 +95,7 @@
 
             //On document ready
             document.addEventListener( "DOMContentLoaded", function() {
-              var player = Popcorn( Popcorn.vimeo( "player_1", "http://vimeo.com/11127501" ) )
+              var player = Popcorn( Popcorn.vimeo( "player_1" ) )
                     .footnote({
                       start: 5, // seconds
                       end: 40, // seconds
@@ -135,7 +135,7 @@
               <strong>Footnote Area</strong><br />
             </div>
           </div>
-          <div id="player_1" width="500" height="281" frameborder="0"></div>
+          <div id="player_1" width="500" height="281" src="http://player.vimeo.com/video/11127501" ></div>
           <br />
           <br />
           <button class="simple" id="btnPlay">Play</button>

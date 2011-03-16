@@ -2,38 +2,43 @@
 ( function( Popcorn ) {
   /**
   * Vimeo wrapper for Popcorn.
-  * This player adds enables Popcorn.js to handle Vimeo videos. It does so by masking an embedded Vimeo video iframe
+  * This player adds enables Popcorn.js to handle Vimeo videos. It does so by masking an embedded Vimeo video Flash object
   * as a video and implementing the HTML5 Media Element interface.
   *
-  * To use this plug-in, include the Vimeo JavaScript API Froogaloop in the parent HTML page as well as the embedded Vimeo iframe:
+  * You can specify the video in four ways:
+  *  1. Use the embed code path supplied by Vimeo as a div's src, and pass the div id into a new Popcorn.vimeo object
   *
-  *   <script src="https://github.com/downloads/vimeo/froogaloop/froogaloop.v1.0.min.js"></script>
-  *
-  * You can specify the video in three ways:
-  *  1. Use the embed code supplied by Vimeo, and pass the iframe id into a new Popcorn.VimeoEngine object
-  *
-  *    <iframe id="player_1" src="http://player.vimeo.com/video/11127501?js_api=1&js_swf_id=player_1" width="500" height="281" frameborder="0"></iframe>
+  *    <div id="player_1" width="500" height="281" src="http://player.vimeo.com/video/11127501" ></div>
   *    <script type="text/javascript">
   *      document.addEventListener("DOMContentLoaded", function() {
-  *        var player = Popcorn.vimeo( "player_1" );
+  *        var popcorn = Popcorn( Popcorn.vimeo( "player_1" ) );
+  *      }, false);
+  *    </script>
+  &
+  *  2. Pass the div id and the embed code path supplied by Vimeo into a new Popcorn.vimeo object
+  *
+  *    <div id="player_1" width="500" height="281" ></div>
+  *    <script type="text/javascript">
+  *      document.addEventListener("DOMContentLoaded", function() {
+  *        var popcorn = Popcorn( Popcorn.vimeo( "player_1", "http://player.vimeo.com/video/11127501" ) );
   *      }, false);
   *    </script>
   *
-  *  2. Use an empty iframe and give both the iframe id and the web url when creating a new Popcorn.VimeoEngine
+  *  3. Use a web url as a div's src, and pass the div id into a new Popcorn.vimeo object
   *
-  *    <iframe id="player_1" width="500" height="281" frameborder="0"></iframe>
+  *    <div id="player_1" width="500" height="281" src="http://vimeo.com/11127501" ></div>
   *    <script type="text/javascript">
   *      document.addEventListener("DOMContentLoaded", function() {
-  *        var player = Popcorn.vimeo( "player_1", "http://vimeo.com/11127501" );
+  *        var popcorn = Popcorn( Popcorn.vimeo( "player_1" ) );
   *      }, false);
   *    </script>
   *
-  *  3. Set the iframe's src attribute to the vimeo video's web url, and pass the id when creating a new Popcorn.VimeoEngine
+  *  4. Pass the div id and the web url into a new Popcorn.vimeo object
   *
-  *    <iframe id="player_1" src="http://vimeo.com/11127501" width="500" height="281" frameborder="0"></iframe>
+  *    <div id="player_1" width="500" height="281" ></div>
   *    <script type="text/javascript">
   *      document.addEventListener("DOMContentLoaded", function() {
-  *        var player = Popcorn.vimeo( "player_1" );
+  *        var popcorn = Popcorn( Popcorn.vimeo( "player_1", "http://vimeo.com/11127501" ) );
   *      }, false);
   *    </script>
   *
@@ -71,19 +76,18 @@
   * Due to Vimeo's API, some attributes are be supported while others are not.
   * Supported media attributes:
   *   autoplay ( via Popcorn )
-  *   currentTime ( get only, set by calling setCurrentTime() )
+  *   currentTime
   *   duration ( get only )
   *   ended ( get only )
   *   initialTime ( get only, always 0 )
   *   loop ( get only, set by calling setLoop() )
-  *   muted ( get only, set by calling setVolume(0) )
+  *   muted ( get only )
   *   paused ( get only )
   *   readyState ( get only )
-  *   src ( get only )
-  *   volume ( get only, set by calling setVolume() )
+  *   volume
   *
   *   load() function
-  *   mute() function
+  *   mute() function ( toggles on/off )
   *
   * Unsupported media attributes:
   *   buffered
@@ -94,18 +98,21 @@
   *   preload
   *   seekable
   *   seeking
+  *   src
   *   startOffsetTime
   */
   
+  // Trackers
   var timeupdateInterval = 33,
       timeCheckInterval = 0.75,
       abs = Math.abs,
       registry = {};
   
   // base object for DOM-related behaviour like events
-  var LikeADOM = function ( owner ) {
+  var EventManager = function ( owner ) {
     var evts = {};
-    var makeHandler = function( evtName ) {
+    
+    function makeHandler( evtName ) {
       if ( !evts[evtName] ) {
         evts[evtName] = [];
         
@@ -204,6 +211,10 @@
     // Expect id to be a valid 32/64-bit unsigned integer
     // Returns string, empty string if could not match
     function extractIdFromUri( uri ) {
+      if ( !uri ) {
+        return;
+      }
+      
       var matches = uri.match( rPlayerUri );
       return matches ? matches[0].substr(30) : "";
     };
@@ -213,6 +224,10 @@
     // Expect id to be a valid 32/64-bit unsigned integer
     // Returns string, empty string if could not match
     function extractIdFromUrl( url ) {
+      if ( !url ) {
+        return;
+      }
+      
       var matches = url.match( rWebUrl );
       return matches ? matches[0].substr(10) : "";
     };
@@ -228,11 +243,13 @@
           container = document.getElementById( containerId ),
           width,
           height,
-          autoplay;
+          // For flash embedding
+          params,
+          flashvars,
+          attributes = {};
       
       this.addEventFn;
       this.evtHolder;
-      this.autoplay;
       this.paused = true;
       this.duration = Number.MAX_VALUE;
       this.ended = 0;
@@ -245,9 +262,8 @@
       
       this.previousCurrentTime = this.currentTime;
       this.previousVolume = this.volume;
-      this.evtHolder = new LikeADOM( this );
+      this.evtHolder = new EventManager( this );
       
-      autoplay = !!container.autoplay ? 1 : 0;
       width = container.getAttribute( "width" ) || "504";
       height = container.getAttribute( "height" ) || "340";
       
@@ -258,7 +274,7 @@
       } 
 
       if ( !vidId ){
-        vidId = extractIdFromUrl( this.swfObj.src ) || extractIdFromUri( this.swfObj.src );
+        vidId = extractIdFromUrl( container.getAttribute("src") ) || extractIdFromUri( container.getAttribute("src") );
       }
       
       if ( !vidId ) {
@@ -267,7 +283,7 @@
       
       registry[ containerId ] = this;
       
-      var flashvars = {
+      flashvars = {
         clip_id: vidId,
         show_portrait: 1,
         show_byline: 1,
@@ -276,11 +292,10 @@
         js_onLoad: 'Popcorn.vimeo.onLoad', // moogaloop will call this JS function when it's done loading (optional)
         js_swf_id: containerId // this will be passed into all event methods so you can keep track of multiple moogaloops (optional)
       };
-      var params = {
+      params = {
         allowscriptaccess: 'always',
         allowfullscreen: 'true'
       };
-      var attributes = {};
       
       if( hasAPILoaded ) {
         swfobject.embedSWF("http://vimeo.com/moogaloop.swf", containerId, width, height, "9.0.0","expressInstall.swf", flashvars, params, attributes);
@@ -292,6 +307,7 @@
           var evts = {},
               retFn;
               
+          // The actual (temporary) event listener function
           retFn = function( evt, fn ) {
               evt = evt.toLowerCase();
               
@@ -302,6 +318,7 @@
               evts[evt].push( fn );
             }
             
+          // Used to transfer events from the old to the new once the API loader (either SWFObject or Froogaloop) has loaded
           retFn.transferToHandler = function() {
             // No need to keep caching events, now we can connect them to the API directly!
             this.addEventListener = Popcorn.vimeo.prototype.addEventListener;
@@ -368,6 +385,7 @@
             that.evtHolder.dispatchEvent( "readystatechange" );
           }
           
+          // Check if fully loaded
           if ( data.percent === 100 ) {
             that.readyState = 4;
             that.evtHolder.dispatchEvent( "readystatechange" );
@@ -439,10 +457,12 @@
       this.evtHolder.dispatchEvent( "play" );
       this.swfObj.api_play();
     },
-    // Pauses the video
+    // Pause the video
     pause: function() {
       this.swfObj.api_pause();
     },
+    // Toggle video muting
+    // Unmuting will leave it at the old value
     mute: function() {
       if ( !this.muted() ) {
         this.oldVol = this.volume;
@@ -505,7 +525,6 @@
       this.evtHolder.addEventListener( evt, fn, false );
       
       // Link manual event structure with Vimeo's if not already
-      // Do not link for 'timeupdate'
       if( playerEvt && this.evtHolder.getEventListeners( evt ).length === 1 ) {
         // Setup global functions on Popcorn.vimeo to sync player events to an internal collection
         // Some events expect 2 args, some only one (the player id)
