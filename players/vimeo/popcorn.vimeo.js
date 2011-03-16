@@ -1,4 +1,6 @@
 // Popcorn Vimeo Player Wrapper
+var onVimeoLoad;
+
 ( function( Popcorn ) {
   /**
   * Vimeo wrapper for Popcorn.
@@ -177,19 +179,26 @@
   Popcorn.vimeo.init = (function() {
     var rPlayerUri = /^http:\/\/player\.vimeo\.com\/video\/[\d]+/i,
         rWebUrl = /vimeo\.com\/[\d]+/,
-        registry = [],
+        registry = {},
         hasAPILoaded = false;
+        
+    onVimeoLoad = function( playerId ) {
+      var player = registry[ playerId ];
+      
+      player.swfObj = document.getElementById( playerId );
+      player.dispatchEvent( "load" );
+    }
         
     // Source file is from https://github.com/vimeo/froogaloop/blob/master/froogaloop.min.js
     // HTTPS seems to have some difficulties with getScript, so store locally
-    Popcorn.getScript( "./froogaloop.min.js", function() {
+    Popcorn.getScript( "./swfobject.js", function() {
       var i,
           l = registry.length;
           
       hasAPILoaded = true;
-      for( i=0; i<l; i++ ) {
-        registry[i].addEventListener.transferToHandler.call( registry[i] );
-      }
+      Popcorn.forEach( registry, function( item ) {
+        item.addEventListener.transferToHandler.call( item );
+      });
     });
     
     // Extract the numeric video id from container uri: 'http://player.vimeo.com/video/11127501' or 'http://player.vimeo.com/video/4282282'
@@ -216,9 +225,12 @@
       }
       
       var vidId,
-          that = this;
+          that = this,
+          container = document.getElementById( containerId ),
+          width,
+          height,
+          autoplay;
       
-      this.swfObj = document.getElementById( containerId );
       this.addEventFn;
       this.evtHolder;
       this.autoplay;
@@ -234,33 +246,45 @@
       
       this.previousCurrentTime = this.currentTime;
       this.previousVolume = this.volume;
-          
-      if ( !this.swfObj ) {
-        throw "Invalid id, could not find it!";
-      }
-      
       this.evtHolder = new LikeADOM( this );
-      this.autoplay = this.swfObj.autoplay;
+      
+      autoplay = !!container.autoplay ? 1 : 0;
+      width = container.getAttribute( "width" ) || "504";
+      height = container.getAttribute( "height" ) || "340";
       
       // Try and get a video id from a vimeo site url
       // Try either from ctor param or from iframe itself
       if( videoUrl ) {
-        vidId = extractIdFromUrl( videoUrl );
-      } else {
-        vidId = extractIdFromUrl( this.swfObj.src )
+        vidId = extractIdFromUrl( videoUrl ) || extractIdFromUri( videoUrl );
+      } 
+
+      if ( !vidId ){
+        vidId = extractIdFromUrl( this.swfObj.src ) || extractIdFromUri( this.swfObj.src );
       }
       
-      // If was able to gete a video id
-      if ( vidId ) {
-        // Set iframe source to vimeo player and id
-        // Note that speccifying a web url will over-write any src attribute already on the iframe
-        this.swfObj.src = "http://player.vimeo.com/video/"+vidId+"?js_api=1&js_swf_id="+containerId;
+      if ( !vidId ) {
+        throw "No video id";
       }
       
-      registry.push( this );
+      registry[ containerId ] = this;
+      
+      var flashvars = {
+        clip_id: vidId,
+        show_portrait: 1,
+        show_byline: 1,
+        show_title: 1,
+        js_api: 1, // required in order to use the Javascript API
+        js_onLoad: 'onVimeoLoad', // moogaloop will call this JS function when it's done loading (optional)
+        js_swf_id: containerId // this will be passed into all event methods so you can keep track of multiple moogaloops (optional)
+      };
+      var params = {
+        allowscriptaccess: 'always',
+        allowfullscreen: 'true'
+      };
+      var attributes = {};
       
       if( hasAPILoaded ) {
-        Froogaloop.init( [ this.swfObj ] );
+        swfobject.embedSWF("http://vimeo.com/moogaloop.swf", containerId, width, height, "9.0.0","expressInstall.swf", flashvars, params, attributes);
       } else {
         // API not ready, temporarily hold events here, will be transfered over shortly
         // This is in case an object is instantiated and played around with before the Vimeo API is ready
@@ -280,8 +304,6 @@
             }
             
           retFn.transferToHandler = function() {
-            Froogaloop.init( [ this.swfObj ] );
-            
             // No need to keep caching events, now we can connect them to the API directly!
             this.addEventListener = Popcorn.vimeo.prototype.addEventListener;
             
@@ -294,6 +316,8 @@
               that.evtHolder.addEventListeners( evtName, evtArray );
             });
             
+            swfobject.embedSWF("http://vimeo.com/moogaloop.swf", containerId, width, height, "9.0.0","expressInstall.swf", flashvars, params, attributes);
+            
             // GC Function
             retFn = null;
           };
@@ -302,22 +326,19 @@
         })();
       }
       
+      
       // Set up listeners to internally track state as needed
       this.addEventListener( "load", function() {
         var loadingFn;
         
-        that.swfObj.get( "api_getDuration", function( duration ) {
-          that.duration = parseFloat( duration );
-          that.evtHolder.dispatchEvent( "durationchange" );
-        });
+        that.duration = that.swfObj.api_getDuration();
+        that.evtHolder.dispatchEvent( "durationchange" );
         
         // Chain events and calls together so that this.currentTime reflects the current time of the video
         // Done by Getting the Current Time while the video plays
-        that.swfObj.addEvent( "onProgress", function() {
-          that.swfObj.get( "api_getCurrentTime", function( time ) {
-            that.currentTime = parseFloat( time );
-            that.evtHolder.dispatchEvent( "timeupdate" );
-          });
+        that.swfObj.api_addEventListener( "onProgress", function() {
+          that.currentTime = that.swfObj.api_getCurrentTime();
+          that.evtHolder.dispatchEvent( "timeupdate" );
         });
         
         // Add pause listener to keep track of playing state
@@ -363,7 +384,7 @@
       this.loop = val;
       var isLoop = val === "loop" ? 1 : 0;
       // HTML convention says to loop if value is 'loop'
-      this.swfObj.api('api_setLoop', isLoop );
+      this.swfObj.api_setLoop( isLoop );
     },
     // Set the volume as a value between 0 and 1
     setVolume: function( val ) {
@@ -382,7 +403,7 @@
       
       // HTML video expects to be 0.0 -> 1.0, Vimeo expects 0-100
       this.volume = this.previousVolume = val;
-      this.swfObj.api( "api_setVolume", val*100 );
+      this.swfObj.api_setVolume( val*100 );
       this.evtHolder.dispatchEvent( "volumechange" );
     },
     // Seeks the video
@@ -393,7 +414,7 @@
       
       this.currentTime = this.previousCurrentTime = time;
       this.ended = time >= this.duration;
-      this.swfObj.api( "api_seekTo", time );
+      this.swfObj.api_seekTo( time );
       
       // Fire events for seeking and time change
       this.evtHolder.dispatchEvent( "seeked" );
@@ -407,11 +428,11 @@
       }
       
       this.evtHolder.dispatchEvent( "play" );
-      this.swfObj.api( "api_play" );
+      this.swfObj.api_play();
     },
     // Pauses the video
     pause: function() {
-      this.swfObj.api( "api_pause" );
+      this.swfObj.api_pause();
     },
     mute: function() {
       if ( !this.muted() ) {
@@ -441,7 +462,7 @@
     unload: function() {
       this.pause();
       
-      this.swfObj.api( "api_unload" );
+      this.swfObj.api_unload();
       this.evtHolder.dispatchEvent( "abort" );
       this.evtHolder.dispatchEvent( "emptied" );
     },
@@ -465,7 +486,7 @@
         playerEvt = "onFinish";
       } else if ( evt === "playing" ) {
         playerEvt = "onPlay";
-      } else if ( evt === "pause" || evt === "load" ) {
+      } else if ( evt === "pause" ) {
         // Direct mapping, CamelCase the event name as vimeo API expects
         playerEvt = "on"+evt[0].toUpperCase() + evt.substr(1);
       }
@@ -477,7 +498,7 @@
       // Link manual event structure with Vimeo's if not already
       // Do not link for 'timeupdate'
       if( evt !== "timeupdate" && playerEvt && this.evtHolder.getEventListeners( evt ).length === 1 ) {
-        this.swfObj.addEvent( playerEvt, function() {
+        this.swfObj.api_addEventListener( playerEvt, function() {
           that.evtHolder.dispatchEvent( evt );
         });
       }
