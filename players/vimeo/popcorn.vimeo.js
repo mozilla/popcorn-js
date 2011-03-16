@@ -166,6 +166,9 @@
     };
   };
   
+  var timeupdateInterval = 33,
+      timeCheckInterval = 0.75;
+      
   Popcorn.vimeo = function( mediaId, list ) {
     return new Popcorn.vimeo.init( mediaId, list );
   };
@@ -205,7 +208,7 @@
       var matches = url.match( rWebUrl );
       return matches ? matches[0].substr(10) : "";
     };
-  
+    
     // If container id is not supplied, assumed to be same as player id
     var ctor = function ( containerId, videoUrl ) {
       if ( !containerId ) {
@@ -215,13 +218,22 @@
       var vidId,
           that = this;
       
-      this.swfObj = document.getElementById( containerId ),
-      this.addEventFn,
-      this.evtHolder,
-      this.popped,
-      this.autoplay,
-      this.readyState = 0,
-      this.objVars;
+      this.swfObj = document.getElementById( containerId );
+      this.addEventFn;
+      this.evtHolder;
+      this.autoplay;
+      this.paused = true;
+      this.duration = Number.MAX_VALUE;
+      this.ended = 0;
+      this.currentTime = 0;
+      this.volume = 1;
+      this.loop = 0;
+      this.initialTime = 0;
+      this.played = 0;
+      this.readyState = 0;
+      
+      this.previousCurrentTime = this.currentTime;
+      this.previousVolume = this.volume;
           
       if ( !this.swfObj ) {
         throw "Invalid id, could not find it!";
@@ -229,19 +241,6 @@
       
       this.evtHolder = new LikeADOM( this );
       this.autoplay = this.swfObj.autoplay;
-      
-      // Tracking variables for the video player
-      // Better to store them here than on the DOM
-      this.objVars = {
-        paused: true,
-        duration: Number.NaN,
-        ended: 0,
-        currentTime: Number.NaN,
-        volume: 1,
-        loop: 0,
-        initialTime: 0,
-        played: 0,
-      };
       
       // Try and get a video id from a vimeo site url
       // Try either from ctor param or from iframe itself
@@ -308,7 +307,7 @@
         var loadingFn;
         
         that.swfObj.get( "api_getDuration", function( duration ) {
-          that.objVars.duration = duration;
+          that.duration = parseFloat( duration );
           that.evtHolder.dispatchEvent( "durationchange" );
         });
         
@@ -316,27 +315,27 @@
         // Done by Getting the Current Time while the video plays
         that.swfObj.addEvent( "onProgress", function() {
           that.swfObj.get( "api_getCurrentTime", function( time ) {
-            that.objVars.currentTime = parseFloat( time );
+            that.currentTime = parseFloat( time );
             that.evtHolder.dispatchEvent( "timeupdate" );
           });
         });
         
         // Add pause listener to keep track of playing state
         that.addEventListener( "pause", function() {
-          that.objVars.paused = true;
+          that.paused = true;
         });
         
         // Add play listener to keep track of playing state
         that.addEventListener( "playing", function() {
-          that.objVars.paused = false;
-          that.objVars.ended = 0;
+          that.paused = false;
+          that.ended = 0;
         });
         
         // Add ended listener to keep track of playing state
         that.addEventListener( "ended", function() {
-          if ( that.objVars.loop !== "loop" ) {
-            that.objVars.paused = true;
-            that.objVars.ended = 1;
+          if ( that.loop !== "loop" ) {
+            that.paused = true;
+            that.ended = 1;
           }
         });
         
@@ -347,10 +346,6 @@
           that.evtHolder.removeEventListener( "progress", loadingFn );
         });
       });
-    
-      // 'this' is a video wrapper, so put into Popcorn and return the result
-      this.popped = Popcorn( this );      
-      return this.popped;
     }
     return ctor;
   })();
@@ -360,20 +355,20 @@
   // Sequence object prototype
   Popcorn.extend( Popcorn.vimeo.prototype, {
     // Do everything as functions instead of get/set
-    loop: function( val ) {
+    setLoop: function( val ) {
       if ( !val ) {
-        return this.objVars.loop;
+        return;
       }
       
-      this.objVars.loop = val;
+      this.loop = val;
       var isLoop = val === "loop" ? 1 : 0;
       // HTML convention says to loop if value is 'loop'
       this.swfObj.api('api_setLoop', isLoop );
     },
     // Set the volume as a value between 0 and 1
-    volume: function( val ) {
+    setVolume: function( val ) {
       if ( !val && val !== 0 ) {
-        return this.objVars.volume;
+        return;
       }
       
       // Normalize in case outside range of expected values
@@ -386,18 +381,18 @@
       }
       
       // HTML video expects to be 0.0 -> 1.0, Vimeo expects 0-100
-      this.objVars.volume = val;
+      this.volume = this.previousVolume = val;
       this.swfObj.api( "api_setVolume", val*100 );
       this.evtHolder.dispatchEvent( "volumechange" );
     },
     // Seeks the video
-    currentTime: function ( time ) {
+    setCurrentTime: function ( time ) {
       if ( !time && time !== 0 ) {
-        return this.objVars.currentTime;
+        return;
       }
       
-      this.objVars.currentTime = time;
-      this.objVars.ended = time < this.objVars.duration;
+      this.currentTime = this.previousCurrentTime = time;
+      this.ended = time >= this.duration;
       this.swfObj.api( "api_seekTo", time );
       
       // Fire events for seeking and time change
@@ -406,8 +401,9 @@
     },
     // Play the video
     play: function() {
-      if ( !this.objVars.played ) {
-        this.objVars.played = 1;
+      if ( !this.played ) {
+        this.played = 1;
+        this.startTimeUpdater();
         this.evtHolder.dispatchEvent( "loadstart" );
       }
       
@@ -418,19 +414,25 @@
     pause: function() {
       this.swfObj.api( "api_pause" );
     },
-    duration: function() {
-      return this.objVars.duration;
-    },
     mute: function() {
       if ( !this.muted() ) {
-        this.objVars.oldVol = this.objVars.volume;
-        this.volume( 0 );
+        this.oldVol = this.volume;
+        
+        if ( this.paused ) {
+          this.setVolume( 0 );
+        } else {
+          this.volume = 0;
+        }
       } else {
-        this.volume( this.objVars.oldVol );
+        if ( this.paused ) {
+          this.setVolume( this.oldVol );
+        } else {
+          this.volume = this.oldVol;
+        }
       }
     },
     muted: function() {
-      return this.objVars.volume === 0;
+      return this.volume === 0;
     },
     // Force loading by playing the player. Pause afterwards
     load: function() {
@@ -485,6 +487,32 @@
     },
     dispatchEvent: function( evtName ) {
       return this.evtHolder.dispatchEvent( evtName );
-    }
+    },
+    startTimeUpdater: function() {
+      var self = this,
+          seeked = 0;
+      
+      if ( Math.abs( this.currentTime - this.previousCurrentTime ) > timeCheckInterval ) {
+        // Has programatically set the currentTime
+        this.setCurrentTime( this.currentTime );
+        seeked = 1;
+      } else {
+        this.previousCurrentTime = this.currentTime;
+      }
+      
+      if ( this.volume !== this.previousVolume ) {
+        this.setVolume( this.volume );
+      }
+      
+      if ( !self.paused || seeked ) {
+        this.dispatchEvent( 'timeupdate' );
+      }
+      
+      if( !self.ended ) {
+        setTimeout( function() {
+          self.startTimeUpdater.call(self);
+        }, timeupdateInterval);
+      }
+    },
   });
 })( Popcorn );

@@ -80,7 +80,7 @@ test("Popcorn Vimeo Plugin", function () {
             if ( timesCalled === 1 ) {
               ok( true, "Pause event works" );
               plus();
-              ok( popped.video.objVars.paused, "Pause attribute set" );
+              ok( popped.video.paused, "Pause attribute set" );
               plus();
               popped.play();
             }
@@ -99,7 +99,7 @@ test("Popcorn Vimeo Plugin", function () {
               ok( true, "Video autoplay attribute works" );
               plus();
               
-              ok( !popped.video.objVars.paused, "Player paused attribute not set" );
+              ok( !popped.video.paused, "Player paused attribute not set" );
               plus();
               
               popped.exec( 5, function() {
@@ -125,7 +125,7 @@ test("Popcorn Vimeo Plugin", function () {
   ok( "vimeo" in Popcorn, "Vimeo is a method of Popcorn" );
   plus();
   
-  equals( popped.video.objVars.initialTime, 0, "Player initial time is 0" );
+  equals( popped.video.initialTime, 0, "Player initial time is 0" );
   plus();
   
   Popcorn.plugin( "timingTest", {

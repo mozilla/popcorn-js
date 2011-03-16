@@ -67,6 +67,63 @@ test("Utility", function () {
   
 });
 
+test("Instances", function() {
+  var expects = 11, 
+      count   = 0,
+      instance;
+  
+  expect(expects);
+  
+  function plus(){ 
+    if ( ++count == expects ) {
+      start();      
+    }   
+  }
+
+  stop();
+  
+  ok( typeof Popcorn.addInstance === "function" , "Popcorn.addInstance is a provided utility function");
+  plus();
+  
+  ok( typeof Popcorn.removeInstance === "function" , "Popcorn.removeInstance is a provided utility function");
+  plus();
+  
+  ok( typeof Popcorn.getInstanceById === "function" , "Popcorn.getInstanceById is a provided utility function");
+  plus();
+
+  ok( typeof Popcorn.removeInstanceById === "function" , "Popcorn.removeInstanceById is a provided utility function");  
+  plus();
+  
+  ok( typeof Popcorn.instanceIds === "object" , "Popcorn.instanceIds is a provided cache object");
+  plus();
+  
+  ok( "length" in Popcorn.instances && "join" in Popcorn.instances, "Popcorn.instances is a provided cache array");  
+  plus();
+  
+  instance = Popcorn.getInstanceById("video");
+  
+  ok( instance.video, "Stored instance as a `video` property" );
+  plus();
+   
+  ok( instance.data, "Stored instance as a `data` property" );
+  plus();
+   
+  ok( instance instanceof Popcorn, "Instance instanceof Popcorn" );
+  plus();
+  
+  equal( Popcorn.instances.length, 1, "There are the correct number of Popcorn instances" );
+  plus();
+
+  //  Create another instance
+  Popcorn("#video");
+
+  //  Get a reference to remove
+  var remove = Popcorn.instances[1];
+
+  //  Remove and check the length of the currently cached instances
+  equal( Popcorn.removeInstanceById( remove.id ).length, 1, "Removing an instance by id: 1 instance remains" );
+  plus();
+});
 
 test("guid", function () {
   
@@ -120,34 +177,73 @@ test("Protected", function () {
 
 
 
-test("Object", function () {
+test( "Object", function () {
 
+  var popped = Popcorn( "#video" ),
+      popObj = Popcorn( document.getElementById( "video" ) ),
+      methods = "load play pause currentTime mute volume roundTime exec removePlugin",
+      count = 0,
+      expects = 30;
   
-  var popped = Popcorn("#video"), 
-      methods = "load play pause currentTime mute volume roundTime exec removePlugin";
+  expect( expects );
   
-  
-  
-  ok( "video" in popped, "instance has `video` property" );
-  ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
+  function plus() {
 
-  ok( "data" in popped, "instance has `data` property" );
-  ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
+    if ( ++count === expects ) {
 
-  ok( "trackEvents" in popped.data, "instance has `trackEvents` property" );
-  ok( Object.prototype.toString.call(popped.data.trackEvents) === "[object Object]", "trackEvents property is an object" )
+      start(); 
+    }
+  }
 
-  
+  stop( 10000 ); 
+
+  // testing element passed by id
+  ok( "video" in popped, "instance by id has `video` property" );
+  plus();
+  equal( Object.prototype.toString.call( popped.video ), "[object HTMLVideoElement]", "instance by id video property is a HTMLVideoElement" );
+  plus();
+
+  ok( "data" in popped, "instance by id has `data` property" );
+  plus();
+  equal( Object.prototype.toString.call( popped.data ), "[object Object]", "instance by id data property is an object" );
+  plus();
+
+  ok( "trackEvents" in popped.data, "instance by id has `trackEvents` property" );
+  plus();
+  equal( Object.prototype.toString.call( popped.data.trackEvents ), "[object Object]", "instance by id trackEvents property is an object" );
+  plus();
+
   popped.play();
 
+  methods.split( /\s+/g ).forEach(function ( k,v ) {
 
-  methods.split(/\s+/g).forEach(function (k,v) {
-
-    ok( k in popped, "instance has method: " + k );
-    
+    ok( k in popped, "instance by id has method: " + k );
+    plus();
   });
-  
-  
+
+  // testing element passed by reference
+  ok( "video" in popObj, "instance by reference has `video` property" );
+  plus();
+  equal( Object.prototype.toString.call( popObj.video ), "[object HTMLVideoElement]", "instance by reference video property is a HTMLVideoElement" );
+  plus();
+
+  ok( "data" in popObj, "instance by reference has `data` property" );
+  plus();
+  equal( Object.prototype.toString.call( popObj.data ), "[object Object]", "instance by reference data property is an object" );
+  plus();
+
+  ok( "trackEvents" in popObj.data, "instance by reference has `trackEvents` property" );
+  plus();
+  equal( Object.prototype.toString.call( popObj.data.trackEvents ), "[object Object]", "instance by reference trackEvents property is an object" );
+  plus();
+
+  popObj.play();
+
+  methods.split( /\s+/g ).forEach(function ( k,v ) {
+
+    ok( k in popObj, "instance by reference has method: " + k );
+    plus();
+  });
 });
 
 module("Popcorn Methods");
@@ -276,82 +372,6 @@ test("Stored By Type", function () {
   
   p.unlisten("play");
   
-});
-
-
-test("Passed an object", function () {
-  
-  QUnit.reset();
-  
-  var evtMethods = "addEventListener dispatchEvent".split(/\s+/),
-      methods = "load play pause currentTime playbackRate mute volume duration".split(/\s+/),
-      attributes = "readyState autoplay".split(/\s+/),
-      obj = {},
-      p,
-      playEvent,
-      count = 0,
-      wants;
-
-  function plus(){ 
-
-    if ( ++count === wants ) {  
-      start();
-    } 
-  }
-  
-  Popcorn.forEach( methods, function( method ) {
-    obj[method] = (function() {
-      var calledWithArgs = 0,
-          calledWithoutArgs = 0;
-          
-      return function( arg ) {
-        if ( arg && !calledWithArgs ) {
-          calledWithArgs = 1;
-          ok(true, method+" called with argument");
-          plus();
-        } else if ( !arg && !calledWithoutArgs ) {
-          calledWithoutArgs = 1;
-          ok(true, method+" called without argument");
-          plus();
-        }
-      }
-    })();
-  });
-  
-  Popcorn.forEach( evtMethods, function( method ) {
-    obj[method] = (function() {
-      var hasCalled = 0;
-      
-      return function() {
-        if ( hasCalled ) {
-          return;
-        }
-        
-        hasCalled = 1;
-        ok(true, method+" called");
-        plus();
-      };
-    })()
-  });
-  
-  Popcorn.forEach( attributes, function( attr ) {
-    obj[attr] = 3;
-  });
-  
-  p = Popcorn( obj );
-  wants = methods.length*2 + evtMethods.length;
-
-  expect( wants );
-  stop( 10000 );
-  
-  p.listen( "play", Popcorn.nop );
-  
-  Popcorn.forEach( methods, function( method ) {
-    p[method]();
-    p[method]( 1 );
-  });
-  
-  p.trigger( "play" );
 });
 
 
@@ -653,28 +673,22 @@ test("Update Timer", function () {
 test("Plugin Factory", function () {
   
   QUnit.reset();
-  
-  // needs expectation
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 48, 
+      expects = 34, 
       count = 0;
-  
-  //expect(expects);
-  
+
   function plus() { 
     if ( ++count == expects ) {
-      Popcorn.removePlugin("breaker");
       Popcorn.removePlugin("executor");
       Popcorn.removePlugin("complicator");
-      Popcorn.removePlugin("closure");
-      start(); 
+      start();
     }
   }
 
+  expect( expects );
   stop( 10000 );
-  expect(expects);
 
   Popcorn.plugin("executor", function () {
     
@@ -715,7 +729,7 @@ test("Plugin Factory", function () {
  
   ok( "executor" in popped, "executor plugin is now available to instance" );
   plus();
-  ok( Popcorn.registry.length === 1, "One item in the registry");
+  equals( Popcorn.registry.length, 1, "One item in the registry");
   plus();    
   
   
@@ -724,8 +738,7 @@ test("Plugin Factory", function () {
     start: 1, 
     end: 2
   });
-  
-  
+
   Popcorn.plugin("complicator", {
     
     start: function ( event ) {
@@ -763,18 +776,38 @@ test("Plugin Factory", function () {
     timeupdate: function () {
     }    
   });
-  
-  
+
   ok( "complicator" in popped, "complicator plugin is now available to instance" );
   plus();
-  ok( Popcorn.registry.length === 2, "Two items in the registry");
+  equals( Popcorn.registry.length, 2, "Two items in the registry");
   plus();
   
   popped.complicator({
     start: 3, 
     end: 4
-  });  
+  }); 
 
+  popped.currentTime(0).play();
+
+});
+
+test("Plugin Breaker", function () {
+  
+  QUnit.reset();
+
+  var popped = Popcorn("#video"), 
+      expects = 6, 
+      count = 0;
+
+  function plus() { 
+    if ( ++count == expects ) {
+      Popcorn.removePlugin("breaker");
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 10000 );
 
   var breaker = {
     
@@ -811,13 +844,68 @@ test("Plugin Factory", function () {
 
   ok( "breaker" in popped, "breaker plugin is now available to instance" );
   plus();
-  ok( Popcorn.registry.length === 3, "Three items in the registry");
+  equals( Popcorn.registry.length, 1, "Three items in the registry");
   plus();
   
   popped.breaker({
     start: 1, 
     end: 2
   });     
+
+  popped.currentTime(0).play();
+
+});
+
+test("Plugin Empty", function () {
+  
+  QUnit.reset();
+
+  var popped = Popcorn("#video"), 
+      expects = 2,
+      testObj = {},
+      count = 0;
+
+  function plus() { 
+    if ( ++count == expects ) {
+      Popcorn.removePlugin("empty");
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 10000 );
+
+  Popcorn.plugin("empty", testObj);
+
+  popped.empty({});
+
+  ok( testObj.start, "default start function is generated" );
+  plus();
+  ok( testObj.end, "default end function is generated" );
+  plus();
+
+  popped.currentTime(0).play();
+
+});
+
+test("Plugin Closure", function () {
+  
+  QUnit.reset();
+
+  var popped = Popcorn("#video"), 
+      methods = "load play pause currentTime mute volume roundTime exec removePlugin",
+      expects = 8, 
+      count = 0;
+
+  function plus() { 
+    if ( ++count == expects ) {
+      Popcorn.removePlugin("closure");
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 10000 );
 
   Popcorn.plugin("closure", function() {
 
@@ -857,7 +945,7 @@ test("Plugin Factory", function () {
     nick: "second closure track"
   });
 
-  popped.currentTime(0).play();
+  popped.currentTime(5).play();
 
 });
 
@@ -1727,9 +1815,6 @@ test("Parsing Handler - References unavailable plugin", function () {
   }, 2000);
   
 });
-
-
-
 
 module("Popcorn Test Runner End");
 test("Last Check", function () {
