@@ -10,6 +10,7 @@
    * End is the time that you want this plug-in to stop executing 
    * Person is the name of the person who you want to tag
    * Image is the url to the image of the person - optional
+   * href is the url to the webpage of the person - optional   
    * Target is the id of the document element that the text needs to be 
    * attached to, this target element must exist on the DOM
    * 
@@ -21,6 +22,8 @@
           start: 5, // seconds
           end: 15, // seconds
           person: '@annasob',
+          image:  'http://newshour.s3.amazonaws.com/photos%2Fspeeches%2Fguests%2FRichardNSmith_thumbnail.jpg',
+          href:   'http://annasob.wordpress.com',
           target: 'tagdiv'
         } )
    *
@@ -56,14 +59,15 @@
           end      : {elem:'input', type:'text', label:'Out'},
           target   : 'tag-container',
           person   : {elem:'input', type:'text', label:'Name'},
-          image    : {elem:'input', type:'text', label:'Image Src'}
+          image    : {elem:'input', type:'text', label:'Image Src'},
+          href     : {elem:'input', type:'text', label:'URL'}   
         }
       },
       _setup: function( options ) {
         var exists = false;
         // loop through the existing objects to ensure no duplicates
         // the idea here is to have one object per unique options.target
-        for ( var i = 0; i< peopleArray.length; i++ ) {
+        for ( var i = 0; i < peopleArray.length; i++ ) {
           if ( peopleArray[ i ].name === options.target ) {
             options._p = peopleArray[ i ];  
             exists = true;
@@ -83,14 +87,11 @@
        * options variable
        */
       start: function( event, options ){
-        if ( options.image ) {
-          options._p.contains[ options.person ] = " <img src='" + options.image + "'/> " + options.person;
-        } else {
-          options._p.contains[ options.person ] = options.person;
-        }
-        //options._p.contains[options.person] = options.person;
+        options._p.contains[ options.person ] = ( options.image ) ? "<img src='" + options.image + "'/> " : "" ;
+        options._p.contains[ options.person ] += ( options.href ) ? "<a href='" + options.href + "' target='_blank'> " + options.person + "</a>" : options.person ;
+
         if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).innerHTML  = options._p.toString();
+          document.getElementById( options.target ).innerHTML = options._p.toString();
         }
       },
       /**
@@ -99,10 +100,10 @@
        * of the video  reaches the end time provided by the 
        * options variable
        */
-      end: function(event, options){
+      end: function( event, options ){
         delete options._p.contains[ options.person ];
         if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).innerHTML  = options._p.toString();
+          document.getElementById( options.target ).innerHTML = options._p.toString();
         }
       }
    };

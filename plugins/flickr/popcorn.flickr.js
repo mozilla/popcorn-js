@@ -87,7 +87,6 @@
         uri += "lang=en-us&format=json&jsoncallback=flickr";
         
         Popcorn.xhr.getJSONP( uri, function( data ) {
-        //$.getJSON( uri, function( data ) {
           options.container.innerHTML = "<p style='padding:" + padding + ";'>" + data.title + "<p/>";
           
           Popcorn.forEach( data.items, function ( item, i ) {

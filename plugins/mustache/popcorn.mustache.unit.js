@@ -62,7 +62,7 @@ test('Popcorn Mustache Plugin', function () {
   video.addEventListener('timeupdate', function() {
 
     function pass(a, b) {
-      equals( '<h1>mustache - test ' + a + '/' + b + '<\/h1>', mustacheDiv.innerHTML, 'Mustache template rendered' );
+      equals( mustacheDiv.innerHTML, '<h1>mustache - test ' + a + '/' + b + '<\/h1>','Mustache template rendered' );
       plus();
     }
 
