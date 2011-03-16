@@ -5,6 +5,13 @@
       <script src="../../popcorn.js"></script>
       <script type="text/javascript" src="popcorn.youtube.js"></script>
       <script src="../../plugins/footnote/popcorn.footnote.js"></script>
+      <script src="../../plugins/flickr/popcorn.flickr.js"></script>
+      <script src="../../plugins/attribution/popcorn.attribution.js"></script>
+      <script src="../../plugins/webpage/popcorn.webpage.js"></script>
+      <script src="../../plugins/googlefeed/popcorn.googlefeed.js"></script>
+      <script src="../../plugins/image/popcorn.image.js"></script>
+      <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
+      <script src="../../plugins/twitter/popcorn.twitter.js"></script>
       <script>
         // Helper function to get elements
         function element(id) {
@@ -12,15 +19,69 @@
         }
         
         document.addEventListener( 'DOMContentLoaded', function() {
-          var popcorn = Popcorn( Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=9oar9glUCL0' ) ),
-              paused = true;
+          var paused = true,
+              popcorn;
           
-          popcorn = popcorn.footnote({
-            start: 5, // seconds
-            end: 40, // seconds
-            text: 'The video is "RiP: A Remix Manifesto", by Brett Gaylor',
-            target: 'footnotediv'
-          })
+          popcorn = Popcorn( Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=9oar9glUCL0' ) )
+                    .footnote({
+                      start: 5, // seconds
+                      end: 40, // seconds
+                      text: 'The video is "RiP: A Remix Manifesto", by Brett Gaylor',
+                      target: 'footnotediv'
+                    })
+                    .flickr({
+                      start: 20, // seconds
+                      end: 40, // seconds
+                      tags: 'georgia',
+                      numberofimages: '8',
+                      target: 'flickrdiv'
+                    })
+                    .twitter({
+                      start: 20, // seconds
+                      end: 45, // seconds
+                      title: 'Oil Spill',
+                      src: '#oilspill',
+                      target: 'twitterdiv'
+                    })
+                    .attribution({
+                      start: 5, // seconds
+                      end: 60, // seconds
+                      nameofwork: "Internet",
+                      nameofworkurl:"http://www.archive.org/details/CC1232_internet",
+                      copyrightholder:"The Computer Chronicles",
+                      license:"CC-BY-NC-ND",
+                      licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
+                      target: 'attribdiv'
+                    })
+                    .subtitle({
+                      start: 5, // seconds
+                      end: 15, // seconds
+                      text: 'This is overlaid on top of the video. You can hightlight it!',
+                      display: 'inline',
+                      language: "en"
+                    })
+                    .webpage({
+                      id: "webpages-a", 
+                      start: 0, // seconds
+                      end: 15, // seconds
+                      src: 'http://webmademovies.org/',
+                      target: 'webpagediv'
+                    })
+                    .googlefeed({
+                        start: 0, // seconds
+                        end: 15, // seconds
+                        target: "feeddiv",
+                        url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
+                        title: "Planet Feed",
+                        orientation: "Vertical"
+                    })
+                    .image({
+                      start: 5, // seconds
+                      end: 15, // seconds
+                      href: 'http://www.drumbeat.org/',
+                      src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
+                      target: 'imagediv'
+                    })
           .listen( 'durationchange', function() {
             element( 'player-duration' ).innerHTML = popcorn.duration();
           })
@@ -38,7 +99,9 @@
           .listen('pause', function() {
             paused = true;
             element( 'btn-play-pause' ).innerHTML = 'Play';
-          });
+          })
+          .mute()
+          .play();
             
           // Setup UI after loaded
           popcorn.listen( 'load', function() {
@@ -74,37 +137,65 @@
   </head>
   <body>
     <div>
-       <div style="float:right;">
+      <div>
+        <div id="video" width="360" height="300" ></div>
+        <button class="simple" id="btn-play-pause">Play</button>
+        <button class="seek" id="btn-seek">Seek to 30</button>
+        <button class="volume" id="btn-volume">Toggle Volume</button>
+        <button class="mute" id="btn-mute">Toggle Mute</button>
+        <div>
+          <ul>
+            <li>Status: <span id="player-status">Not Ready</span></li>
+            <li>Current Time (s): <span id="player-time"></span></li>
+            <li>Volume (0-1): <span id="player_vol"></span></li>
+            <li>Video Duration (s): <span id="player-duration"></span></li>
+          </ul>
+        </div>
+      </div>
+      <div>
         <h3>Description</h3>
         <p>
           This demo will showcase how a Youtube flash video can be integrated into Popcorn. This  is done by making the flash video masquerade as HTML 5 video.<br />
           Due to the Flash security model, this demo must be  run from a web server<br />
           From 5 to 40 seconds, the footnote 'The video is "RiP: A Remix Manifesto", by Brett Gaylor' will appear below 'Footnote Area'.
         <hr >
-          Youtube does not support their player to be chromeless (hidden controls), but custsom controls have been developed and tied into their player.<br />
-          Clicking play/pause or seeking in either the video or via custsom controls will cause the other to update.<br />
-          Clicking on the embed option in the Vimeo player while the video is playing will cause the video to pause and custom controls to update.<br />
-          The video can be specified in the HTML source by giving the vimeo web site url (http://www.youtube.com/watch?v=VIDEOID) to either Popcorn.youtube or as the div src attribute.<br/>
+          Youtube does support their player to be chromeless (hidden controls), but their controls are left in to provide richer interaction.<br />
+          Custom controls have been developed and tied into their player for this demo.<br />
+          Clicking play/pause or seeking in either the video or via custom controls will cause the other to update.<br />
+          The video can be specified in the HTML source by giving the youtube web site url (http://www.youtube.com/watch?v=VIDEOID) to either Popcorn.youtube or as the div src attribute.<br/>
         </p>
-        <br />
-        <br />
-        <br />
-        <div id="footnotediv" width="50%" height="50%">
-          <strong>Footnote Area</strong><br />
-        </div>
-      </div>
-      <div id="video" width="360" height="300" ></div>
-      <button class="simple" id="btn-play-pause">Play</button>
-      <button class="seek" id="btn-seek">Seek to 30</button>
-      <button class="volume" id="btn-volume">Toggle Volume</button>
-      <button class="mute" id="btn-mute">Toggle Mute</button>
-      <div>
+        <h4>Expected Events</h4>
         <ul>
-          <li>Status: <span id="player-status">Not Ready</span></li>
-          <li>Current Time (s): <span id="player-time"></span></li>
-          <li>Volume (0-1): <span id="player_vol"></span></li>
-          <li>Video Duration (s): <span id="player-duration"></span></li>
+          <li>From 5 to 40 seconds, the footnote 'The video is "RiP: A Remix Manifesto", by Brett Gaylor' will appear below 'Footnote Area'.</li>
+          <li>From 20 to 40 seconds, the a flickr stream of 8 images  tagged 'georgia' will appear below 'Flickr Area'.</li>
+          <li>From 20 to 45 seconds, tweets tagged #oilspill will appear below 'Twitter Area'.</li>
+          <li>From 5 to 60 seconds, the Creative Commons license will appear below 'Attributions Area'.</li>
+          <li>From 5 to 15 seconds, the Mozilla Drumbeat logo will appear below 'Image Area'.</li>
+          <li>From 5 to 15 seconds, the subtitle 'This is overlaid on top of the video. You can hightlight it!' will appear in front of the video.</li>
+          <li>From 0 to 20 seconds, blogs from 'http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml' will appear below 'Google Feed Area'.</li>
+          <li>From 0 to 15 seconds, the site 'http://webmademovies.org/' will appear below 'Web Page Area'.</li>
         </ul>
+      </div>
+      <div id="footnotediv" width="50%" height="50%">
+        <strong>Footnote Area</strong><br />
+      </div>
+      <div id="attribdiv" width="50%" height="50%">
+        <strong>Attributions Area</strong><br />
+      </div>
+      <div id="flickrdiv" width="50%" height="50%">
+        <strong>Flickr Area</strong><br />
+      </div>
+      <div id="twitterdiv" width="50%" height="50%">
+        <strong>Twitter Area</strong><br />
+      </div>
+      <div id="imagediv" width="50%" height="50%">
+        <strong>Image Area</strong><br />
+      </div>
+      <div id="feeddiv" width="50%" height="50%">
+        <strong>Google Feed Area</strong><br />
+      </div>
+      <div id="webpagediv" width="100px" height="50px">
+        <strong>Web Page Area</strong><br />
       </div>
     </div>
   </body>

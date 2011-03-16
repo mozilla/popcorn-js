@@ -102,6 +102,7 @@ var onYouTubePlayerReady;
         width="250" height="200">
         <param name="allowFullScreen" value="true" />
         <param name="allowscriptaccess" value="always" />
+        <param name="wmode" value="transparent" />
       </object>*/
   
   function createSWFObject( params ) {
@@ -121,8 +122,14 @@ var onYouTubePlayerReady;
     param2.setAttribute( "name", "allowscriptaccess" );
     param2.setAttribute( "value", "always" );
     
+    // This param allows us to place html on top of the Flash video
+    var param3 = document.createElement( "param" );
+    param3.setAttribute( "name", "wmode" );
+    param3.setAttribute( "value", "transparent" );
+    
     obj.appendChild( param1 );
     obj.appendChild( param2 );
+    obj.appendChild( param3 );
     
     return obj;
   }
@@ -153,6 +160,24 @@ var onYouTubePlayerReady;
     
     // Issue load event
     vid.dispatchEvent( 'load' );
+  }
+  
+  function makeFlashObject( container ) {
+    this.video = createSWFObject({
+      playerId: this.playerId,
+      videoId: this.vidId,
+      width: container.getAttribute("width") || 460,
+      height: container.getAttribute("height") || 350
+    });
+    
+    container.appendChild( this.video );
+    
+    // For calculating position relative to video (like subtitles)
+    this.offsetWidth = this.video.offsetWidth;
+    this.offsetHeight = this.video.offsetHeight;
+    this.offsetParent = this.video.offsetParent;
+    this.offsetLeft = this.video.offsetLeft;
+    this.offsetTop = this.video.offsetTop;
   }
 
   Popcorn.youtube = function( elementId, url ) {
@@ -203,14 +228,7 @@ var onYouTubePlayerReady;
       if ( container.children.length ) {
         this.video = container.firstChild;
       } else {
-        this.video = createSWFObject({
-          playerId: this.playerId,
-          videoId: this.vidId,
-          width: container.getAttribute("width") || 460,
-          height: container.getAttribute("height") || 350
-        });
-        
-        container.appendChild( this.video );
+        makeFlashObject.call( this, container );
       }
     } else {
       document.addEventListener( "DOMContentLoaded", function() {
@@ -226,14 +244,7 @@ var onYouTubePlayerReady;
           throw "Could not find video id";
         }
         
-        self.video = createSWFObject({
-          playerId: self.playerId,
-          videoId: self.vidId,
-          width: container.getAttribute("width") || 460,
-          height: container.getAttribute("height") || 350
-        });
-        
-        container.appendChild( self.video );
+        makeFlashObject.call( self, container );
       }, false);
     }
     
@@ -313,16 +324,34 @@ var onYouTubePlayerReady;
     },
 
     play: function() {
+      // In case called before video is loaded, defer acting
+      if ( !loadedPlayers[this.playerId] ) {
+        this.addEventListener( "load", this.play );
+        return;
+      }
+      
       this.dispatchEvent( 'play' );
       this.video.playVideo();
     },
 
     pause: function() {
+      // In case called before video is loaded, defer acting
+      if ( !loadedPlayers[this.playerId] ) {
+        this.addEventListener( "load", this.pause );
+        return;
+      }
+      
       this.video.pauseVideo();
       // pause event is raised by Youtube.
     },
 
     load: function() {
+      // In case called before video is loaded, defer acting
+      if ( !loadedPlayers[this.playerId] ) {
+        this.addEventListener( "load", this.load );
+        return;
+      }
+      
       this.video.playVideo();
       this.video.pauseVideo();
     },
@@ -345,12 +374,14 @@ var onYouTubePlayerReady;
       this.dispatchEvent( 'seeked' );
     },
 
-    duration: function() {
-      return this.video.getDuration();
-    },
-
     // Mute is toggleable
     mute: function() {
+      // In case called before video is loaded, defer acting
+      if ( !loadedPlayers[this.playerId] ) {
+        this.addEventListener( "load", this.mute );
+        return;
+      }
+      
       if ( this.volume !== 0 ) {
         this.preMuteVol = this.volume;        
         this.setVolume( 0 );
