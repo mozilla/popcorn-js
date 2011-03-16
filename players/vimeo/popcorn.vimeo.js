@@ -236,6 +236,8 @@
     var ctor = function ( containerId, videoUrl ) {
       if ( !containerId ) {
         throw "Must supply an id!";
+      } else if ( /file/.test( location.protocol ) ) {
+        throw "Must run from a web server!";
       }
       
       var vidId,
