@@ -19,7 +19,7 @@ test("Popcorn Vimeo Plugin", function () {
     }
   }
   
-  var popped = Popcorn.vimeo( "player_1", "http://vimeo.com/11127501" ),
+  var popped = Popcorn( Popcorn.vimeo( "player_1", "http://vimeo.com/11127501" ) ),
       expects = 23,
       playCount = 0,
       pauseCount = 0,

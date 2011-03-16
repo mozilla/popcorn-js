@@ -397,7 +397,6 @@
       
       // Fire events for seeking and time change
       this.evtHolder.dispatchEvent( "seeked" );
-      this.evtHolder.dispatchEvent( "timeupdate" );
     },
     // Play the video
     play: function() {
@@ -452,7 +451,8 @@
       var playerEvt,
           that = this;
       
-      evt = evt.toLowerCase();
+      // In case event object is passed in
+      evt = evt.type || evt.toLowerCase();
       
       // If it's an HTML media event supported by player, map
       if ( evt === "seeked" ) {
