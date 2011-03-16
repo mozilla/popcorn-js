@@ -20,7 +20,7 @@ test("Popcorn Vimeo Plugin", function () {
   }
   
   var popped = Popcorn( Popcorn.vimeo( "player_1", "http://vimeo.com/11127501" ) ),
-      expects = 23,
+      expects = 22,
       playCount = 0,
       pauseCount = 0,
       count = 0,
@@ -120,7 +120,7 @@ test("Popcorn Vimeo Plugin", function () {
   
   expect( expects );
   
-  stop( /* 20000 */ );
+  stop( 20000 );
   
   ok( "vimeo" in Popcorn, "Vimeo is a method of Popcorn" );
   plus();

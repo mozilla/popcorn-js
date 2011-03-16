@@ -90,6 +90,7 @@
                 // Output some initial UI values so we caan see what the player is doing
                 document.getElementById( "player_time" ).innerHTML = player.currentTime();
                 document.getElementById( "player_vol" ).innerHTML = player.volume();
+                document.getElementById( "player_duration" ).innerHTML = player.duration();
             };
 
             //On document ready
@@ -106,6 +107,9 @@
                     })
                     .listen( "loadstart", function() {
                       document.getElementById( "player_load" ).innerHTML = "Started";
+                    })
+                    .listen( "canplaythrough", function() {
+                      document.getElementById( "player_load" ).innerHTML = "Finished";
                     });
             }, false);
         </script>

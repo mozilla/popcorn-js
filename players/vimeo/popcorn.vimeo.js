@@ -1,6 +1,4 @@
 // Popcorn Vimeo Player Wrapper
-var onVimeoLoad;
-
 ( function( Popcorn ) {
   /**
   * Vimeo wrapper for Popcorn.
@@ -41,8 +39,10 @@ var onVimeoLoad;
   *
   * Due to Vimeo's API, certain events must be subscribed to at different times, and some not at all.
   * These events are completely custom-implemented and may be subscribed to at any time:
+  *   canplaythrough
   *   durationchange
   *   load
+  *   loadedmetadata
   *   loadstart
   *   play
   *   readystatechange
@@ -60,10 +60,8 @@ var onVimeoLoad;
   *
   * These events are not supported:
   *   canplay
-  *   canplaythrough
   *   error
   *   loadeddata
-  *   loadedmetadata
   *   ratechange
   *   seeking
   *   stalled
@@ -99,6 +97,11 @@ var onVimeoLoad;
   *   startOffsetTime
   */
   
+  var timeupdateInterval = 33,
+      timeCheckInterval = 0.75,
+      abs = Math.abs,
+      registry = {};
+  
   // base object for DOM-related behaviour like events
   var LikeADOM = function ( owner ) {
     var evts = {};
@@ -107,10 +110,10 @@ var onVimeoLoad;
         evts[evtName] = [];
         
         // Create a wrapper function to all registered listeners
-        this["on"+evtName] = function() {
+        this["on"+evtName] = function( args ) {
           Popcorn.forEach( evts[evtName], function( fn ) {
             if ( fn ) {
-              fn.call( owner );
+              fn.call( owner, args );
             }
           });
         }
@@ -159,35 +162,31 @@ var onVimeoLoad;
           return evts;
         }
       },
-      dispatchEvent: function( evt ) {        
+      dispatchEvent: function( evt, args ) {        
         // If event object was passed in, toString will yield event type as string (timeupdate)
         // If a string, toString() will return the string itself (timeupdate)
         var evt = "on"+evt.toString().toLowerCase();
-        this[evt] && this[evt]();
+        this[evt] && this[evt]( args );
       }
     };
   };
-  
-  var timeupdateInterval = 33,
-      timeCheckInterval = 0.75;
       
   Popcorn.vimeo = function( mediaId, list ) {
     return new Popcorn.vimeo.init( mediaId, list );
   };
   
+  Popcorn.vimeo.onLoad = function( playerId ) {
+    var player = registry[ playerId ];
+    
+    player.swfObj = document.getElementById( playerId );
+    player.dispatchEvent( "load" );
+  }
+  
   // A constructor, but we need to wrap it to allow for "static" functions
   Popcorn.vimeo.init = (function() {
     var rPlayerUri = /^http:\/\/player\.vimeo\.com\/video\/[\d]+/i,
         rWebUrl = /vimeo\.com\/[\d]+/,
-        registry = {},
         hasAPILoaded = false;
-        
-    onVimeoLoad = function( playerId ) {
-      var player = registry[ playerId ];
-      
-      player.swfObj = document.getElementById( playerId );
-      player.dispatchEvent( "load" );
-    }
         
     // Source file is from https://github.com/vimeo/froogaloop/blob/master/froogaloop.min.js
     // HTTPS seems to have some difficulties with getScript, so store locally
@@ -274,7 +273,7 @@ var onVimeoLoad;
         show_byline: 1,
         show_title: 1,
         js_api: 1, // required in order to use the Javascript API
-        js_onLoad: 'onVimeoLoad', // moogaloop will call this JS function when it's done loading (optional)
+        js_onLoad: 'Popcorn.vimeo.onLoad', // moogaloop will call this JS function when it's done loading (optional)
         js_swf_id: containerId // this will be passed into all event methods so you can keep track of multiple moogaloops (optional)
       };
       var params = {
@@ -329,19 +328,20 @@ var onVimeoLoad;
       
       // Set up listeners to internally track state as needed
       this.addEventListener( "load", function() {
-        var loadingFn;
+        var hasLoaded = false;
         
         that.duration = that.swfObj.api_getDuration();
         that.evtHolder.dispatchEvent( "durationchange" );
+        that.evtHolder.dispatchEvent( "loadedmetadata" );
         
         // Chain events and calls together so that this.currentTime reflects the current time of the video
         // Done by Getting the Current Time while the video plays
-        that.swfObj.api_addEventListener( "onProgress", function() {
+        that.addEventListener( "timeupdate", function() {
           that.currentTime = that.swfObj.api_getCurrentTime();
-          that.evtHolder.dispatchEvent( "timeupdate" );
         });
         
         // Add pause listener to keep track of playing state
+        
         that.addEventListener( "pause", function() {
           that.paused = true;
         });
@@ -361,10 +361,18 @@ var onVimeoLoad;
         });
         
         // Add progress listener to keep track of ready state
-        loadingFn = that.addEventListener( "progress", function() {
-          that.readyState = 3;
-          that.evtHolder.dispatchEvent( "readystatechange" );
-          that.evtHolder.removeEventListener( "progress", loadingFn );
+        that.addEventListener( "progress", function( data ) {
+          if ( !hasLoaded ) {
+            hasLoaded = 1;
+            that.readyState = 3;
+            that.evtHolder.dispatchEvent( "readystatechange" );
+          }
+          
+          if ( data.percent === 100 ) {
+            that.readyState = 4;
+            that.evtHolder.dispatchEvent( "readystatechange" );
+            that.evtHolder.dispatchEvent( "canplaythrough" );
+          }
         });
       });
     }
@@ -418,6 +426,7 @@ var onVimeoLoad;
       
       // Fire events for seeking and time change
       this.evtHolder.dispatchEvent( "seeked" );
+      this.evtHolder.dispatchEvent( "timeupdate" );
     },
     // Play the video
     play: function() {
@@ -497,10 +506,23 @@ var onVimeoLoad;
       
       // Link manual event structure with Vimeo's if not already
       // Do not link for 'timeupdate'
-      if( evt !== "timeupdate" && playerEvt && this.evtHolder.getEventListeners( evt ).length === 1 ) {
-        this.swfObj.api_addEventListener( playerEvt, function() {
-          that.evtHolder.dispatchEvent( evt );
-        });
+      if( playerEvt && this.evtHolder.getEventListeners( evt ).length === 1 ) {
+        // Setup global functions on Popcorn.vimeo to sync player events to an internal collection
+        // Some events expect 2 args, some only one (the player id)
+        if ( playerEvt === "onSeek" || playerEvt === "onProgress" || playerEvt === "onLoading" ) {
+          Popcorn.vimeo[playerEvt] = function( arg1, arg2 ) {
+            var player = registry[arg2];
+            
+            player.evtHolder.dispatchEvent( evt, arg1 );
+          };
+        } else {
+          Popcorn.vimeo[playerEvt] = function( arg1 ) {
+            var player = registry[arg1];
+            player.evtHolder.dispatchEvent( evt );
+          };
+        }
+        
+        this.swfObj.api_addEventListener( playerEvt, "Popcorn.vimeo."+playerEvt );
       }
     },
     removeEventListener: function( evtName, fn ) {
@@ -513,7 +535,7 @@ var onVimeoLoad;
       var self = this,
           seeked = 0;
       
-      if ( Math.abs( this.currentTime - this.previousCurrentTime ) > timeCheckInterval ) {
+      if ( abs( this.currentTime - this.previousCurrentTime ) > timeCheckInterval ) {
         // Has programatically set the currentTime
         this.setCurrentTime( this.currentTime );
         seeked = 1;
