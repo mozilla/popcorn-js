@@ -267,7 +267,6 @@
           {
             title: 'popcorn.getTrackEvents exists and works',
             test: function() {
-              console.log(popcorn.getTrackEvents());
               var exists = popcorn.getTrackEvents !== undefined;
               var works = popcorn.getTrackEvents();
               return exists && works;
@@ -276,7 +275,6 @@
           {
             title: 'popcorn.getTrackEvents === Popcorn.getTrackEvents(popcorn)',
             test: function() {
-              console.log(popcorn.getTrackEvents());
               var exists = popcorn.getTrackEvents !== undefined;
               var tracks1 = popcorn.getTrackEvents();
               var tracks2 = Popcorn.getTrackEvents(popcorn);
