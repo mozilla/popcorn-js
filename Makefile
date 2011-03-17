@@ -5,6 +5,9 @@ DIST_DIR = ${PREFIX}/dist
 PLUGINS_DIR = ${PREFIX}/plugins
 PARSERS_DIR = ${PREFIX}/parsers
 
+#Version
+VERSION ?= $(error Specify a version for your release (e.g., VERSION=0.5))
+
 RHINO ?= java -jar ${BUILD_DIR}/js.jar
 
 CLOSURE_COMPILER = ${BUILD_DIR}/google-compiler-20100917.jar
@@ -54,8 +57,8 @@ popcorn: ${POPCORN_DIST}
 
 ${POPCORN_DIST}: ${POPCORN_SRC} | ${DIST_DIR}
 	@@echo "Building" ${POPCORN_DIST}
-	@@cp ${POPCORN_SRC} ${POPCORN_DIST}
-
+	@@cat ${POPCORN_SRC} | sed -e 's/@VERSION/${VERSION}/' > ${POPCORN_DIST}
+       
 min: ${POPCORN_MIN} ${PLUGINS_MIN} ${PARSERS_MIN} ${POPCORN_COMPLETE_MIN}
 
 ${POPCORN_MIN}: ${POPCORN_DIST}
@@ -88,7 +91,7 @@ ${PARSERS_DIST}: ${PARSERS_SRC} ${DIST_DIR}
 
 complete: ${POPCORN_SRC} ${PLUGINS_SRC} ${DIST_DIR}
 	@@echo "Building popcorn + plugins + parsers"
-	@@cat ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} > ${POPCORN_COMPLETE_DIST}
+	@@cat ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} | sed -e 's/@VERSION/${VERSION}/' > ${POPCORN_COMPLETE_DIST}   
 
 lint:
 	@@echo "Checking Popcorn against JSLint..."
