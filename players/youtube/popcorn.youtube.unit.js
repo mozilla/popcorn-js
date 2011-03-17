@@ -49,7 +49,6 @@ test( "Popcorn YouTube Plugin Event Tests", function() {
   var expectedEvents = [
     'play',
     'loadeddata',
-    'volumechange',
     'playing',
     'volumechange',
     'pause',
@@ -201,7 +200,7 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
   equals( rawTube.duration, Number.MAX_VALUE, 'Duration starts as Max Value');
   plus();
   
-  rawTube.addEventListener( "durationchange", function() {
+  rawTube.addEventListener( "playing", function() {
     notEqual( rawTube.duration, Number.MAX_VALUE, "Duration has been changed from max value" );
     plus();
     notEqual( rawTube.duration, 0, "Duration is non-zero" );

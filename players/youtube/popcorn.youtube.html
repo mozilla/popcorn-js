@@ -22,66 +22,68 @@
           var paused = true,
               popcorn;
           
-          popcorn = Popcorn( Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=9oar9glUCL0' ) )
-                    .footnote({
-                      start: 5, // seconds
-                      end: 40, // seconds
-                      text: 'The video is "RiP: A Remix Manifesto", by Brett Gaylor',
-                      target: 'footnotediv'
-                    })
-                    .flickr({
-                      start: 20, // seconds
-                      end: 40, // seconds
-                      tags: 'georgia',
-                      numberofimages: '8',
-                      target: 'flickrdiv'
-                    })
-                    .twitter({
-                      start: 20, // seconds
-                      end: 45, // seconds
-                      title: 'Oil Spill',
-                      src: '#oilspill',
-                      target: 'twitterdiv'
-                    })
-                    .attribution({
-                      start: 5, // seconds
-                      end: 60, // seconds
-                      nameofwork: "Internet",
-                      nameofworkurl:"http://www.archive.org/details/CC1232_internet",
-                      copyrightholder:"The Computer Chronicles",
-                      license:"CC-BY-NC-ND",
-                      licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
-                      target: 'attribdiv'
-                    })
-                    .subtitle({
-                      start: 5, // seconds
-                      end: 15, // seconds
-                      text: 'This is overlaid on top of the video. You can hightlight it!',
-                      display: 'inline',
-                      language: "en"
-                    })
-                    .webpage({
-                      id: "webpages-a", 
-                      start: 0, // seconds
-                      end: 15, // seconds
-                      src: 'http://webmademovies.org/',
-                      target: 'webpagediv'
-                    })
-                    .googlefeed({
-                        start: 0, // seconds
-                        end: 15, // seconds
-                        target: "feeddiv",
-                        url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
-                        title: "Planet Feed",
-                        orientation: "Vertical"
-                    })
-                    .image({
-                      start: 5, // seconds
-                      end: 15, // seconds
-                      href: 'http://www.drumbeat.org/',
-                      src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
-                      target: 'imagediv'
-                    })
+          popcorn = Popcorn( Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=9oar9glUCL0' ) );
+          
+          popcorn = popcorn
+            .footnote({
+              start: 5, // seconds
+              end: 40, // seconds
+              text: 'The video is "RiP: A Remix Manifesto", by Brett Gaylor',
+              target: 'footnotediv'
+            })
+            .flickr({
+              start: 20, // seconds
+              end: 40, // seconds
+              tags: 'georgia',
+              numberofimages: '8',
+              target: 'flickrdiv'
+            })
+            .twitter({
+              start: 20, // seconds
+              end: 45, // seconds
+              title: 'Oil Spill',
+              src: '#oilspill',
+              target: 'twitterdiv'
+            })
+            .attribution({
+              start: 5, // seconds
+              end: 60, // seconds
+              nameofwork: "Internet",
+              nameofworkurl:"http://www.archive.org/details/CC1232_internet",
+              copyrightholder:"The Computer Chronicles",
+              license:"CC-BY-NC-ND",
+              licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
+              target: 'attribdiv'
+            })
+            .subtitle({
+              start: 5, // seconds
+              end: 15, // seconds
+              text: 'This is overlaid on top of the video. You can hightlight it!',
+              display: 'inline',
+              language: "en"
+            })
+            .webpage({
+              id: "webpages-a", 
+              start: 0, // seconds
+              end: 15, // seconds
+              src: 'http://webmademovies.org/',
+              target: 'webpagediv'
+            })
+            .googlefeed({
+                start: 0, // seconds
+                end: 15, // seconds
+                target: "feeddiv",
+                url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
+                title: "Planet Feed",
+                orientation: "Vertical"
+            })
+            .image({
+              start: 5, // seconds
+              end: 15, // seconds
+              href: 'http://www.drumbeat.org/',
+              src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
+              target: 'imagediv'
+            })
           .listen( 'durationchange', function() {
             element( 'player-duration' ).innerHTML = popcorn.duration();
           })
@@ -138,7 +140,7 @@
   <body>
     <div>
       <div>
-        <div id="video" width="360" height="300" ></div>
+        <div id="video" width="360" height="300" ></div><br />
         <button class="simple" id="btn-play-pause">Play</button>
         <button class="seek" id="btn-seek">Seek to 30</button>
         <button class="volume" id="btn-volume">Toggle Volume</button>
