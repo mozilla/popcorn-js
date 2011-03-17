@@ -40,6 +40,15 @@
             text: "Another clickable marker"
           }
         ]
+      } )
+      .openmap( {
+        start: 0,
+        end: 20,
+        type: 'TERRAIN',
+        target: 'map3',
+        lat: 40.943926,
+        lng: -78.968525,
+        zoom: 14
       } );
     }, false);
   </script>
@@ -48,6 +57,7 @@
   <h1 id="qunit-header">Popcorn Open Map Plug-in Demo</h1>
   <p> An OpenLayers + OpenStreetMap Map displaying Toronto, Ontario will appear at 0 seconds and disappear at 20 seconds.</p>
   <p> An OpenLayers + NASA LandSat Map displaying Boston and a map marker will appear at 0 seconds and disappear at 30 seconds.</p>
+  <p> An OpenLayers + USGS Topographic Map displaying Punxsutawney, PA will appear at 0 seconds and disappear at 20 seconds.</p>
   <div>
     <video id='video' 
       controls 
@@ -66,9 +76,10 @@
 
     </video>
   </div>
-  <div style="width:700px">
+  <div style="width:1000px">
     <div id="map" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
     <div id="map2" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
+    <div id="map3" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
   </div>
 </body>
 </html>

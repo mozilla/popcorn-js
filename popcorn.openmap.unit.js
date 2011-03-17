@@ -1,7 +1,7 @@
 test("Popcorn OpenMap Plugin", function () {
   
   var popped = Popcorn("#video"),
-    expects = 10, 
+    expects = 12, 
     count = 0,
     mapInterval,
     mapInterval2,
@@ -21,10 +21,13 @@ test("Popcorn OpenMap Plugin", function () {
   ok ('openmap' in popped, "openmap is a method of the popped instance");
   plus();
   
-  ok ( document.getElementById('map').innerHTML === "", "initially, there is nothing inside the map" );
+  ok ( document.getElementById('map').innerHTML === "", "initially, there is nothing inside map" );
   plus();
   
-  ok ( document.getElementById('map2').innerHTML === "", "initially, there is nothing inside the map2" );
+  ok ( document.getElementById('map2').innerHTML === "", "initially, there is nothing inside map2" );
+  plus();
+
+  ok ( document.getElementById('map3').innerHTML === "", "initially, there is nothing inside map3" );
   plus();
   
   popped.openmap({
@@ -41,14 +44,23 @@ test("Popcorn OpenMap Plugin", function () {
     end: 5,
     type: 'SATELLITE',
     target: 'map2',
-    lat: 0,
-    lng: 0,
-    zoom: 4
+    lat: 40.943926,
+    lng: -78.968525,
+    zoom: 9
+  } )
+  .openmap( {
+    start: 0,
+    end: 5,
+    type: 'TERRAIN',
+    target: 'map3',
+    lat: 40.943926,
+    lng: -78.968525,
+    zoom: 14
   } )
   .volume(0)
   .play();
 
-  mapInterval = setInterval( function() {
+  mapInterval = popped.exec( 4, function() {
     if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
       ok(OpenLayers, "OpenLayers is available");
       plus();
@@ -58,8 +70,8 @@ test("Popcorn OpenMap Plugin", function () {
       plus();
       clearInterval( mapInterval );
     }
-  }, 1000);
-  mapInterval2 = setInterval( function() {
+  } );
+  mapInterval2 = popped.exec( 4, function() {
     if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
       ok (document.getElementById('actualmap2'), "Second map is on the page" );
       plus();
@@ -67,14 +79,23 @@ test("Popcorn OpenMap Plugin", function () {
       plus();
       clearInterval( mapInterval2 );
     }
-  }, 1000);
-  mapInterval3 = setInterval( function() {
-    if( popped.currentTime() > 5  ) {
-      ok (document.getElementById('actualmap2').style.display === "none" && 
-          document.getElementById('actualmap1').style.display === "none", "Both maps are no longer visible" );
+  } );
+  mapInterval3 = popped.exec( 4, function() {
+    if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
+      ok (document.getElementById('actualmap3'), "Third map is on the page" );
+      plus();
+      equals (document.getElementById('actualmap3').offsetParent.id, "map3", "Third map is inside the 'map3' div" );
       plus();
       clearInterval( mapInterval3 );
     }
-  }, 1000);
-  
-});
+  } );
+  mapInterval4 = popped.exec( 6, function() {
+    if( popped.currentTime() > 5  ) {
+      ok (document.getElementById('actualmap2').style.display === "none" && 
+          document.getElementById('actualmap3').style.display === "none" && 
+          document.getElementById('actualmap1').style.display === "none", "All three maps are no longer visible" );
+      plus();
+      clearInterval( mapInterval4 );
+    }
+  } );
+} );

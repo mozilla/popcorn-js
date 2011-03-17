@@ -16,6 +16,8 @@ As an alternative to Google Maps, the OpenMap plugin offers:
 
 * SATELLITE using NASA Landsat / World Wind - satellite images in the public domain
 
+* TERRAIN using USGS Topographic Maps in the public domain
+
 ## Sample code for Popcorn.js ##
 popped.openmap({
   start: 0,
