@@ -101,15 +101,15 @@
     
     } )();
 
-    if ( !options.onStart || !( typeof options.onStart === 'function' ) ) {
+    if ( !options.onStart || typeof options.onStart !== 'function' ) {
       throw 'Popcorn Code Plugin Error: onStart must be a function.';
     }
 
-    if ( options.onEnd && !( typeof options.onEnd === 'function' ) ) {
+    if ( options.onEnd && typeof options.onEnd !== 'function' ) {
       throw 'Popcorn Code Plugin Error: onEnd  must be a function.';
     }
 
-    if ( options.onFrame && !( typeof options.onFrame === 'function' ) ) {
+    if ( options.onFrame && typeof options.onFrame !== 'function' ) {
       throw 'Popcorn Code Plugin Error: onFrame  must be a function.';
     }
 
