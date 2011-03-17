@@ -66,7 +66,7 @@
         do {
             left += obj.offsetLeft;
             top  += obj.offsetTop;
-        } while (obj === obj.offsetParent);
+        } while ( !!(obj = obj.offsetParent) );
     }
     return {
         left : left,

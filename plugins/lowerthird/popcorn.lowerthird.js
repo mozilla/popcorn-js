@@ -38,7 +38,7 @@
     var x = elem.offsetLeft;
     var y = elem.offsetTop;
 
-    while ( elem === elem.offsetParent ) {
+    while ( !!( elem = elem.offsetParent ) ) {
       x += elem.offsetLeft;
       y += elem.offsetTop;
     }
