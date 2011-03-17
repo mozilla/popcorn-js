@@ -857,7 +857,7 @@ var onYouTubePlayerReady;
       return;
     }
     
-    return "http://www.youtube.com/e/" + id+ "?enablejsapi=1&playerapiid=" + playerId + "&verion=3";
+    return "http://www.youtube.com/e/" + id;
   }
   
   function makeSWF( url, container ) {
@@ -867,8 +867,11 @@ var onYouTubePlayerReady;
         
     // The video id for youtube (web or player formats)
     // First check manually given url, if that doesn't work resort to "src"
-    this.vidId = extractIdFromUrl( url ) || extractIdFromUri( url )
-                  || extractIdFromUrl( container.getAttribute( "src" ) ) || extractIdFromUri( container.getAttribute( "src" ) );
+    this.vidId = this.vidId || extractIdFromUrl( container.getAttribute( "src" ) ) || extractIdFromUri( container.getAttribute( "src" ) );
+    
+    if ( !this.vidId ) {
+      throw "Could not find video id";
+    }
     
     // Determine width/height/etc based on container
     this.width = container.getAttribute("width") || 460;
@@ -883,10 +886,6 @@ var onYouTubePlayerReady;
     this.offsetParent = container.offsetParent;
     this.offsetLeft = container.offsetLeft;
     this.offsetTop = container.offsetTop;
-    
-    if ( !this.vidId ) {
-      throw "Could not find video id";
-    }
     
     flashvars = {
       playerapiid: this.playerId
@@ -903,7 +902,7 @@ var onYouTubePlayerReady;
     };
     
     swfobject.embedSWF( "http://www.youtube.com/e/" + this.vidId +"?enablejsapi=1&playerapiid=" + this.playerId + "&verion=3", 
-                      this.playerId, this.width, this.height, "9.0.0", "expressInstall.swf", flashvars, params, attributes );
+                      this.playerId, this.width, this.height, "8", null, flashvars, params, attributes );
   }
   
   // Called when a player is loaded
@@ -915,19 +914,7 @@ var onYouTubePlayerReady;
     
     // Video hadn't loaded yet when ctor was called
     vid.video = document.getElementById( playerId );
-    
-    // For calculating position relative to video (like subtitles)
-    vid.offsetWidth = vid.video.offsetWidth;
-    vid.offsetHeight = vid.video.offsetHeight;
-    vid.offsetParent = vid.video.offsetParent;
-    vid.offsetLeft = vid.video.offsetLeft;
-    vid.offsetTop = vid.video.offsetTop;
-    
     vid.duration = vid.video.getDuration();
-    
-    // Set up stuff that requires the API to be loaded
-    vid.registerYoutubeEventHandlers();
-    vid.registerInternalEventHandlers();
     
     // Issue load event
     vid.dispatchEvent( 'load' );
@@ -959,9 +946,52 @@ var onYouTubePlayerReady;
     
     this.currentTime = this.previousCurrentTime = 0;
     this.volume = this.previousVolume = this.preMuteVol = 1;
-    this.duration = Number.MAX_VALUE;
+    this.duration = 0;
     
-    if ( container ) {
+    this.vidId = extractIdFromUrl( url ) || extractIdFromUri( url );
+    
+    this.addEventListener( "load", function() {
+      // For calculating position relative to video (like subtitles)
+      this.offsetWidth = this.video.offsetWidth;
+      this.offsetHeight = this.video.offsetHeight;
+      this.offsetParent = this.video.offsetParent;
+      this.offsetLeft = this.video.offsetLeft;
+      this.offsetTop = this.video.offsetTop;
+      
+      // Set up stuff that requires the API to be loaded
+      this.registerYoutubeEventHandlers();
+      this.registerInternalEventHandlers();
+    });
+    
+    (function() {
+      var hasBeenCalled = 0;
+      
+      self.addEventListener( "playing", function() {
+        if (hasBeenCalled) {
+          return;
+        }
+        
+        hasBeenCalled = 1;
+        self.duration = self.video.getDuration();
+        self.dispatchEvent( "durationchange" );
+        
+      });
+    })();
+    
+    if ( loadedPlayers[this.playerId] ) {
+      this.video = registry[this.playerId].video;
+      
+      this.vidId = this.vidId || extractIdFromUrl( container.getAttribute( "src" ) ) || extractIdFromUri( container.getAttribute( "src" ) );
+      
+      if (this.vidId !== registry[this.playerId].vidId ) {
+        this.video.cueVideoById( this.vidId );
+      } else {
+        // Same video, new ctor. Force a seek to the beginning
+        this.previousCurrentTime = 1;
+      }
+      
+      this.dispatchEvent( 'load' );
+    } else if ( container ) {
       makeSWF.call( this, url, container );
     } else {
       // Container not yet loaded, get it on DOMDontentLoad
@@ -977,10 +1007,6 @@ var onYouTubePlayerReady;
     }
     
     registry[this.playerId] = this;
-    
-    if ( loadedPlayers[this.playerId] ) {
-      this.dispatchEvent( "load" );
-    }
   };
   // end Popcorn.youtube.init
 
@@ -1047,7 +1073,9 @@ var onYouTubePlayerReady;
     play: function() {
       // In case called before video is loaded, defer acting
       if ( !loadedPlayers[this.playerId] ) {
-        this.addEventListener( "load", this.play );
+        this.addEventListener( "load", function() {
+          this.play();
+        });
         return;
       }
       
@@ -1069,7 +1097,9 @@ var onYouTubePlayerReady;
     load: function() {
       // In case called before video is loaded, defer acting
       if ( !loadedPlayers[this.playerId] ) {
-        this.addEventListener( "load", this.load );
+        this.addEventListener( "load", function() {
+          this.load();
+}          );
         return;
       }
       
@@ -1209,7 +1239,7 @@ var onYouTubePlayerReady;
       this.dispatchEvent( 'progress' );
         
       setTimeout( function() {
-        self.startTimeUpdater.call( self );
+        self.startProgressUpdater.call( self );
       }, progressInterval);
     }
   }); // end Popcorn.extend

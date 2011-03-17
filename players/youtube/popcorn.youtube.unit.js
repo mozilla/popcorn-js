@@ -68,7 +68,8 @@ test( "Popcorn YouTube Plugin Event Tests", function() {
       set1Executed = false,
       set2Executed = false,
       set3Executed = false,
-      expects = expectedEvents.length + 5;
+      expects = expectedEvents.length + 5,
+      listeners = [];
       
   stop( 15000 );
   expect(expects);
@@ -99,19 +100,29 @@ test( "Popcorn YouTube Plugin Event Tests", function() {
         }
       }
       
-      popcorn.listen( event, function() {        
-        eventCount++;
-        var expected = expectedEvents.shift();
-        if ( expected == event ) {
-          ok( true, "Event: "+event + " is fired." );
-          plus();
-        } else {
-          ok( false, event + " is fired unexpectedly, expecting: " + expected );
-        }
+      listeners.push( {
+        evt: event,
+        fn: popcorn.listen( event, function() {
+          eventCount++;
+          var expected = expectedEvents.shift();
+          if ( expected == event ) {
+            ok( true, "Event: "+event + " is fired." );
+            plus();
+          } else {
+            ok( false, event + " is fired unexpectedly, expecting: " + expected );
+          }
+        })
       });
       added.push( event );
     })( expectedEvents[i] );
   }
+  
+  // Cleanup
+  listeners.push( popcorn.listen( "ended", function() {
+    Popcorn.forEach( listeners, function ( obj ) {
+      popcorn.unlisten( obj.evt, obj.fn );
+    });
+  }));
 
   // operations set1
   popcorn.listen( 'playing', function() {
@@ -188,26 +199,24 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
   QUnit.reset();
   
   var count = 0,
-      expects = 4,
-      rawTube = Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=9oar9glUCL0' );
+      expects = 3,
+      popcorn = Popcorn( Popcorn.youtube( 'video2', 'http://www.youtube.com/watch?v=9oar9glUCL0' ) );
       
   expect( expects );
-  stop( 5000 );
+  stop( 10000 );
   
-  equals( rawTube.vidId, '9oar9glUCL0', 'Video id set' );
+  equals( popcorn.video.vidId, '9oar9glUCL0', 'Video id set' );
   plus();
   
-  equals( rawTube.duration, Number.MAX_VALUE, 'Duration starts as Max Value');
+  equals( popcorn.duration(), 0, 'Duration starts as 0');
   plus();
   
-  rawTube.addEventListener( "playing", function() {
-    notEqual( rawTube.duration, Number.MAX_VALUE, "Duration has been changed from max value" );
-    plus();
-    notEqual( rawTube.duration, 0, "Duration is non-zero" );
+  popcorn.listen( "durationchange", function() {
+    notEqual( 0, popcorn.duration(), "Duration has been changed from 0" );
     plus();
     
-    rawTube.pause();
+    popcorn.pause();
   });
   
-  rawTube.play();
+  popcorn.play();
 });
