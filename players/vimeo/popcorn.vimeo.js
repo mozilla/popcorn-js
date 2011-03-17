@@ -1065,9 +1065,12 @@ var swfobject = function() {
         show_portrait: 1,
         show_byline: 1,
         show_title: 1,
-        js_api: 1, // required in order to use the Javascript API
-        js_onLoad: 'Popcorn.vimeo.onLoad', // moogaloop will call this JS function when it's done loading (optional)
-        js_swf_id: containerId // this will be passed into all event methods so you can keep track of multiple moogaloops (optional)
+        // required in order to use the Javascript API
+        js_api: 1,
+        // moogaloop will call this JS function when it's done loading (optional)
+        js_onLoad: 'Popcorn.vimeo.onLoad',
+        // this will be passed into all event methods so you can keep track of multiple moogaloops (optional)
+        js_swf_id: containerId
       };
       params = {
         allowscriptaccess: 'always',
