@@ -110,7 +110,7 @@ ${PLAYERS_DIST}: ${PLAYERS_SRC} ${DIST_DIR}
 
 complete: ${POPCORN_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} ${DIST_DIR}
 	@@echo "Building popcorn + plugins + parsers + players"
-	cat ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} | sed -e 's/@VERSION/${VERSION}/' > ${POPCORN_COMPLETE_DIST}
+	@@cat ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} | sed -e 's/@VERSION/${VERSION}/' > ${POPCORN_COMPLETE_DIST}
 
 lint:
 	@@echo "Checking Popcorn against JSLint..."
