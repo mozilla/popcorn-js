@@ -5,7 +5,7 @@
     <style>
       body {
         background-color: #a8a8a8;
-        font: 14pt Arial,sans-serif; 
+        font: 12pt Arial,sans-serif; 
       }
 
       #title {
@@ -40,12 +40,37 @@
         cursor: pointer;
         text-decoration: underline;
       }
+
+      #video-container {
+        display: none;
+      }
     </style>
     <script type="text/javascript" src="../popcorn.js"></script>
     <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript">
 
       $(document).ready(function() {
+        var video = document.getElementById('video');
+        var popcorn = new Popcorn('#video');
+
+        var pluginResults;
+        var pluginOptions;
+        var manifest = {
+            about: {name: 'test', version: '0.1', author: 'Bobby Richter', website: 'http://robothaus.org'},
+            options: {
+              start : {elem:'input', type:'text', label:'In'},
+              end : {elem:'input', type:'text', label:'Out'},
+              target : 'test-target',
+            }
+          };
+        var plugin = (Popcorn.plugin('test',{
+          manifest: manifest,
+          _setup:function(options){pluginOptions = options; pluginResults='_setup';}, 
+          start:function(options){pluginResults='start'}, 
+          end:function(options){pluginResults='end'}
+        }));
+        var pluginInstance = popcorn['test']({start: 1, end: 2});
+
         var tests = [
           {
             title: 'Popcorn.registry',
@@ -58,7 +83,185 @@
             test: function() {
               return Popcorn.getTrackEvents !== undefined;
             }
-          }
+          },
+          {
+            title: 'Popcorn.getTrackEvents exists',
+            test: function() {
+              return Popcorn.getTrackEvents !== undefined;
+            }
+          },
+          {
+            title: 'Valid plugins are addressable as p[pluginName]',
+            test: function() {
+              return popcorn['test'] !== undefined;
+            }
+          },
+          {
+            title: 'Invalid plugin names yield undefined using p[invalidName]',
+            test: function() {
+              return popcorn['notValid'] === undefined;
+            }
+          },
+          {
+            title: 'Popcorn.registry must be a list',
+            test: function() {
+              return Popcorn.registry !== undefined && typeof(Popcorn.registry) === 'object';
+            }
+          },
+          {
+            title: 'Popcorn.registry must contain plugins',
+            test: function() {
+              for (var i in Popcorn.registry) {
+                if (Popcorn.registry[i] === plugin) {
+                  return true;
+                } //if
+              } //for
+              return false;
+            }
+          },
+          {
+            title: 'plugin.type must exist',
+            test: function() {
+              return plugin.type !== undefined;
+            }
+          },
+          {
+            title: 'Plugin instance options._natives must exist',
+            test: function() {
+              return pluginOptions._natives !== undefined;
+            }
+          },
+          {
+            title: 'Plugin instance options.target should exist',
+            test: function() {
+              return pluginOptions.target !== undefined;
+            }
+          },
+          {
+            title: 'Popcorn.manifest be a list',
+            test: function() {
+              return Popcorn.manifest !== undefined && typeof(Popcorn.manifest) === 'object';
+            }
+          },
+          {
+            title: 'Valid manifests are addressable as p[pluginName]',
+            test: function() {
+              return popcorn['test'] !== undefined;
+            }
+          },
+          {
+            title: 'Invalid manifests names yield undefined using p[invalidName]',
+            test: function() {
+              return popcorn['notValid'] === undefined;
+            }
+          },
+          {
+            title: 'Popcorn.manifest must contain plugin manifests',
+            test: function() {
+              for (var i in Popcorn.manifest) {
+                if (Popcorn.manifest[i] === manifest) {
+                  return true;
+                } //if
+              } //for
+              return false;
+            }
+          },
+          {
+            title: 'Plugin manifest must contain options property',
+            test: function() {
+              return Popcorn.manifest['test'].options !== undefined;
+            }
+          },
+          {
+            title: 'popcorn.video exists',
+            test: function() {
+              return popcorn.video !== undefined;
+            }
+          },
+          {
+            title: 'popcorn.video.currentTime exists',
+            test: function() {
+              return popcorn.video.currentTime !== undefined;
+            }
+          },
+          {
+            title: 'popcorn.video.play exists',
+            test: function() {
+              return popcorn.video.play !== undefined;
+            }
+          },
+          {
+            title: 'popcorn.video.pause exists',
+            test: function() {
+              return popcorn.video.pause !== undefined;
+            }
+          },
+          {
+            title: 'popcorn.video.volume exists',
+            test: function() {
+              return popcorn.video.volume !== undefined;
+            }
+          },
+          {
+            title: 'popcorn.video.duration exists',
+            test: function() {
+              return popcorn.video.duration !== undefined;
+            }
+          },
+          {
+            title: 'popcorn.video.readyState exists',
+            test: function() {
+              return popcorn.video.readyState !== undefined;
+            }
+          },
+          {
+            title: 'popcorn.data exists',
+            test: function() {
+              return popcorn.data !== undefined;
+            }
+          },
+          {
+            title: 'popcorn.data.trackEvents exists',
+            test: function() {
+              return popcorn.data.trackEvents !== undefined;
+            }
+          },
+          {
+            title: 'popcorn.data.trackEvents.byStart exists',
+            test: function() {
+              return popcorn.data.trackEvents.byStart !== undefined;
+            }
+          },
+          {
+            title: 'popcorn.data.history must be a list',
+            test: function() {
+              return popcorn.data.history !== undefined && typeof(popcorn.data.history) === 'object';
+            }
+          },
+          {
+            title: 'popcorn.getLastTrackEventId exists',
+            test: function() {
+              return popcorn.data.history !== undefined && typeof(popcorn.data.history) === 'object';
+            }
+          },
+          {
+            title: 'popcorn.getTrackEvents exists',
+            test: function() {
+              return popcorn.data.history !== undefined && typeof(popcorn.data.history) === 'object';
+            }
+          },
+          {
+            title: 'popcorn.removeTrackEvent exists',
+            test: function() {
+              return popcorn.data.history !== undefined && typeof(popcorn.data.history) === 'object';
+            }
+          },
+          {
+            title: 'popcorn.listen exists',
+            test: function() {
+              return popcorn.data.history !== undefined && typeof(popcorn.data.history) === 'object';
+            }
+          },
         ];
 
         var content = document.getElementById('test-content');
@@ -67,7 +270,7 @@
           var testElement = testItem.element = document.createElement('div');
           var testTitle = document.createElement('span');
           var testStatus = testItem.statusElement = document.createElement('span');
-          var testInfo = document.createElement('div');
+          var testInfo = testItem.infoElement = document.createElement('div');
           testElement.className = 'test-item';
           testElement.style.position = 'relative';
           testTitle.innerHTML = testItem.title;
@@ -103,20 +306,27 @@
 
         var testIndex = 0;
         var score = 0;
+        var waitTime = 50;
         function runNextTest() {
           var test = tests[testIndex];
-          var result = test.test();
-          test.statusElement.innerHTML = result ? '&#x2713;' : '&#x2717;';
+          try {
+            var result = test.test();
+            test.statusElement.innerHTML = result ? '&#x2713;' : '&#x2717;';
+          }
+          catch (e) {
+            test.statusElement.innerHTML = '!';
+            test.infoElement.innerHTML += '<br /><b>Error:</b> ' + e.message;
+          } //try
           ++testIndex;
           if (testIndex < tests.length) {
-            setTimeout(runNextTest, 500);
+            setTimeout(runNextTest, waitTime);
           } //if
           score += (result ? 1 : 0);
 
           scoreDiv.innerHTML = 'Score: ' + score + '/' + tests.length;
         } //runNextTest
 
-        setTimeout(runNextTest, 500);
+        setTimeout(runNextTest, waitTime);
       });
     </script>
   </head>
@@ -127,6 +337,11 @@
       </div>
       <div id="test-content">
       </div>
+    </div>
+    <div id="video-container">
+      <video id="video" />
+    </div>
+    <div id="test-target">
     </div>
   </body>
 </html>
