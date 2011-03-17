@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Butter Test</title>
+    <style>
+      body {
+        background-color: #a8a8a8;
+        font: 14pt Arial,sans-serif; 
+      }
+
+      #title {
+        font-size: 180%;
+        text-align: center;
+      }
+
+      #main-container {
+        width: 600px;
+        margin: auto;
+      }
+
+      #test-content {
+        border: 3px solid #0a0a0a;
+        border-radius: 10px;
+      }
+
+      .test-item {
+        padding: 3px;
+      }
+
+      .test-status {
+        font-weight: bold;
+      }
+
+      .test-info {
+        font-size: 70%;
+        margin-left: 1em;
+      }
+
+      .test-title:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    </style>
+    <script type="text/javascript" src="../popcorn.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript">
+
+      $(document).ready(function() {
+        var tests = [
+          {
+            title: 'Popcorn.registry',
+            test: function() {
+              return Popcorn.registry !== undefined;
+            }
+          },
+          {
+            title: 'Popcorn.getTrackEvents',
+            test: function() {
+              return Popcorn.getTrackEvents !== undefined;
+            }
+          }
+        ];
+
+        var content = document.getElementById('test-content');
+        for (var i=0; i<tests.length; ++i) {
+          var testItem = tests[i];
+          var testElement = testItem.element = document.createElement('div');
+          var testTitle = document.createElement('span');
+          var testStatus = testItem.statusElement = document.createElement('span');
+          var testInfo = document.createElement('div');
+          testElement.className = 'test-item';
+          testElement.style.position = 'relative';
+          testTitle.innerHTML = testItem.title;
+          testTitle.className = 'test-title';
+          testStatus.className = 'test-status';
+          testStatus.style.position = 'absolute';
+          testStatus.style.right = '6px';
+          testStatus.innerHTML = '?';
+          testInfo.innerHTML = testItem.test.toString();
+          testInfo.className = 'test-info';
+          testElement.appendChild(testTitle);
+          testElement.appendChild(testStatus);
+          testElement.appendChild(document.createElement('br'));
+          testElement.appendChild(testInfo);
+          content.appendChild(testElement);
+
+          (function(){
+            var ti = testInfo;
+            var tt = testTitle;
+            $(ti).hide();
+            $(tt).click(function() {
+              $(ti).toggle('fast');
+            });
+          })();
+        } //for
+
+        var scoreDiv = document.createElement('div');
+        scoreDiv.className = 'test-item';
+        scoreDiv.innerHTML = 'Score: N/A';
+        scoreDiv.style.fontWeight = 'bold';
+        content.appendChild(document.createElement('br'));
+        content.appendChild(scoreDiv);
+
+        var testIndex = 0;
+        var score = 0;
+        function runNextTest() {
+          var test = tests[testIndex];
+          var result = test.test();
+          test.statusElement.innerHTML = result ? '&#x2713;' : '&#x2717;';
+          ++testIndex;
+          if (testIndex < tests.length) {
+            setTimeout(runNextTest, 500);
+          } //if
+          score += (result ? 1 : 0);
+
+          scoreDiv.innerHTML = 'Score: ' + score + '/' + tests.length;
+        } //runNextTest
+
+        setTimeout(runNextTest, 500);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="main-container">
+      <div id="title">
+        Butter Dependency Test
+      </div>
+      <div id="test-content">
+      </div>
+    </div>
+  </body>
+</html>
