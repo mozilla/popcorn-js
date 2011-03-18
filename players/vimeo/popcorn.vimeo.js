@@ -1342,6 +1342,6 @@
           self.startTimeUpdater.call(self);
         }, timeupdateInterval);
       }
-    },
+    }
   });
 })( Popcorn );
