@@ -44,7 +44,7 @@
     },
     _setup : function( options ) {
       // make an iframe 
-      options._iframe  = document.createElement( 'iframe' ),
+      options._iframe  = document.createElement( 'iframe' );
       options._iframe.setAttribute('width', "100%");
       options._iframe.setAttribute('height', "100%");
       options._iframe.id  = options.id;

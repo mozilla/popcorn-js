@@ -67,7 +67,7 @@
         }, 5);
       } else {
         // Create the feed control using the user entered url and title
-        new GFdynamicFeedControl( options.url, newdiv, {
+        var tmp = new GFdynamicFeedControl( options.url, newdiv, {
           vertical:   options.orientation.toLowerCase() == "vertical" ? true : false,
           horizontal: options.orientation.toLowerCase() == "horizontal" ? true : false,
           title:      options.title = options.title || "Blog"

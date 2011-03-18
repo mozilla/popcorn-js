@@ -33,18 +33,18 @@
   // just a little tool function
   // calculates the top and left position of an element
   var offset = function(elem) {
-    if(!elem) elem = this;
+    if ( !elem ) { elem = this; }
 
     var x = elem.offsetLeft;
     var y = elem.offsetTop;
 
-    while (elem = elem.offsetParent) {
+    while ( !!( elem = elem.offsetParent ) ) {
       x += elem.offsetLeft;
       y += elem.offsetTop;
     }
 
     return { left: x, top: y };
-  }
+  };
 
   Popcorn.plugin( "lowerthird" , {
     

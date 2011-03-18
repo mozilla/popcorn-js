@@ -102,7 +102,7 @@ var openmapCallback;
         }
         else if( options.type == "SATELLITE" ) {
           // add NASA WorldWind / LANDSAT map
-          map = new OpenLayers.Map( { div: newdiv, "maxResolution": .28125, tileSize: new OpenLayers.Size( 512, 512 ) } );
+          map = new OpenLayers.Map( { div: newdiv, "maxResolution": 0.28125, tileSize: new OpenLayers.Size( 512, 512 ) } );
           var worldwind = new OpenLayers.Layer.WorldWind( "LANDSAT", "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4, { T: "105" } );
           map.addLayer( worldwind );
           displayProjection = new OpenLayers.Projection( "EPSG:4326" );
