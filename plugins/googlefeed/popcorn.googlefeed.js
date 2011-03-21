@@ -1,6 +1,33 @@
 // PLUGIN: Google Feed
 (function (Popcorn) {
 
+  var i = 1,
+      scriptLoaded = false,
+      callBack     = function( data ) {
+
+        if ( typeof google !== 'undefined' && google.load ) {
+
+          google.load( "feeds", "1", { callback: function () { _feedLoaded = true; } } );
+        } else {
+
+          setTimeout( function() {
+
+            callBack( data );
+          }, 1);
+        }
+      }
+
+  Popcorn.getScript( "http://www.google.com/jsapi", callBack );
+  Popcorn.getScript( "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js" );
+
+  //Doing this because I cannot find something similar to getScript() for css files
+  var head = document.getElementsByTagName("head")[0];
+  var css = document.createElement('link');
+  css.type = "text/css";
+  css.rel = "stylesheet";
+  css.href =  "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css";
+  head.insertBefore( css, head.firstChild );
+
   /**
    * googlefeed popcorn plug-in
    * Adds a feed from the specified blog url at the target div
@@ -24,27 +51,6 @@
     } )
   *
   */
-
-  var _feedFired = false,
-	  _feedLoaded = false,
-	  i = 1;
-  
-  // insert google api and dynamic feed control script once, as well as the dynamic feed css file
-  if ( !_feedFired ) {
-    _feedFired = true;
-    Popcorn.getScript( "https://www.google.com/jsapi", function () {
-      google.load( "feeds", "1", { callback: function () { _feedLoaded = true; } } );
-    });
-    Popcorn.getScript( "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js" );
-    //Doing this because I cannot find something similar to getScript() for css files
-    var head = document.getElementsByTagName("head")[0];
-    var css = document.createElement('link');
-    css.type = "text/css";
-    css.rel = "stylesheet";
-    css.href =  "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css";
-    head.insertBefore( css, head.firstChild );
-  }
-
 
   Popcorn.plugin( "googlefeed" , function( options ) {
     // create a new div and append it to the parent div so nothing
