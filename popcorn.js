@@ -41,7 +41,7 @@
       return;
     }
 
-    //  Remove instance from Popcorn.instances 
+    //  Remove instance from Popcorn.instances
     Popcorn.instances.splice( Popcorn.instanceIds[ instance.id ], 1 );
 
     //  Delete the instance id key
@@ -206,7 +206,7 @@
                   return;
                 }
               }
-              
+
               while ( tracksByStart[ tracks.startIndex ] && tracksByStart[ tracks.startIndex ].start <= currentTime ) {
                 //  If plugin does not exist on this instance, remove it
                 if ( !tracksByStart[ tracks.startIndex ]._natives || !!that[ tracksByStart[ tracks.startIndex ]._natives.type ] ) {
@@ -272,7 +272,7 @@
     }
   };
 
-  //  Extend constructor prototype to instance prototype 
+  //  Extend constructor prototype to instance prototype
   //  Allows chaining methods to instances
   Popcorn.p.init.prototype = Popcorn.p;
 
@@ -391,7 +391,7 @@
           type: "exec"
         }
       });
-      
+
       return this;
     }
   });
@@ -429,7 +429,7 @@
         return false;
       }
 
-      var natives = Popcorn.Events, 
+      var natives = Popcorn.Events,
           proto;
 
       for ( var p in natives ) {
@@ -512,8 +512,8 @@
         }
 
         this.data.events[type] = null;
-        
-        return this;        
+
+        return this;
       }
     }
   };
@@ -522,7 +522,7 @@
   Popcorn.forEach( ["trigger", "listen", "unlisten"], function ( key ) {
     Popcorn.p[ key ] = Popcorn.events.fn[ key ];
   });
-  //  Protected API methods 
+  //  Protected API methods
   Popcorn.protect = {
     natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten".toLowerCase().split(/\s+/)
   };
@@ -582,19 +582,19 @@
 
     }
 
-    var byStart = obj.data.trackEvents.byStart, 
-        byEnd = obj.data.trackEvents.byEnd, 
+    var byStart = obj.data.trackEvents.byStart,
+        byEnd = obj.data.trackEvents.byEnd,
         idx, sl;
 
     // remove all trackEvents
     for ( idx = 0, sl = byStart.length; idx < sl; idx++ ) {
 
-      if ( ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) && 
+      if ( ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) &&
                 ( byEnd[ idx ] && byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) ) {
-          
+
         byStart.splice( idx, 1 );
         byEnd.splice( idx, 1 );
-          
+
         // update for loop if something removed, but keep checking
         idx--; sl--;
         if ( obj.data.trackEvents.startIndex <= idx ) {
@@ -694,8 +694,8 @@
     removeTrackEvent: function( id ) {
       Popcorn.removeTrackEvent.call( null, this, id );
       return this;
-    }, 
-    
+    },
+
     removePlugin: function( name ) {
       Popcorn.removePlugin.call( null, this, name );
       return this;
@@ -739,7 +739,7 @@
       options._natives = setup;
       options._natives.type = name;
       options._running = false;
-      
+
       //  Ensure a manifest object, an empty object is a sufficient fallback
       options._natives.manifest = manifest;
 
@@ -759,14 +759,14 @@
         // Resolves 239, 241, 242
         if ( !options.target ) {
 
-          //  Sometimes the manifest may be missing entirely 
+          //  Sometimes the manifest may be missing entirely
           //  or it has an options object that doesn't have a `target` property
 
           var manifestopts = "options" in manifest && manifest.options;
-          
+
           options.target = manifestopts && "target" in manifestopts && manifestopts.target;
         }
-        
+
         setup._setup.call( this, options );
       }
 
@@ -796,7 +796,7 @@
 
     //  Assign new named definition
     plugin[ name ] = function( options ) {
-      return pluginFn.call( this, isfn ? definition.call( this, options ) : definition, 
+      return pluginFn.call( this, isfn ? definition.call( this, options ) : definition,
                                   options );
     };
 
@@ -804,10 +804,10 @@
     Popcorn.extend( Popcorn.p, plugin );
 
     //  Push into the registry
-    Popcorn.registry.push( 
+    Popcorn.registry.push(
       Popcorn.extend( plugin, {
         type: name
-      }) 
+      })
      );
 
     return plugin;
@@ -824,7 +824,7 @@
       Popcorn.error("'" + name + "' is a protected function name");
       return;
     }
-    
+
     // fixes parameters for overloaded function call
     if ( typeof type === "function" && !definition ) {
       definition = type;
@@ -841,9 +841,9 @@
     var natives = Popcorn.events.all,
         parseFn,
         parser = {};
-    
+
     parseFn = function ( filename, callback ) {
-        
+
       if ( !filename ) {
         return this;
       }
@@ -921,14 +921,14 @@
   };
 
   Popcorn.xhr = function ( options ) {
-    
-    if ( options.dataType && 
-          ( options.dataType.toLowerCase() === "jsonp" || 
+
+    if ( options.dataType &&
+          ( options.dataType.toLowerCase() === "jsonp" ||
               options.dataType.toLowerCase() === "script" ) ) {
 
       Popcorn.xhr.getJSONP(
         options.url,
-        options.success, 
+        options.success,
         options.dataType.toLowerCase() === "script"
       );
       return;
@@ -995,17 +995,17 @@
     };
     return data;
   };
-  
+
   Popcorn.xhr.getJSONP = function ( url, success, isScript ) {
-    
+
     //  If this is a script request, ensure that we do not call something that has already been loaded
     if ( isScript ) {
-      
+
       var scripts = document.querySelectorAll('script[src="' + url + '"]');
-      
+
       //  If there are scripts with this url loaded, early return
       if ( scripts.length ) {
-      
+
         //  Execute success callback and pass "exists" flag
         success && success( true );
 
@@ -1014,12 +1014,12 @@
     }
 
     var head = document.head || document.getElementsByTagName("head")[0] || document.documentElement,
-      script = document.createElement("script"), 
-      paramStr = url.split("?")[1], 
-      fired = false, 
-      params = [], 
+      script = document.createElement("script"),
+      paramStr = url.split("?")[1],
+      isFired = false,
+      params = [],
       callback, parts, callparam;
-    
+
     if ( paramStr && !isScript ) {
       params = paramStr.split("&");
     }
@@ -1027,9 +1027,9 @@
     if ( params.length ) {
       parts = params[ params.length - 1 ].split("=");
     }
-    
+
     callback = params.length ? ( parts[1] ? parts[1] : parts[0]  ) : "jsonp";
-    
+
     if ( !paramStr && !isScript ) {
       url += "?callback=" + callback;
     }
@@ -1043,11 +1043,11 @@
         callback = Popcorn.guid( callback );
       }
 
-      //  Define the jsonp success callback globally
+      //  Define the JSONP success callback globally
       window[ callback ] = function ( data ) {
 
         success && success( data );
-        fired = true;
+        isFired = true;
 
       };
 
@@ -1056,32 +1056,34 @@
 
     }
 
-    script.src = url;
-
     script.onload = script.onreadystatechange = function() {
 
-      //  Executing remote scripts
-      if ( isScript && ( !script.readyState || /loaded|complete/.test( script.readyState ) ) ) {
+			if ( !script.readyState || /loaded|complete/.test( script.readyState ) ) {
 
-        success && success();
+				//	Handling remote script loading callbacks
+				if ( isScript ) {
 
-      }
+					//	getScript
+					success & success();
+				}
 
-      //  Executing for JSONP requests
-      if ( fired || /loaded|complete/.test( script.readyState ) ) {
+	      //  Executing for JSONP requests
+				if ( isFired ) {
 
-        //  Garbage collect the callback
-        delete window[ callback ];
+		      //  Garbage collect the callback
+		      delete window[ callback ];
 
-        //  Garbage collect the script resource
-        head.removeChild( script );
-      }
+		      //  Garbage collect the script resource
+		      head.removeChild( script );
+				}
+			}
     };
+
+    script.src = url;
 
     head.insertBefore( script, head.firstChild );
 
     return;
-
   };
 
   Popcorn.getJSONP = Popcorn.xhr.getJSONP;
@@ -1156,3 +1158,4 @@
   }, false );
 
 })(window, window.document);
+
