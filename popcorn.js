@@ -1064,7 +1064,7 @@
 				if ( isScript ) {
 
 					//	getScript
-					success & success();
+					success && success();
 				}
 
 	      //  Executing for JSONP requests
