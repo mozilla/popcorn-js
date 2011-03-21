@@ -15,7 +15,7 @@
             callBack( data );
           }, 1);
         }
-      }
+      };
 
   Popcorn.getScript( "http://www.google.com/jsapi", callBack );
   Popcorn.getScript( "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js" );

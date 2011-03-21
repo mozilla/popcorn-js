@@ -15,7 +15,7 @@
             callBack( data );
           }, 1);
         }
-      }
+      };
 
   Popcorn.getScript( "http://www.google.com/jsapi", callBack );
 
