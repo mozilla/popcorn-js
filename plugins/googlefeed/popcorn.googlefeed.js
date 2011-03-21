@@ -7,7 +7,7 @@
 
         if ( typeof google !== 'undefined' && google.load ) {
 
-          google.load( "feeds", "1", { callback: function () { _feedLoaded = true; } } );
+          google.load( "feeds", "1", { callback: function () { scriptLoaded = true; } } );
         } else {
 
           setTimeout( function() {
@@ -67,7 +67,7 @@
 
     var initialize = function() {
       //ensure that the script has been loaded
-      if ( !_feedLoaded ) {
+      if ( !scriptLoaded ) {
         setTimeout(function () {
           initialize();
         }, 5);
