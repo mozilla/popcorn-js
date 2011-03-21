@@ -2,11 +2,22 @@
 
 (function (Popcorn) {
 
-  var scriptLoaded = false;
+  var scriptLoaded = false,
+      callBack     = function( data ) {
 
-  Popcorn.getScript( "http://www.google.com/jsapi", function() {
-    google.load("language", "1", {callback: function() {scriptLoaded = true;}});
-  });
+        if ( typeof google !== 'undefined' && google.load ) {
+
+          google.load("language", "1", {callback: function() {scriptLoaded = true;}});
+        } else {
+
+          setTimeout( function() {
+
+            callBack( data );
+          }, 1);
+        }
+      }
+
+  Popcorn.getScript( "http://www.google.com/jsapi", callBack );
 
   /**
    * Subtitle popcorn plug-in 
