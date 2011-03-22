@@ -1,6 +1,43 @@
 // PLUGIN: Google Maps
 var googleCallback;
 (function (Popcorn) {
+  var newdiv,
+      i = 1,
+      _mapFired = false,
+      _mapLoaded = false,
+      geocoder,
+      loadMaps;
+  //google api callback 
+  googleCallback  = function( data ) {
+    // ensure all of the maps functions needed are loaded 
+    // before setting _maploaded to true
+    if ( typeof google !== 'undefined'  && google.maps && typeof google.maps.Geocoder !== 'undefined' &&
+         typeof google.maps.LatLng !== 'undefined' ) {
+        geocoder = new google.maps.Geocoder();
+        _mapLoaded = true;
+    } else {
+      setTimeout( function() {
+        googleCallback( data );
+      }, 1);
+    }
+  };
+  // function that loads the google api
+  loadMaps = function () {
+    // for some reason the Google Map API adds content to the body
+    if ( document.body ) {
+      _mapFired = true;
+      Popcorn.getScript( "http://maps.google.com/maps/api/js?sensor=false&callback=googleCallback" );
+    } else {
+      setTimeout( function() {
+          loadMaps( );
+        }, 1);
+    }
+  };
+  // if this is the firest time running the plugins
+  // call the function that gets the sctipt
+  if ( !_mapFired ) {
+    loadMaps();
+  }
 
   /**
    * googlemap popcorn plug-in
@@ -31,67 +68,54 @@ var googleCallback;
     } )
   *
   */
-
-  var newdiv,
-      i = 1,
-      _mapFired = false,
-      _mapLoaded = false;
-
-  // callback function fires when the script is run
-  googleCallback = function() {
-    _mapLoaded = true;
-  };
-  // insert google api script once
-  if (!_mapFired) {
-    _mapFired = true;
-    Popcorn.getScript("http://maps.google.com/maps/api/js?sensor=false&callback=googleCallback");
-  }
-
-
   Popcorn.plugin( "googlemap" , function( options ) {
     var newdiv,
         map,
         location;
 
-    // create a new div this way anything in the target div
+    // create a new div this way anything in the target div is left intact
     // this is later passed on to the maps api
-    newdiv = document.createElement("div");
-    newdiv.id = "actualmap" + i;
-    newdiv.style.width = "100%";
+    newdiv              = document.createElement( "div" );
+    newdiv.id           = "actualmap" + i;
+    newdiv.style.width  = "100%";
     newdiv.style.height = "100%";
     i++;
-    if (document.getElementById(options.target)) {
+    
+    // ensure the target container the user chose exists
+    if ( document.getElementById( options.target ) ) {
       document.getElementById(options.target).appendChild(newdiv);
+    } else { 
+      throw ( "map target container doesn't exist" ); 
     }
-
-    // If there is no lat/lng, and there is location, geocode the location
-    // you can only do this once google.maps exists
-    var isGeoReady = function() {
-      if ( !_mapLoaded ) {
-        setTimeout(function () {
-          isGeoReady();
-        }, 5);
-      } else {
-        if (options.location) {
-          var geocoder = new google.maps.Geocoder();
-          // calls an anonymous function called on separate thread
-          geocoder.geocode({ "address": options.location}, function(results, status) {
-            if (status === google.maps.GeocoderStatus.OK) {
+    
+    // ensure that google maps and its functions are loaded
+    // before setting up the map parameters
+    var isMapReady = function() {
+      if ( _mapLoaded ) {
+        if ( options.location ) {
+          // calls an anonymous google function called on separate thread
+          geocoder.geocode( { "address": options.location }, function( results, status ) {
+            if ( status === google.maps.GeocoderStatus.OK ) {
               options.lat = results[0].geometry.location.lat();
               options.lng = results[0].geometry.location.lng();
-              location = new google.maps.LatLng(options.lat, options.lng);
-              map = new google.maps.Map(newdiv, {mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID });
+              location    = new google.maps.LatLng( options.lat, options.lng );
+              map         = new google.maps.Map( newdiv, { mapTypeId: google.maps.MapTypeId[ options.type ] || google.maps.MapTypeId.HYBRID } );
               map.getDiv().style.display = "none";
             }
-          });
+          } );
         } else {
-          location = new google.maps.LatLng(options.lat, options.lng);
-          map = new google.maps.Map(newdiv, {mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID });
+          location = new google.maps.LatLng( options.lat, options.lng );
+          map      = new google.maps.Map( newdiv, { mapTypeId: google.maps.MapTypeId[ options.type ] || google.maps.MapTypeId.HYBRID } );
           map.getDiv().style.display = "none";
-        }
+        }        
+      } else {
+        setTimeout(function () {
+          isMapReady();
+        }, 5);
       }
     };
-    isGeoReady();
+    
+    isMapReady();
 
     return {
       /**
@@ -101,13 +125,9 @@ var googleCallback;
        * options variable
        */
       start: function(event, options){
-        // dont do anything if the information didn't come back from google map
-        var isReady = function () {
-          if (!map) {
-            setTimeout(function () {
-              isReady();
-            }, 13);
-          } else {
+        // ensure the map has been initialized in the setup function above
+        var isMapSetup = function () {
+          if ( map ) {
             map.getDiv().style.display = "block";
             // reset the location and zoom just in case the user plaid with the map
             map.setCenter(location);
@@ -139,16 +159,20 @@ var googleCallback;
                   position: location,
                   pov: {
                     heading: options.heading = options.heading || 0,
-                    pitch: options.pitch = options.pitch || 0,
+                    pitch: options.pitch     = options.pitch || 0,
                     zoom: options.zoom
                   }
-                })
+                } )
               );
             }
+          } else {
+            setTimeout( function () {
+              isMapSetup();
+            }, 13);
           }
         };
 
-        isReady();
+        isMapSetup();
       },
       /**
        * @member webpage
