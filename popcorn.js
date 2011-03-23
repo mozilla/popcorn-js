@@ -816,7 +816,6 @@
 
   Popcorn.pluginInherit = function(name, parent, definition, manifest)
   {
-    var isArray = Array.isArray || function(o) { return Object.prototype.toString.call(o) === '[object Array]'; };
     function getDefinition(name)
     {
       for each (r in Popcorn.registry)
@@ -825,7 +824,7 @@
       throw "you idiot";
     }
 
-    if (!isArray(parent))
+    if (!Array.isArray(parent))
       parent = [parent];
     var parents = parent.map(getDefinition);
 
