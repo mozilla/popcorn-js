@@ -806,11 +806,49 @@
     //  Push into the registry
     Popcorn.registry.push( 
       Popcorn.extend( plugin, {
+        definition: definition,
         type: name
       }) 
      );
 
     return plugin;
+  };
+
+  Popcorn.pluginInherit = function(name, parent, definition, manifest)
+  {
+    var isArray = Array.isArray || function(o) { return Object.prototype.toString.call(o) === '[object Array]'; };
+    function getDefinition(name)
+    {
+      for each (r in Popcorn.registry)
+        if (r.type === name)
+          return r.definition;
+      throw "you idiot";
+    }
+
+    if (!isArray(parent))
+      parent = [parent];
+    var parents = parent.map(getDefinition);
+
+    return Popcorn.plugin(name, function(options) {
+      var self = this;
+      function instantiate(p, options) { return (typeof p === "function") ? p.call(self, options) : p; }
+      function apply(fn, args) { return fn && fn.apply(self, args); }
+      function delegate(name) {
+        return function() {
+          plugins.forEach(function(p) {
+            apply(p[name], arguments);
+          });
+        };
+      }
+
+      var plugins = parents.map(function(p) { return instantiate(p, self, options); });
+      plugins.push(instantiate(definition, self, options));
+      return {
+        _setup: delegate("_setup"),
+        start: delegate("start"),
+        end: delegate("end")
+      };
+    }, manifest || definition.manifest);
   };
 
   // stores parsers keyed on filetype
