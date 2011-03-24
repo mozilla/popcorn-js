@@ -818,9 +818,10 @@
   {
     function getDefinition( p )
     {
-      for each ( r in Popcorn.registry ) {
-        if ( r.type === p ) {
-          return r.definition;            
+      for (i in Popcorn.registry)
+      {
+        if ( Popcorn.registry[i].type === p ) {
+          return Popcorn.registry[i].definition;
         }
       }
       throw new Error("Plugin "+ name +" can't inherit from "+ p +", which doesn't exist");
