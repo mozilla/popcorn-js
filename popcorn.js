@@ -814,38 +814,41 @@
     return plugin;
   };
 
-  Popcorn.pluginInherit = function(name, parent, definition, manifest)
+  Popcorn.pluginInherit = function( name, parent, definition, manifest )
   {
-    function getDefinition(name)
+    function getDefinition( p )
     {
-      for each (r in Popcorn.registry)
-        if (r.type === name)
-          return r.definition;
-      throw "you idiot";
+      for each ( r in Popcorn.registry ) {
+        if ( r.type === p ) {
+          return r.definition;            
+        }
+      }
+      throw new Error("Plugin "+ name +" can't inherit from "+ p +", which doesn't exist");
     }
 
-    if (!Array.isArray(parent))
-      parent = [parent];
-    var parents = parent.map(getDefinition);
+    if ( !Array.isArray( parent ) ) {
+      parent = [ parent ];
+    }
+    var parents = parent.map( getDefinition );
 
-    return Popcorn.plugin(name, function(options) {
+    return Popcorn.plugin( name, function( options ) {
       var self = this;
-      function instantiate(p, options) { return (typeof p === "function") ? p.call(self, options) : p; }
-      function apply(fn, args) { return fn && fn.apply(self, args); }
-      function delegate(name) {
+      function instantiate( p, options ) { return (typeof p === "function") ? p.call( self, options ) : p; }
+      function apply( fn, args ) { return fn && fn.apply( self, args ); }
+      function delegate( name ) {
         return function() {
-          plugins.forEach(function(p) {
-            apply(p[name], arguments);
+          plugins.forEach( function( p ) {
+            apply( p[name], arguments );
           });
         };
       }
 
-      var plugins = parents.map(function(p) { return instantiate(p, self, options); });
-      plugins.push(instantiate(definition, self, options));
+      var plugins = parents.map(function( p ) { return instantiate( p, self, options ); });
+      plugins.push( instantiate( definition, self, options ) );
       return {
-        _setup: delegate("_setup"),
-        start: delegate("start"),
-        end: delegate("end")
+        _setup: delegate( "_setup" ),
+        start: delegate( "start" ),
+        end: delegate( "end" )
       };
     }, manifest || definition.manifest);
   };
