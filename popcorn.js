@@ -816,8 +816,7 @@
 
   Popcorn.pluginInherit = function( name, parent, definition, manifest ) {
     function getDefinition( p ) {
-      for (var i in Popcorn.registry)
-      {
+      for (var i in Popcorn.registry) {
         if ( Popcorn.registry[i].type === p ) {
           return Popcorn.registry[i].definition;
         }
