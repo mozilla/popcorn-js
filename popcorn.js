@@ -1101,8 +1101,9 @@
 
   document.addEventListener( "DOMContentLoaded", function () {
 
+    //  Supports non-specific elements
     var dataAttr = "data-timeline-sources", 
-    		medias = document.querySelectorAll( "video,audio" );
+        medias = document.querySelectorAll( "[" + dataAttr + "]" );
 
     Popcorn.forEach( medias, function( idx, key ) {
 

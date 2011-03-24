@@ -81,6 +81,8 @@ test("Instances", function() {
   }
 
   stop();
+
+  Popcorn("#video");
   
   ok( typeof Popcorn.addInstance === "function" , "Popcorn.addInstance is a provided utility function");
   plus();
