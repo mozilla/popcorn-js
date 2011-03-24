@@ -822,7 +822,7 @@
           return Popcorn.registry[i].definition;
         }
       }
-      throw new Error("Plugin "+ name +" can't inherit from "+ p +", which doesn't exist");
+      Popcorn.error("Plugin "+ name +" can't inherit from "+ p +", which doesn't exist");
     }
 
     if ( !Array.isArray( parent ) ) {
