@@ -1099,10 +1099,10 @@
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
 
-  document.addEventListener( "DOMContentLoaded", function () {
+  document.addEventListener( "DOMContentLoaded", function() {
 
     //  Supports non-specific elements
-    var dataAttr = "data-timeline-sources", 
+    var dataAttr = "data-timeline-sources",
         medias = document.querySelectorAll( "[" + dataAttr + "]" );
 
     Popcorn.forEach( medias, function( idx, key ) {
