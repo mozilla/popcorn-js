@@ -99,7 +99,7 @@ test("Instances", function() {
   
   ok( "length" in Popcorn.instances && "join" in Popcorn.instances, "Popcorn.instances is a provided cache array");  
   plus();
-  
+
   instance = Popcorn.getInstanceById("video");
   
   ok( instance.video, "Stored instance as a `video` property" );
@@ -1918,11 +1918,11 @@ test("Parser Support", function () {
     }
   });
 
-  Popcorn.parser( "parseAudio", function( data ){
-    ok( typeof data.json === "object", "data.json exists");
-    plus();
-    return data.json;
-  });
+	Popcorn.parser( "parseAudio", function( data ){
+	  ok( typeof data.json === "object", "data.json exists");
+	  plus();
+	  return data.json;
+	});
 
   audiocorn.parseAudio("data/parserAudio.json", function() {
 

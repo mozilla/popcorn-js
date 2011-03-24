@@ -1101,9 +1101,9 @@
 
   document.addEventListener( "DOMContentLoaded", function () {
 
-    var medias = document.querySelectorAll( "video,audio" );
+    var dataAttr = "data-timeline-sources", 
+    		medias = document.querySelectorAll( "video,audio" );
 
-    
     Popcorn.forEach( medias, function( idx, key ) {
 
       var media = medias[ key ],
@@ -1122,9 +1122,7 @@
 
         popcornMedia = Popcorn( "#" + media.id );
 
-        dataSources = ( media.getAttribute( "data-timeline-sources" ) || "" ).split(",");
-
-        
+        dataSources = ( media.getAttribute( dataAttr ) || "" ).split(",");
 
         if ( dataSources[ 0 ] ) {
 
