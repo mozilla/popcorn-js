@@ -814,10 +814,8 @@
     return plugin;
   };
 
-  Popcorn.pluginInherit = function( name, parent, definition, manifest )
-  {
-    function getDefinition( p )
-    {
+  Popcorn.pluginInherit = function( name, parent, definition, manifest ) {
+    function getDefinition( p ) {
       for (i in Popcorn.registry)
       {
         if ( Popcorn.registry[i].type === p ) {
