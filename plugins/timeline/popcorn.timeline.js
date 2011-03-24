@@ -25,7 +25,8 @@
   *
   */
 
-  var i = 0;
+  var i = 0,
+      that = this;
    
     var head = document.getElementsByTagName("head")[0];
     var css = document.createElement('link');
@@ -41,7 +42,7 @@
     var newdiv = document.createElement( "div" );
     newdiv.style.display = "none";
     newdiv.id = "asdf"+i;
-
+    
     if ( document.getElementById( options.target ) ) {
       document.getElementById( options.target ).appendChild( newdiv );
       // if this isnt the first div added to the target div
@@ -56,6 +57,14 @@
     newdiv.innerHTML = "<p><span id='big'>" + options.title + "</span><br />" +
     "<span id='mid'>" + options.text + "<br />" +
 "</span><a href='#'>" + options.links + "</a></p>";
+
+    // adding eventlistener to each div, so when its clicked it will go to divs start time
+    newdiv.addEventListener( "click", function () {
+      that.currentTime( options.start );
+    }, false );
+    
+    document.links.addEventListener( "click", function () {
+    }, false );
     
     return {
       /**
