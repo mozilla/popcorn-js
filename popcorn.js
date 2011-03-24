@@ -832,12 +832,13 @@
 
     return Popcorn.plugin( name, function( options ) {
       var self = this;
-      function instantiate( p, options ) { return (typeof p === "function") ? p.call( self, options ) : p; }
-      function apply( fn, args ) { return fn && fn.apply( self, args ); }
+      function instantiate( p, options ) {
+        return (typeof p === "function") ? p.call( self, options ) : p;
+      }
       function delegate( name ) {
         return function() {
           plugins.forEach( function( p ) {
-            apply( p[name], arguments );
+            p[name] && p[name].apply( self, arguments );
           });
         };
       }
