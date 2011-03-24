@@ -825,11 +825,17 @@
       Popcorn.error("Plugin "+ name +" can't inherit from "+ p +", which doesn't exist");
     }
 
+    // get the defining functions for all of the parent classes
+    // these are only the direct parents, it's not the full list of ancestors
+    // a refinement of this implementation will use the full ancestor
+    // list as an optimization and so that we can state precisely the
+    // order that the ancestor plugins are called in
     if ( !Array.isArray( parent ) ) {
       parent = [ parent ];
     }
     var parents = parent.map( getDefinition );
 
+    // now create the requested plugin under the reqested name
     return Popcorn.plugin( name, function( options ) {
       var self = this;
       function instantiate( p, options ) {
@@ -838,11 +844,15 @@
       function delegate( name ) {
         return function() {
           plugins.forEach( function( p ) {
+            // the new plugin simply calls the delegated methods on
+            // all of its parents in the order they were specified
             p[name] && p[name].apply( self, arguments );
           });
         };
       }
 
+      // when the newly-defined plugin is instantiated, it must
+      // explicitly instantiate all of the parents
       var plugins = parents.map(function( p ) { return instantiate( p, self, options ); });
       plugins.push( instantiate( definition, self, options ) );
       return {
