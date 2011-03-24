@@ -55,9 +55,9 @@
   Popcorn.addInstance = function( instance ) {
 
     var instanceLen = Popcorn.instances.length,
-        instanceId = instance.video.id && instance.video.id;
+        instanceId = instance.media.id && instance.media.id;
 
-    //  If the video element has its own `id` use it, otherwise provide one
+    //  If the media element has its own `id` use it, otherwise provide one
     //  Ensure that instances have unique ids and unique entries
     //  Uses `in` operator to avoid false positives on 0
     instance.id = !( instanceId in Popcorn.instanceIds ) && instanceId ||
@@ -139,10 +139,14 @@
       //  Check if entity is a valid string id
       matches = rIdExp.exec( entity );
 
-      //  Get video element by id or object reference
-      this.video = matches && matches.length && matches[ 2 ] ?
+      //  Get media element by id or object reference
+      this.media = matches && matches.length && matches[ 2 ] ?
                     document.getElementById( matches[ 2 ] ) :
                     entity;
+
+      //  Create an audio or video element property reference
+      this[ this.media.tagName.toLowerCase() ] = this.media; 
+      
 
       //  Register new instance
       Popcorn.addInstance( this );
@@ -168,11 +172,11 @@
       //  Wrap true ready check
       var isReady = function( that ) {
 
-        if ( that.video.readyState >= 2 ) {
+        if ( that.media.readyState >= 2 ) {
           //  Adding padding to the front and end of the arrays
           //  this is so we do not fall off either end
 
-          var duration = that.video.duration;
+          var duration = that.media.duration;
           //  Check for no duration info (NaN)
           var videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
 
@@ -181,7 +185,7 @@
             end: videoDurationPlus
           });
 
-          that.video.addEventListener( "timeupdate", function( event ) {
+          that.media.addEventListener( "timeupdate", function( event ) {
 
             var currentTime    = this.currentTime,
                 previousTime   = that.data.trackEvents.previousUpdateTime,
@@ -347,8 +351,8 @@
 
         ret[ name ] = function( arg ) {
 
-          if ( typeof this.video[name] === "function" ) {
-            this.video[ name ]();
+          if ( typeof this.media[name] === "function" ) {
+            this.media[ name ]();
 
             return this;
           }
@@ -356,12 +360,12 @@
 
           if ( arg !== false && arg !== null && typeof arg !== "undefined" ) {
 
-            this.video[ name ] = arg;
+            this.media[ name ] = arg;
 
             return this;
           }
 
-          return this.video[ name ];
+          return this.media[ name ];
         };
       });
 
@@ -374,7 +378,7 @@
 
     //  Rounded currentTime
     roundTime: function () {
-      return -~this.video.currentTime;
+      return -~this.media.currentTime;
     },
 
     //  Attach an event to a single point in time
@@ -456,7 +460,7 @@
             var evt = document.createEvent( eventInterface );
                 evt.initEvent(type, true, true, global, 1);
 
-            this.video.dispatchEvent(evt);
+            this.media.dispatchEvent(evt);
 
             return this;
           }
@@ -487,7 +491,7 @@
         // only attach one event of any type
         if ( !hasEvents && Popcorn.events.all.indexOf( type ) > -1 ) {
 
-          this.video.addEventListener( type, function( event ) {
+          this.media.addEventListener( type, function( event ) {
 
             Popcorn.forEach( self.data.events[type], function ( obj, key ) {
               if ( typeof obj === "function" ) {
@@ -1097,31 +1101,34 @@
 
   document.addEventListener( "DOMContentLoaded", function () {
 
-    var videos = document.getElementsByTagName( "video" );
+    var medias = document.querySelectorAll( "video,audio" );
 
-    Popcorn.forEach( videos, function ( iter, key ) {
+    
+    Popcorn.forEach( medias, function( idx, key ) {
 
-      var video = videos[ key ],
+      var media = medias[ key ],
           hasDataSources = false,
-          dataSources, data, popcornVideo;
+          dataSources, data, popcornMedia;
 
       //  Ensure that the DOM has an id
-      if ( !video.id ) {
+      if ( !media.id ) {
 
-        video.id = Popcorn.guid( "__popcorn" );
+        media.id = Popcorn.guid( "__popcorn" );
 
       }
 
       //  Ensure we're looking at a dom node
-      if ( video.nodeType && video.nodeType === 1 ) {
+      if ( media.nodeType && media.nodeType === 1 ) {
 
-        popcornVideo = Popcorn( "#" + video.id );
+        popcornMedia = Popcorn( "#" + media.id );
 
-        dataSources = ( video.getAttribute( "data-timeline-sources" ) || "" ).split(",");
+        dataSources = ( media.getAttribute( "data-timeline-sources" ) || "" ).split(",");
+
+        
 
         if ( dataSources[ 0 ] ) {
 
-          Popcorn.forEach( dataSources, function ( source ) {
+          Popcorn.forEach( dataSources, function( source ) {
 
             // split the parser and data as parser:file
             data = source.split( ":" );
@@ -1135,20 +1142,20 @@
 
             }
 
-            //  If the video has data sources and the correct parser is registered, continue to load
-            if ( dataSources[ 0 ] && popcornVideo[ data[ 0 ] ] ) {
+            //  If the media has data sources and the correct parser is registered, continue to load
+            if ( dataSources[ 0 ] && popcornMedia[ data[ 0 ] ] ) {
 
-              //  Set up the video and load in the datasources
-              popcornVideo[ data[ 0 ] ]( data[ 1 ] );
+              //  Set up the media and load in the datasources
+              popcornMedia[ data[ 0 ] ]( data[ 1 ] );
 
             }
           });
 
         }
 
-        //  Only play the video if it was specified to do so
-        if ( !!popcornVideo.autoplay ) {
-          popcornVideo.play();
+        //  Only play the media if it was specified to do so
+        if ( !!popcornMedia.autoplay ) {
+          popcornMedia.play();
         }
 
       }

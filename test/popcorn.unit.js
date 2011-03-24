@@ -111,7 +111,7 @@ test("Instances", function() {
   ok( instance instanceof Popcorn, "Instance instanceof Popcorn" );
   plus();
   
-  equal( Popcorn.instances.length, 1, "There are the correct number of Popcorn instances" );
+  equal( Popcorn.instances.length, 2, "There are the correct number of Popcorn instances" );
   plus();
 
   //  Create another instance
@@ -121,7 +121,7 @@ test("Instances", function() {
   var remove = Popcorn.instances[1];
 
   //  Remove and check the length of the currently cached instances
-  equal( Popcorn.removeInstanceById( remove.id ).length, 1, "Removing an instance by id: 1 instance remains" );
+  equal( Popcorn.removeInstanceById( remove.id ).length, 2, "Removing an instance by id: 1 instance remains" );
   plus();
 });
 
@@ -1815,6 +1815,122 @@ test("Parsing Handler - References unavailable plugin", function () {
   }, 2000);
   
 });
+
+module("Audio");
+test( "Basic Audio Support", function () {
+
+  var popped = Popcorn( "#audio" ),
+      popObj = Popcorn( document.getElementById( "audio" ) ),
+      methods = "load play pause currentTime mute volume roundTime exec removePlugin",
+      count = 0,
+      expects = 30;
+  
+  expect( expects );
+  
+  function plus() {
+
+    if ( ++count === expects ) {
+
+      start(); 
+    }
+  }
+
+  stop( 10000 ); 
+
+  // testing element passed by id
+  ok( "audio" in popped, "instance by id has `media` property" );
+  plus();
+  equal( Object.prototype.toString.call( popped.media ), "[object HTMLAudioElement]", "instance by id media property is a HTMLAudioElement" );
+  plus();
+
+  ok( "data" in popped, "instance by id has `data` property" );
+  plus();
+  equal( Object.prototype.toString.call( popped.data ), "[object Object]", "instance by id data property is an object" );
+  plus();
+
+  ok( "trackEvents" in popped.data, "instance by id has `trackEvents` property" );
+  plus();
+  equal( Object.prototype.toString.call( popped.data.trackEvents ), "[object Object]", "instance by id trackEvents property is an object" );
+  plus();
+
+  popped.play();
+
+  methods.split( /\s+/g ).forEach(function ( k,v ) {
+
+    ok( k in popped, "instance by id has method: " + k );
+    plus();
+  });
+
+  // testing element passed by reference
+  ok( "media" in popObj, "instance by reference has `media` property" );
+  plus();
+  equal( Object.prototype.toString.call( popObj.media ), "[object HTMLAudioElement]", "instance by reference media property is a HTMLAudioElement" );
+  plus();
+
+  ok( "data" in popObj, "instance by reference has `data` property" );
+  plus();
+  equal( Object.prototype.toString.call( popObj.data ), "[object Object]", "instance by reference data property is an object" );
+  plus();
+
+  ok( "trackEvents" in popObj.data, "instance by reference has `trackEvents` property" );
+  plus();
+  equal( Object.prototype.toString.call( popObj.data.trackEvents ), "[object Object]", "instance by reference trackEvents property is an object" );
+  plus();
+
+  popObj.play();
+
+  methods.split( /\s+/g ).forEach(function ( k,v ) {
+
+    ok( k in popObj, "instance by reference has method: " + k );
+    plus();
+  });
+});
+
+test("Parser Support", function () {
+
+  var expects = 3,
+      count = 0,
+      timeOut = 0,
+      interval,
+      audiocorn = Popcorn( "#audio" );
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+
+      Popcorn.removePlugin( "testAudioParser" );
+    }
+  }
+
+  expect(expects);
+  stop(5000);
+
+
+  Popcorn.plugin("testAudioParser", {
+    
+    start: function() {
+      ok(true, "testAudioParser started: " + Math.round(this.currentTime()) );
+      plus();
+    },
+    end: function() {
+      ok(true, "testAudioParser ended: " + Math.round(this.currentTime()) );
+      plus();
+    }
+  });
+
+  Popcorn.parser( "parseAudio", function( data ){
+    ok( typeof data.json === "object", "data.json exists");
+    plus();
+    return data.json;
+  });
+
+  audiocorn.parseAudio("data/parserAudio.json", function() {
+
+    audiocorn.currentTime(4).play();
+
+  });
+});
+
 
 module("Popcorn Test Runner End");
 test("Last Check", function () {
