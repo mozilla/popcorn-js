@@ -676,13 +676,15 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 34, 
+      expects = 68, 
       count = 0;
 
   function plus() { 
     if ( ++count == expects ) {
       Popcorn.removePlugin("executor");
       Popcorn.removePlugin("complicator");
+      Popcorn.removePlugin("executor_inherits");
+      Popcorn.removePlugin("complicator_inherits");
       start();
     }
   }
@@ -727,16 +729,26 @@ test("Plugin Factory", function () {
 
   });
  
+  Popcorn.pluginInherit("executor_inherits", "executor", function (options) {
+    return {
+      start: function() { ok(true, "child class method executed"); plus(); }
+    };
+  });
+
   ok( "executor" in popped, "executor plugin is now available to instance" );
   plus();
-  equals( Popcorn.registry.length, 1, "One item in the registry");
-  plus();    
-  
-  
-  
+  ok( "executor_inherits" in popped, "executor-inerits plugin is now available to instance" );
+  plus();
+  equals( Popcorn.registry.length, 2, "One item in the registry");
+  plus();
+
   popped.executor({
     start: 1, 
     end: 2
+  });
+  popped.executor_inherits({
+    start: 2, 
+    end: 3
   });
 
   Popcorn.plugin("complicator", {
@@ -777,14 +789,24 @@ test("Plugin Factory", function () {
     }    
   });
 
+  Popcorn.pluginInherit("complicator_inherits", "executor", {
+    start: function() { ok(true, "child class method executed"); plus(); }
+  });
+
   ok( "complicator" in popped, "complicator plugin is now available to instance" );
   plus();
-  equals( Popcorn.registry.length, 2, "Two items in the registry");
+  ok( "complicator_inherits" in popped, "complicator plugin is now available to instance" );
+  plus();
+  equals( Popcorn.registry.length, 4, "Two items in the registry");
   plus();
   
   popped.complicator({
-    start: 3, 
-    end: 4
+    start: 4, 
+    end: 5
+  }); 
+  popped.complicator_inherits({
+    start: 5, 
+    end: 6
   }); 
 
   popped.currentTime(0).play();
