@@ -60,8 +60,8 @@
         }
         var div = document.createElement( 'div' );
         divStyle = {
-          width : '200px',
-          height : '200px',
+          width : '100%',
+          height : '600px',
           background : "url( " + options.src + " ) no-repeat ",
           backgroundSize : '100%',
           MozBackgroundSize: '100%',
