@@ -676,8 +676,8 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 68, 
-      count = 0;
+      expects = 76, // 15*2+16*2+6+8. executor/complicator each do 15
+      count = 0;    
 
   function plus() { 
     if ( ++count == expects ) {
@@ -685,6 +685,10 @@ test("Plugin Factory", function () {
       Popcorn.removePlugin("complicator");
       Popcorn.removePlugin("executor_inherits");
       Popcorn.removePlugin("complicator_inherits");
+      Popcorn.removePlugin("A");
+      Popcorn.removePlugin("B");
+      Popcorn.removePlugin("C");
+      Popcorn.removePlugin("D");
       start();
     }
   }
@@ -808,6 +812,59 @@ test("Plugin Factory", function () {
     start: 5, 
     end: 6
   }); 
+
+  var counts = { a: 0, b: 0, c: 0, d: 0 };
+  Popcorn.plugin("A", function(options) {
+    return {
+      start: function() {
+        counts.a++;
+      }
+    };
+  });
+  Popcorn.plugin("B", function(options) {
+    return {
+      start: function() {
+        counts.b++;
+      }
+    };
+  });
+  Popcorn.pluginInherit("C", "B", function(options) {
+    return {
+      start: function() {
+        counts.c++;
+      }
+    };
+  });
+  Popcorn.pluginInherit("D", ["A", "B"], function(options) {
+    return {
+      start: function() {
+        counts.d++;
+      }
+    };
+  });
+
+  equals(counts.a, 0, "plugin A should not have been run yet");
+  plus();
+  equals(counts.b, 0, "plugin B should not have been run yet");
+  plus();
+  equals(counts.c, 0, "plugin C should not have been run yet");
+  plus();
+  equals(counts.d, 0, "plugin D should not have been run yet");
+  plus();
+
+  popped.C({ start: 6, end: 7 });
+  popped.D({ start: 7, end: 8 });
+
+  setTimeout(function() {
+    equals(counts.a, 1, "plugin A should have been run once");
+    plus();
+    equals(counts.b, 2, "plugin B should have been run twice");
+    plus();
+    equals(counts.c, 1, "plugin C should have been run once");
+    plus();
+    equals(counts.d, 1, "plugin D should have been run once");
+    plus();    
+  }, 8000);
 
   popped.currentTime(0).play();
 
