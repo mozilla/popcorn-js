@@ -145,8 +145,7 @@
                     entity;
 
       //  Create an audio or video element property reference
-      this[ this.media.tagName.toLowerCase() ] = this.media; 
-      
+      this[ ( this.media.tagName && this.media.tagName.toLowerCase() ) || "video" ] = this.media;
 
       //  Register new instance
       Popcorn.addInstance( this );
