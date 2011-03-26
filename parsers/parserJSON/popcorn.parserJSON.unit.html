@@ -41,14 +41,26 @@
     <p>Your user agent does not support the HTML5 Video element.</p> 
 
   </video> 
+
+	<audio id='audio' src="../../test/italia.ogg" data-timeline-sources="data/audio.json" controls> 
+	</audio>
+  
   <style>
     .displays {
       width: 300px;
       height: 300px;
     }
   </style>
-  <div class="displays" id="iframe-container"></div>
-  <div class="displays" id="map-container"></div>
-  <div class="displays" id="footnote-container"></div> 
+  <hr>
+  <div style="width:300px;float:left">
+		<div class="displays" id="video-iframe-container"></div>
+		<div class="displays" id="video-map-container"></div>
+		<div class="displays" id="video-footnote-container"></div> 
+	</div>
+	<div style="width:300px;float:left">
+		<div class="displays" id="audio-iframe-container"></div>
+		<div class="displays" id="audio-map-container"></div>
+		<div class="displays" id="audio-footnote-container"></div>   
+	</div>
 </body>
 </html>

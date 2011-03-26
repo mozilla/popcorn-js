@@ -128,9 +128,9 @@
           this.container.style.textAlign  = "center";
 
           // the video element must have height and width defined
-          this.container.style.width      = this.video.offsetWidth + "px";
-          this.container.style.top        = offset( this.video ).top + this.video.offsetHeight - 65 + "px";
-          this.container.style.left       = offset( this.video ).left + "px";
+          this.container.style.width      = this.media.offsetWidth + "px";
+          this.container.style.top        = offset( this.media ).top + this.media.offsetHeight - 65 + "px";
+          this.container.style.left       = offset( this.media ).left + "px";
 
           document.body.appendChild( this.container );
         }
