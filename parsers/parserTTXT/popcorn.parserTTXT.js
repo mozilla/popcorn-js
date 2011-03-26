@@ -14,7 +14,7 @@
    * Example:
      <TextSample sampleTime="00:00:00.000" text=""></TextSample>
    */
-  Popcorn.parser( "parseTTXT", "TTXT", function( data ) {
+  Popcorn.parser( "parseTTXT", function( data ) {
 
     // declare needed variables
     var returnData = {

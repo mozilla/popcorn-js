@@ -3,8 +3,6 @@ test("Popcorn Image Plugin", function () {
   var popped = Popcorn("#video"),
       expects = 5,
       count = 0,
-      interval,
-      interval2,
       imagediv = document.getElementById('imagediv');
   
   expect( expects );
@@ -27,28 +25,21 @@ test("Popcorn Image Plugin", function () {
     start: 1, // seconds
     end: 3, // seconds
     href: 'http://www.drumbeat.org/',
-    src: 'http://www.drumbeat.org/sites/default/files/domain-2/drumbeat_logo.png',
+    src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
     target: 'imagediv'
   } );
 
-  interval = setInterval( function() {
-    if( popped.currentTime() > 1 && popped.currentTime() < 3 ) {
-      ok( /display: inline;/.test( imagediv.innerHTML ), "Div contents are displayed" );
-      plus();
-      ok( /img/.test( imagediv.innerHTML ), "An image exists" );
-      plus();
-      clearInterval( interval );
-    }
-  }, 500);
-  
-  interval2 = setInterval( function() {
-    if( popped.currentTime() > 3 ) {
-      ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
-      plus();
-      clearInterval( interval2 );
-    }
-  }, 500);
-  
-  popped.play();
+  popped.exec( 2, function() {
+    ok( /display: inline;/.test( imagediv.innerHTML ), "Div contents are displayed" );
+    plus();
+    ok( /img/.test( imagediv.innerHTML ), "An image exists" );
+    plus();
+  });
+
+  popped.exec( 4, function() {
+    ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
+    plus();
+  });
+  popped.volume(0).play();
   
 });

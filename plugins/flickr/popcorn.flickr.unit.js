@@ -3,8 +3,6 @@ test("Popcorn Flickr Plugin", function () {
   var popped = Popcorn("#video"),
       expects = 5, 
       count = 0,
-      interval,
-      interval2,
       flickrdiv = document.getElementById('flickrdiv');
   
   expect( expects );
@@ -25,29 +23,23 @@ test("Popcorn Flickr Plugin", function () {
   
   popped.flickr({
     start: 1, // seconds
-    end: 3, // seconds
+    end: 3,   // seconds
     userid: '35034346917@N01',
     numberofimages: '1',
     target: 'flickrdiv'
   } );
 
-  interval = setInterval( function() {
-    if( popped.currentTime() > 1 && popped.currentTime() < 3 ) {
-      ok( /display: inline;/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
-      plus();
-      ok( /img/.test( flickrdiv.innerHTML ), "An image exists" );
-      plus();
-      clearInterval( interval );
-    }
-  }, 500);
-  
-  interval2 = setInterval( function() {
-    if( popped.currentTime() > 3 ) {
-      ok( /display: none;/.test( flickrdiv.innerHTML ), "Div contents are hidden again" );
-      plus();
-      clearInterval( interval2 );
-    }
-  }, 500);
+  popped.exec( 2, function() {
+    ok( /display: inline;/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
+    plus();
+    ok( /img/.test( flickrdiv.innerHTML ), "An image exists" );
+    plus();
+  });
+
+  popped.exec( 4, function() {
+    ok( /display: none;/.test( flickrdiv.innerHTML ), "Div contents are hidden again" );
+    plus();
+  });
   popped.volume(0);
   popped.play();
   

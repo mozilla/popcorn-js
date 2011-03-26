@@ -27,7 +27,7 @@
     SSA tags with {\i1} would open and close italicize {\i0}, but are stripped
     Multiple {\pos(142,120)\b1}SSA tags are stripped
    */
-  Popcorn.parser( "parseSRT", "SRT", function( data ) {
+  Popcorn.parser( "parseSRT", function( data ) {
 
     // declare needed variables
     var retObj = {
