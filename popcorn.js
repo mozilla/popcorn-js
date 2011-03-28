@@ -820,8 +820,7 @@
 
   Popcorn.pluginInherit = function( name, parentNames, definition, manifest ) {
     function getDefinition( p ) {
-      if ( p in Popcorn.registryHash && Popcorn.registryHash.hasOwnProperty( p ) )
-      {
+      if ( p in Popcorn.registryHash && Popcorn.registryHash.hasOwnProperty( p ) ) {
         return Popcorn.registryHash[ p ];
       }
       Popcorn.error( "Plugin "+ name +" can't inherit from "+ p +", which doesn't exist" );
@@ -837,7 +836,7 @@
         if ( parents.hasOwnProperty( i ) ) {
           var p = parents[ i ];
           getAncestors( p );
-          if (ancestorNames.indexOf( p ) === -1) {
+          if ( ancestorNames.indexOf( p ) === -1 ) {
             ancestorNames.push( p );
           }
         }
@@ -858,15 +857,15 @@
             // The new plugin simply calls the delegated methods on
             // all of its parents in the order they were specified.
             p[ name ] && p[ name ].apply( self, arguments );
-          });
+          } );
         };
       }
 
       // When the newly-defined plugin is instantiated, it must
       // explicitly instantiate all of its ancestors.
-      var plugins = ancestorNames.map(function( name ) {
+      var plugins = ancestorNames.map( function( name ) {
         return instantiate( getDefinition( name ).base_definition );
-      });
+      } );
       return {
         _setup: delegate( "_setup" ),
         start: delegate( "start" ),
