@@ -571,7 +571,7 @@
       for ( registryIdx = 0; registryIdx < registryLen; registryIdx++ ) {
         if ( Popcorn.registry[ registryIdx ].name === name ) {
           Popcorn.registry.splice( registryIdx, 1 );
-          delete Popcorn.registry_hash[ name ];
+          delete Popcorn.registryHash[ name ];
 
           // delete the plugin
           delete obj[ name ];
@@ -708,7 +708,7 @@
   Popcorn.manifest = {};
   //  Plugins are registered
   Popcorn.registry = [];
-  Popcorn.registry_hash = {};
+  Popcorn.registryHash = {};
   //  An interface for extending Popcorn
   //  with plugin functionality
   Popcorn.plugin = function( name, definition, manifest ) {
@@ -807,42 +807,46 @@
 
     //  Push into the registry
     var entry = {
-      function: plugin[name],
+      function: plugin[ name ],
       definition: definition,
       base_definition: definition,
       parents: [],
       name: name
     };
-    Popcorn.registry.push(entry);
-    Popcorn.registry_hash[name] = entry;
+    Popcorn.registry.push( entry );
+    Popcorn.registryHash[ name ] = entry;
     return plugin;
   };
 
   Popcorn.pluginInherit = function( name, parentNames, definition, manifest ) {
     function getDefinition( p ) {
-      if (p in Popcorn.registry_hash)
-        return Popcorn.registry_hash[p];
-      Popcorn.error("Plugin "+ name +" can't inherit from "+ p +", which doesn't exist");
+      if ( p in Popcorn.registryHash && Popcorn.registryHash.hasOwnProperty( p ) )
+      {
+        return Popcorn.registryHash[ p ];
+      }
+      Popcorn.error( "Plugin "+ name +" can't inherit from "+ p +", which doesn't exist" );
     }
 
-    // get the names of all of the ancestor classes, in the order that
+    // Get the names of all of the ancestor classes, in the order that
     // we will be calling them. The override is for the class we're
-    // currently defining, since it's not in the registry yet
+    // currently defining, since it's not in the registry yet.
     var ancestorNames = [];
-    function getAncestors(name, override) {
-      var parents = override || getDefinition(name).parents;
-      for (var i in parents)
-      {
-        var p = parents[i];
-        getAncestors(p);
-        if (ancestorNames.indexOf(p) == -1)
-          ancestorNames.push(p);
+    function getAncestors( name, override ) {
+      var parents = override || getDefinition( name ).parents;
+      for ( var i in parents ) {
+        if ( parents.hasOwnProperty( i ) ) {
+          var p = parents[ i ];
+          getAncestors( p );
+          if (ancestorNames.indexOf( p ) === -1) {
+            ancestorNames.push( p );
+          }
+        }
       }
     }
-    getAncestors(name, Array.isArray( parentNames ) ? parentNames : [ parentNames ]);
-    ancestorNames.push(name);
+    getAncestors( name, Array.isArray( parentNames ) ? parentNames : [ parentNames ] );
+    ancestorNames.push( name );
 
-    // now create the requested plugin under the reqested name
+    // Now create the requested plugin under the reqested name.
     var p = Popcorn.plugin( name, function( options ) {
       var self = this;
       function instantiate( p ) {
@@ -851,24 +855,24 @@
       function delegate( name ) {
         return function() {
           plugins.forEach( function( p ) {
-            // the new plugin simply calls the delegated methods on
-            // all of its parents in the order they were specified
-            p[name] && p[name].apply( self, arguments );
+            // The new plugin simply calls the delegated methods on
+            // all of its parents in the order they were specified.
+            p[ name ] && p[ name ].apply( self, arguments );
           });
         };
       }
 
-      // when the newly-defined plugin is instantiated, it must
-      // explicitly instantiate all of the parents
-      var plugins = ancestorNames.map(function(name) {
-        return instantiate(getDefinition(name).base_definition);
+      // When the newly-defined plugin is instantiated, it must
+      // explicitly instantiate all of its ancestors.
+      var plugins = ancestorNames.map(function( name ) {
+        return instantiate( getDefinition( name ).base_definition );
       });
       return {
         _setup: delegate( "_setup" ),
         start: delegate( "start" ),
         end: delegate( "end" )
       };
-    }, manifest || definition.manifest);
+    }, manifest || definition.manifest );
 
     var entry = getDefinition( name );
     entry.base_definition = definition;
