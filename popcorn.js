@@ -569,8 +569,9 @@
 
       // remove plugin reference from registry
       for ( registryIdx = 0; registryIdx < registryLen; registryIdx++ ) {
-        if ( Popcorn.registry[ registryIdx ].type === name ) {
+        if ( Popcorn.registry[ registryIdx ].name === name ) {
           Popcorn.registry.splice( registryIdx, 1 );
+          delete Popcorn.registry_hash[ name ];
 
           // delete the plugin
           delete obj[ name ];
@@ -707,6 +708,7 @@
   Popcorn.manifest = {};
   //  Plugins are registered
   Popcorn.registry = [];
+  Popcorn.registry_hash = {};
   //  An interface for extending Popcorn
   //  with plugin functionality
   Popcorn.plugin = function( name, definition, manifest ) {
@@ -804,40 +806,46 @@
     Popcorn.extend( Popcorn.p, plugin );
 
     //  Push into the registry
-    Popcorn.registry.push( 
-      Popcorn.extend( plugin, {
-        definition: definition,
-        type: name
-      }) 
-     );
-
+    var entry = {
+      function: plugin[name],
+      definition: definition,
+      base_definition: definition,
+      parents: [],
+      name: name
+    };
+    Popcorn.registry.push(entry);
+    Popcorn.registry_hash[name] = entry;
     return plugin;
   };
 
-  Popcorn.pluginInherit = function( name, parent, definition, manifest ) {
+  Popcorn.pluginInherit = function( name, parentNames, definition, manifest ) {
     function getDefinition( p ) {
-      for (var i in Popcorn.registry) {
-        if ( Popcorn.registry[i].type === p ) {
-          return Popcorn.registry[i].definition;
-        }
-      }
+      if (p in Popcorn.registry_hash)
+        return Popcorn.registry_hash[p];
       Popcorn.error("Plugin "+ name +" can't inherit from "+ p +", which doesn't exist");
     }
 
-    // get the defining functions for all of the parent classes
-    // these are only the direct parents, it's not the full list of ancestors
-    // a refinement of this implementation will use the full ancestor
-    // list as an optimization and so that we can state precisely the
-    // order that the ancestor plugins are called in
-    if ( !Array.isArray( parent ) ) {
-      parent = [ parent ];
+    // get the names of all of the ancestor classes, in the order that
+    // we will be calling them. The override is for the class we're
+    // currently defining, since it's not in the registry yet
+    var ancestorNames = [];
+    function getAncestors(name, override) {
+      var parents = override || getDefinition(name).parents;
+      for (var i in parents)
+      {
+        var p = parents[i];
+        getAncestors(p);
+        if (ancestorNames.indexOf(p) == -1)
+          ancestorNames.push(p);
+      }
     }
-    var parents = parent.map( getDefinition );
+    getAncestors(name, Array.isArray( parentNames ) ? parentNames : [ parentNames ]);
+    ancestorNames.push(name);
 
     // now create the requested plugin under the reqested name
-    return Popcorn.plugin( name, function( options ) {
+    var p = Popcorn.plugin( name, function( options ) {
       var self = this;
-      function instantiate( p, options ) {
+      function instantiate( p ) {
         return (typeof p === "function") ? p.call( self, options ) : p;
       }
       function delegate( name ) {
@@ -852,14 +860,21 @@
 
       // when the newly-defined plugin is instantiated, it must
       // explicitly instantiate all of the parents
-      var plugins = parents.map(function( p ) { return instantiate( p, self, options ); });
-      plugins.push( instantiate( definition, self, options ) );
+      var plugins = ancestorNames.map(function(name) {
+        return instantiate(getDefinition(name).base_definition);
+      });
       return {
         _setup: delegate( "_setup" ),
         start: delegate( "start" ),
         end: delegate( "end" )
       };
     }, manifest || definition.manifest);
+
+    var entry = getDefinition( name );
+    entry.base_definition = definition;
+    entry.parents = parentNames;
+
+    return p;
   };
 
   // stores parsers keyed on filetype
