@@ -676,7 +676,7 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"), 
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 76, // 15*2+16*2+6+8. executor/complicator each do 15
+      expects = 80, // 15*2+16*2+6+12. executor/complicator each do 15
       count = 0;    
 
   function plus() { 
@@ -689,12 +689,14 @@ test("Plugin Factory", function () {
       Popcorn.removePlugin("B");
       Popcorn.removePlugin("C");
       Popcorn.removePlugin("D");
+      Popcorn.removePlugin("E");
+      Popcorn.removePlugin("F");
       start();
     }
   }
 
   expect( expects );
-  stop( 10000 );
+  stop( 15000 );
 
   Popcorn.plugin("executor", function () {
     
@@ -813,34 +815,24 @@ test("Plugin Factory", function () {
     end: 6
   }); 
 
-  var counts = { a: 0, b: 0, c: 0, d: 0 };
+  var counts = { a: 0, b: 0, c: 0, d: 0, e: 0, f: 0 };
   Popcorn.plugin("A", function(options) {
-    return {
-      start: function() {
-        counts.a++;
-      }
-    };
+    return { start: function() { counts.a++; } };
   });
   Popcorn.plugin("B", function(options) {
-    return {
-      start: function() {
-        counts.b++;
-      }
-    };
+    return { start: function() { counts.b++; } };
   });
   Popcorn.pluginInherit("C", "B", function(options) {
-    return {
-      start: function() {
-        counts.c++;
-      }
-    };
+    return { start: function() { counts.c++; } };
   });
   Popcorn.pluginInherit("D", ["A", "B"], function(options) {
-    return {
-      start: function() {
-        counts.d++;
-      }
-    };
+    return { start: function() { counts.d++; } };
+  });
+  Popcorn.pluginInherit("E", ["B"], function(options) {
+    return { start: function() { counts.e++; } };
+  });
+  Popcorn.pluginInherit("F", ["E", "C"], function(options) {
+    return { start: function() { counts.f++; } };
   });
 
   equals(counts.a, 0, "plugin A should not have been run yet");
@@ -851,20 +843,29 @@ test("Plugin Factory", function () {
   plus();
   equals(counts.d, 0, "plugin D should not have been run yet");
   plus();
+  equals(counts.e, 0, "plugin E should not have been run yet");
+  plus();
+  equals(counts.f, 0, "plugin F should not have been run yet");
+  plus();
 
   popped.C({ start: 6, end: 7 });
   popped.D({ start: 7, end: 8 });
+  popped.F({ start: 8, end: 9 });
 
   setTimeout(function() {
     equals(counts.a, 1, "plugin A should have been run once");
     plus();
-    equals(counts.b, 2, "plugin B should have been run twice");
+    equals(counts.b, 3, "plugin B should have been run thrice");
     plus();
-    equals(counts.c, 1, "plugin C should have been run once");
+    equals(counts.c, 2, "plugin C should have been run twice");
     plus();
     equals(counts.d, 1, "plugin D should have been run once");
     plus();    
-  }, 8000);
+    equals(counts.e, 1, "plugin E should have been run once");
+    plus();    
+    equals(counts.f, 1, "plugin F should have been run once");
+    plus();    
+  }, 10000);
 
   popped.currentTime(0).play();
 
