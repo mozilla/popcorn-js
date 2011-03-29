@@ -77,7 +77,7 @@ test("Default Functionality", function () {
 });
 
 test("Extension and Method Overriding", function () {
-  var expects = 3,
+  var expects = 4,
       count = 0,
       player = Popcorn.baseplayer(),
       playerForPopcorn = Popcorn.baseplayer(),
@@ -100,7 +100,17 @@ test("Extension and Method Overriding", function () {
     timeupdate: function() {
       ok( true, "Timeupdate overridden" );
       plus();
+      
+      // Must dispatch event so event listeners can work!
+      this.dispatchEvent("timeupdate");
+      
+      // We don't want to cue custom timing loop using setTimeout because we only want this to run once
     }
+  });
+  
+  player.addEventListener( "timeupdate", function() {
+    ok( true, "Timeupdate event dispatched!" );
+    plus();
   });
   
   popcorn = Popcorn( playerForPopcorn )
@@ -112,6 +122,8 @@ test("Extension and Method Overriding", function () {
   player.load();
   player.play();
   
+  // Each player will define its own criteria for when readyState should be changed
+  // No logic in base player for this, so we must do it manually so popcorn will be able to cue track events
   playerForPopcorn.readyState = 2;
   popcorn.play();
 });
