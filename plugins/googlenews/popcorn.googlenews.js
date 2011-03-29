@@ -1,11 +1,23 @@
 // PLUGIN: Google News
 
 (function (Popcorn) {
-  var scriptLoaded = false;
 
-  Popcorn.getScript( "http://www.google.com/jsapi", function() {
-    google.load("elements", "1", {packages : ["newsshow"], callback: function() {scriptLoaded = true;}});
-  });
+  var scriptLoaded = false,
+      callBack     = function( data ) {
+
+        if ( typeof google !== 'undefined' && google.load ) {
+
+          google.load("elements", "1", {packages : ["newsshow"], callback: function() {scriptLoaded = true;}});
+        } else {
+
+          setTimeout( function() {
+
+            callBack( data );
+          }, 1);
+        }
+      };
+
+  Popcorn.getScript( "http://www.google.com/jsapi", callBack );
 
   /**
    * Google News popcorn plug-in 

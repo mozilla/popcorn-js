@@ -2,11 +2,22 @@
 
 (function (Popcorn) {
 
-  var scriptLoaded = false;
+  var scriptLoaded = false,
+      callBack     = function( data ) {
 
-  Popcorn.getScript( "http://www.google.com/jsapi", function() {
-    google.load("language", "1", {callback: function() {scriptLoaded = true;}});
-  });
+        if ( typeof google !== 'undefined' && google.load ) {
+
+          google.load("language", "1", {callback: function() {scriptLoaded = true;}});
+        } else {
+
+          setTimeout( function() {
+
+            callBack( data );
+          }, 1);
+        }
+      };
+
+  Popcorn.getScript( "http://www.google.com/jsapi", callBack );
 
   /**
    * Subtitle popcorn plug-in 
@@ -117,9 +128,9 @@
           this.container.style.textAlign  = "center";
 
           // the video element must have height and width defined
-          this.container.style.width      = this.video.offsetWidth + "px";
-          this.container.style.top        = offset( this.video ).top + this.video.offsetHeight - 65 + "px";
-          this.container.style.left       = offset( this.video ).left + "px";
+          this.container.style.width      = this.media.offsetWidth + "px";
+          this.container.style.top        = offset( this.media ).top + this.media.offsetHeight - 65 + "px";
+          this.container.style.left       = offset( this.media ).left + "px";
 
           document.body.appendChild( this.container );
         }
