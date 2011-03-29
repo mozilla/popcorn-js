@@ -19,6 +19,7 @@ var onYouTubePlayerReady;
         win = window,
         doc = document,
         nav = navigator,
+        main,
         
         plugin = false,
         domLoadFnArr = [main],
@@ -178,7 +179,7 @@ var onYouTubePlayerReady;
       /* Main function
         - Will preferably execute onDomLoad, otherwise onload (as a fallback)
       */
-      function main() { 
+      main = function main() { 
         if (plugin) {
           testPlayerVersion();
         }
@@ -804,7 +805,7 @@ var onYouTubePlayerReady;
   // 0.05 sec tolerance between old and new times to determine if currentTime has been set programatically
   // 250 ms progress interval as specified by WHATWG
   var timeupdateInterval = 33,
-      timeCheckInterval = 0.5
+      timeCheckInterval = 0.5,
       progressInterval = 250;
 
   // Ready State Constants
@@ -837,7 +838,7 @@ var onYouTubePlayerReady;
     var matches = url.match( /((http:\/\/)?www\.)?youtube\.[a-z]+\/watch\?v\=[a-z0-9]+/i );    
     // Return id, which comes after first equals sign
     return matches ? matches[0].split( "=" )[1] : "";
-  };
+  }
   
   // Extract the id from a player url
   function extractIdFromUri( url ) {
@@ -848,8 +849,8 @@ var onYouTubePlayerReady;
     var matches = url.match( /^http:\/\/?www\.youtube\.[a-z]+\/e\/[a-z0-9]+/i );
     
     // Return id, which comes after first equals sign
-    return matches ? matches[0].split( "/e/" )[1] : ""
-  };
+    return matches ? matches[0].split( "/e/" )[1] : "";
+  }
   
   function getPlayerAddress( vidId, playerId ) {
     if( !vidId ) {
@@ -918,7 +919,7 @@ var onYouTubePlayerReady;
     // Issue load event
     vid.dispatchEvent( 'load' );
     vid.dispatchEvent( "durationchange" );
-  }
+  };
 
   Popcorn.youtube = function( elementId, url ) {
     return new Popcorn.youtube.init( elementId, url );
@@ -932,7 +933,7 @@ var onYouTubePlayerReady;
     }
     
     var self = this,
-        container = document.getElementById( elementId );;
+        container = document.getElementById( elementId );
     
     this.playerId = elementId;
     this.readyState = READY_STATE_HAVE_NOTHING;
@@ -1217,7 +1218,7 @@ var onYouTubePlayerReady;
           self = this;
 
       // do nothing if size is not yet determined
-      if ( bytesToLoad == 0 ) {
+      if ( bytesToLoad === 0 ) {
         return;
       }
 
