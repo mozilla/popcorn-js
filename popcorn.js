@@ -315,7 +315,7 @@
   // A Few reusable utils, memoized onto Popcorn
   Popcorn.extend( Popcorn, {
     error: function( msg ) {
-      throw msg;
+      throw new Error( msg );
     },
     guid: function( prefix ) {
       Popcorn.guid.counter++;
