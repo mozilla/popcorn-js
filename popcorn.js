@@ -810,7 +810,7 @@
 
     //  Push into the registry
     var entry = {
-      function: plugin[ name ],
+      fn: plugin[ name ],
       definition: definition,
       base_definition: definition,
       parents: [],
