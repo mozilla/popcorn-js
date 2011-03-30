@@ -824,8 +824,9 @@
 
   Popcorn.pluginInherit = function( name, parentNames, definition, manifest ) {
     function getDefinition( p ) {
-      if ( p in Popcorn.registryHash && Popcorn.registryHash.hasOwnProperty( p ) ) {
-        return Popcorn.registryHash[ p ];
+      var hash = Popcorn.registryHash;
+      if ( hasOwn.call( hash, p ) ) {
+        return hash[ p ];
       }
       Popcorn.error( "Plugin "+ name +" can't inherit from "+ p +", which doesn't exist" );
     }
@@ -837,7 +838,7 @@
     function getAncestors( name, override ) {
       var parents = override || getDefinition( name ).parents;
       for ( var i in parents ) {
-        if ( parents.hasOwnProperty( i ) ) {
+        if ( hasOwn.call( parents, i ) ) {
           var p = parents[ i ];
           getAncestors( p );
           if ( ancestorNames.indexOf( p ) === -1 ) {
