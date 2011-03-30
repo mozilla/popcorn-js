@@ -1,0 +1,1 @@
+Popcorn.BetaLib = function() {};

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Open Map Plug-in Demo</title>
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.openmap.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      Popcorn('#video')
+      .volume( 0 )
+      .play()
+      .openmap( {
+        start: 0,
+        end: 20,
+        type: 'ROADMAP',
+        target: 'map',
+        lat: 43.665429,
+        lng: -79.403323,
+        zoom: "10"
+      } )
+      .openmap( {
+        start: 0,
+        end: 30,
+        type: 'SATELLITE',
+        target: 'map2',
+        lat: 42.358544,
+        lng: -71.05957,
+        zoom: 9,
+        markers: [
+          {
+            location: "Cambridge, MA",
+            icon: "http://google-maps-icons.googlecode.com/files/vegetarian.png",
+            text: "Clickable markers",
+            size: 10
+          },
+          {
+            lat: 42.358544,
+            lng: -71.05957,
+            icon: "http://google-maps-icons.googlecode.com/files/walking-tour.png",
+            text: "Another clickable marker"
+          }
+        ]
+      } )
+      .openmap( {
+        start: 0,
+        end: 20,
+        type: 'TERRAIN',
+        target: 'map3',
+        lat: 40.943926,
+        lng: -78.968525,
+        zoom: 14
+      } );
+    }, false);
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Open Map Plug-in Demo</h1>
+  <p> An OpenLayers + OpenStreetMap Map displaying Toronto, Ontario will appear at 0 seconds and disappear at 20 seconds.</p>
+  <p> An OpenLayers + NASA LandSat Map displaying Boston and a map marker will appear at 0 seconds and disappear at 30 seconds.</p>
+  <p> An OpenLayers + USGS Topographic Map displaying Punxsutawney, PA will appear at 0 seconds and disappear at 20 seconds.</p>
+  <div>
+    <video id='video' 
+      controls 
+      width= '250px'
+      poster="../../test/poster.png"> 
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4;' codecs="avc1, mp4a"> 
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg;' codecs="theora, vorbis"> 
+
+      <p>Your user agent does not support the HTML5 Video element.</p> 
+
+    </video>
+  </div>
+  <div style="width:1000px">
+    <div id="map" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
+    <div id="map2" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
+    <div id="map3" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
+  </div>
+</body>
+</html>

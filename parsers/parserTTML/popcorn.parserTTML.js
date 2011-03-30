@@ -26,7 +26,7 @@
       </body>
     </tt>
    */
-  Popcorn.parser( "parseTTML", "TTML", function( data ) {
+  Popcorn.parser( "parseTTML", function( data ) {
 
     // declare needed variables
     var returnData = {
@@ -168,4 +168,3 @@
   });
 
 })( Popcorn );
-;
