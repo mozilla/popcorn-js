@@ -14,6 +14,25 @@
   <script src="popcorn.baseplayer.unit.js"></script>
   <script src="popcorn.baseplayer.js"></script>
   
+  <style>
+    body > div {
+        width: 100%;
+        float: left;
+        overflow: hidden;
+    }
+    div div {
+        margin-bottom:20px;
+    }
+    
+    #player_1 {
+      position: absolute;
+      left: 220px;
+      top: 260px;
+      width: 300px;
+      height: 250px;
+      background: #FFAAAA;
+    }
+  </style>
 </head>
 <body>
   <h1 id="qunit-header">Popcorn Base Player Plugin</h1>
@@ -23,6 +42,6 @@
   <ol id="qunit-tests"></ol>
   <div id="qunit-fixture">  </div>
   
-  <div id="player_1" width="500" height="281"></div>
+  <span id="player_1">This is a container for the player, auto-sized for testing purposes.</span>
 </body>
 </html>

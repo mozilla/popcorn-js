@@ -1,10 +1,11 @@
-module("Popcorn Base Player");
-test("API", function () {
+module( "Popcorn Base Player" );
+test( "API", function () {
 
-  var expects = 17,
+  var expects = 0,
       count = 0,
       player = Popcorn.baseplayer(),
       members = {
+        // HTMLMediaElement members
         'readyState' : 'number',
         'currentTime' : 'number',
         'duration' : 'number',
@@ -15,13 +16,20 @@ test("API", function () {
         'playbackRate' : 'number',
         'autoplay' : 'undefined',
         'loop' : 'undefined',
-        'events' : 'object',
         'load' : 'function',
         'play' : 'function',
         'pause' : 'function',
         'timeupdate' : 'function',
+        
+        // DOMElement members
         'addEventListener' : 'function',
-        'dispatchEvent' : 'function'
+        'dispatchEvent' : 'function',
+        'getBoundingClientRect' : 'function',
+        
+        // Helper functions and members
+        'events' : 'object',
+        'resource' : 'undefined',
+        'getStyle' : 'function'
       };
       
   function plus() {
@@ -30,7 +38,11 @@ test("API", function () {
     }
   }
   
-  expect(expects);
+  Popcorn.forEach( members, function () {
+    expects++;
+  });
+  
+  expect( expects );
   stop( 10000 );
   
   Popcorn.forEach( members, function ( type, prop ) {
@@ -39,11 +51,17 @@ test("API", function () {
   });
 });
 
-test("Default Functionality", function () {
-  var expects = 5,
+test( "Default Functionality", function () {
+  var expects = 7,
       count = 0,
       player = Popcorn.baseplayer(),
-      popcorn = Popcorn( player );
+      dimensions,
+      expectedVals = {
+        left: 220,
+        top: 260,
+        width: 300,
+        height: 250
+      };
       
   function plus() {
     if ( ++count === expects ) {
@@ -51,9 +69,29 @@ test("Default Functionality", function () {
     }
   }
   
-  expect(expects);
+  player.resource = document.getElementById('player_1');
+  dimensions = player.getBoundingClientRect();
+  
+  Popcorn.forEach( expectedVals, function() {
+    expects+= 2;
+  });
+  
+  expect( expects );
   stop( 1000 );
-      
+  
+  Popcorn.forEach( expectedVals, function( val, prop ) {
+    equals( player.getStyle( prop ), val+'px', "Style '" + prop + "' correctly got" );
+    plus();
+    
+    equals( dimensions[prop], val, "Bounding Client " + prop + " works" );
+    plus();
+  });
+  
+  equals( dimensions.right, expectedVals.left + expectedVals.width, "Bounding Client right works" );
+  plus();
+  equals( dimensions.bottom, expectedVals.top + expectedVals.height, "Bounding Client bottom works" );
+  plus();
+  
   player.addEventListener( 'timeupdate', function( evt, caller ) {
     ok( true, "Time update called" );
     plus();
@@ -76,7 +114,7 @@ test("Default Functionality", function () {
   player.play();
 });
 
-test("Extension and Method Overriding", function () {
+test( "Extension and Method Overriding", function () {
   var expects = 4,
       count = 0,
       player = Popcorn.baseplayer(),
