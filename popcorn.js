@@ -13,6 +13,7 @@
   forEach = Array.prototype.forEach,
   hasOwn = Object.prototype.hasOwnProperty,
   slice = Array.prototype.slice,
+  toString = Object.prototype.toString,
 
   //  ID string matching
   rIdExp  = /^(#([\w\-\_\.]+))$/,
@@ -330,6 +331,9 @@
 
       return size;
     },
+    isArray: Array.isArray || function( array ) {
+	    return toString.call( array ) === "[object Array]";
+    }, 
     nop: function () {}
   });
 

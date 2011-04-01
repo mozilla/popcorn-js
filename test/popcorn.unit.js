@@ -164,6 +164,39 @@ test("guid", function () {
   }
 
 });
+test("isArray", function() {
+
+  expect(18);
+
+  var empty = [], 
+      fastSmall = [1], 
+      slow = [],
+      slowSmall = [], 
+      all = null;
+
+  slowSmall[999999] = 0;
+  slowSmall.length = 0;
+  slow.slow = 0;
+
+  all = [ [], [1], new Array, Array(0),'abc'.match(/(a)/g), slow, slowSmall ];
+
+  all.forEach(function( a ) { 
+    ok( Popcorn.isArray(a), "Popcorn.isArray("+JSON.stringify(a)+")" ); 
+  });
+
+  equal( Popcorn.isArray.length, 1, "Popcorn.isArray.length, 1" );
+  
+  ok( !Popcorn.isArray(), "!Popcorn.isArray(), false");
+  ok( !Popcorn.isArray({}), "!Popcorn.isArray({}), false");
+  ok( !Popcorn.isArray(null), "!Popcorn.isArray(null), false");
+  ok( !Popcorn.isArray(undefined), "!Popcorn.isArray(undefined)");
+  ok( !Popcorn.isArray(17), "!Popcorn.isArray(17), false");
+  ok( !Popcorn.isArray("Array"), "!Popcorn.isArray('Array'), false");
+  ok( !Popcorn.isArray(Math.PI), "!Popcorn.isArray(Math.PI), false");
+  ok( !Popcorn.isArray(true), "!Popcorn.isArray(true), false");
+  ok( !Popcorn.isArray(false), "!Popcorn.isArray(false), false");
+  ok( !Popcorn.isArray( {__proto__: Array.prototype, length:1, 0:1, 1:2} ), "{__proto__: Array.prototype, length:1, 0:1, 1:2}");
+});
 
 
 test("Protected", function () {
@@ -1920,11 +1953,11 @@ test("Parser Support", function () {
     }
   });
 
-	Popcorn.parser( "parseAudio", function( data ){
-	  ok( typeof data.json === "object", "data.json exists");
-	  plus();
-	  return data.json;
-	});
+  Popcorn.parser( "parseAudio", function( data ){
+    ok( typeof data.json === "object", "data.json exists");
+    plus();
+    return data.json;
+  });
 
   audiocorn.parseAudio("data/parserAudio.json", function() {
 
