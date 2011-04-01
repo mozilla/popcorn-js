@@ -397,6 +397,33 @@
 
       return this;
     }
+    //  Popcorn Object Element Utils
+    position: function() {
+      var  media = this.video,  
+          bounds = media.getBoundingClientRect(),
+          doc = media.ownerDocument,
+          docElem = document.documentElement,
+          body = document.body,
+          clientTop, clientLeft, scrollTop, scrollLeft, top, left;
+
+      //  Determine correct clientTop/Left
+      clientTop  = docElem.clientTop  || body.clientTop  || 0;
+      clientLeft = docElem.clientLeft || body.clientLeft || 0;
+
+      //  Determine correct scrollTop/Left
+      scrollTop  = (global.pageYOffset && docElem.scrollTop  || body.scrollTop );
+      scrollLeft = (global.pageXOffset && docElem.scrollLeft || body.scrollLeft);
+
+      //  Temp top/left
+      top  = Math.ceil( bounds.top  + scrollTop  - clientTop );
+      left = Math.ceil( bounds.left + scrollLeft - clientLeft );
+
+      for ( var p in bounds ) {
+        bounds[ p ] = Math.round( bounds[ p ] );
+      }
+      
+      return Popcorn.extend({}, bounds, { top: top, left: left });
+    }
   });
 
   Popcorn.Events  = {
@@ -1061,25 +1088,25 @@
 
     script.onload = script.onreadystatechange = function() {
 
-			if ( !script.readyState || /loaded|complete/.test( script.readyState ) ) {
+      if ( !script.readyState || /loaded|complete/.test( script.readyState ) ) {
 
-				//	Handling remote script loading callbacks
-				if ( isScript ) {
+        //  Handling remote script loading callbacks
+        if ( isScript ) {
 
-					//	getScript
-					success && success();
-				}
+          //  getScript
+          success && success();
+        }
 
-	      //  Executing for JSONP requests
-				if ( isFired ) {
+        //  Executing for JSONP requests
+        if ( isFired ) {
 
-		      //  Garbage collect the callback
-		      delete window[ callback ];
+          //  Garbage collect the callback
+          delete window[ callback ];
 
-		      //  Garbage collect the script resource
-		      head.removeChild( script );
-				}
-			}
+          //  Garbage collect the script resource
+          head.removeChild( script );
+        }
+      }
     };
 
     script.src = url;

@@ -307,6 +307,92 @@ test("exec", function () {
 
 });
 
+module("Popcorn Position");
+test("position", function () {
+
+  var pops = [ Popcorn("#pos-1"),
+                Popcorn("#pos-2"),
+                Popcorn("#pos-3"),
+                Popcorn("#pos-4")
+            ],
+      expects = 22,
+      count = 0,
+      tests = [
+                {"top":0,"height":150,"width":300,"bottom":150,"left":1123,"right":1423},
+                {"top":100,"height":150,"width":300,"bottom":250,"left":1023,"right":1323},
+                {"height":150,"width":300,"left":1366,"right":1666},
+                {"top":0,"height":150,"width":300,"bottom":150,"left":1123,"right":1423}
+                ],
+      bounds,
+      against,
+      styles;
+
+  expect( expects );
+
+  function plus(){ 
+    if ( ++count == expects ) {
+      start();
+    }
+  }
+
+  stop( 10000 ); 
+
+  pops.forEach(function( pop, idx ) {
+
+    bounds = pop.position();
+    against = tests[ idx ];
+    styles = document.getElementById( pop.video.id ).style;
+
+    for ( var p in bounds ) {
+      if ( p in against ) {
+        equal( bounds[ p ], against[ p ], "video#" + pop.video.id + ": " + p );
+        plus();
+      }
+    }
+  });
+});
+
+test("position called from plugin", function () {
+
+  var $pop = Popcorn("#video"),
+      expects = 3,
+      count = 0;
+
+  expect( expects );
+
+  function plus(){ 
+    if ( ++count == expects ) {
+      start();
+      Popcorn.removePlugin("positionPlugin");
+      delete Popcorn.manifest.positionPlugin;
+    }
+  }
+
+  stop( 10000 );
+
+  Popcorn.plugin( "positionPlugin" , function(){
+    return {
+      _setup: function( options ) {
+        ok( "position" in this, "this.position() avaliable in _setup");
+        plus();
+      },
+      start: function(event, options){
+
+        ok( "position" in this, "this.position() avaliable in start");
+        plus();
+      },
+      end: function(event, options){
+        ok( "position" in this, "this.position() avaliable in end");
+        plus();
+      }
+    };
+  });
+
+  $pop.positionPlugin({
+    start: 0,
+    end: 1
+  }).currentTime(0).play();
+});
 
 module("Popcorn Events");
 
@@ -1920,11 +2006,11 @@ test("Parser Support", function () {
     }
   });
 
-	Popcorn.parser( "parseAudio", function( data ){
-	  ok( typeof data.json === "object", "data.json exists");
-	  plus();
-	  return data.json;
-	});
+  Popcorn.parser( "parseAudio", function( data ){
+    ok( typeof data.json === "object", "data.json exists");
+    plus();
+    return data.json;
+  });
 
   audiocorn.parseAudio("data/parserAudio.json", function() {
 
