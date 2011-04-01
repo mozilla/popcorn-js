@@ -401,7 +401,8 @@
     //  Popcorn Object Element Utils
     position: function() {
       var  media = this.video,  
-          bounds = media.getBoundingClientRect(),
+          clientRect = media.getBoundingClientRect(),
+          bounds = {}, 
           doc = media.ownerDocument,
           docElem = document.documentElement,
           body = document.body,
@@ -412,15 +413,15 @@
       clientLeft = docElem.clientLeft || body.clientLeft || 0;
 
       //  Determine correct scrollTop/Left
-      scrollTop  = (global.pageYOffset && docElem.scrollTop  || body.scrollTop );
-      scrollLeft = (global.pageXOffset && docElem.scrollLeft || body.scrollLeft);
+      scrollTop  = ( global.pageYOffset && docElem.scrollTop || body.scrollTop );
+      scrollLeft = ( global.pageXOffset && docElem.scrollLeft || body.scrollLeft );
 
       //  Temp top/left
-      top  = Math.ceil( bounds.top  + scrollTop  - clientTop );
-      left = Math.ceil( bounds.left + scrollLeft - clientLeft );
+      top  = Math.ceil( clientRect.top  + scrollTop - clientTop );
+      left = Math.ceil( clientRect.left + scrollLeft - clientLeft );
 
-      for ( var p in bounds ) {
-        bounds[ p ] = Math.round( bounds[ p ] );
+      for ( var p in clientRect ) {
+        bounds[ p ] = Math.round( clientRect[ p ] );
       }
       
       return Popcorn.extend({}, bounds, { top: top, left: left });
