@@ -63,14 +63,11 @@
         
         var img = document.createElement( 'img' );
         img.src = options.src;
-        img.style
         img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
         
         var divText = document.createElement( 'div' );
         divTextStyle = {
-            margin: 'auto',
             position: 'absolute',
-            overflow: 'hidden',
             paddingTop: '20px',
             paddingLeft: '20px',
             paddingBottom: '0',
