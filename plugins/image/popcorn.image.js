@@ -47,8 +47,7 @@
       },
 
       _setup: function( options ) {
-        var s, st; 
-        
+
         options.link = document.createElement( 'a' );
         options.link.style.display = "none"; // display none by default
         if ( options.href ) {
@@ -58,36 +57,35 @@
         if ( document.getElementById( options.target ) ) {
           document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
         }
-        var div = document.createElement( 'div' );
-        divStyle = {
-          width : '100%',
-          height : '600px',
-          background : "url( " + options.src + " ) no-repeat ",
-          backgroundSize : '100%',
-          MozBackgroundSize: '100%',
-          borderStyle : 'none'
-        };
-        for ( s in divStyle ) {
-          div.style[ s ] = divStyle[ s ];
-        }
         
-        var divText = document.createElement( 'div' ); // add the inner div for overlaying text
+
+
+        
+        var img = document.createElement( 'img' );
+        img.src = options.src;
+        img.style
+        img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
+        
+        var divText = document.createElement( 'div' );
         divTextStyle = {
-          width : '50%',
-          margin : 'auto',
-          marginTop : '20px',
-          color : 'black',
-          fontWeight : 'bold',
-          textAlign : 'center'
+            margin: 'auto',
+            position: 'absolute',
+            overflow: 'hidden',
+            paddingTop: '20px',
+            paddingLeft: '20px',
+            paddingBottom: '0',
+            fontSize: 'large',
+            color: 'black',
+            fontWeight : 'bold',
+            zIndex: '10',
         };
         for ( st in divTextStyle ) {
           divText.style[ st ] = divTextStyle[ st ];
         }
         divText.innerHTML = options.text;
         
-        div.appendChild( divText ); 
-        options.link.appendChild( div );
-        
+        options.link.appendChild( divText );
+        options.link.appendChild( img );
       },
 
       /**
