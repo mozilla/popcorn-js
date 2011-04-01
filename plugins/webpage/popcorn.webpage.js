@@ -64,6 +64,7 @@
      */
     start: function(event, options){
       // make the iframe visible
+      options._iframe.src = options.src;
       options._iframe.style.display = 'inline';
     },
     /**
