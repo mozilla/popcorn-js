@@ -396,7 +396,8 @@
       });
 
       return this;
-    }
+    },
+
     //  Popcorn Object Element Utils
     position: function() {
       var  media = this.video,  

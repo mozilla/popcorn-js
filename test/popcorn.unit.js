@@ -310,46 +310,66 @@ test("exec", function () {
 module("Popcorn Position");
 test("position", function () {
 
-  var pops = [ Popcorn("#pos-1"),
-                Popcorn("#pos-2"),
-                Popcorn("#pos-3"),
-                Popcorn("#pos-4")
-            ],
-      expects = 22,
-      count = 0,
-      tests = [
-                {"top":0,"height":150,"width":300,"bottom":150,"left":1123,"right":1423},
-                {"top":100,"height":150,"width":300,"bottom":250,"left":1023,"right":1323},
-                {"height":150,"width":300,"left":1366,"right":1666},
-                {"top":0,"height":150,"width":300,"bottom":150,"left":1123,"right":1423}
-                ],
-      bounds,
-      against,
-      styles;
+	expect(24);
+	
+  var $absolute = $(".absolute"), 
+      $relative = $(".relative"), 
+      $fixed = $(".fixed"),
+      $static = $(".static"),  
+      tests;
 
-  expect( expects );
+	$("#position-tests").show();
+//  console.log( $absolute );
+//  console.log( $fixed );
+//  console.log( $relative );
+//  console.log( $static );
 
-  function plus(){ 
-    if ( ++count == expects ) {
-      start();
-    }
-  }
-
-  stop( 10000 ); 
-
-  pops.forEach(function( pop, idx ) {
-
-    bounds = pop.position();
-    against = tests[ idx ];
-    styles = document.getElementById( pop.video.id ).style;
-
-    for ( var p in bounds ) {
-      if ( p in against ) {
-        equal( bounds[ p ], against[ p ], "video#" + pop.video.id + ": " + p );
-        plus();
-      }
-    }
+  tests = [
+    { id: "absolute-1",     top:  0, left:  0 },
+    { id: "absolute-1-1",   top:  1, left:  1 },
+    { id: "absolute-1-1-1", top:  2, left:  2 },
+    { id: "absolute-2",     top: 19, left: 19 }
+  ];
+  
+  Popcorn.forEach( tests, function( test ) {
+    equals( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn('#vid-" + test.id + "').position().top" );
+    equals( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
   });
+
+  tests = [
+    { id: "relative-1", top:   0, left:  0 },
+    { id: "relative-2", top: 120, left: 20 }
+  ];
+
+  Popcorn.forEach( tests, function( test ) {
+    equals( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn('#vid-" + test.id + "').position().top" );
+    equals( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
+  });  
+
+  tests = [
+    { id: "fixed-1", top:  0, left:  0 },
+    { id: "fixed-2", top: 20, left: 20 }
+  ];
+
+  Popcorn.forEach( tests, function( test ) {
+    equals( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn('#vid-" + test.id + "').position().top" );
+    equals( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
+  });  
+
+  tests = [
+    { id: "static-1",     top:  200, left:  0 },
+    { id: "static-1-1",   top:  0, left:  0 },
+    { id: "static-1-1-1", top:  0, left:  0 },
+    { id: "static-2",     top: 300, left: 0 }
+  ];
+  
+  Popcorn.forEach( tests, function( test ) {
+    equals( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn('#vid-" + test.id + "').position().top" );
+    equals( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
+  });
+
+
+	$("#position-tests").hide();
 });
 
 test("position called from plugin", function () {
