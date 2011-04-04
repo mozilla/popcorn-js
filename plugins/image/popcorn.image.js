@@ -50,6 +50,10 @@
 
         options.link = document.createElement( 'a' );
         options.link.style.display = "none"; // display none by default
+        options.link.style.position = "relative";
+        options.link.style.height = "100%";
+        //options.link.style.width = "100%";
+
         if ( options.href ) {
           options.link.href = options.href;
         }
@@ -58,23 +62,26 @@
           document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
         }
         
-
-
-        
         var img = document.createElement( 'img' );
         img.src = options.src;
+        img.style.position = "absolute";
+        img.style.height = "100%";
+        //img.style.width = "100%";
         img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
+        
+        var fontHeight = ((document.getElementById( options.target ).offsetHeight) / 12) + "px";
         
         var divText = document.createElement( 'div' );
         divTextStyle = {
-            position: 'absolute',
-            paddingTop: '20px',
-            paddingLeft: '20px',
-            paddingBottom: '0',
-            fontSize: 'large',
-            color: 'black',
-            fontWeight : 'bold',
-            zIndex: '10',
+            position: "absolute",
+            top: "50%",
+            textAlign: "center",
+            left: 0,
+            right: 0,
+            fontSize: fontHeight,
+            color: "black",
+            fontWeight : "bold",
+            zIndex: "10",
         };
         for ( st in divTextStyle ) {
           divText.style[ st ] = divTextStyle[ st ];
@@ -92,7 +99,7 @@
        * options variable
        */
       start: function( event, options ) {
-        options.link.style.display = "inline";
+        options.link.style.display = "block";
       },
       /**
        * @member image 
