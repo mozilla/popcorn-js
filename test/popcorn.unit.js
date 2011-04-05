@@ -164,6 +164,39 @@ test("guid", function () {
   }
 
 });
+test("isArray", function() {
+
+  expect(18);
+
+  var empty = [], 
+      fastSmall = [1], 
+      slow = [],
+      slowSmall = [], 
+      all = null;
+
+  slowSmall[999999] = 0;
+  slowSmall.length = 0;
+  slow.slow = 0;
+
+  all = [ [], [1], new Array, Array(0),'abc'.match(/(a)/g), slow, slowSmall ];
+
+  all.forEach(function( a ) { 
+    ok( Popcorn.isArray(a), "Popcorn.isArray("+JSON.stringify(a)+")" ); 
+  });
+
+  equal( Popcorn.isArray.length, 1, "Popcorn.isArray.length, 1" );
+  
+  ok( !Popcorn.isArray(), "!Popcorn.isArray(), false");
+  ok( !Popcorn.isArray({}), "!Popcorn.isArray({}), false");
+  ok( !Popcorn.isArray(null), "!Popcorn.isArray(null), false");
+  ok( !Popcorn.isArray(undefined), "!Popcorn.isArray(undefined)");
+  ok( !Popcorn.isArray(17), "!Popcorn.isArray(17), false");
+  ok( !Popcorn.isArray("Array"), "!Popcorn.isArray('Array'), false");
+  ok( !Popcorn.isArray(Math.PI), "!Popcorn.isArray(Math.PI), false");
+  ok( !Popcorn.isArray(true), "!Popcorn.isArray(true), false");
+  ok( !Popcorn.isArray(false), "!Popcorn.isArray(false), false");
+  ok( !Popcorn.isArray( {__proto__: Array.prototype, length:1, 0:1, 1:2} ), "{__proto__: Array.prototype, length:1, 0:1, 1:2}");
+});
 
 
 test("Protected", function () {
@@ -307,6 +340,112 @@ test("exec", function () {
 
 });
 
+module("Popcorn Position");
+test("position", function () {
+
+	expect(24);
+	
+  var $absolute = $(".absolute"), 
+      $relative = $(".relative"), 
+      $fixed = $(".fixed"),
+      $static = $(".static"),  
+      tests;
+
+	$("#position-tests").show();
+//  console.log( $absolute );
+//  console.log( $fixed );
+//  console.log( $relative );
+//  console.log( $static );
+
+  tests = [
+    { id: "absolute-1",     top:  0, left:  0 },
+    { id: "absolute-1-1",   top:  1, left:  1 },
+    { id: "absolute-1-1-1", top:  2, left:  2 },
+    { id: "absolute-2",     top: 19, left: 19 }
+  ];
+  
+  Popcorn.forEach( tests, function( test ) {
+    equals( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn('#vid-" + test.id + "').position().top" );
+    equals( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
+  });
+
+  tests = [
+    { id: "relative-1", top:   0, left:  0 },
+    { id: "relative-2", top: 120, left: 20 }
+  ];
+
+  Popcorn.forEach( tests, function( test ) {
+    equals( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn('#vid-" + test.id + "').position().top" );
+    equals( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
+  });  
+
+  tests = [
+    { id: "fixed-1", top:  0, left:  0 },
+    { id: "fixed-2", top: 20, left: 20 }
+  ];
+
+  Popcorn.forEach( tests, function( test ) {
+    equals( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn('#vid-" + test.id + "').position().top" );
+    equals( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
+  });  
+
+  tests = [
+    { id: "static-1",     top:  200, left:  0 },
+    { id: "static-1-1",   top:  0, left:  0 },
+    { id: "static-1-1-1", top:  0, left:  0 },
+    { id: "static-2",     top: 300, left: 0 }
+  ];
+  
+  Popcorn.forEach( tests, function( test ) {
+    equals( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn('#vid-" + test.id + "').position().top" );
+    equals( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
+  });
+
+
+	$("#position-tests").hide();
+});
+
+test("position called from plugin", function () {
+
+  var $pop = Popcorn("#video"),
+      expects = 3,
+      count = 0;
+
+  expect( expects );
+
+  function plus(){ 
+    if ( ++count == expects ) {
+      start();
+      Popcorn.removePlugin("positionPlugin");
+      delete Popcorn.manifest.positionPlugin;
+    }
+  }
+
+  stop( 10000 );
+
+  Popcorn.plugin( "positionPlugin" , function(){
+    return {
+      _setup: function( options ) {
+        ok( "position" in this, "this.position() avaliable in _setup");
+        plus();
+      },
+      start: function(event, options){
+
+        ok( "position" in this, "this.position() avaliable in start");
+        plus();
+      },
+      end: function(event, options){
+        ok( "position" in this, "this.position() avaliable in end");
+        plus();
+      }
+    };
+  });
+
+  $pop.positionPlugin({
+    start: 0,
+    end: 1
+  }).currentTime(0).play();
+});
 
 module("Popcorn Events");
 
@@ -2000,11 +2139,11 @@ test("Parser Support", function () {
     }
   });
 
-	Popcorn.parser( "parseAudio", function( data ){
-	  ok( typeof data.json === "object", "data.json exists");
-	  plus();
-	  return data.json;
-	});
+  Popcorn.parser( "parseAudio", function( data ){
+    ok( typeof data.json === "object", "data.json exists");
+    plus();
+    return data.json;
+  });
 
   audiocorn.parseAudio("data/parserAudio.json", function() {
 

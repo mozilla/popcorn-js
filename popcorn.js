@@ -13,6 +13,7 @@
   forEach = Array.prototype.forEach,
   hasOwn = Object.prototype.hasOwnProperty,
   slice = Array.prototype.slice,
+  toString = Object.prototype.toString,
 
   //  ID string matching
   rIdExp  = /^(#([\w\-\_\.]+))$/,
@@ -315,7 +316,7 @@
   // A Few reusable utils, memoized onto Popcorn
   Popcorn.extend( Popcorn, {
     error: function( msg ) {
-      throw msg;
+      throw new Error( msg );
     },
     guid: function( prefix ) {
       Popcorn.guid.counter++;
@@ -330,6 +331,9 @@
 
       return size;
     },
+    isArray: Array.isArray || function( array ) {
+      return toString.call( array ) === "[object Array]";
+    }, 
     nop: function () {}
   });
 
@@ -396,6 +400,35 @@
       });
 
       return this;
+    },
+
+    //  Popcorn Object Element Utils
+    position: function() {
+      var  media = this.video,  
+          clientRect = media.getBoundingClientRect(),
+          bounds = {}, 
+          doc = media.ownerDocument,
+          docElem = document.documentElement,
+          body = document.body,
+          clientTop, clientLeft, scrollTop, scrollLeft, top, left;
+
+      //  Determine correct clientTop/Left
+      clientTop  = docElem.clientTop  || body.clientTop  || 0;
+      clientLeft = docElem.clientLeft || body.clientLeft || 0;
+
+      //  Determine correct scrollTop/Left
+      scrollTop  = ( global.pageYOffset && docElem.scrollTop || body.scrollTop );
+      scrollLeft = ( global.pageXOffset && docElem.scrollLeft || body.scrollLeft );
+
+      //  Temp top/left
+      top  = Math.ceil( clientRect.top  + scrollTop - clientTop );
+      left = Math.ceil( clientRect.left + scrollLeft - clientLeft );
+
+      for ( var p in clientRect ) {
+        bounds[ p ] = Math.round( clientRect[ p ] );
+      }
+      
+      return Popcorn.extend({}, bounds, { top: top, left: left });
     }
   });
 
@@ -994,14 +1027,16 @@
 
   Popcorn.xhr = function ( options ) {
 
+    options.dataType = options.dataType && options.dataType.toLowerCase() || null;
+    
     if ( options.dataType &&
-          ( options.dataType.toLowerCase() === "jsonp" ||
-              options.dataType.toLowerCase() === "script" ) ) {
+            ( options.dataType === "jsonp" ||
+                options.dataType === "script" ) ) {
 
       Popcorn.xhr.getJSONP(
         options.url,
         options.success,
-        options.dataType.toLowerCase() === "script"
+        options.dataType === "script"
       );
       return;
     }
@@ -1010,10 +1045,6 @@
 
     //  Create new XMLHttpRequest object
     settings.ajax  = settings.xhr();
-
-    //  Normalize dataType
-    settings.dataType  = settings.dataType.toLowerCase();
-
 
     if ( settings.ajax ) {
 
@@ -1130,25 +1161,25 @@
 
     script.onload = script.onreadystatechange = function() {
 
-			if ( !script.readyState || /loaded|complete/.test( script.readyState ) ) {
+      if ( !script.readyState || /loaded|complete/.test( script.readyState ) ) {
 
-				//	Handling remote script loading callbacks
-				if ( isScript ) {
+        //  Handling remote script loading callbacks
+        if ( isScript ) {
 
-					//	getScript
-					success && success();
-				}
+          //  getScript
+          success && success();
+        }
 
-	      //  Executing for JSONP requests
-				if ( isFired ) {
+        //  Executing for JSONP requests
+        if ( isFired ) {
 
-		      //  Garbage collect the callback
-		      delete window[ callback ];
+          //  Garbage collect the callback
+          delete window[ callback ];
 
-		      //  Garbage collect the script resource
-		      head.removeChild( script );
-				}
-			}
+          //  Garbage collect the script resource
+          head.removeChild( script );
+        }
+      }
     };
 
     script.src = url;
