@@ -332,7 +332,7 @@
       return size;
     },
     isArray: Array.isArray || function( array ) {
-	    return toString.call( array ) === "[object Array]";
+      return toString.call( array ) === "[object Array]";
     }, 
     nop: function () {}
   });
@@ -958,14 +958,16 @@
 
   Popcorn.xhr = function ( options ) {
 
+    options.dataType = options.dataType && options.dataType.toLowerCase() || null;
+    
     if ( options.dataType &&
-          ( options.dataType.toLowerCase() === "jsonp" ||
-              options.dataType.toLowerCase() === "script" ) ) {
+            ( options.dataType === "jsonp" ||
+                options.dataType === "script" ) ) {
 
       Popcorn.xhr.getJSONP(
         options.url,
         options.success,
-        options.dataType.toLowerCase() === "script"
+        options.dataType === "script"
       );
       return;
     }
@@ -974,10 +976,6 @@
 
     //  Create new XMLHttpRequest object
     settings.ajax  = settings.xhr();
-
-    //  Normalize dataType
-    settings.dataType  = settings.dataType.toLowerCase();
-
 
     if ( settings.ajax ) {
 
