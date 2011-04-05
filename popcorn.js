@@ -607,7 +607,7 @@
       for ( registryIdx = 0; registryIdx < registryLen; registryIdx++ ) {
         if ( Popcorn.registry[ registryIdx ].name === name ) {
           Popcorn.registry.splice( registryIdx, 1 );
-          delete Popcorn.registryHash[ name ];
+          delete Popcorn.registryByName[ name ];
 
           // delete the plugin
           delete obj[ name ];
@@ -744,7 +744,7 @@
   Popcorn.manifest = {};
   //  Plugins are registered
   Popcorn.registry = [];
-  Popcorn.registryHash = {};
+  Popcorn.registryByName = {};
   //  An interface for extending Popcorn
   //  with plugin functionality
   Popcorn.plugin = function( name, definition, manifest ) {
@@ -845,78 +845,100 @@
     var entry = {
       fn: plugin[ name ],
       definition: definition,
-      base_definition: definition,
+      base: definition,
       parents: [],
       name: name
     };
     Popcorn.registry.push( entry );
-    Popcorn.registryHash[ name ] = entry;
+    Popcorn.registryByName[ name ] = entry;
 
     return plugin;
   };
 
-  Popcorn.pluginInherit = function( name, parentNames, definition, manifest ) {
-    function getDefinition( p ) {
-      var hash = Popcorn.registryHash;
-      if ( hasOwn.call( hash, p ) ) {
-        return hash[ p ];
-      }
-      Popcorn.error( "Plugin "+ name +" can't inherit from "+ p +", which doesn't exist" );
+	//	Popcorn Plugin Inheritance Helper Methods
+	//	Internal use only
+  Popcorn.plugin.getDefinition = function( name ) {
+
+    var registry = Popcorn.registryByName;
+    
+    if ( registry[ name ] ) {
+      return registry[ name ];
     }
+
+    Popcorn.error( "Cannot inherit from "+ name +"; Object does not exist" );
+  }
+
+	//	Internal use only
+  Popcorn.plugin.delegate = function( instance, name, genus ) {
+
+    return function() {
+      genus.forEach( function( gene ) {
+        // The new plugin simply calls the delegated methods on
+        // all of its parents in the order they were specified.
+        gene[ name ] && gene[ name ].apply( instance, arguments );
+      });
+    };
+  };
+
+	//	Plugin inheritance
+  Popcorn.plugin.inherit = function( name, parents, definition, manifest ) {
+
 
     // Get the names of all of the ancestor classes, in the order that
     // we will be calling them. The override is for the class we're
     // currently defining, since it's not in the registry yet.
-    var ancestorNames = [];
+    var ancestors = [], 
+        pluginFn, entry;
+
     function getAncestors( name, override ) {
-      var parents = override || getDefinition( name ).parents;
+      var parents = override || Popcorn.plugin.getDefinition( name ).parents;
       for ( var i in parents ) {
         if ( hasOwn.call( parents, i ) ) {
           var p = parents[ i ];
           getAncestors( p );
-          if ( ancestorNames.indexOf( p ) === -1 ) {
-            ancestorNames.push( p );
+          if ( ancestors.indexOf( p ) === -1 ) {
+            ancestors.push( p );
           }
         }
       }
     }
-    getAncestors( name, Array.isArray( parentNames ) ? parentNames : [ parentNames ] );
-    ancestorNames.push( name );
+
+    getAncestors( name, Popcorn.isArray( parents ) ? parents : [ parents ] );
+    ancestors.push( name );
 
     // Now create the requested plugin under the reqested name.
-    var p = Popcorn.plugin( name, function( options ) {
-      var self = this;
-      function instantiate( p ) {
-        return (typeof p === "function") ? p.call( self, options ) : p;
-      }
-      function delegate( name ) {
-        return function() {
-          plugins.forEach( function( p ) {
-            // The new plugin simply calls the delegated methods on
-            // all of its parents in the order they were specified.
-            p[ name ] && p[ name ].apply( self, arguments );
-          } );
-        };
+    pluginFn = Popcorn.plugin( name, function( options ) {
+
+      var self = this, 
+          genus;
+
+      function instantiate( definition ) {
+        return definition.call && definition.call( self, options ) || definition;
       }
 
       // When the newly-defined plugin is instantiated, it must
       // explicitly instantiate all of its ancestors.
-      var plugins = ancestorNames.map( function( name ) {
-        return instantiate( getDefinition( name ).base_definition );
-      } );
+      genus = ancestors.map( function( name ) {
+        return instantiate( Popcorn.plugin.getDefinition( name ).base );
+      });
+
       return {
-        _setup: delegate( "_setup" ),
-        start: delegate( "start" ),
-        end: delegate( "end" )
+        _setup: Popcorn.plugin.delegate( self, "_setup", genus ),
+        start: Popcorn.plugin.delegate( self, "start", genus ),
+        end: Popcorn.plugin.delegate( self, "end", genus )
       };
+      
     }, manifest || definition.manifest );
 
-    var entry = getDefinition( name );
-    entry.base_definition = definition;
-    entry.parents = parentNames;
+    entry = Popcorn.plugin.getDefinition( name );
+    entry.base = definition;
+    entry.parents = parents;
 
-    return p;
+    return pluginFn;
   };
+
+	// Augment Popcorn; 
+  Popcorn.inherit = Popcorn.plugin.inherit;
 
   // stores parsers keyed on filetype
   Popcorn.parsers = {};

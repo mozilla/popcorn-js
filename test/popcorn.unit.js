@@ -876,7 +876,7 @@ test("Plugin Factory", function () {
 
   });
 
-  Popcorn.pluginInherit("executor_inherits", "executor", function (options) {
+  Popcorn.inherit("executor_inherits", "executor", function (options) {
     return {
       start: function() { ok(true, "child class method executed"); plus(); }
     };
@@ -936,7 +936,7 @@ test("Plugin Factory", function () {
     }
   });
 
-  Popcorn.pluginInherit("complicator_inherits", "executor", {
+  Popcorn.inherit("complicator_inherits", "executor", {
     start: function() { ok(true, "child class method executed"); plus(); }
   });
 
@@ -963,16 +963,16 @@ test("Plugin Factory", function () {
   Popcorn.plugin("B", function(options) {
     return { start: function() { counts.b++; } };
   });
-  Popcorn.pluginInherit("C", "B", function(options) {
+  Popcorn.inherit("C", "B", function(options) {
     return { start: function() { counts.c++; } };
   });
-  Popcorn.pluginInherit("D", ["A", "B"], function(options) {
+  Popcorn.inherit("D", ["A", "B"], function(options) {
     return { start: function() { counts.d++; } };
   });
-  Popcorn.pluginInherit("E", ["B"], function(options) {
+  Popcorn.inherit("E", ["B"], function(options) {
     return { start: function() { counts.e++; } };
   });
-  Popcorn.pluginInherit("F", ["E", "C"], function(options) {
+  Popcorn.inherit("F", ["E", "C"], function(options) {
     return { start: function() { counts.f++; } };
   });
 
