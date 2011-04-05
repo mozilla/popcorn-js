@@ -2087,5 +2087,14 @@ test("Last Check", function () {
 
   } catch (e) {};
 
+	//	Trigger follow-up tests to run in iframes
+	(function( $ ) {
+
+		$("iframe[data-src]").attr( "src", function() {
+			return $(this).data("src");
+		});
+	
+	})( jQuery );
+
 });
 
