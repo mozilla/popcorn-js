@@ -866,7 +866,7 @@
     }
 
     Popcorn.error( "Cannot inherit from "+ name +"; Object does not exist" );
-  }
+  };
 
 	//	Internal use only
   Popcorn.plugin.delegate = function( instance, name, genus ) {
