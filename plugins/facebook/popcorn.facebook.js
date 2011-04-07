@@ -70,12 +70,9 @@
       
       //setOptions property list doesn't accept dashes
       if(options.type === "LIKE-BOX") {
-      console.log(options.type);
         options.type = "likebox";
-        console.log(options.type);
       }
       
-      //
       var setOptions = (function ( options ) {
         options._container.setAttribute( 'href', ( options.href || document.URL ) );
         return {
@@ -102,7 +99,7 @@
             options._container.setAttribute( 'border_color', ( options.border_color || "#000000" ) );
             options._container.setAttribute( 'recommendations', ( options.recommendations || "false" ) );
             options._container.setAttribute( 'font', options.font );
-          },
+          }
         };
       })( options );
       
