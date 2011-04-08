@@ -1,7 +1,7 @@
 (function( global, doc ) {
   Popcorn.baseplayer = function() {
     return new Popcorn.baseplayer.init();
-  }
+  };
 
   Popcorn.baseplayer.init = function() {
     this.readyState = 0;
@@ -22,7 +22,7 @@
     
     // The underlying player resource. May be <canvas>, <iframe>, <object>, array, etc
     this.resource;
-  }
+  };
 
   Popcorn.baseplayer.init.prototype = {
     load: function() {},
