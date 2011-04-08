@@ -869,13 +869,13 @@
   };
 
 	//	Internal use only
-  Popcorn.plugin.delegate = function( instance, name, genus ) {
+  Popcorn.plugin.delegate = function( instance, name, plugins ) {
 
     return function() {
-      genus.forEach( function( gene ) {
+      plugins.forEach( function( plugin ) {
         // The new plugin simply calls the delegated methods on
         // all of its parents in the order they were specified.
-        gene[ name ] && gene[ name ].apply( instance, arguments );
+        plugin[ name ] && plugin[ name ].apply( instance, arguments );
       });
     };
   };
@@ -910,7 +910,7 @@
     pluginFn = Popcorn.plugin( name, function( options ) {
 
       var self = this, 
-          genus;
+          plugins;
 
       function instantiate( definition ) {
         return definition.call && definition.call( self, options ) || definition;
@@ -918,14 +918,14 @@
 
       // When the newly-defined plugin is instantiated, it must
       // explicitly instantiate all of its ancestors.
-      genus = ancestors.map( function( name ) {
+      plugins = ancestors.map( function( name ) {
         return instantiate( Popcorn.plugin.getDefinition( name ).base );
       });
 
       return {
-        _setup: Popcorn.plugin.delegate( self, "_setup", genus ),
-        start: Popcorn.plugin.delegate( self, "start", genus ),
-        end: Popcorn.plugin.delegate( self, "end", genus )
+        _setup: Popcorn.plugin.delegate( self, "_setup", plugins ),
+        start: Popcorn.plugin.delegate( self, "start", plugins ),
+        end: Popcorn.plugin.delegate( self, "end", plugins )
       };
       
     }, manifest || definition.manifest );
