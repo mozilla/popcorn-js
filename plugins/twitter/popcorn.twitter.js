@@ -1,6 +1,7 @@
 // PLUGIN: TWITTER
 
 (function (Popcorn) {
+  var scriptLoading = false;
 
   /**
    * Twitter popcorn plug-in 
@@ -30,10 +31,6 @@
    *
    */
 
-  if ( !window.TWTR ) {
-    Popcorn.getScript("http://widgets.twimg.com/j/2/widget.js");
-  }
-
   Popcorn.plugin( "twitter" , {
 
       manifest: {
@@ -54,6 +51,11 @@
       },
 
       _setup: function( options ) {
+
+        if ( !window.TWTR && !scriptLoading ) {
+          scriptLoading = true;
+          Popcorn.getScript("http://widgets.twimg.com/j/2/widget.js");
+        }
 
         // setup widget div that is unique per track
         options.container = document.createElement( 'div' ); // create the div to store the widget

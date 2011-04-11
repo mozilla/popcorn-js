@@ -1,6 +1,7 @@
 // PLUGIN: Google Maps
 var googleCallback;
 (function (Popcorn) {
+
   var newdiv,
       i = 1,
       _mapFired = false,
@@ -32,11 +33,6 @@ var googleCallback;
         }, 1);
     }
   };
-  // if this is the firest time running the plugins
-  // call the function that gets the sctipt
-  if ( !_mapFired ) {
-    loadMaps();
-  }
 
   /**
    * googlemap popcorn plug-in
@@ -71,6 +67,12 @@ var googleCallback;
     var newdiv,
         map,
         location;
+        
+    // if this is the firest time running the plugins
+    // call the function that gets the sctipt
+    if ( !_mapFired ) {
+      loadMaps();
+    }
 
     // create a new div this way anything in the target div is left intact
     // this is later passed on to the maps api
