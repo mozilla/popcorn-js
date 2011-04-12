@@ -15,7 +15,6 @@
    * Example:
      var p = Popcorn('#video')
         .facebook({
-          id: "fb-likebox",
           href: "http://www.facebook.com/senecacollege",
           type: "LIKE-BOX",
           show_faces: "true",
@@ -46,7 +45,7 @@
       // facebook script requires a div named fb-root
       if( !document.getElementById('fb-root') ) {
         var fbRoot = document.createElement( 'div' );
-        fbRoot.id = "fb-root";
+        fbRoot.setAttribute('id', "fb-root");
         document.body.appendChild( fbRoot );
         //initialize facebook JS SDK
         window.fbAsyncInit = function() {
