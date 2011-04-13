@@ -817,7 +817,7 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 96, // 15*2+16*2+6+12. executor/complicator each do 15
+      expects = 96, // 15*2+16*2+6+12+16. executor/complicator each do 15
       count = 0;    
 
   function plus() {
