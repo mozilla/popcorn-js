@@ -584,9 +584,40 @@
         }, timeupdateInterval);
       }
     },
+    
     getBoundingClientRect: function() {
-      return !this.swfObj || this.swfObj.getBoundingClientRect();
+      var b,
+          self = this;
+          
+      if ( this.swfObj ) {
+        b = this.swfObj.getBoundingClientRect();
+        
+        return {
+          bottom: b.bottom,
+          left: b.left,
+          right: b.right,
+          top: b.top,
+          
+          //  These not guaranteed to be in there
+          width: b.width || ( b.right - b.left ),
+          height: b.height || ( b.bottom - b.top )
+        };
+      } else {
+        //container = document.getElementById( this.playerId );
+        tmp = this._container.getBoundingClientRect();
+        
+        // Update bottom, right for expected values once the container loads
+        return {
+          left: tmp.left,
+          top: tmp.top,
+          width: self.offsetWidth,
+          height: self.offsetHeight,
+          bottom: tmp.top + this.width,
+          right: tmp.top + this.height
+        };
+      }
     },
+    
     registerPopcornWithPlayer: function( popcorn ) {
       if ( !this.swfObj ) {
         this.addEventListener( "load", function() {
