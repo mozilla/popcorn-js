@@ -130,9 +130,7 @@
           end: 60, // seconds
           nameofwork: "Flickermood",
           nameofworkurl:"http://soundcloud.com/forss/flickermood",
-          copyrightholder:"Sonar Kollektiv",
-          license:"CC-BY-NC-ND",
-          licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
+          copyrightholder:"Eric Wahlforss",
           target: 'attribdiv'
         })
         .webpage({
@@ -186,11 +184,11 @@
     <div style="float:right; width: 100%;">
       <h3>Description</h3>
       <p>
-        This demo will showcase how the Soundcloud flash audio player can be integrated into Popcorn.js. This  is done by making the flash audio player masquerade as HTML 5 media element.<br />
+        This demo will showcase how a player for Popcorn.js may be powered by Soundcloud's Flash audio player. This  is done by making the flash audio player masquerade as HTML 5 media element.<br />
         Due to the Flash security model, this demo must be  run from a web server<br />
       <hr >
-        Soundcloud does not support their player to be chromeless (hidden controls), but custom controls have been developed and tied into their player for demo purposes.<br />
-        Clicking play/pause or seeking in either the Soundcloud player or via custsom controls will cause the other to update.<br />
+        Custom controls have been developed and tied into their player for demo purposes.<br />
+        Clicking play/pause or seeking in either the Soundcloud player or via custom controls will cause the other to update.<br />
         The Soundcloud audio can be specified in the HTML source by giving the Soundcloud song url to either the Popcorn.soundcloud constructor or as the div data-src attribute.<br/>
         Specifying the source in the constructor will override any source specified on the container element.<br/>
         Player width/height can be specified as container attributes (data-width, data-height), or as styles (width, height). Styles can be inline or CSS.<br/>
@@ -205,7 +203,7 @@
         <li>From 5 to 15 seconds, the subtitle 'This is overlaid on top of the audio visualization. You can hightlight it!' will be overlaid on the Soundcloud player.</li>
         <li>From 5 to 15 seconds, the Mozilla Drumbeat logo will appear below 'Image Area'.</li>
         <li>From 5 to 40 seconds, the footnote 'The song is "Flickermood", by Forss' will appear below 'Footnote Area'.</li>
-        <li>From 5 to 60 seconds, the Creative Commons license will appear below 'Attributions Area'.</li>
+        <li>From 5 to 60 seconds, the 'Flickermood, Eric Wahlforss' will appear below 'Attributions Area'.</li>
         <li>From 20 to 40 seconds, the a flickr stream of 8 images  tagged 'georgia' will appear below 'Flickr Area'.</li>
         <li>From 20 to 45 seconds, tweets tagged #oilspill will appear below 'Twitter Area'.</li>
       </ul>
