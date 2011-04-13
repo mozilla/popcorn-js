@@ -41,15 +41,6 @@ var openmapCallback;
       _mapFired = false,
       _mapLoaded = false;
 
-  // insert openlayers api script once
-  if ( !_mapFired ) {
-    _mapFired = true;
-    Popcorn.getScript('http://openlayers.org/api/OpenLayers.js',
-    function() {
-      _mapLoaded = true;
-    } );
-  }
-
   Popcorn.plugin( "openmap" , function( options ){
     var newdiv,
         map,
@@ -59,6 +50,15 @@ var openmapCallback;
         pointLayer,
         selectControl,
         popup;
+
+    // insert openlayers api script once
+    if ( !_mapFired ) {
+      _mapFired = true;
+      Popcorn.getScript('http://openlayers.org/api/OpenLayers.js',
+      function() {
+        _mapLoaded = true;
+      } );
+    }
 
     // create a new div within the target div
     // this is later passed on to the maps api

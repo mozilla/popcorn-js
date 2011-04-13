@@ -2,8 +2,6 @@
 
 (function (Popcorn) {
 
-  Popcorn.getScript('https://github.com/janl/mustache.js/raw/master/mustache.js');
-
   /**
    * Mustache Popcorn Plug-in
    *
@@ -87,6 +85,9 @@
   */
 
   Popcorn.plugin( 'mustache' , function( options ) {
+
+    Popcorn.getScript('https://github.com/janl/mustache.js/raw/master/mustache.js');
+
     var getData, data, getTemplate, template;
 
     var shouldReload = !!options.dynamic,
