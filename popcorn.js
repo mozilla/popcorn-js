@@ -404,7 +404,7 @@
 
     //  Popcorn Object Element Utils
     position: function() {
-      var  media = this.video,  
+      var  media = this.media,  
           clientRect = media.getBoundingClientRect(),
           bounds = {}, 
           doc = media.ownerDocument,

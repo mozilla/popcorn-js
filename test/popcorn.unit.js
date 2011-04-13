@@ -343,7 +343,7 @@ test("exec", function () {
 module("Popcorn Position");
 test("position", function () {
 
-	expect(24);
+	expect(25);
 	
   var $absolute = $(".absolute"), 
       $relative = $(".relative"), 
@@ -401,6 +401,11 @@ test("position", function () {
     equals( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
   });
 
+  try {
+    ok( Popcorn( "#audio" ).position(), "position called from audio" );
+  } catch( e ) {
+    ok( false, e );
+  }
 
 	$("#position-tests").hide();
 });
