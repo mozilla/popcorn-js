@@ -34,7 +34,7 @@ test("Popcorn Image Plugin", function () {
 
   interval = setInterval( function() {
     if( popped.currentTime() > 1 && popped.currentTime() < 3 ) {
-      ok( /display: inline;/.test( imagediv.innerHTML ), "Div contents are displayed" );
+      ok( /display: block;/.test( imagediv.innerHTML ), "Div contents are displayed" );
       plus();
       ok( /img/.test( imagediv.innerHTML ), "An image exists" );
       plus();

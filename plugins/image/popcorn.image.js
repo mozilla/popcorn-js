@@ -49,11 +49,13 @@
       _setup: function( options ) {
 
         options.link = document.createElement( 'a' );
-        options.link.style.display = "none"; // display none by default
         options.link.style.position = "relative";
-        options.link.style.height = "100%";
-        //options.link.style.width = "100%";
+        options.link.style.textDecoration = "none";
 
+        var img = document.createElement( 'img' );
+        img.src = options.src;
+        img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
+        
         if ( options.href ) {
           options.link.href = options.href;
         }
@@ -62,22 +64,13 @@
           document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
         }
         
-        var img = document.createElement( 'img' );
-        img.src = options.src;
-        img.style.position = "absolute";
-        img.style.height = "100%";
-        //img.style.width = "100%";
-        img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
-        
-        var fontHeight = ((document.getElementById( options.target ).offsetHeight) / 12) + "px";
+        var fontHeight = ( img.height / 12 ) + "px";
         
         var divText = document.createElement( 'div' );
         divTextStyle = {
-            position: "absolute",
-            top: "50%",
+            position: "relative",
+            width: img.width + "px",
             textAlign: "center",
-            left: 0,
-            right: 0,
             fontSize: fontHeight,
             color: "black",
             fontWeight : "bold",
@@ -86,10 +79,12 @@
         for ( st in divTextStyle ) {
           divText.style[ st ] = divTextStyle[ st ];
         }
-        divText.innerHTML = options.text;
         
+        divText.innerHTML = options.text || "";
         options.link.appendChild( divText );
         options.link.appendChild( img );
+        divText.style.top = ( img.height / 2 ) - ( divText.offsetHeight / 2 ) + "px"; 
+        options.link.style.display = "none";
       },
 
       /**

@@ -19,11 +19,10 @@
         target: 'imagediv'
       } )
       .image({
-        start: 20, // seconds
+        start: 5, // seconds
         end: 45, // seconds
         // no href
         src: 'http://patriciabergeron.net/wp-content/uploads/web.made_.movie_marquee.gif',
-        text: 'WEB MADE MOVIES',
         target: 'imagediv'
       } );
 
@@ -33,8 +32,9 @@
 </head>
 <body>
   <h1 id="qunit-header">Popcorn Image Plug-in Demo</h1>
-  <p> An image will appear at 5 seconds and disappear at 15 seconds.</p>
-  <p> An image will appear at 20 seconds and disappear at 45 seconds.</p>
+  <p> Two images will appear at 5 seconds.</p>
+  <p> First one (with an overlayed text) will disappear at 15 seconds.</p>
+  <p> Second one (without an overlayed text) will disappear at 45 seconds.</p>
   <div>
     <video id='video' 
       controls
