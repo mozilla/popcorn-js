@@ -404,7 +404,7 @@
 
     //  Popcorn Object Element Utils
     position: function() {
-      var  media = this.video,  
+      var  media = this.media,  
           clientRect = media.getBoundingClientRect(),
           bounds = {}, 
           doc = media.ownerDocument,
@@ -872,10 +872,11 @@
   Popcorn.plugin.delegate = function( instance, name, plugins ) {
 
     return function() {
+      var args = arguments;
       plugins.forEach( function( plugin ) {
         // The new plugin simply calls the delegated methods on
         // all of its parents in the order they were specified.
-        plugin[ name ] && plugin[ name ].apply( instance, arguments );
+        plugin[ name ] && plugin[ name ].apply( instance, args );
       });
     };
   };

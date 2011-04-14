@@ -343,7 +343,7 @@ test("exec", function () {
 module("Popcorn Position");
 test("position", function () {
 
-	expect(24);
+	expect(25);
 	
   var $absolute = $(".absolute"), 
       $relative = $(".relative"), 
@@ -401,6 +401,11 @@ test("position", function () {
     equals( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
   });
 
+  try {
+    ok( Popcorn( "#audio" ).position(), "position called from audio" );
+  } catch( e ) {
+    ok( false, e );
+  }
 
 	$("#position-tests").hide();
 });
@@ -817,7 +822,7 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 80, // 15*2+16*2+6+12. executor/complicator each do 15
+      expects = 96, // 15*2+16*2+6+12+16. executor/complicator each do 15
       count = 0;    
 
   function plus() {
@@ -832,6 +837,8 @@ test("Plugin Factory", function () {
       Popcorn.removePlugin("D");
       Popcorn.removePlugin("E");
       Popcorn.removePlugin("F");
+      Popcorn.removePlugin("optionTest1");
+      Popcorn.removePlugin("optionTest2");
       start();
     }
   }
@@ -1007,6 +1014,59 @@ test("Plugin Factory", function () {
     equals(counts.f, 1, "plugin F should have been run once");
     plus();    
   }, 10000);
+
+  Popcorn.plugin( "optionTest1", {
+    _setup: function( options ) {
+      options.item = "exist";
+      equals( options.data[ 0 ], "parent", "parent plugin _setup options.data" );
+      plus();
+    },
+    start: function( event, options ) {
+      equals( options.item, "exist", "parent plugin start options.item" );
+      plus();
+      equals( options.data[ 0 ], "parent", "parent plugin start options.data" );
+      plus();
+    },
+    end: function( event, options ) {
+      equals( options.item, "exist", "parent plugin end options.item" );
+      plus();
+      equals( options.data[ 0 ], "parent", "parent plugin end options.data" );
+      plus();
+    }
+  });
+
+  Popcorn.inherit( "optionTest2", "optionTest1", {
+    _setup: function( options ) {
+      equals( options.item, "exist", "child plugin _setup options.item" );
+      plus();
+      equals( options.data[ 1 ], "child", "child plugin _setup options.data" );
+      plus();
+    },
+    start: function( event, options ) {
+      equals( options.item, "exist", "child plugin start options.item" );
+      plus();
+      equals( options.data[ 1 ], "child", "child plugin start options.data" );
+      plus();
+    },
+    end: function( event, options ) {
+      equals( options.item, "exist", "child plugin end options.item" );
+      plus();
+      equals( options.data[ 1 ], "child", "child plugin end options.data" );
+      plus();
+    }
+  });
+
+  popped.optionTest1({
+    start: 6,
+    end: 7,
+    data: [ "parent" ]
+  })
+  .optionTest2({
+    start: 7,
+    end: 8,
+    data: [ "parent", "child" ]
+  })
+  
 
   popped.currentTime(0).play();
 
