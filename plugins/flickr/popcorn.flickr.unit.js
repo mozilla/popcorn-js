@@ -1,7 +1,7 @@
 test("Popcorn Flickr Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 6, 
+      expects = 7, 
       count = 0,
       flickrdiv = document.getElementById('flickrdiv');
   
@@ -32,7 +32,7 @@ test("Popcorn Flickr Plugin", function () {
     start: 4, // seconds
     end: 7,   // seconds
     username: 'AniaSob',
-    api_key: 'd1d249260dd1673ec8810c8ce5150ae1',
+    apikey: 'd1d249260dd1673ec8810c8ce5150ae1',
     numberofimages: '1',
     target: 'flickrdiv'
   } );;

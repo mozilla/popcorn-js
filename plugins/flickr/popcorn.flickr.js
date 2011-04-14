@@ -13,7 +13,7 @@
    * Username is the username of who's Flickr images you wish to show 
    *  using both userid and username is redundant
    *  an api_key is required when using username
-   * Api_key is your own api key provided by Flickr 
+   * Apikey is your own api key provided by Flickr 
    * Target is the id of the document element that the images are
    *  appended to, this target element must exist on the DOM
    * Numberofimages specify the number of images to retreive from flickr, defaults to 4
@@ -69,11 +69,11 @@
       throw ( "flickr target container doesn't exist" ); 
     }
     
-    // get the userid from Flickr API by using the username and api_key
+    // get the userid from Flickr API by using the username and apikey
     var isUserIDReady = function() {
       if ( !_userid ) {
         _uri  = "http://api.flickr.com/services/rest/?method=flickr.people.findByUsername&";        
-        _uri += "username=" + options.username + "&api_key=" + options.api_key + "&format=json&jsoncallback=flickr";
+        _uri += "username=" + options.username + "&api_key=" + options.apikey + "&format=json&jsoncallback=flickr";
         Popcorn.xhr.getJSONP( _uri, function(data) {
           _userid = data.user.nsid;
           getFlickrData();
@@ -118,7 +118,7 @@
       _userid = options.userid;
       getFlickrData();
       
-    } else if ( options.username && options.api_key ) {
+    } else if ( options.username && options.apikey ) {
       isUserIDReady();
     }
     return {
@@ -145,7 +145,7 @@
   {
     about:{
       name:    "Popcorn Flickr Plugin",
-      version: "0.1.1",
+      version: "0.2",
       author:  "Scott Downe, Steven Weerdenburg, Annasob",
       website: "http://scottdowne.wordpress.com/"
     },
@@ -155,7 +155,7 @@
       userid         : {elem:'input', type:'text',   label:'UserID'},
       tags           : {elem:'input', type:'text',   label:'Tags'},
       username       : {elem:'input', type:'text',   label:'Username'},
-      api_key        : {elem:'input', type:'text',   label:'Api_key'},
+      apikey        : {elem:'input', type:'text',   label:'Api_key'},
       target         :  'Flickr-container',
       height         : {elem:'input', type:'text', label:'Height'},
       width          : {elem:'input', type:'text', label:'Width'},
