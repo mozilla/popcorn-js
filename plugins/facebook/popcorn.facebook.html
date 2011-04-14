@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Popcorn WebPage Plug-in Demo</title>
+  <title>Popcorn Facebook Plug-in Demo</title>
   
   <script src="../../popcorn.js"></script>
   <script src="popcorn.facebook.js"></script>
@@ -12,26 +12,25 @@
       .play() 
       .facebook({
         type: "LIKE",
-        target: 'likediv'
+        target: "likediv"
       } )
       .facebook({
         href: "http://www.facebook.com/senecacollege",
         type: "LIKE-BOX",
         show_faces: "true",
         header: "false",
-        target: 'likeboxdiv'
+        target: "likeboxdiv"
       } )
       .facebook({
         href: "http://popcornjs.org/",
         type: "ACTIVITY",
-        target: 'activitydiv'
+        target: "activitydiv"
       } )
       .facebook({
         href: "http://www.facebook.com/senecacollege",
         type: "FACEPILE",
-        target: 'facepilediv'
+        target: "facepilediv"
       } );
-
     }, false);
 
   </script>

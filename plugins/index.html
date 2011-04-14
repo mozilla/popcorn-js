@@ -10,6 +10,7 @@
     <ul id="menuItems">
       <li><a onclick="clearEvents();" target="out" href="attribution/popcorn.attribution.unit.html">attribution</a></li>
       <li><a onclick="clearEvents();" target="out" href="code/popcorn.code.unit.html">code</a></li>
+      <li><a onclick="clearEvents();" target="out" href="facebook/popcorn.facebook.unit.html">facebook</a></li>
       <li><a onclick="clearEvents();" target="out" href="flickr/popcorn.flickr.unit.html">flickr</a></li>
       <li><a onclick="clearEvents();" target="out" href="footnote/popcorn.footnote.unit.html">footnote</a></li>
       <li><a onclick="clearEvents();" target="out" href="googlemap/popcorn.googlemap.unit.html">googlemap</a></li>
@@ -29,13 +30,15 @@
   <script>
   var eventList = [];
   function runAllTests(){
-    var testUrl = [ "attribution", "code", "flickr", "footnote", "googlemap", 
-                    "googlenews", "image", "lastfm", "lowerthird", "mustache", 
-                    "subtitle", "tagthisperson", "twitter", "webpage", "wikipedia" ];
+    var testUrl = [ "attribution", "code", "facebook", "flickr", "footnote", 
+                    "googlemap", "googlenews", "image", "lastfm", "lowerthird",
+                    "mustache", "subtitle", "tagthisperson", "twitter", "webpage", 
+                    "wikipedia" ];
     //googlenews and lowerthird tests do not exist, therefore their test time is set to 0
-    var testDur = [ 17000, 20000, 10000, 20000, 11000,
-                    0, 10000, 10000, 0, 15000,
-                    25000, 21000, 10000, 21000, 21000 ];
+    var testDur = [ 17000, 20000, 10000, 10000, 20000, 
+                    11000, 0, 10000, 10000, 0, 
+                    15000, 25000, 21000, 10000, 21000, 
+                    21000 ];
     
     var setTest = function( index ) {
       var url = function( str ) {
