@@ -22,6 +22,14 @@
     
     // The underlying player resource. May be <canvas>, <iframe>, <object>, array, etc
     this.resource;
+    // The container div of the resource
+    this._container;
+    
+    this.offsetWidth = this.width = 0;
+    this.offsetHeight = this.height = 0;
+    this.offsetLeft = 0;
+    this.offsetTop = 0;
+    this.offsetParent = 0;
   }
 
   Popcorn.baseplayer.init.prototype = {
@@ -55,18 +63,35 @@
     // By default, assumes this.resource is a DOM Element
     // Changing the type of this.resource requires this method to be overridden
     getBoundingClientRect: function() {
-      var b = this.resource.getBoundingClientRect();
-      
-      return {
-        bottom: b.bottom,
-        left: b.left,
-        right: b.right,
-        top: b.top,
+      var b,
+          self = this;
+          
+      if ( this.resource ) {
+        b = this.resource.getBoundingClientRect();
         
-        //  These not guaranteed to be in there
-        width: b.width || ( b.right - b.left ),
-        height: b.height || ( b.bottom - b.top )
-      };
+        return {
+          bottom: b.bottom,
+          left: b.left,
+          right: b.right,
+          top: b.top,
+          
+          //  These not guaranteed to be in there
+          width: b.width || ( b.right - b.left ),
+          height: b.height || ( b.bottom - b.top )
+        };
+      } else {
+        b = this._container.getBoundingClientRect();
+        
+        // Update bottom, right for expected values once the container loads
+        return {
+          left: b.left,
+          top: b.top,
+          width: self.offsetWidth,
+          height: self.offsetHeight,
+          bottom: b.top + this.width,
+          right: b.top + this.height
+        };
+      }
     },
     
     // By default, assumes this.resource is a DOM Element
