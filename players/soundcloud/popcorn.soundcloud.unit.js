@@ -246,7 +246,7 @@ test( "Testing Comments", function() {
   });
   
   expect( expects );
-  stop( 1000 );
+  stop( 5000 );
   
   Popcorn.forEach( players, function ( player, name ) {
     equals( player._comments[0].display(), commentOutput[name](), name + " formatted as expected" );
@@ -266,7 +266,7 @@ test( "Popcorn Integration", function () {
   }
   
   expect(expects);
-  stop( 10000 );
+  stop( 20000 );
   
   player.addEventListener( "load", function() {
     ok( true, "Listen works (load event)" );
@@ -296,7 +296,6 @@ test( "Popcorn Integration", function () {
   });
 });
 
-
 test( "Events and Player Control", function () {
   var expects = 14,
       count = 0,
@@ -310,7 +309,7 @@ test( "Events and Player Control", function () {
   }
   
   expect(expects);
-  stop( 60000 );
+  stop( 100000 );
   
   player.addEventListener( "load", function() {
     ok( true, "Load was fired" );
