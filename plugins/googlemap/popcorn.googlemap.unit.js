@@ -2,7 +2,8 @@ test("Popcorn Google Map Plugin", function () {
   
   var popped = Popcorn("#video"),
       expects = 11, 
-      count = 0;
+      count = 0,
+      setupId;
   
   expect(expects);
   
@@ -51,7 +52,7 @@ test("Popcorn Google Map Plugin", function () {
       zoom: 15
     });
 
-var setupId = popped.getLastTrackEventId();
+  setupId = popped.getLastTrackEventId();
 
   popped.exec( 4, function() {
     ok(google.maps, "Google maps is available");
