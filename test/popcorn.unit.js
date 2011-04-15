@@ -1358,7 +1358,7 @@ test("Remove Plugin", function () {
       p2 = Popcorn("#video"),
       rlen = Popcorn.registry.length,
       count = 0,
-      expects = 19,
+      expects = 21,
       interval;
 
   function plus() {
@@ -1450,6 +1450,29 @@ test("Remove Plugin", function () {
       clearInterval( interval );
     }
   }, 1);
+
+  Popcorn.plugin( "cleanup", {
+
+    _setup: function( options ) {
+
+      options.exist = true;
+    },
+    _cleanup: function( options ) {
+
+      ok( true, "cleanup function is called during removal" );
+      plus();
+
+      ok( options.exist, "options object exists at time of cleanup" );
+      plus();
+    }
+  });
+
+  p2.cleanup({
+    start: 2,
+    end: 3
+  });
+  p2.removeTrackEvent( p2.getLastTrackEventId() );
+
   p2.currentTime( 2 ).play();
 
 });

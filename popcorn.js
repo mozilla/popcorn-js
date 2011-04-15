@@ -674,6 +674,7 @@
         //  Capture the position of the track being removed.
         if ( o._id === trackId ) {
           indexWasAt = i;
+          o._natives._cleanup && o._natives._cleanup.call( obj, o );
         }
       }
     });

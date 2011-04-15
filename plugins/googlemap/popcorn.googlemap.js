@@ -187,6 +187,10 @@ var googleCallback;
         if (map) {
           map.getDiv().style.display = "none";
         }
+      },
+      _cleanup: function( options ) {
+        // the map must be manually removed
+        document.getElementById( options.target ).removeChild( newdiv );
       }
     };
   },
