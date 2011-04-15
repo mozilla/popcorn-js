@@ -1457,7 +1457,7 @@ test("Remove Plugin", function () {
 
       options.exist = true;
     },
-    _cleanup: function( options ) {
+    _teardown: function( options ) {
 
       ok( true, "cleanup function is called during removal" );
       plus();
