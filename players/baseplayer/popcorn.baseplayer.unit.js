@@ -25,11 +25,20 @@ test( "API", function () {
         'addEventListener' : 'function',
         'dispatchEvent' : 'function',
         'getBoundingClientRect' : 'function',
+        'width' : 'number',
+        'height' : 'number',
+        'offsetWidth' : 'number',
+        'offsetHeight' : 'number',
+        'offsetTop' : 'number',
+        'offsetLeft' : 'number',
+        'offsetParent' : 'undefined',
         
         // Helper functions and members
-        'events' : 'object',
-        'resource' : 'undefined',
-        'getStyle' : 'function'
+        '_events' : 'object',
+        '_resource' : 'undefined',
+        '_container' : 'undefined',
+        'getStyle' : 'function',
+        'extractContainerValues' : 'function'
       };
       
   function plus() {
@@ -69,7 +78,7 @@ test( "Default Functionality", function () {
     }
   }
   
-  player.resource = document.getElementById('player_1');
+  player._resource = document.getElementById('player_1');
   dimensions = player.getBoundingClientRect();
   
   Popcorn.forEach( expectedVals, function() {
