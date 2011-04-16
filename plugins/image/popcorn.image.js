@@ -8,10 +8,11 @@
    * Options parameter will need a start, end, href, target and src.
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing 
-   * href is the url of the destination of a link
+   * href is the url of the destination of a link - optional 
    * Target is the id of the document element that the iframe needs to be attached to, 
    * this target element must exist on the DOM
    * Src is the url of the image that you want to display
+   * text is the overlayed text on the image - optional  
    *
    * @param {Object} options
    * 
@@ -47,6 +48,7 @@
       },
 
       _setup: function( options ) {
+        var st;
 
         options.link = document.createElement( 'a' );
         options.link.style.position = "relative";
@@ -74,7 +76,7 @@
             fontSize: fontHeight,
             color: "black",
             fontWeight : "bold",
-            zIndex: "10",
+            zIndex: "10"
         };
         for ( st in divTextStyle ) {
           divText.style[ st ] = divTextStyle[ st ];

@@ -32,24 +32,22 @@ test("Popcorn Image Plugin", function () {
     target: 'imagediv'
   } );
 
-  interval = setInterval( function() {
+  popped.exec( 2, function() {
     if( popped.currentTime() > 1 && popped.currentTime() < 3 ) {
       ok( /display: block;/.test( imagediv.innerHTML ), "Div contents are displayed" );
       plus();
       ok( /img/.test( imagediv.innerHTML ), "An image exists" );
       plus();
-      clearInterval( interval );
     }
-  }, 500);
+  });
   
-  interval2 = setInterval( function() {
+  popped.exec( 4, function() {
     if( popped.currentTime() > 3 ) {
       ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
       plus();
-      clearInterval( interval2 );
     }
-  }, 500);
-  popped.volume(0);
-  popped.play();
+  });
   
+  popped.volume(0);
+  popped.play();  
 });
