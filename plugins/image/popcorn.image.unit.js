@@ -3,8 +3,6 @@ test("Popcorn Image Plugin", function () {
   var popped = Popcorn("#video"),
       expects = 5,
       count = 0,
-      interval,
-      interval2,
       imagediv = document.getElementById('imagediv');
   
   expect( expects );
@@ -30,24 +28,19 @@ test("Popcorn Image Plugin", function () {
     src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
     text: 'DRUMBEAT',
     target: 'imagediv'
-  } );
+  });
 
   popped.exec( 2, function() {
-    if( popped.currentTime() > 1 && popped.currentTime() < 3 ) {
       ok( /display: block;/.test( imagediv.innerHTML ), "Div contents are displayed" );
       plus();
       ok( /img/.test( imagediv.innerHTML ), "An image exists" );
       plus();
-    }
   });
   
   popped.exec( 4, function() {
-    if( popped.currentTime() > 3 ) {
       ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
       plus();
-    }
   });
+  popped.volume(0).play();  
   
-  popped.volume(0);
-  popped.play();  
 });
