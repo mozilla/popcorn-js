@@ -1,20 +1,24 @@
-// PLUGIN: FLICKR
-
+// PLUGIN: Flickr
 (function (Popcorn) {
+  
   /**
    * Flickr popcorn plug-in 
    * Appends a users Flickr images to an element on the page.
-   * Options parameter will need a start, end, target and userid.
+   * Options parameter will need a start, end, target and userid or username and api_key.
    * Optional parameters are numberofimages, height, width, padding, and border
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing
    * Userid is the id of who's Flickr images you wish to show
    * Tags is a mutually exclusive list of image descriptor tags
+   * Username is the username of who's Flickr images you wish to show 
+   *  using both userid and username is redundant
+   *  an api_key is required when using username
+   * Apikey is your own api key provided by Flickr 
    * Target is the id of the document element that the images are
    *  appended to, this target element must exist on the DOM
-   * Numberofimages specify the number of images to retreive from flickr, defaults to 8
-   * Height the height of the component, defaults to '50px'
-   * Width the width of the component, defaults to '50px'
+   * Numberofimages specify the number of images to retreive from flickr, defaults to 4
+   * Height the height of the image, defaults to '50px'
+   * Width the width of the image, defaults to '50px'
    * Padding number of pixels between images, defaults to '5px'
    * Border border size in pixels around images, defaults to '0px'
    * 
@@ -36,96 +40,128 @@
         } )
    *
    */
-  Popcorn.plugin( "flickr" , {
+  Popcorn.plugin( "flickr" , function( options ) {
+    var containerDiv,
+        _userid,
+        _uri,
+        _link,
+        _image,
+        _count   = options.numberofimages || 4 ,
+        _height  = options.height || "50px",
+        _width   = options.width || "50px",
+        _padding = options.padding || "5px",
+        _border  = options.border || "0px",
+        i;
 
-      manifest: {
-        about:{
-          name:    "Popcorn Flickr Plugin",
-          version: "0.1.1",
-          author:  "Scott Downe, Steven Weerdenburg",
-          website: "http://scottdowne.wordpress.com/"
-        },
-        options:{
-          start   : {elem:'input', type:'number', label:'In'},
-          end     : {elem:'input', type:'number', label:'Out'},
-          userid  : {elem:'input', type:'text',   label:'Source'},
-          tags    : {elem:'input', type:'text',   label:'Tags'},
-          target  :  'Flickr-container',
-          height  : {elem:'input', type:'text', label:'Height'},
-          width   : {elem:'input', type:'text', label:'Width'},
-          padding : {elem:'input', type:'text', label:'Padding'},
-          border  : {elem:'input', type:'text', label:'Border'},
-          numberofimages : {elem:'input', type:'text', label:'Number of Images'}
-        }
-      },
-
-      _setup: function( options ) {
-        options.container = document.createElement( 'div' );
-        options.container.style.display = "none";
-        
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).appendChild( options.container );
-        }
-        
-        var height  = options.height || "50px",
-            width   = options.width || "50px",
-            count   = options.numberofimages || 4,
-            padding = options.padding || "5px",
-            tags    = options.tags || "",
-            userid  = options.userid || "",
-            border  = options.border || "0px",
-            uri = "http://api.flickr.com/services/feeds/photos_public.gne?";
-        
-        if ( userid ) {
-          uri += "id="+userid+"&";
-        }
-        
-        if ( tags ) {
-          uri += "tags="+tags+"&";
-        }
-
-        uri += "lang=en-us&format=json&jsoncallback=flickr";
-        
-        Popcorn.xhr.getJSONP( uri, function( data ) {
-          options.container.innerHTML = "<p style='padding:" + padding + ";'>" + data.title + "<p/>";
-          
-          Popcorn.forEach( data.items, function ( item, i ) {
-            if ( i < count ) {
-              var link = document.createElement('a');
-              link.setAttribute( 'href', item.link );
-              link.setAttribute( "target", "_blank" );
-              var image = document.createElement( 'img' );
-              image.setAttribute( 'src', item.media.m );
-              image.setAttribute( 'height', height );
-              image.setAttribute( 'width', width );
-              image.setAttribute( 'style', 'border:' + border + ';padding:' + padding );
-              link.appendChild( image );
-              
-              options.container.appendChild( link );
-            } else {
-              return false;
-            }
-          });
+    // create a new div this way anything in the target div is left intact
+    // this is later populated with Flickr images
+    containerDiv               = document.createElement( "div" );
+    containerDiv.id            = "flickr"+ i;
+    containerDiv.style.width   = "100%";
+    containerDiv.style.height  = "100%";
+    containerDiv.style.display = "none";
+    i++;
+    
+    // ensure the target container the user chose exists
+    if ( document.getElementById( options.target ) ) {
+      document.getElementById( options.target ).appendChild( containerDiv );
+    } else { 
+      throw ( "flickr target container doesn't exist" ); 
+    }
+    
+    // get the userid from Flickr API by using the username and apikey
+    var isUserIDReady = function() {
+      if ( !_userid ) {
+        _uri  = "http://api.flickr.com/services/rest/?method=flickr.people.findByUsername&";        
+        _uri += "username=" + options.username + "&api_key=" + options.apikey + "&format=json&jsoncallback=flickr";
+        Popcorn.xhr.getJSONP( _uri, function(data) {
+          _userid = data.user.nsid;
+          getFlickrData();
         });
-      },
-      /**
-       * @member Flickr 
-       * The start function will be executed when the currentTime 
-       * of the video  reaches the start time provided by the 
-       * options variable
-       */
-      start: function( event, options ) {
-        options.container.style.display = "inline";
-      },
-      /**
-       * @member Flickr 
-       * The end function will be executed when the currentTime 
-       * of the video  reaches the end time provided by the 
-       * options variable
-       */
-      end: function( event, options ) {
-        options.container.style.display = "none";
+      } else {
+        setTimeout(function () {
+          isUserIDReady();
+        }, 5);
       }
-    });
-
+    };
+    // get the photos from Flickr API by using the user_id and/or tags
+    var getFlickrData = function() { 
+      _uri  = "http://api.flickr.com/services/feeds/photos_public.gne?";        
+      _uri += "id=" + _userid + "&";
+      if ( options.tags ) {
+        _uri += "tags=" + options.tags + "&";
+      }
+      _uri += "lang=en-us&format=json&jsoncallback=flickr";
+      
+      Popcorn.xhr.getJSONP( _uri, function( data ) {
+        containerDiv.innerHTML = "<p style='padding:" + _padding + ";'>" + data.title + "<p/>";
+        
+        Popcorn.forEach( data.items, function ( item, i ) {
+          if ( i < _count ) {
+            _link = document.createElement( 'a' );
+            _link.setAttribute( 'href', item.link );
+            _link.setAttribute( "target", "_blank" );
+            _image = document.createElement( 'img' );
+            _image.setAttribute( 'src', item.media.m );
+            _image.setAttribute( 'height',_height );
+            _image.setAttribute( 'width', _width );
+            _image.setAttribute( 'style', 'border:' + _border + ';padding:' + _padding );
+            _link.appendChild( _image );         
+            containerDiv.appendChild( _link );
+          } else {
+            return false;
+          }
+        });
+      });
+    };
+    if ( options.userid ) {
+      _userid = options.userid;
+      getFlickrData();
+      
+    } else if ( options.username && options.apikey ) {
+      isUserIDReady();
+    }
+    return {
+      /**
+       * @member flickr
+       * The start function will be executed when the currentTime
+       * of the video reaches the start time provided by the
+       * options variable
+       */
+      start: function( event, options ){
+        containerDiv.style.display = "inline";
+      },
+      /**
+       * @member flickr
+       * The end function will be executed when the currentTime
+       * of the video reaches the end time provided by the
+       * options variable
+       */
+      end: function( event, options ){      
+          containerDiv.style.display = "none";       
+      }
+    };
+  },
+  {
+    about:{
+      name:    "Popcorn Flickr Plugin",
+      version: "0.2",
+      author:  "Scott Downe, Steven Weerdenburg, Annasob",
+      website: "http://scottdowne.wordpress.com/"
+    },
+    options:{
+      start          : {elem:'input', type:'number', label:'In'},
+      end            : {elem:'input', type:'number', label:'Out'},
+      userid         : {elem:'input', type:'text',   label:'UserID'},
+      tags           : {elem:'input', type:'text',   label:'Tags'},
+      username       : {elem:'input', type:'text',   label:'Username'},
+      apikey        : {elem:'input', type:'text',   label:'Api_key'},
+      target         :  'Flickr-container',
+      height         : {elem:'input', type:'text', label:'Height'},
+      width          : {elem:'input', type:'text', label:'Width'},
+      padding        : {elem:'input', type:'text', label:'Padding'},
+      border         : {elem:'input', type:'text', label:'Border'},
+      numberofimages : {elem:'input', type:'text', label:'Number of Images'}
+    }
+  });
 })( Popcorn );
