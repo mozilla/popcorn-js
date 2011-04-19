@@ -67,6 +67,128 @@ test("Utility", function () {
 
 });
 
+test("Standard Time Strings" , function () {
+  var framerate = 24,
+      storedStartTime,
+      storedEndTime,
+      areEquivalent,
+      currentPeriod,
+      startTimeStr,
+      endTimeStr,
+      message;
+
+  //Time period data
+  //The correct times that specify frame are calculated with a framerate of
+  //24fps. Quotation is mixes (single and double) for testing purposes.
+  var timePeriods = [
+    { //Testing double quotes
+      start: "01.234",
+      end: "4.003",
+      correctStartTime: 1.234,
+      correctEndTime: 4.003
+    },
+    { //Tesing actual numbers
+      start: 5.333,
+      end: 6,
+      correctStartTime: 5.333,
+      correctEndTime: 6.000
+    },
+    { //Testing times in different data types (number and string)
+      start: 6.004,
+      end: "6.78",
+      correctStartTime: 6.004,
+      correctEndTime: 6.780
+    },
+    { //Testing times in different data types (string and number)
+      start: "8.090",
+      end: 9.11111111,
+      correctStartTime: 8.090,
+      correctEndTime: 9.11111111
+    },
+    { //Testing double quotes
+      start: "10;4",
+      end: "10;17",
+      correctStartTime: 10.1666,
+      correctEndTime: 10.7083
+    },
+    { //Testing single quotes
+      start: '12;1',
+      end: '13;2',
+      correctStartTime: 12.0416,
+      correctEndTime: 13.0833
+    },
+    { //Testing mixed quotes
+      start: "20;11",
+      end: '23;17',
+      correctStartTime: 20.4583,
+      correctEndTime: 23.7083
+    },
+    { //Testing mixed quotes
+      start: '27;7',
+      end: "27;22",
+      correctStartTime: 27.2916,
+      correctEndTime: 27.9166
+    },
+    { //Testing double quotes
+      start: "12:04;12",
+      end: "22:59;23",
+      correctStartTime: 724.5,
+      correctEndTime: 1379.9583
+    },
+    { //Testing single quotes
+      start: '1:48:27;9',
+      end: '3:23:15;1',
+      correctStartTime: 6507.375,
+      correctEndTime: 12195.0416
+    },
+    { //Testing mixed quotes
+      start: '12:56;7',
+      end: "2:02:42;8",
+      correctStartTime: 776.2916,
+      correctEndTime: 7362.3333
+    }
+  ];
+
+  var equivalentTimes = function ( testedTime, correctTime ) {
+    var tolerance = 0.0001;
+    return ( testedTime < ( correctTime + tolerance ) ) &&
+           ( testedTime > ( correctTime - tolerance ) );
+  };
+
+  var logMessage = function ( timeStr, correctTime, incorrectTime ) {
+    return "Time stored in seconds for '" + timeStr +
+           "' should be " + correctTime +
+           ". Time stored was " + incorrectTime ;
+  };
+
+  for ( var periodsIdx = 0, timPeriodsLength = timePeriods.length; periodsIdx < timPeriodsLength; periodsIdx++ ) {
+    currentPeriod = timePeriods[ periodsIdx ];
+    startTimeStr = currentPeriod.start;
+    endTimeStr = currentPeriod.end;
+
+    storedStartTime = Popcorn.util.toSeconds( startTimeStr, framerate );
+    storedEndTime = Popcorn.util.toSeconds( endTimeStr, framerate );
+
+    message = logMessage(
+      startTimeStr,
+      currentPeriod.correctStartTime,
+      storedStartTime
+    );
+
+    areEquivalent = equivalentTimes( storedStartTime, currentPeriod.correctStartTime );
+    equals( areEquivalent, true, message );
+
+    message = logMessage(
+      endTimeStr,
+      currentPeriod.correctEndTime,
+      storedEndTime
+    );
+
+    areEquivalent = equivalentTimes( storedEndTime, currentPeriod.correctEndTime ) ;
+    equals( areEquivalent, true, message );
+  }
+});
+
 test("Instances", function() {
   var expects = 11,
       count   = 0,
@@ -343,7 +465,7 @@ test("exec", function () {
 module("Popcorn Position");
 test("position", function () {
 
-	expect(24);
+	expect(25);
 	
   var $absolute = $(".absolute"), 
       $relative = $(".relative"), 
@@ -401,6 +523,11 @@ test("position", function () {
     equals( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
   });
 
+  try {
+    ok( Popcorn( "#audio" ).position(), "position called from audio" );
+  } catch( e ) {
+    ok( false, e );
+  }
 
 	$("#position-tests").hide();
 });
@@ -817,7 +944,7 @@ test("Plugin Factory", function () {
 
   var popped = Popcorn("#video"),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 80, // 15*2+16*2+6+12. executor/complicator each do 15
+      expects = 96, // 15*2+16*2+6+12+16. executor/complicator each do 15
       count = 0;    
 
   function plus() {
@@ -832,6 +959,8 @@ test("Plugin Factory", function () {
       Popcorn.removePlugin("D");
       Popcorn.removePlugin("E");
       Popcorn.removePlugin("F");
+      Popcorn.removePlugin("optionTest1");
+      Popcorn.removePlugin("optionTest2");
       start();
     }
   }
@@ -1007,6 +1136,59 @@ test("Plugin Factory", function () {
     equals(counts.f, 1, "plugin F should have been run once");
     plus();    
   }, 10000);
+
+  Popcorn.plugin( "optionTest1", {
+    _setup: function( options ) {
+      options.item = "exist";
+      equals( options.data[ 0 ], "parent", "parent plugin _setup options.data" );
+      plus();
+    },
+    start: function( event, options ) {
+      equals( options.item, "exist", "parent plugin start options.item" );
+      plus();
+      equals( options.data[ 0 ], "parent", "parent plugin start options.data" );
+      plus();
+    },
+    end: function( event, options ) {
+      equals( options.item, "exist", "parent plugin end options.item" );
+      plus();
+      equals( options.data[ 0 ], "parent", "parent plugin end options.data" );
+      plus();
+    }
+  });
+
+  Popcorn.inherit( "optionTest2", "optionTest1", {
+    _setup: function( options ) {
+      equals( options.item, "exist", "child plugin _setup options.item" );
+      plus();
+      equals( options.data[ 1 ], "child", "child plugin _setup options.data" );
+      plus();
+    },
+    start: function( event, options ) {
+      equals( options.item, "exist", "child plugin start options.item" );
+      plus();
+      equals( options.data[ 1 ], "child", "child plugin start options.data" );
+      plus();
+    },
+    end: function( event, options ) {
+      equals( options.item, "exist", "child plugin end options.item" );
+      plus();
+      equals( options.data[ 1 ], "child", "child plugin end options.data" );
+      plus();
+    }
+  });
+
+  popped.optionTest1({
+    start: 6,
+    end: 7,
+    data: [ "parent" ]
+  })
+  .optionTest2({
+    start: 7,
+    end: 8,
+    data: [ "parent", "child" ]
+  })
+  
 
   popped.currentTime(0).play();
 

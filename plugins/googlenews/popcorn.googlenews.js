@@ -3,6 +3,7 @@
 (function (Popcorn) {
 
   var scriptLoaded = false,
+      scriptLoading = false,
       callBack     = function( data ) {
 
         if ( typeof google !== 'undefined' && google.load ) {
@@ -16,8 +17,6 @@
           }, 1);
         }
       };
-
-  Popcorn.getScript( "http://www.google.com/jsapi", callBack );
 
   /**
    * Google News popcorn plug-in 
@@ -59,6 +58,12 @@
         }
       },
       _setup : function( options ) {
+      
+        if ( !scriptLoading ) {
+
+          scriptLoading = true;
+          Popcorn.getScript( "http://www.google.com/jsapi", callBack );
+        }
 
         options.container = document.createElement( 'div' );
         if ( document.getElementById( options.target ) ) {
