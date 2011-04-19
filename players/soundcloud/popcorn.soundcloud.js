@@ -333,10 +333,14 @@
           bounds = container.getBoundingClientRect(),
           tmp,
           undef;
+          
+      if ( !options.src ) {
+        throw "An audio source must be supplied!";
+      }
       
-      that.width = options.width || container.getAttribute( "data-width" ) || getStyle( container, "width" ) || "100%";
-      that.height = options.height || container.getAttribute( "data-height" ) || getStyle( container, "height" ) || "81px";
-      that.src = options.src || container.getAttribute( "data-src" );
+      that.width = options.width || getStyle( container, "width" ) || "100%";
+      that.height = options.height || getStyle( container, "height" ) || "81px";
+      that.src = options.src;
       that.autoplay = container.getAttribute( "data-autoplay" ) || undef;
       
       if ( parseFloat( that.height, 10 ) !== 81 ) {
