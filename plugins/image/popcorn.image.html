@@ -15,10 +15,11 @@
         end: 15, // seconds
         href: 'http://www.drumbeat.org/',
         src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
+        text: 'DRUMBEAT',
         target: 'imagediv'
       } )
       .image({
-        start: 20, // seconds
+        start: 5, // seconds
         end: 45, // seconds
         // no href
         src: 'http://patriciabergeron.net/wp-content/uploads/web.made_.movie_marquee.gif',
@@ -31,8 +32,9 @@
 </head>
 <body>
   <h1 id="qunit-header">Popcorn Image Plug-in Demo</h1>
-  <p> An image will appear at 5 seconds and disappear at 15 seconds.</p>
-  <p> An image will appear at 20 seconds and disappear at 45 seconds.</p>
+  <p> Two images will appear at 5 seconds.</p>
+  <p> First one (with an overlayed text) will disappear at 15 seconds.</p>
+  <p> Second one (without an overlayed text) will disappear at 45 seconds.</p>
   <div>
     <video id='video' 
       controls
@@ -51,7 +53,8 @@
 
     </video> 
   </div>
-  <div id="imagediv">
-  </div>
+  <div style="width:400px; height:400px" id="imagediv">
+  </div> 
+
 </body>
 </html>
