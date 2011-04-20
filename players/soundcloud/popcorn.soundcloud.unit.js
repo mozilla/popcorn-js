@@ -183,8 +183,11 @@ test( "Testing Comments", function() {
       players = {
         player1: Popcorn.soundcloud( "player_1", "http://soundcloud.com/forss/flickermood" ),
         player2: Popcorn.soundcloud( "player_2", "http://soundcloud.com/forss/flickermood", {
-          commentformat: function( comment ) {
-            return comment.text
+          api: {
+            commentdiv: "commentOutput",
+            commentformat: function( comment ) {
+              return comment.text
+            }
           }
         }),
         player3: Popcorn.soundcloud( "player_1", "http://soundcloud.com/forss/flickermood" )

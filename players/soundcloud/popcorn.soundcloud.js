@@ -36,9 +36,11 @@
   *                                                     //           Defaults to the maximum possible width
   *   height: "81px",                                   // Optional, the height for the player. May also be as '###%'
   *                                                     //           Defaults to 81px
-  *   api_key: "abcdefsdfsdf",                          // Optional, the Soundcloud API key, required for retrieving comments
-  *   commentdiv: "divId_for_output",                   // Optional, the Div Id for outputting comments. Required if comments are desired
-  *   commentformat: function( comment ) {}             // Optional, a function to format a comment. Returns HTML string
+  *   api: {                                            // Optional, information for Soundcloud API interaction
+  *     key: "abcdefsdfsdf",                            // Required for API interaction. The Soundcloud API key
+  *     commentdiv: "divId_for_output",                 // Required for comment retrieval, the Div Id for outputting comments.
+  *     commentformat: function( comment ) {}           // Optional, a function to format a comment. Returns HTML string
+  *   }
   * }));
   *
   * Comments are retrieved from Soundcloud when the player is registered with Popcorn by calling the registerWithPopcorn()
@@ -207,7 +209,7 @@
       object_id: self._playerId,
       url: self.src,
       // Hide comments in player if showing them elsewhere
-      show_comments: !self._options.api_key && !self._options.commentdiv
+      show_comments: !self._options.api.key && !self._options.api.commentdiv
     },
     params = {
       allowscriptaccess: "always",
