@@ -191,6 +191,7 @@ var googleCallback;
       _teardown: function( options ) {
         // the map must be manually removed
         document.getElementById( options.target ).removeChild( newdiv );
+        newdiv = map = location = null;
       }
     };
   },
