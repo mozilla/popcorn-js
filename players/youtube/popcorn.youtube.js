@@ -109,8 +109,8 @@ var onYouTubePlayerReady;
     bounds = container.getBoundingClientRect();
     
     // Determine width/height/etc based on container
-    this.width = container.getAttribute("width") || 460;
-    this.height = container.getAttribute("height") || 350;
+    this.width = container.style.width || 460;
+    this.height = container.style.height || 350;
     
     // Just in case we got the attributes as strings. We'll need to do math with these later
     this.width = parseFloat(this.width);
@@ -171,14 +171,22 @@ var onYouTubePlayerReady;
     
     var self = this;
     
-    this.playerId = elementId;
+    this.playerId = elementId + Popcorn.guid();
     this.readyState = READY_STATE_HAVE_NOTHING;
     this._eventListeners = {};
     this.loadStarted = false;
     this.loadedData = false;
     this.fullyLoaded = false;
     
-    this._container = document.getElementById( elementId );
+    this._target = document.getElementById( elementId );
+    this._container = document.createElement( "div" );
+    this._container.id = this.playerId;
+    this._container.style.height = this._target.style.height = this._target.style.height || "350px";
+    this._container.style.width  = this._target.style.width  = this._target.style.width  || "460px";
+    this._target.appendChild( this._container );
+
+    this.offsetHeight = +this._target.offsetHeight;
+    this.offsetWidth = +this._target.offsetWidth;
     
     this.currentTime = this.previousCurrentTime = 0;
     this.volume = this.previousVolume = this.preMuteVol = 1;
@@ -333,7 +341,7 @@ var onYouTubePlayerReady;
       if ( !loadedPlayers[this.playerId] ) {
         this.addEventListener( "load", function() {
           this.load();
-}          );
+        });
         return;
       }
       
@@ -434,16 +442,16 @@ var onYouTubePlayerReady;
           height: b.height || ( b.bottom - b.top )
         };
       } else {
-        b = this._container.getBoundingClientRect();
+        b = self._container.getBoundingClientRect();
         
         // Update bottom, right for expected values once the container loads
         return {
           left: b.left,
           top: b.top,
-          width: self.offsetWidth,
-          height: self.offsetHeight,
-          bottom: b.top + this.width,
-          right: b.top + this.height
+          width: self._target.offsetWidth,
+          height: self._target.offsetHeight,
+          bottom: b.top + self._target.offsetWidth,
+          right: b.left + self._target.offsetHeight
         };
       }
     },
