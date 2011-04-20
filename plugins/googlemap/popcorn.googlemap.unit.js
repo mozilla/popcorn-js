@@ -1,8 +1,9 @@
 test("Popcorn Google Map Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 10, 
-      count = 0;
+      expects = 11, 
+      count = 0,
+      setupId;
   
   expect(expects);
   
@@ -31,7 +32,7 @@ test("Popcorn Google Map Plugin", function () {
     lat: 43.665429,
     lng: -79.403323,
     zoom: 10
-  } )
+  })
   .googlemap({
     start: 0, // seconds
     end: 5, // seconds
@@ -39,8 +40,19 @@ test("Popcorn Google Map Plugin", function () {
     target: 'map2',
     location:'boston',
     zoom: 15
-  } )
+  })
   .volume(0);
+
+    popped.googlemap({
+      start: 0, // seconds
+      end: 10, // seconds
+      type: 'SATELLITE',
+      target: 'map2',
+      location:'toronto',
+      zoom: 15
+    });
+
+  setupId = popped.getLastTrackEventId();
 
   popped.exec( 4, function() {
     ok(google.maps, "Google maps is available");
@@ -62,7 +74,13 @@ test("Popcorn Google Map Plugin", function () {
 
   popped.exec( 6, function() {
     ok (document.getElementById('actualmap2').style.display === "none" && 
-        document.getElementById('actualmap1').style.display === "none", "Both maps are no lnger visible" );
+        document.getElementById('actualmap1').style.display === "none", "Both maps are no longer visible" );
+    plus();
+    popped.pause();
+
+    popped.removeTrackEvent( setupId );
+
+    ok( !document.getElementById('actualmap3'), "removed map was properly destroyed"  );
     plus();
   });
 
