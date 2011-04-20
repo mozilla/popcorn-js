@@ -5,42 +5,47 @@
   * This player adds enables Popcorn.js to handle Soundcloud audio. It does so by masking an embedded Soundcloud Flash object
   * as a video and implementing the HTML5 Media Element interface.
   *
-  * You can specify the video in four ways:
-  *  1. Use the embed code path supplied by Soundcloud as a div's data-src attribute, and pass the div id into a new Popcorn.soundcloud object
+  * You can configure the video source and dimensions in two ways:
+  *  1. Use the embed code path supplied by Soundcloud the id of the desired location into a new Popcorn.soundcloud object.
+  *     Width and height can be configured throughh CSS.
   *
-  *    <div id="player_1" data-width="500" data-height="281" data-src="http://soundcloud.com/forss/flickermood" ></div>
+  *    <div id="player_1" style="width: 500px; height: 81px"></div>
   *    <script type="text/javascript">
   *      document.addEventListener("DOMContentLoaded", function() {
-  *        var popcorn = Popcorn( Popcorn.soundcloud( "player_1" ) );
+  *        var popcorn = Popcorn( Popcorn.soundcloud({
+  *            target: "player_1",                               // Required
+  *            src: "http://soundcloud.com/forss/flickermood",   // Required
+  *          }));
   *      }, false);
   *    </script>
   *
-  *  2. Pass the div id and the embed code path supplied by Soundcloud into a new Popcorn.soundcloud object
+  *  2. Width and height may also be configured directly with the player. This will override any CSS.
   *
-  *    <div id="player_1" data-width="500" data-height="281" data-src="" ></div>
-  *    <script type="text/javascript">
-  *      document.addEventListener("DOMContentLoaded", function() {
-  *        var popcorn = Popcorn( Popcorn.soundcloud( "player_1", { src: "http://soundcloud.com/forss/flickermood" } ) );
-  *      }, false);
-  *    </script>
+  *     <div id="player_1"></div>
+  *     <script type="text/javascript">
+  *       document.addEventListener("DOMContentLoaded", function() {
+  *       var popcorn = Popcorn( Popcorn.soundcloud({
+  *         target: "player_1",                               // Required
+  *         src: "http://soundcloud.com/forss/flickermood",   // Required
+  *         width: "500",                                     // Optional
+  *         height: "81"                                      // Optional
+  *       }));
+  *       }, false);
+  *     </script>
   *
-  * The player can be further configured when it is created by adding other attrributes. A complete list (all optional):
+  * The player can be further configured to integrate with the SoundCloud API:
   *
   * var popcorn = Popcorn( Popcorn.soundcloud( "player_1", {
-  *   src: "http://soundcloud.com/forss/flickermood",     // The Soundcloud track to play
-  *   width: "100%",                                      // The width for the player. May also be as '##px'
-  *   height: "81px",                                     // The height for the player. May also be as '###%'
-  *   api_key: "abcdefsdfsdf",                            // Soundcloud API key, required for retrieving comments
-  *   commentdiv: "divId_for_output",                     // Div Id for outputting comments
-  *   commentformat: function( comment ) {}               // Function to format a comment. Returns HTML string
+  *   target: "player_1",                               // Required, the location to place the player
+  *   src: "http://soundcloud.com/forss/flickermood",   // Required, the Soundcloud track to play
+  *   width: "100%",                                    // Optional, the width for the player. May also be as '##px'
+  *                                                     //           Defaults to the maximum possible width
+  *   height: "81px",                                   // Optional, the height for the player. May also be as '###%'
+  *                                                     //           Defaults to 81px
+  *   api_key: "abcdefsdfsdf",                          // Optional, the Soundcloud API key, required for retrieving comments
+  *   commentdiv: "divId_for_output",                   // Optional, the Div Id for outputting comments
+  *   commentformat: function( comment ) {}             // Optional, a function to format a comment. Returns HTML string
   * }));
-  *
-  * Height, width and track source may be specified in other ways. Height and width may be throughh CSS or inline on the container
-  * div's attributes (data-height, data-width). Track source may be specified on the container element as an attribute (data-src).
-  * See above example. Values may be overridden if height, width or souurce are specified in moree than one way.
-  * The hierarchy is:
-  *
-  *   constructor -> inline -> CSS
   *
   * Comments are retrieved from Soundcloud when the player is registered with Popcorn by calling the registerWithPopcorn()
   * function. For this to work, the api_key and commentdiv attributes must be set. Comments are output by default similar to
@@ -322,14 +327,15 @@
     });
   });
   
-  Popcorn.soundcloud = function( containerId, options ) {
-    return new Popcorn.soundcloud.init( containerId, options );
+  Popcorn.soundcloud = function( options ) {
+    return new Popcorn.soundcloud.init( options );
   };
   
   // A constructor, but we need to wrap it to allow for "static" functions
   Popcorn.soundcloud.init = (function() {
-    function pullFromContainer( that, options ) {      
-      var container = that._container,
+    function pullFromContainer( that ) {      
+      var options = that._options,
+          container = that._container,
           bounds = container.getBoundingClientRect(),
           tmp,
           undef;
@@ -341,7 +347,7 @@
       that.width = options.width || getStyle( container, "width" ) || "100%";
       that.height = options.height || getStyle( container, "height" ) || "81px";
       that.src = options.src;
-      that.autoplay = container.getAttribute( "data-autoplay" ) || undef;
+      that.autoplay = options.autoplay;
       
       if ( parseFloat( that.height, 10 ) !== 81 ) {
         that.height = "81px";
@@ -369,20 +375,19 @@
     }
   
     // If container id is not supplied, assumed to be same as player id
-    var ctor = function ( containerId, options ) {
-      if ( !containerId ) {
+    var ctor = function ( options ) {
+      if ( !options || !options.target ) {
         throw "Must supply an id!";
       } else if ( /file/.test( location.protocol ) ) {
         throw "Must run from a web server!";
       }
       
-      var container = this._container = document.getElementById( containerId );
+      var containerId = options.target,
+          container = this._container = document.getElementById( containerId );
       
       if ( !container ) {
         throw "Could not find that container in the DOM!";
       }
-      
-      options = options || {};
       
       options.commentformat = options.commentformat || formatComment
       
@@ -394,9 +399,7 @@
       this._comments = [];
       this._popcorn;
       
-      this._options.src = options.src || container.getAttribute( "data-src" );
-      
-      pullFromContainer( this, this._options );
+      pullFromContainer( this );
       
       this.duration = 0;
       this.volume = 1;

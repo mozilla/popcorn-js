@@ -52,7 +52,8 @@
           popcorn.mute();
         }, false);
         
-        popcorn = Popcorn( Popcorn.soundcloud( "media_1", {
+        popcorn = Popcorn( Popcorn.soundcloud({
+          target: "media_1",
           width: "50%",
           /*
             This demo contains an api key used for retrieving comments from Soundcloud's API

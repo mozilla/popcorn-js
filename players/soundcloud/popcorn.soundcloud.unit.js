@@ -3,7 +3,8 @@ test( "API", function () {
 
   var expects = 0,
       count = 0,
-      player = Popcorn.soundcloud( "player_1", {
+      player = Popcorn.soundcloud({
+        target: "player_1",
         src: "http://soundcloud.com/forss/flickermood"
       }),
       members = {
@@ -101,10 +102,12 @@ test( "Default Attribute Functionality", function () {
   expect( expects );
   stop( 10000 );
   
-  playerDefault = Popcorn.soundcloud( "player_2", {
+  playerDefault = Popcorn.soundcloud({
+    target: "player_2",
     src: "http://soundcloud.com/forss/flickermood"
   });
-  playerOverride = Popcorn.soundcloud( "player_2", {
+  playerOverride = Popcorn.soundcloud({
+    target: "player_2",
     height: "100px",
     width: '90%',
     src: "http://soundcloud.com/forss/journeyman"
@@ -142,7 +145,10 @@ test( "Default Attribute Functionality", function () {
 test( "Player Volume Control", function () {
   var expects = 3,
       count = 0,
-      player = Popcorn.soundcloud( "player_1", { src: "http://soundcloud.com/forss/flickermood" } ),
+      player = Popcorn.soundcloud({
+        target: "player_1",
+        src: "http://soundcloud.com/forss/flickermood"
+      }),
       targetVolume,
       startVolume;
       
@@ -186,14 +192,21 @@ test( "Testing Comments", function() {
       cmtDate = new Date(),
       comment,
       players = {
-        player1: Popcorn.soundcloud( "player_1", { src: "http://soundcloud.com/forss/flickermood" } ),
-        player2: Popcorn.soundcloud( "player_2", {
+        player1: Popcorn.soundcloud({
+          target: "player_1",
+          src: "http://soundcloud.com/forss/flickermood"
+        }),
+        player2: Popcorn.soundcloud({
+          target: "player_2",
           src: "http://soundcloud.com/forss/flickermood",
           commentformat: function( comment ) {
             return comment.text
           }
         }),
-        player3: Popcorn.soundcloud( "player_1", { src: "http://soundcloud.com/forss/flickermood" } )
+        player3: Popcorn.soundcloud({
+          target: "player_1",
+          src: "http://soundcloud.com/forss/flickermood"
+        })
       }
       // Expecteed comment output
       commentOutput = {
@@ -254,7 +267,10 @@ test( "Testing Comments", function() {
 test( "Popcorn Integration", function () {
   var expects = 4,
       count = 0,
-      player = Popcorn.soundcloud( "player_1", { src: "http://soundcloud.com/forss/flickermood" } );
+      player = Popcorn.soundcloud({
+        target: "player_1",
+        src: "http://soundcloud.com/forss/flickermood"
+      });
       
   function plus() {
     if ( ++count === expects ) {
@@ -296,7 +312,10 @@ test( "Popcorn Integration", function () {
 test( "Events and Player Control", function () {
   var expects = 14,
       count = 0,
-      player = Popcorn.soundcloud( "player_1", { src: "http://soundcloud.com/forss/flickermood" } ),
+      player = Popcorn.soundcloud({ 
+        target: "player_1",
+        src: "http://soundcloud.com/forss/flickermood"
+      }),
       targetVolume;
       
   function plus() {
@@ -306,7 +325,7 @@ test( "Events and Player Control", function () {
   }
   
   expect(expects);
-  stop( 100000 );
+  stop( 150000 );
   
   player.addEventListener( "load", function() {
     ok( true, "Load was fired" );
