@@ -1,5 +1,5 @@
 // Popcorn Vimeo Player Wrapper
-( function( Popcorn ) {
+( function( Popcorn, global ) {
   /**
   * Vimeo wrapper for Popcorn.
   * This player adds enables Popcorn.js to handle Vimeo videos. It does so by masking an embedded Vimeo video Flash object
@@ -178,8 +178,8 @@
     };
   };
       
-  Popcorn.vimeo = function( mediaId, list ) {
-    return new Popcorn.vimeo.init( mediaId, list );
+  Popcorn.vimeo = function( mediaId, list, options ) {
+    return new Popcorn.vimeo.init( mediaId, list, options );
   };
   
   Popcorn.vimeo.onLoad = function( playerId ) {
@@ -229,6 +229,19 @@
       var matches = url.match( rWebUrl );
       return matches ? matches[0].substr(10) : "";
     };
+    
+    // Borrowed from: http://www.quirksmode.org/dom/getstyles.html
+    // Gets the style for the given element
+    function getStyle( elem, styleProp ) {
+      return elem.style[styleProp];
+      if ( elem.currentStyle ) {
+        // IE way
+        return elem.currentStyle[styleProp];
+      } else if ( global.getComputedStyle ) {
+        // Firefox, Chrome, et. al
+        return document.defaultView.getComputedStyle( elem, null ).getPropertyValue( styleProp );
+      }
+    }
       
     function makeSwf( self, vidId, containerId ) {
       if ( !window.swfobject ) {
@@ -261,11 +274,11 @@
         wmode: 'transparent'
       };
       
-      swfobject.embedSWF( "http://vimeo.com/moogaloop.swf", containerId, self.width, self.height, "9.0.0", "expressInstall.swf", flashvars, params, attributes );
+      swfobject.embedSWF( "http://vimeo.com/moogaloop.swf", containerId, self.offsetWidth, self.offsetHeight, "9.0.0", "expressInstall.swf", flashvars, params, attributes );
     }
     
     // If container id is not supplied, assumed to be same as player id
-    var ctor = function ( containerId, videoUrl ) {
+    var ctor = function ( containerId, videoUrl, options ) {
       if ( !containerId ) {
         throw "Must supply an id!";
       } else if ( /file/.test( location.protocol ) ) {
@@ -274,7 +287,10 @@
       
       var vidId,
           that = this,
-          container = document.getElementById( containerId );
+          tmp,
+          container = this.container = document.getElementById( containerId );
+      
+      options = options || {};
       
       this.addEventFn;
       this.evtHolder;
@@ -293,8 +309,29 @@
       this.evtHolder = new EventManager( this );
       
       // For calculating position relative to video (like subtitles)
-      this.offsetWidth = this.width = container.getAttribute( "width" ) || "504";
-      this.offsetHeight = this.height = container.getAttribute( "height" ) || "340";
+      this.width = options.width || getStyle( container, "width" ) || "504px";
+      this.height = options.height || getStyle( container, "height" ) || "340px";
+      
+      if ( !/[\d]%/.test( this.width ) ) {
+        this.offsetWidth = parseInt( this.width, 10 );
+      } else {
+        // convert from pct to abs pixels
+        tmp = container.style.width;
+        container.style.width = this.width;
+        this.offsetWidth = container.offsetWidth;
+        container.style.width = tmp;
+      }
+      
+      if ( !/[\d]%/.test( this.height ) ) {
+        this.offsetHeight = parseInt( this.height, 10 );
+      } else {
+        // convert from pct to abs pixels
+        tmp = container.style.height;
+        container.style.height = this.height;
+        this.offsetHeight = container.offsetHeight;
+        container.style.height = tmp;
+      }
+      
       this.offsetLeft = 0;
       this.offsetTop = 0;
       
@@ -553,6 +590,9 @@
     dispatchEvent: function( evtName ) {
       return this.evtHolder.dispatchEvent( evtName );
     },
+    getBoundingClientRect: function() {
+      return this.container.getBoundingClientRect();
+    },
     startTimeUpdater: function() {
       var self = this,
           seeked = 0;
@@ -580,4 +620,4 @@
       }
     }
   });
-})( Popcorn );
+})( Popcorn, window );
