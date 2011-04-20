@@ -1,9 +1,9 @@
-var ytReady = false,
+var ytReady = true; /*
     popcorn = Popcorn( Popcorn.youtube( 'video' ) );
 
 popcorn.listen( "load", function onYouTubePlayerReady() {
   ytReady = true;
-});
+});*/
 
 test( "Popcorn YouTube Plugin Startup", function() {
   var time = 0,
@@ -32,10 +32,11 @@ test( "Popcorn YouTube Plugin Startup", function() {
 });
 
 test( "Popcorn YouTube Plugin Event Tests", function() {
-  if ( !ytReady ) {
+  /*if ( !ytReady ) {
     ok( false, "YouTube did not start." );
     return;
-  }
+  }*/
+var popcorn = Popcorn( Popcorn.youtube( 'video', "http://www.youtube.com/e/ac7KhViaVqc" ) );
   
   function plus(){ 
     if ( ++count == expects ) {
