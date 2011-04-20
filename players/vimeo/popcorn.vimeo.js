@@ -1,5 +1,5 @@
 // Popcorn Vimeo Player Wrapper
-( function( Popcorn ) {
+( function( Popcorn, global ) {
   /**
   * Vimeo wrapper for Popcorn.
   * This player adds enables Popcorn.js to handle Vimeo videos. It does so by masking an embedded Vimeo video Flash object
@@ -178,8 +178,8 @@
     };
   };
       
-  Popcorn.vimeo = function( mediaId, list ) {
-    return new Popcorn.vimeo.init( mediaId, list );
+  Popcorn.vimeo = function( mediaId, list, options ) {
+    return new Popcorn.vimeo.init( mediaId, list, options );
   };
   
   Popcorn.vimeo.onLoad = function( playerId ) {
@@ -229,6 +229,19 @@
       var matches = url.match( rWebUrl );
       return matches ? matches[0].substr(10) : "";
     };
+    
+    // Borrowed from: http://www.quirksmode.org/dom/getstyles.html
+    // Gets the style for the given element
+    function getStyle( elem, styleProp ) {
+      return elem.style[styleProp];
+      if ( elem.currentStyle ) {
+        // IE way
+        return elem.currentStyle[styleProp];
+      } else if ( global.getComputedStyle ) {
+        // Firefox, Chrome, et. al
+        return document.defaultView.getComputedStyle( elem, null ).getPropertyValue( styleProp );
+      }
+    }
       
     function makeSwf( self, vidId, containerId ) {
       if ( !window.swfobject ) {
@@ -261,18 +274,23 @@
         wmode: 'transparent'
       };
       
-      swfobject.embedSWF( "http://vimeo.com/moogaloop.swf", containerId, self.width, self.height, "9.0.0", "expressInstall.swf", flashvars, params, attributes );
+      swfobject.embedSWF( "http://vimeo.com/moogaloop.swf", containerId, self.offsetWidth, self.offsetHeight, "9.0.0", "expressInstall.swf", flashvars, params, attributes );
     }
     
     // If container id is not supplied, assumed to be same as player id
-    var ctor = function ( containerId, videoUrl ) {
+    var ctor = function ( containerId, videoUrl, options ) {
+      if ( !containerId ) {
+        throw "Must supply an id!";
+      } else if ( /file/.test( location.protocol ) ) {
+        throw "Must run from a web server!";
+      }
+      
       var vidId,
           that = this,
-          bounds,
-          // For flash embedding
-          params,
-          flashvars,
-          attributes = {};
+          tmp,
+          container = this.container = document.getElementById( containerId );
+      
+      options = options || {};
       
       this.addEventFn;
       this.evtHolder;
@@ -294,10 +312,31 @@
       bounds = this._container.getBoundingClientRect();
       
       // For calculating position relative to video (like subtitles)
-      this.offsetWidth = this.width = this._container.getAttribute( "width" ) || 504;
-      this.offsetHeight = this.height = this._container.getAttribute( "height" ) || 340;
-      this.offsetLeft = bounds.left;
-      this.offsetTop = bounds.top;
+      this.width = options.width || getStyle( container, "width" ) || "504px";
+      this.height = options.height || getStyle( container, "height" ) || "340px";
+      
+      if ( !/[\d]%/.test( this.width ) ) {
+        this.offsetWidth = parseInt( this.width, 10 );
+      } else {
+        // convert from pct to abs pixels
+        tmp = container.style.width;
+        container.style.width = this.width;
+        this.offsetWidth = container.offsetWidth;
+        container.style.width = tmp;
+      }
+      
+      if ( !/[\d]%/.test( this.height ) ) {
+        this.offsetHeight = parseInt( this.height, 10 );
+      } else {
+        // convert from pct to abs pixels
+        tmp = container.style.height;
+        container.style.height = this.height;
+        this.offsetHeight = container.offsetHeight;
+        container.style.height = tmp;
+      }
+      
+      this.offsetLeft = 0;
+      this.offsetTop = 0;
       
       // Try and get a video id from a vimeo site url
       // Try either from ctor param or from iframe itself
@@ -555,35 +594,7 @@
       return this.evtHolder.dispatchEvent( evtName );
     },
     getBoundingClientRect: function() {
-      var b,
-          self = this;
-          
-      if ( this.swfObj ) {
-        b = this.swfObj.getBoundingClientRect();
-        
-        return {
-          bottom: b.bottom,
-          left: b.left,
-          right: b.right,
-          top: b.top,
-          
-          //  These not guaranteed to be in there
-          width: b.width || ( b.right - b.left ),
-          height: b.height || ( b.bottom - b.top )
-        };
-      } else {
-        b = this._container.getBoundingClientRect();
-        
-        // Update bottom, right for expected values once the container loads
-        return {
-          left: b.left,
-          top: b.top,
-          width: self.offsetWidth,
-          height: self.offsetHeight,
-          bottom: b.top + this.width,
-          right: b.top + this.height
-        };
-      }
+      return this.container.getBoundingClientRect();
     },
     startTimeUpdater: function() {
       var self = this,
@@ -612,4 +623,4 @@
       }
     }
   });
-})( Popcorn );
+})( Popcorn, window );
