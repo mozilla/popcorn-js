@@ -52,24 +52,24 @@
           popcorn.mute();
         }, false);
         
-        popcorn = Popcorn( Popcorn.soundcloud({
-          target: "media_1",
+        popcorn = Popcorn( Popcorn.soundcloud( "media_1", "http://soundcloud.com/forss/flickermood", {
           width: "50%",
           /*
             This demo contains an api key used for retrieving comments from Soundcloud's API
             It is to be used for demonstration purposes only, and for only this demo
-         */
-          api_key: "PRaNFlda6Bhf5utPjUsptg",
-          src: "http://soundcloud.com/forss/flickermood",
-          commentdiv: "commentDisplay",
-          commentformat: (function() {
-            var count = 0;
-            
-            return function( comment ) {
-              return "<div>Comment # " + ( count++ ) + "<br />"
-                      + "<em>" + comment.user.name + "</em>: " + comment.text +"</div>";
-            }
-          })()
+          */
+          api: {
+            key: "PRaNFlda6Bhf5utPjUsptg",
+            commentdiv: "commentDisplay"/*,
+            commentformat: (function() {
+              var count = 0;
+              
+              return function( comment ) {
+                return "<div>Comment # " + ( count++ ) + "<br />"
+                        + "<em>" + comment.user.name + "</em>: " + comment.text +"</div>";
+              }
+            })()*/
+          }
         }) );
         
         popcorn.listen( "load", function() {

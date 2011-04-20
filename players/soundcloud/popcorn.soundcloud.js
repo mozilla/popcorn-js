@@ -12,38 +12,32 @@
   *    <div id="player_1" style="width: 500px; height: 81px"></div>
   *    <script type="text/javascript">
   *      document.addEventListener("DOMContentLoaded", function() {
-  *        var popcorn = Popcorn( Popcorn.soundcloud({
-  *            target: "player_1",                               // Required
-  *            src: "http://soundcloud.com/forss/flickermood",   // Required
-  *          }));
+  *        var popcorn = Popcorn( Popcorn.soundcloud( "player_1", "http://soundcloud.com/forss/flickermood" ));
   *      }, false);
   *    </script>
   *
-  *  2. Width and height may also be configured directly with the player. This will override any CSS.
+  *  2. Width and height may also be configured directly with the player; this will override any CSS. This is useful for
+  *     when different sizes are desired. for multiple players within the same parent container.
   *
   *     <div id="player_1"></div>
   *     <script type="text/javascript">
   *       document.addEventListener("DOMContentLoaded", function() {
-  *       var popcorn = Popcorn( Popcorn.soundcloud({
-  *         target: "player_1",                               // Required
-  *         src: "http://soundcloud.com/forss/flickermood",   // Required
-  *         width: "500",                                     // Optional
-  *         height: "81"                                      // Optional
+  *       var popcorn = Popcorn( Popcorn.soundcloud( "player_1", "http://soundcloud.com/forss/flickermood", {
+  *         width: "500",                                     // Optional, will default to CSS values
+  *         height: "81"                                      // Optional, will default to CSS values
   *       }));
   *       }, false);
   *     </script>
   *
   * The player can be further configured to integrate with the SoundCloud API:
   *
-  * var popcorn = Popcorn( Popcorn.soundcloud( "player_1", {
-  *   target: "player_1",                               // Required, the location to place the player
-  *   src: "http://soundcloud.com/forss/flickermood",   // Required, the Soundcloud track to play
+  * var popcorn = Popcorn( Popcorn.soundcloud( "player_1", "http://soundcloud.com/forss/flickermood", {
   *   width: "100%",                                    // Optional, the width for the player. May also be as '##px'
   *                                                     //           Defaults to the maximum possible width
   *   height: "81px",                                   // Optional, the height for the player. May also be as '###%'
   *                                                     //           Defaults to 81px
   *   api_key: "abcdefsdfsdf",                          // Optional, the Soundcloud API key, required for retrieving comments
-  *   commentdiv: "divId_for_output",                   // Optional, the Div Id for outputting comments
+  *   commentdiv: "divId_for_output",                   // Optional, the Div Id for outputting comments. Required if comments are desired
   *   commentformat: function( comment ) {}             // Optional, a function to format a comment. Returns HTML string
   * }));
   *
@@ -327,8 +321,8 @@
     });
   });
   
-  Popcorn.soundcloud = function( options ) {
-    return new Popcorn.soundcloud.init( options );
+  Popcorn.soundcloud = function( containerId, src, options ) {
+    return new Popcorn.soundcloud.init( containerId, src, options );
   };
   
   // A constructor, but we need to wrap it to allow for "static" functions
@@ -339,10 +333,6 @@
           bounds = container.getBoundingClientRect(),
           tmp,
           undef;
-          
-      if ( !options.src ) {
-        throw "An audio source must be supplied!";
-      }
       
       that.width = options.width || getStyle( container, "width" ) || "100%";
       that.height = options.height || getStyle( container, "height" ) || "81px";
@@ -375,26 +365,31 @@
     }
   
     // If container id is not supplied, assumed to be same as player id
-    var ctor = function ( options ) {
-      if ( !options || !options.target ) {
+    var ctor = function ( containerId, src, options ) {
+      if ( !containerId ) {
         throw "Must supply an id!";
+      } else if ( !src ) {
+        throw "Must supply a source!";
       } else if ( /file/.test( location.protocol ) ) {
         throw "Must run from a web server!";
       }
       
-      var containerId = options.target,
-          container = this._container = document.getElementById( containerId );
+      var container = this._container = document.getElementById( containerId );
       
       if ( !container ) {
         throw "Could not find that container in the DOM!";
       }
       
-      options.commentformat = options.commentformat || formatComment
+      options = options || {};
+      options.api = options.api || {};
+      options.target = containerId;
+      options.src = src;
+      options.api.commentformat = options.api.commentformat || formatComment;
       
       this._mediaId = 0;
       this._listeners = {};
-      this._playerId = Popcorn.guid( containerId );
-      this._containerId = containerId;
+      this._playerId = Popcorn.guid( options.target );
+      this._containerId = options.target;
       this._options = options;
       this._comments = [];
       this._popcorn;
@@ -635,11 +630,13 @@
       
       this._popcorn = popcorn;
       
-      if ( this._options && this._options.api_key && this._options.commentdiv ) {
+      var api = this._options.api;
+      
+      if ( api.key && api.commentdiv ) {
         var self = this;
         
         Popcorn.xhr({
-          url: "http://api.soundcloud.com/tracks/" + self._mediaId + "/comments.js?consumer_key=" + self._options.api_key,
+          url: "http://api.soundcloud.com/tracks/" + self._mediaId + "/comments.js?consumer_key=" + api.key,
           success: function( data ) {
             Popcorn.forEach( data.json, function ( obj ) {
               self.addComment({
@@ -672,7 +669,7 @@
               avatar: obj.user.avatar || ""
             },
             display: function() {
-              return ( displayFn || self._options.commentformat )( comment );
+              return ( displayFn || self._options.api.commentformat )( comment );
             }
           }
       
@@ -684,7 +681,7 @@
       
       this._popcorn.subtitle({
         start: comment.start,
-        target: this._options.commentdiv,
+        target: this._options.api.commentdiv,
         display: 'inline',
         language: 'en',
         text: comment.display()
