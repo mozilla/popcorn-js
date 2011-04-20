@@ -2,8 +2,7 @@
 var googleCallback;
 (function (Popcorn) {
 
-  var newdiv,
-      i = 1,
+  var i = 1,
       _mapFired = false,
       _mapLoaded = false,
       geocoder,
