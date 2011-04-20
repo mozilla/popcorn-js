@@ -48,7 +48,6 @@
       },
 
       _setup: function( options ) {
-        var st;
 
         options.link = document.createElement( 'a' );
         options.link.style.position = "relative";
@@ -78,7 +77,7 @@
               fontWeight : "bold",
               zIndex: "10"
           };
-          for ( st in divTextStyle ) {
+          for ( var st in divTextStyle ) {
             divText.style[ st ] = divTextStyle[ st ];
           }
           
