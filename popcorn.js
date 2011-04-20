@@ -846,13 +846,6 @@
     Popcorn.extend( Popcorn.p, plugin );
 
     //  Push into the registry
-    Popcorn.registry.push(
-      Popcorn.extend( plugin, {
-        type: name
-      })
-     );
-     
-    //  Push into the registry
     var entry = {
       fn: plugin[ name ],
       definition: definition,
@@ -860,6 +853,11 @@
       parents: [],
       name: name
     };
+    Popcorn.registry.push(
+       Popcorn.extend( plugin, entry, {
+        type: name
+      })
+    );
     Popcorn.registryByName[ name ] = entry;
 
     return plugin;
