@@ -26,9 +26,9 @@
 
   //  Declare constructor
   //  Returns an instance object.
-  Popcorn = function( entity ) {
+  Popcorn = function( entity, options ) {
     //  Return new Popcorn object
-    return new Popcorn.p.init( entity );
+    return new Popcorn.p.init( entity, options || null );
   };
 
   //  Instance caching
@@ -88,7 +88,7 @@
   //  the new prototype for our Popcorn constructor
   Popcorn.p = Popcorn.prototype = {
 
-    init: function( entity ) {
+    init: function( entity, options ) {
 
       var matches;
 
@@ -151,6 +151,7 @@
       //  Register new instance
       Popcorn.addInstance( this );
 
+      this.options = options || { };
       this.data = {
         history: [],
         events: {},
@@ -176,9 +177,9 @@
           //  Adding padding to the front and end of the arrays
           //  this is so we do not fall off either end
 
-          var duration = that.media.duration;
-          //  Check for no duration info (NaN)
-          var videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
+          var duration = that.media.duration,
+              //  Check for no duration info (NaN)
+              videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
 
           Popcorn.addTrackEvent( that, {
             start: videoDurationPlus,
@@ -577,6 +578,9 @@
       track._natives.end = track._natives.end || Popcorn.nop;
     }
 
+    track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );
+    track.end = Popcorn.util.toSeconds( track.end, obj.options.framerate );
+
     //  Store this definition in an array sorted by times
     obj.data.trackEvents.byStart.push( track );
     obj.data.trackEvents.byEnd.push( track );
@@ -670,6 +674,7 @@
         //  Capture the position of the track being removed.
         if ( o._id === trackId ) {
           indexWasAt = i;
+          o._natives._teardown && o._natives._teardown.call( obj, o );
         }
       }
     });
@@ -849,7 +854,11 @@
       parents: [],
       name: name
     };
-    Popcorn.registry.push( entry );
+    Popcorn.registry.push(
+       Popcorn.extend( plugin, entry, {
+        type: name
+      })
+    );
     Popcorn.registryByName[ name ] = entry;
 
     return plugin;
@@ -1219,6 +1228,57 @@
     return Popcorn.xhr.getJSONP( url, success, true );
   };
 
+  Popcorn.util = {
+    // Simple function to parse a timestamp into seconds
+    // Acceptable formats are:
+    // HH:MM:SS.MMM
+    // HH:MM:SS;FF
+    // Hours and minutes are optional. They default to 0
+    toSeconds: function( timeStr, framerate ) {
+        //Hours and minutes are optional
+        //Seconds must be specified
+        //Seconds can be followed by milliseconds OR by the frame information
+        var validTimeFormat = /^([0-9]+:){0,2}[0-9]+([.;][0-9]+)?$/,
+            errorMessage = "Invalid time format";
+
+        if ( typeof timeStr === "number" ) {
+          return timeStr;
+        } else if ( typeof timeStr === "string" ) {
+          if ( ! validTimeFormat.test( timeStr ) ) {
+            Popcorn.error( errorMessage );
+          }
+        } else {
+          Popcorn.error( errorMessage );
+        }
+
+        var t = timeStr.split( ":" ),
+            lastIndex = t.length - 1,
+            lastElement = t[ lastIndex ];
+
+        //Fix last element:
+        if ( lastElement.indexOf( ";" ) > -1 ) {
+          var frameInfo = lastElement.split( ";" ),
+              frameTime = 0;
+
+          if ( framerate && ( typeof framerate === "number" ) ) {
+              frameTime = parseFloat( frameInfo[ 1 ], 10 ) / framerate;
+          }
+
+          t[ lastIndex ] =
+            parseInt( frameInfo[ 0 ], 10 ) + frameTime;
+        }
+
+        if ( t.length === 1 ) {
+          return parseFloat( t[ 0 ], 10 );
+        } else if ( t.length === 2 ) {
+          return ( parseInt( t[ 0 ], 10 ) * 60 ) + parseFloat( t[ 1 ], 10 );
+        } else if ( t.length === 3 ) {
+          return ( parseInt( t[ 0 ], 10 ) * 3600 ) +
+                 ( parseInt( t[ 1 ], 10 ) * 60 ) +
+                 parseFloat( t[ 2 ], 10 );
+        }
+    }
+  };
 
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;

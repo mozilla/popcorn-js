@@ -26,20 +26,21 @@ test("Popcorn Image Plugin", function () {
     end: 3, // seconds
     href: 'http://www.drumbeat.org/',
     src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
+    text: 'DRUMBEAT',
     target: 'imagediv'
-  } );
+  });
 
   popped.exec( 2, function() {
-    ok( /display: inline;/.test( imagediv.innerHTML ), "Div contents are displayed" );
-    plus();
-    ok( /img/.test( imagediv.innerHTML ), "An image exists" );
-    plus();
+      ok( /display: block;/.test( imagediv.innerHTML ), "Div contents are displayed" );
+      plus();
+      ok( /img/.test( imagediv.innerHTML ), "An image exists" );
+      plus();
   });
-
+  
   popped.exec( 4, function() {
-    ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
-    plus();
+      ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
+      plus();
   });
-  popped.volume(0).play();
+  popped.volume(0).play();  
   
 });

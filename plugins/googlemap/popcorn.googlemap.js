@@ -2,8 +2,7 @@
 var googleCallback;
 (function (Popcorn) {
 
-  var newdiv,
-      i = 1,
+  var i = 1,
       _mapFired = false,
       _mapLoaded = false,
       geocoder,
@@ -187,6 +186,11 @@ var googleCallback;
         if (map) {
           map.getDiv().style.display = "none";
         }
+      },
+      _teardown: function( options ) {
+        // the map must be manually removed
+        document.getElementById( options.target ).removeChild( newdiv );
+        newdiv = map = location = null;
       }
     };
   },
