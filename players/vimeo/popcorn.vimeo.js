@@ -308,6 +308,9 @@
       this.previousVolume = this.volume;
       this.evtHolder = new EventManager( this );
       
+      this._container =  document.getElementById( containerId );
+      bounds = this._container.getBoundingClientRect();
+      
       // For calculating position relative to video (like subtitles)
       this.width = options.width || getStyle( container, "width" ) || "504px";
       this.height = options.height || getStyle( container, "height" ) || "340px";
@@ -342,7 +345,7 @@
       } 
 
       if ( !vidId ){
-        vidId = extractIdFromUrl( container.getAttribute("src") ) || extractIdFromUri( container.getAttribute("src") );
+        vidId = extractIdFromUrl( this._container.getAttribute("src") ) || extractIdFromUri( this._container.getAttribute("src") );
       }
       
       if ( !vidId ) {
