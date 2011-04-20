@@ -854,7 +854,11 @@
       parents: [],
       name: name
     };
-    Popcorn.registry.push( entry );
+    Popcorn.registry.push(
+       Popcorn.extend( plugin, entry, {
+        type: name
+      })
+    );
     Popcorn.registryByName[ name ] = entry;
 
     return plugin;
