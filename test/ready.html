@@ -1,45 +1,103 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
   <title>Popcorn API</title>
   <link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+
+	<style>
+		body {
+			margin: 3px;
+			padding: 0px;
+		}
+		h3 {
+			margin: 3px;
+			padding: 0px;
+		}
+		h2 {
+			display: inline;
+			margin: 3px;
+			padding: 0px;
+		}		
+		.pass {
+			color: #33FF00;
+		}
+		.expect {
+			color: #2d2d2d;
+		}		
+		.fail {
+			color: #FF0000;
+		}
+	</style>
+	<script src="jquery.js"></script>
   <script src="../popcorn.js"></script>
   <script>
-  
-  Popcorn(function (e) {
+	(function( Popcorn, $ ) {
 
-    console.log("Popcorn(function() { /../ }) 1");
-    
-    var p = Popcorn("#video");
-    
-    
-    p.exec( 4, function () {
+		var readyCalled = 0, 
+				readyOrder = [], 
+				readyComposed = "Ready Callback 1,Ready Callback 2", 
+				results = {
+					pass: 0, 
+					fail: 0,
+					expect: 2
+				};
 
-      
+		$(function() {
+		  readyCalled++;
+		});
 
-    }).play();
-    
-  });
+		Popcorn(function (e) {
 
-  Popcorn(function () {
-  
-    console.log("Popcorn(function() { /../ }) 2");
-  
-  });  
+		  readyCalled++;
+		  readyOrder.push("Ready Callback 1");
+		  
+		  Popcorn("#video").exec( 1, function () {
+
+				results[ 
+					( readyCalled === 3 ? "pass" : "fail" ) 
+				]++;
+
+				if ( readyOrder.join(",") === readyComposed ) {
+					results.pass++;
+				}
+
+				$.each( results, function( name, value ) {
+					$("video").before( 
+						$("<h2>", {
+							className: name, 
+							html: name + ": " + value  
+						}) 
+					);
+				});
+
+		  }).play().volume(0);
+		  
+		});
+
+		Popcorn(function () {
+		  
+		  readyCalled++;
+		  readyOrder.push("Ready Callback 2");
+
+		});  	
+	})( Popcorn, jQuery );
+
   </script>
   
 </head>
 <body>
-  <video id='video'style="display:" 
+	<h3>Popcorn(/* DOM Ready */)<h3>
+
+  <video id='video'style="display:none" 
     controls 
-    poster="http://media.w3.org/2010/05/sintel/poster.png"> 
+    poster="poster.png"> 
 
     <source id='mp4'
-      src="http://media.w3.org/2010/05/sintel/trailer.mp4"
+      src="trailer.mp4"
       type='video/mp4; codecs="avc1, mp4a"'> 
 
     <source id='ogv'
-      src="http://media.w3.org/2010/05/sintel/trailer.ogv"
+      src="trailer.ogv"
       type='video/ogg; codecs="theora, vorbis"'> 
 
     <p>Your user agent does not support the HTML5 Video element.</p> 
