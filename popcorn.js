@@ -420,6 +420,7 @@
       for ( var p in clientRect ) {
         bounds[ p ] = Math.round( clientRect[ p ] );
       }
+
       return Popcorn.extend({}, bounds, { top: top, left: left });
     }
   });
