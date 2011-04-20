@@ -18,11 +18,19 @@
     this.loop;
     
     // List of events
-    this.events = {};
+    this._events = {};
     
     // The underlying player resource. May be <canvas>, <iframe>, <object>, array, etc
-    this.resource;
-  };
+    this._resource;
+    // The container div of the resource
+    this._container;
+    
+    this.offsetWidth = this.width = 0;
+    this.offsetHeight = this.height = 0;
+    this.offsetLeft = 0;
+    this.offsetTop = 0;
+    this.offsetParent;
+  }
 
   Popcorn.baseplayer.init.prototype = {
     load: function() {},
@@ -55,45 +63,44 @@
     // By default, assumes this.resource is a DOM Element
     // Changing the type of this.resource requires this method to be overridden
     getBoundingClientRect: function() {
-      var b = this.resource.getBoundingClientRect();
-      
-      return {
-        bottom: b.bottom,
-        left: b.left,
-        right: b.right,
-        top: b.top,
+      var b,
+          self = this;
+          
+      if ( this._resource ) {
+        b = this._resource.getBoundingClientRect();
         
-        //  These not guaranteed to be in there
-        width: b.width || ( b.right - b.left ),
-        height: b.height || ( b.bottom - b.top )
-      };
-    },
-    
-    // By default, assumes this.resource is a DOM Element
-    // Changing the type of this.resource requires this method to be overridden
-    // Returns the computed value for CSS style 'prop' as computed by the browser
-    getStyle: function( prop ) {
-      var elem = this.resource;
-      
-      if ( elem.currentStyle ) {
-        // IE syntax
-        return elem.currentStyle[prop];
-      } else if ( global.getComputedStyle ) {
-        // Firefox, Chrome et. al
-        return doc.defaultView.getComputedStyle( elem, null ).getPropertyValue( prop );
+        return {
+          bottom: b.bottom,
+          left: b.left,
+          right: b.right,
+          top: b.top,
+          
+          //  These not guaranteed to be in there
+          width: b.width || ( b.right - b.left ),
+          height: b.height || ( b.bottom - b.top )
+        };
       } else {
-        // Fallback, just in case
-        return elem.style[prop];
+        b = this._container.getBoundingClientRect();
+        
+        // Update bottom, right for expected values once the container loads
+        return {
+          left: b.left,
+          top: b.top,
+          width: self.offsetWidth,
+          height: self.offsetHeight,
+          bottom: b.top + this.width,
+          right: b.top + this.height
+        };
       }
     },
     
     // Add an event listener to the object
     addEventListener: function( evtName, fn ) {
-      if ( !this.events[evtName] ) {
-        this.events[evtName] = [];
+      if ( !this._events[evtName] ) {
+        this._events[evtName] = [];
       }
       
-      this.events[evtName].push( fn );
+      this._events[evtName].push( fn );
       return fn;
     },
     
@@ -115,9 +122,46 @@
         }
       }
       
-      Popcorn.forEach( this.events[eventName], function( val ) {
+      Popcorn.forEach( this._events[eventName], function( val ) {
         val.call( self, evt, self );
       });
+    },
+    
+    // Extracts values from container onto this object
+    extractContainerValues: function( id ) {
+      this._container = document.getElementById( id );
+      
+      if ( !this._container ) {
+        return;
+      }
+      
+      var bounds = this._container.getBoundingClientRect();
+      
+      this.offsetWidth = this.width = container.getAttribute( "width" ) || getStyle( "width" ) || 0;
+      this.offsetHeight = this.height = container.getAttribute( "height" ) || getStyle( "height" ) || 0;
+      this.offsetLeft = bounds.left;
+      this.offsetTop = bound.top;
+      this.offsetParent = this._container.offsetParent;
+      
+      return this._container;
+    },
+    
+    // By default, assumes this.resource is a DOM Element
+    // Changing the type of this.resource requires this method to be overridden
+    // Returns the computed value for CSS style 'prop' as computed by the browser
+    getStyle: function( prop ) {
+      var elem = this._resource;
+      
+      if ( elem.currentStyle ) {
+        // IE syntax
+        return elem.currentStyle[prop];
+      } else if ( global.getComputedStyle ) {
+        // Firefox, Chrome et. al
+        return doc.defaultView.getComputedStyle( elem, null ).getPropertyValue( prop );
+      } else {
+        // Fallback, just in case
+        return elem.style[prop];
+      }
     }
   };
 })( window, document );

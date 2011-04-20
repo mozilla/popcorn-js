@@ -266,15 +266,13 @@
     
     // If container id is not supplied, assumed to be same as player id
     var ctor = function ( containerId, videoUrl ) {
-      if ( !containerId ) {
-        throw "Must supply an id!";
-      } else if ( /file/.test( location.protocol ) ) {
-        throw "Must run from a web server!";
-      }
-      
       var vidId,
           that = this,
-          container = document.getElementById( containerId );
+          bounds,
+          // For flash embedding
+          params,
+          flashvars,
+          attributes = {};
       
       this.addEventFn;
       this.evtHolder;
@@ -292,11 +290,14 @@
       this.previousVolume = this.volume;
       this.evtHolder = new EventManager( this );
       
+      this._container =  document.getElementById( containerId );
+      bounds = this._container.getBoundingClientRect();
+      
       // For calculating position relative to video (like subtitles)
-      this.offsetWidth = this.width = container.getAttribute( "width" ) || "504";
-      this.offsetHeight = this.height = container.getAttribute( "height" ) || "340";
-      this.offsetLeft = 0;
-      this.offsetTop = 0;
+      this.offsetWidth = this.width = this._container.getAttribute( "width" ) || 504;
+      this.offsetHeight = this.height = this._container.getAttribute( "height" ) || 340;
+      this.offsetLeft = bounds.left;
+      this.offsetTop = bounds.top;
       
       // Try and get a video id from a vimeo site url
       // Try either from ctor param or from iframe itself
@@ -305,7 +306,7 @@
       } 
 
       if ( !vidId ){
-        vidId = extractIdFromUrl( container.getAttribute("src") ) || extractIdFromUri( container.getAttribute("src") );
+        vidId = extractIdFromUrl( this._container.getAttribute("src") ) || extractIdFromUri( this._container.getAttribute("src") );
       }
       
       if ( !vidId ) {
@@ -552,6 +553,37 @@
     },
     dispatchEvent: function( evtName ) {
       return this.evtHolder.dispatchEvent( evtName );
+    },
+    getBoundingClientRect: function() {
+      var b,
+          self = this;
+          
+      if ( this.swfObj ) {
+        b = this.swfObj.getBoundingClientRect();
+        
+        return {
+          bottom: b.bottom,
+          left: b.left,
+          right: b.right,
+          top: b.top,
+          
+          //  These not guaranteed to be in there
+          width: b.width || ( b.right - b.left ),
+          height: b.height || ( b.bottom - b.top )
+        };
+      } else {
+        b = this._container.getBoundingClientRect();
+        
+        // Update bottom, right for expected values once the container loads
+        return {
+          left: b.left,
+          top: b.top,
+          width: self.offsetWidth,
+          height: self.offsetHeight,
+          bottom: b.top + this.width,
+          right: b.top + this.height
+        };
+      }
     },
     startTimeUpdater: function() {
       var self = this,
