@@ -56,7 +56,6 @@
 
         var img = document.createElement( 'img' );
         img.addEventListener( "load", function() {
-          //img.src = options.src;
           img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
           
           if ( options.href ) {
