@@ -70,7 +70,6 @@ popcorn: ${POPCORN_DIST}
 ${POPCORN_DIST}: ${POPCORN_SRC} | ${DIST_DIR}
 	@@echo "Building" ${POPCORN_DIST}
 	@@$(call add_license, $(POPCORN_SRC), $(POPCORN_DIST))
-#	@@cat ${POPCORN_SRC} | sed -e 's/@VERSION/${VERSION}/' > ${POPCORN_DIST}
 
 min: ${POPCORN_MIN} ${PLUGINS_MIN} ${PARSERS_MIN} ${PLAYERS_MIN} ${POPCORN_COMPLETE_MIN}
 
