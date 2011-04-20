@@ -55,38 +55,41 @@
         options.link.style.textDecoration = "none";
 
         var img = document.createElement( 'img' );
+        img.addEventListener( "load", function() {
+          //img.src = options.src;
+          img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
+          
+          if ( options.href ) {
+            options.link.href = options.href;
+          }
+          options.link.target = "_blank";
+          if ( document.getElementById( options.target ) ) {
+            document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
+          }
+          
+          var fontHeight = ( img.height / 12 ) + "px";
+          
+          var divText = document.createElement( 'div' );
+          divTextStyle = {
+              position: "relative",
+              width: img.width + "px",
+              textAlign: "center",
+              fontSize: fontHeight,
+              color: "black",
+              fontWeight : "bold",
+              zIndex: "10"
+          };
+          for ( st in divTextStyle ) {
+            divText.style[ st ] = divTextStyle[ st ];
+          }
+          
+          divText.innerHTML = options.text || "";
+          options.link.appendChild( divText );
+          options.link.appendChild( img );
+          divText.style.top = ( img.height / 2 ) - ( divText.offsetHeight / 2 ) + "px"; 
+          options.link.style.display = "none";
+        }, false );
         img.src = options.src;
-        img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
-        
-        if ( options.href ) {
-          options.link.href = options.href;
-        }
-        options.link.target = "_blank";
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
-        }
-        
-        var fontHeight = ( img.height / 12 ) + "px";
-        
-        var divText = document.createElement( 'div' );
-        divTextStyle = {
-            position: "relative",
-            width: img.width + "px",
-            textAlign: "center",
-            fontSize: fontHeight,
-            color: "black",
-            fontWeight : "bold",
-            zIndex: "10"
-        };
-        for ( st in divTextStyle ) {
-          divText.style[ st ] = divTextStyle[ st ];
-        }
-        
-        divText.innerHTML = options.text || "";
-        options.link.appendChild( divText );
-        options.link.appendChild( img );
-        divText.style.top = ( img.height / 2 ) - ( divText.offsetHeight / 2 ) + "px"; 
-        options.link.style.display = "none";
       },
 
       /**
