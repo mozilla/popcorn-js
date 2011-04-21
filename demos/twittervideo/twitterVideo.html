@@ -6,7 +6,15 @@
       <script src="../../players/youtube/popcorn.youtube.js"></script>
 			<script src="../../players/vimeo/popcorn.vimeo.js"></script>
       <script src="../../plugins/twitter/popcorn.twitter.js"></script>
-      <script>
+      <script>     
+      document.addEventListener( "DOMContentLoaded", function() {
+
+        var srtBtn = document.getElementById( "srtBtn" );
+
+          srtBtn.addEventListener( "click", btnClick, false );
+
+       }, false );
+      
 			var count = 0;
         function btnClick(){
           var popcorn, ok = false;
@@ -86,7 +94,7 @@
         <input id="vidUrl" size="50" value="http://www.youtube.com/watch?v=9oar9glUCL0"/><br />
 			<p>Twitter Hashtag:</p>
 			<input id="hashtag" size="20" value="#seneca"/>
-			<button class="start" id="srtBtn" onClick="btnClick();">Play</button><br />
+			<button class="start" id="srtBtn">Play</button><br />
       <div id="video" width="360" height="300" ></div><br />
 			<div id="twitterdiv" style="position:relative;float:left;width:400px;height:600px"></div>
     </div>
