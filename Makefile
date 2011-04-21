@@ -116,8 +116,10 @@ ${PLAYERS_DIST}: ${PLAYERS_SRC} ${DIST_DIR}
 	@@cat ${PLAYERS_SRC} > ${PLAYERS_DIST}
 
 complete: ${POPCORN_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} ${DIST_DIR}
-	@@echo "Building popcorn + plugins + parsers + players"
-	@@cat ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} | sed -e 's/@VERSION/${VERSION}/' > ${POPCORN_COMPLETE_DIST}
+	@@echo "Building popcorn + plugins + parsers + players..."
+	@@cat ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} > ${POPCORN_COMPLETE_DIST}.tmp
+	@@$(call add_license, ${POPCORN_COMPLETE_DIST}.tmp, ${POPCORN_COMPLETE_DIST})
+	@@rm ${POPCORN_COMPLETE_DIST}.tmp
 
 lint:
 	@@echo "Checking Popcorn against JSLint..."
