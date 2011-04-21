@@ -230,17 +230,9 @@
       return matches ? matches[0].substr(10) : "";
     }
     
-    // Borrowed from: http://www.quirksmode.org/dom/getstyles.html
     // Gets the style for the given element
     function getStyle( elem, styleProp ) {
       return elem.style[styleProp];
-      if ( elem.currentStyle ) {
-        // IE way
-        return elem.currentStyle[styleProp];
-      } else if ( global.getComputedStyle ) {
-        // Firefox, Chrome, et. al
-        return document.defaultView.getComputedStyle( elem, null ).getPropertyValue( styleProp );
-      }
     }
       
     function makeSwf( self, vidId, containerId ) {
