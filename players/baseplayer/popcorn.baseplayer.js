@@ -70,10 +70,10 @@
         b = this._resource.getBoundingClientRect();
         
         return {
-          bottom: b.bottom,
-          left: b.left,
-          right: b.right,
-          top: b.top,
+          bottom: Math.ceil( b.bottom ),
+          left: Math.ceil( b.left ),
+          right: Math.ceil( b.right ),
+          top: Math.ceil( b.top ),
           
           //  These not guaranteed to be in there
           width: b.width || ( b.right - b.left ),
