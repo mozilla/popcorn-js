@@ -30,7 +30,7 @@
     this.offsetLeft = 0;
     this.offsetTop = 0;
     this.offsetParent;
-  }
+  };
 
   Popcorn.baseplayer.init.prototype = {
     load: function() {},
