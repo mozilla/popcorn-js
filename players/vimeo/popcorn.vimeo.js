@@ -340,13 +340,7 @@
       
       // Try and get a video id from a vimeo site url
       // Try either from ctor param or from iframe itself
-      if( videoUrl ) {
-        vidId = extractIdFromUrl( videoUrl ) || extractIdFromUri( videoUrl );
-      } 
-
-      if ( !vidId ){
-        vidId = extractIdFromUrl( this._container.getAttribute("src") ) || extractIdFromUri( this._container.getAttribute("src") );
-      }
+      vidId = extractIdFromUrl( videoUrl ) || extractIdFromUri( videoUrl );
       
       if ( !vidId ) {
         throw "No video id";

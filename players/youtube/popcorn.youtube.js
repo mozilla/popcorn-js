@@ -96,14 +96,6 @@ var onYouTubePlayerReady;
         makeSWF.call( self, url, container );
       }, 1 );
       return;
-    }    
-        
-    // The video id for youtube (web or player formats)
-    // First check manually given url, if that doesn't work resort to "src"
-    this.vidId = this.vidId || extractIdFromUrl( container.getAttribute( "src" ) ) || extractIdFromUri( container.getAttribute( "src" ) );
-    
-    if ( !this.vidId ) {
-      throw "Could not find video id";
     }
     
     bounds = container.getBoundingClientRect();
@@ -158,16 +150,18 @@ var onYouTubePlayerReady;
     vid.dispatchEvent( "durationchange" );
   }
 
-  Popcorn.youtube = function( elementId, url ) {
-    return new Popcorn.youtube.init( elementId, url );
+  Popcorn.youtube = function( elementId, url, options ) {
+    return new Popcorn.youtube.init( elementId, url, options );
   };
 
-  Popcorn.youtube.init = function( elementId, url ) {
+  Popcorn.youtube.init = function( elementId, url, options ) {
     if ( !elementId ) {
       throw "Element id is invalid.";
     } else if ( /file/.test( location.protocol ) ) {
       throw "This must be run from a web server.";
     }
+    
+    options = options || {};
     
     var self = this;
     
@@ -178,11 +172,14 @@ var onYouTubePlayerReady;
     this.loadedData = false;
     this.fullyLoaded = false;
     
+    options.width = options.width && (+options.width)+"px";
+    options.height = options.height && (+options.height)+"px";
+    
     this._target = document.getElementById( elementId );
     this._container = document.createElement( "div" );
     this._container.id = this.playerId;
-    this._container.style.height = this._target.style.height = this._target.style.height || "350px";
-    this._container.style.width  = this._target.style.width  = this._target.style.width  || "460px";
+    this._container.style.height = this._target.style.height = options.height || this._target.style.height || "350px";
+    this._container.style.width  = this._target.style.width  = options.width || this._target.style.width  || "460px";
     this._target.appendChild( this._container );
 
     this.offsetHeight = +this._target.offsetHeight;
@@ -193,6 +190,10 @@ var onYouTubePlayerReady;
     this.duration = 0;
     
     this.vidId = extractIdFromUrl( url ) || extractIdFromUri( url );
+    
+    if ( !this.vidId ) {
+      throw "Could not find video id";
+    }
     
     this.addEventListener( "load", function() {
       // For calculating position relative to video (like subtitles)
