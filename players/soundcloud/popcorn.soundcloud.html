@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Soundcloud Player Example</title>
+    <style>      
+      #media_1{
+        width: 80%;
+      }
+    </style>
+    
+    <script src="../../popcorn.js"></script>
+    <script type="text/javascript" src="popcorn.soundcloud.js"></script>
+    
+    <!-- Plugins for demo purposes -->
+    <script src="../../plugins/footnote/popcorn.footnote.js"></script>
+    <script src="../../plugins/flickr/popcorn.flickr.js"></script>
+    <script src="../../plugins/attribution/popcorn.attribution.js"></script>
+    <script src="../../plugins/webpage/popcorn.webpage.js"></script>
+    <script src="../../plugins/googlefeed/popcorn.googlefeed.js"></script>
+    <script src="../../plugins/image/popcorn.image.js"></script>
+    <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
+    <script src="../../plugins/twitter/popcorn.twitter.js"></script>
+    
+    <script type="text/javascript">
+      //On document ready
+      document.addEventListener( "DOMContentLoaded", function() {
+        var popcorn;
+        
+        document.getElementById( "btnPlay" ).addEventListener( "click", function() {
+          popcorn.play();
+        }, false);
+        
+        document.getElementById( "btnPause" ).addEventListener( "click", function() {
+          popcorn.pause();
+        }, false);
+        
+        document.getElementById( "btnSeek" ).addEventListener( "click", function() {
+          popcorn.currentTime( 30 );
+        }, false);
+        
+        document.getElementById( "btnVolume" ).addEventListener( "click", function() {
+          if ( popcorn.volume() >= 0.5 ) {
+            popcorn.volume( popcorn.volume()/2 );
+            this.innerHTML = "Double Volume";
+          } else {
+            popcorn.volume( popcorn.volume()*2 );
+            this.innerHTML = "Halve Volume";
+          }
+        }, false);
+        
+        document.getElementById( "btnMute" ).addEventListener( "click", function() {
+          popcorn.mute();
+        }, false);
+        
+        popcorn = Popcorn( Popcorn.soundcloud( "media_1", "http://soundcloud.com/forss/flickermood", {
+          width: "50%",
+          /*
+            This demo contains an api key used for retrieving comments from Soundcloud's API
+            It is to be used for demonstration purposes only, and for only this demo
+          */
+          api: {
+            key: "PRaNFlda6Bhf5utPjUsptg",
+            commentdiv: "commentDisplay"/*,
+            commentformat: (function() {
+              var count = 0;
+              
+              return function( comment ) {
+                return "<div>Comment # " + ( count++ ) + "<br />"
+                        + "<em>" + comment.user.name + "</em>: " + comment.text +"</div>";
+              }
+            })()*/
+          }
+        }) );
+        
+        popcorn.listen( "load", function() {
+          
+          document.getElementById( "media_duration" ).innerHTML = popcorn.duration();
+          document.getElementById( "media_volume" ).innerHTML = popcorn.volume();
+          document.getElementById( "media_currentTime" ).innerHTML = popcorn.currentTime();
+          document.getElementById( "media_readyState" ).innerHTML = popcorn.video.readyState;
+          
+          popcorn.listen( "timeupdate", function() {
+            document.getElementById( "media_currentTime" ).innerHTML = popcorn.currentTime();
+          });
+          
+          popcorn.video.addEventListener( "readystatechange", function() {
+            document.getElementById( "media_readyState" ).innerHTML = popcorn.video.readyState;
+          });
+          
+          popcorn.listen( "volumechange", function() {
+            document.getElementById( "media_volume" ).innerHTML = popcorn.volume();
+          });
+          
+          popcorn.trigger( "play" );
+        });
+        
+        // Empty for the purposes of allowing popcorn.trigger("play");
+        popcorn.listen( "play", function() {
+        
+        });
+        
+        popcorn.subtitle({
+          start: 5, // seconds
+          end: 15, // seconds
+          text: 'This is overlaid on top of the audio visualization. You can hightlight it!',
+          display: 'inline',
+          language: "en"
+        });
+        
+        popcorn.footnote({
+          start: 5, // seconds
+          end: 40, // seconds
+          text: 'The song is "Flickermood", by Forss',
+          target: 'footnotediv'
+        })
+        .flickr({
+          start: 20, // seconds
+          end: 40, // seconds
+          tags: 'georgia',
+          numberofimages: '8',
+          target: 'flickrdiv'
+        })
+        .twitter({
+          start: 20, // seconds
+          end: 45, // seconds
+          title: 'Oil Spill',
+          src: '#oilspill',
+          target: 'twitterdiv'
+        })
+        .attribution({
+          start: 5, // seconds
+          end: 60, // seconds
+          nameofwork: "Flickermood",
+          nameofworkurl:"http://soundcloud.com/forss/flickermood",
+          copyrightholder:"Eric Wahlforss",
+          target: 'attribdiv'
+        })
+        .webpage({
+          id: "webpages-a",
+          start: 0, // seconds
+          end: 15, // seconds
+          src: 'http://webmademovies.org/',
+          target: 'webpagediv'
+        })
+        .googlefeed({
+            start: 0, // seconds
+            end: 15, // seconds
+            target: "feeddiv",
+            url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
+            title: "Planet Feed",
+            orientation: "Vertical"
+        })
+        .image({
+          start: 5, // seconds
+          end: 15, // seconds
+          href: 'http://www.drumbeat.org/',
+          src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
+          target: 'imagediv'
+        })
+        .video.registerPopcornWithPlayer( popcorn );
+      }, false);
+    </script>
+  </head>
+  <body>
+    <div id="media_1" ></div><br />
+      
+    <div>
+      <button class="simple" id="btnPlay">Play</button>
+      <button class="simple" id="btnPause">Pause</button>
+      <button class="seek" id="btnSeek">Seek to 30</button>
+      <button class="volume" id="btnVolume">Toggle Volume</button>
+      <button class="volume" id="btnMute">Mute</button><br />
+      
+      <div style="float: left;">
+        Current Time (s): <span id="media_currentTime"></span>
+        <br />Duration (s): <span id="media_duration"></span>
+        <br />Volume (0-1): <span id="media_volume"></span>
+        <br />Ready State: <span id="media_readyState">0</span>
+      </div>
+      <div style="position: absolute; left: 350px;">
+        <strong>Comment Area</strong>
+        <div id="commentDisplay"></div>
+      </div>
+      
+    </div>
+    <div style="float:right; width: 100%;">
+      <h3>Description</h3>
+      <p>
+        This demo will showcase how a player for Popcorn.js may be powered by Soundcloud's Flash audio player. This  is done by making the flash audio player masquerade as HTML 5 media element.<br />
+        Due to the Flash security model, this demo must be  run from a web server<br />
+      <hr >
+        Custom controls have been developed and tied into their player for demo purposes.<br />
+        Clicking play/pause or seeking in either the Soundcloud player or via custom controls will cause the other to update.<br />
+        The Soundcloud audio can be specified in the HTML source by giving the Soundcloud song url to either the Popcorn.soundcloud constructor or as the div data-src attribute.<br/>
+        Specifying the source in the constructor will override any source specified on the container element.<br/>
+        Player width/height can be specified as container attributes (data-width, data-height), or as styles (width, height). Styles can be inline or CSS.<br/>
+        If no width or height are given, they default to '100%' and '81px' respectively.<br/>
+        Width/height precendence is in this order: constructor, container attributes, natural (manually given inline/CSS styles), default<br/>
+      </p>
+      <h4>Expected Events</h4>
+      <ul>
+        <li>Throughout the track, user comments from Soundcloud will appear below 'Comment Area'.</li>
+        <li>From 0 to 15 seconds, the site 'http://webmademovies.org/' will appear below 'Web Page Area'.</li>
+        <li>From 0 to 20 seconds, blogs from 'http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml' will appear below 'Google Feed Area'.</li>
+        <li>From 5 to 15 seconds, the subtitle 'This is overlaid on top of the audio visualization. You can hightlight it!' will be overlaid on the Soundcloud player.</li>
+        <li>From 5 to 15 seconds, the Mozilla Drumbeat logo will appear below 'Image Area'.</li>
+        <li>From 5 to 40 seconds, the footnote 'The song is "Flickermood", by Forss' will appear below 'Footnote Area'.</li>
+        <li>From 5 to 60 seconds, the 'Flickermood, Eric Wahlforss' will appear below 'Attributions Area'.</li>
+        <li>From 20 to 40 seconds, the a flickr stream of 8 images  tagged 'georgia' will appear below 'Flickr Area'.</li>
+        <li>From 20 to 45 seconds, tweets tagged #oilspill will appear below 'Twitter Area'.</li>
+      </ul>
+      <br />
+      <br />
+      <br />
+      <div id="footnotediv" width="50%" height="50%">
+        <strong>Footnote Area</strong><br />
+      </div>
+      <div id="attribdiv" width="50%" height="50%">
+        <strong>Attributions Area</strong><br />
+      </div>
+      <div id="flickrdiv" width="50%" height="50%">
+        <strong>Flickr Area</strong><br />
+      </div>
+      <div id="twitterdiv" width="50%" height="50%">
+        <strong>Twitter Area</strong><br />
+      </div>
+      <div id="imagediv" width="50%" height="50%">
+        <strong>Image Area</strong><br />
+      </div>
+      <div id="feeddiv" width="50%" height="50%">
+        <strong>Google Feed Area</strong><br />
+      </div>
+      <div id="webpagediv" width="100px" height="50px">
+        <strong>Web Page Area</strong><br />
+      </div>
+    </div>
+    
+    <br />
+    <br />
+  </body>
+</html>
