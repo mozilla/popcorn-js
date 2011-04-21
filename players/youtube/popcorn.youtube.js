@@ -172,6 +172,8 @@ var onYouTubePlayerReady;
     this.loadedData = false;
     this.fullyLoaded = false;
     
+    // If supplied as number, append  'px' on end
+    // If suppliied as '###' or '###px', convert to number and append 'px' back on end
     options.width = options.width && (+options.width)+"px";
     options.height = options.height && (+options.height)+"px";
     
