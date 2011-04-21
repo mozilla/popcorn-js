@@ -123,9 +123,9 @@
               fn.call( owner, args );
             }
           });
-        }
+        };
       }
-    };
+    }
     
     return {
       addEventListener: function( evtName, fn, doFire ) {
@@ -172,7 +172,7 @@
       dispatchEvent: function( evt, args ) {        
         // If event object was passed in, toString will yield event type as string (timeupdate)
         // If a string, toString() will return the string itself (timeupdate)
-        var evt = "on"+evt.toString().toLowerCase();
+        evt = "on"+evt.toString().toLowerCase();
         this[evt] && this[evt]( args );
       }
     };
@@ -195,7 +195,7 @@
     player.offsetTop = player.swfObj.offsetTop;
     
     player.dispatchEvent( "load" );
-  }
+  };
   
   Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" );
   
@@ -215,7 +215,7 @@
       
       var matches = uri.match( rPlayerUri );
       return matches ? matches[0].substr(30) : "";
-    };
+    }
     
     // Extract the numeric video id from url: 'http://vimeo.com/11127501' or simply 'vimeo.com/4282282'
     // Ignores protocol and subdomain, but one would expecct it to be http://www.vimeo.com/#######
@@ -228,19 +228,11 @@
       
       var matches = url.match( rWebUrl );
       return matches ? matches[0].substr(10) : "";
-    };
+    }
     
-    // Borrowed from: http://www.quirksmode.org/dom/getstyles.html
     // Gets the style for the given element
     function getStyle( elem, styleProp ) {
       return elem.style[styleProp];
-      if ( elem.currentStyle ) {
-        // IE way
-        return elem.currentStyle[styleProp];
-      } else if ( global.getComputedStyle ) {
-        // Firefox, Chrome, et. al
-        return document.defaultView.getComputedStyle( elem, null ).getPropertyValue( styleProp );
-      }
     }
       
     function makeSwf( self, vidId, containerId ) {
@@ -400,7 +392,7 @@
           }
         });
       });
-    }
+    };
     return ctor;
   })();
   
