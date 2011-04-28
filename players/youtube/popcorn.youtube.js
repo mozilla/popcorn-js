@@ -59,7 +59,7 @@ var onYouTubePlayerReady;
       return;
     }
     
-    var matches = url.match( /((http:\/\/)?www\.)?youtube\.[a-z]+\/watch\?v\=[a-z0-9]+/i );    
+    var matches = url.match( /((http:\/\/)?www\.)?youtube\.[a-z]+\/watch\?v\=[a-z0-9_]+/i );    
     // Return id, which comes after first equals sign
     return matches ? matches[0].split( "=" )[1] : "";
   }
@@ -70,7 +70,7 @@ var onYouTubePlayerReady;
       return;
     }
     
-    var matches = url.match( /^http:\/\/?www\.youtube\.[a-z]+\/e\/[a-z0-9]+/i );
+    var matches = url.match( /^http:\/\/?www\.youtube\.[a-z]+\/e\/[a-z0-9_]+/i );
     
     // Return id, which comes after first equals sign
     return matches ? matches[0].split( "/e/" )[1] : "";
