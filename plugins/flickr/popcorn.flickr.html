@@ -2,13 +2,24 @@
 <html>
 <head>
   <title>Popcorn Flickr Plug-in Demo</title>
+  <!--
+    ATTENTION
   
+    This demo uses an API key obtained for testing the Flickr Popcorn.js
+    plugin. Please do not use it for other purposes.
+  -->
   <script src="../../popcorn.js"></script>
-  <script src="../../test/jquery.js"></script>
   <script src="popcorn.flickr.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
+      .flickr({
+        start: 0, // seconds
+        end: 5, // seconds
+        username: 'AniaSob',
+        apikey: 'd1d249260dd1673ec8810c8ce5150ae1',
+        target: 'flickrdiv'
+      } )
       .flickr({
         start: 5, // seconds
         end: 15, // seconds
@@ -37,8 +48,8 @@
 </head>
 <body>
   <h1 id="qunit-header">Popcorn Flickr Plug-in Demo</h1>
-  <p>This plugin requires jquery</p>
-  <p>Flickr images by '35034346917@N01' will appear at 5 seconds and disappear at 15 seconds.
+  <p>Flickr images by 'AniaSob' will appear at 0 seconds and disappear at 5 seconds.
+  <br />Flickr images by '35034346917@N01' will appear at 5 seconds and disappear at 15 seconds.
   <br />Flickr images tagged 'georgia' will appear at 20 seconds and disappear at 30 seconds.
   <br />Flickr images by '35034346917@N01' and tagged 'georgia' will appear at 35 seconds and disappear at 45 seconds.</p>
   <div>

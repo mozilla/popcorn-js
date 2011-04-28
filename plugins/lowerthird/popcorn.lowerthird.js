@@ -30,22 +30,6 @@
    *
    */
 
-  // just a little tool function
-  // calculates the top and left position of an element
-  var offset = function(elem) {
-    if ( !elem ) { elem = this; }
-
-    var x = elem.offsetLeft;
-    var y = elem.offsetTop;
-
-    while ( !!( elem = elem.offsetParent ) ) {
-      x += elem.offsetLeft;
-      y += elem.offsetTop;
-    }
-
-    return { left: x, top: y };
-  };
-
   Popcorn.plugin( "lowerthird" , {
     
       manifest: {
@@ -80,7 +64,7 @@
 
           // the video element must have height and width defined
           this.container.style.width = this.video.offsetWidth + "px";
-          this.container.style.left = offset( this.video ).left + "px";
+          this.container.style.left = this.position().left + "px";
 
           this.video.parentNode.appendChild( this.container );
         }
@@ -103,7 +87,7 @@
        */
       start: function(event, options){
         options.container.innerHTML = ( options.salutation ? options.salutation + " " : "" ) + options.name + ( options.role ? "<br />" + options.role : "" );
-        this.container.style.top = offset( this.video ).top + this.video.offsetHeight - ( 40 + this.container.offsetHeight ) + "px";
+        this.container.style.top = this.position().top + this.video.offsetHeight - ( 40 + this.container.offsetHeight ) + "px";
       },
       /**
        * @member lowerthird

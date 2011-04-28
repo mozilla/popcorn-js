@@ -14,15 +14,18 @@
       <li><a onclick="clearEvents();" target="out" href="footnote/popcorn.footnote.unit.html">footnote</a></li>
       <li><a onclick="clearEvents();" target="out" href="googlemap/popcorn.googlemap.unit.html">googlemap</a></li>
       <li><a onclick="clearEvents();" target="out" href="googlenews/popcorn.googlenews.unit.html">googlenews</a></li>
+      <li><a onclick="clearEvents();" target="out" href="googlefeed/popcorn.googlefeed.unit.html">googlefeed</a></li>
       <li><a onclick="clearEvents();" target="out" href="image/popcorn.image.unit.html">image</a></li>
       <li><a onclick="clearEvents();" target="out" href="lastfm/popcorn.lastfm.unit.html">lastfm</a></li>
       <li><a onclick="clearEvents();" target="out" href="lowerthird/popcorn.lowerthird.unit.html">lowerthird</a></li>
       <li><a onclick="clearEvents();" target="out" href="mustache/popcorn.mustache.unit.html">mustache</a></li>
+       <li><a onclick="clearEvents();" target="out" href="openmap/popcorn.openmap.unit.html">openmap</a></li>
       <li><a onclick="clearEvents();" target="out" href="subtitle/popcorn.subtitle.unit.html">subtitle</a></li>
       <li><a onclick="clearEvents();" target="out" href="tagthisperson/popcorn.tagthisperson.unit.html">tagthisperson</a></li>
       <li><a onclick="clearEvents();" target="out" href="twitter/popcorn.twitter.unit.html">twitter</a></li>
       <li><a onclick="clearEvents();" target="out" href="webpage/popcorn.webpage.unit.html">webpage</a></li>
       <li><a onclick="clearEvents();" target="out" href="wikipedia/popcorn.wikipedia.unit.html">wikipedia</a></li>
+     
     </ul>
   </div>
   <iframe id="out" name="out" style="position:absolute;top:0px;left:150px;height:100%;width:100%"></iframe>
@@ -30,12 +33,13 @@
   var eventList = [];
   function runAllTests(){
     var testUrl = [ "attribution", "code", "flickr", "footnote", "googlemap", 
-                    "googlenews", "image", "lastfm", "lowerthird", "mustache", 
-                    "subtitle", "tagthisperson", "twitter", "webpage", "wikipedia" ];
-    //googlenews and lowerthird tests do not exist, therefore their test time is set to 0
+                    "googlenews", "googlefeed", "image", "lastfm", "lowerthird", 
+                    "mustache",  "openmap", "subtitle", "tagthisperson", "twitter",  
+                    "webpage", "wikipedia"];
     var testDur = [ 17000, 20000, 10000, 20000, 11000,
-                    0, 10000, 10000, 0, 15000,
-                    25000, 21000, 10000, 21000, 21000 ];
+                    13000, 13000, 10000, 10000, 13000, 
+                    15000, 13000, 25000, 21000, 10000, 
+                    21000, 21000 ];
     
     var setTest = function( index ) {
       var url = function( str ) {

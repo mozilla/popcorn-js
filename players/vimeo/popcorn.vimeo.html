@@ -22,7 +22,6 @@
             }
         </style>
         
-        
         <script src="../../popcorn.js"></script>
         <script type="text/javascript" src="popcorn.vimeo.js"></script>
         <script src="../../plugins/footnote/popcorn.footnote.js"></script>
@@ -102,7 +101,10 @@
 
             //On document ready
             document.addEventListener( "DOMContentLoaded", function() {
-              var player = Popcorn( Popcorn.vimeo( "player_1" ) )
+              var player = Popcorn( Popcorn.vimeo( "player_1", "http://player.vimeo.com/video/11127501", {
+                  width: 500,
+                  height: 281
+                }) )
                     .footnote({
                       start: 5, // seconds
                       end: 40, // seconds
@@ -178,7 +180,7 @@
     </head>
     <body>
           <div>
-            <div id="player_1" width="500" height="281" src="http://player.vimeo.com/video/11127501" ></div><br />
+            <div id="player_1" ></div><br />
             <button class="simple" id="btnPlay">Play</button>
             <button class="simple" id="btnPause">Pause</button>
             <button class="seek" id="btnSeek">Seek to 30</button>

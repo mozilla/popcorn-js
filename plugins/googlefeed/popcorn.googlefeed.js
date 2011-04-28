@@ -2,8 +2,9 @@
 (function (Popcorn) {
 
   var i = 1,
-      scriptLoaded = false,
-      callBack     = function( data ) {
+      scriptLoading = false,
+      scriptLoaded  = false,
+      callBack      = function( data ) {
 
         if ( typeof google !== 'undefined' && google.load ) {
 
@@ -16,17 +17,6 @@
           }, 1);
         }
       };
-
-  Popcorn.getScript( "http://www.google.com/jsapi", callBack );
-  Popcorn.getScript( "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js" );
-
-  //Doing this because I cannot find something similar to getScript() for css files
-  var head = document.getElementsByTagName("head")[0];
-  var css = document.createElement('link');
-  css.type = "text/css";
-  css.rel = "stylesheet";
-  css.href =  "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css";
-  head.insertBefore( css, head.firstChild );
 
   /**
    * googlefeed popcorn plug-in
@@ -81,6 +71,22 @@
       }
     };
     
+    if ( !scriptLoading ) {
+
+      scriptLoading = true;
+    
+      Popcorn.getScript( "http://www.google.com/jsapi", callBack );
+      Popcorn.getScript( "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js" );
+
+      //Doing this because I cannot find something similar to getScript() for css files
+      var head = document.getElementsByTagName("head")[0];
+      var css = document.createElement('link');
+      css.type = "text/css";
+      css.rel = "stylesheet";
+      css.href =  "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css";
+      head.insertBefore( css, head.firstChild );
+    }
+
     initialize();
     
     return {

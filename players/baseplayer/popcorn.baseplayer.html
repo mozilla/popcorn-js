@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Popcorn Base Player Example</title>
+        <style>
+            body > div {
+                width: 100%;
+                float: left;
+                overflow: hidden;
+            }
+            div div {
+                margin-bottom:20px;
+            }
+            
+            #player_1 {
+              position: absolute;
+              left: 250px;
+              top: 20px;
+              width: 300px;
+              height: 150px;
+              background: #FFAAAA;
+            }
+        </style>
+        
+        
+        <script src="../../popcorn.js"></script>
+        <script type="text/javascript" src="popcorn.baseplayer.js"></script>
+        
+        <script type="text/javascript">            
+            //On document ready
+            document.addEventListener( "DOMContentLoaded", function() {
+              var ticks = 0,
+                  player = Popcorn.baseplayer(),
+                  dimensions,
+                  popcorn;
+                  
+              document.getElementById( "btnPlay" ).addEventListener( "click", function() { popcorn.play(); }, false );
+              document.getElementById( "btnPause" ).addEventListener( "click", function() { popcorn.pause(); }, false );
+              
+              player._resource = document.getElementById('player_1');
+              
+              player._resource.innerHTML += '<br />Width and Height: '+player.getStyle( 'width' ) + ' by ' + player.getStyle( 'height' )
+                                            + '<br /> Positioned at: '+player.getStyle( 'left' ) + ',' + player.getStyle( 'top' );
+              
+              dimensions = player.getBoundingClientRect();
+              document.getElementById( "playerTop" ).innerHTML = dimensions.top;
+              document.getElementById( "playerLeft" ).innerHTML = dimensions.left;
+              document.getElementById( "playerBottom" ).innerHTML = dimensions.bottom;
+              document.getElementById( "playerRight" ).innerHTML = dimensions.right;
+              document.getElementById( "playerWidth" ).innerHTML = dimensions.width;
+              document.getElementById( "playerHeight" ).innerHTML = dimensions.height;
+              
+              popcorn = Popcorn( player )
+                .listen( "timeupdate", function() {
+                  document.getElementById( "playerTicks" ).innerHTML = ++ticks;
+                  document.getElementById( "playerMs" ).innerHTML = popcorn.currentTime().toFixed(5);
+                })
+                .exec( 2, function() {
+                  document.getElementById( "playerOutput" ).innerHTML = "2 seconds reached";
+                });
+              
+              // The ready state and resource selection would be handled by the player extending this base player
+              player.readyState = 2;
+              popcorn.play();
+            }, false);
+        </script>
+    </head>
+    <body>
+          <div>
+            Ticks: <span id="playerTicks" ></span><br />
+            Seconds: <span id="playerMs" ></span><br />
+            Event Output: <span id="playerOutput" ></span><br />
+            <button class="simple" id="btnPlay">Play</button>
+            <button class="simple" id="btnPause">Pause</button><br r/>
+            Top: <span id="playerTop" ></span><br />
+            Left: <span id="playerLeft" ></span><br />
+            Bottom: <span id="playerBottom" ></span><br />
+            Right: <span id="playerRight" ></span><br />
+            Width: <span id="playerWidth" ></span><br />
+            Height: <span id="playerHeight" ></span><br />
+          </div>
+          
+          <span id="player_1">This is a container for the player, auto-sized for testing purposes. It displays CSS values.</span>
+          
+          <br />
+          <br />
+          This demo showcases basic functionality of a player. It is a shell of an HTMLMediaElement with basic timing routines.<br />
+          At 2 seconds, the phrase "2 seconds reached" will appear beside 'Event Output'<br />
+    </body>
+</html>

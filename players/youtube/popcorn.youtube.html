@@ -22,7 +22,7 @@
           var paused = true,
               popcorn;
           
-          popcorn = Popcorn( Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=9oar9glUCL0' ) );
+          popcorn = Popcorn( Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=9oar9glUCL0', { width: 400 } ) );
           
           popcorn = popcorn
             .footnote({
@@ -140,7 +140,7 @@
   <body>
     <div>
       <div>
-        <div id="video" width="360" height="300" ></div><br />
+        <div id="video" style="width: 360px; height: 300px;" ></div><br />
         <button class="simple" id="btn-play-pause">Play</button>
         <button class="seek" id="btn-seek">Seek to 30</button>
         <button class="volume" id="btn-volume">Toggle Volume</button>

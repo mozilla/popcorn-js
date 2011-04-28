@@ -55,6 +55,9 @@ POPCORN_COMPLETE_LIST := --js ${POPCORN_SRC} \
 POPCORN_COMPLETE_DIST = ${DIST_DIR}/popcorn-complete.js
 POPCORN_COMPLETE_MIN = ${DIST_DIR}/popcorn-complete.min.js
 
+# Create a versioned license header for js files we ship: arg1=source arg2=dest
+add_license = cat ${PREFIX}/LICENSE_HEADER | sed -e 's/@VERSION/${VERSION}/' > $(2) ; \
+	                    cat $(1) >> $(2)
 
 all: lint lint-plugins lint-parsers lint-players popcorn plugins parsers players complete min
 	@@echo "Popcorn build complete."
@@ -66,23 +69,27 @@ popcorn: ${POPCORN_DIST}
 
 ${POPCORN_DIST}: ${POPCORN_SRC} | ${DIST_DIR}
 	@@echo "Building" ${POPCORN_DIST}
-	@@cat ${POPCORN_SRC} | sed -e 's/@VERSION/${VERSION}/' > ${POPCORN_DIST}
+	@@$(call add_license, $(POPCORN_SRC), $(POPCORN_DIST))
 
 min: ${POPCORN_MIN} ${PLUGINS_MIN} ${PARSERS_MIN} ${PLAYERS_MIN} ${POPCORN_COMPLETE_MIN}
 
 ${POPCORN_MIN}: ${POPCORN_DIST}
 	@@echo "Building" ${POPCORN_MIN}
-	$(call compile, --js ${POPCORN_DIST}, ${POPCORN_MIN})
+	@@$(call compile, --js ${POPCORN_DIST}, ${POPCORN_MIN}.tmp)
+	@@$(call add_license, ${POPCORN_MIN}.tmp, ${POPCORN_MIN})
+	@@rm ${POPCORN_MIN}.tmp
 
 ${POPCORN_COMPLETE_MIN}: ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${DIST_DIR}
 	@@echo "Building" ${POPCORN_COMPLETE_MIN}
-	@@$(call compile, ${POPCORN_COMPLETE_LIST}, ${POPCORN_COMPLETE_MIN})
+	@@$(call compile, ${POPCORN_COMPLETE_LIST}, ${POPCORN_COMPLETE_MIN}.tmp)
+	@@$(call add_license, ${POPCORN_COMPLETE_MIN}.tmp, ${POPCORN_COMPLETE_MIN})
+	@@rm ${POPCORN_COMPLETE_MIN}.tmp
 
 plugins: ${PLUGINS_DIST}
 
 ${PLUGINS_MIN}: ${PLUGINS_DIST}
 	@@echo "Building" ${PLUGINS_MIN}
-	$(call compile, $(shell for js in ${PLUGINS_SRC} ; do echo --js $$js ; done), ${PLUGINS_MIN})
+	@@$(call compile, $(shell for js in ${PLUGINS_SRC} ; do echo --js $$js ; done), ${PLUGINS_MIN})
 
 ${PLUGINS_DIST}: ${PLUGINS_SRC} ${DIST_DIR}
 	@@echo "Building ${PLUGINS_DIST}"
@@ -92,7 +99,7 @@ parsers: ${PARSERS_DIST}
 
 ${PARSERS_MIN}: ${PARSERS_DIST}
 	@@echo "Building" ${PARSERS_MIN}
-	$(call compile, $(shell for js in ${PARSERS_SRC} ; do echo --js $$js ; done), ${PARSERS_MIN})
+	@@$(call compile, $(shell for js in ${PARSERS_SRC} ; do echo --js $$js ; done), ${PARSERS_MIN})
 
 ${PARSERS_DIST}: ${PARSERS_SRC} ${DIST_DIR}
 	@@echo "Building ${PARSERS_DIST}"
@@ -102,15 +109,17 @@ players: ${PLAYERS_DIST}
 
 ${PLAYERS_MIN}: ${PLAYERS_DIST}
 	@@echo "Building" ${PLAYERS_MIN}
-	$(call compile, $(shell for js in ${PLAYERS_SRC} ; do echo --js $$js ; done), ${PLAYERS_MIN})
+	@@$(call compile, $(shell for js in ${PLAYERS_SRC} ; do echo --js $$js ; done), ${PLAYERS_MIN})
 
 ${PLAYERS_DIST}: ${PLAYERS_SRC} ${DIST_DIR}
 	@@echo "Building ${PLAYERS_DIST}"
 	@@cat ${PLAYERS_SRC} > ${PLAYERS_DIST}
 
 complete: ${POPCORN_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} ${DIST_DIR}
-	@@echo "Building popcorn + plugins + parsers + players"
-	@@cat ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} | sed -e 's/@VERSION/${VERSION}/' > ${POPCORN_COMPLETE_DIST}
+	@@echo "Building popcorn + plugins + parsers + players..."
+	@@cat ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} > ${POPCORN_COMPLETE_DIST}.tmp
+	@@$(call add_license, ${POPCORN_COMPLETE_DIST}.tmp, ${POPCORN_COMPLETE_DIST})
+	@@rm ${POPCORN_COMPLETE_DIST}.tmp
 
 lint:
 	@@echo "Checking Popcorn against JSLint..."

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Popcorn API</title>
+  <title>Popcorn Soundcloud Player</title>
   <link rel="stylesheet" href="../../test/qunit/qunit.css" type="text/css" media="screen">
   <script src="../../test/qunit/qunit.js"></script>
   <!-- 
@@ -11,18 +11,34 @@
   
   <script src="../../popcorn.js"></script>
   
-  <script src="popcorn.vimeo.unit.js"></script>
-  <script src="popcorn.vimeo.js"></script>
+  <script src="popcorn.soundcloud.unit.js"></script>
+  <script src="popcorn.soundcloud.js"></script>
   
+  <style>
+    .soundcloudPlayer {
+      left: 20px;
+    }
+    
+    #player_1 {
+      width: 80%;
+    }
+    
+    #player_2 {
+      width: 70%;
+    }
+  </style>
 </head>
 <body>
-  <h1 id="qunit-header">Popcorn Vimeo Player Plugin</h1>
+  <h1 id="qunit-header">Popcorn Soundcloud Player</h1>
   <h2 id="qunit-banner"></h2>
   <div id="qunit-testrunner-toolbar"></div>
   <h2 id="qunit-userAgent"></h2>
   <ol id="qunit-tests"></ol>
   <div id="qunit-fixture">  </div>
   
-  <div id="player_1"></div>
+  <div id="commentOutput" />
+  <div class="soundcloudPlayer" id="player_1" ></div>
+  <div class="soundcloudPlayer" id="player_2" ></div>
+  
 </body>
 </html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Popcorn Flickr</title>
+  <title>Popcorn Google News Plug-in Test</title>
   <link rel="stylesheet" href="../../test/qunit/qunit.css" type="text/css" media="screen">
   <script src="../../test/qunit/qunit.js"></script>
   <!-- 
@@ -10,14 +10,12 @@
   -->
   
   <script src="../../popcorn.js"></script>
-  <script src="../../test/jquery.js"></script>
-  <script src="popcorn.flickr.js"></script>
-
-  <script src="popcorn.flickr.unit.js"></script>
+  
+  <script src="popcorn.googlenews.js"></script>
+  <script src="popcorn.googlenews.unit.js"></script>
 </head>
 <body>
-
-  <h1 id="qunit-header">Popcorn Flickr Plugin</h1>
+  <h1 id="qunit-header">Popcorn Google News Plugin</h1>
   <h2 id="qunit-banner"></h2>
   <div id="qunit-testrunner-toolbar"></div>
   <h2 id="qunit-userAgent"></h2>
@@ -25,7 +23,7 @@
   <div id="qunit-fixture">  </div>
   
   <video id='video' 
-    controls 
+    controls preload='none' 
     width= '250px'
     poster="../../test/poster.png"> 
 
@@ -39,7 +37,7 @@
 
     <p>Your user agent does not support the HTML5 Video element.</p> 
 
-  </video> 
-  <div id="flickrdiv"></div>  
+  </video>
+  <div id="googlenewsdiv"></div>
 </body>
 </html>

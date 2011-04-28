@@ -1,41 +1,6 @@
-var ytReady = false,
-    popcorn = Popcorn( Popcorn.youtube( 'video' ) );
-
-popcorn.listen( "load", function onYouTubePlayerReady() {
-  ytReady = true;
-});
-
-test( "Popcorn YouTube Plugin Startup", function() {
-  var time = 0,
-      wait = 100,
-      timeout = 10000;
-      
-  // wait for YouTube to start
-  stop( timeout + wait );
-
-  // run in an interval check if YouTube has started
-  var interval = setInterval(function() {
-    time += wait;
-
-    if ( ytReady ) {
-      start();
-      ok( true, "YouTube has started." );
-      clearInterval( interval );
-      return;
-    }
-
-    if ( time > timeout ) {
-      ok( false, "YouTube cannot be started." );
-      clearInterval( interval );
-    }
-  }, wait);
-});
-
 test( "Popcorn YouTube Plugin Event Tests", function() {
-  if ( !ytReady ) {
-    ok( false, "YouTube did not start." );
-    return;
-  }
+
+  var popcorn = Popcorn( Popcorn.youtube( 'video', "http://www.youtube.com/e/ac7KhViaVqc" ) );
   
   function plus(){ 
     if ( ++count == expects ) {

@@ -68,23 +68,6 @@
    *
    */
 
-  // just a little tool function
-  // calculates the top and left position of an element
-  var offset = function(obj) {
-    var left, top;
-    left = top = 0;
-    if (obj.offsetParent) {
-        do {
-            left += obj.offsetLeft;
-            top  += obj.offsetTop;
-        } while ( !!(obj = obj.offsetParent) );
-    }
-    return {
-        left : left,
-        top : top
-    };
-  };
-
   // translates whatever is in options.container into selected language
   var translate = function( options, text ) {
 
@@ -128,9 +111,9 @@
           this.container.style.textAlign  = "center";
 
           // the video element must have height and width defined
-          this.container.style.width      = this.video.offsetWidth + "px";
-          this.container.style.top        = offset( this.video ).top + this.video.offsetHeight - 65 + "px";
-          this.container.style.left       = offset( this.video ).left + "px";
+          this.container.style.width      = this.media.offsetWidth + "px";
+          this.container.style.top        = this.position().top + this.media.offsetHeight - 65 + "px";
+          this.container.style.left       = this.position().left + "px";
 
           document.body.appendChild( this.container );
         }
