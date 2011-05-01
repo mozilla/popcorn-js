@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Pause Demo</title>
+
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.pause.js"></script>
+  <script>
+   var output;
+
+   document.addEventListener('DOMContentLoaded', function () {
+     var p = Popcorn( '#video' , { pauseOnLinkClicked : true } )
+             .play();
+    }, false);
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Code Plugin Demo</h1>
+  <p>The video pauses when links (anchor elements) are clicked</p>
+  <div>
+    <video id="video"
+      autobuffer="autobuffer"
+      preload="auto"
+      controls="controls"
+      width= '250px'
+      poster="../../test/poster.png">
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"' />
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"' />
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+
+    </video>
+  </div>
+  <div style="width:700px">
+    <a href="../../index.html" target="_blank">Home page</a><br />
+    <a href="http://www.mozilla.org/" target="_blank">Mozila</a><br />
+    <a href="http://webmademovies.lighthouseapp.com/" target="_blank">
+      Popcorn.js on Lighthouse
+    </a><br />
+    <a href="#anchorOnPage">
+      An another in this page
+      (check the url after you click)
+    </a><br />
+    <a name="anchorOnPage" />
+  </div>
+</body>
+</html>
