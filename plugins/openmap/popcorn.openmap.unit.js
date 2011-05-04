@@ -18,7 +18,7 @@ test("Popcorn OpenMap Plugin", function () {
   
   stop();
 
-  ok ('openmap' in popped, "openmap is a method of the popped instance");
+  ok ('openmap' in popped, "OpenMap is a method of the popped instance");
   plus();
   
   ok ( document.getElementById('map').innerHTML === "", "initially, there is nothing inside map" );

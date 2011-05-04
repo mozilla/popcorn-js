@@ -3,7 +3,7 @@ var openmapCallback;
 ( function ( Popcorn ) {
   
   /**
-   * openmap popcorn plug-in 
+   * OpenMap popcorn plug-in 
    * Adds an OpenLayers map and open map tiles (OpenStreetMap [default], NASA WorldWind, or USGS Topographic)
    * Based on the googlemap popcorn plug-in. No StreetView support
    * Options parameter will need a start, end, target, type, zoom, lat and lng
