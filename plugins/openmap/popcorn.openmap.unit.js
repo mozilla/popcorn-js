@@ -1,7 +1,7 @@
 test("Popcorn OpenMap Plugin", function () {
   
   var popped = Popcorn("#video"),
-    expects = 12, 
+    expects = 14, 
     count = 0,
     mapInterval,
     mapInterval2,
@@ -57,6 +57,14 @@ test("Popcorn OpenMap Plugin", function () {
     lng: -78.968525,
     zoom: 14
   } )
+  .openmap( {
+    start: 0,
+    end: 5,
+    target: 'map4',
+    lat: 40.943926,
+    lng: -78.968525,
+    zoom: "14"
+  } )
   .volume(0)
   .play();
 
@@ -89,13 +97,23 @@ test("Popcorn OpenMap Plugin", function () {
       clearInterval( mapInterval3 );
     }
   } );
-  mapInterval4 = popped.exec( 6, function() {
+  mapInterval4 = popped.exec( 4, function() {
+    if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
+      ok (document.getElementById('actualmap4'), "Fourth map is on the page" );
+      plus();
+      equals (document.getElementById('actualmap4').offsetParent.id, "map4", "Fourth map is inside the 'map4' div" );
+      plus();
+      clearInterval( mapInterval4 );
+    }
+  } );
+  mapInterval5 = popped.exec( 6, function() {
     if( popped.currentTime() > 5  ) {
       ok (document.getElementById('actualmap2').style.display === "none" && 
           document.getElementById('actualmap3').style.display === "none" && 
+          document.getElementById('actualmap4').style.display === "none" &&
           document.getElementById('actualmap1').style.display === "none", "All three maps are no longer visible" );
       plus();
-      clearInterval( mapInterval4 );
+      clearInterval( mapInterval5 );
     }
   } );
 } );
