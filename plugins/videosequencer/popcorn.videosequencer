@@ -1,0 +1,60 @@
+// PLUGIN: Google News
+
+(function (Popcorn) {
+
+  /**
+   * Video Sequencer popcorn plug-in 
+   * 
+   * 
+   * @param {Object} options
+   * 
+   * Example:
+     var p = Popcorn('#video')
+        .footnote({
+          start:          5,                 // seconds, mandatory
+          end:            15,                // seconds, mandatory
+          topic:          'oil spill',       // optional
+          target:         'newsdiv'        // mandatory
+        } )
+   *
+   */
+  Popcorn.plugin( "videosequencer" , {
+
+      manifest: {
+        about:{
+          name:    "Popcorn Video Sequencer Plugin",
+          version: "0.1",
+          author:  "Christopher De Cairos",
+          website: "http://cadecairos.blogspot.com/"
+        },
+        options:{
+          srcs    : {elem: 'input', type: 'object', label: "Sources"},
+          target  : 'video-container'
+        }
+      },
+      _setup : function( options ) {
+        
+
+      },
+      /**
+       * @member googlenews 
+       * The start function will be executed when the currentTime 
+       * of the video  reaches the start time provided by the 
+       * options variable
+       */
+      start: function( event, options ){
+        
+      },
+      /**
+       * @member googlenews 
+       * The end function will be executed when the currentTime 
+       * of the video  reaches the end time provided by the 
+       * options variable
+       */
+      end: function( event, options ){
+        
+      }
+
+  });
+
+})( Popcorn );
