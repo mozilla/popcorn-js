@@ -45,8 +45,8 @@ var onYouTubePlayerReady;
       YOUTUBE_STATE_BUFFERING = 3,
       YOUTUBE_STATE_CUED = 5;
 
-  var uriRegex = /^[^v]+v.(.{11}).*/;
-  var urlRegex = /^[^d]+d.(.{11}).*/;
+  var uriRegex = /^[^v]+v.(.{11}).*/,
+      urlRegex = /^[^d]+d.(.{11}).*/;
   
   // Collection of all Youtube players
   var registry = {},
