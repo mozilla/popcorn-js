@@ -2,7 +2,7 @@ test( "Popcorn OpenMap Plugin", function () {
   
   var popped = Popcorn("#video"),
     expects = 14, 
-    count = 0,
+    count = 0;
   
   expect(expects);
   
