@@ -1,12 +1,8 @@
-test("Popcorn OpenMap Plugin", function () {
+test( "Popcorn OpenMap Plugin", function () {
   
   var popped = Popcorn("#video"),
     expects = 14, 
     count = 0,
-    mapInterval,
-    mapInterval2,
-    mapInterval3,
-    mapInterval4;
   
   expect(expects);
   
@@ -18,7 +14,7 @@ test("Popcorn OpenMap Plugin", function () {
   
   stop();
 
-  ok ('openmap' in popped, "OpenMap is a method of the popped instance");
+  ok ('openmap' in popped, "openmap is a method of the popped instance");
   plus();
   
   ok ( document.getElementById('map').innerHTML === "", "initially, there is nothing inside map" );
@@ -68,52 +64,47 @@ test("Popcorn OpenMap Plugin", function () {
   .volume(0)
   .play();
 
-  mapInterval = popped.exec( 4, function() {
+  popped.exec( 4, function() {
     if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
       ok(OpenLayers, "OpenLayers is available");
       plus();
-      ok (document.getElementById('actualmap1'), "First map is on the page" );
+      ok (document.getElementById('openmapdiv1'), "First map is on the page" );
       plus();
-      equals (document.getElementById('actualmap1').offsetParent.id, "map", "First map is inside the 'map' div" );
+      equals (document.getElementById('openmapdiv1').offsetParent.id, "map", "First map is inside the 'map' div" );
       plus();
-      clearInterval( mapInterval );
     }
   } );
-  mapInterval2 = popped.exec( 4, function() {
+  popped.exec( 4, function() {
     if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
-      ok (document.getElementById('actualmap2'), "Second map is on the page" );
+      ok (document.getElementById('openmapdiv2'), "Second map is on the page" );
       plus();
-      equals (document.getElementById('actualmap2').offsetParent.id, "map2", "Second map is inside the 'map2' div" );
+      equals (document.getElementById('openmapdiv2').offsetParent.id, "map2", "Second map is inside the 'map2' div" );
       plus();
-      clearInterval( mapInterval2 );
     }
   } );
-  mapInterval3 = popped.exec( 4, function() {
+  popped.exec( 4, function() {
     if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
-      ok (document.getElementById('actualmap3'), "Third map is on the page" );
+      ok (document.getElementById('openmapdiv3'), "Third map is on the page" );
       plus();
-      equals (document.getElementById('actualmap3').offsetParent.id, "map3", "Third map is inside the 'map3' div" );
+      equals (document.getElementById('openmapdiv3').offsetParent.id, "map3", "Third map is inside the 'map3' div" );
       plus();
-      clearInterval( mapInterval3 );
     }
   } );
-  mapInterval4 = popped.exec( 4, function() {
+  popped.exec( 4, function() {
     if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
-      ok (document.getElementById('actualmap4'), "Fourth map is on the page" );
+      ok (document.getElementById('openmapdiv4'), "Fourth map is on the page" );
       plus();
-      equals (document.getElementById('actualmap4').offsetParent.id, "map4", "Fourth map is inside the 'map4' div" );
+      equals (document.getElementById('openmapdiv4').offsetParent.id, "map4", "Fourth map is inside the 'map4' div" );
       plus();
-      clearInterval( mapInterval4 );
     }
   } );
-  mapInterval5 = popped.exec( 6, function() {
+  popped.exec( 6, function() {
     if( popped.currentTime() > 5  ) {
-      ok (document.getElementById('actualmap2').style.display === "none" && 
-          document.getElementById('actualmap3').style.display === "none" && 
-          document.getElementById('actualmap4').style.display === "none" &&
-          document.getElementById('actualmap1').style.display === "none", "All three maps are no longer visible" );
+      ok (document.getElementById('openmapdiv2').style.display === "none" && 
+          document.getElementById('openmapdiv3').style.display === "none" && 
+          document.getElementById('openmapdiv4').style.display === "none" &&
+          document.getElementById('openmapdiv1').style.display === "none", "All three maps are no longer visible" );
       plus();
-      clearInterval( mapInterval5 );
     }
   } );
 } );
