@@ -185,3 +185,42 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
   
   popcorn.play();
 });
+
+test( "Popcorn YouTube Plugin Url Regex Test", function() {
+
+  QUnit.reset();
+
+  var urlTests = [
+    { name: 'standard',
+      url: 'http://www.youtube.com/watch?v=9oar9glUCL0',
+    },
+    { name: 'share url',
+      url: 'http://youtu.be/9oar9glUCL0',
+    },
+    { name: 'long embed',
+      url: 'http://www.youtube.com/embed/9oar9glUCL0',
+    },
+    { name: 'short embed',
+      url: 'http://www.youtube.com/e/9oar9glUCL0',
+    },
+  ];
+
+  expect( urlTests.length );
+  stop( 10000 );
+
+  for ( var t in urlTests ) {
+
+    var urlTest = urlTests[t],
+        popcorn = Popcorn( Popcorn.youtube( 'video3', urlTest.url ) );
+
+    equals( popcorn.video.vidId, '9oar9glUCL0', 'Video id is correct for ' + urlTest.name );
+    popcorn.pause();
+
+    // Get rid of the youtube object inside the video3, to keep things simple
+    var div = document.getElementById('video3');
+    div.removeChild(div.firstChild);
+  }
+  
+  start(); 
+});
+
