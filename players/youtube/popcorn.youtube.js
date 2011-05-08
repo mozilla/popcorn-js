@@ -130,7 +130,7 @@ var onYouTubePlayerReady;
       id: this.playerId
     };
     
-    swfobject.embedSWF( "http://www.youtube.com/e/" + this.vidId +"?enablejsapi=1&playerapiid=" + this.playerId + "&verion=3", 
+    swfobject.embedSWF( "http://www.youtube.com/e/" + this.vidId +"?enablejsapi=1&playerapiid=" + this.playerId + "&version=3", 
                       this.playerId, this.width, this.height, "8", null, flashvars, params, attributes );
   }
   
