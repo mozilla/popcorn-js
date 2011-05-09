@@ -137,10 +137,10 @@
       
       var bounds = this._container.getBoundingClientRect();
       
-      this.offsetWidth = this.width = container.getAttribute( "width" ) || getStyle( "width" ) || 0;
-      this.offsetHeight = this.height = container.getAttribute( "height" ) || getStyle( "height" ) || 0;
+      this.offsetWidth = this.width = this.getStyle( "width" ) || 0;
+      this.offsetHeight = this.height = this.getStyle( "height" ) || 0;
       this.offsetLeft = bounds.left;
-      this.offsetTop = bound.top;
+      this.offsetTop = bounds.top;
       this.offsetParent = this._container.offsetParent;
       
       return this._container;
@@ -150,7 +150,8 @@
     // Changing the type of this.resource requires this method to be overridden
     // Returns the computed value for CSS style 'prop' as computed by the browser
     getStyle: function( prop ) {
-      var elem = this._resource;
+
+      var elem = this._resource || this._container;
       
       if ( elem.currentStyle ) {
         // IE syntax
