@@ -45,7 +45,7 @@ var onYouTubePlayerReady;
       YOUTUBE_STATE_BUFFERING = 3,
       YOUTUBE_STATE_CUED = 5;
 
-  var urlRegex = /(\/e\/|be\/|\/embed\/|\/watch\?v=)([a-zA-Z0-9_]{11})/;
+  var urlRegex = /^.*[\/=](.{11})/;
   
   // Collection of all Youtube players
   var registry = {},
@@ -64,7 +64,7 @@ var onYouTubePlayerReady;
     var matches = urlRegex.exec( url ); 
 
     // Return id, which comes after first equals sign
-    return matches ? matches[2] : "";
+    return matches ? matches[1] : "";
   }
   
   // Extract the id from a player url
@@ -76,7 +76,7 @@ var onYouTubePlayerReady;
     var matches = urlRegex.exec( url ); 
     
     // Return id, which comes after first equals sign
-    return matches ? matches[2] : "";
+    return matches ? matches[1] : "";
   }
   
   function getPlayerAddress( vidId, playerId ) {

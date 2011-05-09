@@ -200,8 +200,11 @@ test( "Popcorn YouTube Plugin Url Regex Test", function() {
     { name: 'long embed',
       url: 'http://www.youtube.com/embed/9oar9glUCL0',
     },
-    { name: 'short embed',
+    { name: 'short embed 1 (e)',
       url: 'http://www.youtube.com/e/9oar9glUCL0',
+    },
+    { name: 'short embed 2 (v)',
+      url: 'http://www.youtube.com/v/9oar9glUCL0',
     },
   ];
 
@@ -213,7 +216,7 @@ test( "Popcorn YouTube Plugin Url Regex Test", function() {
     var urlTest = urlTests[t],
         popcorn = Popcorn( Popcorn.youtube( 'video3', urlTest.url ) );
 
-    equals( popcorn.video.vidId, '9oar9glUCL0', 'Video id is correct for ' + urlTest.name );
+    equals( popcorn.video.vidId, '9oar9glUCL0', 'Video id is correct for ' + urlTest.name + ': ' + urlTest.url );
     popcorn.pause();
 
     // Get rid of the youtube object inside the video3, to keep things simple
