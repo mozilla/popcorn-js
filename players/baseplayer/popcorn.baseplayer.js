@@ -63,36 +63,8 @@
     // By default, assumes this.resource is a DOM Element
     // Changing the type of this.resource requires this method to be overridden
     getBoundingClientRect: function() {
-      var b,
-          self = this;
-          
-      if ( this._resource ) {
-        b = this._resource.getBoundingClientRect();
-        
-        return {
-          bottom: Math.ceil( b.bottom ),
-          left: Math.ceil( b.left ),
-          right: Math.ceil( b.right ),
-          top: Math.ceil( b.top ),
-          
-          //  These not guaranteed to be in there
-          width: b.width || ( b.right - b.left ),
-          height: b.height || ( b.bottom - b.top )
-        };
-      } else {
-        b = this._container.getBoundingClientRect();
-        
-        // Update bottom, right for expected values once the container loads
-        return {
-          left: b.left,
-          top: b.top,
-          width: self.offsetWidth,
-          height: self.offsetHeight,
-          bottom: b.top + this.width,
-          right: b.top + this.height
-        };
-      }
-    },
+			return Popcorn.position( this._resource || this._container );
+	  },
     
     // Add an event listener to the object
     addEventListener: function( evtName, fn ) {
