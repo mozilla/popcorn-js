@@ -1308,8 +1308,8 @@
 
           Popcorn.forEach( dataSources, function( source ) {
 
-            // split the parser and data as parser:file
-            data = source.split( ":" );
+            // split the parser and data as parser!file
+            data = source.split( "!" );
 
             // if no parser is defined for the file, assume "parse" + file extension
             if ( data.length === 1 ) {
