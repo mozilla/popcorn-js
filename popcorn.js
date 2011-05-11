@@ -577,14 +577,24 @@
     track.end = Popcorn.util.toSeconds( track.end, obj.options.framerate );
 
     //  Store this definition in an array sorted by times
-    obj.data.trackEvents.byStart.push( track );
-    obj.data.trackEvents.byEnd.push( track );
-    obj.data.trackEvents.byStart.sort( function( a, b ){
-      return ( a.start - b.start );
-    });
-    obj.data.trackEvents.byEnd.sort( function( a, b ){
-      return ( a.end - b.end );
-    });
+    var byStart = obj.data.trackEvents.byStart,
+        byEnd = obj.data.trackEvents.byEnd;
+   
+    for (var idx = byStart.length-1; idx >= 0; idx--) {
+
+     if (track.start >= byStart[idx].start) {
+      obj.data.trackEvents.byStart.splice(idx+1, 0, track);
+      break;
+     }
+    }
+   
+    for (var idx = byEnd.length-1; idx >= 0; idx--) {
+
+     if (track.start >= byEnd[idx].start) {
+      obj.data.trackEvents.byEnd.splice(idx+1, 0, track);
+      break;
+     }
+    }
 
   };
 
