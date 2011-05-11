@@ -138,7 +138,7 @@
                     entity;
 
       //  Create an audio or video element property reference
-      this[ ( this.media.tagName && this.media.tagName.toLowerCase() ) || "video" ] = this.media;
+      this[ ( this.media.nodeName && this.media.nodeName.toLowerCase() ) || "video" ] = this.media;
 
       //  Register new instance
       Popcorn.addInstance( this );
@@ -1308,8 +1308,8 @@
 
           Popcorn.forEach( dataSources, function( source ) {
 
-            // split the parser and data as parser:file
-            data = source.split( ":" );
+            // split the parser and data as parser!file
+            data = source.split( "!" );
 
             // if no parser is defined for the file, assume "parse" + file extension
             if ( data.length === 1 ) {
