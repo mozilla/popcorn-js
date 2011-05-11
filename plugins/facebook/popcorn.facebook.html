@@ -11,25 +11,35 @@
       .volume(0)
       .play() 
       .facebook({
-        type: "LIKE",
-        target: "likediv"
+        type  : "LIKE",
+        target: "likediv",
+        start : 5,
+        end   : 10
       } )
       .facebook({
-        href: "http://www.facebook.com/senecacollege",
-        type: "LIKE-BOX",
-        show_faces: "true",
+        href  : "http://www.facebook.com/senecacollege",
+        type  : "LIKE-BOX",
+        show_faces : "true",
         header: "false",
-        target: "likeboxdiv"
+        target: "likeboxdiv",
+        start : 3,
+        end   : 8
       } )
       .facebook({
-        href: "http://popcornjs.org/",
-        type: "ACTIVITY",
-        target: "activitydiv"
+        site  : "http://popcornjs.org/",
+        type  : "ACTIVITY",
+        target: "activitydiv",
+        header: true,
+        start : 9,
+        end   : 13
       } )
       .facebook({
-        href: "http://www.facebook.com/senecacollege",
-        type: "FACEPILE",
-        target: "facepilediv"
+        href  : "http://www.facebook.com/senecacollege",
+        type  : "FACEPILE",
+        target: "facepilediv",
+        width : 300,
+        start : 5,
+        end   : 15
       } );
     }, false);
 
@@ -61,6 +71,7 @@
   </div>
   <div>
     <div id="likediv"></div>
+    <br />
     <div id="likeboxdiv"></div>
   </div>
   <div style="position:absolute;left:400px;top:150px">

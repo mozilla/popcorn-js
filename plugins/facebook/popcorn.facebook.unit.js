@@ -23,36 +23,51 @@ test("Popcorn Facebook Plugin", function () {
   plus();
 
   popped.facebook({
-  type:"LIKE",
-        target: "likediv"
+        target: "likediv",
+        start : 1,
+        end   : 7
       } )
       .facebook({
         href  : "http://www.facebook.com/senecacollege",
         type  : "LIKE_BOX",
-        show_faces : "true",
-        header: "false",
-        target: "likeboxdiv"
+        target: "likeboxdiv",
+        start : 2,
+        end   : 7
       } )
       .facebook({
-        href   : "http://popcornjs.org/",
+        site   : "http://popcornjs.org/",
         type   : "ACTIVITY",
-        target : "activitydiv"
+        target : "activitydiv",
+        start  : 3,
+        end    : 7
       } )
       .facebook({
         href   : "http://www.facebook.com/senecacollege",
         type   : "FACEPILE",
-        target : "facepilediv"
+        target : "facepilediv",
+        start  : 4,
+        end    : 7,
+        width  : 300
       } )
     .volume(0)
     .play();
   
-  popped.exec( 5, function() {
+  popped.exec( 2, function() {
     ok ( document.getElementById( "likediv" ).innerHTML.length > 0, "No type specified. Like button added to div" );
     plus();
+  });
+  
+  popped.exec( 3, function() {
     ok ( document.getElementById( "likeboxdiv" ).innerHTML.length === 0, "Like box is not added to div" );
     plus();
+  });
+  
+  popped.exec( 4, function() {
     ok ( document.getElementById( "activitydiv" ).innerHTML.length > 0, "Activity feed is added to div" );
     plus();
+  });
+  
+  popped.exec( 5, function() {
     ok ( document.getElementById( "facepilediv" ).innerHTML.length > 0, "Facepile is added to div" );
     plus();
   });
