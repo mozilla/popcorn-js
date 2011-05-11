@@ -1696,50 +1696,79 @@ test("Index Integrity", function () {
 
 });
 
-test("Popcorn.disable/enable", function() {
+test("Popcorn.disable/enable/toggle", function() {
 
 
-  var $pop = Popcorn.getInstanceById( "video" ),
+  var $pop = Popcorn( "#video" ),
       count = 0,
-      expects = 4;
+      expects = 5;
 
   expect( expects );
 
   function plus() {
     if ( ++count === expects ) {
       start();
+
+      Popcorn.removeInstance( $pop );
     }
   }
 
+  Popcorn.plugin("toggler", function () {
+    return {
+      start: function () {
+        var div = document.createElement("div");
+        div.id = "toggler-test";
+        div.innerHTML = "foo";
+
+        document.body.appendChild(div);
+      },
+      end: function () {
+        document.getElementById("toggler-test").parentNode.removeChild(document.getElementById("toggler-test"));
+      }
+    };
+  });
+
+  $pop.exec( 40, function() {
+
+    console.log( "WOO!" );
+    //  make sure toggler never happened
+    // look for: "toggler-test"
+
+    ok( !document.getElementById("toggler-test"), "No toggler container, disabled toggler plugin correctly never ran" );
+    plus();
+
+    // Test per-instance toggle on
+    $pop.toggle( "toggler" );  
+    ok( $pop.data.disabled.indexOf("toggler") === -1, "toggle() plugin: toggler is re-enabled" );
+    plus();
+  });
+
+  $pop.toggler({
+    start: 40, 
+    end: 50
+  });
+
+  // rw/ff
+
+  // Test per-instance function call
+  $pop.disable( "toggler" );
+  
+  ok( $pop.data.disabled.indexOf("toggler") > -1, "disable() plugin: toggler is disabled" );
+  plus();
+
+  // Test per-instance function call
+  $pop.enable( "toggler" );  
+  
+  ok( $pop.data.disabled.indexOf("toggler") === -1, "enable() plugin: toggler is enabled" );
+  plus();
+
+  // Test per-instance toggle off
+  $pop.toggle( "toggler" );  
+  
+  ok( $pop.data.disabled.indexOf("toggler") > -1, "toggle() plugin: toggler is disabled" );
+  plus();
+
   stop( 10000 );
-
-	// rw/ff
-
-	// Test static function call
-	Popcorn.disable( $pop, "rw" );
-
-	ok( $pop.data.disabled.indexOf("rw") > -1, "Plugin: rw is disabled" );
-	plus();
-
-	// Test per-instance function call
-	$pop.disable( "ff" );
-	
-	ok( $pop.data.disabled.indexOf("ff") > -1, "Plugin: ff is disabled" );
-	plus();
-
-	// Test static function call
-	Popcorn.enable( $pop, "rw" );
-
-	ok( $pop.data.disabled.indexOf("rw") === -1, "Plugin: rw is enabled" );
-	plus();
-
-	// Test per-instance function call
-	$pop.enable( "ff" );	
-	
-	ok( $pop.data.disabled.indexOf("ff") === -1, "Plugin: ff is enabled" );
-	plus();
-
-  //console.log( Popcorn.instances[ Popcorn.instanceIds.video ],  );
 });
 
 module("Popcorn XHR");

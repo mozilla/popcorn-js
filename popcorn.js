@@ -440,6 +440,12 @@
     })()
   );
 
+  Popcorn.forEach( "enable disable".split(" "), function( method ) {
+    Popcorn.p[ method ] = function( plugin ) {
+      return Popcorn[ method ]( this, plugin );
+    };
+  });
+
   Popcorn.extend(Popcorn.p, {
 
     //  Rounded currentTime
@@ -466,13 +472,10 @@
     },
     position: function() {
       return Popcorn.position( this.media );
+    }, 
+    toggle: function( plugin ) {
+      return Popcorn[ this.data.disabled.indexOf( plugin ) > -1 ? "enable" : "disable" ]( this, plugin );
     }
-  });
-
-  Popcorn.forEach( "enable disable".split(" "), function( method ) {
-    Popcorn.p[ method ] = function( plugin ) {
-      return Popcorn[ method ]( this, plugin );
-    };
   });
 
   Popcorn.Events  = {
