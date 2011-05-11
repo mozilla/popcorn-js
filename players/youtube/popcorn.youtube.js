@@ -27,7 +27,7 @@ var onYouTubePlayerReady;
   // 0.05 sec tolerance between old and new times to determine if currentTime has been set programatically
   // 250 ms progress interval as specified by WHATWG
   var timeupdateInterval = 33,
-      timeCheckInterval = 0.5
+      timeCheckInterval = 0.5,
       progressInterval = 250;
 
   // Ready State Constants
@@ -62,7 +62,7 @@ var onYouTubePlayerReady;
     var matches = url.match( /((http:\/\/)?www\.)?youtube\.[a-z]+\/watch\?v\=[a-z0-9]+/i );    
     // Return id, which comes after first equals sign
     return matches ? matches[0].split( "=" )[1] : "";
-  };
+  }
   
   // Extract the id from a player url
   function extractIdFromUri( url ) {
@@ -73,8 +73,8 @@ var onYouTubePlayerReady;
     var matches = url.match( /^http:\/\/?www\.youtube\.[a-z]+\/e\/[a-z0-9]+/i );
     
     // Return id, which comes after first equals sign
-    return matches ? matches[0].split( "/e/" )[1] : ""
-  };
+    return matches ? matches[0].split( "/e/" )[1] : "";
+  }
   
   function getPlayerAddress( vidId, playerId ) {
     if( !vidId ) {
@@ -85,7 +85,8 @@ var onYouTubePlayerReady;
   }
   
   function makeSWF( url, container ) {
-    var params,
+    var bounds,
+        params,
         flashvars,
         attributes,
         self = this;
@@ -95,29 +96,25 @@ var onYouTubePlayerReady;
         makeSWF.call( self, url, container );
       }, 1 );
       return;
-    }    
-        
-    // The video id for youtube (web or player formats)
-    // First check manually given url, if that doesn't work resort to "src"
-    this.vidId = this.vidId || extractIdFromUrl( container.getAttribute( "src" ) ) || extractIdFromUri( container.getAttribute( "src" ) );
-    
-    if ( !this.vidId ) {
-      throw "Could not find video id";
     }
     
+    bounds = container.getBoundingClientRect();
+    
     // Determine width/height/etc based on container
-    this.width = container.getAttribute("width") || 460;
-    this.height = container.getAttribute("height") || 350;
+    this.width = container.style.width || 460;
+    this.height = container.style.height || 350;
     
     // Just in case we got the attributes as strings. We'll need to do math with these later
     this.width = parseFloat(this.width);
     this.height = parseFloat(this.height);
     
+    // For calculating position relative to video (like subtitles)
     this.offsetWidth = this.width;
     this.offsetHeight = this.height;
+    this.offsetLeft = bounds.left;
+    this.offsetTop = bounds.top;
+    
     this.offsetParent = container.offsetParent;
-    this.offsetLeft = container.offsetLeft;
-    this.offsetTop = container.offsetTop;
     
     flashvars = {
       playerapiid: this.playerId
@@ -151,30 +148,44 @@ var onYouTubePlayerReady;
     // Issue load event
     vid.dispatchEvent( 'load' );
     vid.dispatchEvent( "durationchange" );
-  }
-
-  Popcorn.youtube = function( elementId, url ) {
-    return new Popcorn.youtube.init( elementId, url );
   };
 
-  Popcorn.youtube.init = function( elementId, url ) {
+  Popcorn.youtube = function( elementId, url, options ) {
+    return new Popcorn.youtube.init( elementId, url, options );
+  };
+
+  Popcorn.youtube.init = function( elementId, url, options ) {
     if ( !elementId ) {
       throw "Element id is invalid.";
     } else if ( /file/.test( location.protocol ) ) {
       throw "This must be run from a web server.";
     }
     
-    var self = this,
-        container = document.getElementById( elementId );;
+    options = options || {};
     
-    this.playerId = elementId;
+    var self = this;
+    
+    this.playerId = elementId + Popcorn.guid();
     this.readyState = READY_STATE_HAVE_NOTHING;
-    this.eventListeners = {};
+    this._eventListeners = {};
     this.loadStarted = false;
     this.loadedData = false;
     this.fullyLoaded = false;
-    this.timeUpdater = null;
-    this.progressUpdater = null;
+    
+    // If supplied as number, append  'px' on end
+    // If suppliied as '###' or '###px', convert to number and append 'px' back on end
+    options.width = options.width && (+options.width)+"px";
+    options.height = options.height && (+options.height)+"px";
+    
+    this._target = document.getElementById( elementId );
+    this._container = document.createElement( "div" );
+    this._container.id = this.playerId;
+    this._container.style.height = this._target.style.height = options.height || this._target.style.height || "350px";
+    this._container.style.width  = this._target.style.width  = options.width || this._target.style.width  || "460px";
+    this._target.appendChild( this._container );
+
+    this.offsetHeight = +this._target.offsetHeight;
+    this.offsetWidth = +this._target.offsetWidth;
     
     this.currentTime = this.previousCurrentTime = 0;
     this.volume = this.previousVolume = this.preMuteVol = 1;
@@ -182,13 +193,15 @@ var onYouTubePlayerReady;
     
     this.vidId = extractIdFromUrl( url ) || extractIdFromUri( url );
     
+    if ( !this.vidId ) {
+      throw "Could not find video id";
+    }
+    
     this.addEventListener( "load", function() {
       // For calculating position relative to video (like subtitles)
       this.offsetWidth = this.video.offsetWidth;
       this.offsetHeight = this.video.offsetHeight;
       this.offsetParent = this.video.offsetParent;
-      this.offsetLeft = this.video.offsetLeft;
-      this.offsetTop = this.video.offsetTop;
       
       // Set up stuff that requires the API to be loaded
       this.registerYoutubeEventHandlers();
@@ -213,7 +226,7 @@ var onYouTubePlayerReady;
     if ( loadedPlayers[this.playerId] ) {
       this.video = registry[this.playerId].video;
       
-      this.vidId = this.vidId || extractIdFromUrl( container.getAttribute( "src" ) ) || extractIdFromUri( container.getAttribute( "src" ) );
+      this.vidId = this.vidId || extractIdFromUrl( this._container.getAttribute( "src" ) ) || extractIdFromUri( this._container.getAttribute( "src" ) );
       
       if (this.vidId !== registry[this.playerId].vidId ) {
         this.video.cueVideoById( this.vidId );
@@ -223,18 +236,18 @@ var onYouTubePlayerReady;
       }
       
       this.dispatchEvent( 'load' );
-    } else if ( container ) {
-      makeSWF.call( this, url, container );
+    } else if ( this._container ) {
+      makeSWF.call( this, url, this._container );
     } else {
       // Container not yet loaded, get it on DOMDontentLoad
       document.addEventListener( "DOMContentLoaded", function() {
-        container = document.getElementById( elementId );
+        self._container = document.getElementById( elementId );
         
-        if ( !container ) {
+        if ( !self._container ) {
           throw "Could not find container!";
         }
         
-        makeSWF.call( self, url, container );
+        makeSWF.call( self, url, self._container );
       }, false);
     }
     
@@ -331,7 +344,7 @@ var onYouTubePlayerReady;
       if ( !loadedPlayers[this.playerId] ) {
         this.addEventListener( "load", function() {
           this.load();
-}          );
+        });
         return;
       }
       
@@ -383,11 +396,11 @@ var onYouTubePlayerReady;
     addEventListener: function( evt, func ) {
       var evtName = evt.type || evt;
       
-      if ( !this.eventListeners[evtName] ) {
-        this.eventListeners[evtName] = [];
+      if ( !this._eventListeners[evtName] ) {
+        this._eventListeners[evtName] = [];
       }
       
-      this.eventListeners[evtName].push( func );
+      this._eventListeners[evtName].push( func );
     },
 
     /**
@@ -395,13 +408,13 @@ var onYouTubePlayerReady;
      */
     dispatchEvent: function( name ) {
       var evtName = name.type || name;
-      if ( !this.eventListeners[evtName] ) {
+      if ( !this._eventListeners[evtName] ) {
         return;
       }
       
       var self = this;
       
-      Popcorn.forEach( this.eventListeners[evtName], function( evt ) {
+      Popcorn.forEach( this._eventListeners[evtName], function( evt ) {
         evt.call( self, null );
       });
     },
@@ -412,6 +425,38 @@ var onYouTubePlayerReady;
     },
 
     playbackRate: function( arg ) {
+    },
+    
+    getBoundingClientRect: function() {
+      var b,
+          self = this;
+          
+      if ( this.video ) {
+        b = this.video.getBoundingClientRect();
+        
+        return {
+          bottom: b.bottom,
+          left: b.left,
+          right: b.right,
+          top: b.top,
+          
+          //  These not guaranteed to be in there
+          width: b.width || ( b.right - b.left ),
+          height: b.height || ( b.bottom - b.top )
+        };
+      } else {
+        b = self._container.getBoundingClientRect();
+        
+        // Update bottom, right for expected values once the container loads
+        return {
+          left: b.left,
+          top: b.top,
+          width: self._target.offsetWidth,
+          height: self._target.offsetHeight,
+          bottom: b.top + self._target.offsetWidth,
+          right: b.left + self._target.offsetHeight
+        };
+      }
     },
     
     startTimeUpdater: function() {
@@ -450,7 +495,7 @@ var onYouTubePlayerReady;
           self = this;
 
       // do nothing if size is not yet determined
-      if ( bytesToLoad == 0 ) {
+      if ( bytesToLoad === 0 ) {
         return;
       }
 

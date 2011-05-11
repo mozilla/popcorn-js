@@ -51,7 +51,7 @@ test("API", function () {
 
 test("Utility", function () {
 
-  expect(7);
+  expect(8);
   //  TODO: comprehensive tests for these utilities
 
   equals( typeof Popcorn.forEach, "function" , "Popcorn.forEach is a provided utility function");
@@ -61,10 +61,7 @@ test("Utility", function () {
   equals( typeof Popcorn.sizeOf, "function" , "Popcorn.sizeOf is a provided utility function");
   equals( typeof Popcorn.nop, "function" , "Popcorn.nop is a provided utility function");
   equals( typeof Popcorn.addTrackEvent, "function" , "Popcorn.addTrackEvent is a provided utility function");
-
-
-
-
+  equals( typeof Popcorn.position, "function" , "Popcorn.position is a provided utility function");
 });
 
 test("Standard Time Strings" , function () {
@@ -465,15 +462,15 @@ test("exec", function () {
 module("Popcorn Position");
 test("position", function () {
 
-	expect(25);
-	
+  expect(25);
+  
   var $absolute = $(".absolute"), 
       $relative = $(".relative"), 
       $fixed = $(".fixed"),
       $static = $(".static"),  
       tests;
 
-	$("#position-tests").show();
+  $("#position-tests").show();
 //  console.log( $absolute );
 //  console.log( $fixed );
 //  console.log( $relative );
@@ -529,7 +526,7 @@ test("position", function () {
     ok( false, e );
   }
 
-	$("#position-tests").hide();
+  $("#position-tests").hide();
 });
 
 test("position called from plugin", function () {
@@ -2371,6 +2368,15 @@ test("Last Check", function () {
     }
 
   } catch (e) {};
+
+  //  Trigger follow-up tests to run in iframes
+  (function( $ ) {
+
+    $("iframe[data-src]").attr( "src", function() {
+      return $(this).data("src");
+    });
+  
+  })( jQuery );
 
 });
 

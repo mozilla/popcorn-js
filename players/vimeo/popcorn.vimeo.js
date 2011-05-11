@@ -1,5 +1,5 @@
 // Popcorn Vimeo Player Wrapper
-( function( Popcorn ) {
+( function( Popcorn, global ) {
   /**
   * Vimeo wrapper for Popcorn.
   * This player adds enables Popcorn.js to handle Vimeo videos. It does so by masking an embedded Vimeo video Flash object
@@ -123,9 +123,9 @@
               fn.call( owner, args );
             }
           });
-        }
+        };
       }
-    };
+    }
     
     return {
       addEventListener: function( evtName, fn, doFire ) {
@@ -172,14 +172,14 @@
       dispatchEvent: function( evt, args ) {        
         // If event object was passed in, toString will yield event type as string (timeupdate)
         // If a string, toString() will return the string itself (timeupdate)
-        var evt = "on"+evt.toString().toLowerCase();
+        evt = "on"+evt.toString().toLowerCase();
         this[evt] && this[evt]( args );
       }
     };
   };
       
-  Popcorn.vimeo = function( mediaId, list ) {
-    return new Popcorn.vimeo.init( mediaId, list );
+  Popcorn.vimeo = function( mediaId, list, options ) {
+    return new Popcorn.vimeo.init( mediaId, list, options );
   };
   
   Popcorn.vimeo.onLoad = function( playerId ) {
@@ -195,7 +195,7 @@
     player.offsetTop = player.swfObj.offsetTop;
     
     player.dispatchEvent( "load" );
-  }
+  };
   
   Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" );
   
@@ -215,7 +215,7 @@
       
       var matches = uri.match( rPlayerUri );
       return matches ? matches[0].substr(30) : "";
-    };
+    }
     
     // Extract the numeric video id from url: 'http://vimeo.com/11127501' or simply 'vimeo.com/4282282'
     // Ignores protocol and subdomain, but one would expecct it to be http://www.vimeo.com/#######
@@ -228,7 +228,12 @@
       
       var matches = url.match( rWebUrl );
       return matches ? matches[0].substr(10) : "";
-    };
+    }
+    
+    // Gets the style for the given element
+    function getStyle( elem, styleProp ) {
+      return elem.style[styleProp];
+    }
       
     function makeSwf( self, vidId, containerId ) {
       if ( !window.swfobject ) {
@@ -261,11 +266,11 @@
         wmode: 'transparent'
       };
       
-      swfobject.embedSWF( "http://vimeo.com/moogaloop.swf", containerId, self.width, self.height, "9.0.0", "expressInstall.swf", flashvars, params, attributes );
+      swfobject.embedSWF( "http://vimeo.com/moogaloop.swf", containerId, self.offsetWidth, self.offsetHeight, "9.0.0", "expressInstall.swf", flashvars, params, attributes );
     }
     
     // If container id is not supplied, assumed to be same as player id
-    var ctor = function ( containerId, videoUrl ) {
+    var ctor = function ( containerId, videoUrl, options ) {
       if ( !containerId ) {
         throw "Must supply an id!";
       } else if ( /file/.test( location.protocol ) ) {
@@ -274,7 +279,10 @@
       
       var vidId,
           that = this,
-          container = document.getElementById( containerId );
+          tmp,
+          container = this.container = document.getElementById( containerId );
+      
+      options = options || {};
       
       this.addEventFn;
       this.evtHolder;
@@ -292,21 +300,39 @@
       this.previousVolume = this.volume;
       this.evtHolder = new EventManager( this );
       
+      this._container =  document.getElementById( containerId );
+      bounds = this._container.getBoundingClientRect();
+      
       // For calculating position relative to video (like subtitles)
-      this.offsetWidth = this.width = container.getAttribute( "width" ) || "504";
-      this.offsetHeight = this.height = container.getAttribute( "height" ) || "340";
+      this.width = options.width || getStyle( container, "width" ) || "504px";
+      this.height = options.height || getStyle( container, "height" ) || "340px";
+      
+      if ( !/[\d]%/.test( this.width ) ) {
+        this.offsetWidth = parseInt( this.width, 10 );
+      } else {
+        // convert from pct to abs pixels
+        tmp = container.style.width;
+        container.style.width = this.width;
+        this.offsetWidth = container.offsetWidth;
+        container.style.width = tmp;
+      }
+      
+      if ( !/[\d]%/.test( this.height ) ) {
+        this.offsetHeight = parseInt( this.height, 10 );
+      } else {
+        // convert from pct to abs pixels
+        tmp = container.style.height;
+        container.style.height = this.height;
+        this.offsetHeight = container.offsetHeight;
+        container.style.height = tmp;
+      }
+      
       this.offsetLeft = 0;
       this.offsetTop = 0;
       
       // Try and get a video id from a vimeo site url
       // Try either from ctor param or from iframe itself
-      if( videoUrl ) {
-        vidId = extractIdFromUrl( videoUrl ) || extractIdFromUri( videoUrl );
-      } 
-
-      if ( !vidId ){
-        vidId = extractIdFromUrl( container.getAttribute("src") ) || extractIdFromUri( container.getAttribute("src") );
-      }
+      vidId = extractIdFromUrl( videoUrl ) || extractIdFromUri( videoUrl );
       
       if ( !vidId ) {
         throw "No video id";
@@ -366,7 +392,7 @@
           }
         });
       });
-    }
+    };
     return ctor;
   })();
   
@@ -553,6 +579,9 @@
     dispatchEvent: function( evtName ) {
       return this.evtHolder.dispatchEvent( evtName );
     },
+    getBoundingClientRect: function() {
+      return this.container.getBoundingClientRect();
+    },
     startTimeUpdater: function() {
       var self = this,
           seeked = 0;
@@ -580,4 +609,4 @@
       }
     }
   });
-})( Popcorn );
+})( Popcorn, window );

@@ -37,9 +37,9 @@
               document.getElementById( "btnPlay" ).addEventListener( "click", function() { popcorn.play(); }, false );
               document.getElementById( "btnPause" ).addEventListener( "click", function() { popcorn.pause(); }, false );
               
-              player.resource = document.getElementById('player_1');
+              player._resource = document.getElementById('player_1');
               
-              player.resource.innerHTML += '<br />Width and Height: '+player.getStyle( 'width' ) + ' by ' + player.getStyle( 'height' )
+              player._resource.innerHTML += '<br />Width and Height: '+player.getStyle( 'width' ) + ' by ' + player.getStyle( 'height' )
                                             + '<br /> Positioned at: '+player.getStyle( 'left' ) + ',' + player.getStyle( 'top' );
               
               dimensions = player.getBoundingClientRect();

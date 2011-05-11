@@ -1,11 +1,3 @@
-/*
- * popcorn.js version @VERSION
- * http://popcornjs.org
- *
- * Copyright 2011, Mozilla Foundation
- * Licensed under the MIT license
- */
-
 (function(global, document) {
 
   //  Cache refs to speed up calls to native utils
@@ -335,7 +327,36 @@
     isArray: Array.isArray || function( array ) {
       return toString.call( array ) === "[object Array]";
     }, 
-    nop: function () {}
+
+    nop: function () {},
+
+    position: function( elem ) {
+
+      var clientRect = elem.getBoundingClientRect(),
+          bounds = {}, 
+          doc = elem.ownerDocument,
+          docElem = document.documentElement,
+          body = document.body,
+          clientTop, clientLeft, scrollTop, scrollLeft, top, left;
+
+      //  Determine correct clientTop/Left
+      clientTop  = docElem.clientTop  || body.clientTop  || 0;
+      clientLeft = docElem.clientLeft || body.clientLeft || 0;
+
+      //  Determine correct scrollTop/Left
+      scrollTop  = ( global.pageYOffset && docElem.scrollTop || body.scrollTop );
+      scrollLeft = ( global.pageXOffset && docElem.scrollLeft || body.scrollLeft );
+
+      //  Temp top/left
+      top  = Math.ceil( clientRect.top  + scrollTop - clientTop );
+      left = Math.ceil( clientRect.left + scrollLeft - clientLeft );
+
+      for ( var p in clientRect ) {
+        bounds[ p ] = Math.round( clientRect[ p ] );
+      }
+
+      return Popcorn.extend({}, bounds, { top: top, left: left });     
+    }
   });
 
   //  Memoized GUID Counter
@@ -402,34 +423,8 @@
 
       return this;
     },
-
-    //  Popcorn Object Element Utils
     position: function() {
-      var  media = this.media,  
-          clientRect = media.getBoundingClientRect(),
-          bounds = {}, 
-          doc = media.ownerDocument,
-          docElem = document.documentElement,
-          body = document.body,
-          clientTop, clientLeft, scrollTop, scrollLeft, top, left;
-
-      //  Determine correct clientTop/Left
-      clientTop  = docElem.clientTop  || body.clientTop  || 0;
-      clientLeft = docElem.clientLeft || body.clientLeft || 0;
-
-      //  Determine correct scrollTop/Left
-      scrollTop  = ( global.pageYOffset && docElem.scrollTop || body.scrollTop );
-      scrollLeft = ( global.pageXOffset && docElem.scrollLeft || body.scrollLeft );
-
-      //  Temp top/left
-      top  = Math.ceil( clientRect.top  + scrollTop - clientTop );
-      left = Math.ceil( clientRect.left + scrollLeft - clientLeft );
-
-      for ( var p in clientRect ) {
-        bounds[ p ] = Math.round( clientRect[ p ] );
-      }
-      
-      return Popcorn.extend({}, bounds, { top: top, left: left });
+      return Popcorn.position( this.media );
     }
   });
 
@@ -864,8 +859,8 @@
     return plugin;
   };
 
-	//	Popcorn Plugin Inheritance Helper Methods
-	//	Internal use only
+  //  Popcorn Plugin Inheritance Helper Methods
+  //  Internal use only
   Popcorn.plugin.getDefinition = function( name ) {
 
     var registry = Popcorn.registryByName;
@@ -877,7 +872,7 @@
     Popcorn.error( "Cannot inherit from "+ name +"; Object does not exist" );
   };
 
-	//	Internal use only
+  //  Internal use only
   Popcorn.plugin.delegate = function( instance, name, plugins ) {
 
     return function() {
@@ -890,7 +885,7 @@
     };
   };
 
-	//	Plugin inheritance
+  //  Plugin inheritance
   Popcorn.plugin.inherit = function( name, parents, definition, manifest ) {
 
 
@@ -947,7 +942,7 @@
     return pluginFn;
   };
 
-	// Augment Popcorn; 
+  // Augment Popcorn; 
   Popcorn.inherit = Popcorn.plugin.inherit;
 
   // stores parsers keyed on filetype
