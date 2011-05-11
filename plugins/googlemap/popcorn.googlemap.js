@@ -128,9 +128,11 @@ var googleCallback;
         // ensure the map has been initialized in the setup function above
         var isMapSetup = function () {
           if ( map ) {
-            map.getDiv().style.display = "block";
-            // reset the location and zoom just in case the user plaid with the map
-            map.setCenter(location);
+            map.getDiv().style.display = "block";                               
+
+            // reset the location and zoom just in case the user manually moved the map
+						google.maps.event.trigger(map, "resize");
+            map.setCenter(location);       
 
             // make sure options.zoom is a number
             if ( options.zoom && typeof options.zoom !== "number" ) {
@@ -148,8 +150,6 @@ var googleCallback;
             if ( options.pitch && typeof options.pitch !== "number" ) {
               options.pitch = +options.pitch;
             }
-
-            google.maps.event.trigger(map, 'resize');
 
             if ( options.type === "STREETVIEW" ) {
               // Switch this map into streeview mode
