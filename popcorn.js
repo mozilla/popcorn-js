@@ -580,20 +580,20 @@
     var byStart = obj.data.trackEvents.byStart,
         byEnd = obj.data.trackEvents.byEnd;
    
-    for (var idx = byStart.length-1; idx >= 0; idx--) {
+    for ( var idx = byStart.length-1; idx >= 0; idx-- ) {
 
-     if (track.start >= byStart[idx].start) {
-      obj.data.trackEvents.byStart.splice(idx+1, 0, track);
-      break;
-     }
+      if ( track.start >= byStart[idx].start ) {
+        byStart.splice( idx+1, 0, track );
+        break;
+      }
     }
    
-    for (var idx = byEnd.length-1; idx >= 0; idx--) {
+    for ( var idx = byEnd.length-1; idx >= 0; idx-- ) {
 
-     if (track.start >= byEnd[idx].start) {
-      obj.data.trackEvents.byEnd.splice(idx+1, 0, track);
-      break;
-     }
+      if ( track.start >= byEnd[idx].start ) {
+        byEnd.splice( idx+1, 0, track );
+        break;
+      }
     }
 
   };
