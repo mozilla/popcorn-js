@@ -51,17 +51,19 @@ test("API", function () {
 
 test("Utility", function () {
 
-  expect(8);
+  expect(10);
   //  TODO: comprehensive tests for these utilities
 
-  equals( typeof Popcorn.forEach, "function" , "Popcorn.forEach is a provided utility function");
-  equals( typeof Popcorn.extend, "function" , "Popcorn.extend is a provided utility function");
-  equals( typeof Popcorn.error, "function" , "Popcorn.error is a provided utility function");
-  equals( typeof Popcorn.guid, "function" , "Popcorn.guid is a provided utility function");
-  equals( typeof Popcorn.sizeOf, "function" , "Popcorn.sizeOf is a provided utility function");
-  equals( typeof Popcorn.nop, "function" , "Popcorn.nop is a provided utility function");
-  equals( typeof Popcorn.addTrackEvent, "function" , "Popcorn.addTrackEvent is a provided utility function");
-  equals( typeof Popcorn.position, "function" , "Popcorn.position is a provided utility function");
+  equals( typeof Popcorn.forEach, "function" , "Popcorn.forEach is a provided static function");
+  equals( typeof Popcorn.extend, "function" , "Popcorn.extend is a provided static function");
+  equals( typeof Popcorn.error, "function" , "Popcorn.error is a provided static function");
+  equals( typeof Popcorn.guid, "function" , "Popcorn.guid is a provided static function");
+  equals( typeof Popcorn.sizeOf, "function" , "Popcorn.sizeOf is a provided static function");
+  equals( typeof Popcorn.nop, "function" , "Popcorn.nop is a provided static function");
+  equals( typeof Popcorn.addTrackEvent, "function" , "Popcorn.addTrackEvent is a provided static function");
+  equals( typeof Popcorn.position, "function" , "Popcorn.position is a provided static function");
+  equals( typeof Popcorn.disable, "function" , "Popcorn.disable is a provided static function");
+  equals( typeof Popcorn.enable, "function" , "Popcorn.enable is a provided static function");
 });
 
 test("Standard Time Strings" , function () {
@@ -203,16 +205,16 @@ test("Instances", function() {
 
   Popcorn("#video");
 
-  ok( typeof Popcorn.addInstance === "function" , "Popcorn.addInstance is a provided utility function");
+  ok( typeof Popcorn.addInstance === "function" , "Popcorn.addInstance is a provided static function");
   plus();
 
-  ok( typeof Popcorn.removeInstance === "function" , "Popcorn.removeInstance is a provided utility function");
+  ok( typeof Popcorn.removeInstance === "function" , "Popcorn.removeInstance is a provided static function");
   plus();
 
-  ok( typeof Popcorn.getInstanceById === "function" , "Popcorn.getInstanceById is a provided utility function");
+  ok( typeof Popcorn.getInstanceById === "function" , "Popcorn.getInstanceById is a provided static function");
   plus();
 
-  ok( typeof Popcorn.removeInstanceById === "function" , "Popcorn.removeInstanceById is a provided utility function");
+  ok( typeof Popcorn.removeInstanceById === "function" , "Popcorn.removeInstanceById is a provided static function");
   plus();
 
   ok( typeof Popcorn.instanceIds === "object" , "Popcorn.instanceIds is a provided cache object");
@@ -1694,19 +1696,59 @@ test("Index Integrity", function () {
 
 });
 
+test("Popcorn.disable/enable", function() {
 
 
+  var $pop = Popcorn.getInstanceById( "video" ),
+      count = 0,
+      expects = 4;
 
+  expect( expects );
 
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
 
+  stop( 10000 );
+
+	// rw/ff
+
+	// Test static function call
+	Popcorn.disable( $pop, "rw" );
+
+	ok( $pop.data.disabled.indexOf("rw") > -1, "Plugin: rw is disabled" );
+	plus();
+
+	// Test per-instance function call
+	$pop.disable( "ff" );
+	
+	ok( $pop.data.disabled.indexOf("ff") > -1, "Plugin: ff is disabled" );
+	plus();
+
+	// Test static function call
+	Popcorn.enable( $pop, "rw" );
+
+	ok( $pop.data.disabled.indexOf("rw") === -1, "Plugin: rw is enabled" );
+	plus();
+
+	// Test per-instance function call
+	$pop.enable( "ff" );	
+	
+	ok( $pop.data.disabled.indexOf("ff") === -1, "Plugin: ff is enabled" );
+	plus();
+
+  //console.log( Popcorn.instances[ Popcorn.instanceIds.video ],  );
+});
 
 module("Popcorn XHR");
 test("Basic", function () {
 
   expect(2);
 
-  equals( typeof Popcorn.xhr, "function" , "Popcorn.xhr is a provided utility function");
-  equals( typeof Popcorn.xhr.httpData, "function" , "Popcorn.xhr.httpData is a provided utility function");
+  equals( typeof Popcorn.xhr, "function" , "Popcorn.xhr is a provided static function");
+  equals( typeof Popcorn.xhr.httpData, "function" , "Popcorn.xhr.httpData is a provided static function");
 
 
 });

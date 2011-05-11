@@ -1,11 +1,16 @@
 (function(global, document) {
 
   //  Cache refs to speed up calls to native utils
+  
   var
-  forEach = Array.prototype.forEach,
-  hasOwn = Object.prototype.hasOwnProperty,
-  slice = Array.prototype.slice,
-  toString = Object.prototype.toString,
+  
+  AP = Array.prototype,
+  OP = Object.prototype,
+  
+  forEach = AP.forEach,
+  slice = AP.slice,
+  hasOwn = OP.hasOwnProperty,
+  toString = OP.toString,
 
   //  ID string matching
   rIdExp  = /^(#([\w\-\_\.]+))$/,
@@ -143,10 +148,20 @@
       //  Register new instance
       Popcorn.addInstance( this );
 
-      this.options = options || { };
+      this.options = options || {};
+
       this.data = {
-        history: [],
+
+        // Allows disabling a plugin per instance
+        disabled: [],
+
+        // Stores DOM event queues by type
         events: {},
+
+        // Store track event history data
+        history: [],
+
+        // Playback track event queues
         trackEvents: {
           byStart: [{
             start: -1,
@@ -207,7 +222,10 @@
               while ( tracksByStart[ tracks.startIndex ] && tracksByStart[ tracks.startIndex ].start <= currentTime ) {
                 //  If plugin does not exist on this instance, remove it
                 if ( !tracksByStart[ tracks.startIndex ]._natives || !!that[ tracksByStart[ tracks.startIndex ]._natives.type ] ) {
-                  if ( tracksByStart[ tracks.startIndex ].end > currentTime && tracksByStart[ tracks.startIndex ]._running === false ) {
+                  if ( tracksByStart[ tracks.startIndex ].end > currentTime && 
+                        tracksByStart[ tracks.startIndex ]._running === false && 
+                          that.data.disabled.indexOf( tracksByStart[ tracks.endIndex ]._natives.type ) === -1 ) {
+                          
                     tracksByStart[ tracks.startIndex ]._running = true;
                     tracksByStart[ tracks.startIndex ]._natives.start.call( that, event, tracksByStart[ tracks.startIndex ] );
                   }
@@ -240,7 +258,10 @@
               while ( tracksByEnd[ tracks.endIndex ] && tracksByEnd[ tracks.endIndex ].end > currentTime ) {
                 // if plugin does not exist on this instance, remove it
                 if ( !tracksByEnd[ tracks.endIndex ]._natives || !!that[ tracksByEnd[ tracks.endIndex ]._natives.type ] ) {
-                  if ( tracksByEnd[ tracks.endIndex ].start <= currentTime && tracksByEnd[ tracks.endIndex ]._running === false ) {
+                  if ( tracksByEnd[ tracks.endIndex ].start <= currentTime && 
+                        tracksByEnd[ tracks.endIndex ]._running === false  && 
+                          that.data.disabled.indexOf( tracksByStart[ tracks.endIndex ]._natives.type ) === -1 ) {
+
                     tracksByEnd[ tracks.endIndex ]._running = true;
                     tracksByEnd[ tracks.endIndex ]._natives.start.call( that, event, tracksByEnd[tracks.endIndex] );
                   }
@@ -356,6 +377,26 @@
       }
 
       return Popcorn.extend({}, bounds, { top: top, left: left });     
+    }, 
+
+    disable: function( instance, plugin ) {
+
+      var disabled = instance.data.disabled;
+      
+      if ( disabled.indexOf( plugin ) === -1 ) {
+        disabled.push( plugin );
+      }
+      return instance;
+    },
+    enable: function( instance, plugin ) {
+
+      var disabled = instance.data.disabled, 
+          index = disabled.indexOf( plugin );
+
+      if ( index > -1 ) {
+        disabled.splice( index, 1 );
+      }
+      return instance;
     }
   });
 
@@ -426,6 +467,12 @@
     position: function() {
       return Popcorn.position( this.media );
     }
+  });
+
+  Popcorn.forEach( "enable disable".split(" "), function( method ) {
+    Popcorn.p[ method ] = function( plugin ) {
+      return Popcorn[ method ]( this, plugin );
+    };
   });
 
   Popcorn.Events  = {
