@@ -53,6 +53,10 @@
         options.link.style.position = "relative";
         options.link.style.textDecoration = "none";
 
+        if ( document.getElementById( options.target ) ) {
+          document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
+        }
+
         var img = document.createElement( 'img' );
         img.addEventListener( "load", function() {
           img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
@@ -61,9 +65,6 @@
             options.link.href = options.href;
           }
           options.link.target = "_blank";
-          if ( document.getElementById( options.target ) ) {
-            document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
-          }
           
           var fontHeight = ( img.height / 12 ) + "px";
           
