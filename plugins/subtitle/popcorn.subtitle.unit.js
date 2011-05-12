@@ -1,7 +1,7 @@
 test("Popcorn Subtitle Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 5,
+      expects = 9,
       count = 0,
       interval,
       interval2,
@@ -23,22 +23,24 @@ test("Popcorn Subtitle Plugin", function () {
   plus();
 
   popped.subtitle({
-      start: 3,
+      start: 0,
+      end: 1,
       text: 'this is the first subtitle of 2011',
       language: "en",
       languagesrc: "language",
       accessibilitysrc: "accessibility"
     } )
   .subtitle({
-      start: 10,
-      end: 15,
+      start: 1,
+      end: 2,
       text: 'this is the second subtitle of 2011',
       language: "en",
       languagesrc: "language",
       accessibilitysrc: "accessibility"
     } )
 	.subtitle({
-      start: 20,
+      start: 3,
+      end: 4,
       text: 'this is the third subtitle of 2011',
       language: "en",
       languagesrc: "language",
@@ -46,38 +48,45 @@ test("Popcorn Subtitle Plugin", function () {
     } )
     .volume(0)
     .play();
-  
-  interval = setInterval( function() {
-    if( popped.currentTime() >= 3 && popped.currentTime() < 10 ) {
-      subtitlediv = document.getElementById('subtitlediv'); // this div has only now been created
-      equals (subtitlediv.innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
-      plus();
-      clearInterval( interval );
-    }
-  }, 500);
-  
-  interval2 = setInterval( function() {
-    if( popped.currentTime() >= 10 && popped.currentTime() < 15  ) {
-      equals (subtitlediv.innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
-      plus();
-      clearInterval( interval2 );
-    }
-  }, 500);
 
-  interval3 = setInterval( function() {
-    if( popped.currentTime() >= 15 && popped.currentTime() < 20 ) {
-      equals (subtitlediv.innerHTML, "" );
-      plus();
-      clearInterval( interval3 );
-    }
-  }, 500);
-  
-  interval4 = setInterval( function() {
-    if( popped.currentTime() > 20) {
-      equals (subtitlediv.innerHTML, "this is the third subtitle of 2011", "subtitle displaying correct information" );
-      plus();
-      clearInterval( interval4 );
-    }
-  }, 500);
+  subtitlediv = document.getElementById('subtitlediv');
+
+  popped.exec( 0.5, function() {
+
+console.log(subtitlediv.style.top);
+    equals ( subtitlediv.style.left, "400px", "subtitle left position moved" );
+    plus();
+    equals ( subtitlediv.style.top, "657px", "subtitle top position moved" );
+    plus();
+    equals (subtitlediv.innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
+    plus();
+  });
+
+  popped.exec( 1.5, function() {
+
+    equals (subtitlediv.innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
+    plus();
+  });
+
+  popped.exec( 2.5, function() {
+
+    equals (subtitlediv.innerHTML, "", "subtitle is clear" );
+    plus();
+  });
+
+  popped.exec( 3.5, function() {
+
+    equals (subtitlediv.innerHTML, "this is the third subtitle of 2011", "subtitle displaying correct information" );
+    plus();
+  });
+
+  equals ( "8px", subtitlediv.style.left, "subtitle left position default" );
+  plus();
+  equals ( "247px", subtitlediv.style.top, "subtitle top position default" );
+  plus();
+
+  popped.media.style.position = "absolute";
+  popped.media.style.left = "400px";
+  popped.media.style.top = "600px";
 
 });
