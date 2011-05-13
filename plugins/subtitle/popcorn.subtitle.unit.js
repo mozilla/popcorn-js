@@ -53,7 +53,6 @@ test("Popcorn Subtitle Plugin", function () {
 
   popped.exec( 0.5, function() {
 
-console.log(subtitlediv.style.top);
     equals ( subtitlediv.style.left, "400px", "subtitle left position moved" );
     plus();
     equals ( subtitlediv.style.top, "657px", "subtitle top position moved" );
