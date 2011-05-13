@@ -2,10 +2,8 @@
 <html>
 <head>
   <title>Popcorn LinkedIn Plug-in Demo</title>
+  <script src="http://platform.linkedin.com/in.js" type="text/javascript"></script>
   <script src="../../popcorn.js"></script>
-  <script>
-    var api_key = 'ND1uSIEUBH8MkI8E7g41kgGlWUexzvFL9uB2ihJbIrFuqunFq8aVmUrxyfAqxCBX';
-  </script>
   <script src="popcorn.linkedin.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -16,38 +14,53 @@
         type      : 'share',
         counter   : 'right',
         url       : "http://www.google.ca",
-        target    : "sharediv"
+        target    : "sharediv",
+        api_key   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        start     : 1,
+        end       : 3
       } )
       .linkedin({
         type      : 'recommendproduct',
         counter   : 'top',
         target    : "recommenddiv",
         companyid : 'LinkedIn',
-        productid : '201714'
+        productid : '201714',
+        api_key   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        start     : 4,
+        end       : 7
       } )
       .linkedin({
         type      : 'memberprofile',
         memberid  : '/in/jeffweiner08',
         format    : 'inline',
-        target    : "memberprofilediv"
+        target    : "memberprofilediv",
+        api_key   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        start     : 9,
+        end       : 11
       } )
       .linkedin({
         type      : 'companyinsider',
         companyid : '1441',
-        target    : "bottomdiv"
+        target    : "bottomdiv",
+        api_key   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        start     : 9,
+        end       : 11
       } )
       .linkedin({
         type      : 'companyprofile',
         companyid : '1441',
         format    : 'inline',
-        target    : "bottomdiv"
+        target    : "bottomdiv",
+        api_key   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        start     : 13,
+        end       : 17
       } )
     }, false);
 
   </script>
 </head>
 <body>
-<h1 id="qunit-header">Popcorn Facebook Plug-in Demo</h1>
+<h1 id="qunit-header">Popcorn LinkedIn Plug-in Demo</h1>
   <p>Right of video: share button, recommend button, member profile. <br />
      Below video: company insider, company profile.<br />
      For a description of each plugin's purpose, go to: <a href="http://developer.linkedin.com/community/plugins">LinkedIn Plugins</a></p>

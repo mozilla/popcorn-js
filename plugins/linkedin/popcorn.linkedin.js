@@ -43,28 +43,19 @@
         type   : {elem:"input", type:'text', label:"Type"},
         target : 'linkedin-container'
       }
-    },  
+    },
     
     _setup: function( options ) {
-      // similar to facebook script load idea
-      if ( !document.getElementById("linkedin-root") ) {
-        var r = document.createElement( 'div' );
-        r.setAttribute( 'div', "linkedin-root" );
-        document.body.appendChild( r );
-        
-        (function() {
-          var s = document.createElement( 'script' );
-          s.setAttribute( 'src', "http://platform.linkedin.com/in.js" );
-          s.setAttribute( 'type', "text/javascript" );
-          s.setAttribute( 'async', 'true' );
-          if ( typeof( api_key ) !== "undefined" ) {
-            s.innerHTML = 'api_key: ' + api_key;
-          }
-          r.appendChild( s );
-        }());
+      var api_key = options.api_key,
+                    target = document.getElementById( options.target );
+   
+      options._container = document.createElement( 'script' );
+      
+      options._container.setAttribute( 'async', 'true' );
+      if ( typeof( api_key ) !== "undefined" ) {
+        options._container.innerHTML = 'api_key: ' + api_key;
       }
       
-      options._container = document.createElement( 'script' );
       options.type = options.type.toLowerCase();
       
       // Replace the LinkedIn plugin's error message to something more helpful
@@ -132,6 +123,15 @@
       if ( document.getElementById( options.target ) ) {
         document.getElementById( options.target ).appendChild( options._container );
       }
+      target.style.display = 'none';
+    },
+
+    start: function( event, options ) {
+      options._container.parentNode.style.display = 'block';
+    },
+    
+    end: function( event, options ) {
+      options._container.parentNode.style.display = 'none';
     }
   });
 
