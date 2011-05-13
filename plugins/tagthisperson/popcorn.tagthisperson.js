@@ -1,6 +1,22 @@
 // PLUGIN: tagthisperson
 
 (function (Popcorn) {
+    
+  var peopleArray = [];
+  // one People object per options.target
+  var People = function() {
+    this.name = "";
+    this.contains = { };
+    this.toString = function() {
+      var r = [];
+      for ( var j in this.contains ) {
+        if ( this.contains.hasOwnProperty( j ) ) {
+          r.push( " " + this.contains[ j ] );
+        }
+      }
+      return r.toString();
+    };
+  };
   
   /**
    * tagthisperson popcorn plug-in 
@@ -29,22 +45,6 @@
    *
    */
   Popcorn.plugin( "tagthisperson" , ( function() {
-    
-    var peopleArray = [];
-    // one People object per options.target
-    var People = function() {
-      this.name = "";
-      this.contains = { };
-      this.toString = function() {
-        var r = [];
-        for ( var j in this.contains ) {
-          if ( this.contains.hasOwnProperty( j ) ) {
-            r.push( " " + this.contains[ j ] );
-          }
-        }
-        return r.toString();
-      };
-    };
     
     return {
       manifest: {

@@ -65,8 +65,10 @@
      */
     end: function(event, options){
       options._container.style.display = "none";
+    },
+    _teardown: function( options ) {
+      document.getElementById( options.target ).removeChild( options._container );
     }
-   
   });
 
 })( Popcorn );

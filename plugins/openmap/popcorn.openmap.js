@@ -250,8 +250,12 @@ var openmapCallback;
         if ( map ) {
           map.div.style.display = 'none';          
         }
-      }
+      },
+      _teardown: function( options ) {
 
+        document.getElementById( options.target ).removeChild( newdiv );
+        newdiv = map = centerlonlat = projection = displayProjection = pointLayer = selectControl = popup = null;
+      }
     };
   },
   {

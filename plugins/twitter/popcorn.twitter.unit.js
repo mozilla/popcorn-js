@@ -1,8 +1,9 @@
 test("Popcorn Twitter Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 6, 
+      expects = 7, 
       count = 0,
+      setupId,
       twitterdiv = document.getElementById('twitterdiv');
   
   expect( expects );
@@ -34,7 +35,9 @@ test("Popcorn Twitter Plugin", function () {
     title: 'Steve Song',
     src: '@stevesong',
     target: 'twitterdiv',
-  } );
+  });
+
+  setupId = popped.getLastTrackEventId();
 
   popped.exec( 1, function() {
     ok( /display: inline;/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
@@ -45,6 +48,10 @@ test("Popcorn Twitter Plugin", function () {
 
   popped.exec( 2, function() {
     ok( /display: none;/.test( twitterdiv.innerHTML ), "Div contents are hidden again" );
+    plus();
+
+    popped.pause().removeTrackEvent( setupId );
+    ok( !twitterdiv.children[0], "removed twitter was properly destroyed" );
     plus();
   });
   

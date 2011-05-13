@@ -112,6 +112,9 @@
        */
       end: function(event, options){
         newdiv.setAttribute( "style", "display:none" );
+      },
+      _teardown: function( options ) {
+        document.getElementById( options.target ).removeChild( newdiv );
       }
     };
   },

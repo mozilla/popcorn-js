@@ -76,7 +76,10 @@
     end: function(event, options){
       // make the iframe invisible
       options._iframe.style.display = 'none';
+    },
+    _teardown: function( options ) {
+
+      document.getElementById( options.target ).removeChild( options._iframe );
     }
-    
   });
 })( Popcorn );

@@ -107,8 +107,10 @@
        */
       end: function( event, options ) {
         options.link.style.display = "none";
+      },
+      _teardown: function( options ) {
+        document.getElementById( options.target ).removeChild( options.link );
       }
-          
   });
 
 })( Popcorn );

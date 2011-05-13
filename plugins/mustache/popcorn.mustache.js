@@ -139,6 +139,9 @@
 
       end: function( event, options ) {
         document.getElementById( options.target ).innerHTML = '';
+      },
+      _teardown: function( options ) {
+        getData, data, getTemplate, template = null;
       }
     };
   },

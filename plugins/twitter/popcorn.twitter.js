@@ -146,6 +146,10 @@
        */
       end: function( event, options ) {
         options.container.style.display = "none";
+      },
+      _teardown: function( options ) {
+
+        document.getElementById( options.target ).removeChild( options.container );
       }
     });
 
