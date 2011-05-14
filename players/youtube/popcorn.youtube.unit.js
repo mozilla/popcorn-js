@@ -165,12 +165,12 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
   
   var count = 0,
       expects = 3,
-      popcorn = Popcorn( Popcorn.youtube( 'video2', 'http://www.youtube.com/watch?v=9oar9glUCL0' ) );
+      popcorn = Popcorn( Popcorn.youtube( 'video2', 'http://www.youtube.com/watch?v=2w-_Vtttrfc' ) );
       
   expect( expects );
   stop( 10000 );
   
-  equals( popcorn.video.vidId, '9oar9glUCL0', 'Video id set' );
+  equals( popcorn.video.vidId, '2w-_Vtttrfc', 'Video id set' );
   plus();
   
   equals( popcorn.duration(), 0, 'Duration starts as 0');
