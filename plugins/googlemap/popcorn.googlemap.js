@@ -178,13 +178,8 @@ var googleCallback;
 
                                         setTimeout(function () {
                                           console.log(rM);
-                                          var p = new google.maps.LatLng(rM.position.lat, rM.position.lng);
-                                          sView.setPosition(p);
-                                          sView.setPov({
-                                            heading: rM.pov.heading,
-                                              zoom: 1,
-                                              pitch: 1
-                                          });
+                                          sView.setPosition(rM);
+                                          
                                         }, t);
 
                                 }
@@ -203,7 +198,7 @@ var googleCallback;
                                         lat = start.lat(), 
                                         lng = start.lng();
 
-                                    for(var i = ; i < steps; i++){
+                                    for(var i = 0; i < 99; i++){
                                       lat += latDiff;
                                       lng += lngDiff;
                                       checkpoints.push(new google.maps.LatLng(lat, lng));
@@ -213,7 +208,7 @@ var googleCallback;
 
                                   var directionsService = new google.maps.DirectionsService();
 
-                                  var directionsDisplay = new google.maps.DirectionsRenderer(panorama);
+                                  var directionsDisplay = new google.maps.DirectionsRenderer(sView);
 
                                   var request = {
                                     origin: options.startLoc,
@@ -229,13 +224,34 @@ var googleCallback;
                                   });
 
                                   function showSteps(directionResult) {
-                                    for (var j = 0; j < directionResult.routes[0].overview_path.length; j++) {
+                                    for (var j = 0; j < directionResult.routes[0].overview_path.length-1; j++) {
                                       getSteps(directionResult.routes[0].overview_path[j], directionResult.routes[0].overview_path[j+1]);
                                     }     
-                                    for ( i = 0; i < checkpoints.length; i++ ) {
+                                    for ( var i = 0; i < checkpoints.length; i++ ) {
                                       tmr = tmr + options.interval;
                                       tween( checkpoints[i], tmr );
                                     }
+
+
+                                  interval = window.setInterval(function(){
+                                        i++;
+                                        // use trig to adjust the heading towards destination
+                                       if ( i > 0 ) {
+                                          //console.log(k);
+                                          var radians = Math.atan2( ( checkpoints[i].lng() - checkpoints[i-1].lng() ), 
+                                                                   ( checkpoints[i].lat() - checkpoints[i-1].lat() ) );
+                                          var degrees = Math.round( ( radians / (Math.PI/180) ) );
+                                          var pov = panorama.getPov();
+                                          pov.heading = degrees;
+                                          sView.setPov(pov); 
+                                        }
+                                        sView.setPosition(checkpoints[i]);
+                                        //console.log(checkpoints.length);
+                                        if(i == checkpoints.length-1){
+                                          console.log("DONE");
+                                          window.clearInterval(interval);
+                                      }
+                                      }, options.interval);
                                   }
                                 }
                                 else if ( options.tween.length > 0 ){
