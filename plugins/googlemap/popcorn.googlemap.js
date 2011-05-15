@@ -176,85 +176,62 @@ var googleCallback;
 
                                 var tween = function (rM, t) {
 
-                                        setTimeout(function () {
-                                          console.log(rM);
-                                          sView.setPosition(rM);
-                                          
-                                        }, t);
+                                  setTimeout(function () {
+
+                                    if(options.tween){
+
+                                      var p = new google.maps.LatLng(rM.position.lat, rM.position.lng);
+	                                    sView.setPosition(p);
+
+	                                    sView.setPov({
+	                                      heading: rM.pov.heading,
+	                                      zoom: 1,
+	                                      pitch: 1
+	                                    });
+
+                                    }
+                                    else{
+                                      sView.setPosition(rM);
+                                    }   
+                                  }, t);
 
                                 }
+
                                 var tmr = 0;
         
-                                if ( !!options.startLoc && !!options.endLoc ){
-   
+                                if ( !options.tween && ( options.location && options.endLoc) ){
+                                  
                                   //  Create an array to store all the lat/lang values along our route
                                   var checkpoints = [];
-
-                                  //  Helper function to split up each portion on a route into smaller chunks, creating a smoother and more fluent tween
-                                  //  Also pushes the data into the checkpoints array
-                                  var getSteps = function (start, end){
-                                    var latDiff = (end.lat() - start.lat()) / 100,
-                                        lngDiff = (end.lng() - start.lng()) / 100,
-                                        lat = start.lat(), 
-                                        lng = start.lng();
-
-                                    for(var i = 0; i < 99; i++){
-                                      lat += latDiff;
-                                      lng += lngDiff;
-                                      checkpoints.push(new google.maps.LatLng(lat, lng));
-                                    }
-                                    checkpoints.push(new google.maps.LatLng(end.lat(), end.lng()));
-                                  }
 
                                   var directionsService = new google.maps.DirectionsService();
 
                                   var directionsDisplay = new google.maps.DirectionsRenderer(sView);
 
                                   var request = {
-                                    origin: options.startLoc,
+                                    origin: options.location,
                                     destination:options.endLoc,
                                     travelMode: google.maps.TravelMode.DRIVING
                                   };
 
                                   directionsService.route(request, function(response, status) {
-                                        if (status == google.maps.DirectionsStatus.OK) {
-                                          directionsDisplay.setDirections(response);
-                                          showSteps(response);
-                                        }
+                                    if (status == google.maps.DirectionsStatus.OK) {
+                                      directionsDisplay.setDirections(response);
+                                      showSteps(response);
+                                    }
                                   });
 
                                   function showSteps(directionResult) {
-                                    for (var j = 0; j < directionResult.routes[0].overview_path.length-1; j++) {
-                                      getSteps(directionResult.routes[0].overview_path[j], directionResult.routes[0].overview_path[j+1]);
+                                    for (var j = 0; j < directionResult.routes[0].overview_path.length; j++) {
+                                      checkpoints.push(new google.maps.LatLng(directionResult.routes[0].overview_path[j].lat(), directionResult.routes[0].overview_path[j].lng()));
                                     }     
                                     for ( var i = 0; i < checkpoints.length; i++ ) {
                                       tmr = tmr + options.interval;
                                       tween( checkpoints[i], tmr );
                                     }
-
-
-                                  interval = window.setInterval(function(){
-                                        i++;
-                                        // use trig to adjust the heading towards destination
-                                       if ( i > 0 ) {
-                                          //console.log(k);
-                                          var radians = Math.atan2( ( checkpoints[i].lng() - checkpoints[i-1].lng() ), 
-                                                                   ( checkpoints[i].lat() - checkpoints[i-1].lat() ) );
-                                          var degrees = Math.round( ( radians / (Math.PI/180) ) );
-                                          var pov = panorama.getPov();
-                                          pov.heading = degrees;
-                                          sView.setPov(pov); 
-                                        }
-                                        sView.setPosition(checkpoints[i]);
-                                        //console.log(checkpoints.length);
-                                        if(i == checkpoints.length-1){
-                                          console.log("DONE");
-                                          window.clearInterval(interval);
-                                      }
-                                      }, options.interval);
                                   }
                                 }
-                                else if ( options.tween.length > 0 ){
+                                else {
                                   for ( i = 0; i < options.tween.length; i++ ) {
                                     tmr = tmr + options.tween[i].interval;
                                     tween( options.tween[i], tmr );
