@@ -45,19 +45,21 @@
             },
             seek = function( point ) {
 
-              if ( point < onPt ) reset();
+              ( point < onPt ) && reset();
 
               while ( onPt <= point ) {
 
-                if ( !strokes ) return;
+                if ( !strokes ) {
+                  return;
+                }
                 _stroke = strokes[ onStroke ] || strokes;
                 var pt = _stroke.pt[ onPt ];
                 var p = onPt;
-                if (x !== null ) drawLine( x, y, pt.x, pt.y );
+                x && drawLine( x, y, pt.x, pt.y );
 
                 x = pt.x;
                 y = pt.y;
-                if ( onPt === p ) onPt++;
+                ( onPt === p ) && onPt++;
               }
             };
 
@@ -76,7 +78,9 @@
 
           var si =  setInterval(function() {
 
-            if ( !data ) return;
+            if ( !data ) {
+              return;
+            }
             clearInterval( si );
 
             strokes = data.gml.tag.drawing.stroke;
@@ -150,10 +154,7 @@
       options.container.style.display = "none";
       options.container.setAttribute( "id", "canvas" + options.gmltag );
 
-      if ( document.getElementById( options.target ) ) {
-        document.getElementById( options.target ).appendChild( options.container );
-      }
-
+      document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options.container );
 
       // makes sure both processing.js and the gml data are loaded
       var readyCheck = setInterval(function() {
@@ -166,8 +167,7 @@
         clearInterval( readyCheck );
         Popcorn.getJSONP( "http://000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
 
-          new Processing( options.container, gmlPlayer );
-          options.pjsInstance = Processing.getInstanceById( "canvas" + data.id );
+          options.pjsInstance = new Processing( options.container, gmlPlayer );
           options.pjsInstance.construct( self.media, data, options );
           options._running && options.pjsInstance.loop();
         }, false );
@@ -198,10 +198,7 @@
     _teardown: function( options ) {
 
       options.pjsInstance && options.pjsInstance.exit();
-
-      if ( document.getElementById( options.target ) ) {
-        document.getElementById( options.target ).removeChild( options.container );
-      }
+      document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options.container );
     }
   });
 })( Popcorn );
