@@ -8,7 +8,7 @@ test("Popcorn LinkedIn Plugin", function () {
   expect( expects );
   
   function plus() {
-    if ( ++count === expects) {
+    if ( ++count === expects ) {
       start();
     }
   }
@@ -27,7 +27,7 @@ test("Popcorn LinkedIn Plugin", function () {
     counter   : 'right',
     url       : "http://www.google.ca",
     target    : "linkedindiv",
-    apikey   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+    apikey    : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
     start     : 1,
     end       : 3
   } );
