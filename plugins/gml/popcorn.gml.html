@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Popcorn attribution Plug-in Demo</title>
+  <title>Popcorn Grafiti Markup Language Plug-in Demo</title>
   
   <script src="../../popcorn.js"></script>
   <script src="popcorn.gml.js"></script>
@@ -12,20 +12,22 @@
       .volume(0)
       .gml({
         start: 0, // seconds
-        end: 10, // seconds
+        end: 5, // seconds
         gmltag: '29582',
-        target: 'attribdiv'
+        target: 'gmldiv'
+      })
+      .gml({
+        start: 10, // seconds
+        end: 20, // seconds
+        gmltag: '155',
+        target: 'gmldiv'
+      })
+      .gml({
+        start: 20, // seconds
+        end: 40, // seconds
+        gmltag: '161',
+        target: 'gmldiv'
       });
-      /*.attribution({
-        start: 5, // seconds
-        end: 15, // seconds
-        nameofwork: "Internet",
-        nameofworkurl:"http://www.archive.org/details/CC1232_internet",
-        copyrightholder:"The Computer Chronicles",
-        license:"CC-BY-NC-ND",
-        licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
-        target: 'attribdiv'
-      } )*/
 
     }, false);
       
@@ -33,8 +35,9 @@
 </head>
 <body>
   <h1 id="qunit-header">Popcorn Attribution Plug-in Demo</h1>
-  <p> A attribution displaying 'A Shared Culture, Jesse Dylan, license: CC-BY-N6' will appear at 0 seconds and disappear at 10 seconds.</p>
-  <p> A attribution displaying 'Internet, The Computer Chronicles' will appear at 5 seconds and disappear at 15 seconds.</p>
+  <p> A Processing canvas displaying the GML tag <a href="http://000000book.com/data/29582">29582</a> will appear at 0-5 seconds.</p>
+  <p> A Processing canvas displaying the GML tag <a href="http://000000book.com/data/155">155</a> will appear at 10-20 seconds.</p>
+  <p> A Processing canvas displaying the GML tag <a href="http://000000book.com/data/161">161</a> will appear at 20-40 seconds.</p>
   <div>
     <video id='video' 
       controls preload='none' 
@@ -53,7 +56,6 @@
 
     </video> 
   </div>
-  <div id="attribdiv" width="50%" height="50%">
-  </div>
+  <div id="gmldiv"></div>
 </body>
 </html>
