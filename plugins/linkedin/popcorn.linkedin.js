@@ -21,7 +21,7 @@
    *       url     : "http://www.google.ca",
    *       counter : "right",
    *       target  : 'sharediv'
-   *       api_key : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+   *       apikey : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
    *       start   : 1,
    *       end     : 3
    *     } )
@@ -30,43 +30,64 @@
    * Will show number of people (counter) to the right of the share plugin.
    */
    
-  Popcorn.plugin( "linkedin" , {  
-    manifest:{
-      about:{
+  Popcorn.plugin( "linkedin", {
+
+    manifest: {
+
+      about: {
+
         name   : "Popcorn LinkedIn Plugin",
         version: "0.1",
         author : "Dan Ventura",
         website: "dsventura.blogspot.com"
       },
-      options:{
+      options: {
+
         type   : {elem:"input", type:'text', label:"Type"},
         target : 'linkedin-container'
       }
     },
     
     _setup: function( options ) {
-      var api_key = options.apikey,
-                    target = document.getElementById( options.target );
-   
+
+      var apikey = options.apikey,
+          target  = document.getElementById( options.target );
+
+      if ( !document.getElementById("linkedin-root") ) {
+        var root = document.createElement( 'div' );
+        root.setAttribute( 'div', "linkedin-root" );
+        document.body.appendChild( root );
+        
+        (function() {
+          var linkedinAPIScript = document.createElement( 'script' );
+          linkedinAPIScript.setAttribute( 'src', "http://platform.linkedin.com/in.js" );
+          linkedinAPIScript.setAttribute( 'type', "text/javascript" );
+          root.appendChild( linkedinAPIScript );
+        }());
+      }
+      
       options._container = document.createElement( 'script' );
       
-      options._container.setAttribute( 'async', 'true' );
-      if ( typeof( api_key ) !== "undefined" ) {
-        options._container.innerHTML = 'api_key: ' + api_key;
+      if ( apikey ) {
+        options._container.innerHTML = 'api_key: ' + apikey;
       }
       
       options.type = options.type.toLowerCase();
       
       // Replace the LinkedIn plugin's error message to something more helpful
-      var errorMsg = function () {
-        options._container = document.createElement( 'p' );
-        options._container.innerHTML = "Plugin requires a valid <a href=\"https://www.linkedin.com/secure/developer\">api_key</a>";
+      var errorMsg = function() {
+
+        options._container = document.createElement( "p" );
+        options._container.innerHTML = "Plugin requires a valid <a href='https://www.linkedin.com/secure/developer'>apikey</a>";
         document.getElementById( options.target ).appendChild( options._container );
-      }
+      };
       
       var setOptions = (function ( options ) {
+
         return {
+
           share: function () {
+
             options._container.setAttribute( 'type', "IN/Share" );
             if ( options.counter ) {
               options._container.setAttribute( 'data-counter', options.counter );
@@ -76,7 +97,8 @@
             }
           },
           memberprofile: function () {
-            options._container.setAttribute('type', "IN/MemberProfile");
+
+            options._container.setAttribute( 'type', "IN/MemberProfile" );
             options._container.setAttribute( 'data-id', ( options.memberid ) );
             options._container.setAttribute( 'data-format', ( options.format || "inline" ) );
             if ( options.text && options.format.toLowerCase() !== "inline" ) {
@@ -84,6 +106,7 @@
             }
           },
           companyinsider: function () {
+
             options._container.setAttribute( 'type', "IN/CompanyInsider" );
             options._container.setAttribute( 'data-id', options.companyid );
             if( options.modules ) {
@@ -91,6 +114,7 @@
             }
           },
           companyprofile: function () {
+
             options._container.setAttribute( 'type', "IN/CompanyProfile" );
             options._container.setAttribute( 'data-id', ( options.companyid ) );
             options._container.setAttribute( 'data-format', ( options.format || "inline" ) );
@@ -102,6 +126,7 @@
             }
           },
           recommendproduct: function () {
+
             options._container.setAttribute( 'type', "IN/RecommendProduct" );
             options._container.setAttribute( 'data-company', ( options.companyid || "LinkedIn" ) );
             options._container.setAttribute( 'data-product', ( options.productid || "201714" ) );
@@ -112,17 +137,19 @@
         };
       })( options );
       
-      if ( typeof( api_key ) === "undefined" ) {
+      if ( !apikey ) {
+
         errorMsg();
-      }
-      else {
+      } else {
+
         setOptions[ options.type ] && setOptions[ options.type ]();
       }
       
       if ( document.getElementById( options.target ) ) {
         document.getElementById( options.target ).appendChild( options._container );
       }
-      target.style.display = 'none';
+
+      target.style.display = "none";
     },
     
     /**
@@ -132,7 +159,8 @@
      * options variable
      */
     start: function( event, options ) {
-      options._container.parentNode.style.display = 'block';
+      
+      options._container.parentNode.style.display = "block";
     },
     
     /**
@@ -142,7 +170,8 @@
      * options variable
      */    
     end: function( event, options ) {
-      options._container.parentNode.style.display = 'none';
+      
+      options._container.parentNode.style.display = "none";
     }
   });
 
