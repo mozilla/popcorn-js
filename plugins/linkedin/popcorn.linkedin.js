@@ -4,12 +4,19 @@
    * LinkedIn Popcorn plug-in
    * Places a  LinkedIn plugin inside a div ( http://developers.facebook.com/docs/plugins/ )
    * Options parameter will need a start, end, target, type, and an api key
+   * Optional parameters are url, counter, format, companyid, and productid
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing
    * Target is the id of the document element that the plugin needs to be attached to, this target element must exist on the DOM
-   * Type is the name of the plugin: share, memberprofile, companyinsider, companyprofile, or recommendproduct  
+   * Type is the name of the plugin, options are share, memberprofile, companyinsider, companyprofile, or recommendproduct  
    * Apikey is your own api key from obtained from https://www.linkedin.com/secure/developer
-   *
+   * Url is the desired url to share via LinkedIn. Defaults to the current page if no url is specified
+   * Counter is the position where the counter will be positioned. This is used if the type is "share" or "recommendproduct"
+   *  The options are right and top (don't include this option if you do not want a counter)
+   * Format is is the data format of the member and company profile plugins. The options are inlined, hover, and click. Defaults to inline 
+   * Companyid must be specified if the type is "companyprofile," "companyinsider," or "recommendproduct"
+   * Productid must be specified if the type is "recommendproduct"
+   * 
    * @param {Object} options
    * 
    * Example:
@@ -26,8 +33,8 @@
    *       end     : 3
    *     } )
    *
-   * This will show how many people have "shared" Google (default url is current page, if none specified) via LinkedIn.
-   * Will show number of people (counter) to the right of the share plugin.
+   * This plugin will be displayed between 1 and 3 seconds, inclusive, in the video. This will show how many people have "shared" Google via LinkedIn,
+   * with the number of people (counter) displayed to the right of the share plugin.
    */
    
   Popcorn.plugin( "linkedin", {
