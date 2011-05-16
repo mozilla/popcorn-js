@@ -62,6 +62,7 @@
           var linkedinAPIScript = document.createElement( 'script' );
           linkedinAPIScript.setAttribute( 'src', "http://platform.linkedin.com/in.js" );
           linkedinAPIScript.setAttribute( 'type', "text/javascript" );
+          linkedinAPIScript.setAttribute( 'async', 'true' );
           root.appendChild( linkedinAPIScript );
         }());
       }
