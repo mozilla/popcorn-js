@@ -4,13 +4,10 @@
 
   var container = {},
       spanLocation = 0,
-      knownSpeaker = false,
-      knownIndex = 0,
-      unknownIndex = 0,
       setupContainer = function( target ) {
   
         container[ target ] = document.createElement( "div" );
-        document.getElementById( target ).appendChild( container[ target ] );
+        document.getElementById( target ) && document.getElementById( target ).appendChild( container[ target ] );
         
         container[ target ].style.height = "100%";
         container[ target ].style.position = "relative";
@@ -69,7 +66,8 @@
         options.word.style.MozTransform =
           options.word.style.webkitTransform =
           options.word.style.OTransform =
-          options.word.style.transform = "translateY(" + ( document.getElementById( options.target ).offsetHeight - options.word.offsetHeight ) + "px)";
+          options.word.style.transform = "translateY(" +
+            ( document.getElementById( options.target ).offsetHeight - options.word.offsetHeight ) + "px)";
         
         options.word.style.opacity = 1;
 
@@ -85,6 +83,17 @@
 
         // manually clears the word based on user interaction
         options.word.style.opacity = 0;
+      },
+      _teardown: function( options ) {
+
+        // removes word span from generated container
+        options._container.removeChild( options.word );
+
+        // if no more word spans exist in container, remove container
+        container[ options.target ] &&
+          !container[ options.target ].childElementCount &&
+          document.getElementById( options.target ).removeChild( container[ options.target ] ) &&
+          delete container[ options.target ];
       }
   });
 
