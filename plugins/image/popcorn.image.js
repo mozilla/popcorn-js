@@ -55,15 +55,17 @@
 
         var img = document.createElement( 'img' );
         img.addEventListener( "load", function() {
-          img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
+
+          // borders look really bad, if someone wants it they can put it on their div target
+          img.style.borderStyle = "none";
           
           if ( options.href ) {
             options.link.href = options.href;
           }
           options.link.target = "_blank";
-          if ( document.getElementById( options.target ) ) {
-            document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
-          }
+
+          // add the widget's div to the target div
+          document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options.link );
           
           var fontHeight = ( img.height / 12 ) + "px";
           
@@ -109,7 +111,7 @@
         options.link.style.display = "none";
       },
       _teardown: function( options ) {
-        document.getElementById( options.target ).removeChild( options.link );
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options.link );
       }
   });
 

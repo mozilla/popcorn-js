@@ -50,10 +50,9 @@
       options._iframe.id  = options.id;
       options._iframe.src = options.src;
       options._iframe.style.display = 'none';
+
       // add the hidden iframe to the DOM
-      if ( document.getElementById( options.target ) ) {
-        document.getElementById( options.target ).appendChild(options._iframe);
-      }
+      document.getElementById( options.target ) && document.getElementById( options.target ).appendChild(options._iframe);
       
     },
     /**
@@ -79,7 +78,7 @@
     },
     _teardown: function( options ) {
 
-      document.getElementById( options.target ).removeChild( options._iframe );
+      document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options._iframe );
     }
   });
 })( Popcorn );

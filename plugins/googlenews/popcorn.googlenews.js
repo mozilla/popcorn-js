@@ -111,7 +111,7 @@
       _teardown: function( options ) {
         // google news does not like this, throws an error "a is null"
         // doesn't hurt popcorn, and only happens once
-        document.getElementById( options.target ).removeChild( options.container );
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options.container );
         options.newsShow = null;
       }
   });

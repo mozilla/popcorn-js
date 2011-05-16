@@ -78,10 +78,8 @@
         options._container.innerHTML = "";
         
         options.artist = options.artist.toLowerCase();
-        
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).appendChild( options._container );
-        }
+
+        document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options._container );
         
         if(!_artists[options.artist]) {
 
@@ -117,7 +115,7 @@
       _teardown: function( options ) {
         // cleaning possible reference to _artist array;
         --_artists[ options.artist ].count || delete _artists[ options.artist ];
-        document.getElementById( options.target ).removeChild( options._container );
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options._container );
       }
     };
   })());

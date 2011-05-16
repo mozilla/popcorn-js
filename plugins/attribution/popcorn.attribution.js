@@ -104,9 +104,8 @@
           attrib += ", <a href='" + options.licenseurl + "' target='_blank'>license</a> ";
         }
         options._container.innerHTML  = attrib;
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).appendChild( options._container );
-        }
+
+        document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options._container );
       },
       /**
        * @member attribution 
@@ -127,7 +126,7 @@
         options._container.style.display = "none";
       },
       _teardown: function( options ) {
-        document.getElementById( options.target ).removeChild( options._container );
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options._container );
       }
     };
   })());

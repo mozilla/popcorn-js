@@ -67,9 +67,9 @@ var openmapCallback;
     newdiv.style.width   = "100%";
     newdiv.style.height  = "100%";
     i++;
-    if ( document.getElementById( options.target ) ) {
-      document.getElementById( options.target ).appendChild( newdiv );
-    }
+
+    document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( newdiv );
+
     // callback function fires when the script is run
     var isGeoReady = function() {
       if ( !_mapLoaded ) {
@@ -253,7 +253,7 @@ var openmapCallback;
       },
       _teardown: function( options ) {
 
-        document.getElementById( options.target ).removeChild( newdiv );
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( newdiv );
         newdiv = map = centerlonlat = projection = displayProjection = pointLayer = selectControl = popup = null;
       }
     };

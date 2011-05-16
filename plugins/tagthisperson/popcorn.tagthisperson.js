@@ -90,9 +90,7 @@
         options._p.contains[ options.person ] = ( options.image ) ? "<img src='" + options.image + "'/> " : "" ;
         options._p.contains[ options.person ] += ( options.href ) ? "<a href='" + options.href + "' target='_blank'> " + options.person + "</a>" : options.person ;
 
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).innerHTML = options._p.toString();
-        }
+        document.getElementById( options.target ).innerHTML = options._p.toString();
       },
       /**
        * @member tagthisperson 
@@ -102,9 +100,8 @@
        */
       end: function( event, options ){
         delete options._p.contains[ options.person ];
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).innerHTML = options._p.toString();
-        }
+
+        document.getElementById( options.target ).innerHTML = options._p.toString();
       }
    };
   })());

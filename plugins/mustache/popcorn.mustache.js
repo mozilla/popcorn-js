@@ -141,7 +141,7 @@
         document.getElementById( options.target ).innerHTML = '';
       },
       _teardown: function( options ) {
-        getData, data, getTemplate, template = null;
+        getData = data = getTemplate = template = null;
       }
     };
   },

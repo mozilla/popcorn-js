@@ -141,7 +141,7 @@
           containerDiv.style.display = "none";       
       },
       _teardown: function( options ) {
-        document.getElementById( options.target ).removeChild( containerDiv );
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( containerDiv );
       }
     };
   },

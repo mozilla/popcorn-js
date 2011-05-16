@@ -51,9 +51,8 @@
     newdiv.style.width = "100%";
     newdiv.style.height = "100%";
     i++;
-    if ( document.getElementById( options.target ) ) {
-      document.getElementById( options.target ).appendChild( newdiv );
-    }
+
+    document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( newdiv );
 
     var initialize = function() {
       //ensure that the script has been loaded
@@ -63,7 +62,7 @@
         }, 5);
       } else {
         // Create the feed control using the user entered url and title
-        var tmp = new GFdynamicFeedControl( options.url, newdiv, {
+        options.feed = new GFdynamicFeedControl( options.url, newdiv, {
           vertical:   options.orientation.toLowerCase() == "vertical" ? true : false,
           horizontal: options.orientation.toLowerCase() == "horizontal" ? true : false,
           title:      options.title = options.title || "Blog"
@@ -114,7 +113,8 @@
         newdiv.setAttribute( "style", "display:none" );
       },
       _teardown: function( options ) {
-        document.getElementById( options.target ).removeChild( newdiv );
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( newdiv );
+        delete options.feed;
       }
     };
   },

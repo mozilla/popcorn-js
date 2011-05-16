@@ -64,7 +64,7 @@ test("Popcorn Google Feed Plugin", function () {
 	  plus();
 
     popped.pause().removeTrackEvent( setupId );
-    ok( !document.getElementById('feed1').children[0], "removed footnote was properly destroyed"  );
+    ok( !document.getElementById('feed1').children[0], "removed feed was properly destroyed"  );
     plus();
   });
   
