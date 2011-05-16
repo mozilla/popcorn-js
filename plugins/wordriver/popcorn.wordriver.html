@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Subtitle Plug-in Demo</title>
+  
+  <script src="../../popcorn.js"></script>
+
+  <script src="popcorn.wordriver.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var p = Popcorn('#video')
+      .volume(0)
+      .play() 
+      .wordriver({
+				start: 1, // seconds
+				end: 3, // seconds
+				text: "hello",
+				target: "wordriverdiv",
+				color: "red"
+      })
+      .wordriver({
+				start: 3, // seconds
+				end: 6, // seconds
+				text: "world",
+				target: "wordriverdiv",
+				color: "blue"
+      })
+
+    }, false);
+
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Word River Plug-in Demo</h1>
+  <p> A "hello world" word river will appear from 1 to 6.</p>
+  <div>
+
+    <video id='video' 
+      controls height="480" width="854"
+      poster="../../test/poster.png"> 
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'> 
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'> 
+
+      <p>Your user agent does not support the HTML5 Video element.</p> 
+
+    </video> 
+  </div>
+  <div id="wordriverdiv" style="height: 200px; width: 200px;"></div>
+
+</body>
+</html>
