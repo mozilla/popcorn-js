@@ -2,6 +2,14 @@
 <html>
 <head>
   <title>Popcorn LinkedIn Plug-in Demo</title>
+    <!--
+    ATTENTION
+  
+    This demo uses an API key obtained for testing the LinkedIn Popcorn.js
+    plugin. Please do not use it for other purposes. This API key is meant
+    to be used on localhost (port 80). For other purposes, please obtain an API key
+    from https://www.linkedin.com/secure/developer.
+  -->
   <script src="http://platform.linkedin.com/in.js" type="text/javascript"></script>
   <script src="../../popcorn.js"></script>
   <script src="popcorn.linkedin.js"></script>
@@ -15,7 +23,7 @@
         counter   : 'right',
         url       : "http://www.google.ca",
         target    : "sharediv",
-        api_key   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        apikey   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
         start     : 1,
         end       : 3
       } )
@@ -25,7 +33,7 @@
         target    : "recommenddiv",
         companyid : 'LinkedIn',
         productid : '201714',
-        api_key   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        apikey   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
         start     : 4,
         end       : 7
       } )
@@ -34,7 +42,7 @@
         memberid  : '/in/jeffweiner08',
         format    : 'inline',
         target    : "memberprofilediv",
-        api_key   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        apikey   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
         start     : 9,
         end       : 11
       } )
@@ -42,7 +50,7 @@
         type      : 'companyinsider',
         companyid : '1441',
         target    : "bottomdiv",
-        api_key   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        apikey   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
         start     : 9,
         end       : 11
       } )
@@ -51,7 +59,7 @@
         companyid : '1441',
         format    : 'inline',
         target    : "bottomdiv",
-        api_key   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        apikey   : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
         start     : 13,
         end       : 17
       } )
@@ -63,7 +71,8 @@
 <h1 id="qunit-header">Popcorn LinkedIn Plug-in Demo</h1>
   <p>Right of video: share button, recommend button, member profile. <br />
      Below video: company insider, company profile.<br />
-     For a description of each plugin's purpose, go to: <a href="http://developer.linkedin.com/community/plugins">LinkedIn Plugins</a></p>
+     For a description of each plugin's purpose, go to: <a href="http://developer.linkedin.com/community/plugins">LinkedIn Plugins</a><br/>
+  </p>
   
   <div>
     <video id='video' 

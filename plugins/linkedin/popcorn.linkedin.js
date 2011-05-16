@@ -1,22 +1,18 @@
 //PLUGIN: linkedin
 (function (Popcorn){
 /**
-   * LinkedIn Popcorn plug-in 
-   * An api_key must be specified before the linkedin.js script
+   * LinkedIn Popcorn plug-in
    * Places a  LinkedIn plugin inside a div ( http://developers.facebook.com/docs/plugins/ )
-   * Sets options according to user input or default values
-   * Options parameter will need a target and a type
-   * Type is the name of the plugin. Either share, memberprofile, companyinsider, companyprofile, or recommendproduct
-   * Target is the id of the document element that the plugin needs to be 
-   * attached to, this target element must exist on the DOM
-   * 
+   * Options parameter will need a start, end, target, type, and an api key
+   * Start is the time that you want this plug-in to execute
+   * End is the time that you want this plug-in to stop executing
+   * Target is the id of the document element that the plugin needs to be attached to, this target element must exist on the DOM
+   * Type is the name of the plugin: share, memberprofile, companyinsider, companyprofile, or recommendproduct  
+   * Apikey is your own api key from obtained from https://www.linkedin.com/secure/developer
+   *
    * @param {Object} options
    * 
    * Example:
-   * // This api_key is valid for the matrix.senecac.on.ca domain
-   * <script>
-   *   var api_key = 'ND1uSIEUBH8MkI8E7g41kgGlWUexzvFL9uB2ihJbIrFuqunFq8aVmUrxyfAqxCBX';
-   * </script>
    * <script src="popcorn.linkedin.js"></script>
    * ...
    * var p = Popcorn('#video')
@@ -25,9 +21,12 @@
    *       url     : "http://www.google.ca",
    *       counter : "right",
    *       target  : 'sharediv'
+   *       api_key : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+   *       start   : 1,
+   *       end     : 3
    *     } )
    *
-   * This will show how many people have "shared" Google (default url is current page, if non specified) via LinkedIn.
+   * This will show how many people have "shared" Google (default url is current page, if none specified) via LinkedIn.
    * Will show number of people (counter) to the right of the share plugin.
    */
    
@@ -46,7 +45,7 @@
     },
     
     _setup: function( options ) {
-      var api_key = options.api_key,
+      var api_key = options.apikey,
                     target = document.getElementById( options.target );
    
       options._container = document.createElement( 'script' );
@@ -125,11 +124,23 @@
       }
       target.style.display = 'none';
     },
-
+    
+    /**
+     * @member linkedin
+     * The start function will be executed when the currentTime
+     * of the video reaches the start time provided by the
+     * options variable
+     */
     start: function( event, options ) {
       options._container.parentNode.style.display = 'block';
     },
     
+    /**
+     * @member linkedin
+     * The end function will be executed when the currentTime
+     * of the video reaches the end time provided by the
+     * options variable
+     */    
     end: function( event, options ) {
       options._container.parentNode.style.display = 'none';
     }
