@@ -200,10 +200,9 @@ var googleCallback;
                                         //  Checks if this position along the tween should be displayed or not
                                         if( that.media.currentTime >= ( rM[ i ].interval*( i+1 ) )/1000 &&
                                           ( that.media.currentTime <= (rM[ i ].interval*( i+2 ) )/1000 || 
-                                          that.media.currentTime >= rM[ i ].interval*( rM.length )/1000 ) ){
+                                            that.media.currentTime >= rM[ i ].interval*( rM.length )/1000 ) ){
 
-                                          var p = new google.maps.LatLng( rM[ i ].position.lat, rM[ i ].position.lng );
-	                                        sView3.setPosition( p );
+	                                        sView3.setPosition( new google.maps.LatLng( rM[ i ].position.lat, rM[ i ].position.lng ) );
 
 	                                        sView3.setPov({
 	                                          heading: rM[ i ].pov.heading || 0,
@@ -221,7 +220,9 @@ var googleCallback;
 
                                       for ( var i = 0; i < rM.length; i++ ) {
 
-                                          if( that.media.currentTime >= (options.interval*(i+1))/1000 && (that.media.currentTime <= (options.interval*(i+2))/1000 || that.media.currentTime >= options.interval*(rM.length)/1000)){
+                                          if( that.media.currentTime >= (options.interval*( i+1 ) )/1000 &&
+                                            ( that.media.currentTime <= (options.interval*( i+2 ) /1000 ||
+                                             that.media.currentTime >= options.interval*( rM.length )/1000 ) ){
 
                                           sView2.setPosition( checkpoints[i] );
 
