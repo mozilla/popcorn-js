@@ -60,22 +60,7 @@
       var apikey = options.apikey,
           target = document.getElementById( options.target );
 
-      if ( !document.getElementById( "linkedin-root" ) ) {
-
-        var root = document.createElement( "div" );
-
-        root.setAttribute( "div", "linkedin-root" );
-        document.body.appendChild( root );
-        
-        (function() {
-
-          var linkedinAPIScript = document.createElement( "script" );
-          linkedinAPIScript.setAttribute( "src", "http://platform.linkedin.com/in.js" );
-          linkedinAPIScript.setAttribute( "type", "text/javascript" );
-          linkedinAPIScript.setAttribute( "async", "true" );
-          root.appendChild( linkedinAPIScript );
-        }());
-      }
+      Popcorn.getScript("http://platform.linkedin.com/in.js");
       
       options._container = document.createElement( "script" );
       
