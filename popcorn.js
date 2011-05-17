@@ -316,7 +316,7 @@
       Popcorn.guid.counter++;
       return  ( prefix ? prefix : "" ) + ( +new Date() + Popcorn.guid.counter );
     },
-    sizeOf: function ( obj ) {
+    sizeOf: function( obj ) {
       var size = 0;
 
       for ( var prop in obj ) {
@@ -334,22 +334,22 @@
     position: function( elem ) {
 
       var clientRect = elem.getBoundingClientRect(),
-          bounds     = {},
-          doc        = elem.ownerDocument,
-          docElem    = document.documentElement,
-          body       = document.body,
+          bounds = {},
+          doc = elem.ownerDocument,
+          docElem = document.documentElement,
+          body = document.body,
           clientTop, clientLeft, scrollTop, scrollLeft, top, left;
 
       //  Determine correct clientTop/Left
-      clientTop  = docElem.clientTop  || body.clientTop  || 0;
+      clientTop = docElem.clientTop || body.clientTop || 0;
       clientLeft = docElem.clientLeft || body.clientLeft || 0;
 
       //  Determine correct scrollTop/Left
-      scrollTop  = ( global.pageYOffset && docElem.scrollTop || body.scrollTop );
+      scrollTop = ( global.pageYOffset && docElem.scrollTop || body.scrollTop );
       scrollLeft = ( global.pageXOffset && docElem.scrollLeft || body.scrollLeft );
 
       //  Temp top/left
-      top  = Math.ceil( clientRect.top  + scrollTop - clientTop );
+      top = Math.ceil( clientRect.top + scrollTop - clientTop );
       left = Math.ceil( clientRect.left + scrollLeft - clientLeft );
 
       for ( var p in clientRect ) {
@@ -366,7 +366,7 @@
   //  Factory to implement getters, setters and controllers
   //  as Popcorn instance methods. The IIFE will create and return
   //  an object with defined methods
-  Popcorn.extend(Popcorn.p, (function () {
+  Popcorn.extend(Popcorn.p, (function() {
 
       var methods = "load play pause currentTime playbackRate mute volume duration",
           ret = {};
@@ -522,7 +522,7 @@
 
           this.media.addEventListener( type, function( event ) {
 
-            Popcorn.forEach( self.data.events[ type ], function ( obj, key ) {
+            Popcorn.forEach( self.data.events[ type ], function( obj, key ) {
               if ( typeof obj === "function" ) {
                 obj.call( self, event );
               }
@@ -823,7 +823,7 @@
 
       //  Future support for plugin event definitions
       //  for all of the native events
-      Popcorn.forEach( setup, function ( callback, type ) {
+      Popcorn.forEach( setup, function( callback, type ) {
 
         if ( type !== "type" ) {
 
@@ -985,7 +985,7 @@
         parseFn,
         parser = {};
 
-    parseFn = function ( filename, callback ) {
+    parseFn = function( filename, callback ) {
 
       if ( !filename ) {
         return this;
