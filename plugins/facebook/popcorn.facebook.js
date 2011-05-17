@@ -42,6 +42,19 @@
    * Site - href for activity feed. No idea why it must be "site". Default is current page
    * Type - determines which plugin to create
    */
+   
+   function toggle( container, display ) {
+     if ( container ) {
+       container.style.display = display;
+       
+       return;
+     }
+     
+     setTimeout(function() {
+       toggle( container, display );
+     }, 10 );
+   }
+   
   Popcorn.plugin( "facebook" , {  
     manifest:{
       about:{
@@ -176,16 +189,7 @@
     * options variable
     */
     start: function( event, options ){
-      var display = function () {
-        if ( options._container ) {
-          options._container.style.display = "inline";
-        } else {
-          setTimeout ( display, 10 ); 
-        }
-      }
-      
-      display();
-      
+      toggle( options._container, "inline" );     
     },
     /**
     * @member facebook
@@ -194,15 +198,7 @@
     * options variable
     */
     end: function( event, options ){
-      var hide = function () {
-        if ( options._container ) {
-      options._container.style.display = "none";
-      } else {
-          setTimeout ( hide, 10 ); 
-        }
-      }
-      
-      hide();
+      toggle ( options._container, "none" );
     }
   });
 
