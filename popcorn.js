@@ -578,9 +578,10 @@
 
     //  Store this definition in an array sorted by times
     var byStart = obj.data.trackEvents.byStart,
-        byEnd = obj.data.trackEvents.byEnd;
+        byEnd = obj.data.trackEvents.byEnd, 
+        idx;
    
-    for ( var idx = byStart.length-1; idx >= 0; idx-- ) {
+    for ( idx = byStart.length-1; idx >= 0; idx-- ) {
 
       if ( track.start >= byStart[idx].start ) {
         byStart.splice( idx+1, 0, track );
@@ -588,7 +589,7 @@
       }
     }
    
-    for ( var idx = byEnd.length-1; idx >= 0; idx-- ) {
+    for ( idx = byEnd.length-1; idx >= 0; idx-- ) {
 
       if ( track.start >= byEnd[idx].start ) {
         byEnd.splice( idx+1, 0, track );
