@@ -193,52 +193,53 @@ var googleCallback;
 
                   setTimeout( function () {
       
-                  //  Checks whether this is a generated route or not
+                    //  Checks whether this is a generated route or not
 
-                  if( typeof options.tween === "object" ){
+                    if( typeof options.tween === "object" ){
 
-                    for ( var i = 0; i < rM.length; i++ ) {
+                      for ( var i = 0; i < rM.length; i++ ) {
 
-                    //  Checks if this position along the tween should be displayed or not
-                    if( that.media.currentTime >= ( rM[ i ].interval*( i+1 ) )/1000 &&
-                      ( that.media.currentTime <= (rM[ i ].interval*( i+2 ) )/1000 || 
-                      that.media.currentTime >= rM[ i ].interval*( rM.length )/1000 ) ){
+                        //  Checks if this position along the tween should be displayed or not
+                        if( that.media.currentTime >= ( rM[ i ].interval*( i+1 ) )/1000 &&
+                          ( that.media.currentTime <= (rM[ i ].interval*( i+2 ) )/1000 || 
+                          that.media.currentTime >= rM[ i ].interval*( rM.length )/1000 ) ){
 
-	                    sView3.setPosition( new google.maps.LatLng( rM[ i ].position.lat, rM[ i ].position.lng ) );
+	                        sView3.setPosition( new google.maps.LatLng( rM[ i ].position.lat, rM[ i ].position.lng ) );
 
-	                    sView3.setPov({
-	                      heading: rM[ i ].pov.heading || 0,
-	                      zoom:  rM[ i ].pov.zoom || 0,
-	                      pitch:   rM[ i ].pov.pitch || 0
-	                    });
+	                        sView3.setPov({
+	                          heading: rM[ i ].pov.heading || 0,
+	                          zoom:  rM[ i ].pov.zoom || 0,
+	                          pitch:   rM[ i ].pov.pitch || 0
+	                        });
 
+                        }
+
+                      }
+
+                        //  Calls the tween function again at the interval set by the user
+                        tween( rM, rM[ 0 ].interval );
                     }
+                    else{
 
-                    }
-                    //  Calls the tween function again at the interval set by the user
-                    tween( rM, rM[ 0 ].interval );
-                  }
-                  else{
+                      for ( var k = 0; k < rM.length; k++ ) {
 
-                    for ( var k = 0; k < rM.length; k++ ) {
+                        if( that.media.currentTime >= (options.interval*( k+1 ) )/1000 &&
+                          ( that.media.currentTime <= (options.interval*( k+2 ) )/1000 ||
+                          that.media.currentTime >= options.interval*( rM.length )/1000 ) ){
 
-                      if( that.media.currentTime >= (options.interval*( k+1 ) )/1000 &&
-                      ( that.media.currentTime <= (options.interval*( k+2 ) )/1000 ||
-                       that.media.currentTime >= options.interval*( rM.length )/1000 ) ){
+                          sView2.setPosition( checkpoints[ k ] );
 
-                        sView2.setPosition( checkpoints[ k ] );
+                          sView2.setPov({
+	                          heading: options.heading || 0,
+	                          zoom:  options.zoom,
+	                          pitch:   options.pitch || 0
+	                        }); 
+                        }  
 
-                        sView2.setPov({
-	                        heading: options.heading || 0,
-	                        zoom:  options.zoom,
-	                        pitch:   options.pitch || 0
-	                      }); 
-                      }  
+                      }
 
-                    }
-
-                    tween( checkpoints, options.interval );
-                  }   
+                      tween( checkpoints, options.interval );
+                    }   
                   }, t );
 
                 };
