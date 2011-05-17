@@ -1,6 +1,22 @@
 // PLUGIN: tagthisperson
 
 (function (Popcorn) {
+    
+  var peopleArray = [];
+  // one People object per options.target
+  var People = function() {
+    this.name = "";
+    this.contains = { };
+    this.toString = function() {
+      var r = [];
+      for ( var j in this.contains ) {
+        if ( this.contains.hasOwnProperty( j ) ) {
+          r.push( " " + this.contains[ j ] );
+        }
+      }
+      return r.toString();
+    };
+  };
   
   /**
    * tagthisperson popcorn plug-in 
@@ -29,22 +45,6 @@
    *
    */
   Popcorn.plugin( "tagthisperson" , ( function() {
-    
-    var peopleArray = [];
-    // one People object per options.target
-    var People = function() {
-      this.name = "";
-      this.contains = { };
-      this.toString = function() {
-        var r = [];
-        for ( var j in this.contains ) {
-          if ( this.contains.hasOwnProperty( j ) ) {
-            r.push( " " + this.contains[ j ] );
-          }
-        }
-        return r.toString();
-      };
-    };
     
     return {
       manifest: {
@@ -90,9 +90,7 @@
         options._p.contains[ options.person ] = ( options.image ) ? "<img src='" + options.image + "'/> " : "" ;
         options._p.contains[ options.person ] += ( options.href ) ? "<a href='" + options.href + "' target='_blank'> " + options.person + "</a>" : options.person ;
 
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).innerHTML = options._p.toString();
-        }
+        document.getElementById( options.target ).innerHTML = options._p.toString();
       },
       /**
        * @member tagthisperson 
@@ -102,9 +100,8 @@
        */
       end: function( event, options ){
         delete options._p.contains[ options.person ];
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).innerHTML = options._p.toString();
-        }
+
+        document.getElementById( options.target ).innerHTML = options._p.toString();
       }
    };
   })());

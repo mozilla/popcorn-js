@@ -1,12 +1,13 @@
 test("Popcorn OpenMap Plugin", function () {
   
   var popped = Popcorn("#video"),
-    expects = 12, 
-    count = 0,
-    mapInterval,
-    mapInterval2,
-    mapInterval3,
-    mapInterval4;
+      expects = 13, 
+      count = 0,
+      setupId,
+      mapInterval,
+      mapInterval2,
+      mapInterval3,
+      mapInterval4;
   
   expect(expects);
   
@@ -60,6 +61,8 @@ test("Popcorn OpenMap Plugin", function () {
   .volume(0)
   .play();
 
+  setupId = popped.getLastTrackEventId();
+
   mapInterval = popped.exec( 4, function() {
     if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
       ok(OpenLayers, "OpenLayers is available");
@@ -96,6 +99,10 @@ test("Popcorn OpenMap Plugin", function () {
           document.getElementById('actualmap1').style.display === "none", "All three maps are no longer visible" );
       plus();
       clearInterval( mapInterval4 );
+
+      popped.pause().removeTrackEvent( setupId );
+      ok( !document.getElementById('actualmap3'), "removed map was properly destroyed"  );
+      plus();
     }
   } );
 } );
