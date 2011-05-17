@@ -9,12 +9,34 @@
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
       .volume(0)
-      .play() 
+      .play()
+      .facebook({
+        num_posts  : 2,
+        type       : "COMMENTS",
+        target     : "likediv",
+        start      : 15,
+        end        : 30,
+        colorscheme:'dark'
+      } )
+      .facebook({
+        type        : "live-stream",
+        target      : "activitydiv",
+        start       : 1,
+        end         : 10,
+        event_app_id: 174243249296725 // id is from example http://developers.facebook.com/docs/reference/plugins/live-stream/
+      } )
       .facebook({
         type  : "LIKE",
         target: "likediv",
+        layout: "box_count",
         start : 5,
         end   : 10
+      } )
+      .facebook({
+        type   : "send",
+        target : "likediv",
+        start  : 1,
+        end    : 5
       } )
       .facebook({
         href  : "http://www.facebook.com/senecacollege",
@@ -22,23 +44,23 @@
         show_faces : "true",
         header: "false",
         target: "likeboxdiv",
-        start : 3,
-        end   : 8
+        start : 6,
+        end   : 10
       } )
       .facebook({
         site  : "http://popcornjs.org/",
         type  : "ACTIVITY",
         target: "activitydiv",
         header: true,
-        start : 9,
-        end   : 13
+        start : 11,
+        end   : 15
       } )
       .facebook({
         href  : "http://www.facebook.com/senecacollege",
         type  : "FACEPILE",
         target: "facepilediv",
         width : 300,
-        start : 5,
+        start : 10,
         end   : 15
       } );
     }, false);
