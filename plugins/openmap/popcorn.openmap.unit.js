@@ -1,13 +1,8 @@
-test("Popcorn OpenMap Plugin", function () {
+test( "Popcorn OpenMap Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 13, 
-      count = 0,
-      setupId,
-      mapInterval,
-      mapInterval2,
-      mapInterval3,
-      mapInterval4;
+     expects = 15, 
+     count = 0;
   
   expect(expects);
   
@@ -58,50 +53,63 @@ test("Popcorn OpenMap Plugin", function () {
     lng: -78.968525,
     zoom: 14
   } )
+  .openmap( {
+    start: 0,
+    end: 5,
+    target: 'map4',
+    lat: 40.943926,
+    lng: -78.968525,
+    zoom: "14"
+  } )
   .volume(0)
   .play();
 
   setupId = popped.getLastTrackEventId();
 
-  mapInterval = popped.exec( 4, function() {
+ 
+  popped.exec( 4, function() {
     if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
       ok(OpenLayers, "OpenLayers is available");
       plus();
-      ok (document.getElementById('actualmap1'), "First map is on the page" );
+      ok (document.getElementById('openmapdiv1'), "First map is on the page" );
       plus();
-      equals (document.getElementById('actualmap1').offsetParent.id, "map", "First map is inside the 'map' div" );
+      equals (document.getElementById('openmapdiv1').offsetParent.id, "map", "First map is inside the 'map' div" );
       plus();
-      clearInterval( mapInterval );
     }
   } );
-  mapInterval2 = popped.exec( 4, function() {
+  popped.exec( 4, function() {
     if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
-      ok (document.getElementById('actualmap2'), "Second map is on the page" );
+      ok (document.getElementById('openmapdiv2'), "Second map is on the page" );
       plus();
-      equals (document.getElementById('actualmap2').offsetParent.id, "map2", "Second map is inside the 'map2' div" );
+      equals (document.getElementById('openmapdiv2').offsetParent.id, "map2", "Second map is inside the 'map2' div" );
       plus();
-      clearInterval( mapInterval2 );
     }
   } );
-  mapInterval3 = popped.exec( 4, function() {
+  popped.exec( 4, function() {
     if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
-      ok (document.getElementById('actualmap3'), "Third map is on the page" );
+      ok (document.getElementById('openmapdiv3'), "Third map is on the page" );
       plus();
-      equals (document.getElementById('actualmap3').offsetParent.id, "map3", "Third map is inside the 'map3' div" );
+      equals (document.getElementById('openmapdiv3').offsetParent.id, "map3", "Third map is inside the 'map3' div" );
       plus();
-      clearInterval( mapInterval3 );
     }
   } );
-  mapInterval4 = popped.exec( 6, function() {
+  popped.exec( 4, function() {
+    if( popped.currentTime() > 3 && popped.currentTime() <= 5 ) {
+      ok (document.getElementById('openmapdiv4'), "Fourth map is on the page" );
+      plus();
+      equals (document.getElementById('openmapdiv4').offsetParent.id, "map4", "Fourth map is inside the 'map4' div" );
+      plus();
+    }
+  } );
+  popped.exec( 6, function() {
     if( popped.currentTime() > 5  ) {
-      ok (document.getElementById('actualmap2').style.display === "none" && 
-          document.getElementById('actualmap3').style.display === "none" && 
-          document.getElementById('actualmap1').style.display === "none", "All three maps are no longer visible" );
+      ok (document.getElementById('openmapdiv2').style.display === "none" && 
+          document.getElementById('openmapdiv3').style.display === "none" && 
+          document.getElementById('openmapdiv4').style.display === "none" &&
+          document.getElementById('openmapdiv1').style.display === "none", "All three maps are no longer visible" );
       plus();
-      clearInterval( mapInterval4 );
-
       popped.pause().removeTrackEvent( setupId );
-      ok( !document.getElementById('actualmap3'), "removed map was properly destroyed"  );
+      ok( !document.getElementById('actualmap3'), "removed map was properly destroyed" );
       plus();
     }
   } );
