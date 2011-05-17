@@ -176,7 +176,16 @@
     * options variable
     */
     start: function( event, options ){
-      options._container.style.display = "inline";
+      var display = function () {
+        if ( options._container ) {
+          options._container.style.display = "inline";
+        } else {
+          setTimeout ( display, 10 ); 
+        }
+      }
+      
+      display();
+      
     },
     /**
     * @member facebook
@@ -185,7 +194,15 @@
     * options variable
     */
     end: function( event, options ){
+      var hide = function () {
+        if ( options._container ) {
       options._container.style.display = "none";
+      } else {
+          setTimeout ( hide, 10 ); 
+        }
+      }
+      
+      hide();
     }
   });
 

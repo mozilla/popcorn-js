@@ -1,7 +1,7 @@
 test("Popcorn Facebook Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 5,
+      expects = 9,
       count = 0,
       interval,
       interval2,
@@ -51,6 +51,15 @@ test("Popcorn Facebook Plugin", function () {
       } )
     .volume(0)
     .play();
+    
+  ok (document.getElementById('likediv'), "likediv exists on the page" );
+  plus();
+  ok (document.getElementById('likeboxdiv'), "likeboxdiv exists on the page" );
+  plus();
+  ok (document.getElementById('activitydiv'), "activitydiv exists on the page" );
+  plus();
+  ok (document.getElementById('facepilediv'), "facepilediv exists on the page" );
+  plus();
   
   popped.exec( 2, function() {
     ok ( document.getElementById( "likediv" ).innerHTML.length > 0, "No type specified. Like button added to div" );
