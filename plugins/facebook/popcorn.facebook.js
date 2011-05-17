@@ -23,7 +23,6 @@
   * Layout - changes the format of the 'like' count (written in english or a number in a callout).
   *          Options: box_count / button_count / standard(default)
   * Max_rows - number of rows to disperse pictures in facepile. Default is 1
-  * Num_posts - number of posts to display with comments plugin. Default is 10
   * Recommendations - shows recommendations, if any, in the bottom half of activity feed. Options: true / false(default)
   * Show_faces - show pictures beside like button and like-box. Options: true / false(default)
   * Site - href for activity feed. No idea why it must be "site". Default is current page
@@ -86,7 +85,6 @@
         header : {elem:"select", options:["false", "true"], label:"Header"},
         layout : {elem:"select", options:["standard", "button_count", "box_count"], label:"Layout"},
         max_rows     : {elem:"input", type:"text", label:"Max_rows"},
-        num_posts    : {elem:"input", type:"text", label:"Num_Posts"},
         border_color : {elem:"input", type:"text", label:"Border_color"},
         event_app_id : {elem:"input", type:"text", label:"Event_app_id"},
         colorscheme  : {elem:"select", options:["light", "dark"], label:"Colorscheme"},
