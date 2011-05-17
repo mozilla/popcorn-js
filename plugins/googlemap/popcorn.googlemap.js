@@ -142,6 +142,7 @@ var googleCallback;
        */
       start: function (event, options) {
         var that = this;
+        var sView;
 
         // ensure the map has been initialized in the setup function above
         var isMapSetup = function () {
@@ -219,13 +220,13 @@ var googleCallback;
                   }
                   else{
 
-                    for ( var i = 0; i < rM.length; i++ ) {
+                    for ( var k = 0; k < rM.length; k++ ) {
 
-                      if( that.media.currentTime >= (options.interval*( i+1 ) )/1000 &&
-                      ( that.media.currentTime <= (options.interval*( i+2 ) )/1000 ||
+                      if( that.media.currentTime >= (options.interval*( k+1 ) )/1000 &&
+                      ( that.media.currentTime <= (options.interval*( k+2 ) )/1000 ||
                        that.media.currentTime >= options.interval*( rM.length )/1000 ) ){
 
-                        sView2.setPosition( checkpoints[i] );
+                        sView2.setPosition( checkpoints[ k ] );
 
                         sView2.setPov({
 	                        heading: options.heading || 0,
@@ -240,7 +241,7 @@ var googleCallback;
                   }   
                   }, t );
 
-                }
+                };
 
                 
                 //  Determines if we should use hardcoded values ( using options.tween ),
@@ -278,7 +279,7 @@ var googleCallback;
 
                   });
 
-                  function showSteps( directionResult, that ) {
+                  var showSteps = function ( directionResult, that ) {
                   
                   //  Push new google map lat and lng values into an array from our list of lat and lng values
                   for ( var j = 0; j < directionResult.routes[ 0 ].overview_path.length; j++ ) {
@@ -289,7 +290,7 @@ var googleCallback;
                     options.interval = options.interval || 1000;
                     tween( checkpoints, 10);
 
-                  }
+                  };
                 }
                 else if( typeof options.tween === "object" ){
 
