@@ -69,28 +69,30 @@ test( "Popcorn OpenMap Plugin", function () {
   popped.exec( 4, function() {
     ok(OpenLayers, "OpenLayers is available");
     plus();
+
     ok (document.getElementById('openmapdiv1'), "First map is on the page" );
     plus();
+
     equals (document.getElementById('openmapdiv1').offsetParent.id, "map", "First map is inside the 'map' div" );
     plus();
-  } )
-  .exec( 4, function() {
+
     ok (document.getElementById('openmapdiv2'), "Second map is on the page" );
     plus();
+
     equals (document.getElementById('openmapdiv2').offsetParent.id, "map2", "Second map is inside the 'map2' div" );
     plus();
-  } )
-  .exec( 4, function() {
+
     ok (document.getElementById('openmapdiv3'), "Third map is on the page" );
     plus();
+
     equals (document.getElementById('openmapdiv3').offsetParent.id, "map3", "Third map is inside the 'map3' div" );
     plus();
-  } )
-  .exec( 4, function() {
+
     ok (document.getElementById('openmapdiv4'), "Fourth map is on the page" );
     plus();
     equals (document.getElementById('openmapdiv4').offsetParent.id, "map4", "Fourth map is inside the 'map4' div" );
     plus();
+
   } )
   .exec( 6, function() {
     ok (document.getElementById('openmapdiv2').style.display === "none" && 
@@ -101,5 +103,6 @@ test( "Popcorn OpenMap Plugin", function () {
     popped.pause().removeTrackEvent( setupId );
     ok( !document.getElementById('actualmap3'), "removed map was properly destroyed" );
     plus();
+
   } );
 } );
