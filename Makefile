@@ -59,7 +59,7 @@ POPCORN_COMPLETE_MIN = ${DIST_DIR}/popcorn-complete.min.js
 add_license = cat ${PREFIX}/LICENSE_HEADER | sed -e 's/@VERSION/${VERSION}/' > $(2) ; \
 	                    cat $(1) >> $(2)
 
-all: lint lint-plugins lint-parsers lint-players popcorn plugins parsers players complete min
+all: setup lint lint-plugins lint-parsers lint-players popcorn plugins parsers players complete min
 	@@echo "Popcorn build complete."
 
 ${DIST_DIR}:
@@ -140,3 +140,14 @@ lint-players:
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
 	@@rm -rf ${DIST_DIR}
+
+# Setup any git submodules we need
+SEQUENCE_SRC = ${PLAYERS_DIR}/sequence/popcorn.sequence.js
+
+setup: ${SEQUENCE_SRC}
+
+${SEQUENCE_SRC}:
+	@@echo "Setting-up sequence submodule..."
+	@@git submodule init
+	@@git submodule update
+
