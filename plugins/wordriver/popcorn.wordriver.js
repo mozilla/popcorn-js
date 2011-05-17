@@ -5,15 +5,42 @@
   var container = {},
       spanLocation = 0,
       setupContainer = function( target ) {
-  
+
         container[ target ] = document.createElement( "div" );
-        document.getElementById( target ) && document.getElementById( target ).appendChild( container[ target ] );
+
+        var t = document.getElementById( target );
+        t && t.appendChild( container[ target ] );
         
         container[ target ].style.height = "100%";
         container[ target ].style.position = "relative";
         
         return container[ target ];
-      };
+      },
+      // creates an object of supported, cross platform css transitions
+      span = document.createElement( "span" ),
+      prefixes = [ "webkit", "Moz", "ms", "O", "" ],
+      specProp = [ "Transform", "TransitionDuration", "TransitionTimingFunction" ],
+      supports = {},
+      prop;
+
+  document.head.appendChild( span );
+
+  for ( var sIdx = 0, sLen = specProp.length; sIdx < sLen; sIdx++ ) {
+
+    for ( var pIdx = 0, pLen = prefixes.length; pIdx < pLen; pIdx++ ) {
+
+      prop = prefixes[ pIdx ] + specProp[ sIdx ];
+
+      if ( prop in span.style ) {
+
+        supports[ specProp[ sIdx ].toLowerCase() ] = prop;
+        break;
+      }
+    }
+  }
+
+  // Garbage collect support test span
+  document.head.removeChild( span );
 
   Popcorn.plugin( "wordriver" , {
     
@@ -35,15 +62,8 @@
         options.word.style.OTransitionProperty = "opacity, -o-transform";
         options.word.style.transitionProperty = "opacity, transform";
 
-        options.word.style.MozTransitionDuration =
-          options.word.style.webkitTransitionDuration = 
-          options.word.style.OTransitionDuration = 
-          options.word.style.transitionDuration = 1 + "s, " + options._duration + "s";
-
-        options.word.style.MozTransitionTimingFunction =
-          options.word.style.webkitTransitionTimingFunction =
-          options.word.style.OTransitionTimingFunction =
-          options.word.style.transitionTimingFunction = "linear";
+        options.word.style[ supports.transitionduration ] = 1 + "s, " + options._duration + "s";
+        options.word.style[ supports.transitiontimingfunction ] = "linear";
 
         options.word.innerHTML = options.text;
         options.word.style.color = options.color || "black";
@@ -53,22 +73,16 @@
         options._container.appendChild( options.word );
 
         // Resets the transform when changing to a new currentTime before the end event occurred.
-        options.word.style.MozTransform =
-          options.word.style.webkitTransform =
-          options.word.style.OTransform =
-          options.word.style.transform = "";
+        options.word.style[ supports.transform ] = "";
 
         options.word.style.fontSize = ~~( 30 + 20 * Math.random() ) + "px";
         spanLocation = spanLocation % ( options._container.offsetWidth - options.word.offsetWidth );
         options.word.style.left = spanLocation + "px";
         spanLocation += options.word.offsetWidth + 10;
 
-        options.word.style.MozTransform =
-          options.word.style.webkitTransform =
-          options.word.style.OTransform =
-          options.word.style.transform = "translateY(" +
-            ( document.getElementById( options.target ).offsetHeight - options.word.offsetHeight ) + "px)";
-        
+        options.word.style[ supports.transform ] = "translateY(" +
+          ( document.getElementById( options.target ).offsetHeight - options.word.offsetHeight ) + "px)";
+
         options.word.style.opacity = 1;
 
         // automatically clears the word based on time
@@ -76,8 +90,7 @@
 
 		      options.word.style.opacity = 0;
         // ensures at least one second exists, because the fade animation is 1 second
-		    }, ( ( (options.end - options.start) - 1 ) || 1 ) * 1000 )
-
+		    }, ( ( (options.end - options.start) - 1 ) || 1 ) * 1000 );
       },
       end: function( event, options ){
 
