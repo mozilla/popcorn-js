@@ -3,9 +3,9 @@ test("Popcorn LinkedIn Plugin", function () {
   if ( /localhost/.test( location.hostname ) ) {
     
     // run tests on localhost
-    var popped   = Popcorn("#video"),
-        expects  = 5,
-        count    = 0,
+    var popped = Popcorn("#video"),
+        expects = 5,
+        count = 0,
         linkedin = document.getElementById( "linkedindiv" );
     
     expect( expects );
@@ -38,16 +38,16 @@ test("Popcorn LinkedIn Plugin", function () {
   
     popped.exec( 2, function() {
   
-        ok( /block/.test( linkedin.style.display ), "Div contents are displayed" );
-        plus();
-        ok( /script/.test( linkedin.innerHTML ), "LinkedIn plugin exists" );
-        plus();
+      ok( /block/.test( linkedin.style.display ), "Div contents are displayed" );
+      plus();
+      ok( /script/.test( linkedin.innerHTML ), "LinkedIn plugin exists" );
+      plus();
     });
     
     popped.exec( 4, function() {
   
-        ok( /none/.test( linkedin.style.display ), "Div contents are hidden again" );
-        plus();
+      ok( /none/.test( linkedin.style.display ), "Div contents are hidden again" );
+      plus();
     });
   
     popped.volume( 0 ).play();
