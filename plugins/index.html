@@ -10,6 +10,7 @@
     <ul id="menuItems">
       <li><a onclick="clearEvents();" target="out" href="attribution/popcorn.attribution.unit.html">attribution</a></li>
       <li><a onclick="clearEvents();" target="out" href="code/popcorn.code.unit.html">code</a></li>
+      <li><a onclick="clearEvents();" target="out" href="facebook/popcorn.facebook.unit.html">facebook</a></li>
       <li><a onclick="clearEvents();" target="out" href="flickr/popcorn.flickr.unit.html">flickr</a></li>
       <li><a onclick="clearEvents();" target="out" href="footnote/popcorn.footnote.unit.html">footnote</a></li>
       <li><a onclick="clearEvents();" target="out" href="googlemap/popcorn.googlemap.unit.html">googlemap</a></li>
@@ -32,14 +33,14 @@
   <script>
   var eventList = [];
   function runAllTests(){
-    var testUrl = [ "attribution", "code", "flickr", "footnote", "googlemap", 
-                    "googlenews", "googlefeed", "image", "lastfm", "lowerthird", 
-                    "mustache",  "openmap", "subtitle", "tagthisperson", "twitter",  
-                    "webpage", "wikipedia"];
-    var testDur = [ 17000, 20000, 10000, 20000, 11000,
-                    13000, 13000, 10000, 10000, 13000, 
-                    15000, 13000, 25000, 21000, 10000, 
-                    21000, 21000 ];
+    var testUrl = [ "attribution", "code", "facebook", "flickr", "footnote",
+                    "googlemap", "googlenews", "googlefeed", "image", "lastfm",
+                    "lowerthird", "mustache",  "openmap", "subtitle", "tagthisperson", 
+                    "twitter", "webpage", "wikipedia"];
+    var testDur = [ 17000, 20000, 10000, 10000, 20000,
+                    11000, 13000, 13000, 10000, 10000,
+                    13000, 15000, 13000, 25000, 21000,
+                    10000, 21000, 21000 ];
     
     var setTest = function( index ) {
       var url = function( str ) {
