@@ -123,6 +123,7 @@ test( "Default Functionality", function () {
   player.play();
 });
 
+
 test( "Extension and Method Overriding", function () {
   var expects = 4,
       count = 0,

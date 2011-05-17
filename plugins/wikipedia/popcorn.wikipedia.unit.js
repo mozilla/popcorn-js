@@ -42,9 +42,9 @@ test("Popcorn wikipedia Plugin", function () {
     plus();
     equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
     plus();
-    equals (theArticle.childNodes[0].innerHTML, "this is an article", "wikidiv has the right title" );
+    equals (theArticle.children[0].innerHTML, "this is an article", "wikidiv has the right title" );
     plus();
-    ok (theArticle.childNodes[1].innerHTML !=="", "wikidiv has some content" );
+    ok (theArticle.children[1].innerHTML !=="", "wikidiv has some content" );
     plus();
   });
   
@@ -58,7 +58,7 @@ test("Popcorn wikipedia Plugin", function () {
     plus();
     equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
     plus();
-    ok (theArticle.childNodes[1].innerHTML !== "", "wikidiv has the right content" );
+    ok (theArticle.children[1].innerHTML !== "", "wikidiv has the right content" );
     plus();
   });
 });

@@ -231,7 +231,7 @@
   Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" );
   
   // Source file originally from 'https://github.com/soundcloud/Widget-JS-API/raw/master/soundcloud.player.api.js'
-  Popcorn.getScript( "lib/soundcloud.player.api.js", function() {
+  Popcorn.getScript( "http://popcornjs.org/code/players/soundcloud/lib/soundcloud.player.api.js", function() {
     // Play event is fired twice when player is first started. Ignore second one
     var ignorePlayEvt = 1;
     

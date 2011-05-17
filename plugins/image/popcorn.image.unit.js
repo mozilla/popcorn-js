@@ -1,8 +1,9 @@
 test("Popcorn Image Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 5,
+      expects = 6,
       count = 0,
+      setupId,
       imagediv = document.getElementById('imagediv');
   
   expect( expects );
@@ -30,16 +31,22 @@ test("Popcorn Image Plugin", function () {
     target: 'imagediv'
   });
 
+  setupId = popped.getLastTrackEventId();
+
   popped.exec( 2, function() {
-      ok( /display: block;/.test( imagediv.innerHTML ), "Div contents are displayed" );
-      plus();
-      ok( /img/.test( imagediv.innerHTML ), "An image exists" );
-      plus();
+    ok( /display: block;/.test( imagediv.innerHTML ), "Div contents are displayed" );
+    plus();
+    ok( /img/.test( imagediv.innerHTML ), "An image exists" );
+    plus();
   });
   
   popped.exec( 4, function() {
-      ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
-      plus();
+    ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
+    plus();
+
+    popped.pause().removeTrackEvent( setupId );
+    ok( !imagediv.children[0], "removed image was properly destroyed" );
+    plus();
   });
   popped.volume(0).play();  
   
