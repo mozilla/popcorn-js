@@ -6,7 +6,7 @@ test("Popcorn LinkedIn Plugin", function () {
     var popped   = Popcorn("#video"),
         expects  = 5,
         count    = 0,
-        linkedin = document.getElementById('linkedindiv');
+        linkedin = document.getElementById( "linkedindiv" );
     
     expect( expects );
     
@@ -19,7 +19,7 @@ test("Popcorn LinkedIn Plugin", function () {
   
     stop();
    
-    ok( 'linkedin' in popped, "linkedin is a method of the popped instance" );
+    ok( "linkedin" in popped, "linkedin is a method of the popped instance" );
     plus();
   
     equals( linkedin.innerHTML, "", "initially, there is nothing inside the linkedin div" );
@@ -27,13 +27,13 @@ test("Popcorn LinkedIn Plugin", function () {
     
     popped.linkedin({
   
-      type      : 'share',
-      counter   : 'right',
-      url       : "http://www.google.ca",
-      target    : "linkedindiv",
-      apikey    : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
-      start     : 1,
-      end       : 3
+      type: "share",
+      counter: "right",
+      url: "http://www.google.ca",
+      target: "linkedindiv",
+      apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
+      start: 1,
+      end: 3
     });
   
     popped.exec( 2, function() {
@@ -50,10 +50,10 @@ test("Popcorn LinkedIn Plugin", function () {
         plus();
     });
   
-    popped.volume(0).play();
+    popped.volume( 0 ).play();
   } else {
 
     // tests must be run on localhost
-    ok(false, "LinkedIn apikey will only work under localhost");
+    ok( false, "LinkedIn apikey will only work under localhost" );
   }
 });
