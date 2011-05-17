@@ -5,21 +5,23 @@
   var processingLoaded = false,
       gmlPlayer = function( $p ) {
 
-        var _stroke = 0,
-            onPt = 0, 
+        var _stroke  = 0,
+            onPt     = 0, 
             onStroke = 0,
-            x = null,
-            y = null,
+            x        = null,
+            y        = null,
             rotation = false,
-            strokes = 0,
-            play =  function() {},
-            reset = function() {
+            strokes  = 0,
+            play     = function() {},
+            reset    = function() {
 
               $p.background( 0 );
               onPt = onStroke = 0;
               x = y = null;
             },
             drawLine = function( x, y, x2, y2 ) {
+
+              var _x, _y, _x2, _y2;
 
               if ( rotation ) {
 
@@ -34,6 +36,7 @@
                 _x2 = x2 * $p.width;
                 _y2 = y2 * $p.height;
               }
+
               $p.stroke( 0 );
               $p.strokeWeight( 13 );
               $p.strokeCap( $p.SQUARE );
@@ -52,10 +55,11 @@
                 if ( !strokes ) {
                   return;
                 }
+
                 _stroke = strokes[ onStroke ] || strokes;
-                var pt = _stroke.pt[ onPt ];
-                var p = onPt;
-                x && drawLine( x, y, pt.x, pt.y );
+                var pt = _stroke.pt[ onPt ],
+                    p = onPt;
+                x != null && drawLine( x, y, pt.x, pt.y );
 
                 x = pt.x;
                 y = pt.y;
@@ -70,47 +74,52 @@
         $p.setup = function() {};
         $p.construct = function( media, data, options ) {
 
-          $p.size( 640,640 );
+          var dataReady = function() {
+
+            if ( data ) {
+
+              strokes = data.gml.tag.drawing.stroke;
+
+              var drawingDur = ( options.end - options.start ) / ( strokes.pt || (function( strokes ) {
+
+                var rStrokes = [];
+
+                for ( var i = 0, sl = strokes.length; i < sl; i++ ) {
+
+                  rStrokes = rStrokes.concat( strokes[ i ].pt );
+                }
+
+                return rStrokes;
+              })( strokes ) ).length;
+
+              var tag = data.gml.tag,
+                  app_name =  tag.header && tag.header.client && tag.header.client.name;
+
+              rotation = app_name === 'Graffiti Analysis 2.0: DustTag' ||
+                         app_name === 'DustTag: Graffiti Analysis 2.0' ||
+                         app_name === 'Fat Tag - Katsu Edition';
+
+              play = function() {
+
+                if ( media.currentTime < options.endDrawing ) {
+
+                  seek( ( media.currentTime - options.start ) / drawingDur );
+                }
+              };
+
+              return;
+            }
+
+            setTimeout( dataReady, 5 );
+          };
+
+          $p.size( 640, 640 );
           $p.frameRate( 60 );
           $p.smooth();
           reset();
           $p.noLoop();
 
-          var si =  setInterval(function() {
-
-            if ( !data ) {
-              return;
-            }
-            clearInterval( si );
-
-            strokes = data.gml.tag.drawing.stroke;
-
-            var drawingDur = ( options.end - options.start ) / ( strokes.pt || (function( strokes ) {
-
-              var rStrokes = [];
-
-              for ( var i = 0, sl = strokes.length; i < sl; i++ ) {
-
-                rStrokes = rStrokes.concat( strokes[ i ].pt );
-              }
-
-              return rStrokes;
-            })( strokes ) ).length;
-
-            var tag = data.gml.tag;
-            var app_name =  tag.header && tag.header.client && tag.header.client.name;
-            rotation = app_name === 'Graffiti Analysis 2.0: DustTag' ||
-                       app_name === 'DustTag: Graffiti Analysis 2.0' ||
-                       app_name === 'Fat Tag - Katsu Edition';
-
-            play = function() {
-
-              if ( media.currentTime < options.endDrawing ) {
-
-                seek( ( media.currentTime - options.start ) / drawingDur );
-              }
-            };
-          }, 50);
+          dataReady();
         };
       };
 
@@ -157,21 +166,23 @@
       document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options.container );
 
       // makes sure both processing.js and the gml data are loaded
-      var readyCheck = setInterval(function() {
+      var readyCheck = function() {
 
-        if ( !processingLoaded ) {
+        if ( processingLoaded ) {
+          Popcorn.getJSONP( "http://000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
+
+            options.pjsInstance = new Processing( options.container, gmlPlayer );
+            options.pjsInstance.construct( self.media, data, options );
+            options._running && options.pjsInstance.loop();
+          }, false );
 
           return;
         }
 
-        clearInterval( readyCheck );
-        Popcorn.getJSONP( "http://000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
+        setTimeout( readyCheck, 5 );
+      }
 
-          options.pjsInstance = new Processing( options.container, gmlPlayer );
-          options.pjsInstance.construct( self.media, data, options );
-          options._running && options.pjsInstance.loop();
-        }, false );
-      }, 5);
+      readyCheck();
     },
     /**
      * @member gml 
