@@ -2,7 +2,6 @@
 
 (function (Popcorn){
 /**
-<<<<<<< HEAD
   * Facebook Popcorn plug-in 
   * Places Facebook's "social plugins" inside a div ( http://developers.facebook.com/docs/plugins/ )
   * Sets options according to user input or default values
@@ -191,11 +190,6 @@
             options._container.setAttribute( "font", options.font );
             options._container.setAttribute( "colorscheme", options.colorscheme );
           },
-          comments: function() {
-            options._container.setAttribute( "num_posts", ( options.num_posts || 10 ) );
-            options._container.setAttribute( "width", ( options.width || 450 ) );
-            options._container.setAttribute( "colorscheme", options.colorscheme );
-          },
           livestream: function() {
             options._container.setAttribute( "width", ( options.width || 400 ) );
             options._container.setAttribute( "height", ( options.height || 500 ) );
@@ -223,13 +217,7 @@
     * options variable
     */
     start: function( event, options ){
-<<<<<<< HEAD
-      if ( !!options._container ) {
-        options._container.style.display = "inline";
-      }
-=======
       toggle( options._container, "inline" );     
->>>>>>> af5e535d76479f6c0825ad3f6517930f6c89c798
     },
     /**
     * @member facebook
@@ -238,13 +226,7 @@
     * options variable
     */
     end: function( event, options ){
-<<<<<<< HEAD
-      if ( !!options._container ) {
-        options._container.style.display = "none";
-      }
-=======
       toggle ( options._container, "none" );
->>>>>>> af5e535d76479f6c0825ad3f6517930f6c89c798
     }
   });
 
