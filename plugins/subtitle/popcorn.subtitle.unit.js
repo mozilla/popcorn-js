@@ -1,12 +1,10 @@
 test("Popcorn Subtitle Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 5,
+      expects = 9,
       count = 0,
-      interval,
-      interval2,
-      interval3,
-      interval4,
+      subTop = 9001,
+      subLeft = 9001,
       subtitlediv;
   
   expect(expects);
@@ -23,22 +21,24 @@ test("Popcorn Subtitle Plugin", function () {
   plus();
 
   popped.subtitle({
-      start: 3,
+      start: 0,
+      end: 1,
       text: 'this is the first subtitle of 2011',
       language: "en",
       languagesrc: "language",
       accessibilitysrc: "accessibility"
     } )
   .subtitle({
-      start: 10,
-      end: 15,
+      start: 1,
+      end: 2,
       text: 'this is the second subtitle of 2011',
       language: "en",
       languagesrc: "language",
       accessibilitysrc: "accessibility"
     } )
 	.subtitle({
-      start: 20,
+      start: 3,
+      end: 4,
       text: 'this is the third subtitle of 2011',
       language: "en",
       languagesrc: "language",
@@ -46,38 +46,59 @@ test("Popcorn Subtitle Plugin", function () {
     } )
     .volume(0)
     .play();
-  
-  interval = setInterval( function() {
-    if( popped.currentTime() >= 3 && popped.currentTime() < 10 ) {
-      subtitlediv = document.getElementById('subtitlediv'); // this div has only now been created
-      equals (subtitlediv.innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
-      plus();
-      clearInterval( interval );
-    }
-  }, 500);
-  
-  interval2 = setInterval( function() {
-    if( popped.currentTime() >= 10 && popped.currentTime() < 15  ) {
-      equals (subtitlediv.innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
-      plus();
-      clearInterval( interval2 );
-    }
-  }, 500);
 
-  interval3 = setInterval( function() {
-    if( popped.currentTime() >= 15 && popped.currentTime() < 20 ) {
-      equals (subtitlediv.innerHTML, "" );
-      plus();
-      clearInterval( interval3 );
-    }
-  }, 500);
-  
-  interval4 = setInterval( function() {
-    if( popped.currentTime() > 20) {
-      equals (subtitlediv.innerHTML, "this is the third subtitle of 2011", "subtitle displaying correct information" );
-      plus();
-      clearInterval( interval4 );
-    }
-  }, 500);
+  subtitlediv = document.getElementById('subtitlediv');
 
+  popped.exec( 0.5, function() {
+
+    // capturing location now, to check against later,
+    // a subtitle must be displayed to get valid data
+    // which is why we do this in exec
+    subLeft = subtitlediv.style.left;
+    subTop  = subtitlediv.style.top;
+
+    // changing position
+    popped.media.style.position = "absolute";
+    popped.media.style.left = "400px";
+    popped.media.style.top = "600px";
+
+    equals( subtitlediv.innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
+    plus();
+  });
+
+  popped.exec( 1.5, function() {
+
+
+    // check position of subttile that should of moved with video,
+    // a subtitle must be displayed to get valid data
+    ok( subtitlediv.style.left !== subLeft, "subtitle's left position has changed" );
+    plus();
+    ok( subtitlediv.style.top !== subTop, "subtitle's top position has changed" );
+    plus();
+
+    // we know values have changed, but how accurate are they?
+    // check values against the video's values
+    // we need four checks because if we just check against video's position,
+    // and video's position hasn't updated either, we'll pass when we should fail
+    equals( subtitlediv.style.left, popped.position().left + "px", "subtitle left position moved" );
+    plus();
+    ok( Popcorn.position( subtitlediv ).top > popped.position().top, "subtitle top position moved" );
+    plus();
+
+    equals (subtitlediv.innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
+    plus();
+  });
+
+  popped.exec( 2.5, function() {
+
+    equals (subtitlediv.innerHTML, "", "subtitle is clear" );
+    plus();
+  });
+
+  popped.exec( 3.5, function() {
+
+    equals (subtitlediv.innerHTML, "this is the third subtitle of 2011", "subtitle displaying correct information" );
+    plus();
+  });
 });
+
