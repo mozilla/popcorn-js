@@ -193,7 +193,7 @@
     player.offsetParent = player.swfObj.offsetParent;
     player.offsetLeft = player.swfObj.offsetLeft;
     player.offsetTop = player.swfObj.offsetTop;
-    
+
     player.dispatchEvent( "load" );
   };
   
@@ -279,11 +279,12 @@
       
       var vidId,
           that = this,
-          tmp,
-          container = this._container = document.createElement( "div" );
+          tmp;
 
-      container.id = containerId + "object";
-      document.getElementById( containerId ).appendChild( container );
+      this._container = document.createElement( "div" );
+      this._container.id = containerId + "object";
+      this._target = document.getElementById( containerId );
+      this._target.appendChild( this._container );
       
       options = options || {};
       
@@ -302,31 +303,31 @@
       this.previousCurrentTime = this.currentTime;
       this.previousVolume = this.volume;
       this.evtHolder = new EventManager( this );
-
-      bounds = this._container.getBoundingClientRect();
       
       // For calculating position relative to video (like subtitles)
-      this.width = options.width || getStyle( container, "width" ) || "504px";
-      this.height = options.height || getStyle( container, "height" ) || "340px";
+      this.width = options.width || getStyle( this._target, "width" ) || "504px";
+      this.height = options.height || getStyle( this._target, "height" ) || "340px";
       
       if ( !/[\d]%/.test( this.width ) ) {
         this.offsetWidth = parseInt( this.width, 10 );
+        this._target.style.width = this.width + "px";
       } else {
         // convert from pct to abs pixels
-        tmp = container.style.width;
-        container.style.width = this.width;
-        this.offsetWidth = container.offsetWidth;
-        container.style.width = tmp;
+        tmp = this._target.style.width;
+        this._target.style.width = this.width;
+        this.offsetWidth = this._target.offsetWidth;
+        this._target.style.width = tmp;
       }
       
       if ( !/[\d]%/.test( this.height ) ) {
         this.offsetHeight = parseInt( this.height, 10 );
+        this._target.style.height = this.height + "px";
       } else {
         // convert from pct to abs pixels
-        tmp = container.style.height;
-        container.style.height = this.height;
-        this.offsetHeight = container.offsetHeight;
-        container.style.height = tmp;
+        tmp = this._target.style.height;
+        this._target.style.height = this.height;
+        this.offsetHeight = this._target.offsetHeight;
+        this._target.style.height = tmp;
       }
       
       this.offsetLeft = 0;
@@ -340,9 +341,9 @@
         throw "No video id";
       }
       
-      registry[ container.id ] = this;
+      registry[ this._container.id ] = this;
       
-      makeSwf( this, vidId, container.id );
+      makeSwf( this, vidId, this._container.id );
       
       // Set up listeners to internally track state as needed
       this.addEventListener( "load", function() {
@@ -582,7 +583,7 @@
       return this.evtHolder.dispatchEvent( evtName );
     },
     getBoundingClientRect: function() {
-      return this._container.getBoundingClientRect();
+      return this._target.getBoundingClientRect();
     },
     startTimeUpdater: function() {
       var self = this,
