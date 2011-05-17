@@ -54,7 +54,7 @@
     //  Ensure that instances have unique ids and unique entries
     //  Uses `in` operator to avoid false positives on 0
     instance.id = !( instanceId in Popcorn.instanceIds ) && instanceId ||
-                      "__popcorn" + instanceLen;
+                    "__popcorn" + instanceLen;
 
     //  Create a reference entry for this instance
     Popcorn.instanceIds[ instance.id ] = instanceLen;
@@ -92,7 +92,7 @@
         //  If document ready has already fired
         if ( document.readyState === "interactive" || document.readyState === "complete" ) {
 
-          entity(document, Popcorn);
+          entity( document, Popcorn );
 
           return;
         }
@@ -105,7 +105,7 @@
           //  set readyBound flag
           readyBound = true;
 
-          var DOMContentLoaded  = function () {
+          var DOMContentLoaded  = function() {
 
             readyFired = true;
 
@@ -113,9 +113,9 @@
             document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
 
             //  Execute all ready function in the stack
-            for ( var i = 0; i < readyStack.length; i++ ) {
+            for ( var i = 0, readyStackLength = readyStack.length; i < readyStackLength; i++ ) {
 
-              readyStack[i].call( document, Popcorn );
+              readyStack[ i ].call( document, Popcorn );
 
             }
             //  GC readyStack
@@ -123,7 +123,7 @@
           };
 
           //  Register global DOM ready listener
-          document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false);
+          document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
         }
 
         return;
@@ -134,8 +134,8 @@
 
       //  Get media element by id or object reference
       this.media = matches && matches.length && matches[ 2 ] ?
-                    document.getElementById( matches[ 2 ] ) :
-                    entity;
+                     document.getElementById( matches[ 2 ] ) :
+                     entity;
 
       //  Create an audio or video element property reference
       this[ ( this.media.nodeName && this.media.nodeName.toLowerCase() ) || "video" ] = this.media;
@@ -255,11 +255,11 @@
 
             tracks.previousUpdateTime = currentTime;
 
-          }, false);
+          }, false );
         } else {
-          global.setTimeout( function() {
+          global.setTimeout(function() {
             isReady( that );
-          }, 1);
+          }, 1 );
         }
       };
 
@@ -282,12 +282,12 @@
     context = context || this;
     // Use native whenever possible
     if ( forEach && obj.forEach === forEach ) {
-      return obj.forEach(fn, context);
+      return obj.forEach( fn, context );
     }
 
     for ( var key in obj ) {
-      if ( hasOwn.call(obj, key) ) {
-        fn.call(context, obj[key], key, obj);
+      if ( hasOwn.call( obj, key ) ) {
+        fn.call( context, obj[ key ], key, obj );
       }
     }
 
@@ -295,13 +295,14 @@
   };
 
   Popcorn.extend = function( obj ) {
-    var dest = obj, src = slice.call(arguments, 1);
+    var dest = obj, src = slice.call( arguments, 1 );
 
     Popcorn.forEach( src, function( copy ) {
       for ( var prop in copy ) {
-        dest[prop] = copy[prop];
+        dest[ prop ] = copy[ prop ];
       }
     });
+
     return dest;
   };
 
@@ -318,7 +319,7 @@
     sizeOf: function ( obj ) {
       var size = 0;
 
-      for ( var prop in obj  ) {
+      for ( var prop in obj ) {
         size++;
       }
 
@@ -326,17 +327,17 @@
     },
     isArray: Array.isArray || function( array ) {
       return toString.call( array ) === "[object Array]";
-    }, 
+    },
 
-    nop: function () {},
+    nop: function() {},
 
     position: function( elem ) {
 
       var clientRect = elem.getBoundingClientRect(),
-          bounds = {}, 
-          doc = elem.ownerDocument,
-          docElem = document.documentElement,
-          body = document.body,
+          bounds     = {},
+          doc        = elem.ownerDocument,
+          docElem    = document.documentElement,
+          body       = document.body,
           clientTop, clientLeft, scrollTop, scrollLeft, top, left;
 
       //  Determine correct clientTop/Left
@@ -355,12 +356,12 @@
         bounds[ p ] = Math.round( clientRect[ p ] );
       }
 
-      return Popcorn.extend({}, bounds, { top: top, left: left });     
+      return Popcorn.extend({}, bounds, { top: top, left: left } );
     }
   });
 
   //  Memoized GUID Counter
-  Popcorn.guid.counter  = 1;
+  Popcorn.guid.counter = 1;
 
   //  Factory to implement getters, setters and controllers
   //  as Popcorn instance methods. The IIFE will create and return
@@ -372,11 +373,11 @@
 
 
       //  Build methods, store in object that is returned and passed to extend
-      Popcorn.forEach( methods.split(/\s+/g), function( name ) {
+      Popcorn.forEach( methods.split( /\s+/g ), function( name ) {
 
         ret[ name ] = function( arg ) {
 
-          if ( typeof this.media[name] === "function" ) {
+          if ( typeof this.media[ name ] === "function" ) {
             this.media[ name ]();
 
             return this;
@@ -402,12 +403,12 @@
   Popcorn.extend(Popcorn.p, {
 
     //  Rounded currentTime
-    roundTime: function () {
+    roundTime: function() {
       return -~this.media.currentTime;
     },
 
     //  Attach an event to a single point in time
-    exec: function ( time, fn ) {
+    exec: function( time, fn ) {
 
       //  Creating a one second track event with an empty end
       Popcorn.addTrackEvent( this, {
@@ -432,23 +433,22 @@
     UIEvents: "blur focus focusin focusout load resize scroll unload  ",
     MouseEvents: "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave click dblclick",
     Events: "loadstart progress suspend emptied stalled play pause " +
-           "loadedmetadata loadeddata waiting playing canplay canplaythrough " +
-           "seeking seeked timeupdate ended ratechange durationchange volumechange"
+            "loadedmetadata loadeddata waiting playing canplay canplaythrough " +
+            "seeking seeked timeupdate ended ratechange durationchange volumechange"
   };
 
   Popcorn.Events.Natives = Popcorn.Events.UIEvents + " " +
-                            Popcorn.Events.MouseEvents + " " +
-                              Popcorn.Events.Events;
+                           Popcorn.Events.MouseEvents + " " +
+                           Popcorn.Events.Events;
 
-  Popcorn.events  = {
-
+  Popcorn.events = {
 
     isNative: function( type ) {
 
       var checks = Popcorn.Events.Natives.split( /\s+/g );
 
       for ( var i = 0; i < checks.length; i++ ) {
-        if ( checks[i] === type ) {
+        if ( checks[ i ] === type ) {
           return true;
         }
       }
@@ -473,10 +473,10 @@
       return proto;
     },
     //  Compile all native events to single array
-    all: Popcorn.Events.Natives.split(/\s+/g),
+    all: Popcorn.Events.Natives.split( /\s+/g ),
     //  Defines all Event handling static functions
     fn: {
-      trigger: function ( type, data ) {
+      trigger: function( type, data ) {
 
         //  setup checks for custom event system
         if ( this.data.events[ type ] && Popcorn.sizeOf( this.data.events[ type ] ) ) {
@@ -486,30 +486,31 @@
           if ( eventInterface ) {
 
             var evt = document.createEvent( eventInterface );
-                evt.initEvent(type, true, true, global, 1);
+                evt.initEvent( type, true, true, global, 1 );
 
-            this.media.dispatchEvent(evt);
+            this.media.dispatchEvent( evt );
 
             return this;
           }
 
           //  Custom events
-          Popcorn.forEach(this.data.events[ type ], function ( obj, key ) {
+          Popcorn.forEach( this.data.events[ type ], function( obj, key ) {
 
             obj.call( this, data );
 
-          }, this);
+          }, this );
 
         }
 
         return this;
       },
-      listen: function ( type, fn ) {
+      listen: function( type, fn ) {
 
-        var self = this, hasEvents = true;
+        var self = this,
+            hasEvents = true;
 
-        if ( !this.data.events[type] ) {
-          this.data.events[type] = {};
+        if ( !this.data.events[ type ] ) {
+          this.data.events[ type ] = {};
           hasEvents = false;
         }
 
@@ -521,11 +522,10 @@
 
           this.media.addEventListener( type, function( event ) {
 
-            Popcorn.forEach( self.data.events[type], function ( obj, key ) {
+            Popcorn.forEach( self.data.events[ type ], function ( obj, key ) {
               if ( typeof obj === "function" ) {
-                obj.call(self, event);
+                obj.call( self, event );
               }
-
             });
 
             //fn.call( self, event );
@@ -536,14 +536,14 @@
       },
       unlisten: function( type, fn ) {
 
-        if ( this.data.events[type] && this.data.events[type][fn] ) {
+        if ( this.data.events[ type ] && this.data.events[ type ][ fn ] ) {
 
-          delete this.data.events[type][ fn ];
+          delete this.data.events[ type ][ fn ];
 
           return this;
         }
 
-        this.data.events[type] = null;
+        this.data.events[ type ] = null;
 
         return this;
       }
@@ -551,12 +551,12 @@
   };
 
   //  Extend Popcorn.events.fns (listen, unlisten, trigger) to all Popcorn instances
-  Popcorn.forEach( ["trigger", "listen", "unlisten"], function ( key ) {
+  Popcorn.forEach( [ "trigger", "listen", "unlisten" ], function( key ) {
     Popcorn.p[ key ] = Popcorn.events.fn[ key ];
   });
   //  Protected API methods
   Popcorn.protect = {
-    natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten".toLowerCase().split(/\s+/)
+    natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten".toLowerCase().split( /\s+/ )
   };
 
   //  Internal Only
@@ -570,28 +570,28 @@
       obj.data.history.push( track._id );
 
       track._natives.start = track._natives.start || Popcorn.nop;
-      track._natives.end = track._natives.end || Popcorn.nop;
+      track._natives.end   = track._natives.end || Popcorn.nop;
     }
 
     track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );
-    track.end = Popcorn.util.toSeconds( track.end, obj.options.framerate );
+    track.end   = Popcorn.util.toSeconds( track.end, obj.options.framerate );
 
     //  Store this definition in an array sorted by times
     var byStart = obj.data.trackEvents.byStart,
-        byEnd = obj.data.trackEvents.byEnd;
-   
-    for ( var idx = byStart.length-1; idx >= 0; idx-- ) {
+        byEnd   = obj.data.trackEvents.byEnd;
+
+    for ( var idx = byStart.length - 1; idx >= 0; idx-- ) {
 
       if ( track.start >= byStart[idx].start ) {
-        byStart.splice( idx+1, 0, track );
+        byStart.splice( idx + 1, 0, track );
         break;
       }
     }
-   
-    for ( var idx = byEnd.length-1; idx >= 0; idx-- ) {
+
+    for ( var idx = byEnd.length - 1; idx >= 0; idx-- ) {
 
       if ( track.start >= byEnd[idx].start ) {
-        byEnd.splice( idx+1, 0, track );
+        byEnd.splice( idx + 1, 0, track );
         break;
       }
     }
@@ -682,6 +682,7 @@
           o._natives._teardown && o._natives._teardown.call( obj, o );
         }
       }
+
     });
 
 
@@ -696,12 +697,12 @@
 
 
     obj.data.trackEvents.byStart = byStart;
-    obj.data.trackEvents.byEnd = byEnd;
+    obj.data.trackEvents.byEnd  = byEnd;
 
 
     for ( var i = 0; i < historyLen; i++ ) {
-      if ( obj.data.history[i] !== trackId ) {
-        history.push( obj.data.history[i] );
+      if ( obj.data.history[ i ] !== trackId ) {
+        history.push( obj.data.history[ i ] );
       }
     }
 
@@ -715,7 +716,7 @@
 
     Popcorn.forEach( obj.data.trackEvents.byStart, function( o, i, context ) {
       if ( o._id ) {
-        trackevents.push(o);
+        trackevents.push( o );
       }
     });
 
@@ -832,7 +833,7 @@
           }
         }
 
-      }, this);
+      }, this );
 
       return this;
     };
@@ -874,12 +875,12 @@
   Popcorn.plugin.getDefinition = function( name ) {
 
     var registry = Popcorn.registryByName;
-    
+
     if ( registry[ name ] ) {
       return registry[ name ];
     }
 
-    Popcorn.error( "Cannot inherit from "+ name +"; Object does not exist" );
+    Popcorn.error( "Cannot inherit from " + name + "; Object does not exist" );
   };
 
   //  Internal use only
@@ -902,7 +903,7 @@
     // Get the names of all of the ancestor classes, in the order that
     // we will be calling them. The override is for the class we're
     // currently defining, since it's not in the registry yet.
-    var ancestors = [], 
+    var ancestors = [],
         pluginFn, entry;
 
     function getAncestors( name, override ) {
@@ -924,7 +925,7 @@
     // Now create the requested plugin under the reqested name.
     pluginFn = Popcorn.plugin( name, function( options ) {
 
-      var self = this, 
+      var self = this,
           plugins;
 
       function instantiate( definition ) {
@@ -942,7 +943,7 @@
         start: Popcorn.plugin.delegate( self, "start", plugins ),
         end: Popcorn.plugin.delegate( self, "end", plugins )
       };
-      
+
     }, manifest || definition.manifest );
 
     entry = Popcorn.plugin.getDefinition( name );
@@ -952,7 +953,7 @@
     return pluginFn;
   };
 
-  // Augment Popcorn; 
+  // Augment Popcorn;
   Popcorn.inherit = Popcorn.plugin.inherit;
 
   // stores parsers keyed on filetype
@@ -963,7 +964,7 @@
   Popcorn.parser = function( name, type, definition ) {
 
     if ( Popcorn.protect.natives.indexOf( name.toLowerCase() ) >= 0 ) {
-      Popcorn.error("'" + name + "' is a protected function name");
+      Popcorn.error( "'" + name + "' is a protected function name" );
       return;
     }
 
@@ -1051,24 +1052,23 @@
   var rparams = /\?/,
   //  XHR Setup object
   setup = {
-    url: '',
-    data: '',
-    dataType: '',
+    url: "",
+    data: "",
+    dataType: "",
     success: Popcorn.nop,
-    type: 'GET',
+    type: "GET",
     async: true,
-    xhr: function()  {
+    xhr: function() {
       return new global.XMLHttpRequest();
     }
   };
 
-  Popcorn.xhr = function ( options ) {
+  Popcorn.xhr = function( options ) {
 
     options.dataType = options.dataType && options.dataType.toLowerCase() || null;
-    
-    if ( options.dataType &&
-            ( options.dataType === "jsonp" ||
-                options.dataType === "script" ) ) {
+
+    if ( options.dataType && 
+         ( options.dataType === "jsonp" || options.dataType === "script" ) ) {
 
       Popcorn.xhr.getJSONP(
         options.url,
@@ -1103,7 +1103,7 @@
   };
 
 
-  Popcorn.xhr.httpData = function ( settings ) {
+  Popcorn.xhr.httpData = function( settings ) {
 
     var data, json = null;
 
@@ -1112,8 +1112,8 @@
       if ( settings.ajax.readyState === 4 ) {
 
         try {
-          json = JSON.parse(settings.ajax.responseText);
-        } catch(e) {
+          json = JSON.parse( settings.ajax.responseText );
+        } catch( e ) {
           //suppress
         }
 
@@ -1136,12 +1136,12 @@
     return data;
   };
 
-  Popcorn.xhr.getJSONP = function ( url, success, isScript ) {
+  Popcorn.xhr.getJSONP = function( url, success, isScript ) {
 
     //  If this is a script request, ensure that we do not call something that has already been loaded
     if ( isScript ) {
 
-      var scripts = document.querySelectorAll('script[src="' + url + '"]');
+      var scripts = document.querySelectorAll( "script[src=\"" + url + "\"]" );
 
       //  If there are scripts with this url loaded, early return
       if ( scripts.length ) {
@@ -1153,22 +1153,22 @@
       }
     }
 
-    var head = document.head || document.getElementsByTagName("head")[0] || document.documentElement,
-      script = document.createElement("script"),
-      paramStr = url.split("?")[1],
+    var head = document.head || document.getElementsByTagName( "head" )[ 0 ] || document.documentElement,
+      script = document.createElement( "script" ),
+      paramStr = url.split( "?" )[ 1 ],
       isFired = false,
       params = [],
       callback, parts, callparam;
 
     if ( paramStr && !isScript ) {
-      params = paramStr.split("&");
+      params = paramStr.split( "&" );
     }
 
     if ( params.length ) {
-      parts = params[ params.length - 1 ].split("=");
+      parts = params[ params.length - 1 ].split( "=" );
     }
 
-    callback = params.length ? ( parts[1] ? parts[1] : parts[0]  ) : "jsonp";
+    callback = params.length ? ( parts[ 1 ] ? parts[ 1 ] : parts[ 0 ]  ) : "jsonp";
 
     if ( !paramStr && !isScript ) {
       url += "?callback=" + callback;
@@ -1184,7 +1184,7 @@
       }
 
       //  Define the JSONP success callback globally
-      window[ callback ] = function ( data ) {
+      window[ callback ] = function( data ) {
 
         success && success( data );
         isFired = true;
@@ -1192,7 +1192,7 @@
       };
 
       //  Replace callback param and callback name
-      url = url.replace( parts.join("="), parts[0] + "=" + callback );
+      url = url.replace( parts.join( "=" ), parts[ 0 ] + "=" + callback );
 
     }
 
@@ -1304,7 +1304,6 @@
       if ( !media.id ) {
 
         media.id = Popcorn.guid( "__popcorn" );
-
       }
 
       //  Ensure we're looking at a dom node
@@ -1312,7 +1311,7 @@
 
         popcornMedia = Popcorn( "#" + media.id );
 
-        dataSources = ( media.getAttribute( dataAttr ) || "" ).split(",");
+        dataSources = ( media.getAttribute( dataAttr ) || "" ).split( "," );
 
         if ( dataSources[ 0 ] ) {
 
@@ -1327,7 +1326,6 @@
               data = source.split( "." );
               data[ 0 ] = "parse" + data[ data.length - 1 ].toUpperCase();
               data[ 1 ] = source;
-
             }
 
             //  If the media has data sources and the correct parser is registered, continue to load
