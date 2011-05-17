@@ -101,30 +101,30 @@ var googleCallback;
     // ensure that google maps and its functions are loaded
     // before setting up the map parameters
     var isMapReady = function () {
-        if (_mapLoaded) {
-          if (options.location) {
-            // calls an anonymous google function called on separate thread
-            geocoder.geocode({
-              "address": options.location
-            }, function (results, status) {
-              if (status === google.maps.GeocoderStatus.OK) {
-                options.lat = results[0].geometry.location.lat();
-                options.lng = results[0].geometry.location.lng();
-                location = new google.maps.LatLng(options.lat, options.lng);
-                map = new google.maps.Map(newdiv, {
-                  mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID
-                });
-                map.getDiv().style.display = "none";
-              }
-            });
-          } else {
-            location = new google.maps.LatLng(options.lat, options.lng);
-            map = new google.maps.Map(newdiv, {
-              mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID
-            });
-            map.getDiv().style.display = "none";
-          }
+      if (_mapLoaded) {
+        if (options.location) {
+          // calls an anonymous google function called on separate thread
+          geocoder.geocode({
+            "address": options.location
+          }, function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+              options.lat = results[0].geometry.location.lat();
+              options.lng = results[0].geometry.location.lng();
+              location = new google.maps.LatLng(options.lat, options.lng);
+              map = new google.maps.Map(newdiv, {
+                mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID
+              });
+              map.getDiv().style.display = "none";
+            }
+          });
         } else {
+          location = new google.maps.LatLng(options.lat, options.lng);
+          map = new google.maps.Map(newdiv, {
+            mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID
+          });
+          map.getDiv().style.display = "none";
+        }
+      } else {
           setTimeout(function () {
             isMapReady();
           }, 5);
@@ -146,174 +146,174 @@ var googleCallback;
 
         // ensure the map has been initialized in the setup function above
         var isMapSetup = function () {
-            if (map) {
-              map.getDiv().style.display = "block";
-              // reset the location and zoom just in case the user plaid with the map
-              google.maps.event.trigger(map, 'resize');
-              map.setCenter(location);
+          if (map) {
+            map.getDiv().style.display = "block";
+            // reset the location and zoom just in case the user plaid with the map
+            google.maps.event.trigger(map, 'resize');
+            map.setCenter(location);
 
-              // make sure options.zoom is a number
-              if (options.zoom && typeof options.zoom !== "number") {
-                options.zoom = +options.zoom;
-              }
+            // make sure options.zoom is a number
+            if (options.zoom && typeof options.zoom !== "number") {
+              options.zoom = +options.zoom;
+            }
 
-              options.zoom = options.zoom || 0; // default to 0
-              map.setZoom(options.zoom);
+            options.zoom = options.zoom || 0; // default to 0
+            map.setZoom(options.zoom);
 
-              //Make sure heading is a number
-              if (options.heading && typeof options.heading !== "number") {
-                options.heading = +options.heading;
-              }
-              //Make sure pitch is a number
-              if (options.pitch && typeof options.pitch !== "number") {
-                options.pitch = +options.pitch;
-              }
+            //Make sure heading is a number
+            if (options.heading && typeof options.heading !== "number") {
+              options.heading = +options.heading;
+            }
+            //Make sure pitch is a number
+            if (options.pitch && typeof options.pitch !== "number") {
+              options.pitch = +options.pitch;
+            }
 
-							
+						
 
-              if (options.type === "STREETVIEW") {
-                // Switch this map into streeview mode
-                map.setStreetView(
-                // Pass a new StreetViewPanorama instance into our map
+            if (options.type === "STREETVIEW") {
+              // Switch this map into streeview mode
+              map.setStreetView(
+              // Pass a new StreetViewPanorama instance into our map
 
-                sView = new google.maps.StreetViewPanorama( newdiv, {
-                  position: location,
-                  pov: {
-                    heading: options.heading = options.heading || 0,
-                    pitch: options.pitch = options.pitch || 0,
-                    zoom: options.zoom
-                  }
-                })
+              sView = new google.maps.StreetViewPanorama( newdiv, {
+                position: location,
+                pov: {
+                  heading: options.heading = options.heading || 0,
+                  pitch: options.pitch = options.pitch || 0,
+                  zoom: options.zoom
+                }
+              })
 
 
-                );
+              );
+  
+              //  Function to handle tweening using a set timeout
+              var tween = function ( rM, t ) {
+
+                setTimeout( function () {
     
-                //  Function to handle tweening using a set timeout
-                var tween = function ( rM, t ) {
+                  //  Checks whether this is a generated route or not
 
-                  setTimeout( function () {
-      
-                    //  Checks whether this is a generated route or not
+                  if( typeof options.tween === "object" ){
 
-                    if( typeof options.tween === "object" ){
+                    for ( var i = 0; i < rM.length; i++ ) {
 
-                      for ( var i = 0; i < rM.length; i++ ) {
+                      //  Checks if this position along the tween should be displayed or not
+                      if( that.media.currentTime >= ( rM[ i ].interval*( i+1 ) )/1000 &&
+                        ( that.media.currentTime <= (rM[ i ].interval*( i+2 ) )/1000 || 
+                        that.media.currentTime >= rM[ i ].interval*( rM.length )/1000 ) ){
 
-                        //  Checks if this position along the tween should be displayed or not
-                        if( that.media.currentTime >= ( rM[ i ].interval*( i+1 ) )/1000 &&
-                          ( that.media.currentTime <= (rM[ i ].interval*( i+2 ) )/1000 || 
-                          that.media.currentTime >= rM[ i ].interval*( rM.length )/1000 ) ){
+                        sView3.setPosition( new google.maps.LatLng( rM[ i ].position.lat, rM[ i ].position.lng ) );
 
-	                        sView3.setPosition( new google.maps.LatLng( rM[ i ].position.lat, rM[ i ].position.lng ) );
-
-	                        sView3.setPov({
-	                          heading: rM[ i ].pov.heading || 0,
-	                          zoom:  rM[ i ].pov.zoom || 0,
-	                          pitch:   rM[ i ].pov.pitch || 0
-	                        });
-
-                        }
+                        sView3.setPov({
+                          heading: rM[ i ].pov.heading || 0,
+                          zoom:  rM[ i ].pov.zoom || 0,
+                          pitch:   rM[ i ].pov.pitch || 0
+                        });
 
                       }
 
-                        //  Calls the tween function again at the interval set by the user
-                        tween( rM, rM[ 0 ].interval );
                     }
-                    else{
 
-                      for ( var k = 0; k < rM.length; k++ ) {
+                      //  Calls the tween function again at the interval set by the user
+                      tween( rM, rM[ 0 ].interval );
+                  }
+                  else{
 
-                        if( that.media.currentTime >= (options.interval*( k+1 ) )/1000 &&
-                          ( that.media.currentTime <= (options.interval*( k+2 ) )/1000 ||
-                          that.media.currentTime >= options.interval*( rM.length )/1000 ) ){
+                    for ( var k = 0; k < rM.length; k++ ) {
 
-                          sView2.setPosition( checkpoints[ k ] );
+                      if( that.media.currentTime >= (options.interval*( k+1 ) )/1000 &&
+                        ( that.media.currentTime <= (options.interval*( k+2 ) )/1000 ||
+                        that.media.currentTime >= options.interval*( rM.length )/1000 ) ){
 
-                          sView2.setPov({
-	                          heading: options.heading || 0,
-	                          zoom:  options.zoom,
-	                          pitch:   options.pitch || 0
-	                        }); 
-                        }  
+                        sView2.setPosition( checkpoints[ k ] );
 
-                      }
+                        sView2.setPov({
+                          heading: options.heading || 0,
+                          zoom:  options.zoom,
+                          pitch:   options.pitch || 0
+                        }); 
+                      }  
 
-                      tween( checkpoints, options.interval );
-                    }   
-                  }, t );
+                    }
 
+                    tween( checkpoints, options.interval );
+                  }   
+                }, t );
+
+              };
+
+              
+              //  Determines if we should use hardcoded values ( using options.tween ),
+              //  or if we should use a start and end location and let google generate
+              //  the route for us
+              if ( options.location && typeof options.tween === "string" ){
+
+              //  Creating another variable to hold the streetview map for tweening,
+              //  Doing this because if there was more then one streetview map, the tweening would sometimes appear in other maps
+              var sView2 = sView;
+                
+                //  Create an array to store all the lat/lang values along our route
+                var checkpoints = [];
+
+                //  Creates a new direction service, later used to create a route
+                var directionsService = new google.maps.DirectionsService();
+
+                //  Creates a new direction renderer using the current map
+                //  This enables us to access all of the route data that is returned to us
+                var directionsDisplay = new google.maps.DirectionsRenderer( sView2 );
+
+                var request = {
+                origin:    options.location,
+                destination: options.tween,
+                travelMode:  google.maps.TravelMode.DRIVING
                 };
 
-                
-                //  Determines if we should use hardcoded values ( using options.tween ),
-                //  or if we should use a start and end location and let google generate
-                //  the route for us
-                if ( options.location && typeof options.tween === "string" ){
+                //  Create the route using the direction service and renderer
+                directionsService.route( request, function( response, status ) {
 
-                //  Creating another variable to hold the streetview map for tweening,
-                //  Doing this because if there was more then one streetview map, the tweening would sometimes appear in other maps
-                var sView2 = sView;
-                  
-                  //  Create an array to store all the lat/lang values along our route
-                  var checkpoints = [];
-
-                  //  Creates a new direction service, later used to create a route
-                  var directionsService = new google.maps.DirectionsService();
-
-                  //  Creates a new direction renderer using the current map
-                  //  This enables us to access all of the route data that is returned to us
-                  var directionsDisplay = new google.maps.DirectionsRenderer( sView2 );
-
-                  var request = {
-                  origin:    options.location,
-                  destination: options.tween,
-                  travelMode:  google.maps.TravelMode.DRIVING
-                  };
-
-                  //  Create the route using the direction service and renderer
-                  directionsService.route( request, function( response, status ) {
-
-                  if ( status == google.maps.DirectionsStatus.OK ) {
-                    directionsDisplay.setDirections( response );
-                    showSteps( response, that );
-                  }
-
-                  });
-
-                  var showSteps = function ( directionResult, that ) {
-                  
-                  //  Push new google map lat and lng values into an array from our list of lat and lng values
-                  for ( var j = 0; j < directionResult.routes[ 0 ].overview_path.length; j++ ) {
-                    checkpoints.push( new google.maps.LatLng( directionResult.routes[ 0 ].overview_path[ j ].lat(), directionResult.routes[ 0 ].overview_path[ j ].lng() ) );
-                  }   
-                    
-                    //  Check to make sure the interval exists, if not, set to a default of 1000
-                    options.interval = options.interval || 1000;
-                    tween( checkpoints, 10);
-
-                  };
+                if ( status == google.maps.DirectionsStatus.OK ) {
+                  directionsDisplay.setDirections( response );
+                  showSteps( response, that );
                 }
-                else if( typeof options.tween === "object" ){
 
-                  //  Same as the above to stop streetview maps from overflowing into one another
-                  var sView3 = sView;
+                });
 
-                  for ( var i = 0; i < options.tween.length; i++ ) {
-                   
-                  //  Make sure interval exists, if not, set to 1000
-                  options.tween[ i ].interval = options.tween[ i ].interval || 1000;
-                  tween( options.tween, 10 );
-                  }
+                var showSteps = function ( directionResult, that ) {
+                
+                //  Push new google map lat and lng values into an array from our list of lat and lng values
+                for ( var j = 0; j < directionResult.routes[ 0 ].overview_path.length; j++ ) {
+                  checkpoints.push( new google.maps.LatLng( directionResult.routes[ 0 ].overview_path[ j ].lat(), directionResult.routes[ 0 ].overview_path[ j ].lng() ) );
+                }   
+                  
+                  //  Check to make sure the interval exists, if not, set to a default of 1000
+                  options.interval = options.interval || 1000;
+                  tween( checkpoints, 10);
 
+                };
+              }
+              else if( typeof options.tween === "object" ){
+
+                //  Same as the above to stop streetview maps from overflowing into one another
+                var sView3 = sView;
+
+                for ( var i = 0; i < options.tween.length; i++ ) {
+                 
+                //  Make sure interval exists, if not, set to 1000
+                options.tween[ i ].interval = options.tween[ i ].interval || 1000;
+                tween( options.tween, 10 );
                 }
 
               }
-            } else {
-              setTimeout(function () {
-                isMapSetup();
-              }, 13);
+
             }
-          };
+          } else {
+            setTimeout(function () {
+              isMapSetup();
+            }, 13);
+          }
+        };
 
         isMapSetup();
       },
