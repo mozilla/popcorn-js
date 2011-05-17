@@ -1,5 +1,4 @@
 // PLUGIN: OPENMAP
-var openmapCallback;
 ( function ( Popcorn ) {
   
   /**
