@@ -5,15 +5,15 @@
   var processingLoaded = false,
       gmlPlayer = function( $p ) {
 
-        var _stroke  = 0,
-            onPt     = 0, 
+        var _stroke = 0,
+            onPt = 0, 
             onStroke = 0,
-            x        = null,
-            y        = null,
+            x = null,
+            y = null,
             rotation = false,
-            strokes  = 0,
-            play     = function() {},
-            reset    = function() {
+            strokes = 0,
+            play = function() {},
+            reset = function() {
 
               $p.background( 0 );
               onPt = onStroke = 0;
