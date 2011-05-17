@@ -1,5 +1,7 @@
 //PLUGIN: linkedin
+
 (function (Popcorn){
+
 /**
    * LinkedIn Popcorn plug-in
    * Places a  LinkedIn plugin inside a div ( http://developers.facebook.com/docs/plugins/ )
@@ -22,62 +24,63 @@
    * Example:
    * <script src="popcorn.linkedin.js"></script>
    * ...
-   * var p = Popcorn('#video')
+   * var p = Popcorn("#video")
    *     .linkedin({
-   *       type    : 'share',
-   *       url     : "http://www.google.ca",
-   *       counter : "right",
-   *       target  : 'sharediv'
-   *       apikey : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
-   *       start   : 1,
-   *       end     : 3
+   *       type: "share",
+   *       url: "http://www.google.ca",
+   *       counter: "right",
+   *       target: "sharediv"
+   *       apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
+   *       start: 1,
+   *       end: 3
    *     } )
    *
    * This plugin will be displayed between 1 and 3 seconds, inclusive, in the video. This will show how many people have "shared" Google via LinkedIn,
    * with the number of people (counter) displayed to the right of the share plugin.
    */
-   
   Popcorn.plugin( "linkedin", {
-
     manifest: {
-
       about: {
-
-        name   : "Popcorn LinkedIn Plugin",
+        name: "Popcorn LinkedIn Plugin",
         version: "0.1",
-        author : "Dan Ventura",
+        author: "Dan Ventura",
         website: "dsventura.blogspot.com"
       },
       options: {
-
-        type   : {elem:"input", type:'text', label:"Type"},
-        target : 'linkedin-container'
+        type: { 
+          elem: "input",
+          type: "text",
+          label: "Type"
+         },
+        target: "linkedin-container"
       }
     },
-    
     _setup: function( options ) {
 
       var apikey = options.apikey,
-          target  = document.getElementById( options.target );
+          target = document.getElementById( options.target );
 
-      if ( !document.getElementById("linkedin-root") ) {
-        var root = document.createElement( 'div' );
-        root.setAttribute( 'div', "linkedin-root" );
+      if ( !document.getElementById( "linkedin-root" ) ) {
+
+        var root = document.createElement( "div" );
+
+        root.setAttribute( "div", "linkedin-root" );
         document.body.appendChild( root );
         
         (function() {
-          var linkedinAPIScript = document.createElement( 'script' );
-          linkedinAPIScript.setAttribute( 'src', "http://platform.linkedin.com/in.js" );
-          linkedinAPIScript.setAttribute( 'type', "text/javascript" );
-          linkedinAPIScript.setAttribute( 'async', 'true' );
+
+          var linkedinAPIScript = document.createElement( "script" );
+          linkedinAPIScript.setAttribute( "src", "http://platform.linkedin.com/in.js" );
+          linkedinAPIScript.setAttribute( "type", "text/javascript" );
+          linkedinAPIScript.setAttribute( "async", "true" );
           root.appendChild( linkedinAPIScript );
         }());
       }
       
-      options._container = document.createElement( 'script' );
+      options._container = document.createElement( "script" );
       
       if ( apikey ) {
-        options._container.innerHTML = 'api_key: ' + apikey;
+        options._container.innerHTML = "api_key: " + apikey;
       }
       
       options.type = options.type.toLowerCase();
@@ -93,63 +96,65 @@
       var setOptions = (function ( options ) {
 
         return {
-
           share: function () {
 
-            options._container.setAttribute( 'type', "IN/Share" );
+            options._container.setAttribute( "type", "IN/Share" );
+
             if ( options.counter ) {
-              options._container.setAttribute( 'data-counter', options.counter );
+              options._container.setAttribute( "data-counter", options.counter );
             }
             if ( options.url ) {
-              options._container.setAttribute( 'data-url', options.url);
+              options._container.setAttribute( "data-url", options.url );
             }
           },
           memberprofile: function () {
 
-            options._container.setAttribute( 'type', "IN/MemberProfile" );
-            options._container.setAttribute( 'data-id', ( options.memberid ) );
-            options._container.setAttribute( 'data-format', ( options.format || "inline" ) );
+            options._container.setAttribute( "type", "IN/MemberProfile" );
+            options._container.setAttribute( "data-id", ( options.memberid ) );
+            options._container.setAttribute( "data-format", ( options.format || "inline" ) );
+
             if ( options.text && options.format.toLowerCase() !== "inline" ) {
-              options._container.setAttribute( 'data-text', options.text );
+              options._container.setAttribute( "data-text", options.text );
             }
           },
           companyinsider: function () {
 
-            options._container.setAttribute( 'type', "IN/CompanyInsider" );
-            options._container.setAttribute( 'data-id', options.companyid );
+            options._container.setAttribute( "type", "IN/CompanyInsider" );
+            options._container.setAttribute( "data-id", options.companyid );
+
             if( options.modules ) {
-              options._container.setAttribute( 'data-modules', options.modules );
+              options._container.setAttribute( "data-modules", options.modules );
             }
           },
           companyprofile: function () {
 
-            options._container.setAttribute( 'type', "IN/CompanyProfile" );
-            options._container.setAttribute( 'data-id', ( options.companyid ) );
-            options._container.setAttribute( 'data-format', ( options.format || "inline" ) );
+            options._container.setAttribute( "type", "IN/CompanyProfile" );
+            options._container.setAttribute( "data-id", ( options.companyid ) );
+            options._container.setAttribute( "data-format", ( options.format || "inline" ) );
+
             if ( options.text && options.format.toLowerCase() !== "inline" ) {
-              options._container.setAttribute( 'data-text', options.text );
+              options._container.setAttribute( "data-text", options.text );
             }
             if ( options.related !== undefined ) {
-              options._container.setAttribute( 'data-related', options.related );
+              options._container.setAttribute( "data-related", options.related );
             }
           },
           recommendproduct: function () {
 
-            options._container.setAttribute( 'type', "IN/RecommendProduct" );
-            options._container.setAttribute( 'data-company', ( options.companyid || "LinkedIn" ) );
-            options._container.setAttribute( 'data-product', ( options.productid || "201714" ) );
+            options._container.setAttribute( "type", "IN/RecommendProduct" );
+            options._container.setAttribute( "data-company", ( options.companyid || "LinkedIn" ) );
+            options._container.setAttribute( "data-product", ( options.productid || "201714" ) );
+
             if ( options.counter ) {
-              options._container.setAttribute( 'data-counter', options.counter );
+              options._container.setAttribute( "data-counter", options.counter );
             }
           }
         };
       })( options );
       
       if ( !apikey ) {
-
         errorMsg();
       } else {
-
         setOptions[ options.type ] && setOptions[ options.type ]();
       }
       
@@ -159,7 +164,6 @@
 
       target.style.display = "none";
     },
-    
     /**
      * @member linkedin
      * The start function will be executed when the currentTime
@@ -167,10 +171,8 @@
      * options variable
      */
     start: function( event, options ) {
-      
       options._container.parentNode.style.display = "block";
     },
-    
     /**
      * @member linkedin
      * The end function will be executed when the currentTime
@@ -178,9 +180,7 @@
      * options variable
      */    
     end: function( event, options ) {
-      
       options._container.parentNode.style.display = "none";
     }
   });
-
 })( Popcorn );

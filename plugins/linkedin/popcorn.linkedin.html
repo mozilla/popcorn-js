@@ -14,52 +14,53 @@
   <script src="../../popcorn.js"></script>
   <script src="popcorn.linkedin.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
-      .volume(0)
+    document.addEventListener( "DOMContentLoaded", function () {
+
+      var p = Popcorn( "#video" )
+      .volume( 0 )
       .play()
       .linkedin({
-        type      : 'share',
-        counter   : 'right',
-        url       : "http://www.google.ca",
-        target    : "sharediv",
-        apikey    : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
-        start     : 1,
-        end       : 3
+        type: "share",
+        counter: "right",
+        url: "http://www.google.ca",
+        target: "sharediv",
+        apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
+        start: 1,
+        end: 3
       })
       .linkedin({
-        type      : 'recommendproduct',
-        counter   : 'top',
+        type      : "recommendproduct",
+        counter   : "top",
         target    : "recommenddiv",
-        companyid : 'LinkedIn',
-        productid : '201714',
-        apikey    : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        companyid : "LinkedIn",
+        productid : "201714",
+        apikey    : "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
         start     : 4,
         end       : 7
       })
       .linkedin({
-        type      : 'memberprofile',
-        memberid  : '/in/jeffweiner08',
-        format    : 'inline',
+        type      : "memberprofile",
+        memberid  : "/in/jeffweiner08",
+        format    : "inline",
         target    : "memberprofilediv",
-        apikey    : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        apikey    : "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
         start     : 9,
         end       : 11
       })
       .linkedin({
-        type      : 'companyinsider',
-        companyid : '1441',
+        type      : "companyinsider",
+        companyid : "1441",
         target    : "bottomdiv",
-        apikey    : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        apikey    : "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
         start     : 9,
         end       : 11
       })
       .linkedin({
-        type      : 'companyprofile',
-        companyid : '1441',
-        format    : 'inline',
+        type      : "companyprofile",
+        companyid : "1441",
+        format    : "inline",
         target    : "bottomdiv",
-        apikey    : 'ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk',
+        apikey    : "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
         start     : 13,
         end       : 17
       });
@@ -74,16 +75,16 @@
   </p>
   
   <div>
-    <video id='video' 
-      controls preload='none' 
-      width= '350px'
+    <video id="video" 
+      controls preload="none" 
+      width="350px"
       poster="../../test/poster.png"> 
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
         type='video/mp4; codecs="avc1, mp4a"'> 
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
         type='video/ogg; codecs="theora, vorbis"'> 
 
@@ -94,8 +95,6 @@
   <div id="sharediv" style="position:absolute;top:150px;left:400px;"></div>
   <div id="recommenddiv" style="position:absolute;top:175px;left:400px;"></div>
   <div id="memberprofilediv" style="position:absolute;top:150px;left:500px;"></div>
-  <div id="bottomdiv">
-    <br />
-  </div>
+  <div id="bottomdiv"></div>
 </body>
 </html>
