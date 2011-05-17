@@ -1,5 +1,7 @@
 // PLUGIN: IMAGE
+
 (function (Popcorn) {
+
 /**
  * Images popcorn plug-in 
  * Shows an image element
@@ -26,47 +28,64 @@
       } )
  *
  */
-  
   Popcorn.plugin( "image", {
-
       manifest: {
-
         about:{
-
-          name    : "Popcorn image Plugin",
-          version : "0.1",
-          author  : "Scott Downe",
-          website : "http://scottdowne.wordpress.com/"
+          name: "Popcorn image Plugin",
+          version: "0.1",
+          author: "Scott Downe",
+          website: "http://scottdowne.wordpress.com/"
         },
-
-        options:{
-          start  :  {elem:'input', type:'number', label:'In'},
-          end    :    {elem:'input', type:'number', label:'Out'},
-          href   :   {elem:'input', type:'text',   label:'Link URL'},
-          target : 'Image-container',
-          src    :    {elem:'input', type:'text',   label:'Source URL'},
-          text   :    {elem:'input', type:'text',   label:'TEXT'}
+        options: {
+          start: {
+            elem: "input",
+            type: "number",
+            label: "In"
+          },
+          end: {
+            elem: "input",
+            type: "number",
+            label: "Out"
+          },
+          href: {
+            elem: "input",
+            type: "text",
+            label: "Link URL"
+          },
+          target: "Image-container",
+          src: {
+            elem: "input", 
+            type: "text",   
+            label: "Source URL"
+          },
+          text: {
+            elem: "input",
+            type: "text",
+            label: "TEXT"
+          }
         }
       },
-
       _setup: function( options ) {
-        var img = document.createElement( 'img' );
+        var img = document.createElement( "img" );
 
-        options.link = document.createElement( 'a' );
+        options.link = document.createElement( "a" );
         options.link.style.position = "relative";
         options.link.style.textDecoration = "none";
 
         if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).appendChild( options.link ); // add the widget's div to the target div
+          // add the widget's div to the target div
+          document.getElementById( options.target ).appendChild( options.link );
         }
 
         img.addEventListener( "load", function() {
 
-          img.style.borderStyle = "none"; // borders look really bad, if someone wants it they can put it on their div target
+          // borders look really bad, if someone wants it they can put it on their div target 
+          img.style.borderStyle = "none"; 
           
           if ( options.href ) {
             options.link.href = options.href;
           }
+
           options.link.target = "_blank";
 
           var fontHeight = ( img.height / 12 ) + "px", 
@@ -74,13 +93,13 @@
           
           Popcorn.extend( divText.style, {
 
-            color      : "black",
-            fontSize   : fontHeight,
-            fontWeight : "bold",
-            position   : "relative",
-            textAlign  : "center",
-            width      : img.width + "px",
-            zIndex     : "10"
+            color: "black",
+            fontSize: fontHeight,
+            fontWeight: "bold",
+            position: "relative",
+            textAlign: "center",
+            width: img.width + "px",
+            zIndex: "10"
           });
 
           divText.innerHTML = options.text || "";
@@ -89,6 +108,7 @@
           divText.style.top = ( img.height / 2 ) - ( divText.offsetHeight / 2 ) + "px"; 
           options.link.style.display = "none";
         }, false );
+
         img.src = options.src;
       },
 
@@ -111,5 +131,4 @@
         options.link.style.display = "none";
       }
   });
-
 })( Popcorn );

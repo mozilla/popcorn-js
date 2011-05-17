@@ -1,9 +1,9 @@
 test("Popcorn Image Plugin", function () {
   
-  var popped = Popcorn("#video"),
+  var popped = Popcorn( "#video" ),
       expects = 5,
       count = 0,
-      imagediv = document.getElementById('imagediv');
+      imagediv = document.getElementById( "imagediv" );
   
   expect( expects );
   
@@ -15,19 +15,21 @@ test("Popcorn Image Plugin", function () {
 
   stop();
  
-  ok('image' in popped, "image is a method of the popped instance");
+  ok( "image" in popped, "image is a method of the popped instance" );
   plus();
 
-  equals ( imagediv.innerHTML, "", "initially, there is nothing inside the imagediv" );
+  equals( imagediv.innerHTML, "", "initially, there is nothing inside the imagediv" );
   plus();
   
   popped.image({
-    start: 1, // seconds
-    end: 3, // seconds
-    href: 'http://www.drumbeat.org/',
-    src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
-    text: 'DRUMBEAT',
-    target: 'imagediv'
+    // seconds
+    start: 1,
+    // seconds
+    end: 3,
+    href: "http://www.drumbeat.org/",
+    src: "https://www.drumbeat.org/media//images/drumbeat-logo-splash.png",
+    text: "DRUMBEAT",
+    target: "imagediv"
   });
 
   popped.exec( 2, function() {
@@ -41,6 +43,6 @@ test("Popcorn Image Plugin", function () {
       ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
       plus();
   });
-  popped.volume(0).play();  
-  
+
+  popped.volume( 0 ).play();  
 });
