@@ -221,7 +221,7 @@ var googleCallback;
                                       for ( var i = 0; i < rM.length; i++ ) {
 
                                           if( that.media.currentTime >= (options.interval*( i+1 ) )/1000 &&
-                                            ( that.media.currentTime <= (options.interval*( i+2 ) /1000 ||
+                                            ( that.media.currentTime <= (options.interval*( i+2 ) )/1000 ||
                                              that.media.currentTime >= options.interval*( rM.length )/1000 ) ){
 
                                           sView2.setPosition( checkpoints[i] );
