@@ -186,14 +186,15 @@ var googleCallback;
 
 
                                 );
-                                         
+      
                                 //  Function to handle tweening using a set timeout
                                 var tween = function ( rM, t ) {
 
                                   setTimeout( function () {
           
                                     //  Checks whether this is a generated route or not
-                                    if( typeof options.tween === "array" ){
+
+                                    if( typeof options.tween === "object" ){
 
                                       for ( var i = 0; i < rM.length; i++ ) {
 
@@ -289,7 +290,7 @@ var googleCallback;
 
                                   }
                                 }
-                                else if( typeof options.tween === "array" ){
+                                else if( typeof options.tween === "object" ){
 
                                   //  Same as the above to stop streetview maps from overflowing into one another
                                   var sView3 = sView;
