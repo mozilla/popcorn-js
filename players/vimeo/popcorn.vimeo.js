@@ -229,11 +229,6 @@
       var matches = url.match( rWebUrl );
       return matches ? matches[0].substr(10) : "";
     }
-    
-    // Gets the style for the given element
-    function getStyle( elem, styleProp ) {
-      return elem.style[styleProp];
-    }
       
     function makeSwf( self, vidId, containerId ) {
       if ( !window.swfobject ) {
@@ -305,9 +300,9 @@
       this.evtHolder = new EventManager( this );
       
       // For calculating position relative to video (like subtitles)
-      this.width = options.width || getStyle( this._target, "width" ) || "504px";
-      this.height = options.height || getStyle( this._target, "height" ) || "340px";
-      
+      this.width = options.width || this._target.style.width || "504px";
+      this.height = options.height || this._target.style.height || "340px";
+
       if ( !/[\d]%/.test( this.width ) ) {
         this.offsetWidth = parseInt( this.width, 10 );
         this._target.style.width = this.width + "px";
