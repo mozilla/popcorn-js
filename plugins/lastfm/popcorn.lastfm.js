@@ -2,10 +2,12 @@
 
 (function (Popcorn) {
 
-  var _artists = [],
+  var _artists = {},
       lastFMcallback = function(data){
         if (data.artist) {
-          var htmlString = '<h3>'+data.artist.name+'</h3>';
+          var htmlString = "";
+
+          htmlString = '<h3>'+data.artist.name+'</h3>';
           htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
           htmlString += '<p>'+ data.artist.bio.summary +'</p>';
           htmlString += '<hr /><p><h4>Tags</h4><ul>';
@@ -23,7 +25,7 @@
 
           htmlString += '</ul></p>';
 
-          _artists[data.artist.name.toLowerCase()] = htmlString;
+          _artists[data.artist.name.toLowerCase()].htmlString = htmlString;
         }
       };
 
@@ -76,17 +78,18 @@
         options._container.innerHTML = "";
         
         options.artist = options.artist.toLowerCase();
-        
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).appendChild( options._container );
-        }
+
+        document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options._container );
         
         if(!_artists[options.artist]) {
 
-          _artists[options.artist] = "Unknown Artist";
+          _artists[options.artist] = {
+            count: 0,
+            htmlString: "Unknown Artist"
+          };
           Popcorn.getJSONP("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ options.artist +"&api_key="+options.apikey+"&format=json&callback=lastFMcallback", lastFMcallback, false );
-          
         }
+        _artists[options.artist].count++;
         
       },
       /**
@@ -96,7 +99,7 @@
        * options variable
        */
       start: function( event, options ) {
-        options._container.innerHTML = _artists[options.artist];
+        options._container.innerHTML = _artists[options.artist].htmlString;
         options._container.style.display = "inline";
       },
       /**
@@ -108,6 +111,11 @@
       end: function( event, options ) {
         options._container.style.display = "none";
         options._container.innerHTML = "";
+      },
+      _teardown: function( options ) {
+        // cleaning possible reference to _artist array;
+        --_artists[ options.artist ].count || delete _artists[ options.artist ];
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options._container );
       }
     };
   })());

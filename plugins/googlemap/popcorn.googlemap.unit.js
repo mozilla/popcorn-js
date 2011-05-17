@@ -76,9 +76,7 @@ test("Popcorn Google Map Plugin", function () {
     ok (document.getElementById('actualmap2').style.display === "none" && 
         document.getElementById('actualmap1').style.display === "none", "Both maps are no longer visible" );
     plus();
-    popped.pause();
-
-    popped.removeTrackEvent( setupId );
+    popped.pause().removeTrackEvent( setupId );
 
     ok( !document.getElementById('actualmap3'), "removed map was properly destroyed"  );
     plus();
