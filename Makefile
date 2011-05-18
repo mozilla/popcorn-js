@@ -137,6 +137,26 @@ lint-players:
 	@@echo "Checking all players against JSLint..."
 	@@${RHINO} build/jslint-check.js ${PLAYERS_SRC}
 
+# Create a mirror copy of the tree in dist/ using popcorn-complete.js
+# in place of popcorn.js.
+TESTING_MIRROR := ${DIST_DIR}/testing-mirror
+
+testing: complete
+	@@echo "Building testing-mirror in ${TESTING_MIRROR}"
+	@@mkdir -p ${TESTING_MIRROR}
+	@@find ${PREFIX} | cpio -pd --quiet ${TESTING_MIRROR}
+# Remove unneeded files for testing, so it's clear this isn't the tree
+	@@rm -fr ${TESTING_MIRROR}/.git ${TESTING_MIRROR}/dist ${TESTING_MIRROR}/AUTHORS \
+           ${TESTING_MIRROR}/LICENSE ${TESTING_MIRROR}/LICENSE_HEADER \
+           ${TESTING_MIRROR}/Makefile ${TESTING_MIRROR}/readme.md
+	@@touch "${TESTING_MIRROR}/THIS IS A TESTING MIRROR -- READ-ONLY"
+# Prefer plugin code in popcorn-complete.js, but Don't overriwte *unit.js files....
+	@@for js in $$(find ${TESTING_MIRROR}/plugins \( -name "*.js" -a \! -name "*.unit.js" \)) ; \
+                 do echo '/* Stub, see popcorn.js instead */ function(){}\n' > $$js ; \
+                 done
+	@@cp ${POPCORN_COMPLETE_DIST} ${TESTING_MIRROR}/popcorn.js
+
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
 	@@rm -rf ${DIST_DIR}
+
