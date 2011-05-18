@@ -4,8 +4,9 @@ test("Popcorn LinkedIn Plugin", function () {
     
     // run tests on localhost
     var popped = Popcorn("#video"),
-        expects = 5,
+        expects = 6,
         count = 0,
+        setupId,
         linkedin = document.getElementById( "linkedindiv" );
     
     expect( expects );
@@ -36,6 +37,8 @@ test("Popcorn LinkedIn Plugin", function () {
       end: 3
     });
   
+    setupId = popped.getLastTrackEventId();
+  
     popped.exec( 2, function() {
   
       ok( /block/.test( linkedin.style.display ), "Div contents are displayed" );
@@ -48,11 +51,15 @@ test("Popcorn LinkedIn Plugin", function () {
   
       ok( /none/.test( linkedin.style.display ), "Div contents are hidden again" );
       plus();
+      
+      popped.pause().removeTrackEvent( setupId );
+      ok( !linkedin.children[1], "removed linkedin was properly destroyed"  );
+      plus();
     });
   
     popped.volume( 0 ).play();
   } else {
-
+    
     // tests must be run on localhost
     ok( false, "LinkedIn apikey will only work under localhost" );
   }
