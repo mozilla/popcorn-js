@@ -115,7 +115,7 @@ ${PLAYERS_DIST}: ${PLAYERS_SRC} ${DIST_DIR}
 	@@echo "Building ${PLAYERS_DIST}"
 	@@cat ${PLAYERS_SRC} > ${PLAYERS_DIST}
 
-complete: ${POPCORN_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} ${DIST_DIR}
+complete: ${POPCORN_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} ${DIST_DIR} update
 	@@echo "Building popcorn + plugins + parsers + players..."
 	@@cat ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} > ${POPCORN_COMPLETE_DIST}.tmp
 	@@$(call add_license, ${POPCORN_COMPLETE_DIST}.tmp, ${POPCORN_COMPLETE_DIST})
@@ -146,8 +146,11 @@ SEQUENCE_SRC = ${PLAYERS_DIR}/sequence/popcorn.sequence.js
 
 setup: ${SEQUENCE_SRC}
 
-${SEQUENCE_SRC}:
-	@@echo "Setting-up sequence submodule..."
-	@@git submodule init
+update:
+	@@echo "Updating submodules..."
 	@@git submodule update
+
+${SEQUENCE_SRC}:
+	@@echo "Setting-up submodules..."
+	@@git submodule init
 
