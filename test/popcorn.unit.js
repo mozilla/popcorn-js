@@ -51,17 +51,19 @@ test("API", function () {
 
 test("Utility", function () {
 
-  expect(8);
+  expect(10);
   //  TODO: comprehensive tests for these utilities
 
-  equals( typeof Popcorn.forEach, "function" , "Popcorn.forEach is a provided utility function");
-  equals( typeof Popcorn.extend, "function" , "Popcorn.extend is a provided utility function");
-  equals( typeof Popcorn.error, "function" , "Popcorn.error is a provided utility function");
-  equals( typeof Popcorn.guid, "function" , "Popcorn.guid is a provided utility function");
-  equals( typeof Popcorn.sizeOf, "function" , "Popcorn.sizeOf is a provided utility function");
-  equals( typeof Popcorn.nop, "function" , "Popcorn.nop is a provided utility function");
-  equals( typeof Popcorn.addTrackEvent, "function" , "Popcorn.addTrackEvent is a provided utility function");
-  equals( typeof Popcorn.position, "function" , "Popcorn.position is a provided utility function");
+  equals( typeof Popcorn.forEach, "function" , "Popcorn.forEach is a provided static function");
+  equals( typeof Popcorn.extend, "function" , "Popcorn.extend is a provided static function");
+  equals( typeof Popcorn.error, "function" , "Popcorn.error is a provided static function");
+  equals( typeof Popcorn.guid, "function" , "Popcorn.guid is a provided static function");
+  equals( typeof Popcorn.sizeOf, "function" , "Popcorn.sizeOf is a provided static function");
+  equals( typeof Popcorn.nop, "function" , "Popcorn.nop is a provided static function");
+  equals( typeof Popcorn.addTrackEvent, "function" , "Popcorn.addTrackEvent is a provided static function");
+  equals( typeof Popcorn.position, "function" , "Popcorn.position is a provided static function");
+  equals( typeof Popcorn.disable, "function" , "Popcorn.disable is a provided static function");
+  equals( typeof Popcorn.enable, "function" , "Popcorn.enable is a provided static function");
 });
 
 test("Standard Time Strings" , function () {
@@ -203,16 +205,16 @@ test("Instances", function() {
 
   Popcorn("#video");
 
-  ok( typeof Popcorn.addInstance === "function" , "Popcorn.addInstance is a provided utility function");
+  ok( typeof Popcorn.addInstance === "function" , "Popcorn.addInstance is a provided static function");
   plus();
 
-  ok( typeof Popcorn.removeInstance === "function" , "Popcorn.removeInstance is a provided utility function");
+  ok( typeof Popcorn.removeInstance === "function" , "Popcorn.removeInstance is a provided static function");
   plus();
 
-  ok( typeof Popcorn.getInstanceById === "function" , "Popcorn.getInstanceById is a provided utility function");
+  ok( typeof Popcorn.getInstanceById === "function" , "Popcorn.getInstanceById is a provided static function");
   plus();
 
-  ok( typeof Popcorn.removeInstanceById === "function" , "Popcorn.removeInstanceById is a provided utility function");
+  ok( typeof Popcorn.removeInstanceById === "function" , "Popcorn.removeInstanceById is a provided static function");
   plus();
 
   ok( typeof Popcorn.instanceIds === "object" , "Popcorn.instanceIds is a provided cache object");
@@ -1694,19 +1696,88 @@ test("Index Integrity", function () {
 
 });
 
+test("Popcorn.disable/enable/toggle", function() {
 
 
+  var $pop = Popcorn( "#video" ),
+      count = 0,
+      expects = 5;
 
+  expect( expects );
 
+  function plus() {
+    if ( ++count === expects ) {
+      start();
 
+      Popcorn.removeInstance( $pop );
+    }
+  }
+
+  Popcorn.plugin("toggler", function () {
+    return {
+      start: function () {
+        var div = document.createElement("div");
+        div.id = "toggler-test";
+        div.innerHTML = "foo";
+
+        document.body.appendChild(div);
+      },
+      end: function () {
+        document.getElementById("toggler-test").parentNode.removeChild(document.getElementById("toggler-test"));
+      }
+    };
+  });
+
+  $pop.exec( 40, function() {
+
+    console.log( "WOO!" );
+    //  make sure toggler never happened
+    // look for: "toggler-test"
+
+    ok( !document.getElementById("toggler-test"), "No toggler container, disabled toggler plugin correctly never ran" );
+    plus();
+
+    // Test per-instance toggle on
+    $pop.toggle( "toggler" );  
+    ok( $pop.data.disabled.indexOf("toggler") === -1, "toggle() plugin: toggler is re-enabled" );
+    plus();
+  });
+
+  $pop.toggler({
+    start: 40, 
+    end: 50
+  });
+
+  // rw/ff
+
+  // Test per-instance function call
+  $pop.disable( "toggler" );
+  
+  ok( $pop.data.disabled.indexOf("toggler") > -1, "disable() plugin: toggler is disabled" );
+  plus();
+
+  // Test per-instance function call
+  $pop.enable( "toggler" );  
+  
+  ok( $pop.data.disabled.indexOf("toggler") === -1, "enable() plugin: toggler is enabled" );
+  plus();
+
+  // Test per-instance toggle off
+  $pop.toggle( "toggler" );  
+  
+  ok( $pop.data.disabled.indexOf("toggler") > -1, "toggle() plugin: toggler is disabled" );
+  plus();
+
+  stop( 10000 );
+});
 
 module("Popcorn XHR");
 test("Basic", function () {
 
   expect(2);
 
-  equals( typeof Popcorn.xhr, "function" , "Popcorn.xhr is a provided utility function");
-  equals( typeof Popcorn.xhr.httpData, "function" , "Popcorn.xhr.httpData is a provided utility function");
+  equals( typeof Popcorn.xhr, "function" , "Popcorn.xhr is a provided static function");
+  equals( typeof Popcorn.xhr.httpData, "function" , "Popcorn.xhr.httpData is a provided static function");
 
 
 });

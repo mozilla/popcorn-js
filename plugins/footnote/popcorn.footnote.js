@@ -44,9 +44,8 @@
       options._container = document.createElement( 'div' );
       options._container.style.display = "none";
       options._container.innerHTML  = options.text;
-      if ( document.getElementById( options.target ) ) {
-        document.getElementById( options.target ).appendChild( options._container );
-      }
+
+      document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options._container );
     },
     /**
      * @member footnote 
@@ -65,8 +64,10 @@
      */
     end: function(event, options){
       options._container.style.display = "none";
+    },
+    _teardown: function( options ) {
+      document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options._container );
     }
-   
   });
 
 })( Popcorn );

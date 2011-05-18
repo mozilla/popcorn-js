@@ -1,8 +1,9 @@
 test("Popcorn attribution Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 7, 
+      expects = 8, 
       count = 0,
+      setupId,
       attributiondiv = document.getElementById('attribdiv');
 
   expect(expects);
@@ -24,7 +25,7 @@ test("Popcorn attribution Plugin", function () {
   
   popped.attribution({
       start: 0, // seconds
-      end: 5, // seconds
+      end: 0.5, // seconds
       nameofwork: "A Shared Culture",
       copyrightholder:"Jesse Dylan",
       license: "CC-BY-N6",
@@ -32,8 +33,8 @@ test("Popcorn attribution Plugin", function () {
       target: 'attribdiv'
     } )
     .attribution({
-      start: 3, // seconds
-      end: 10, // seconds
+      start: 0.5, // seconds
+      end: 1, // seconds
       nameofwork: "Internet",
       nameofworkurl:"http://www.archive.org/details/CC1232_internet",
       copyrightholder:"The Computer Chronicles",
@@ -43,22 +44,28 @@ test("Popcorn attribution Plugin", function () {
     } )
     .volume(0);
 
-  popped.exec( 1, function() {
+  setupId = popped.getLastTrackEventId();
+
+  popped.exec( 0, function() {
     equals ( attributiondiv.childElementCount, 2, "attributiondiv now has two inner elements" );
     plus();
     equals (attributiondiv.children[0].style.display , "inline", "attribution is visible on the page" );
     plus();
   });
   
-  popped.exec( 4, function() {
+  popped.exec( 0.5, function() {
     equals (attributiondiv.children[1].style.display , "inline", "second attribution is visible on the page" );
     plus();
   });
   
-  popped.exec( 11, function() {
-    equals (attributiondiv.children[1].style.display , "none", "second attribution is no longer visible on the page" );
+  popped.exec( 1, function() {
+    equals(attributiondiv.children[1].style.display , "none", "second attribution is no longer visible on the page" );
     plus();
-    equals (attributiondiv.children[0].style.display , "none", "first attribution is no longer visible on the page" );
+    equals(attributiondiv.children[0].style.display , "none", "first attribution is no longer visible on the page" );
+    plus();
+
+    popped.pause().removeTrackEvent( setupId );
+    ok( !attributiondiv.children[1], "removed attribution was properly destroyed"  );
     plus();
   });
   

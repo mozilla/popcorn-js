@@ -280,7 +280,10 @@
       var vidId,
           that = this,
           tmp,
-          container = this.container = document.getElementById( containerId );
+          container = this._container = document.createElement( "div" );
+
+      container.id = containerId + "object";
+      document.getElementById( containerId ).appendChild( container );
       
       options = options || {};
       
@@ -299,8 +302,7 @@
       this.previousCurrentTime = this.currentTime;
       this.previousVolume = this.volume;
       this.evtHolder = new EventManager( this );
-      
-      this._container =  document.getElementById( containerId );
+
       bounds = this._container.getBoundingClientRect();
       
       // For calculating position relative to video (like subtitles)
@@ -338,9 +340,9 @@
         throw "No video id";
       }
       
-      registry[ containerId ] = this;
+      registry[ container.id ] = this;
       
-      makeSwf( this, vidId, containerId );
+      makeSwf( this, vidId, container.id );
       
       // Set up listeners to internally track state as needed
       this.addEventListener( "load", function() {
@@ -580,7 +582,7 @@
       return this.evtHolder.dispatchEvent( evtName );
     },
     getBoundingClientRect: function() {
-      return this.container.getBoundingClientRect();
+      return this._container.getBoundingClientRect();
     },
     startTimeUpdater: function() {
       var self = this,
