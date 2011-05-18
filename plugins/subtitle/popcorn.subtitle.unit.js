@@ -50,9 +50,11 @@ test("Popcorn Subtitle Plugin", function () {
   subtitlediv = document.getElementById('subtitlediv');
 
   popped.exec( 0.5, function() {
-
+    
+    popped.media.pause();
     equals( subtitlediv.innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
     plus();
+    
 
     // capturing location now, to check against later,
     // a subtitle must be displayed to get valid data
@@ -64,13 +66,13 @@ test("Popcorn Subtitle Plugin", function () {
     popped.media.style.position = "absolute";
     popped.media.style.left = "400px";
     popped.media.style.top = "600px";
-
+    popped.media.play()
     
   });
 
   popped.exec( 1.5, function() {
 
-
+    popped.media.pause();
     // check position of subttile that should of moved with video,
     // a subtitle must be displayed to get valid data
     ok( subtitlediv.style.left !== subLeft, "subtitle's left position has changed" );
@@ -89,18 +91,26 @@ test("Popcorn Subtitle Plugin", function () {
 
     equals (subtitlediv.innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
     plus();
+    popped.media.play();
+    
   });
 
   popped.exec( 2.5, function() {
-
+    
+    popped.media.pause();
     equals (subtitlediv.innerHTML, "", "subtitle is clear" );
     plus();
+    popped.media.play();
+  
   });
 
   popped.exec( 3.5, function() {
 
+    popped.media.play();
     equals (subtitlediv.innerHTML, "this is the third subtitle of 2011", "subtitle displaying correct information" );
     plus();
+    popped.media.play();
+    
   });
 });
 
