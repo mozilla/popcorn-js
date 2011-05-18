@@ -79,8 +79,8 @@
 
         img.addEventListener( "load", function() {
 
-          // borders look really bad, if someone wants it they can put it on their div target 
-          img.style.borderStyle = "none"; 
+          // borders look really bad, if someone wants it they can put it on their div target
+          img.style.borderStyle = "none";
           
           if ( options.href ) {
             options.link.href = options.href;
@@ -89,7 +89,9 @@
           options.link.target = "_blank";
 
           var fontHeight = ( img.height / 12 ) + "px", 
-              divText    = document.createElement( "div" );
+              divText = document.createElement( "div" );
+          // add the widget's div to the target div
+          document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options.link );
           
           Popcorn.extend( divText.style, {
 
@@ -129,6 +131,9 @@
        */
       end: function( event, options ) {
         options.link.style.display = "none";
+      },
+      _teardown: function( options ) {
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options.link );
       }
   });
 })( Popcorn );

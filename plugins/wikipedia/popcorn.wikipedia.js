@@ -136,7 +136,6 @@ var wikiCallback;
         document.getElementById( options.target ).removeChild( options._desc );
       }
     }
-     
   });
 
 })( Popcorn );

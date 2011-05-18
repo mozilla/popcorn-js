@@ -15,6 +15,34 @@
             callBack( data );
           }, 1);
         }
+      },
+      createDefaultContainer = function( context ) {
+
+        // clear this function from future calls; we are done
+        createDefaultContainer = Popcorn.nop;
+
+        var updatePosition = function() {
+
+          // the video element must have height and width defined
+          context.container.style.fontSize   = "18px";
+          context.container.style.width      = context.media.offsetWidth + "px";
+          context.container.style.top        = context.position().top  + context.media.offsetHeight - context.container.offsetHeight - 40 + "px";
+          context.container.style.left       = context.position().left + "px";
+
+          setTimeout( updatePosition, 10 );
+        };
+
+        context.container = document.createElement('div');
+        context.container.id               = "subtitlediv";
+        context.container.style.position   = "absolute";
+        context.container.style.color      = "white";
+        context.container.style.textShadow = "black 2px 2px 6px";
+        context.container.style.fontWeight = "bold";
+        context.container.style.textAlign  = "center";
+
+        updatePosition();
+
+        document.body.appendChild( context.container );
       };
 
   Popcorn.getScript( "http://www.google.com/jsapi", callBack );
@@ -100,23 +128,8 @@
       _setup: function( options ) {
 
         // Creates a div for all subtitles to use
-        if ( !this.container ) {
-          this.container = document.createElement('div');
-          this.container.id = "subtitlediv";
-          this.container.style.position   = "absolute";
-          this.container.style.color      = "white";
-          this.container.style.textShadow = "black 2px 2px 6px";
-          this.container.style.fontSize   = "18px";
-          this.container.style.fontWeight = "bold";
-          this.container.style.textAlign  = "center";
-
-          // the video element must have height and width defined
-          this.container.style.width      = this.media.offsetWidth + "px";
-          this.container.style.top        = this.position().top + this.media.offsetHeight - 65 + "px";
-          this.container.style.left       = this.position().left + "px";
-
-          document.body.appendChild( this.container );
-        }
+        ( !this.container && !options.target || options.target === 'Subtitle-container' ) && 
+          createDefaultContainer( this );
 
         // if a target is specified, use that
         if ( options.target && options.target !== 'Subtitle-container' ) {
@@ -188,11 +201,6 @@
             options.toggleSubtitles();
           }
         }, 5);
-
-
-
-
-
 
       },
       /**

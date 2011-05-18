@@ -61,9 +61,10 @@
         options.container = document.createElement( 'div' ); // create the div to store the widget
         options.container.setAttribute('id', Popcorn.guid()); // use this id to connect it to the widget
         options.container.style.display = "none"; // display none by default
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).appendChild( options.container ); // add the widget's div to the target div
-        }
+
+         // add the widget's div to the target div
+        document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options.container );
+
         // setup info for the widget
         var src     = options.src || "",
             width   = options.width || 250,
@@ -146,6 +147,10 @@
        */
       end: function( event, options ) {
         options.container.style.display = "none";
+      },
+      _teardown: function( options ) {
+
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options.container );
       }
     });
 

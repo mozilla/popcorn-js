@@ -1,8 +1,9 @@
 test("Popcorn Image Plugin", function () {
-  
+
   var popped = Popcorn( "#video" ),
       expects = 8,
       count = 0,
+      setupId,
       imagediv = document.getElementById( "imagediv" ),
       sources = [
         "https://www.drumbeat.org/media//images/drumbeat-logo-splash.png",
@@ -38,22 +39,24 @@ test("Popcorn Image Plugin", function () {
   })
   .image({
     // seconds
-    start: 4,
+    start: 5,
     // seconds
-    end: 6,
+    end: 7,
     // no href
     src: sources[1],
     target: "imagediv"
   })
   .image({
     // seconds
-    start: 4,
+    start: 5,
     // seconds
-    end: 6,
+    end: 7,
     // no href
     src: sources[2],
     target: "imagediv"  
   });
+
+  setupId = popped.getLastTrackEventId();
 
   popped.exec( 2, function() {
     ok( /display: block;/.test( imagediv.innerHTML ), "Div contents are displayed" );
@@ -67,11 +70,16 @@ test("Popcorn Image Plugin", function () {
     plus();
   });
   
-  popped.exec( 5, function() {
+  popped.exec( 6, function() {
     [].forEach.call( document.querySelectorAll( "#imagediv a img" ), function( img, idx ) {
       ok( img.src === sources[ idx ], "Image " + idx + " is in the right order" );
       plus();
-    });
+  });
+  
+  popped.exec( 8, function() {
+    popped.pause().removeTrackEvent( setupId );
+    ok( !imagediv.children[0], "removed image was properly destroyed" );
+    plus();
   });
   
   popped.volume( 0 ).play();  

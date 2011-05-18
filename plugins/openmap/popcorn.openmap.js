@@ -1,16 +1,15 @@
 // PLUGIN: OPENMAP
-var openmapCallback;
 ( function ( Popcorn ) {
   
   /**
    * openmap popcorn plug-in 
-   * Adds an OpenLayers + OpenStreetMap map to the target div centered on the location specified by the user
+   * Adds an OpenLayers map and open map tiles (OpenStreetMap [default], NASA WorldWind, or USGS Topographic)
    * Based on the googlemap popcorn plug-in. No StreetView support
    * Options parameter will need a start, end, target, type, zoom, lat and lng
    * -Start is the time that you want this plug-in to execute
    * -End is the time that you want this plug-in to stop executing 
    * -Target is the id of the DOM element that you want the map to appear in. This element must be in the DOM
-   * -Type [optional] either: ROADMAP (OpenStreetMap), SATELLITE (NASA WorldWind / LandSat), or TERRAIN (USGS)
+   * -Type [optional] either: ROADMAP (OpenStreetMap), SATELLITE (NASA WorldWind / LandSat), or TERRAIN (USGS).  ROADMAP/OpenStreetMap is the default.
    * -Zoom [optional] defaults to 2
    * -Lat and Lng are the coordinates of the map if location is not named
    * -Location is a name of a place to center the map, geocoded to coordinates using TinyGeocoder.com
@@ -41,6 +40,15 @@ var openmapCallback;
       _mapFired = false,
       _mapLoaded = false;
 
+  // insert openlayers api script once
+  if ( !_mapFired ) {
+    _mapFired = true;
+    Popcorn.getScript('http://openlayers.org/api/OpenLayers.js',
+    function() {
+      _mapLoaded = true;
+    } );
+  }
+
   Popcorn.plugin( "openmap" , function( options ){
     var newdiv,
         map,
@@ -51,25 +59,16 @@ var openmapCallback;
         selectControl,
         popup;
 
-    // insert openlayers api script once
-    if ( !_mapFired ) {
-      _mapFired = true;
-      Popcorn.getScript('http://openlayers.org/api/OpenLayers.js',
-      function() {
-        _mapLoaded = true;
-      } );
-    }
-
     // create a new div within the target div
     // this is later passed on to the maps api
     newdiv               = document.createElement( 'div' );
-    newdiv.id            = "actualmap" + i;
+    newdiv.id            = "openmapdiv" + i;
     newdiv.style.width   = "100%";
     newdiv.style.height  = "100%";
     i++;
-    if ( document.getElementById( options.target ) ) {
-      document.getElementById( options.target ).appendChild( newdiv );
-    }
+
+    document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( newdiv );
+
     // callback function fires when the script is run
     var isGeoReady = function() {
       if ( !_mapLoaded ) {
@@ -91,18 +90,10 @@ var openmapCallback;
         } else {
           centerlonlat = new OpenLayers.LonLat( options.lng, options.lat );
         }
-        if( options.type == "ROADMAP" ) {
-          // add OpenStreetMap layer
-          projection = new OpenLayers.Projection( 'EPSG:900913' );
-          displayProjection = new OpenLayers.Projection( 'EPSG:4326' );
-          centerlonlat = centerlonlat.transform( displayProjection, projection );
-          map = new OpenLayers.Map( { div: newdiv, projection: projection, "displayProjection": displayProjection } );
-          var osm = new OpenLayers.Layer.OSM();
-          map.addLayer( osm );
-        }
-        else if( options.type == "SATELLITE" ) {
+        options.type = options.type || "ROADMAP";
+        if( options.type == "SATELLITE" ) {
           // add NASA WorldWind / LANDSAT map
-          map = new OpenLayers.Map( { div: newdiv, "maxResolution": 0.28125, tileSize: new OpenLayers.Size( 512, 512 ) } );
+          map = new OpenLayers.Map( { div: newdiv, "maxResolution": .28125, tileSize: new OpenLayers.Size( 512, 512 ) } );
           var worldwind = new OpenLayers.Layer.WorldWind( "LANDSAT", "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4, { T: "105" } );
           map.addLayer( worldwind );
           displayProjection = new OpenLayers.Projection( "EPSG:4326" );
@@ -116,7 +107,18 @@ var openmapCallback;
           var relief = new OpenLayers.Layer.WMS( "USGS Terraserver", "http://terraserver-usa.org/ogcmap.ashx?", { layers: 'DRG' } ); 
           map.addLayer( relief );
         }
-        map.div.style.display = "none";
+        else {
+          // add OpenStreetMap layer
+          projection = new OpenLayers.Projection( 'EPSG:900913' );
+          displayProjection = new OpenLayers.Projection( 'EPSG:4326' );
+          centerlonlat = centerlonlat.transform( displayProjection, projection );
+          map = new OpenLayers.Map( { div: newdiv, projection: projection, "displayProjection": displayProjection } );
+          var osm = new OpenLayers.Layer.OSM();
+          map.addLayer( osm );
+        }
+        if( map ) {
+          map.div.style.display = "none";
+        }
       }
     };
     isGeoReady();
@@ -250,8 +252,12 @@ var openmapCallback;
         if ( map ) {
           map.div.style.display = 'none';          
         }
-      }
+      },
+      _teardown: function( options ) {
 
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( newdiv );
+        newdiv = map = centerlonlat = projection = displayProjection = pointLayer = selectControl = popup = null;
+      }
     };
   },
   {
