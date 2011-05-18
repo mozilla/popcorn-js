@@ -22,23 +22,23 @@ test("Popcorn Subtitle Plugin", function () {
 
   popped.subtitle({
       start: 0,
-      end: 1,
+      end: 3,
       text: 'this is the first subtitle of 2011',
       language: "en",
       languagesrc: "language",
       accessibilitysrc: "accessibility"
     } )
   .subtitle({
-      start: 1,
-      end: 2,
+      start: 3,
+      end: 6,
       text: 'this is the second subtitle of 2011',
       language: "en",
       languagesrc: "language",
       accessibilitysrc: "accessibility"
     } )
 	.subtitle({
-      start: 3,
-      end: 4,
+      start: 7,
+      end: 10,
       text: 'this is the third subtitle of 2011',
       language: "en",
       languagesrc: "language",
@@ -49,7 +49,7 @@ test("Popcorn Subtitle Plugin", function () {
 
   subtitlediv = document.getElementById('subtitlediv');
 
-  popped.exec( 0.5, function() {
+  popped.exec( 1.5, function() {
     
     popped.media.pause();
     equals( subtitlediv.innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
@@ -70,7 +70,7 @@ test("Popcorn Subtitle Plugin", function () {
     
   });
 
-  popped.exec( 1.5, function() {
+  popped.exec( 4.5, function() {
 
     popped.media.pause();
     // check position of subttile that should of moved with video,
@@ -95,7 +95,7 @@ test("Popcorn Subtitle Plugin", function () {
     
   });
 
-  popped.exec( 2.5, function() {
+  popped.exec( 6.5, function() {
     
     popped.media.pause();
     equals (subtitlediv.innerHTML, "", "subtitle is clear" );
@@ -104,7 +104,7 @@ test("Popcorn Subtitle Plugin", function () {
   
   });
 
-  popped.exec( 3.5, function() {
+  popped.exec( 8.5, function() {
 
     popped.media.play();
     equals (subtitlediv.innerHTML, "this is the third subtitle of 2011", "subtitle displaying correct information" );
