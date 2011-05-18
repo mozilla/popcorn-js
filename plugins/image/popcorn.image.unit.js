@@ -72,7 +72,6 @@ test("Popcorn Image Plugin", function () {
   
   popped.exec( 6, function() {
     [].forEach.call( document.querySelectorAll( "#imagediv a img" ), function( img, idx ) {
-      alert(idx + " src = " + img.src);
       ok( img.src === sources[ idx ], "Image " + idx + " is in the right order" );
       plus();
     });

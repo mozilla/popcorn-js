@@ -90,8 +90,6 @@
 
           var fontHeight = ( img.height / 12 ) + "px", 
               divText = document.createElement( "div" );
-          // add the widget's div to the target div
-          document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options.link );
           
           Popcorn.extend( divText.style, {
 
