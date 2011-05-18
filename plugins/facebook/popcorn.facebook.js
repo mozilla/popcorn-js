@@ -1,6 +1,6 @@
 //PLUGIN: facebook
 
-(function (Popcorn){
+(function(Popcorn, global ) {
 /**
   * Facebook Popcorn plug-in 
   * Places Facebook's "social plugins" inside a div ( http://developers.facebook.com/docs/plugins/ )
@@ -45,22 +45,22 @@
       } )
   * This will show how many people "like" Seneca College's Facebook page, and show their profile pictures
   */
-  
+
   var ranOnce = false;
-   
-   function toggle( container, display ) {
-     if ( container ) {
-       container.style.display = display;
-       
-       return;
-     }
-     
-     setTimeout(function() {
-       toggle( container, display );
-     }, 10 );
-   }
-   
-  Popcorn.plugin( "facebook" , {  
+
+  function toggle( container, display ) {
+    if ( container ) {
+      container.style.display = display;
+
+      return;
+    }
+
+    setTimeout(function() {
+      toggle( container, display );
+    }, 10 );
+  }
+
+  Popcorn.plugin( "facebook" , {
     manifest:{
       about:{
         name   : "Popcorn Facebook Plugin",
@@ -96,18 +96,18 @@
     
     _setup: function( options ) {
       // facebook script requires a div named fb-root
-      if( !document.getElementById( "fb-root" ) ) {
+      if ( !document.getElementById( "fb-root" ) ) {
         var fbRoot = document.createElement( "div" );
         fbRoot.setAttribute( "id", "fb-root" );
         document.body.appendChild( fbRoot );
       }
       
-      if(!ranOnce || options.event_app_id){
+      if ( !ranOnce || options.event_app_id ) {
         ranOnce = true;
         // initialize facebook JS SDK
         Popcorn.getScript("http://connect.facebook.net/en_US/all.js");
-      
-        window.fbAsyncInit = function() {
+
+        global.fbAsyncInit = function() {
           FB.init({
             appId  : ( options.event_app_id || "" ),
             status : true,
@@ -116,49 +116,33 @@
           });
         };
       }
-      
-      var validType = function( type ){
-        var valid = false;
-        var existing = [ "like", "like-box", "activity", "facepile", "comments", "live-stream", "send" ];
-        
-        for(var i in existing){
-          if ( type.toLowerCase() === existing[i] ) {
-            valid = true;
-          }
-        }
-        
-        return valid;
+
+      function validType( type ) {
+        return ( [ "like", "like-box", "activity", "facepile", "comments", "live-stream", "send" ].indexOf( type ) > -1 );
       };
-      
+
       // default plugin is like button
-      if( typeof( options.type ) === "undefined"){
-        options.type = "like";
-      } else if ( !validType( options.type ) ) {
+      options.type = ( options.type || "like" ).toLowerCase();
+
+      // default plugin is like button
+      if ( !validType( options.type ) ) {
         return;
       }
-      
-      var type = options.type.toLowerCase();
-      options._container = document.createElement( "fb:" + type );
-      
-      // setOptions property list doesn't accept dashes
-      if ( type === "like-box" ) {
-        type = "likebox";
-      }
-      else if ( type === "live-stream" ) {
-        type = "livestream";
-      }
-      
-      var setOptions = (function ( options ) {
+
+      options._container = document.createElement( "fb:" + options.type );
+
+
+      var setOptions = (function( options ) {
+
         options._container.style.display = "none";
+
         // activity feed uses 'site' rather than 'href'
-        if ( type === "activity" ) {
-          options._container.setAttribute( "site", ( options.site || document.URL));
-        } else {
-          options._container.setAttribute( "href", ( options.href || document.URL ) );
-        }
+        var attr = options.type === "activity" ? "site" : "href";
+
+        options._container.setAttribute( attr, ( options[ attr ] || document.URL ) );
 
         return {
-          like: function () {
+          "like": function () {
             options._container.setAttribute( "send", ( options.send || false ) );
             options._container.setAttribute( "width", options.width );
             options._container.setAttribute( "show_faces", options.show_faces );
@@ -166,7 +150,7 @@
             options._container.setAttribute( "font", options.font );
             options._container.setAttribute( "colorscheme", options.colorscheme );
           },
-          likebox: function () {
+          "like-box": function () {
             options._container.setAttribute( "height", ( options.height || 250 ) );
             options._container.setAttribute( "width", options.width );
             options._container.setAttribute( "show_faces", options.show_faces );
@@ -174,12 +158,12 @@
             options._container.setAttribute( "header", options.header );
             options._container.setAttribute( "colorscheme", options.colorscheme );
           },
-          facepile: function () {
+          "facepile": function () {
             options._container.setAttribute( "height", options.height );
             options._container.setAttribute( "width", options.width );
             options._container.setAttribute( "max_rows", ( options.max_rows || 1 ) );
           },
-          activity: function () {
+          "activity": function () {
             options._container.setAttribute( "width", options.width );
             options._container.setAttribute( "height", options.height );
             options._container.setAttribute( "header", options.header );
@@ -188,22 +172,22 @@
             options._container.setAttribute( "font", options.font );
             options._container.setAttribute( "colorscheme", options.colorscheme );
           },
-          livestream: function() {
+          "live-stream": function() {
             options._container.setAttribute( "width", ( options.width || 400 ) );
             options._container.setAttribute( "height", ( options.height || 500 ) );
             options._container.setAttribute( "always_post_to_friends", ( options.always_post_to_friends || false ) );
             options._container.setAttribute( "event_app_id", options.event_app_id );
             options._container.setAttribute( "xid", options.xid );
           },
-          send: function() {
+          "send": function() {
             options._container.setAttribute( "font", options.font );
             options._container.setAttribute( "colorscheme", options.colorscheme );
           }
         };
       })( options );
 
-      setOptions[ type ]();
-      
+      setOptions[ options.type ]();
+
       if ( document.getElementById( options.target ) ) {
         document.getElementById( options.target ).appendChild( options._container );
       }
@@ -215,7 +199,7 @@
     * options variable
     */
     start: function( event, options ){
-      toggle( options._container, "inline" );     
+      toggle( options._container, "inline" );
     },
     /**
     * @member facebook
@@ -228,5 +212,5 @@
     }
   });
 
-})( Popcorn );
+})( Popcorn, this );
 
