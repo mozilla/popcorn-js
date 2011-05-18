@@ -51,6 +51,9 @@ test("Popcorn Subtitle Plugin", function () {
 
   popped.exec( 0.5, function() {
 
+    equals( subtitlediv.innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
+    plus();
+
     // capturing location now, to check against later,
     // a subtitle must be displayed to get valid data
     // which is why we do this in exec
@@ -62,8 +65,7 @@ test("Popcorn Subtitle Plugin", function () {
     popped.media.style.left = "400px";
     popped.media.style.top = "600px";
 
-    equals( subtitlediv.innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
-    plus();
+    
   });
 
   popped.exec( 1.5, function() {
