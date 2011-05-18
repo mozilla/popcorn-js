@@ -102,8 +102,10 @@
             //On document ready
             document.addEventListener( "DOMContentLoaded", function() {
               var player = Popcorn( Popcorn.vimeo( "player_1", "http://player.vimeo.com/video/11127501", {
-                  width: 500,
-                  height: 281
+                  css: {
+                    width: "500px",
+                    height: "281px"
+                  }
                 }) )
                     .footnote({
                       start: 5, // seconds

@@ -282,6 +282,8 @@
       this._target.appendChild( this._container );
       
       options = options || {};
+
+      options.css && Popcorn.extend( this._target.style, options.css );
       
       this.addEventFn;
       this.evtHolder;
@@ -300,8 +302,8 @@
       this.evtHolder = new EventManager( this );
       
       // For calculating position relative to video (like subtitles)
-      this.width = options.width || this._target.style.width || "504px";
-      this.height = options.height || this._target.style.height || "340px";
+      this.width = this._target.style.width || "504px";
+      this.height = this._target.style.height || "340px";
 
       if ( !/[\d]%/.test( this.width ) ) {
         this.offsetWidth = parseInt( this.width, 10 );
