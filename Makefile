@@ -143,7 +143,7 @@ TESTING_MIRROR := ${DIST_DIR}/testing-mirror
 
 # Prefer plugin code in popcorn-complete.js but don't overrwrite *unit.js files
 overwrite_js = @@for js in $$(find ${1} \( -name "*.js" -a \! -name "*.unit.js" \)) ; \
-                 do echo '/* Stub, see popcorn.js instead */ function(){}\n' > $$js ; \
+                 do echo '/* Stub, see popcorn.js instead */' > $$js ; \
                  done
 
 testing: complete
