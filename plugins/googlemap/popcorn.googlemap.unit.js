@@ -24,6 +24,9 @@ test("Popcorn Google Map Plugin", function () {
   ok ( document.getElementById('map2').innerHTML === "", "initially, there is nothing inside the map2" );
   plus();
   
+  ok ( document.getElementById('map3').innerHTML === "", "initially, there is nothing inside the map3" );
+  plus();
+  
   popped.googlemap({
     start: 0, // seconds
     end: 5, // seconds
@@ -34,23 +37,26 @@ test("Popcorn Google Map Plugin", function () {
     zoom: 10
   })
   .googlemap({
-    start: 0, // seconds
-    end: 5, // seconds
-    type: 'SATELLITE',
-    target: 'map2',
-    location:'boston',
-    zoom: 15
-  })
-  .volume(0);
-
-    popped.googlemap({
       start: 0, // seconds
       end: 10, // seconds
       type: 'SATELLITE',
       target: 'map2',
       location:'toronto',
       zoom: 15
-    });
+  });
+  var mapz = popped.googlemap({
+    start: 0, // seconds
+    end: 15, // seconds
+    type: "STREETVIEW",
+    target: "map3",
+    location: "6th Line, Oakville, Ontario",
+    zoom: "1",
+    heading: "180",
+    pitch: "1",
+	  interval: 1000,
+	  tween: "York university"
+  })
+  .volume(0);
 
   setupId = popped.getLastTrackEventId();
 
@@ -72,16 +78,23 @@ test("Popcorn Google Map Plugin", function () {
     plus();
   });
 
-  popped.exec( 6, function() {
+  popped.exec( 4, function() {
+    equals (document.getElementById('actualmap3').offsetParent.id, "map3", "Tweening map is inside the 'map3' div" );
+    plus();
+  });
+
+  popped.exec( 20, function() {
     ok (document.getElementById('actualmap2').style.display === "none" && 
-        document.getElementById('actualmap1').style.display === "none", "Both maps are no longer visible" );
+        document.getElementById('actualmap1').style.display === "none" &&
+        document.getElementById('actualmap3').style.display === "none", "All maps are no longer visible" );
     plus();
     popped.pause().removeTrackEvent( setupId );
 
-    ok( !document.getElementById('actualmap3'), "removed map was properly destroyed"  );
+    ok( !document.getElementById('actualmap4'), "removed map was properly destroyed"  );
     plus();
   });
 
   popped.play();
   
 });
+

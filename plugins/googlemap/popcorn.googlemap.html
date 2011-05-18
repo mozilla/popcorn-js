@@ -5,7 +5,7 @@
   
   <script src="../../popcorn.js"></script>
   <script src="popcorn.googlemap.js"></script>
-  <script>
+  <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
       .volume(0)
@@ -21,14 +21,69 @@
       } )
       .googlemap({
         start: 0, // seconds
+        end: 40, // seconds
+        type: "STREETVIEW",
+        target: "map3",
+        location: "6th Line, Oakville, Ontario",
+        //lat: 35.7795324,
+        //lng: -78.63915450000002,
+        zoom: "1",
+        heading: "180",
+        pitch: "1",
+				interval: 1000,
+				tween: "York university"
+      })
+      .googlemap({
+        start: 0, // seconds
+        end: 40, // seconds
+        type: "STREETVIEW",
+        target: "map5",
+        location: "Buffallo",
+        //lat: 35.7795324,
+        //lng: -78.63915450000002,
+        zoom: "1",
+        heading: "180",
+        pitch: "1",
+				interval: 1000,
+				tween: "Ottawa"
+      })
+      .googlemap({
+        start: 0, // seconds
         end: 20, // seconds
         type: "STREETVIEW",
-        target: "map1",
-        lat: 43.665429,
-        lng: -79.403323,
+        target: "map4",
+        lat: 35.7795324,
+        lng: -78.63915450000002,
         zoom: "1",
-        heading: "0",
-        pitch: "1"
+        heading: "180",
+        pitch: "1",
+        tween:[ 
+          {
+            position: {lat: 35.778056, lng: -78.63903579999999}, 
+            pov: {heading: 183.5, zoom: 1, pitch:1}, 
+            interval:2000 
+          },
+          {	
+            position: {lat: 35.7770258, lng: -78.63929150000001}, 
+            pov: {heading: 180, zoom: 1, pitch:1},
+            interval:2000
+          },
+          {	
+            position: {lat: 35.775581, lng: -78.639395}, 
+            pov: {heading: 180, zoom: 1, pitch:1},
+            interval:2000
+          }, 
+          {	
+            position: {lat: 35.775581, lng: -78.639395}, 
+            pov: {heading: 105, zoom: 1, pitch:1},
+            interval:2000
+          },
+          {	
+            position: {lat: 35.775581, lng: -78.639395}, 
+          	pov: {heading: 0, zoom: 1, pitch:1},
+          	interval:2000
+          }	
+        ]
       } )
       .googlemap({
         start: 0, // seconds
@@ -37,16 +92,32 @@
         target: "map2",
         location:"boston",
         zoom: 15
+      } )
+      .googlemap({
+        start: 0, // seconds
+        end: 20, // seconds
+        type: "STREETVIEW",
+        target: "map1",
+        lat: 43.665429,
+        lng: -79.403323,
+        zoom: "1",
+        heading: "0",
+        pitch: "1"
       } );
     }, false);
   </script>
 </head>
 <body>
+
   <h1 id="qunit-header">Popcorn google Map Plug-in Demo</h1>
   <p> A Google Map displaying Toronto, Ontario will appear at 0 seconds and disappear at 20 seconds.</p>
-  <p> A Google StreetView Map displaying Toronto, Ontario will appear at 0 seconds and disappear at 20 seconds.</p>
+  <p> A Google Map Streetview image of Toronto, Ontario will appear at 0 seconds and disaapear at 20 seconds</p>
   <p> A Google Map displaying Boston will appear at 0 seconds and disappear at 30 seconds.</p>
+  <p> A Google Map Streetview tweening from Oakville, Ontario to York University will appear at 0 seconds and disaapear at 40 seconds</p>
+  <p> A Google Map Streetview tweening from 217 Fayetteville Street to East Davie Street  will appear at 0 seconds and disaapear at 20 seconds - Using hardcoded lat+lng values</p>
+  <p> A Google Map Streetview tweening from Buffallo to Ottawa  will appear at 0 seconds and disaapear at 40 seconds</p>
   <div>
+
     <video id='video'
       controls
       width= '250px'
@@ -64,10 +135,15 @@
 
     </video>
   </div>
-  <div style="width:1000px">
+
+  <div style="width:2000px">
     <div id="map" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
     <div id="map1" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
     <div id="map2" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
+    <div id="map3" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
+    <div id="map4" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
+    <div id="map5" style="position:relative;float:left;width:300px;height:400px"><p>Locations in this video:</p></div>
   </div>
 </body>
 </html>
+
