@@ -148,7 +148,7 @@ setup: ${SEQUENCE_SRC} update
 
 update:
 	@@echo "Updating submodules..."
-	@@git submodule update
+	@@cd  players/sequence; git pull origin master
 
 ${SEQUENCE_SRC}:
 	@@echo "Setting-up submodules..."
