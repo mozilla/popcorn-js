@@ -141,6 +141,11 @@ lint-players:
 # in place of popcorn.js.
 TESTING_MIRROR := ${DIST_DIR}/testing-mirror
 
+# Prefer plugin code in popcorn-complete.js but don't overrwrite *unit.js files
+overwrite_js = @@for js in $$(find ${1} \( -name "*.js" -a \! -name "*.unit.js" \)) ; \
+                 do echo '/* Stub, see popcorn.js instead */ function(){}\n' > $$js ; \
+                 done
+
 testing: complete
 	@@echo "Building testing-mirror in ${TESTING_MIRROR}"
 	@@mkdir -p ${TESTING_MIRROR}
@@ -149,10 +154,9 @@ testing: complete
 	@@rm -fr ${TESTING_MIRROR}/AUTHORS ${TESTING_MIRROR}/LICENSE ${TESTING_MIRROR}/LICENSE_HEADER \
            ${TESTING_MIRROR}/Makefile ${TESTING_MIRROR}/readme.md
 	@@touch "${TESTING_MIRROR}/THIS IS A TESTING MIRROR -- READ-ONLY"
-# Prefer plugin code in popcorn-complete.js but don't overrwrite *unit.js files
-	@@for js in $$(find ${TESTING_MIRROR}/plugins \( -name "*.js" -a \! -name "*.unit.js" \)) ; \
-                 do echo '/* Stub, see popcorn.js instead */ function(){}\n' > $$js ; \
-                 done
+	$(call overwrite_js, ${TESTING_MIRROR}/plugins)
+	$(call overwrite_js, ${TESTING_MIRROR}/players)
+	$(call overwrite_js, ${TESTING_MIRROR}/parsers)
 	@@cp ${POPCORN_COMPLETE_DIST} ${TESTING_MIRROR}/popcorn.js
 
 clean:
