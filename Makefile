@@ -144,13 +144,12 @@ TESTING_MIRROR := ${DIST_DIR}/testing-mirror
 testing: complete
 	@@echo "Building testing-mirror in ${TESTING_MIRROR}"
 	@@mkdir -p ${TESTING_MIRROR}
-	@@find ${PREFIX} | cpio -pd --quiet ${TESTING_MIRROR}
+	@@find ${PREFIX} \( -name '.git' -o -name 'dist' \) -prune -o -print | cpio -pd --quiet ${TESTING_MIRROR}
 # Remove unneeded files for testing, so it's clear this isn't the tree
-	@@rm -fr ${TESTING_MIRROR}/.git ${TESTING_MIRROR}/dist ${TESTING_MIRROR}/AUTHORS \
-           ${TESTING_MIRROR}/LICENSE ${TESTING_MIRROR}/LICENSE_HEADER \
+	@@rm -fr ${TESTING_MIRROR}/AUTHORS ${TESTING_MIRROR}/LICENSE ${TESTING_MIRROR}/LICENSE_HEADER \
            ${TESTING_MIRROR}/Makefile ${TESTING_MIRROR}/readme.md
 	@@touch "${TESTING_MIRROR}/THIS IS A TESTING MIRROR -- READ-ONLY"
-# Prefer plugin code in popcorn-complete.js, but Don't overriwte *unit.js files....
+# Prefer plugin code in popcorn-complete.js but don't overrwrite *unit.js files
 	@@for js in $$(find ${TESTING_MIRROR}/plugins \( -name "*.js" -a \! -name "*.unit.js" \)) ; \
                  do echo '/* Stub, see popcorn.js instead */ function(){}\n' > $$js ; \
                  done
@@ -159,4 +158,3 @@ testing: complete
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
 	@@rm -rf ${DIST_DIR}
-
