@@ -1,0 +1,3 @@
+[submodule "players/sequence"]
+	path = players/sequence
+	url = git://github.com/rwldrn/popcorn.sequence.git
