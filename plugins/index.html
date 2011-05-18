@@ -10,6 +10,7 @@
     <ul id="menuItems">
       <li><a onclick="clearEvents();" target="out" href="attribution/popcorn.attribution.unit.html">attribution</a></li>
       <li><a onclick="clearEvents();" target="out" href="code/popcorn.code.unit.html">code</a></li>
+      <li><a onclick="clearEvents();" target="out" href="facebook/popcorn.facebook.unit.html">facebook</a></li>
       <li><a onclick="clearEvents();" target="out" href="flickr/popcorn.flickr.unit.html">flickr</a></li>
       <li><a onclick="clearEvents();" target="out" href="footnote/popcorn.footnote.unit.html">footnote</a></li>
       <li><a onclick="clearEvents();" target="out" href="gml/popcorn.gml.unit.html">gml</a></li>
@@ -36,7 +37,7 @@
   <script>
   var eventList = [];
   function runAllTests(){
-    var testUrl = [ "attribution", "code", "flickr", "footnote", "gml", "googlemap", 
+    var testUrl = [ "attribution", "code", "facebook", "flickr", "footnote", "gml", "googlemap", 
                     "googlenews", "googlefeed", "image", "lastfm", "linkedin", "lowerthird", 
                     "mustache",  "openmap", "pause", "subtitle", "tagthisperson", "twitter",  
                     "webpage", "wikipedia", "wordriver" ];
@@ -45,7 +46,7 @@
                     13000, 13000, 10000, 10000, 6000,  13000,
                     15000, 13000, 9000, 25000, 21000,
                     10000, 21000, 21000 , 4000];
-    
+
     var setTest = function( index ) {
       var url = function( str ) {
         return str + "/popcorn." + str + ".unit.html";
