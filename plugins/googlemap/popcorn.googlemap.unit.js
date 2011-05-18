@@ -1,7 +1,7 @@
 test("Popcorn Google Map Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 11, 
+      expects = 13, 
       count = 0,
       setupId;
   
@@ -46,7 +46,7 @@ test("Popcorn Google Map Plugin", function () {
   });
   var mapz = popped.googlemap({
     start: 0, // seconds
-    end: 15, // seconds
+    end: 10, // seconds
     type: "STREETVIEW",
     target: "map3",
     location: "6th Line, Oakville, Ontario",
@@ -83,7 +83,7 @@ test("Popcorn Google Map Plugin", function () {
     plus();
   });
 
-  popped.exec( 20, function() {
+  popped.exec( 11, function() {
     ok (document.getElementById('actualmap2').style.display === "none" && 
         document.getElementById('actualmap1').style.display === "none" &&
         document.getElementById('actualmap3').style.display === "none", "All maps are no longer visible" );
