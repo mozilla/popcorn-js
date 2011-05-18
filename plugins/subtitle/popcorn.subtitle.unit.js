@@ -1,44 +1,44 @@
 test("Popcorn Subtitle Plugin", function () {
-  
+ 
   var popped = Popcorn("#video"),
       expects = 9,
       count = 0,
       subTop = 9001,
       subLeft = 9001,
       subtitlediv;
-  
+ 
   expect(expects);
-  
+ 
   function plus() {
     if ( ++count===expects) {
       start();
     }
   }
-  
+ 
   stop();
    
   ok ('subtitle' in popped, "subtitle is a method of the popped instance");
   plus();
-
+ 
   popped.subtitle({
       start: 0,
-      end: 3,
+      end: 1,
       text: 'this is the first subtitle of 2011',
       language: "en",
       languagesrc: "language",
       accessibilitysrc: "accessibility"
     } )
   .subtitle({
-      start: 3,
-      end: 6,
+      start: 1,
+      end: 2,
       text: 'this is the second subtitle of 2011',
       language: "en",
       languagesrc: "language",
       accessibilitysrc: "accessibility"
     } )
-	.subtitle({
-      start: 7,
-      end: 10,
+        .subtitle({
+      start: 3,
+      end: 4,
       text: 'this is the third subtitle of 2011',
       language: "en",
       languagesrc: "language",
@@ -46,32 +46,32 @@ test("Popcorn Subtitle Plugin", function () {
     } )
     .volume(0)
     .play();
-
+ 
   subtitlediv = document.getElementById('subtitlediv');
-
-  popped.exec( 1.5, function() {
-    
+ 
+  popped.exec( 0.5, function() {
+   
     popped.media.pause();
     equals( subtitlediv.innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
     plus();
-    
-
+   
+ 
     // capturing location now, to check against later,
     // a subtitle must be displayed to get valid data
     // which is why we do this in exec
     subLeft = subtitlediv.style.left;
     subTop  = subtitlediv.style.top;
-
+ 
     // changing position
     popped.media.style.position = "absolute";
     popped.media.style.left = "400px";
     popped.media.style.top = "600px";
     popped.media.play()
-    
+   
   });
-
-  popped.exec( 4.5, function() {
-
+ 
+  popped.exec( 1.5, function() {
+ 
     popped.media.pause();
     // check position of subttile that should of moved with video,
     // a subtitle must be displayed to get valid data
@@ -79,7 +79,7 @@ test("Popcorn Subtitle Plugin", function () {
     plus();
     ok( subtitlediv.style.top !== subTop, "subtitle's top position has changed" );
     plus();
-
+ 
     // we know values have changed, but how accurate are they?
     // check values against the video's values
     // we need four checks because if we just check against video's position,
@@ -88,29 +88,29 @@ test("Popcorn Subtitle Plugin", function () {
     plus();
     ok( Popcorn.position( subtitlediv ).top > popped.position().top, "subtitle top position moved" );
     plus();
-
+ 
     equals (subtitlediv.innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
     plus();
     popped.media.play();
-    
+   
   });
-
-  popped.exec( 6.5, function() {
-    
+ 
+  popped.exec( 2.5, function() {
+   
     popped.media.pause();
     equals (subtitlediv.innerHTML, "", "subtitle is clear" );
     plus();
     popped.media.play();
-  
+ 
   });
-
-  popped.exec( 8.5, function() {
-
+ 
+  popped.exec( 3.5, function() {
+ 
     popped.media.play();
     equals (subtitlediv.innerHTML, "this is the third subtitle of 2011", "subtitle displaying correct information" );
     plus();
     popped.media.play();
-    
+   
   });
 });
 
