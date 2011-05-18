@@ -59,7 +59,7 @@ POPCORN_COMPLETE_MIN = ${DIST_DIR}/popcorn-complete.min.js
 add_license = cat ${PREFIX}/LICENSE_HEADER | sed -e 's/@VERSION/${VERSION}/' > $(2) ; \
 	                    cat $(1) >> $(2)
 
-all: lint lint-plugins lint-parsers lint-players popcorn plugins parsers players complete min
+all: setup lint lint-plugins lint-parsers lint-players popcorn plugins parsers players complete min
 	@@echo "Popcorn build complete."
 
 ${DIST_DIR}:
@@ -79,7 +79,7 @@ ${POPCORN_MIN}: ${POPCORN_DIST}
 	@@$(call add_license, ${POPCORN_MIN}.tmp, ${POPCORN_MIN})
 	@@rm ${POPCORN_MIN}.tmp
 
-${POPCORN_COMPLETE_MIN}: ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${DIST_DIR}
+${POPCORN_COMPLETE_MIN}: update ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${DIST_DIR}
 	@@echo "Building" ${POPCORN_COMPLETE_MIN}
 	@@$(call compile, ${POPCORN_COMPLETE_LIST}, ${POPCORN_COMPLETE_MIN}.tmp)
 	@@$(call add_license, ${POPCORN_COMPLETE_MIN}.tmp, ${POPCORN_COMPLETE_MIN})
@@ -115,7 +115,7 @@ ${PLAYERS_DIST}: ${PLAYERS_SRC} ${DIST_DIR}
 	@@echo "Building ${PLAYERS_DIST}"
 	@@cat ${PLAYERS_SRC} > ${PLAYERS_DIST}
 
-complete: ${POPCORN_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} ${DIST_DIR}
+complete: update ${POPCORN_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} ${DIST_DIR}
 	@@echo "Building popcorn + plugins + parsers + players..."
 	@@cat ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} > ${POPCORN_COMPLETE_DIST}.tmp
 	@@$(call add_license, ${POPCORN_COMPLETE_DIST}.tmp, ${POPCORN_COMPLETE_DIST})
@@ -162,3 +162,18 @@ testing: complete
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
 	@@rm -rf ${DIST_DIR}
+
+# Setup any git submodules we need
+SEQUENCE_SRC = ${PLAYERS_DIR}/sequence/popcorn.sequence.js
+
+setup: ${SEQUENCE_SRC} update
+
+update:
+	@@echo "Updating submodules..."
+	@@git submodule update
+	@@cd  players/sequence; git pull origin master
+
+${SEQUENCE_SRC}:
+	@@echo "Setting-up submodules..."
+	@@git submodule init
+
