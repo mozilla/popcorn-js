@@ -93,7 +93,7 @@
         options.type = options.type || "ROADMAP";
         if( options.type == "SATELLITE" ) {
           // add NASA WorldWind / LANDSAT map
-          map = new OpenLayers.Map( { div: newdiv, "maxResolution": .28125, tileSize: new OpenLayers.Size( 512, 512 ) } );
+          map = new OpenLayers.Map( { div: newdiv, "maxResolution": 0.28125, tileSize: new OpenLayers.Size( 512, 512 ) } );
           var worldwind = new OpenLayers.Layer.WorldWind( "LANDSAT", "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4, { T: "105" } );
           map.addLayer( worldwind );
           displayProjection = new OpenLayers.Projection( "EPSG:4326" );
@@ -149,51 +149,37 @@
             // reset the location and zoom just in case the user played with the map
             map.setCenter( centerlonlat, options.zoom );
             if( options.markers ){
-              var layerStyle = OpenLayers.Util.extend( {} , OpenLayers.Feature.Vector.style[ 'default' ] );
-              pointLayer = new OpenLayers.Layer.Vector( "Point Layer", { style: layerStyle } );
-              map.addLayer( pointLayer );
-              for( var m = 0; m < options.markers.length; m++ ) {
-                var myMarker = options.markers[ m ];
-                if( myMarker.text ){
-                  if( !selectControl ){
-                    selectControl = new OpenLayers.Control.SelectFeature( pointLayer );
-                    map.addControl( selectControl );
-                    selectControl.activate();
-                    pointLayer.events.on( {
-                      "featureselected": function( clickInfo ) {
-                        clickedFeature = clickInfo.feature;
-                        if( !clickedFeature.attributes.text ){
-                          return;
-                        }
-                        popup = new OpenLayers.Popup.FramedCloud(
-                          "featurePopup",
-                          clickedFeature.geometry.getBounds().getCenterLonLat(),
-                          new OpenLayers.Size( 120, 250 ),
-                          clickedFeature.attributes.text,
-                          null,
-                          true,
-                          function( closeInfo ) {
-                            selectControl.unselect( this.feature );
-                          }
-                        );
-                        clickedFeature.popup = popup;
-                        popup.feature = clickedFeature;
-                        map.addPopup( popup );
-                      },
-                      "featureunselected": function( clickInfo ) {
-                        feature = clickInfo.feature;
-                        if ( feature.popup ) {
-                          popup.feature = null;
-                          map.removePopup( feature.popup );
-                          feature.popup.destroy();
-                          feature.popup = null;
-                        }
+              var layerStyle = OpenLayers.Util.extend( {} , OpenLayers.Feature.Vector.style[ 'default' ] ),
+                  featureSelected = function( clickInfo ) {
+                    clickedFeature = clickInfo.feature;
+                    if( !clickedFeature.attributes.text ){
+                      return;
+                    }
+                    popup = new OpenLayers.Popup.FramedCloud(
+                      "featurePopup",
+                      clickedFeature.geometry.getBounds().getCenterLonLat(),
+                      new OpenLayers.Size( 120, 250 ),
+                      clickedFeature.attributes.text,
+                      null,
+                      true,
+                      function( closeInfo ) {
+                        selectControl.unselect( this.feature );
                       }
-                    } );
-                  }
-                }
-                if( myMarker.location ){
-                  var geocodeThenPlotMarker = function( myMarker ){
+                    );
+                    clickedFeature.popup = popup;
+                    popup.feature = clickedFeature;
+                    map.addPopup( popup );
+                  }, 
+                  featureUnSelected = function( clickInfo ) {
+                    feature = clickInfo.feature;
+                    if ( feature.popup ) {
+                      popup.feature = null;
+                      map.removePopup( feature.popup );
+                      feature.popup.destroy();
+                      feature.popup = null;
+                    }
+                  },
+                  gcThenPlotMarker = function( myMarker ){
                     Popcorn.getJSONP(
                       "http://tinygeocoder.com/create-api.php?q=" + myMarker.location + "&callback=jsonp",
                       function( latlng ){
@@ -215,6 +201,23 @@
                       }
                     );
                   };
+              pointLayer = new OpenLayers.Layer.Vector( "Point Layer", { style: layerStyle } );
+              map.addLayer( pointLayer ); 
+              for( var m = 0; m < options.markers.length; m++ ) {
+                var myMarker = options.markers[ m ];
+                if( myMarker.text ){
+                  if( !selectControl ){
+                    selectControl = new OpenLayers.Control.SelectFeature( pointLayer );
+                    map.addControl( selectControl );
+                    selectControl.activate();
+                    pointLayer.events.on( {
+                      "featureselected": featureSelected,
+                      "featureunselected": featureUnSelected
+                    } );
+                  }
+                }
+                if( myMarker.location ){
+                  var geocodeThenPlotMarker = gcThenPlotMarker;
                   geocodeThenPlotMarker(myMarker);
                 } else {
                   var myPoint = new OpenLayers.Geometry.Point( myMarker.lng, myMarker.lat ).transform( displayProjection, projection ),
