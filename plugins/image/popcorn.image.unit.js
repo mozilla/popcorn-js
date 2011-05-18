@@ -1,7 +1,7 @@
 test("Popcorn Image Plugin", function () {
 
   var popped = Popcorn( "#video" ),
-      expects = 8,
+      expects = 9,
       count = 0,
       setupId,
       imagediv = document.getElementById( "imagediv" ),
@@ -72,15 +72,17 @@ test("Popcorn Image Plugin", function () {
   
   popped.exec( 6, function() {
     [].forEach.call( document.querySelectorAll( "#imagediv a img" ), function( img, idx ) {
+      alert(idx + " src = " + img.src);
       ok( img.src === sources[ idx ], "Image " + idx + " is in the right order" );
       plus();
+    });
   });
   
   popped.exec( 8, function() {
     popped.pause().removeTrackEvent( setupId );
-    ok( !imagediv.children[0], "removed image was properly destroyed" );
+    ok( !imagediv.children[2], "removed image was properly destroyed" );
     plus();
   });
-  
+
   popped.volume( 0 ).play();  
 });
