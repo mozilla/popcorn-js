@@ -482,7 +482,7 @@
   });
 
   Popcorn.Events  = {
-    UIEvents: "blur focus focusin focusout load resize scroll unload  ",
+    UIEvents: "blur focus focusin focusout load resize scroll unload",
     MouseEvents: "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave click dblclick",
     Events: "loadstart progress suspend emptied stalled play pause " +
             "loadedmetadata loadeddata waiting playing canplay canplaythrough " +
@@ -496,33 +496,19 @@
   Popcorn.events = {
 
     isNative: function( type ) {
-
-      var checks = Popcorn.Events.Natives.split( /\s+/g );
-
-      for ( var i = 0; i < checks.length; i++ ) {
-        if ( checks[ i ] === type ) {
-          return true;
-        }
-      }
-
-      return false;
+			return (new RegExp(type, "i")).test(Popcorn.Events.Natives);
     },
     getInterface: function( type ) {
+			var
+				rType = new RegExp(type, "i"),
+				natives = Popcorn.Events,
+				proto;
 
-      if ( !Popcorn.events.isNative( type ) ) {
-        return false;
-      }
-
-      var natives = Popcorn.Events,
-          proto;
-
-      for ( var p in natives ) {
-        if ( p !== "Natives" && natives[ p ].indexOf( type ) > -1 ) {
-          proto = p;
-        }
-      }
-
-      return proto;
+			for (proto in natives) {
+				if (proto !== "Natives" && rType.test(natives[proto])) {
+					return proto;
+				}
+			}
     },
     //  Compile all native events to single array
     all: Popcorn.Events.Natives.split( /\s+/g ),
