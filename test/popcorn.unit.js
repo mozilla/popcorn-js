@@ -583,7 +583,19 @@ test("Can Detect Native event types", function() {
   expect( tests.length );
 
   tests.forEach(function( type, idx ) {
-    equal( Popcorn.events.isNative( type ), expects[ idx ], type + ( expects[ idx ] ? " is " : " is not " ) + "a native valid event" );
+    equal( Popcorn.events.isNative( type ), expects[ idx ], type + ( expects[ idx ] ? " is " : " is not " ) + "a valid native event" );
+  });
+});
+
+test("Determine event api interface", function() {
+
+  var tests = [ "play", "pause", "click", "scroll", "rough loade", "data seek" ],
+      expects = [ "Events", "Events", "MouseEvents", "UIEvents", false, false ];
+
+  expect( tests.length );
+
+  tests.forEach(function( type, idx ) {
+    equal( Popcorn.events.getInterface( type ), expects[ idx ], type + ( expects[ idx ] ? " is " : " is not " ) + "a valid native event" );
   });
 });
 
