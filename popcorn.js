@@ -20,6 +20,13 @@
   readyBound = false,
   readyFired = false,
 
+  //  Non-public internal data object
+  internal = {
+    events: { 
+      hash: {},
+      apis: {}
+    }
+  },
 
   //  Declare constructor
   //  Returns an instance object.
@@ -482,7 +489,7 @@
   });
 
   Popcorn.Events  = {
-    UIEvents: "blur focus focusin focusout load resize scroll unload  ",
+    UIEvents: "blur focus focusin focusout load resize scroll unload",
     MouseEvents: "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave click dblclick",
     Events: "loadstart progress suspend emptied stalled play pause " +
             "loadedmetadata loadeddata waiting playing canplay canplaythrough " +
@@ -493,19 +500,37 @@
                            Popcorn.Events.MouseEvents + " " +
                            Popcorn.Events.Events;
 
+  internal.events.apiTypes = [ "UIEvents", "MouseEvents", "Events" ];
+
+  // Privately compile events table at load time
+  (function( events, data ) {
+
+    var apis = internal.events.apiTypes, 
+    eventsList = events.Natives.split( /\s+/g ),
+    idx = 0, len = eventsList.length, prop;
+
+    for( ; idx < len; idx++ ) {
+      data.hash[ eventsList[idx] ] = true;
+    }
+
+    apis.forEach(function( val, idx ) {
+
+      data.apis[ val ] = {};
+
+      var apiEvents = events[ val ].split( /\s+/g ), 
+      len = apiEvents.length, 
+      k = 0;
+
+      for ( ; k < len; k++ ) {
+        data.apis[ val ][ apiEvents[ k ] ] = true;
+      }
+    });
+  })( Popcorn.Events, internal.events );
+
   Popcorn.events = {
 
     isNative: function( type ) {
-
-      var checks = Popcorn.Events.Natives.split( /\s+/g );
-
-      for ( var i = 0; i < checks.length; i++ ) {
-        if ( checks[ i ] === type ) {
-          return true;
-        }
-      }
-
-      return false;
+      return !!internal.events.hash[ type ];
     },
     getInterface: function( type ) {
 
@@ -513,16 +538,20 @@
         return false;
       }
 
-      var natives = Popcorn.Events,
-          proto;
+      var eventApi = internal.events, 
+        apis = eventApi.apiTypes,
+        apihash = eventApi.apis, 
+        idx = 0, len = apis.length, api, tmp;
 
-      for ( var p in natives ) {
-        if ( p !== "Natives" && natives[ p ].indexOf( type ) > -1 ) {
-          proto = p;
+      for ( ; idx < len; idx++ ) {
+        tmp = apis[ idx ];
+        
+        if ( apihash[ tmp ][ type ] ) {
+          api = tmp;
+          break;
         }
       }
-
-      return proto;
+      return api;
     },
     //  Compile all native events to single array
     all: Popcorn.Events.Natives.split( /\s+/g ),
@@ -530,15 +559,16 @@
     fn: {
       trigger: function( type, data ) {
 
+        var eventInterface, evt;
         //  setup checks for custom event system
         if ( this.data.events[ type ] && Popcorn.sizeOf( this.data.events[ type ] ) ) {
 
-          var eventInterface  = Popcorn.events.getInterface( type );
+          eventInterface  = Popcorn.events.getInterface( type );
 
           if ( eventInterface ) {
 
-            var evt = document.createEvent( eventInterface );
-                evt.initEvent( type, true, true, global, 1 );
+            evt = document.createEvent( eventInterface );
+            evt.initEvent( type, true, true, global, 1 );
 
             this.media.dispatchEvent( evt );
 

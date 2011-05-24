@@ -575,6 +575,18 @@ test("position called from plugin", function () {
 
 module("Popcorn Events");
 
+test("Can Detect Native event types", function() {
+
+  var tests = [ "play", "pause", "rough loade", "data seek" ],
+      expects = [ true, true, false, false ];
+
+  expect( tests.length );
+
+  tests.forEach(function( type, idx ) {
+    equal( Popcorn.events.isNative( type ), expects[ idx ], type + ( expects[ idx ] ? " is " : " is not " ) + "a native valid event" );
+  });
+});
+
 test("Stored By Type", function () {
 
   QUnit.reset();
@@ -1730,7 +1742,6 @@ test("Popcorn.disable/enable/toggle", function() {
 
   $pop.exec( 40, function() {
 
-    console.log( "WOO!" );
     //  make sure toggler never happened
     // look for: "toggler-test"
 
