@@ -67,7 +67,7 @@ test("Popcorn Facebook Plugin", function () {
   });
   
   popped.exec( 3, function() {
-    ok ( document.getElementById( "likeboxdiv" ).innerHTML.length === 0, "Like box is not added to div" );
+    ok ( document.getElementById( "likeboxdiv" ).innerHTML.length > 0, "Incorrent type value defaulted to like button" );
     plus();
   });
   
