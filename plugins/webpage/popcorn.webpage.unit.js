@@ -1,8 +1,9 @@
 test("Popcorn Webpage Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 10, 
+      expects = 11, 
       count = 0,
+      setupId,
       theiFrame = document.getElementsByTagName('iframe');
 
   expect(expects);
@@ -37,6 +38,8 @@ test("Popcorn Webpage Plugin", function () {
   })
   .volume(0);
 
+  setupId = popped.getLastTrackEventId();
+
   popped.exec( 0, function() {
     ok (!!theiFrame[0], "iframe was created" );
     plus();
@@ -48,17 +51,21 @@ test("Popcorn Webpage Plugin", function () {
     plus();
   });
 
-  popped.exec( 2, function() {
-    ok (theiFrame[0].style.display === 'none' && theiFrame[1].style.display === 'none', "both iframes are hidden" );
-    plus();
-  });
-
   popped.exec( 1, function() {
     ok (!!theiFrame[1], "iframe was created" );
     plus();
     equals (theiFrame[1].id, "webpages-b", "iframe second has the id 'webpages-b'" );
     plus();
     equals (theiFrame[1].src,"http://zenit.senecac.on.ca/wiki/index.php/Processing.js", "iframe has the src 'http://zenit.senecac.on.ca/wiki/index.php/Processing.js'" );
+    plus();
+  });
+
+  popped.exec( 2, function() {
+    ok (theiFrame[0].style.display === 'none' && theiFrame[1].style.display === 'none', "both iframes are hidden" );
+    plus();
+
+    popped.pause().removeTrackEvent( setupId );
+    ok( !theiFrame[1], "removed webpage was properly destroyed" );
     plus();
   });
 

@@ -59,7 +59,7 @@ POPCORN_COMPLETE_MIN = ${DIST_DIR}/popcorn-complete.min.js
 add_license = cat ${PREFIX}/LICENSE_HEADER | sed -e 's/@VERSION/${VERSION}/' > $(2) ; \
 	                    cat $(1) >> $(2)
 
-all: lint lint-plugins lint-parsers lint-players popcorn plugins parsers players complete min
+all: setup lint lint-plugins lint-parsers lint-players popcorn plugins parsers players complete min
 	@@echo "Popcorn build complete."
 
 ${DIST_DIR}:
@@ -79,7 +79,7 @@ ${POPCORN_MIN}: ${POPCORN_DIST}
 	@@$(call add_license, ${POPCORN_MIN}.tmp, ${POPCORN_MIN})
 	@@rm ${POPCORN_MIN}.tmp
 
-${POPCORN_COMPLETE_MIN}: ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${DIST_DIR}
+${POPCORN_COMPLETE_MIN}: update ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${DIST_DIR}
 	@@echo "Building" ${POPCORN_COMPLETE_MIN}
 	@@$(call compile, ${POPCORN_COMPLETE_LIST}, ${POPCORN_COMPLETE_MIN}.tmp)
 	@@$(call add_license, ${POPCORN_COMPLETE_MIN}.tmp, ${POPCORN_COMPLETE_MIN})
@@ -115,7 +115,7 @@ ${PLAYERS_DIST}: ${PLAYERS_SRC} ${DIST_DIR}
 	@@echo "Building ${PLAYERS_DIST}"
 	@@cat ${PLAYERS_SRC} > ${PLAYERS_DIST}
 
-complete: ${POPCORN_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} ${DIST_DIR}
+complete: update ${POPCORN_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} ${DIST_DIR}
 	@@echo "Building popcorn + plugins + parsers + players..."
 	@@cat ${POPCORN_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} > ${POPCORN_COMPLETE_DIST}.tmp
 	@@$(call add_license, ${POPCORN_COMPLETE_DIST}.tmp, ${POPCORN_COMPLETE_DIST})
@@ -137,6 +137,43 @@ lint-players:
 	@@echo "Checking all players against JSLint..."
 	@@${RHINO} build/jslint-check.js ${PLAYERS_SRC}
 
+# Create a mirror copy of the tree in dist/ using popcorn-complete.js
+# in place of popcorn.js.
+TESTING_MIRROR := ${DIST_DIR}/testing-mirror
+
+# Prefer plugin code in popcorn-complete.js but don't overrwrite *unit.js files
+overwrite_js = @@for js in $$(find ${1} \( -name "*.js" -a \! -name "*.unit.js" \)) ; \
+                 do echo '/* Stub, see popcorn.js instead */' > $$js ; \
+                 done
+
+testing: complete
+	@@echo "Building testing-mirror in ${TESTING_MIRROR}"
+	@@mkdir -p ${TESTING_MIRROR}
+	@@find ${PREFIX} \( -name '.git' -o -name 'dist' \) -prune -o -print | cpio -pd --quiet ${TESTING_MIRROR}
+# Remove unneeded files for testing, so it's clear this isn't the tree
+	@@rm -fr ${TESTING_MIRROR}/AUTHORS ${TESTING_MIRROR}/LICENSE ${TESTING_MIRROR}/LICENSE_HEADER \
+           ${TESTING_MIRROR}/Makefile ${TESTING_MIRROR}/readme.md
+	@@touch "${TESTING_MIRROR}/THIS IS A TESTING MIRROR -- READ-ONLY"
+	$(call overwrite_js, ${TESTING_MIRROR}/plugins)
+	$(call overwrite_js, ${TESTING_MIRROR}/players)
+	$(call overwrite_js, ${TESTING_MIRROR}/parsers)
+	@@cp ${POPCORN_COMPLETE_DIST} ${TESTING_MIRROR}/popcorn.js
+
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
 	@@rm -rf ${DIST_DIR}
+
+# Setup any git submodules we need
+SEQUENCE_SRC = ${PLAYERS_DIR}/sequence/popcorn.sequence.js
+
+setup: ${SEQUENCE_SRC} update
+
+update:
+	@@echo "Updating submodules..."
+	@@git submodule update
+	@@cd  players/sequence; git pull origin master
+
+${SEQUENCE_SRC}:
+	@@echo "Setting-up submodules..."
+	@@git submodule init
+

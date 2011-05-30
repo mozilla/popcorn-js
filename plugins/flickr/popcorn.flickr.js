@@ -139,6 +139,9 @@
        */
       end: function( event, options ){      
           containerDiv.style.display = "none";       
+      },
+      _teardown: function( options ) {
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( containerDiv );
       }
     };
   },

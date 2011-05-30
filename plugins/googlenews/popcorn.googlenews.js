@@ -66,17 +66,19 @@
         }
 
         options.container = document.createElement( 'div' );
+        var container = document.createElement( 'div' );
         if ( document.getElementById( options.target ) ) {
           document.getElementById( options.target ).appendChild( options.container );
+          options.container.appendChild( container );
         }
 
         var readyCheck = setInterval(function() {
           if ( !scriptLoaded ) {
             return;
           }
-          clearInterval(readyCheck);
+          clearInterval( readyCheck );
 
-          var newsShow = new google.elements.NewsShow( options.container, {
+          options.newsShow = new google.elements.NewsShow( container, {
             format : "300x250",
             queryList : [
               { q: options.topic || "Top Stories" }
@@ -105,8 +107,13 @@
        */
       end: function( event, options ){
         options.container.setAttribute( 'style', 'display:none' );
+      },
+      _teardown: function( options ) {
+        // google news does not like this, throws an error "a is null"
+        // doesn't hurt popcorn, and only happens once
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options.container );
+        options.newsShow = null;
       }
-
   });
 
 })( Popcorn );

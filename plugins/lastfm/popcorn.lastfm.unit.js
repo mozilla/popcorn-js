@@ -6,8 +6,9 @@ test("Popcorn LastFM Plugin", function () {
     plugin. Please do not use it for other purposes.
   */
   var popped = Popcorn("#video"),
-      expects = 8, 
+      expects = 9, 
       count = 0,
+      setupId,
       lastfmdiv = document.getElementById('lastfmdiv');
   
   expect( expects );
@@ -48,6 +49,8 @@ test("Popcorn LastFM Plugin", function () {
     apikey: '30ac38340e8be75f9268727cb4526b3d'
   });
 
+  setupId = popped.getLastTrackEventId();
+
   popped.exec( 2, function() {
     equals ( lastfmdiv.childElementCount, 3, "lastfmdiv now has three inner elements" );
     plus();
@@ -66,6 +69,10 @@ test("Popcorn LastFM Plugin", function () {
 
   popped.exec( 5, function() {
     equals (lastfmdiv.children[2].innerHTML , "Unknown Artist", "Artist information could not be found" );
+    plus();
+
+    popped.pause().removeTrackEvent( setupId );
+    ok( !lastfmdiv.children[2], "removed artist was properly destroyed" );
     plus();
   });
   
