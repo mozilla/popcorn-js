@@ -851,7 +851,8 @@
       }
 
       if ( !( "end" in options ) ) {
-        options.end = this.duration();
+        var duration = this.duration();
+        options.end = duration ? duration : Number.MAX_VALUE;
       }
 
       //  If a _setup was declared, then call it before

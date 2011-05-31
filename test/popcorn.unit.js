@@ -1498,6 +1498,39 @@ test("Protected Names", function () {
   });
 });
 
+test("Defaulting Empty End Values", function() {
+  
+  expect (2);
+  
+  Popcorn.plugin("testdefault", {
+    _setup: function( options ) {
+      equals( options.end, Number.MAX_VALUE, "The end value defaulted to maximum number value");
+    },
+    start: function(event, options) {
+
+    },
+    end: function(event, options) {
+
+    }
+  });
+  
+  var popped = Popcorn( Popcorn.baseplayer() )
+  .play() 
+  .testdefault({
+    start: 0, // seconds
+    apikey: "CHAyhB5IisvLqqzGYNYbmA",
+    mediaid: "13607892"
+  });
+
+  var popped2 = Popcorn(document.createElement("video"))
+  .play()
+  .testdefault({
+    start: 0, // seconds
+    apikey: "CHAyhB5IisvLqqzGYNYbmA",
+    mediaid: "13607892"
+  });
+});
+
 module("Popcorn TrackEvents");
 test("Functions", function () {
 
