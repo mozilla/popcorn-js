@@ -1514,7 +1514,7 @@ test("Defaulting Empty End Values", function() {
     }
   });
   
-  var popped = Popcorn( Popcorn.baseplayer() )
+  var popped = Popcorn( document.createElement( "audio" ) )
   .play() 
   .testdefault({
     start: 0, // seconds
@@ -1522,7 +1522,7 @@ test("Defaulting Empty End Values", function() {
     mediaid: "13607892"
   });
 
-  var popped2 = Popcorn(document.createElement("video"))
+  var popped2 = Popcorn( document.createElement( "video" ) )
   .play()
   .testdefault({
     start: 0, // seconds
