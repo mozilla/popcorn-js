@@ -776,6 +776,18 @@
     return trackevents;
   };
 
+  Popcorn.getTrackEvent = function( obj, trackId ) {
+
+    var byStart = obj.data.trackEvents.byStart,
+        len = byStart.length, i;
+
+    for (i = 0; i < len; i++) {
+      o = byStart[i];
+      if ( o._id === trackId ) {
+        return o;
+      }
+    }
+  };
 
   Popcorn.getLastTrackEventId = function( obj ) {
     return obj.data.history[ obj.data.history.length - 1 ];
@@ -786,6 +798,10 @@
 
     getTrackEvents: function() {
       return Popcorn.getTrackEvents.call( null, this );
+    },
+    
+    getTrackEvent: function( id ) {
+      return Popcorn.getTrackEvent.call( null, this, id );
     },
 
     getLastTrackEventId: function() {

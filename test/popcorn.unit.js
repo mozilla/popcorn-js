@@ -1609,6 +1609,69 @@ test("Functions", function () {
 
 });
 
+test("getTrackEvent", function () {
+
+  //  TODO: break this into sep. units per function
+  expect(5);
+
+  var popped = Popcorn("#video"),
+    trackIds = [],
+    historyRef, trackEvents;
+
+
+  Popcorn.plugin("ff", function () {
+    return {
+      start: function () {},
+      end: function () {}
+    };
+  });
+
+  popped.ff({
+    start: 3,
+    end: 4
+  });
+
+  trackIds.push( popped.getLastTrackEventId() );
+
+  Popcorn.plugin("rw", function () {
+    return {
+      start: function () {},
+      end: function () {}
+    };
+  });
+
+  popped.rw({
+    start: 1,
+    end: 2
+  });
+
+
+  trackIds.push( popped.getLastTrackEventId() );
+  
+  popped.rw({
+    start: 5,
+    end: 7
+  });
+
+  trackIds.push( popped.getLastTrackEventId() );
+
+  var obj = popped.getTrackEvent( trackIds[0] );
+
+  equals( typeof obj  === 'object', true, 'getTrackEvent() returned an object' );
+
+  trackIds.forEach (function( id ) {
+    trackEvent = popped.getTrackEvent( id );
+    equals( id, trackEvent._id, "returned the correct TrackEvent");
+  });
+  
+  var oldId = trackIds[trackIds.length - 1];
+  
+  popped.removeTrackEvent( oldId );
+
+  equals( popped.getTrackEvent( oldId ) !== true, true,  "returned falsy value when id is not defined" );
+
+});
+
 test("Index Integrity", function () {
 
 
