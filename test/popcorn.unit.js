@@ -1615,9 +1615,7 @@ test("getTrackEvent", function () {
   expect(5);
 
   var popped = Popcorn("#video"),
-    trackIds = [],
-    historyRef, trackEvents;
-
+    trackIds = [], obj, oldId;
 
   Popcorn.plugin("ff", function () {
     return {
@@ -1655,16 +1653,16 @@ test("getTrackEvent", function () {
 
   trackIds.push( popped.getLastTrackEventId() );
 
-  var obj = popped.getTrackEvent( trackIds[0] );
+  obj = popped.getTrackEvent( trackIds[0] );
 
-  equals( typeof obj  === 'object', true, 'getTrackEvent() returned an object' );
+  equals( typeof obj  === "object", true, "getTrackEvent() returned an object" );
 
   trackIds.forEach (function( id ) {
-    trackEvent = popped.getTrackEvent( id );
+    var trackEvent = popped.getTrackEvent( id );
     equals( id, trackEvent._id, "returned the correct TrackEvent");
   });
   
-  var oldId = trackIds[trackIds.length - 1];
+  oldId = trackIds[trackIds.length - 1];
   
   popped.removeTrackEvent( oldId );
 
