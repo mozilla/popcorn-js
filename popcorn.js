@@ -779,7 +779,7 @@
   Popcorn.getTrackEvent = function( obj, trackId ) {
 
     var byStart = obj.data.trackEvents.byStart,
-        len = byStart.length;
+        len = byStart.length, o;
 
     while ( len-- ) {
       o = byStart[len];
