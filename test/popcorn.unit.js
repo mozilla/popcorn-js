@@ -1668,7 +1668,7 @@ test("getTrackEvent", function () {
   
   popped.removeTrackEvent( oldId );
 
-  equals( popped.getTrackEvent( oldId ) !== true, true,  "returned falsy value when id is not defined" );
+  equals( popped.getTrackEvent( oldId ) === undefined, true,  "returned undefined when id is not found" );
 
 });
 
