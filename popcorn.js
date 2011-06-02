@@ -758,7 +758,7 @@
 
   // Return a single track event bound to this instance object
   Popcorn.getTrackEvent = function( obj, trackId ) {
-    return obj.data.trackRefs[ trackId ] || null;
+    return obj.data.trackRefs[ trackId ];
   };
 
   // Internal Only - Returns an instance object's track reference by track id
