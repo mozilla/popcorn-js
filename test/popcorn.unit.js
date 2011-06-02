@@ -1,4 +1,4 @@
-module("Popcorn");
+module("Popcorn API");
 test("API", function () {
 
   var expects = 4,
@@ -49,24 +49,28 @@ test("API", function () {
 
 });
 
-test("Utility", function () {
+test("Popcorn.* Static Methods", function () {
 
-  expect(10);
-  //  TODO: comprehensive tests for these utilities
+  var statics = [ "forEach", "extend", "error", "guid", "sizeOf", "nop", 
+                  "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent", "position", "disable", "enable" ], 
+    substatics = [ "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent"];
 
-  equals( typeof Popcorn.forEach, "function" , "Popcorn.forEach is a provided static function");
-  equals( typeof Popcorn.extend, "function" , "Popcorn.extend is a provided static function");
-  equals( typeof Popcorn.error, "function" , "Popcorn.error is a provided static function");
-  equals( typeof Popcorn.guid, "function" , "Popcorn.guid is a provided static function");
-  equals( typeof Popcorn.sizeOf, "function" , "Popcorn.sizeOf is a provided static function");
-  equals( typeof Popcorn.nop, "function" , "Popcorn.nop is a provided static function");
-  equals( typeof Popcorn.addTrackEvent, "function" , "Popcorn.addTrackEvent is a provided static function");
-  equals( typeof Popcorn.position, "function" , "Popcorn.position is a provided static function");
-  equals( typeof Popcorn.disable, "function" , "Popcorn.disable is a provided static function");
-  equals( typeof Popcorn.enable, "function" , "Popcorn.enable is a provided static function");
+  expect(statics.length + substatics.length);
+  
+  statics.forEach(function(val, idx) {
+
+    equals( typeof Popcorn[val], "function" , "Popcorn."+val+"() is a provided static function");  
+
+  });
+
+  substatics.forEach(function(val, idx) {
+
+    equals( typeof Popcorn[val].ref, "function" , "Popcorn."+val+".ref() is a private use static function");  
+
+  });
 });
 
-test("Standard Time Strings" , function () {
+test("Popcorn.util.toSeconds" , function () {
   var framerate = 24,
       storedStartTime,
       storedEndTime,
@@ -401,6 +405,33 @@ test( "Object", function () {
     plus();
   });
 });
+
+module("Popcorn Static");
+
+test("Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
+
+  expect(2);
+  
+  var popped = Popcorn("#video");
+
+	// Calling exec() will create tracks and added them to the
+	// trackreference internally
+  popped.exec( 1, function() { /* ... */ });
+  popped.exec( 3, function() { /* ... */ });
+  popped.exec( 5, function() { /* ... */ });
+
+  equal( Popcorn.sizeOf( popped.data.trackRefs ), 3, "There are 3 trackRefs in popped.data.trackRefs" );
+
+  Popcorn.forEach( popped.data.trackRefs, function( ref, key ) {
+    popped.removeTrackEvent( key );
+  });
+
+  equal( Popcorn.sizeOf( popped.data.trackRefs ), 0, "There are 0 trackRefs in popped.data.trackRefs" );
+
+  Popcorn.removeInstance( popped );
+});
+
+
 
 module("Popcorn Methods");
 

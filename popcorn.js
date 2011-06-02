@@ -161,8 +161,8 @@
         // Store track event history data
         history: [],
 
-				// Store track event object references by trackId
-				trackRefs: {},
+        // Store track event object references by trackId
+        trackRefs: {},
 
         // Playback track event queues
         trackEvents: {
@@ -609,12 +609,13 @@
   Popcorn.forEach( [ "trigger", "listen", "unlisten" ], function( key ) {
     Popcorn.p[ key ] = Popcorn.events.fn[ key ];
   });
+
   //  Protected API methods
   Popcorn.protect = {
     natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten".toLowerCase().split( /\s+/ )
   };
 
-  //  Internal Only
+  // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
 
     if ( track._natives ) {
@@ -651,6 +652,18 @@
         break;
       }
     }
+
+    // Store references to user added trackevents in ref table
+    if ( track._id ) {
+      Popcorn.addTrackEvent.ref( obj, track );
+    }
+  };
+
+  // Internal Only - Adds track event references to the instance object's trackRefs hash table
+  Popcorn.addTrackEvent.ref = function( obj, track ) {
+    obj.data.trackRefs[ track._id ] = track;
+
+    return obj;
   };
 
   Popcorn.removeTrackEvent  = function( obj, trackId ) {
@@ -660,7 +673,6 @@
         byStart = [],
         byEnd = [],
         history = [];
-
 
     Popcorn.forEach( obj.data.trackEvents.byStart, function( o, i, context ) {
       // Preserve the original start/end trackEvents
@@ -687,7 +699,6 @@
 
     });
 
-
     //  Update
     if ( indexWasAt <= obj.data.trackEvents.startIndex ) {
       obj.data.trackEvents.startIndex--;
@@ -697,10 +708,8 @@
       obj.data.trackEvents.endIndex--;
     }
 
-
     obj.data.trackEvents.byStart = byStart;
     obj.data.trackEvents.byEnd  = byEnd;
-
 
     for ( var i = 0; i < historyLen; i++ ) {
       if ( obj.data.history[ i ] !== trackId ) {
@@ -708,35 +717,53 @@
       }
     }
 
+    // Update ordered history array
     obj.data.history = history;
 
+    // Update track event references
+    Popcorn.removeTrackEvent.ref( obj, trackId );
   };
 
+  // Internal Only - Removes track event references from instance object's trackRefs hash table
+  Popcorn.removeTrackEvent.ref = function( obj, trackId ) {
+    delete obj.data.trackRefs[ trackId ];
+
+    return obj;
+  };
+
+  // Return an array of track events bound to this instance object
   Popcorn.getTrackEvents = function( obj ) {
 
-    var trackevents = [];
+    var trackevents = [],
+      refs = obj.data.trackEvents.byStart,
+      length = refs.length,
+      idx = 0, 
+      ref;
 
-    Popcorn.forEach( obj.data.trackEvents.byStart, function( o, i, context ) {
-      if ( o._id ) {
-        trackevents.push( o );
+    for ( ; idx < length; idx++ ) {
+      ref = refs[ idx ];
+      // Return only user attributed track event references
+      if ( ref._id ) {
+        trackevents.push( ref );
       }
-    });
+    }
 
     return trackevents;
   };
 
+  // Internal Only - Returns an instance object's trackRefs hash table
+  Popcorn.getTrackEvents.ref = function( obj ) {
+    return obj.data.trackRefs;
+  };
+
+  // Return a single track event bound to this instance object
   Popcorn.getTrackEvent = function( obj, trackId ) {
+    return obj.data.trackRefs[ trackId ] || null;
+  };
 
-    var byStart = obj.data.trackEvents.byStart,
-        len = byStart.length, o;
-
-    while ( len-- ) {
-      o = byStart[len];
-      if ( o._id === trackId ) {
-        return o;
-      }
-    }
-    return undefined;
+  // Internal Only - Returns an instance object's track reference by track id
+  Popcorn.getTrackEvent.ref = function( obj, trackId ) {
+    return obj.data.trackRefs[ trackId ];
   };
 
   Popcorn.getLastTrackEventId = function( obj ) {
@@ -749,7 +776,7 @@
     getTrackEvents: function() {
       return Popcorn.getTrackEvents.call( null, this );
     },
-    
+
     getTrackEvent: function( id ) {
       return Popcorn.getTrackEvent.call( null, this, id );
     },
@@ -767,7 +794,6 @@
       Popcorn.removePlugin.call( null, this, name );
       return this;
     }
-
   });
 
   //  Plugin manifests
