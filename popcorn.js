@@ -651,59 +651,6 @@
 
   };
 
-  //  removePlugin( type ) removes all tracks of that from all instances of popcorn
-  //  removePlugin( obj, type ) removes all tracks of type from obj, where obj is a single instance of popcorn
-  Popcorn.removePlugin = function( obj, name ) {
-
-    //  Check if we are removing plugin from an instance or from all of Popcorn
-    if ( !name ) {
-
-      //  Fix the order
-      name = obj;
-      obj = Popcorn.p;
-
-      var registryLen = Popcorn.registry.length,
-          registryIdx;
-
-      // remove plugin reference from registry
-      for ( registryIdx = 0; registryIdx < registryLen; registryIdx++ ) {
-        if ( Popcorn.registry[ registryIdx ].name === name ) {
-          Popcorn.registry.splice( registryIdx, 1 );
-          delete Popcorn.registryByName[ name ];
-
-          // delete the plugin
-          delete obj[ name ];
-
-          // plugin found and removed, stop checking, we are done
-          return;
-        }
-      }
-
-    }
-
-    var byStart = obj.data.trackEvents.byStart,
-        byEnd = obj.data.trackEvents.byEnd,
-        idx, sl;
-
-    // remove all trackEvents
-    for ( idx = 0, sl = byStart.length; idx < sl; idx++ ) {
-
-      if ( ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) &&
-                ( byEnd[ idx ] && byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) ) {
-
-        byStart.splice( idx, 1 );
-        byEnd.splice( idx, 1 );
-
-        // update for loop if something removed, but keep checking
-        idx--; sl--;
-        if ( obj.data.trackEvents.startIndex <= idx ) {
-          obj.data.trackEvents.startIndex--;
-          obj.data.trackEvents.endIndex--;
-        }
-      }
-    }
-  };
-
   Popcorn.removeTrackEvent  = function( obj, trackId ) {
 
     var historyLen = obj.data.history.length,
@@ -939,6 +886,60 @@
 
     return plugin;
   };
+
+  //  removePlugin( type ) removes all tracks of that from all instances of popcorn
+  //  removePlugin( obj, type ) removes all tracks of type from obj, where obj is a single instance of popcorn
+  Popcorn.removePlugin = function( obj, name ) {
+
+    //  Check if we are removing plugin from an instance or from all of Popcorn
+    if ( !name ) {
+
+      //  Fix the order
+      name = obj;
+      obj = Popcorn.p;
+
+      var registryLen = Popcorn.registry.length,
+          registryIdx;
+
+      // remove plugin reference from registry
+      for ( registryIdx = 0; registryIdx < registryLen; registryIdx++ ) {
+        if ( Popcorn.registry[ registryIdx ].name === name ) {
+          Popcorn.registry.splice( registryIdx, 1 );
+          delete Popcorn.registryByName[ name ];
+
+          // delete the plugin
+          delete obj[ name ];
+
+          // plugin found and removed, stop checking, we are done
+          return;
+        }
+      }
+
+    }
+
+    var byStart = obj.data.trackEvents.byStart,
+        byEnd = obj.data.trackEvents.byEnd,
+        idx, sl;
+
+    // remove all trackEvents
+    for ( idx = 0, sl = byStart.length; idx < sl; idx++ ) {
+
+      if ( ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) &&
+                ( byEnd[ idx ] && byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) ) {
+
+        byStart.splice( idx, 1 );
+        byEnd.splice( idx, 1 );
+
+        // update for loop if something removed, but keep checking
+        idx--; sl--;
+        if ( obj.data.trackEvents.startIndex <= idx ) {
+          obj.data.trackEvents.startIndex--;
+          obj.data.trackEvents.endIndex--;
+        }
+      }
+    }
+  };
+
 
   //  Popcorn Plugin Inheritance Helper Methods
   //  Internal use only
