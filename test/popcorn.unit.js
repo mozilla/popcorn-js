@@ -428,7 +428,7 @@ test("Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
 
   equal( Popcorn.sizeOf( popped.data.trackRefs ), 0, "There are 0 trackRefs in popped.data.trackRefs" );
 
-  Popcorn.removeInstance( popped );
+  //Popcorn.removeInstance( popped );
 });
 
 
@@ -1697,7 +1697,7 @@ test("getTrackEvent", function () {
   
   popped.removeTrackEvent( oldId );
 
-  equals( popped.getTrackEvent( oldId ) === undefined, true,  "returned undefined when id is not found" );
+  equals( popped.getTrackEvent( oldId ), undefined,  "returned undefined when id is not found" );
 
 });
 
