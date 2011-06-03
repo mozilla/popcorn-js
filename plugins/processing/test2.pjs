@@ -8,6 +8,7 @@ void setup() {
   
   // Frame rate
   frameRate(8);
+  noLoop();
 }
 
 void draw() {
