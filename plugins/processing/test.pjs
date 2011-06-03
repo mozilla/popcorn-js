@@ -1,0 +1,38 @@
+var w    = 100;
+var h    = 100;
+float r = 0.0;
+var colour = "white";
+
+void setup() {
+  size(width, height);
+  
+  // Frame rate
+  frameRate(8);
+}
+
+void draw() {
+  background(#000000);
+  if(colour=="white"){
+	fill(#ffffff);
+  }else{
+	fill(#151B8D);
+  }
+  translate(width/2, height/2);
+  for(int i = 0; i<r; i++){
+	rotate(PI/4);
+  }
+  rect(-26, -26, 52, 52);
+
+  r++;
+  
+  if(r == 5){
+	r=0;
+  }
+}
+void switch_status(){
+	if(colour=="white"){
+		colour = "blue";
+	}else{
+		colour = "white";
+	}
+}

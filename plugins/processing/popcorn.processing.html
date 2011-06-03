@@ -1,0 +1,91 @@
+<html>
+<head>
+  
+  <title>Popcorn processing Plug-in Demo</title>
+  <!--<script src="./processing.js"></script> -->
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.processing.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var p = Popcorn('#video')
+      .play()
+      .processing({ // Div with sketch defined as a string
+        start: 1, // seconds
+        end: 5, // seconds
+        control: 'pause',
+        target: 'processing-div',
+        sketch: 'var w    = 100; var h    = 100; float r = 0.0; void setup() { size(width, height); frameRate(8);}\nvoid draw(){ background(#000000); translate(width/2, height/2); for(int i = 0; i<r; i++){rotate(PI/4);}rect(-26, -26, 52, 52);r++; if(r == 5){r=0;}}'
+        
+      } )
+      .processing({ // Div with sketch defined here
+        start: 5, // seconds
+        end: 10, // seconds
+        control: 'pause',
+        target: 'processing-div2',
+        sketch: 'test.pjs'
+      } )
+      .processing({  // Canvas with sketch hard-coded defined 
+        start: 10, // seconds
+        end: 15, // seconds
+        control: 'pause',
+        target: 'processing-canvas2',  // we don't need a sketch because we are pausing a canvas that is hard coded
+      } )
+      .processing({ // Div with sketch defined here
+        start: 20, // seconds
+        end: 25, // seconds
+        control: 'pause',
+        target: 'processing-div2',  // Thest mulitple instructions for one sketch - Especially relevant here since the first time we are building a canvas
+      } )
+      .processing({ // Div With a sketch defined as a file calling a function within the sketch 
+        start: 20, // seconds
+        control: 'function',
+        func: 'switch_status',
+        target: 'processing-div3',
+        sketch: 'test.pjs'
+		
+      } )
+    }, false);
+
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn processing Plug-in Demo</h1>
+  
+  <div>
+    <video id='video'
+      controls preload='none'
+      width= '250px'
+      poster="../../test/poster.png">
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'>
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'>
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+
+    </video>
+  </div>
+  <div id="processing-div" width="50%" height="50%">
+  <p> This is within a DIV and was created by sending a string in "sketch:</p>
+  <p> > pause at 1 and resume at 5 seconds. </p>
+  </div>
+  <div id="processing-div2" width="50%" height="50%">
+  <p> This is within a DIV and was created by sending a file in the sketch function</p>
+  <p> > pause at 5 and resume at 10 seconds. Then Pause again at 20 to 25 seconds to test multiple instructions</p>
+  </div>
+  <p> This is within a Canvas and was created by it having it's own sketch file</p>
+  <p> > pause at 10 and resume at 15 seconds. </p>
+   <canvas id="processing-canvas2" datasrc="test2.pjs" width="100" height="100"></canvas></body>
+ 
+   <hr>
+   <strong> Call Function Test </strong>
+   <div id="processing-div3" width="50%" height="50%">
+  <p> This is within a DIV and was created by sending a file in the sketch function</p>
+  <p> > change square to blue at 20 seconds. </p>
+  </div>
+</html>
