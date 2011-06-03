@@ -41,11 +41,20 @@ PLAYERS_MIN = ${DIST_DIR}/popcorn.players.min.js
 # Grab all popcorn.<plugin-name>.js files from plugins dir
 PLUGINS_SRC := $(filter-out %unit.js, $(shell find ${PLUGINS_DIR} -name 'popcorn.*.js' -print))
 
-# Grab all popcorn.<plugin-name>.js files from plugins dir
+# Grab all popcorn.<plugin-name>.js files from parsers dir
 PARSERS_SRC := $(filter-out %unit.js, $(shell find ${PARSERS_DIR} -name 'popcorn.*.js' -print))
 
 # Grab all popcorn.<player-name>.js files from players dir
 PLAYERS_SRC := $(filter-out %unit.js, $(shell find ${PLAYERS_DIR} -name 'popcorn.*.js' -print))
+
+# Grab all popcorn.<player-name>.unit.js files from plugins dir
+PLUGINS_UNIT := $(shell find ${PLUGINS_DIR} -name 'popcorn.*.unit.js' -print)
+
+# Grab all popcorn.<player-name>.unit.js files from parsers dir
+PARSERS_UNIT := $(shell find ${PARSERS_DIR} -name 'popcorn.*.unit.js' -print)
+
+# Grab all popcorn.<player-name>.unit.js files from players dir
+PLAYERS_UNIT := $(shell find ${PLAYERS_DIR} -name 'popcorn.*.unit.js' -print)
 
 # popcorn + plugins
 POPCORN_COMPLETE_LIST := --js ${POPCORN_SRC} \
@@ -136,6 +145,21 @@ lint-parsers:
 lint-players:
 	@@echo "Checking all players against JSLint..."
 	@@${RHINO} build/jslint-check.js ${PLAYERS_SRC}
+
+lint-plugin-tests:
+	@@echo "Checking plugin unit tests against JSLint..."
+	@@${RHINO} build/jslint-check.js ${PLUGINS_UNIT}
+	
+lint-parser-tests:
+	@@echo "Checking parser unit tests against JSLint..."
+	@@${RHINO} build/jslint-check.js ${PARSERS_UNIT}
+	
+lint-player-tests:
+	@@echo "Checking player unit tests against JSLint..."
+	@@${RHINO} build/jslint-check.js ${PLAYERS_UNIT}
+	
+lint-unit-tests: lint-plugin-tests lint-parser-tests lint-player-tests
+	@@echo "completed"
 
 # Create a mirror copy of the tree in dist/ using popcorn-complete.js
 # in place of popcorn.js.

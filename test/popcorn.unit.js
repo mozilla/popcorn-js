@@ -1,4 +1,4 @@
-module("Popcorn");
+module("Popcorn API");
 test("API", function () {
 
   var expects = 4,
@@ -49,24 +49,28 @@ test("API", function () {
 
 });
 
-test("Utility", function () {
+test("Popcorn.* Static Methods", function () {
 
-  expect(10);
-  //  TODO: comprehensive tests for these utilities
+  var statics = [ "forEach", "extend", "error", "guid", "sizeOf", "nop", 
+                  "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent", "position", "disable", "enable" ], 
+    substatics = [ "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent"];
 
-  equals( typeof Popcorn.forEach, "function" , "Popcorn.forEach is a provided static function");
-  equals( typeof Popcorn.extend, "function" , "Popcorn.extend is a provided static function");
-  equals( typeof Popcorn.error, "function" , "Popcorn.error is a provided static function");
-  equals( typeof Popcorn.guid, "function" , "Popcorn.guid is a provided static function");
-  equals( typeof Popcorn.sizeOf, "function" , "Popcorn.sizeOf is a provided static function");
-  equals( typeof Popcorn.nop, "function" , "Popcorn.nop is a provided static function");
-  equals( typeof Popcorn.addTrackEvent, "function" , "Popcorn.addTrackEvent is a provided static function");
-  equals( typeof Popcorn.position, "function" , "Popcorn.position is a provided static function");
-  equals( typeof Popcorn.disable, "function" , "Popcorn.disable is a provided static function");
-  equals( typeof Popcorn.enable, "function" , "Popcorn.enable is a provided static function");
+  expect(statics.length + substatics.length);
+  
+  statics.forEach(function(val, idx) {
+
+    equals( typeof Popcorn[val], "function" , "Popcorn."+val+"() is a provided static function");  
+
+  });
+
+  substatics.forEach(function(val, idx) {
+
+    equals( typeof Popcorn[val].ref, "function" , "Popcorn."+val+".ref() is a private use static function");  
+
+  });
 });
 
-test("Standard Time Strings" , function () {
+test("Popcorn.util.toSeconds" , function () {
   var framerate = 24,
       storedStartTime,
       storedEndTime,
@@ -401,6 +405,33 @@ test( "Object", function () {
     plus();
   });
 });
+
+module("Popcorn Static");
+
+test("Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
+
+  expect(2);
+  
+  var popped = Popcorn("#video");
+
+	// Calling exec() will create tracks and added them to the
+	// trackreference internally
+  popped.exec( 1, function() { /* ... */ });
+  popped.exec( 3, function() { /* ... */ });
+  popped.exec( 5, function() { /* ... */ });
+
+  equal( Popcorn.sizeOf( popped.data.trackRefs ), 3, "There are 3 trackRefs in popped.data.trackRefs" );
+
+  Popcorn.forEach( popped.data.trackRefs, function( ref, key ) {
+    popped.removeTrackEvent( key );
+  });
+
+  equal( Popcorn.sizeOf( popped.data.trackRefs ), 0, "There are 0 trackRefs in popped.data.trackRefs" );
+
+  //Popcorn.removeInstance( popped );
+});
+
+
 
 module("Popcorn Methods");
 
@@ -1522,6 +1553,39 @@ test("Protected Names", function () {
   });
 });
 
+test("Defaulting Empty End Values", function() {
+  
+  expect (2);
+  
+  Popcorn.plugin("testdefault", {
+    _setup: function( options ) {
+      equals( options.end, Number.MAX_VALUE, "The end value defaulted to maximum number value");
+    },
+    start: function(event, options) {
+
+    },
+    end: function(event, options) {
+
+    }
+  });
+  
+  var popped = Popcorn( document.createElement( "audio" ) )
+  .play() 
+  .testdefault({
+    start: 0, // seconds
+    apikey: "CHAyhB5IisvLqqzGYNYbmA",
+    mediaid: "13607892"
+  });
+
+  var popped2 = Popcorn( document.createElement( "video" ) )
+  .play()
+  .testdefault({
+    start: 0, // seconds
+    apikey: "CHAyhB5IisvLqqzGYNYbmA",
+    mediaid: "13607892"
+  });
+});
+
 module("Popcorn TrackEvents");
 test("Functions", function () {
 
@@ -1630,6 +1694,67 @@ test("Functions", function () {
 
 
 
+
+});
+
+test("getTrackEvent", function () {
+
+  //  TODO: break this into sep. units per function
+  expect(5);
+
+  var popped = Popcorn("#video"),
+    trackIds = [], obj, oldId;
+
+  Popcorn.plugin("ff", function () {
+    return {
+      start: function () {},
+      end: function () {}
+    };
+  });
+
+  popped.ff({
+    start: 3,
+    end: 4
+  });
+
+  trackIds.push( popped.getLastTrackEventId() );
+
+  Popcorn.plugin("rw", function () {
+    return {
+      start: function () {},
+      end: function () {}
+    };
+  });
+
+  popped.rw({
+    start: 1,
+    end: 2
+  });
+
+
+  trackIds.push( popped.getLastTrackEventId() );
+  
+  popped.rw({
+    start: 5,
+    end: 7
+  });
+
+  trackIds.push( popped.getLastTrackEventId() );
+
+  obj = popped.getTrackEvent( trackIds[0] );
+
+  equals( typeof obj  === "object", true, "getTrackEvent() returned an object" );
+
+  trackIds.forEach (function( id ) {
+    var trackEvent = popped.getTrackEvent( id );
+    equals( id, trackEvent._id, "returned the correct TrackEvent");
+  });
+  
+  oldId = trackIds[trackIds.length - 1];
+  
+  popped.removeTrackEvent( oldId );
+
+  equals( popped.getTrackEvent( oldId ), undefined,  "returned undefined when id is not found" );
 
 });
 
