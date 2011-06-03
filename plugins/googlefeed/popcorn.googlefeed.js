@@ -8,7 +8,15 @@
 
         if ( typeof google !== 'undefined' && google.load ) {
 
-          google.load( "feeds", "1", { callback: function () { scriptLoaded = true; } } );
+          google.load( "feeds", "1", {
+            callback: function () {
+            
+              Popcorn.getScript( "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js", function() {
+
+                scriptLoaded = true;
+              }); 
+            }
+          });
         } else {
 
           setTimeout( function() {
@@ -75,7 +83,6 @@
       scriptLoading = true;
     
       Popcorn.getScript( "http://www.google.com/jsapi", callBack );
-      Popcorn.getScript( "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js" );
 
       //Doing this because I cannot find something similar to getScript() for css files
       var head = document.getElementsByTagName("head")[0];
