@@ -86,9 +86,11 @@
 
   Popcorn.plugin( 'mustache' , function( options ) {
 
-    Popcorn.getScript('https://github.com/janl/mustache.js/raw/master/mustache.js');
+    var getData, data, getTemplate, template, loaded = false;
 
-    var getData, data, getTemplate, template;
+    Popcorn.getScript('https://github.com/janl/mustache.js/raw/master/mustache.js', function() {
+      loaded = true; 
+    });
 
     var shouldReload = !!options.dynamic,
         typeOfTemplate = typeof options.template,
@@ -122,19 +124,28 @@
 
     return {
       start: function( event, options ) {
-        // if dynamic, freshen json data on every call to start, just in case.
-        if ( getData ) {
-          data = getData( options );
-        }
 
-        if ( getTemplate ) {
-          template = getTemplate( options );
-        }
+        var interval = window.setInterval( function() {
 
-        var html = Mustache.to_html( template,
-                                     data
-                                   ).replace( /^\s*/mg, '' );
-        document.getElementById( options.target ).innerHTML = html;
+          if( loaded ) {
+
+            window.clearInterval( interval );
+
+            // if dynamic, freshen json data on every call to start, just in case.
+            if ( getData ) {
+              data = getData( options );
+            }
+
+            if ( getTemplate ) {
+              template = getTemplate( options );
+            }
+
+            var html = Mustache.to_html( template,
+                                         data
+                                       ).replace( /^\s*/mg, '' );
+            document.getElementById( options.target ).innerHTML = html;
+          }
+        }, 10 );
       },
 
       end: function( event, options ) {
