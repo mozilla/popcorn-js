@@ -105,7 +105,7 @@
     } else if ( typeOfTemplate === 'string' ) {
       template = options.template;
     } else {
-      throw 'Mustache Plugin Error: options.template must be a String or a Function.';
+      Popcorn.error( 'Mustache Plugin Error: options.template must be a String or a Function.' );
     }
 
     if ( typeOfData === 'function' ) {
@@ -119,17 +119,19 @@
     } else if ( typeOfData === 'object' ) {
       data = options.data;
     } else {
-      throw 'Mustache Plugin Error: options.data must be a String, Object, or Function.';
+      Popcorn.error( 'Mustache Plugin Error: options.data must be a String, Object, or Function.' );
     }
 
     return {
       start: function( event, options ) {
 
-        var interval = window.setInterval( function() {
-
-          if( loaded ) {
-
-            window.clearInterval( interval );
+        var interval = function() {
+          
+          if( !loaded ) {
+            setTimeout( function() {
+              interval();
+            }, 10 );
+          } else {
 
             // if dynamic, freshen json data on every call to start, just in case.
             if ( getData ) {
@@ -145,7 +147,10 @@
                                        ).replace( /^\s*/mg, '' );
             document.getElementById( options.target ).innerHTML = html;
           }
-        }, 10 );
+        }
+
+        interval();
+
       },
 
       end: function( event, options ) {
