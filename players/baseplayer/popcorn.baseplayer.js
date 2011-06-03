@@ -6,6 +6,7 @@
   Popcorn.baseplayer.init = function() {
     this.readyState = 0;
     this.currentTime = 0;
+    this.baselineTime = new Date();
     this.duration = 0;
     this.paused = 1;
     this.ended = 0;
@@ -45,16 +46,17 @@
     },
     
     timeupdate: function() {
-      // The player was paused since the last time update
-      if ( this.paused ) {
-        return;
-      }
 
       // So we can refer to the instance when setTimeout is run
       var self = this;
-      this.currentTime += 0.015;
       
-      this.dispatchEvent( "timeupdate" );
+      if( !this.paused ) {
+        this.currentTime += ( new Date() - this.baselineTime ) / 1000;
+        this.dispatchEvent( "timeupdate" );
+      }
+
+      this.baselineTime = new Date();
+      
       setTimeout( function() {
         self.timeupdate.call( self );
       }, 15 );
