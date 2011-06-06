@@ -5,43 +5,81 @@
  
 (function (Popcorn) {
 
-  var scriptLoadingFired = false,
-  canvas,
-  parentTarget,
-  processingInstance,
-  processingLoaded = false,
-
-  loadProcessing = function() {
-    if ( !scriptLoadingFired ) { 
-      if ( window.Processing ) {
-        processingLoaded = true;
-        return;
-      }
-      scriptLoadingFired = true;
-      Popcorn.getScript ( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.js" );
-    }
-  };
-
-  Popcorn.plugin( "processing" , function( options ) {
-      
-    var sketchInstance,
+  var processingLoaded = false,
   
-    toggle = function( on ) {
-      if ( canvas ) {
+    toggle = function( on, options ) {
+      var pcorn = options.popcornInstance,
+          instance = options.pjsInstance,
+          canvas = options.canvas;
+      if ( canvas && options.isReady ) {
         if ( on ) {
           canvas.style.display = "inline";
-          processingInstance.loop();
+          !pcorn.media.paused && instance.loop();
         } else {
           canvas.style.display = "none";
-          processingInstance.noLoop();
+          instance.noLoop();
         }
       } else {
         setTimeout ( function() {
-          toggle ( on );
+          toggle ( on, options );
         }, 10 ); 
       }
+    },
+    
+    load = function() {    
+      Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.js", function() {
+        processingLoaded = true;
+      });
     };
+  
+  load();
 
+  Popcorn.plugin( "processing" , function ( options ) {
+  
+    var init = function( context ) {
+      var popcorn = context,
+      initProcessing,
+      parentTarget = document.getElementById( options.target );
+      if ( parentTarget.tagName === "CANVAS" ) {
+        options.canvas = parentTarget;
+      } else if ( parentTarget.tagName === "DIV" ) {
+        options.canvas = document.createElement( "canvas" );
+        // +new Date() is used here to create unique id's for canvas' within the same div.
+        options.canvas.id = options.target + "Sketch" + +new Date();
+        options.canvas.setAttribute( "data-processing-sources", options.sketch );
+        parentTarget.appendChild( options.canvas );
+      }
+      options.canvas.style.display = "none";
+      Popcorn.xhr({
+        url: options.sketch,
+        dataType: "text",
+        success: function( responseCode ) {
+          codeReady = true;
+          processingCode = responseCode;
+          initProcessing();
+        }
+      });
+      
+      initProcessing = function() {
+        if ( codeReady && window.Processing ) {
+          options.pjsInstance = new Processing( options.canvas, processingCode );
+          popcorn.listen( "pause", function () {
+            if ( options.canvas.style.display === "inline" ) {
+              options.pjsInstance.noLoop();
+            }
+          } );
+          popcorn.listen( "play", function() {
+            if ( options.canvas.style.display === "inline" ) {
+              options.pjsInstance.loop();
+            }
+          });
+          options.isReady = true;
+        } else {
+          setTimeout ( initProcessing, 10 );
+        }
+      };
+    };
+  
     return {
     
       manifest: {
@@ -62,54 +100,27 @@
       },
       
       _setup: function( options ) {
-        var types = { "pause": true, "function": true },
-            processingCode, codeReady = false, createCanvas,
-            
-        init = function() {
-          if ( window.Processing ) {
-            parentTarget = document.getElementById( options.target );
-            if ( parentTarget.tagName === "CANVAS" ) {
-              canvas = parentTarget;
-            } else if ( parentTarget.tagName === "DIV" ) {
-              canvas = document.createElement( "canvas" );
-              // +new Date() is used here to create unique id's for canvas' within the same div.
-              canvas.id = options.target + "Sketch" + +new Date();
-              canvas.setAttribute( "data-processing-sources", options.sketch );
-              canvas.style.display = "none";
-              parentTarget.appendChild( canvas );
-            }
-            Popcorn.xhr({
-              url: options.sketch,
-              dataType: "text",
-              success: function( responseCode ) {
-                codeReady = true;
-                processingCode = responseCode;
-              }
-            });
-            
-            createCanvas = function() {
-              if ( codeReady ) {
-                processingInstance = new Processing( canvas, processingCode );
-              } else {
-                setTimeout ( createCanvas, 10 );
-              }
-            };
-            createCanvas();
-          } else {
-            !processingLoaded && loadProcessing();
-            setTimeout( init, 10 );
-          }
-        };
-
-        init();
+      
+        var processingCode, 
+            codeReady = false,
+            self = this;
+        
+        readyCheck = function() {
+          if ( !processingLoaded ) {
+            load();
+          } 
+        },
+        readyCheck();
+        init( self );
+        options.popcornInstance = this;
       },
       
       start: function( event, options ) {
-        toggle ( true );
+        toggle ( true, options );
       },
       
       end: function( event, options ) {
-        toggle ( false );
+        toggle ( false, options );
       }
     };
   });

@@ -1,7 +1,7 @@
 <html>
 <head>
   
-  <title>Popcorn processing Plug-in Demo</title>
+  <title>Popcorn processing Plug-in Simple Demo</title>
   <!--<script src="./processing.js"></script> -->
   <script src="../../popcorn.js"></script>
   <script src="popcorn.processing.js"></script>
@@ -10,40 +10,31 @@
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
       .play()
-      .processing({ // Div with sketch defined as a string
-        start: 1, // seconds
-        end: 5, // seconds
-        control: 'pause',
+      .processing({
+        start: 2,
+        end: 10,
         target: 'processing-div',
-        sketch: 'test2.pjs'       
+        sketch: 'test.pjs'       
       } )
-      .processing({ // Div with sketch defined here
-        start: 5, // seconds
-        end: 10, // seconds
-        control: 'pause',
+      .processing({
+        start: 10,
+        end: 15,
         target: 'processing-div2',
-        sketch: 'test.pjs'
+        sketch: 'test2.pjs'
       } )
-      .processing({  // Canvas with sketch hard-coded defined 
-        start: 10, // seconds
-        end: 15, // seconds
-        control: 'pause',
-        sketch: 'test2.pjs',
-        target: 'processing-canvas2',  // we don't need a sketch because we are pausing a canvas that is hard coded
+     .processing({
+        start: 15,
+        end: 20,
+        sketch: 'test.pjs',
+        target: 'processing-div2',
       } )
-      .processing({ // Div with sketch defined here
-        start: 20, // seconds
-        end: 25, // seconds
-        control: 'pause',
-        sketch: 'test2.pjs',
-        target: 'processing-div2',  // Thest mulitple instructions for one sketch - Especially relevant here since the first time we are building a canvas
-      } )
+    window.popped = p;
     }, false);
 
   </script>
 </head>
 <body>
-  <h1 id="qunit-header">Popcorn processing Plug-in Demo</h1>
+  <h1 id="qunit-header">Popcorn processing Plug-in Simple Demo</h1>
   
   <div>
     <video id='video'
@@ -64,13 +55,11 @@
     </video>
   </div>
   <div id="processing-div" width="50%" height="50%">
+  <hr />
   </div>
   <div id="processing-div2" width="50%" height="50%">
 
   </div>
 
-   <canvas id="processing-canvas2" data-processing-sources="test2.pjs" width="100" height="100"></canvas></body>
-
-   <div id="processing-div3" width="50%" height="50%">
-  </div>
+  </body>
 </html>

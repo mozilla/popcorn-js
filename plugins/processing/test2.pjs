@@ -30,7 +30,7 @@ void setup(){
     frequency[i]= random(-9, 9);  
     cellRadius[i] = random(16, 30);  
   }  
-  frameRate(30);  
+  frameRate(15);  
   noLoop();
 }  
   
