@@ -15,20 +15,20 @@
         end: 5, // seconds
         control: 'pause',
         target: 'processing-div',
-        sketch: 'test.pjs'       
+        sketch: 'test2.pjs'       
       } )
       .processing({ // Div with sketch defined here
         start: 5, // seconds
         end: 10, // seconds
         control: 'pause',
         target: 'processing-div2',
-        sketch: 'test2.pjs'
+        sketch: 'test.pjs'
       } )
       .processing({  // Canvas with sketch hard-coded defined 
         start: 10, // seconds
         end: 15, // seconds
         control: 'pause',
-        sketch: 'test.pjs',
+        sketch: 'test2.pjs',
         target: 'processing-canvas2',  // we don't need a sketch because we are pausing a canvas that is hard coded
       } )
       .processing({ // Div with sketch defined here
@@ -37,13 +37,6 @@
         control: 'pause',
         sketch: 'test2.pjs',
         target: 'processing-div2',  // Thest mulitple instructions for one sketch - Especially relevant here since the first time we are building a canvas
-      } )
-      .processing({ // Div With a sketch defined as a file calling a function within the sketch 
-        start: 20, // seconds
-        control: 'function',
-        func: 'switch_status',
-        sketch: 'test.pjs',
-        target: 'processing-div3',
       } )
     }, false);
 

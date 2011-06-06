@@ -67,43 +67,34 @@
             
         init = function() {
           if ( window.Processing ) {
-            if ( !types[ options.control ] ) {
-              throw ( "popcorn.processing plug-in ERROR: un-recognized control type '" + options.control + "' must be 'pause' or 'function'" );
-            }
-            if ( options.start >= options.end ) {
-              throw ( "popcorn.processing plug-in ERROR: invalid start and end pause timings '" + options.start + "' must be less than '" + options.end + "'" );
-            }
             parentTarget = document.getElementById( options.target );
-            if ( !parentTarget ) {
-              throw ( "popcorn.processing plug-in ERROR: Target '" + options.target + "' does not exist." );
-            } else {
-              if ( parentTarget.tagName === "CANVAS" ) {
-                canvas = parentTarget;
-              } else if ( parentTarget.tagName === "DIV" ) {
-                canvas = document.createElement( "canvas" );
-                canvas.id = options.target + "Sketch";
-                canvas.setAttribute( "data-processing-sources", options.sketch );
-                canvas.style.display = "none";
-                parentTarget.appendChild( canvas );
-              }
-              Popcorn.xhr({
-                url: options.sketch,
-                dataType: "text",
-                success: function( responseCode ) {
-                  codeReady = true;
-                  processingCode = responseCode;
-                }
-              });
-              
-              createCanvas = function() {
-                if ( codeReady ) {
-                  processingInstance = new Processing( canvas, processingCode );
-                } else {
-                  setTimeout ( createCanvas, 10 );
-                }
-              };
-              createCanvas();
+            if ( parentTarget.tagName === "CANVAS" ) {
+              canvas = parentTarget;
+            } else if ( parentTarget.tagName === "DIV" ) {
+              canvas = document.createElement( "canvas" );
+              // +new Date() is used here to create unique id's for canvas' within the same div.
+              canvas.id = options.target + "Sketch" + +new Date();
+              canvas.setAttribute( "data-processing-sources", options.sketch );
+              canvas.style.display = "none";
+              parentTarget.appendChild( canvas );
             }
+            Popcorn.xhr({
+              url: options.sketch,
+              dataType: "text",
+              success: function( responseCode ) {
+                codeReady = true;
+                processingCode = responseCode;
+              }
+            });
+            
+            createCanvas = function() {
+              if ( codeReady ) {
+                processingInstance = new Processing( canvas, processingCode );
+              } else {
+                setTimeout ( createCanvas, 10 );
+              }
+            };
+            createCanvas();
           } else {
             !processingLoaded && loadProcessing();
             setTimeout( init, 10 );
