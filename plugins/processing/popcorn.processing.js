@@ -22,12 +22,18 @@ var scriptLoadingFired = false,
     var sketchInstance,
   
     toggle = function( on ) {
-      if ( on ) {
-        canvas.style.display = "inline";
-        processingInstance.loop();
+      if (canvas) {
+        if ( on ) {
+          canvas.style.display = "inline";
+          processingInstance.loop();
+        } else {
+          canvas.style.display = "none";
+          processingInstance.noLoop();
+        }
       } else {
-        canvas.style.display = "none";
-        processingInstance.noLoop();
+        setTimeout ( function () {
+          toggle ( on );
+        }, 10 ); 
       }
     };
     
