@@ -1,13 +1,38 @@
 // PLUGIN: Timeline
 (function (Popcorn) {
 
-  var i = 0;
+  /**
+     * timeline popcorn plug-in
+     * Adds data associated with a certain time in the video, which creates a scrolling view of each item as the video progresses
+     * Options parameter will need a start, target, title, and text
+     * -Start is the time that you want this plug-in to execute
+     * -End is the time that you want this plug-in to stop executing, tho for this plugin an end time may not be needed ( optional )
+     * -Target is the id of the DOM element that you want the map to appear in. This element must be in the DOM
+     * -Title is the title of the current timeline box
+     * -Text is text is simply related text that will be displayed
+     * -innerHTML gives the user the option to add things such as links, buttons and so on
+     * @param {Object} options
+     *
+     * Example:
+      var p = Popcorn("#video")
+        .timeline( {
+         start: 5, // seconds
+         target: "timeline",
+         title: "Seneca",
+         text: "Welcome to seneca",
+         innerHTML: "Click this link <a href='http://www.google.ca'>Google</a>"
+      } )
+    *
+  */
+
+  var i = 1;
    
-  var head = document.getElementsByTagName("head")[0];
-  var css = document.createElement('link');
+  //  Included simple css to make it look a bit nicer
+  var head = document.getElementsByTagName( "head" )[ 0 ];
+  var css = document.createElement( 'link' );
   css.type = "text/css";
   css.rel = "stylesheet";
-  css.href = "asdf.css";
+  css.href = "popcorn.timeline.css";
   head.insertBefore( css, head.firstChild );
 
 
@@ -32,10 +57,12 @@
     }
     
     i++;
-    
+
+    //  Default to empty if not used
+    //options.innerHTML = options.innerHTML || "";    
+
     newdiv.innerHTML = "<p><span id='big'>" + options.title + "</span><br />" +
-    "<span id='mid'>" + options.text + "<br />" +
-    "</span><a href='#'>" + options.links + "</a></p>";
+    "<span id='mid'>" + options.text + "<br />" + options.innerHTML;
     
     return {
 
@@ -43,8 +70,15 @@
         newdiv.setAttribute( "style", "display:block" );
       },
  
-      end: function(event, options){
+      end: function( event, options ){
         newdiv.setAttribute( "style", "display:none" );
+      },
+
+      _teardown: function( options ) {
+        while ( document.getElementById( options.target ).childNodes.length >= 1 )
+        {
+            document.getElementById( options.target ).removeChild( document.getElementById( options.target ).firstChild );       
+        }  
       }
     };
   },
@@ -58,10 +92,12 @@
     },
 
     options: {
-      start :  { elem:"input", type:"text", label:"In" },
-      end :    { elem:"input", type:"text", label:"Out" },
-      target : "feed-container",
-      text :   { elem:"input", type:"text", label:"text" }
+      start :      { elem:"input", type:"text", label:"In" },
+      end :        { elem:"input", type:"text", label:"Out" },
+      target :     "feed-container",
+      title :      { elem:"input", type:"text", label:"title" },
+      text :       { elem:"input", type:"text", label:"text" },
+      innerHTML:   { elem:"input", type:"text", label:"innerHTML" }
     }
   });
   

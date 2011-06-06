@@ -5,7 +5,6 @@
   
   <script src="../../popcorn.js"></script>
   <script src="popcorn.timeline.js"></script>
-  <script src="popcorn.timeline.css"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
@@ -13,19 +12,17 @@
       .play()
       .timeline({
         start: 1, // seconds
-        end: 700,
         target: "timeline",
         title: "This is a title",
         text: "this is some interesting text that goes inside",
-        links: "and heres a link"
+        innerHTML: "Click here for <a href='http://www.google.ca'>Google</a>" 
       } )
       .timeline({
         start: 3, // seconds
-        end: 700,
         target: "timeline",
-        title: "and more interesting shit",
+        title: "double as interesting",
         text: "this is some interesting text that goes inside",
-        links: "and heres a link"
+        innerHTML: "Maybe a button? <button onClick=\"window.location.href='http://www.google.com'\">Click Me</button>" 
       } )
      .timeline({
         start: 7, // seconds
@@ -33,31 +30,37 @@
         target: "timeline",
         title: "3x as interesting",
         text: "this is some interesting text that goes inside",
-        links: "and heres a link"
+        innerHTML: ""
       } )
      .timeline({
         start: 9, // seconds
-        end: 700,
         target: "timeline",
         title: "4x as interesting",
         text: "this is some interesting text that goes inside",
-        links: "and heres a link"
+        innerHTML: "perhaps tables <table border='1'>" +
+                      "<tr>" +
+                        "<td>row 1, cell 1</td>" +
+                        "<td>row 1, cell 2</td>" +
+                      "</tr>" +
+                      "<tr>" +
+                        "<td>row 2, cell 1</td>" +
+                       " <td>row 2, cell 2</td>" +
+                      "</tr>" +
+                    "</table>"
       } )
       .timeline({
         start: 14, // seconds
-        end: 700,
         target: "timeline",
         title: "5x as interesting",
         text: "this is some interesting text that goes inside",
-        links: "and heres a link"
+        innerHTML: "Click here for <a href='http://www.apple.com'>Apple</a>"
       } )
       .timeline({
         start: 18, // seconds
-        end: 700,
         target: "timeline",
         title: "6x as interesting",
         text: "this is some interesting text that goes inside",
-        links: "and heres a link"
+        innerHTML: ""
       } );
     }, false);
   </script>
@@ -84,7 +87,7 @@
     </video>
   </div>
   <div style="width:1000px">
-    <div id="timeline" style="float:left;width:400px;height:200px;overflow:auto"><p>Vertical Feed:</p></div>
+    <div id="timeline" style="float:left;width:400px;height:200px;overflow:auto"></div>
   </div>
 </body>
 </html>
