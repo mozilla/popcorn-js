@@ -5,15 +5,20 @@
  
 (function (Popcorn) {
 
-var scriptLoadingFired = false,
+  var scriptLoadingFired = false,
   canvas,
   parentTarget,
   processingInstance,
+  processingLoaded = false,
 
   loadProcessing = function() {
-    if ( !window["Processing"] && !scriptLoadingFired ) {
+    if ( !scriptLoadingFired ) { 
+      if ( window.Processing ) {
+        processingLoaded = true;
+        return;
+      }
       scriptLoadingFired = true;
-      Popcorn.getScript ( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.js");
+      Popcorn.getScript ( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.js" );
     }
   };
 
@@ -22,7 +27,7 @@ var scriptLoadingFired = false,
     var sketchInstance,
   
     toggle = function( on ) {
-      if (canvas) {
+      if ( canvas ) {
         if ( on ) {
           canvas.style.display = "inline";
           processingInstance.loop();
@@ -31,21 +36,20 @@ var scriptLoadingFired = false,
           processingInstance.noLoop();
         }
       } else {
-        setTimeout ( function () {
+        setTimeout ( function() {
           toggle ( on );
         }, 10 ); 
       }
     };
-    
-    loadProcessing();
-    
+
     return {
+    
       manifest: {
         about: {
           name: "Popcorn Processing Plugin",
           version: "0.1",
-          author: "Christopher De Cairos",
-          website: "cadecairos.blogspot.com"
+          author: "Christopher De Cairos, Benjamin Chalovich",
+          website: "cadecairos.blogspot.com, ben1amin.wordpress.org"
         },
         options: {
           start :   { elem: "input", type: "text", label: "In" },
@@ -56,18 +60,17 @@ var scriptLoadingFired = false,
           func :    { elem: "input", type: "text", label: "Function" }
         }
       },
+      
       _setup: function( options ) {
         var types = { "pause": true, "function": true },
-            setup, processingCode, codeReady = false, createCanvas;
+            processingCode, codeReady = false, createCanvas,
             
-        
-            
-        setup = function() {
-          if ( window["Processing"] ) {
+        init = function() {
+          if ( window.Processing ) {
             if ( !types[ options.control ] ) {
-              throw ("popcorn.processing plug-in ERROR: un-recognized control type '" + options.control + "' must be 'pause' or 'function'");
+              throw ( "popcorn.processing plug-in ERROR: un-recognized control type '" + options.control + "' must be 'pause' or 'function'" );
             }
-            if (options.start >= options.end ) {
+            if ( options.start >= options.end ) {
               throw ( "popcorn.processing plug-in ERROR: invalid start and end pause timings '" + options.start + "' must be less than '" + options.end + "'" );
             }
             parentTarget = document.getElementById( options.target );
@@ -102,18 +105,21 @@ var scriptLoadingFired = false,
               createCanvas();
             }
           } else {
-            scriptLoadingFired && loadProcessing();
-            setTimeout( setup, 10 );
+            !processingLoaded && loadProcessing();
+            setTimeout( init, 10 );
           }
         };
-        setup();
+
+        init();
       },
+      
       start: function( event, options ) {
         toggle ( true );
       },
+      
       end: function( event, options ) {
         toggle ( false );
       }
-    }
+    };
   });
-})( Popcorn );
+}( Popcorn ));
