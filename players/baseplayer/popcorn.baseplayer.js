@@ -59,7 +59,7 @@
       
       setTimeout( function() {
         self.timeupdate.call( self );
-      }, 15 );
+      }, 250 );
     },
     
     // By default, assumes this.resource is a DOM Element
