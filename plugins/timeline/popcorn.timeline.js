@@ -38,21 +38,23 @@
 
   Popcorn.plugin( "timeline" , function( options ) {
 
+    var target = document.getElementById( options.target );
+
     // create a new div and append it to the parent div so nothing
     // that already exists in the parent div gets overwritten
     var newdiv = document.createElement( "div" );
     newdiv.style.display = "none";
     newdiv.id = "timelineDiv"+i;
 
-    if ( document.getElementById( options.target ) ) {
+    if ( target ) {
 
-      document.getElementById( options.target ).appendChild( newdiv );
+      target.appendChild( newdiv );
 
       // if this isnt the first div added to the target div
       if( i ){
 
         // insert the current div before the previous div inserted
-        document.getElementById( options.target ).insertBefore( newdiv, document.getElementById( "timelineDiv" + ( i - 1 ) ) );
+        target.insertBefore( newdiv, document.getElementById( "timelineDiv" + ( i - 1 ) ) );
        }
     }
     
@@ -62,22 +64,21 @@
     //options.innerHTML = options.innerHTML || "";    
 
     newdiv.innerHTML = "<p><span id='big'>" + options.title + "</span><br />" +
-    "<span id='mid'>" + options.text + "<br />" + options.innerHTML;
+    "<span id='mid'>" + options.text + "</span><br />" + options.innerHTML;
     
     return {
 
       start: function( event, options ){
-        newdiv.setAttribute( "style", "display:block" );
+        newdiv.style.display = "block";
       },
  
       end: function( event, options ){
-        newdiv.setAttribute( "style", "display:none" );
+        newdiv.style.display = "none";
       },
 
       _teardown: function( options ) {
-        while ( document.getElementById( options.target ).childNodes.length >= 1 )
-        {
-            document.getElementById( options.target ).removeChild( document.getElementById( options.target ).firstChild );       
+        while ( target.childNodes.length >= 1 ) {
+            target.removeChild( document.getElementById( options.target ).firstChild );       
         }  
       }
     };
