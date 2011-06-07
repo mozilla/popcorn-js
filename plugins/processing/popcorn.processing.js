@@ -103,13 +103,13 @@
       
         var processingCode, 
             codeReady = false,
-            self = this;
+            self = this,
         
         readyCheck = function() {
           if ( !processingLoaded ) {
             load();
           } 
-        },
+        };
         readyCheck();
         init( self );
         options.popcornInstance = this;
