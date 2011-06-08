@@ -1,4 +1,4 @@
-z/**
+/**
 * Pause Popcorn Plug-in
 *
 * When this plugin is used, links on the webpage, when clicked, will pause
