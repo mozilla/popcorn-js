@@ -1,4 +1,4 @@
-/**
+z/**
 * Pause Popcorn Plug-in
 *
 * When this plugin is used, links on the webpage, when clicked, will pause
@@ -15,14 +15,11 @@
 */
 
 document.addEventListener( "click", function( event ) {
-  //Consider I.E.
+
   var targetElement = event.target;
-  if ( window.event ) {
-    targetElement = window.event.srcElement;
-  }
 
   //Some browsers use an element as the target, some use the text node inside
-  if ( targetElement.tagName === "A" || targetElement.parentNode.tagName === "A" ) {
+  if ( targetElement.tagName === "A" || targetElement.parentNode && targetElement.parentNode.tagName === "A" ) {
     Popcorn.instances.forEach( function( video ) {
       if ( video.options.pauseOnLinkClicked ) {
         video.pause();
