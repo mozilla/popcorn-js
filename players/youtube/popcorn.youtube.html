@@ -22,9 +22,9 @@
           var paused = true,
               popcorn;
           
-          popcorn = Popcorn( Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=9oar9glUCL0', { width: 400 } ) );
+          popcorn = Popcorn( Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=9oar9glUCL0', { width: 400, controls: 0, annotations: 3 } ) );
           
-          popcorn = popcorn
+          /*popcorn = popcorn
             .footnote({
               start: 5, // seconds
               end: 40, // seconds
@@ -101,8 +101,8 @@
           .listen('pause', function() {
             paused = true;
             element( 'btn-play-pause' ).innerHTML = 'Play';
-          })
-          .mute()
+          })*/
+          popcorn.mute()
           .play();
             
           // Setup UI after loaded

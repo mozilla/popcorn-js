@@ -133,7 +133,9 @@ var onYouTubePlayerReady;
       id: this.playerId
     };
     
-    swfobject.embedSWF( "http://www.youtube.com/e/" + this.vidId +"?enablejsapi=1&playerapiid=" + this.playerId + "&version=3", 
+    
+    console.log ("http://www.youtube.com/e/" + this.vidId +"?enablejsapi=1&playerapiid=" + this.playerId + "&controls=" + this.controls + "&iv_load_policy=" + this.iv_load_policy + "&version=3");
+    swfobject.embedSWF( "http://www.youtube.com/e/" + this.vidId +"?enablejsapi=1&playerapiid=" + this.playerId + "&controls=" + this.controls + "&iv_load_policy=" + this.iv_load_policy + "&version=3", 
                       this.playerId, this.width, this.height, "8", null, flashvars, params, attributes );
   }
   
@@ -179,6 +181,12 @@ var onYouTubePlayerReady;
     // If suppliied as '###' or '###px', convert to number and append 'px' back on end
     options.width = options.width && (+options.width)+"px";
     options.height = options.height && (+options.height)+"px";
+    
+    // show controls on video. Integer value - 1 is for show, 0 is for hide
+    this.controls = +options.controls === 1 || +options.controls === 2 ? options.controls : 1; 
+    
+    // show video annotations, 1 is show, 3 is hide
+    this.iv_load_policy = +options.annotations === 1 || +options.annotations === 3 ? options.annotations : 1;
     
     this._target = document.getElementById( elementId );
     this._container = document.createElement( "div" );
