@@ -100,7 +100,7 @@
       _teardown: function( options ) {
 
         // removes word span from generated container
-        options._container.removeChild( options.word );
+        options.word.parentNode && options._container.removeChild( options.word );
 
         // if no more word spans exist in container, remove container
         container[ options.target ] &&
