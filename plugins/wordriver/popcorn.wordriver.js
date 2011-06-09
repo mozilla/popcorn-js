@@ -44,7 +44,18 @@
 
   Popcorn.plugin( "wordriver" , {
     
-      manifest: {},
+      manifest: {
+        about:{
+          name: "Popcorn WordRiver Plugin"
+        },
+        options:{
+          start    : {elem:'input', type:'text', label:'In'},
+          end      : {elem:'input', type:'text', label:'Out'},
+          target  :  'wordriver-container',
+          text     : {elem:'input', type:'text', label:'Text'},
+          color    : {elem:'input', type:'text', label:'Color'}
+        }
+      },
 
       _setup: function( options ) {
 
