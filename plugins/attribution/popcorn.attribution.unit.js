@@ -25,7 +25,7 @@ test("Popcorn attribution Plugin", function () {
   
   popped.attribution({
       start: 0, // seconds
-      end: 0.5, // seconds
+      end: 2, // seconds
       nameofwork: "A Shared Culture",
       copyrightholder:"Jesse Dylan",
       license: "CC-BY-N6",
@@ -33,8 +33,8 @@ test("Popcorn attribution Plugin", function () {
       target: 'attribdiv'
     } )
     .attribution({
-      start: 0.5, // seconds
-      end: 1, // seconds
+      start: 2, // seconds
+      end: 4, // seconds
       nameofwork: "Internet",
       nameofworkurl:"http://www.archive.org/details/CC1232_internet",
       copyrightholder:"The Computer Chronicles",
@@ -53,12 +53,12 @@ test("Popcorn attribution Plugin", function () {
     plus();
   });
   
-  popped.exec( 0.5, function() {
+  popped.exec( 2, function() {
     equals (attributiondiv.children[1].style.display , "inline", "second attribution is visible on the page" );
     plus();
   });
   
-  popped.exec( 1, function() {
+  popped.exec( 4, function() {
     equals(attributiondiv.children[1].style.display , "none", "second attribution is no longer visible on the page" );
     plus();
     equals(attributiondiv.children[0].style.display , "none", "first attribution is no longer visible on the page" );

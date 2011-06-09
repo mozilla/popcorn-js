@@ -29,7 +29,7 @@ test("Popcorn Google Map Plugin", function () {
   
   popped.googlemap({
     start: 0, // seconds
-    end: 5, // seconds
+    end: 2, // seconds
     type: 'ROADMAP',
     target: 'map',
     lat: 43.665429,
@@ -38,15 +38,15 @@ test("Popcorn Google Map Plugin", function () {
   })
   .googlemap({
       start: 0, // seconds
-      end: 10, // seconds
+      end: 2, // seconds
       type: 'SATELLITE',
       target: 'map2',
       location:'toronto',
       zoom: 15
   });
   var mapz = popped.googlemap({
-    start: 0, // seconds
-    end: 10, // seconds
+    start: 2, // seconds
+    end: 4, // seconds
     type: "STREETVIEW",
     target: "map3",
     location: "6th Line, Oakville, Ontario",
@@ -60,7 +60,7 @@ test("Popcorn Google Map Plugin", function () {
 
   setupId = popped.getLastTrackEventId();
 
-  popped.exec( 4, function() {
+  popped.exec( 1, function() {
     ok(google.maps, "Google maps is available");
     plus();
     ok(google.maps.Geocoder, "Google maps Geocoder is available");
@@ -71,19 +71,19 @@ test("Popcorn Google Map Plugin", function () {
     plus();
   });
 
-  popped.exec( 4, function() {
+  popped.exec( 1, function() {
     ok (document.getElementById('actualmap2'), "Second map is on the page" );
     plus();
     equals (document.getElementById('actualmap2').offsetParent.id, "map2", "Second map is inside the 'map2' div" );
     plus();
   });
 
-  popped.exec( 4, function() {
+  popped.exec( 3, function() {
     equals (document.getElementById('actualmap3').offsetParent.id, "map3", "Tweening map is inside the 'map3' div" );
     plus();
   });
 
-  popped.exec( 11, function() {
+  popped.exec( 5, function() {
     ok (document.getElementById('actualmap2').style.display === "none" && 
         document.getElementById('actualmap1').style.display === "none" &&
         document.getElementById('actualmap3').style.display === "none", "All maps are no longer visible" );

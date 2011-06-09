@@ -24,14 +24,14 @@ test("Popcorn Flickr Plugin", function () {
   
   popped.flickr({
     start: 0, // seconds
-    end: 1,   // seconds
+    end: 2,   // seconds
     userid: '35034346917@N01',
     numberofimages: '1',
     target: 'flickrdiv'
   } )
   .flickr({
-    start: 1, // seconds
-    end: 2,   // seconds
+    start: 2, // seconds
+    end: 4,   // seconds
     username: 'AniaSob',
     apikey: 'd1d249260dd1673ec8810c8ce5150ae1',
     numberofimages: '1',
@@ -40,21 +40,21 @@ test("Popcorn Flickr Plugin", function () {
 
   setupId = popped.getLastTrackEventId();
 
-  popped.exec( 0.5, function() {
+  popped.exec( 1, function() {
     ok( /display: inline;/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
     plus();
     ok( /img/.test( flickrdiv.innerHTML ), "An image exists" );
     plus();
   });
   
-  popped.exec( 1.5, function() {
+  popped.exec( 3, function() {
     ok( /display: inline;/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
     plus();
     ok( /img/.test( flickrdiv.innerHTML ), "An image exists" );
     plus();
   });
 
-  popped.exec( 2, function() {
+  popped.exec( 4, function() {
     ok( /display: none;/.test( flickrdiv.innerHTML ), "Div contents are hidden again" );
     plus();
 

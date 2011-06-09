@@ -25,28 +25,28 @@ test("Popcorn Facebook Plugin", function () {
   popped.facebook({
         target: "likediv",
         start : 1,
-        end   : 7
+        end   : 6
       } )
       .facebook({
         href  : "http://www.facebook.com/senecacollege",
         type  : "LIKE_BOX",
         target: "likeboxdiv",
         start : 2,
-        end   : 7
+        end   : 6
       } )
       .facebook({
         site   : "http://popcornjs.org/",
         type   : "ACTIVITY",
         target : "activitydiv",
         start  : 3,
-        end    : 7
+        end    : 6
       } )
       .facebook({
         href   : "http://www.facebook.com/senecacollege",
         type   : "FACEPILE",
         target : "facepilediv",
         start  : 4,
-        end    : 7,
+        end    : 6,
         width  : 300
       } )
     .volume(0)
