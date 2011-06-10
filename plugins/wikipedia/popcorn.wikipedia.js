@@ -47,7 +47,7 @@ var wikiCallback;
         src           : {elem:'input', type:'text', label:'Src'},
         title         : {elem:'input', type:'text', label:'Title'},
         numberofwords : {elem:'input', type:'text', label:'Num Of Words'},
-        target        : 'wiki-container'
+        target        : 'wikipedia-container'
       }
     },
     /**

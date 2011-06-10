@@ -52,7 +52,7 @@
             type: "text",
             label: "Link URL"
           },
-          target: "Image-container",
+          target: "image-container",
           src: {
             elem: "input", 
             type: "text",   

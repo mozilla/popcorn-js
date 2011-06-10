@@ -57,7 +57,7 @@
         options:{
           start    : {elem:'input', type:'text', label:'In'},
           end      : {elem:'input', type:'text', label:'Out'},
-          target   : 'tag-container',
+          target   : 'tagthisperson-container',
           person   : {elem:'input', type:'text', label:'Name'},
           image    : {elem:'input', type:'text', label:'Image Src'},
           href     : {elem:'input', type:'text', label:'URL'}   
