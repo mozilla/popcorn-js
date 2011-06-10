@@ -144,10 +144,9 @@
     options: {
       start: {elem:'input', type:'text', label:'In'},
       end: {elem:'input', type:'text', label:'Out'},
-      // TODO: how to deal with functions, eval strings?
-      onStart: {elem:'input', type:'text', label:'onStart'},
-      onFrame: {elem:'input', type:'text', label:'onFrame'},
-      onEnd: {elem:'input', type:'text', label:'onEnd'}
+      onStart: {elem:'input', type:'function', label:'onStart'},
+      onFrame: {elem:'input', type:'function', label:'onFrame'},
+      onEnd: {elem:'input', type:'function', label:'onEnd'}
     }
   });
 })( Popcorn );
