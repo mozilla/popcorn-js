@@ -25,7 +25,6 @@
 
   document.getElementsByTagName("head")[0].appendChild( span );
 
-
   for ( var sIdx = 0, sLen = specProp.length; sIdx < sLen; sIdx++ ) {
 
     for ( var pIdx = 0, pLen = prefixes.length; pIdx < pLen; pIdx++ ) {
