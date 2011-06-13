@@ -509,36 +509,38 @@ test( "Popcorn.extend", function () {
         "key22" : 9002,
         "key23" : function() { return false; }
       },
-      obj3 = Popcorn.extend(dest, obj1);
+      prop;
+      
+  Popcorn.extend( dest, obj1 );
   
   for ( prop in obj1 ) {
-    equal ( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop );
+    equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop );
   }
   
-  equal ( typeof dest["key13"], "function","dest[key13] is a function");
+  equal( typeof dest[ "key13" ], "function", "dest[key13] is a function" );
   
   dest = {};
   
-  obj3 = Popcorn.extend( dest, obj1, obj2 );
+  Popcorn.extend( dest, obj1, obj2 );
   
-  for ( var prop in obj1 ) {
-    equal ( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop + ", when extending 2 objects" );
+  for ( prop in obj1 ) {
+    equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop + ", when extending 2 objects" );
   }
 
-  for ( var prop in obj2 ) {
-    equal ( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop + ", when extending 2 objects" );
+  for ( prop in obj2 ) {
+    equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop + ", when extending 2 objects" );
   }
   
-  equal ( typeof dest["key13"], "function","dest[key13] is a function");
+  equal( typeof dest[ "key13" ], "function","dest[key13] is a function" );
   
-  equal ( typeof dest["key23"], "function","dest[key23] is a function");
+  equal( typeof dest[ "key23" ], "function","dest[key23] is a function" );
   
 });
 
 test( "Popcorn.events", function() {
 
   QUnit.reset()
-  expect(43);
+  expect( 43 );
   
   var eventTypes = [ "UIEvents", "MouseEvents", "Events" ], 
       natives = "", 
@@ -549,25 +551,25 @@ test( "Popcorn.events", function() {
       okay = true;
 
   eventTypes.forEach (function( e ) {
-    ok(Popcorn.Events[e], e + " Exists")
+    ok( Popcorn.Events[ e ], e + " Exists")
   });
 
-  natives = Popcorn.Events[eventTypes[0]] + " " + Popcorn.Events[eventTypes[1]] + " " + Popcorn.Events[eventTypes[2]];
+  natives = Popcorn.Events[ eventTypes[ 0 ] ] + " " + Popcorn.Events[ eventTypes[ 1 ] ] + " " + Popcorn.Events[ eventTypes[ 2 ] ];
   events = natives.split( /\s+/g );
   eventsReturned = Popcorn.events.all;
   len = events.length;
 
-  for ( ; idx++ < len ; ) {
-    okay = events[idx] === eventsReturned[idx];
+  for ( ; idx++ < len && okay; ) {
+    okay = events[ idx ] === eventsReturned[ idx ];
   }
 
-  ok( okay, "Native events are correctly being handled");
+  ok( okay, "Native events are correctly being handled" );
 
-  equals( typeof Popcorn.Events.Natives, "string", "Popcorn.Events.Natives is an object" );
+  equals( typeof Popcorn.Events.Natives, "string", "Popcorn.Events.Natives is a string" );
   equals( typeof Popcorn.events, "object", "Popcorn.events is an object" );
 
   Popcorn.forEach( eventsReturned, function ( e ) {
-    ok (Popcorn.events.isNative ( e ), e + " is a native event");
+    ok( Popcorn.events.isNative ( e ), e + " is a native event" );
   });
 
 });
