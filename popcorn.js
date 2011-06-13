@@ -677,7 +677,7 @@
 
     for ( idx = byEnd.length-1; idx >= 0; idx-- ) {
 
-      if ( track.start >= byEnd[idx].start ) {
+      if ( track.end > byEnd[idx].end ) {
         byEnd.splice( idx + 1, 0, track );
         break;
       }
