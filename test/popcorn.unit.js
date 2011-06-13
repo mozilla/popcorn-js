@@ -492,6 +492,88 @@ test("exec", function () {
 
 });
 
+test( "Popcorn.extend", function () {
+  
+  QUnit.reset();
+  
+  expect( 12 );
+  
+  var dest = {},
+      obj1 = {
+        "key11" : "value",
+        "key12" : 9001,
+        "key13" : function() { return true; }
+      },
+      obj2 = {
+        "key21" : "String",
+        "key22" : 9002,
+        "key23" : function() { return false; }
+      },
+      prop;
+      
+  Popcorn.extend( dest, obj1 );
+  
+  for ( prop in obj1 ) {
+    equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop );
+  }
+  
+  equal( typeof dest[ "key13" ], "function", "dest[key13] is a function" );
+  
+  dest = {};
+  
+  Popcorn.extend( dest, obj1, obj2 );
+  
+  for ( prop in obj1 ) {
+    equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop + ", when extending 2 objects" );
+  }
+
+  for ( prop in obj2 ) {
+    equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop + ", when extending 2 objects" );
+  }
+  
+  equal( typeof dest[ "key13" ], "function","dest[key13] is a function" );
+  
+  equal( typeof dest[ "key23" ], "function","dest[key23] is a function" );
+  
+});
+
+test( "Popcorn.events", function() {
+
+  QUnit.reset()
+  expect( 43 );
+  
+  var eventTypes = [ "UIEvents", "MouseEvents", "Events" ], 
+      natives = "", 
+      events, 
+      eventsReturned,
+      idx = 0,
+      len,
+      okay = true;
+
+  eventTypes.forEach (function( e ) {
+    ok( Popcorn.Events[ e ], e + " Exists")
+  });
+
+  natives = Popcorn.Events[ eventTypes[ 0 ] ] + " " + Popcorn.Events[ eventTypes[ 1 ] ] + " " + Popcorn.Events[ eventTypes[ 2 ] ];
+  events = natives.split( /\s+/g );
+  eventsReturned = Popcorn.events.all;
+  len = events.length;
+
+  for ( ; idx++ < len && okay; ) {
+    okay = events[ idx ] === eventsReturned[ idx ];
+  }
+
+  ok( okay, "Native events are correctly being handled" );
+
+  equals( typeof Popcorn.Events.Natives, "string", "Popcorn.Events.Natives is a string" );
+  equals( typeof Popcorn.events, "object", "Popcorn.events is an object" );
+
+  Popcorn.forEach( eventsReturned, function ( e ) {
+    ok( Popcorn.events.isNative ( e ), e + " is a native event" );
+  });
+
+});
+
 module("Popcorn Position");
 test("position", function () {
 
