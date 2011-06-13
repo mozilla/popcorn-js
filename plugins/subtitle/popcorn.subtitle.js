@@ -138,14 +138,12 @@
           options.container = this.container;
         }
 
-        var accessibility = document.getElementById( options.accessibilitysrc ),
-            that = this;
+        var accessibility = document.getElementById( options.accessibilitysrc );
 
         options.showSubtitle = function() {
           options.container.innerHTML = options.text;
         };
         options.toggleSubtitles = function() {};
-        options.that = this;
         
         var readyCheck = setInterval(function() {
           if ( !scriptLoaded ) {
