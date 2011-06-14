@@ -667,17 +667,17 @@
         byEnd = obj.data.trackEvents.byEnd, 
         idx;
 
-    for ( idx = byStart.length-1; idx >= 0; idx-- ) {
+    for ( idx = byStart.length - 1; idx >= 0; idx-- ) {
 
-      if ( track.start >= byStart[idx].start ) {
+      if ( track.start >= byStart[ idx ].start ) {
         byStart.splice( idx + 1, 0, track );
         break;
       }
     }
 
-    for ( idx = byEnd.length-1; idx >= 0; idx-- ) {
+    for ( idx = byEnd.length - 1; idx >= 0; idx-- ) {
 
-      if ( track.end > byEnd[idx].end ) {
+      if ( track.end > byEnd[ idx ].end ) {
         byEnd.splice( idx + 1, 0, track );
         break;
       }
