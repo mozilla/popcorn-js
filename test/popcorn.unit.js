@@ -334,6 +334,25 @@ test("Protected", function () {
 
 });
 
+test("Protected from removal", function () {
+
+  expect( Popcorn.protect.natives.length * 2 );
+
+  Popcorn.protect.natives.forEach(function( name ) {
+
+    try {
+      Popcorn.plugin( name );
+    } catch( e ) {
+      ok( true, e.message + " and cannot be used as a plugin name" );
+    }
+    
+    try {
+      Popcorn.removePlugin( name );
+    } catch( e ) {
+      ok( true, e.message + " and cannot be removed with this API" );
+    }
+  });
+});
 
 
 

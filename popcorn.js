@@ -642,7 +642,7 @@
 
   //  Protected API methods
   Popcorn.protect = {
-    natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten".toLowerCase().split( /\s+/ )
+    natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten exec".toLowerCase().split( /\s+/ )
   };
 
   // Internal Only - Adds track events to the instance object
@@ -836,7 +836,7 @@
   Popcorn.plugin = function( name, definition, manifest ) {
 
     if ( Popcorn.protect.natives.indexOf( name.toLowerCase() ) >= 0 ) {
-      Popcorn.error("'" + name + "' is a protected function name");
+      Popcorn.error( "'" + name + "' is a protected function name" );
       return;
     }
 
@@ -955,6 +955,11 @@
       //  Fix the order
       name = obj;
       obj = Popcorn.p;
+
+      if ( Popcorn.protect.natives.indexOf( name.toLowerCase() ) >= 0 ) {
+        Popcorn.error( "'" + name + "' is a protected function name" );
+        return;
+      }
 
       var registryLen = Popcorn.registry.length,
           registryIdx;
