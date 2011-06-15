@@ -40,10 +40,18 @@ test( "Popcorn wordriver Plugin", function () {
 		text: "world",
 		target: "wordriverdiv",
 		color: "blue"
-  })
-  .volume(0);
+  });
 
   secondTrack = popped.getLastTrackEventId();
+
+  popped.wordriver({
+		start: 20, // seconds
+		end: 24, // seconds
+		text: "nothing here",
+		target: "wordriverdiv",
+		color: "green"
+  })
+  .volume(0);
 
   popped.exec( 0, function() {
     equals( wordriverdiv.children[0].childElementCount, 1, "wordriverdiv now has one inner element" );
@@ -82,7 +90,7 @@ test( "Popcorn wordriver Plugin", function () {
     plus();
 
     popped.pause().removeTrackEvent( secondTrack );
-    equals( wordriverdiv.childElementCount, 0, "wordriverdiv now has no inner element" );
+    equals( wordriverdiv.childElementCount, 0, "wordriverdiv now has no inner element, even though one still exists, but was never called" );
     plus();
   });
   
