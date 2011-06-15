@@ -65,7 +65,7 @@
 
         var attrib = "", 
         license = licenses[ options.license.toLowerCase() ], 
-        tar = "" + tar + ""; 
+        tar = "target=_blank"; 
 
         // make a div to put the information into
         options._container = document.createElement( "div" );
