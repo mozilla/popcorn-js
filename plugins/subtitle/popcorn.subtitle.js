@@ -84,7 +84,7 @@
    * 
    * Example:
      var p = Popcorn('#video')
-        .footnote({
+        .subtitle({
           start:            5,                 // seconds, mandatory
           end:              15,                // seconds, mandatory
           text:             'Hellow world',    // optional
