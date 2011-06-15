@@ -1551,7 +1551,7 @@ test("Remove Plugin", function () {
       p2 = Popcorn("#video"),
       rlen = Popcorn.registry.length,
       count = 0,
-      expects = 21,
+      expects = 23,
       interval;
 
   function plus() {
@@ -1579,17 +1579,23 @@ test("Remove Plugin", function () {
     },
     end: function () {
 
+    },
+    _teardown: function( options ) {
+      ok( true, "teardown called on " + options.order + " plugin via removePlugin()" );
+      plus();
     }
   });
 
   p.removeme({
     start: 2,
-    end: 3
+    end: 3,
+    order: "first"
   });
 
   p2.removeme({
     start: 2,
-    end: 3
+    end: 3,
+    order: "second"
   });
 
   equals( Popcorn.registry.length, 1, "Popcorn.registry.length is 1");
