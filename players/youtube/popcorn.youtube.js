@@ -175,7 +175,7 @@ var onYouTubePlayerReady;
     this.loadStarted = false;
     this.loadedData = false;
     this.fullyLoaded = false;
-    this.paused = true;
+    this.paused = false;
     
     // If supplied as number, append  'px' on end
     // If suppliied as '###' or '###px', convert to number and append 'px' back on end
