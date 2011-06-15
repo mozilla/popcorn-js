@@ -126,7 +126,7 @@
 
       // default plugin is like button
       if ( !validType( options.type ) ) {
-        return;
+        options.type = "like";
       }
 
       options._container = document.createElement( "fb:" + options.type );

@@ -61,23 +61,26 @@ test("Popcorn Facebook Plugin", function () {
   ok (document.getElementById('facepilediv'), "facepilediv exists on the page" );
   plus();
   
+  // I inspected the html genterated by facebook, and found that there are no uniquely identifying attributes between plug-in types
+  // so right now, we just check ot make sure that facebook is returning a plugin and displaying it at the correct time.
+  
   popped.exec( 2, function() {
-    ok ( document.getElementById( "likediv" ).innerHTML.length > 0, "No type specified. Like button added to div" );
+    ok ( document.getElementById( "likediv" ).innerHTML, "likediv is not empty at 0:02 (expected)" );
     plus();
   });
   
   popped.exec( 3, function() {
-    ok ( document.getElementById( "likeboxdiv" ).innerHTML.length === 0, "Like box is not added to div" );
+    ok ( document.getElementById( "likeboxdiv" ).innerHTML, "likeboxdiv is not empty at 0:03 (expected)" );
     plus();
   });
   
   popped.exec( 4, function() {
-    ok ( document.getElementById( "activitydiv" ).innerHTML.length > 0, "Activity feed is added to div" );
+    ok ( document.getElementById( "activitydiv" ).innerHTML, "Activitydiv is not empty at 0:04 (expected)" );
     plus();
   });
   
   popped.exec( 5, function() {
-    ok ( document.getElementById( "facepilediv" ).innerHTML.length > 0, "Facepile is added to div" );
+    ok ( document.getElementById( "facepilediv" ).innerHTML, "Facepilediv is not empty at 0:05 (expected)" );
     plus();
   });
 });
