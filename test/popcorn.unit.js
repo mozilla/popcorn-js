@@ -492,6 +492,88 @@ test("exec", function () {
 
 });
 
+test( "Popcorn.extend", function () {
+  
+  QUnit.reset();
+  
+  expect( 12 );
+  
+  var dest = {},
+      obj1 = {
+        "key11" : "value",
+        "key12" : 9001,
+        "key13" : function() { return true; }
+      },
+      obj2 = {
+        "key21" : "String",
+        "key22" : 9002,
+        "key23" : function() { return false; }
+      },
+      prop;
+      
+  Popcorn.extend( dest, obj1 );
+  
+  for ( prop in obj1 ) {
+    equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop );
+  }
+  
+  equal( typeof dest[ "key13" ], "function", "dest[key13] is a function" );
+  
+  dest = {};
+  
+  Popcorn.extend( dest, obj1, obj2 );
+  
+  for ( prop in obj1 ) {
+    equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop + ", when extending 2 objects" );
+  }
+
+  for ( prop in obj2 ) {
+    equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop + ", when extending 2 objects" );
+  }
+  
+  equal( typeof dest[ "key13" ], "function","dest[key13] is a function" );
+  
+  equal( typeof dest[ "key23" ], "function","dest[key23] is a function" );
+  
+});
+
+test( "Popcorn.events", function() {
+
+  QUnit.reset()
+  expect( 43 );
+  
+  var eventTypes = [ "UIEvents", "MouseEvents", "Events" ], 
+      natives = "", 
+      events, 
+      eventsReturned,
+      idx = 0,
+      len,
+      okay = true;
+
+  eventTypes.forEach (function( e ) {
+    ok( Popcorn.Events[ e ], e + " Exists")
+  });
+
+  natives = Popcorn.Events[ eventTypes[ 0 ] ] + " " + Popcorn.Events[ eventTypes[ 1 ] ] + " " + Popcorn.Events[ eventTypes[ 2 ] ];
+  events = natives.split( /\s+/g );
+  eventsReturned = Popcorn.events.all;
+  len = events.length;
+
+  for ( ; idx++ < len && okay; ) {
+    okay = events[ idx ] === eventsReturned[ idx ];
+  }
+
+  ok( okay, "Native events are correctly being handled" );
+
+  equals( typeof Popcorn.Events.Natives, "string", "Popcorn.Events.Natives is a string" );
+  equals( typeof Popcorn.events, "object", "Popcorn.events is an object" );
+
+  Popcorn.forEach( eventsReturned, function ( e ) {
+    ok( Popcorn.events.isNative ( e ), e + " is a native event" );
+  });
+
+});
+
 module("Popcorn Position");
 test("position", function () {
 
@@ -926,27 +1008,30 @@ test("Update Timer", function () {
   QUnit.reset();
 
   var p2 = Popcorn("#video"),
-      expects = 4,
+      expects = 12,
       count   = 0,
       // These make sure events are only fired once
       // any second call will produce a failed test
       forwardStart  = false,
       forwardEnd    = false,
       backwardStart = false,
-      backwardEnd   = false;
+      backwardEnd   = false,
+      wrapperRunning = { one: false, two: false, };
 
   function plus() {
     if ( ++count === expects ) {
-      start();
       // clean up added events after tests
-      Popcorn.removePlugin("forwards");
-      Popcorn.removePlugin("backwards");
+      Popcorn.removePlugin( "forwards" );
+      Popcorn.removePlugin( "backwards" );
+      Popcorn.removePlugin( "wrapper" );
+      p2.removePlugin( "exec" );
+      start();
     }
   }
 
-  stop(10000);
+  stop( 10000 );
 
-  Popcorn.plugin("forwards", function () {
+  Popcorn.plugin( "forwards", function () {
     return {
       start: function () {
         forwardStart = !forwardStart;
@@ -967,7 +1052,7 @@ test("Update Timer", function () {
     end: 4
   });
 
-  Popcorn.plugin("backwards", function () {
+  Popcorn.plugin( "backwards", function () {
     return {
       start: function () {
         backwardStart = !backwardStart;
@@ -979,6 +1064,7 @@ test("Update Timer", function () {
         backwardEnd = !backwardEnd;
         ok( backwardEnd, "backward's end fired");
         plus();
+        p2.currentTime(5).play();
       }
     };
   });
@@ -986,6 +1072,59 @@ test("Update Timer", function () {
   p2.backwards({
     start: 1,
     end: 2
+  });
+
+  Popcorn.plugin( "wrapper", {
+    start: function ( event, options ) {
+
+      wrapperRunning[ options.wrapper ] = true;
+    },
+    end: function ( event, options ) {
+
+      wrapperRunning[ options.wrapper ] = false;
+    }
+  });
+
+  p2.wrapper({
+    start: 6,
+    end: 7,
+    wrapper: "one"
+  })
+  .wrapper({
+    start: 5,
+    end: 8,
+    wrapper: "two"
+  })
+  .exec( 5, function() {
+
+    ok( wrapperRunning.two, "wrapper two is running" );
+    plus();
+    ok( !wrapperRunning.one, "wrapper one is stopped" );
+    plus();
+  })
+  // checking wrapper 1's start
+  .exec( 6, function() {
+
+    ok( wrapperRunning.two, "wrapper two is running" );
+    plus();
+    ok( wrapperRunning.one, "wrapper one is running" );
+    plus();
+  })
+  // checking wrapper 1's end
+  .exec( 7, function() {
+
+    ok( wrapperRunning.two, "wrapper two is running" );
+    plus();
+    ok( !wrapperRunning.one, "wrapper one is stopped" );
+    plus();
+  })
+  // checking wrapper 2's end
+  .exec( 9, function() {
+
+    ok( !wrapperRunning.two, "wrapper two is stopped" );
+    plus();
+    ok( !wrapperRunning.one, "wrapper one is stopped" );
+    plus();
   });
 
   p2.currentTime(3).play();
