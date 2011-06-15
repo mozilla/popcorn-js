@@ -27,14 +27,14 @@ test( "Popcorn lower third Plugin", function () {
   
   popped.lowerthird({
       start: 0, // seconds
-      end: 5, // seconds
+      end: 2, // seconds
       salutation: "Mr",
       name: "Hyde",
       role: "Monster"
     } )
     .lowerthird({
-      start: 3, // seconds
-      end: 10, // seconds
+      start: 2, // seconds
+      end: 4, // seconds
       target: "lowerthirddiv",
       salutation: "Dr",
       name: "Jekyll",
@@ -47,12 +47,12 @@ test( "Popcorn lower third Plugin", function () {
     plus();
   });
   
-  popped.exec( 4, function() {
+  popped.exec( 3, function() {
     equals ( lowerthirddiv.innerHTML, "Dr Jekyll<br>Person", "second lowerthird is visible" );
     plus();
   });
   
-  popped.exec( 11, function() {
+  popped.exec( 5, function() {
     equals ( popped.container.innerHTML, "", "first lowerthird is empty" );
     plus();
     equals ( lowerthirddiv.innerHTML, "", "second lowerthird is empty" );

@@ -28,7 +28,7 @@ test( "Popcorn OpenMap Plugin", function () {
   
   popped.openmap({
     start: 0,
-    end: 5,
+    end: 4,
     type: 'ROADMAP',
     target: 'map',
     lat: 43.665429,
@@ -37,7 +37,7 @@ test( "Popcorn OpenMap Plugin", function () {
   } )
   .openmap({
     start: 0,
-    end: 5,
+    end: 4,
     type: 'SATELLITE',
     target: 'map2',
     lat: 40.943926,
@@ -46,7 +46,7 @@ test( "Popcorn OpenMap Plugin", function () {
   } )
   .openmap( {
     start: 0,
-    end: 5,
+    end: 4,
     type: 'TERRAIN',
     target: 'map3',
     lat: 40.943926,
@@ -55,7 +55,7 @@ test( "Popcorn OpenMap Plugin", function () {
   } )
   .openmap( {
     start: 0,
-    end: 5,
+    end: 4,
     target: 'map4',
     lat: 40.943926,
     lng: -78.968525,
@@ -66,7 +66,7 @@ test( "Popcorn OpenMap Plugin", function () {
 
   setupId = popped.getLastTrackEventId();
 
-  popped.exec( 4, function() {
+  popped.exec( 3, function() {
     ok(OpenLayers, "OpenLayers is available");
     plus();
 
@@ -94,7 +94,7 @@ test( "Popcorn OpenMap Plugin", function () {
     plus();
 
   } )
-  .exec( 6, function() {
+  .exec( 5, function() {
     ok (document.getElementById('openmapdiv2').style.display === "none" && 
         document.getElementById('openmapdiv3').style.display === "none" && 
         document.getElementById('openmapdiv4').style.display === "none" &&
