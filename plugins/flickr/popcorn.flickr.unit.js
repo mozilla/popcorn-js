@@ -26,14 +26,14 @@ test("Popcorn Flickr Plugin", function () {
     start: 0, // seconds
     end: 3,   // seconds
     userid: '35034346917@N01',
-    numberofimages: '1',
+    numberofimages: 1,
     target: 'flickrdiv'
   } )
   .flickr({
     start: 4,
     end: 7,
     tags: "georgia",
-    numberofimages: "8",
+    numberofimages: 8,
     target: "flickrdiv"
   })
   .flickr({
@@ -41,7 +41,7 @@ test("Popcorn Flickr Plugin", function () {
     end: 10,   // seconds
     username: 'AniaSob',
     apikey: 'd1d249260dd1673ec8810c8ce5150ae1',
-    numberofimages: '1',
+    numberofimages: 1,
     target: 'flickrdiv'
   });
 
