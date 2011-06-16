@@ -40,6 +40,9 @@
         } )
    *
    */
+
+  var idx = 0;
+
   Popcorn.plugin( "flickr" , function( options ) {
     var containerDiv,
         _userid,
@@ -50,17 +53,16 @@
         _height  = options.height || "50px",
         _width   = options.width || "50px",
         _padding = options.padding || "5px",
-        _border  = options.border || "0px",
-        i;
+        _border  = options.border || "0px";
 
     // create a new div this way anything in the target div is left intact
     // this is later populated with Flickr images
     containerDiv               = document.createElement( "div" );
-    containerDiv.id            = "flickr"+ i;
+    containerDiv.id            = "flickr" + idx;
     containerDiv.style.width   = "100%";
     containerDiv.style.height  = "100%";
     containerDiv.style.display = "none";
-    i++;
+    idx++;
     
     // ensure the target container the user chose exists
     if ( document.getElementById( options.target ) ) {
