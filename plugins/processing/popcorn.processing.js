@@ -2,40 +2,39 @@
 /**
 * Processing popcorn plug-in
 */
- 
+
 (function (Popcorn) {
 
   var processingLoaded = false,
-  
+
     toggle = function( on, options ) {
-      var pcorn = options.popcornInstance,
-          instance = options.pjsInstance,
+      var instance = options.pjsInstance,
           canvas = options.canvas;
       if ( canvas && options.isReady ) {
         if ( on ) {
           canvas.style.display = "inline";
-          !pcorn.media.paused && instance.loop();
+          !this.media.paused && instance.loop();
         } else {
           canvas.style.display = "none";
           instance.noLoop();
         }
       } else {
         setTimeout ( function() {
-          toggle ( on, options );
-        }, 10 ); 
+          toggle.call ( this, on, options );
+        }, 10 );
       }
     },
-    
-    load = function() {    
+
+    load = function() {
       Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.js", function() {
         processingLoaded = true;
       });
     };
-  
+
   load();
 
   Popcorn.plugin( "processing" , function ( options ) {
-  
+
     var init = function( context ) {
       var popcorn = context,
       initProcessing,
@@ -59,7 +58,7 @@
           initProcessing();
         }
       });
-      
+
       initProcessing = function() {
         if ( codeReady && window.Processing ) {
           options.pjsInstance = new Processing( options.canvas, processingCode );
@@ -79,9 +78,9 @@
         }
       };
     };
-  
+
     return {
-    
+
       manifest: {
         about: {
           name: "Popcorn Processing Plugin",
@@ -98,29 +97,28 @@
           func :    { elem: "input", type: "text", label: "Function" }
         }
       },
-      
+
       _setup: function( options ) {
-      
-        var processingCode, 
+
+        var processingCode,
             codeReady = false,
             self = this,
-        
+
         readyCheck = function() {
           if ( !processingLoaded ) {
             load();
-          } 
+          }
         };
         readyCheck();
         init( self );
-        options.popcornInstance = this;
       },
-      
+
       start: function( event, options ) {
-        toggle ( true, options );
+        toggle.call ( this, true, options );
       },
-      
+
       end: function( event, options ) {
-        toggle ( false, options );
+        toggle.call ( this, false, options );
       }
     };
   });
