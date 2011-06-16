@@ -14,19 +14,22 @@
         start: 2,
         end: 10,
         target: 'processing-div',
-        sketch: 'test.pjs'       
+        sketch: 'test.pjs',
+        noPause: true
       } )
       .processing({
         start: 10,
         end: 15,
         target: 'processing-div2',
-        sketch: 'test2.pjs'
+        sketch: 'test2.pjs',
+        noPause: false
       } )
      .processing({
         start: 15,
         end: 20,
         sketch: 'test.pjs',
         target: 'processing-div2',
+        noPause: true
       } )
     window.popped = p;
     }, false);
@@ -55,11 +58,8 @@
     </video>
   </div>
   <div id="processing-div" width="50%" height="50%">
-  <hr />
   </div>
   <div id="processing-div2" width="50%" height="50%">
-
   </div>
-
   </body>
 </html>

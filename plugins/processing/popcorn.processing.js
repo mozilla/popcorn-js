@@ -20,7 +20,7 @@
         }
       } else {
         setTimeout ( function() {
-          toggle.call ( this, on, options );
+          toggle.call( this, on, options );
         }, 10 );
       }
     },
@@ -60,8 +60,7 @@
       });
 
       initProcessing = function() {
-        if ( codeReady && window.Processing ) {
-          options.pjsInstance = new Processing( options.canvas, processingCode );
+        var addListeners = function() {
           popcorn.listen( "pause", function () {
             if ( options.canvas.style.display === "inline" ) {
               options.pjsInstance.noLoop();
@@ -72,7 +71,13 @@
               options.pjsInstance.loop();
             }
           });
+        };
+        
+        if ( codeReady && window.Processing ) {
+          options.pjsInstance = new Processing( options.canvas, processingCode );
+          !options.noPause && addListeners();
           options.isReady = true;
+          options.isLooping = false;
         } else {
           setTimeout ( initProcessing, 10 );
         }
@@ -91,10 +96,9 @@
         options: {
           start :   { elem: "input", type: "text", label: "In" },
           end :     { elem: "input", type: "text", label: "Out" },
-          control : { elem: "input", type: "text", label: "Control" },
           target :  { elem: "input", type: "text", label: "Target" },
           sketch :  { elem: "input", type: "text", label: "Sketch" },
-          func :    { elem: "input", type: "text", label: "Function" }
+          noPause : { elem: "select", options: [ "TRUE", "FALSE" ], label: "No Loop" }
         }
       },
 
@@ -114,11 +118,11 @@
       },
 
       start: function( event, options ) {
-        toggle.call ( this, true, options );
+        toggle.call( this, true, options );
       },
 
       end: function( event, options ) {
-        toggle.call ( this, false, options );
+        toggle.call( this, false, options );
       }
     };
   });
