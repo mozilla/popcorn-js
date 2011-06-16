@@ -77,7 +77,6 @@
           options.pjsInstance = new Processing( options.canvas, processingCode );
           !options.noPause && addListeners();
           options.isReady = true;
-          options.isLooping = false;
         } else {
           setTimeout ( initProcessing, 10 );
         }
