@@ -86,13 +86,14 @@
     };
     // get the photos from Flickr API by using the user_id and/or tags
     var getFlickrData = function() { 
-      _uri  = "http://api.flickr.com/services/feeds/photos_public.gne?";        
-      _uri += "id=" + _userid + "&";
+      _uri  = "http://api.flickr.com/services/feeds/photos_public.gne?";
+      if ( _userid ) {       
+        _uri += "id=" + _userid + "&";
+      }
       if ( options.tags ) {
         _uri += "tags=" + options.tags + "&";
       }
       _uri += "lang=en-us&format=json&jsoncallback=flickr";
-      
       Popcorn.xhr.getJSONP( _uri, function( data ) {
         containerDiv.innerHTML = "<p style='padding:" + _padding + ";'>" + data.title + "<p/>";
         
@@ -114,12 +115,13 @@
         });
       });
     };
-    if ( options.userid ) {
+
+    if ( options.username && options.apikey ) {
+      isUserIDReady();
+    }
+    else {
       _userid = options.userid;
       getFlickrData();
-      
-    } else if ( options.username && options.apikey ) {
-      isUserIDReady();
     }
     return {
       /**
