@@ -44,7 +44,7 @@
       } else if ( parentTarget.tagName === "DIV" ) {
         options.canvas = document.createElement( "canvas" );
         // +new Date() is used here to create unique id's for canvas' within the same div.
-        options.canvas.id = options.target + "Sketch" + +new Date();
+        options.canvas.id = options.target + "Sketch" + (+new Date());
         options.canvas.setAttribute( "data-processing-sources", options.sketch );
         parentTarget.appendChild( options.canvas );
       }
