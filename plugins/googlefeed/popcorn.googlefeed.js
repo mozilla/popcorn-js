@@ -31,7 +31,7 @@
       css.rel = "stylesheet";
       css.href =  "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css";
       head.insertBefore( css, head.firstChild );
-      }
+    }
   }
 
   if ( typeof google === "undefined" ) {
