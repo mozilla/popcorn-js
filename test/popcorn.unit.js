@@ -1029,20 +1029,31 @@ test("Update Timer", function () {
     }
   }
 
-  stop( 10000 );
+  // These tests come close to 10 seconds on chrome, increasing to 15
+  stop( 15000 );
 
   Popcorn.plugin( "forwards", function () {
     return {
-      start: function () {
-        forwardStart = !forwardStart;
-        ok( forwardStart, "forward's start fired");
-        plus();
+      start: function ( event, options ) {
+
+        if ( !options.startFired ) {
+
+          options.startFired = true;
+          forwardStart = !forwardStart;
+          ok( forwardStart, "forward's start fired");
+          plus();
+        }
       },
-      end: function () {
-        forwardEnd = !forwardEnd;
-        p2.currentTime(1).play();
-        ok( forwardEnd, "forward's end fired");
-        plus();
+      end: function ( event, options ) {
+
+        if ( !options.endFired ) {
+
+          options.endFired = true;
+          forwardEnd = !forwardEnd;
+          p2.currentTime(1).play();
+          ok( forwardEnd, "forward's end fired");
+          plus();
+        }
       }
     };
   });
@@ -1054,17 +1065,27 @@ test("Update Timer", function () {
 
   Popcorn.plugin( "backwards", function () {
     return {
-      start: function () {
-        backwardStart = !backwardStart;
-        p2.currentTime(0).play();
-        ok( true, "backward's start fired");
-        plus();
+      start: function ( event, options ) {
+
+        if ( !options.startFired ) {
+
+          options.startFired = true;
+          backwardStart = !backwardStart;
+          p2.currentTime(0).play();
+          ok( true, "backward's start fired");
+          plus();
+        }
       },
-      end: function () {
-        backwardEnd = !backwardEnd;
-        ok( backwardEnd, "backward's end fired");
-        plus();
-        p2.currentTime(5).play();
+      end: function ( event, options ) {
+
+        if ( !options.endFired ) {
+
+          options.endFired = true;
+          backwardEnd = !backwardEnd;
+          ok( backwardEnd, "backward's end fired");
+          plus();
+          p2.currentTime( 5 ).play();
+        }
       }
     };
   });
@@ -1085,6 +1106,7 @@ test("Update Timer", function () {
     }
   });
 
+  // second instance of wrapper is wrapping the first
   p2.wrapper({
     start: 6,
     end: 7,
@@ -1095,35 +1117,36 @@ test("Update Timer", function () {
     end: 8,
     wrapper: "two"
   })
+  // checking wrapper 2's start
   .exec( 5, function() {
 
-    ok( wrapperRunning.two, "wrapper two is running" );
+    ok( wrapperRunning.two, "wrapper two is running at second 5" );
     plus();
-    ok( !wrapperRunning.one, "wrapper one is stopped" );
+    ok( !wrapperRunning.one, "wrapper one is stopped at second 5" );
     plus();
   })
   // checking wrapper 1's start
   .exec( 6, function() {
 
-    ok( wrapperRunning.two, "wrapper two is running" );
+    ok( wrapperRunning.two, "wrapper two is running at second 6" );
     plus();
-    ok( wrapperRunning.one, "wrapper one is running" );
+    ok( wrapperRunning.one, "wrapper one is running at second 6" );
     plus();
   })
   // checking wrapper 1's end
   .exec( 7, function() {
 
-    ok( wrapperRunning.two, "wrapper two is running" );
+    ok( wrapperRunning.two, "wrapper two is running at second 7" );
     plus();
-    ok( !wrapperRunning.one, "wrapper one is stopped" );
+    ok( !wrapperRunning.one, "wrapper one is stopped at second 7" );
     plus();
   })
   // checking wrapper 2's end
-  .exec( 9, function() {
+  .exec( 8, function() {
 
-    ok( !wrapperRunning.two, "wrapper two is stopped" );
+    ok( !wrapperRunning.two, "wrapper two is stopped at second 9" );
     plus();
-    ok( !wrapperRunning.one, "wrapper one is stopped" );
+    ok( !wrapperRunning.one, "wrapper one is stopped at second 9" );
     plus();
   });
 
