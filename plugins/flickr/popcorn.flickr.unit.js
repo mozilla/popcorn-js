@@ -1,7 +1,7 @@
 test("Popcorn Flickr Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 8, 
+      expects = 10, 
       count = 0,
       setupId,
       flickrdiv = document.getElementById('flickrdiv');
@@ -24,14 +24,21 @@ test("Popcorn Flickr Plugin", function () {
   
   popped.flickr({
     start: 0, // seconds
-    end: 2,   // seconds
+    end: 3,   // seconds
     userid: '35034346917@N01',
     numberofimages: '1',
     target: 'flickrdiv'
   } )
   .flickr({
-    start: 2, // seconds
-    end: 4,   // seconds
+    start: 4,
+    end: 7,
+    tags: "georgia",
+    numberofimages: "8",
+    target: "flickrdiv"
+  })
+  .flickr({
+    start: 8, // seconds
+    end: 10,   // seconds
     username: 'AniaSob',
     apikey: 'd1d249260dd1673ec8810c8ce5150ae1',
     numberofimages: '1',
@@ -40,28 +47,38 @@ test("Popcorn Flickr Plugin", function () {
 
   setupId = popped.getLastTrackEventId();
 
-  popped.exec( 1, function() {
-    ok( /display: inline;/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
-    plus();
-    ok( /img/.test( flickrdiv.innerHTML ), "An image exists" );
-    plus();
-  });
-  
-  popped.exec( 3, function() {
+  popped.exec( 2, function() {
     ok( /display: inline;/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
     plus();
     ok( /img/.test( flickrdiv.innerHTML ), "An image exists" );
     plus();
   });
 
-  popped.exec( 4, function() {
+  popped.exec( 5, function() {
+    var numberOfImages = document.getElementById( "flickrdiv" ).childNodes[1].getElementsByTagName( "a" ).length;
+
+    ok( /display: inline;/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
+    plus();
+    
+    ok( /img/.test( flickrdiv.innerHTML ), "An image exists" );
+    plus();
+    
+    ok( /display: inline;/.test( flickrdiv.innerHTML ), "Images tagged 'georgia' are displayed in div" );
+    plus();
+    
+    equal( numberOfImages, 8, "There are 8 images tagged 'georgia' being displayed" );
+    plus();
+  });
+  
+  popped.exec( 11, function() {
     ok( /display: none;/.test( flickrdiv.innerHTML ), "Div contents are hidden again" );
     plus();
 
     popped.pause().removeTrackEvent( setupId );
-    ok( !flickrdiv.children[1], "removed flickr was properly destroyed"  );
+    ok( !flickrdiv.children[2], "removed flickr was properly destroyed"  );
     plus();
   });
+  
   popped.volume(0).play();
   
 });
