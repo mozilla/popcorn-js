@@ -71,20 +71,26 @@ test( "Processing plugin tests", function() {
   });
   
   //check that three canvases were created
-  canvases = document.getElementsByTagName( "canvas" ); 
+  canvases = document.querySelectorAll( "canvas" ); 
   equals( canvases.length, 3, "Three canvases are present" );
   plus();
+
+  var called = 0;
   
-  Popcorn.forEach( canvases, function( ctx ) {
+  //enable this when ticket #583 lands
+  //Popcorn.forEach( canvases, function( ctx, idx ) {
+  [].forEach.call( canvases, function( ctx ) {
+ 
     var idCount = 0, i = -1, len = canvases.length;
     for ( ; ++i < len; ){
       if ( ctx.id === canvases[ i ].id ) {
         idCount++;
       }
     }
+
     equals( idCount, 1, ctx.id + " is a unique canvas id" );
     plus();
-    
+
     equals( ctx.style.display, "none", ctx.id + " is hidden initially" );
     plus();
   });
