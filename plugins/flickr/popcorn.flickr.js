@@ -72,13 +72,16 @@
     // get the userid from Flickr API by using the username and apikey
     var isUserIDReady = function() {
       if ( !_userid ) {
+
         _uri  = "http://api.flickr.com/services/rest/?method=flickr.people.findByUsername&";        
         _uri += "username=" + options.username + "&api_key=" + options.apikey + "&format=json&jsoncallback=flickr";
         Popcorn.xhr.getJSONP( _uri, function(data) {
           _userid = data.user.nsid;
           getFlickrData();
         });
+
       } else {
+
         setTimeout(function () {
           isUserIDReady();
         }, 5);
@@ -99,6 +102,7 @@
         
         Popcorn.forEach( data.items, function ( item, i ) {
           if ( i < _count ) {
+
             _link = document.createElement( 'a' );
             _link.setAttribute( 'href', item.link );
             _link.setAttribute( "target", "_blank" );
@@ -109,7 +113,9 @@
             _image.setAttribute( 'style', 'border:' + _border + ';padding:' + _padding );
             _link.appendChild( _image );         
             containerDiv.appendChild( _link );
+
           } else {
+
             return false;
           }
         });
@@ -149,24 +155,68 @@
   },
   {
     about:{
-      name:    "Popcorn Flickr Plugin",
+      name: "Popcorn Flickr Plugin",
       version: "0.2",
-      author:  "Scott Downe, Steven Weerdenburg, Annasob",
+      author: "Scott Downe, Steven Weerdenburg, Annasob",
       website: "http://scottdowne.wordpress.com/"
     },
     options:{
-      start          : {elem:'input', type:'number', label:'In'},
-      end            : {elem:'input', type:'number', label:'Out'},
-      userid         : {elem:'input', type:'text',   label:'UserID'},
-      tags           : {elem:'input', type:'text',   label:'Tags'},
-      username       : {elem:'input', type:'text',   label:'Username'},
-      apikey        : {elem:'input', type:'text',   label:'Api_key'},
-      target         :  'flickr-container',
-      height         : {elem:'input', type:'text', label:'Height'},
-      width          : {elem:'input', type:'text', label:'Width'},
-      padding        : {elem:'input', type:'text', label:'Padding'},
-      border         : {elem:'input', type:'text', label:'Border'},
-      numberofimages : {elem:'input', type:'text', label:'Number of Images'}
+      start: {
+        elem: "input", 
+        type: "number", 
+        label: "In"
+      },
+      end: {
+        elem: "input", 
+        type: "number", 
+        label: "Out"
+      },
+      userid: {
+        elem: "input", 
+        type: "text",
+        label: "UserID"
+      },
+      tags: {
+        elem: "input", 
+        type: "text",
+        label: "Tags"
+      },
+      username: {
+        elem: "input", 
+        type: "text",
+        label: "Username"
+      },
+      apikey: {
+        elem: "input", 
+        type: "text",
+        label: "Api_key"
+      },
+      target: "flickr-container",
+      height: {
+        elem: "input", 
+        type: "text", 
+        label: "Height"
+      },
+      width: {
+        elem: "input",
+        type: "text",
+        label: "Width"
+      },
+      padding: {
+        elem: "input", 
+        type: "text",
+        label: "Padding"
+      },
+      border: {
+        elem: "input", 
+        type: "text", 
+        label: "Border"
+      },
+      numberofimages: {
+        elem: "input", 
+        type: "text", 
+        label: "Number of Images"
+      }
     }
   });
 })( Popcorn );
