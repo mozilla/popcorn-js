@@ -312,7 +312,7 @@
 
     context = context || this;
 
-    var key;
+    var key, len;
 
     // Use native whenever possible
     if ( forEach && obj.forEach === forEach ) {
