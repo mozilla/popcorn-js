@@ -311,19 +311,22 @@
     }
 
     context = context || this;
+
+    var key;
+
     // Use native whenever possible
     if ( forEach && obj.forEach === forEach ) {
       return obj.forEach( fn, context );
     }
 
     if ( toString.call( obj ) === "[object NodeList]" ) {
-      for ( var key = 0, len = obj.length; key < len; key++ ) {
+      for ( key = 0, len = obj.length; key < len; key++ ) {
         fn.call( context, obj[ key ], key, obj );
       }
       return obj;
     }
 
-    for ( var key in obj ) {
+    for ( key in obj ) {
       if ( hasOwn.call( obj, key ) ) {
         fn.call( context, obj[ key ], key, obj );
       }
