@@ -6,8 +6,8 @@
    * Appends a users Flickr images to an element on the page.
    * Options parameter will need a start, end, target and userid or username and api_key.
    * Optional parameters are numberofimages, height, width, padding, and border
-   * Start is the time that you want this plug-in to execute
-   * End is the time that you want this plug-in to stop executing
+   * Start is the time that you want this plug-in to execute (in seconds)
+   * End is the time that you want this plug-in to stop executing (in seconds)
    * Userid is the id of who's Flickr images you wish to show
    * Tags is a mutually exclusive list of image descriptor tags
    * Username is the username of who's Flickr images you wish to show 
@@ -46,19 +46,19 @@
         _uri,
         _link,
         _image,
-        _count   = options.numberofimages || 4 ,
-        _height  = options.height || "50px",
-        _width   = options.width || "50px",
+        _count = options.numberofimages || 4 ,
+        _height = options.height || "50px",
+        _width = options.width || "50px",
         _padding = options.padding || "5px",
-        _border  = options.border || "0px",
+        _border = options.border || "0px",
         i;
 
     // create a new div this way anything in the target div is left intact
     // this is later populated with Flickr images
-    containerDiv               = document.createElement( "div" );
-    containerDiv.id            = "flickr"+ i;
-    containerDiv.style.width   = "100%";
-    containerDiv.style.height  = "100%";
+    containerDiv = document.createElement( "div" );
+    containerDiv.id = "flickr" + i;
+    containerDiv.style.width = "100%";
+    containerDiv.style.height = "100%";
     containerDiv.style.display = "none";
     i++;
     
@@ -75,7 +75,7 @@
 
         _uri  = "http://api.flickr.com/services/rest/?method=flickr.people.findByUsername&";        
         _uri += "username=" + options.username + "&api_key=" + options.apikey + "&format=json&jsoncallback=flickr";
-        Popcorn.xhr.getJSONP( _uri, function(data) {
+        Popcorn.xhr.getJSONP( _uri, function( data ) {
           _userid = data.user.nsid;
           getFlickrData();
         });
@@ -146,7 +146,7 @@
        * options variable
        */
       end: function( event, options ){      
-          containerDiv.style.display = "none";       
+        containerDiv.style.display = "none";       
       },
       _teardown: function( options ) {
         document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( containerDiv );

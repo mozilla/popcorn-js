@@ -23,9 +23,7 @@ test("Popcorn Flickr Plugin", function () {
   plus();
   
   popped.flickr({
-    // seconds
     start: 0,
-    // seconds
     end: 3,
     userid: "35034346917@N01",
     numberofimages: 1,
@@ -39,9 +37,7 @@ test("Popcorn Flickr Plugin", function () {
     target: "flickrdiv"
   })
   .flickr({
-    // seconds
     start: 8,
-    // seconds
     end: 10,
     username: "AniaSob",
     apikey: "d1d249260dd1673ec8810c8ce5150ae1",
