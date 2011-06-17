@@ -1,7 +1,7 @@
 test("Popcorn attribution Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 8, 
+      expects = 9, 
       count = 0,
       setupId,
       attributiondiv = document.getElementById('attribdiv');
@@ -54,6 +54,10 @@ test("Popcorn attribution Plugin", function () {
   });
   
   popped.exec( 2, function() {
+
+    ok( /target="_blank"/.test( attributiondiv.innerHTML ), "attributions create anchors that target=_blank" );
+    plus();
+
     equals (attributiondiv.children[1].style.display , "inline", "second attribution is visible on the page" );
     plus();
   });
