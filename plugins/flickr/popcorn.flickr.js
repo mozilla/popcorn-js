@@ -84,7 +84,7 @@
 
         setTimeout(function () {
           isUserIDReady();
-        }, 5);
+        }, 5 );
       }
     };
     // get the photos from Flickr API by using the user_id and/or tags
