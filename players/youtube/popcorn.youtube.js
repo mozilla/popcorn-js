@@ -468,7 +468,7 @@ var onYouTubePlayerReady;
     },
     
     startTimeUpdater: function() {
-      var state = this.video.getPlayerState(),
+      var state = typeof this.video.getPlayerState != "function"  ? this.readyState : this.video.getPlayerState(),
           self = this,
           seeked = 0;
       
@@ -479,7 +479,7 @@ var onYouTubePlayerReady;
         seeked = 1;
       } else {
         this.previousCurrentTime = this.currentTime;
-        this.currentTime = this.video.getCurrentTime();
+        this.currentTime = typeof this.video.getCurrentTime != "function" ? this.currentTime : this.video.getCurrentTime();
       }
       
       if ( this.volume !== this.previousVolume ) {
