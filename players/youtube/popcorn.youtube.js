@@ -134,7 +134,7 @@ var onYouTubePlayerReady;
     };
     
     attributes = {
-      id: this.player
+      id: this.playerId
     };
     
     swfobject.embedSWF( "http://www.youtube.com/e/" + this.vidId +"?enablejsapi=1&playerapiid=" + this.playerId + "&version=3", 
