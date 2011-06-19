@@ -42,9 +42,40 @@
   // Garbage collect support test span
   document.head.removeChild( span );
 
+  /**
+   * Word River popcorn plug-in 
+   * Displays a string of text, fading it in and out 
+   * while transitioning across the height of the parent container
+   * for the duration of the instance  (duration = end - start)
+   *  
+   * @param {Object} options
+   * 
+   * Example:
+     var p = Popcorn( '#video' )
+        .wordriver({
+          start: 5,                      // When to begin the Word River animation
+          end: 15,                       // When to finish the Word River animation
+          text: 'Hello World',           // The text you want to be displayed by Word River
+          target: 'wordRiverDiv',        // The target div to append the text to
+          color: "blue"                  // The color of the text. (can be Hex value i.e. #FFFFFF )
+        } )
+   *
+   */
+
   Popcorn.plugin( "wordriver" , {
     
-      manifest: {},
+      manifest: {
+        about:{
+          name: "Popcorn WordRiver Plugin"
+        },
+        options:{
+          start    : {elem:'input', type:'text', label:'In'},
+          end      : {elem:'input', type:'text', label:'Out'},
+          target  :  'wordriver-container',
+          text     : {elem:'input', type:'text', label:'Text'},
+          color    : {elem:'input', type:'text', label:'Color'}
+        }
+      },
 
       _setup: function( options ) {
 
@@ -100,7 +131,7 @@
       _teardown: function( options ) {
 
         // removes word span from generated container
-        options._container.removeChild( options.word );
+        options.word.parentNode && options._container.removeChild( options.word );
 
         // if no more word spans exist in container, remove container
         container[ options.target ] &&

@@ -33,7 +33,7 @@
    * 
    * Example:
      var p = Popcorn('#video')
-        .footnote({
+        .googlenews({
           start:          5,                 // seconds, mandatory
           end:            15,                // seconds, mandatory
           topic:          'oil spill',       // optional

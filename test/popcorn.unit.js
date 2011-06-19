@@ -334,6 +334,25 @@ test("Protected", function () {
 
 });
 
+test("Protected from removal", function () {
+
+  expect( Popcorn.protect.natives.length * 2 );
+
+  Popcorn.protect.natives.forEach(function( name ) {
+
+    try {
+      Popcorn.plugin( name );
+    } catch( e ) {
+      ok( true, e.message + " and cannot be used as a plugin name" );
+    }
+    
+    try {
+      Popcorn.removePlugin( name );
+    } catch( e ) {
+      ok( true, e.message + " and cannot be removed with this API" );
+    }
+  });
+});
 
 
 
@@ -1008,27 +1027,30 @@ test("Update Timer", function () {
   QUnit.reset();
 
   var p2 = Popcorn("#video"),
-      expects = 4,
+      expects = 12,
       count   = 0,
       // These make sure events are only fired once
       // any second call will produce a failed test
       forwardStart  = false,
       forwardEnd    = false,
       backwardStart = false,
-      backwardEnd   = false;
+      backwardEnd   = false,
+      wrapperRunning = { one: false, two: false, };
 
   function plus() {
     if ( ++count === expects ) {
-      start();
       // clean up added events after tests
-      Popcorn.removePlugin("forwards");
-      Popcorn.removePlugin("backwards");
+      Popcorn.removePlugin( "forwards" );
+      Popcorn.removePlugin( "backwards" );
+      Popcorn.removePlugin( "wrapper" );
+      p2.removePlugin( "exec" );
+      start();
     }
   }
 
-  stop(10000);
+  stop( 10000 );
 
-  Popcorn.plugin("forwards", function () {
+  Popcorn.plugin( "forwards", function () {
     return {
       start: function () {
         forwardStart = !forwardStart;
@@ -1049,7 +1071,7 @@ test("Update Timer", function () {
     end: 4
   });
 
-  Popcorn.plugin("backwards", function () {
+  Popcorn.plugin( "backwards", function () {
     return {
       start: function () {
         backwardStart = !backwardStart;
@@ -1061,6 +1083,7 @@ test("Update Timer", function () {
         backwardEnd = !backwardEnd;
         ok( backwardEnd, "backward's end fired");
         plus();
+        p2.currentTime(5).play();
       }
     };
   });
@@ -1068,6 +1091,59 @@ test("Update Timer", function () {
   p2.backwards({
     start: 1,
     end: 2
+  });
+
+  Popcorn.plugin( "wrapper", {
+    start: function ( event, options ) {
+
+      wrapperRunning[ options.wrapper ] = true;
+    },
+    end: function ( event, options ) {
+
+      wrapperRunning[ options.wrapper ] = false;
+    }
+  });
+
+  p2.wrapper({
+    start: 6,
+    end: 7,
+    wrapper: "one"
+  })
+  .wrapper({
+    start: 5,
+    end: 8,
+    wrapper: "two"
+  })
+  .exec( 5, function() {
+
+    ok( wrapperRunning.two, "wrapper two is running" );
+    plus();
+    ok( !wrapperRunning.one, "wrapper one is stopped" );
+    plus();
+  })
+  // checking wrapper 1's start
+  .exec( 6, function() {
+
+    ok( wrapperRunning.two, "wrapper two is running" );
+    plus();
+    ok( wrapperRunning.one, "wrapper one is running" );
+    plus();
+  })
+  // checking wrapper 1's end
+  .exec( 7, function() {
+
+    ok( wrapperRunning.two, "wrapper two is running" );
+    plus();
+    ok( !wrapperRunning.one, "wrapper one is stopped" );
+    plus();
+  })
+  // checking wrapper 2's end
+  .exec( 9, function() {
+
+    ok( !wrapperRunning.two, "wrapper two is stopped" );
+    plus();
+    ok( !wrapperRunning.one, "wrapper one is stopped" );
+    plus();
   });
 
   p2.currentTime(3).play();
@@ -1494,7 +1570,7 @@ test("Remove Plugin", function () {
       p2 = Popcorn("#video"),
       rlen = Popcorn.registry.length,
       count = 0,
-      expects = 21,
+      expects = 23,
       interval;
 
   function plus() {
@@ -1522,17 +1598,23 @@ test("Remove Plugin", function () {
     },
     end: function () {
 
+    },
+    _teardown: function( options ) {
+      ok( true, "teardown called on " + options.order + " plugin via removePlugin()" );
+      plus();
     }
   });
 
   p.removeme({
     start: 2,
-    end: 3
+    end: 3,
+    order: "first"
   });
 
   p2.removeme({
     start: 2,
-    end: 3
+    end: 3,
+    order: "second"
   });
 
   equals( Popcorn.registry.length, 1, "Popcorn.registry.length is 1");

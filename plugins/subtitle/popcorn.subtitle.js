@@ -84,7 +84,7 @@
    * 
    * Example:
      var p = Popcorn('#video')
-        .footnote({
+        .subtitle({
           start:            5,                 // seconds, mandatory
           end:              15,                // seconds, mandatory
           text:             'Hellow world',    // optional
@@ -120,7 +120,7 @@
         options:{
           start    : {elem:'input', type:'text', label:'In'},
           end      : {elem:'input', type:'text', label:'Out'},
-          target  :  'Subtitle-container',
+          target  :  'subtitle-container',
           text     : {elem:'input', type:'text', label:'Text'}
         }
       },
@@ -128,11 +128,11 @@
       _setup: function( options ) {
 
         // Creates a div for all subtitles to use
-        ( !this.container && !options.target || options.target === 'Subtitle-container' ) && 
+        ( !this.container && !options.target || options.target === 'subtitle-container' ) && 
           createDefaultContainer( this );
 
         // if a target is specified, use that
-        if ( options.target && options.target !== 'Subtitle-container' ) {
+        if ( options.target && options.target !== 'subtitle-container' ) {
           options.container = document.getElementById( options.target );
         } else { // use shared default container
           options.container = this.container;

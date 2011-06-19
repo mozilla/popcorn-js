@@ -23,8 +23,8 @@ test('Popcorn Code Plugin', function () {
   plus();
 
   popped.code({
-    start: 1,
-    end: 3,
+    start: 0,
+    end: 2,
     onStart: function( options ) {
       codeDiv.innerHTML = 'Test 1 - onStart (no onEnd)';
       ok(true, 'Test 1 onStart was run.');
@@ -33,8 +33,8 @@ test('Popcorn Code Plugin', function () {
   });
 
   popped.code({
-    start: 5,
-    end: 8,
+    start: 2,
+    end: 4,
     onStart: function( options ) {
       codeDiv.innerHTML = 'Test 2 - onStart';
       ok(true, 'Test 2 onStart was run.');
@@ -48,8 +48,8 @@ test('Popcorn Code Plugin', function () {
   });
 
   popped.code({
-    start: 10,
-    end: 14,
+    start: 4,
+    end: 6,
     onStart: function( options ) {
       codeDiv.innerHTML = 'Test 3 - onStart [Frames: ';
       ok(true, 'Test 3 onStart was run.');

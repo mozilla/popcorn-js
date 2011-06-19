@@ -33,7 +33,7 @@ test( "Popcorn YouTube Plugin Event Tests", function() {
       set1Executed = false,
       set2Executed = false,
       set3Executed = false,
-      expects = expectedEvents.length + 5,
+      expects = expectedEvents.length + 6,
       listeners = [];
       
   stop( 15000 );
@@ -44,6 +44,8 @@ test( "Popcorn YouTube Plugin Event Tests", function() {
   // check time sync
   popcorn.exec(2, function() {
     ok( popcorn.currentTime() >= 2, "Check time synchronization." );
+    plus();
+    ok( popcorn.video.paused == false, "Video is not paused" );
     plus();
   });
   popcorn.exec(49, function() {

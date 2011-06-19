@@ -44,7 +44,7 @@
           start   : {elem:'input', type:'number', label:'In'},
           end     : {elem:'input', type:'number', label:'Out'},
           src     : {elem:'input', type:'text',   label:'Source'},
-          target  : 'Twitter-container',
+          target  : 'twitter-container',
           height  : {elem:'input', type:'number', label:'Height'},
           width   : {elem:'input', type:'number', label:'Width'}
         }

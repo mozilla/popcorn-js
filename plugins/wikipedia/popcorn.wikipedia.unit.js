@@ -30,7 +30,7 @@ test("Popcorn wikipedia Plugin", function () {
     } )
     .wikipedia({
       start: 4, // seconds
-      end: 8, // seconds
+      end: 5, // seconds
       src: 'http://en.wikipedia.org/wiki/S%C3%A3o_Paulo',
       target: 'wikidiv'
     } )
@@ -53,7 +53,7 @@ test("Popcorn wikipedia Plugin", function () {
     plus();
   });
   
-  popped.exec( 5, function() {
+  popped.exec( 4, function() {
     ok (theArticle.innerHTML !== "", "wikidiv now contains information" );
     plus();
     equals (theArticle.childElementCount, 2, "wikidiv now contains two child elements" );

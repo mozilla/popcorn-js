@@ -26,7 +26,7 @@
    * 
    * Example:
      var p = Popcorn('#video')
-        .footnote({
+        .flickr({
           start:          5,                 // seconds, mandatory
           end:            15,                // seconds, mandatory
           userid:         '35034346917@N01', // optional
@@ -159,7 +159,7 @@
       tags           : {elem:'input', type:'text',   label:'Tags'},
       username       : {elem:'input', type:'text',   label:'Username'},
       apikey        : {elem:'input', type:'text',   label:'Api_key'},
-      target         :  'Flickr-container',
+      target         :  'flickr-container',
       height         : {elem:'input', type:'text', label:'Height'},
       width          : {elem:'input', type:'text', label:'Width'},
       padding        : {elem:'input', type:'text', label:'Padding'},
