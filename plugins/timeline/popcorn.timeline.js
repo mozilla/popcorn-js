@@ -11,6 +11,7 @@
      * -Title is the title of the current timeline box
      * -Text is text is simply related text that will be displayed
      * -innerHTML gives the user the option to add things such as links, buttons and so on
+     * -direction specifies whether the timeline will grow from the top or the bottom, receives input as "UP" or "DOWN"
      * @param {Object} options
      *
      * Example:
@@ -39,7 +40,6 @@
   Popcorn.plugin( "timeline" , function( options ) {
 
     var target = document.getElementById( options.target );
-    target.style.float = "left";
     target.style.width = "400px";
     target.style.height = "200px";
     target.style.overflow = "auto";
@@ -48,18 +48,22 @@
     // that already exists in the parent div gets overwritten
     var newdiv = document.createElement( "div" );
     newdiv.style.display = "none";
-    newdiv.id = "timelineDiv"+i;
+    newdiv.id = "timelineDiv" + i;
+
+    options.direction = ( options.direction.toLowerCase()  === "up" || options.direction.toLowerCase()  === "down" )
+                      ? options.direction : "up";
 
     if ( target ) {
 
       target.appendChild( newdiv );
 
       // if this isnt the first div added to the target div
-      if( i ){
-
+      if( i && options.direction.length === 2 ){
         // insert the current div before the previous div inserted
         target.insertBefore( newdiv, document.getElementById( "timelineDiv" + ( i - 1 ) ) );
-       }
+      }
+
+      target.scrollTop = options.direction.toLowerCase() === "down" ? 0 : target.scrollHeight;
     }
     
     i++;
@@ -72,11 +76,11 @@
     
     return {
 
-      start: function( event, options ){
+      start: function( event, options ) {
         newdiv.style.display = "block";
       },
  
-      end: function( event, options ){
+      end: function( event, options ) {
         newdiv.style.display = "none";
       },
 
