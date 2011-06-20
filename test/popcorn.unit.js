@@ -1274,7 +1274,7 @@ test( "Plugin extend", function () {
   QUnit.reset();
 
   var popped = Popcorn("#video"),
-      expects = 40,
+      expects = 43,
       count = 0,
       effectTrackOne,
       effectTrackTwo,
@@ -1303,6 +1303,15 @@ test( "Plugin extend", function () {
 
   expect( expects );
   stop( 15000 );
+
+  ok( Popcorn.compose, "compose method exists" );
+  plus();
+
+  ok( Popcorn.effect, "effect method exists" );
+  plus();
+
+  ok( Popcorn.plugin.effect, "effect method exists" );
+  plus();
 
   Popcorn.plugin( "testPlugin", {});
 
