@@ -1,15 +1,37 @@
-// PLUGIN: Processing
 /**
-* Processing popcorn plug-in
-*/
+ * Processing Popcorn Plug-In
+ *
+ * This plugin adds a Processing.js sketch to be added to a target div or canvas.
+ * 
+ * Options parameter needs to specify start, end, target and  sketch attributes
+ * -Start is the time [in seconds] that you want the sketch to display and start looping. 
+ * -End is the time [in seconds] you want the sketch to become hidden and stop looping.
+ * -Target is the id of the div or canvas you want the target sketch to be displayed in. ( a target that is a div will have a canvas created and placed inside of it. )
+ * -Sketch specifies the filename of the Procesing code to be loaded into Processing.js
+ * -noLoop [optional] specifies whether a sketch should continue to loop when the video is paused or seeking.
+ *
+ * @param {Object} options
+ *
+ * Example:
+ var p = Popcorn( "#video" )
+ .processing({
+   start: 5,
+   end: 10,
+   target: "processing-div",
+   sketch: "processingSketch.pjs",
+   noLoop: true
+ });
+ *
+ */
 
-(function (Popcorn) {
+(function ( Popcorn ) {
 
   var processingLoaded = false,
 
     toggle = function( on, options ) {
       var instance = options.pjsInstance,
           canvas = options.canvas;
+          
       if ( canvas && options.isReady ) {
         if ( on ) {
           canvas.style.display = "inline";
@@ -19,7 +41,7 @@
           instance.noLoop();
         }
       } else {
-        setTimeout ( function() {
+        setTimeout (function() {
           toggle.call( this, on, options );
         }, 10 );
       }
@@ -39,12 +61,13 @@
       var popcorn = context,
       initProcessing,
       parentTarget = document.getElementById( options.target );
+      
       if ( parentTarget.tagName === "CANVAS" ) {
         options.canvas = parentTarget;
       } else if ( parentTarget.tagName === "DIV" ) {
         options.canvas = document.createElement( "canvas" );
         // +new Date() is used here to create unique id's for canvas' within the same div.
-        options.canvas.id = options.target + "Sketch" + (+new Date());
+        options.canvas.id = options.target + "Sketch" + ( +new Date() );
         options.canvas.setAttribute( "data-processing-sources", options.sketch );
         parentTarget.appendChild( options.canvas );
       }
@@ -65,7 +88,7 @@
             if ( options.canvas.style.display === "inline" ) {
               options.pjsInstance.noLoop();
             }
-          } );
+          });
           popcorn.listen( "play", function() {
             if ( options.canvas.style.display === "inline" ) {
               options.pjsInstance.loop();
@@ -75,7 +98,14 @@
         
         if ( codeReady && window.Processing ) {
           options.pjsInstance = new Processing( options.canvas, processingCode );
-          !options.noPause && addListeners();
+          popcorn.listen( "seeking", function() {
+            if ( options.canvas.style.display === "inline" && options.noPause ) {
+              options.pjsInstance.loop();
+            }
+          });
+          
+          options.noPause = options.noPause || false;
+          !options.noPause && addListeners();          
           options.isReady = true;
         } else {
           setTimeout ( initProcessing, 10 );

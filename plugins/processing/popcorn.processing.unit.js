@@ -3,8 +3,8 @@ test( "Processing plugin tests", function() {
       expects = 18,
       count = 0,
       processingDiv = document.getElementById( "processing-div" ),
-      processingDiv2= document.getElementById( "processing-div-2" ),
-      processingDiv3= document.getElementById( "processing-div-3" ),
+      processingDiv2 = document.getElementById( "processing-div-2" ),
+      processingDiv3 = document.getElementById( "processing-div-3" ),
       canvases = [];
 
   expect( expects );
@@ -31,42 +31,42 @@ test( "Processing plugin tests", function() {
 
   popped.processing({
     start: 0,
-    end: 3,
+    end: 1,
     target: "processing-div",
     sketch: "test.pjs"
   })
   .processing({
-    start: 4,
-    end: 7,
+    start: 1,
+    end: 3,
     target: "processing-div-2",
     sketch: "test2.pjs"
   })
   .processing({
-    start: 4,
-    end: 7,
+    start: 3,
+    end: 4,
     target: "processing-div-3",
     sketch: "test.pjs"
   })
-  .exec( 1.5, function() {
+  .exec( 0.5, function() {
     equals( processingDiv.children[ 0 ].style.display, "inline", "canvas '" + processingDiv.children[ 0 ].id + "' is displayed" );
     plus();
     //TODO: David Humphrey has written code that allows for listening to events on Processing instances. when 
     // it lands In the next processing release we'll be able to detect if a processing instance is looping or not.
     // this is required in order to test the noPause functionality (automatically)
   })
-  .exec( 5, function() {
+  .exec( 1.5, function() {
     equals( processingDiv.children[ 0 ].style.display, "none", "canvas '" + processingDiv.children[ 0 ].id + "' is hidden" );
     plus();
-    equals( processingDiv2.children[ 0 ].style.display, "inline", "canvas '" + processingDiv.children[ 0 ].id + "' is displayed" );
+    equals( processingDiv2.children[ 0 ].style.display, "inline", "canvas '" + processingDiv2.children[ 0 ].id + "' is displayed" );
     plus();
-    equals( processingDiv3.children[ 0 ].style.display, "inline", "canvas '" + processingDiv.children[ 0 ].id + "' is displayed" );
+    equals( processingDiv3.children[ 0 ].style.display, "none", "canvas '" + processingDiv3.children[ 0 ].id + "' is hidden" );
     plus();
-  }).exec( 7.5, function() {
+  }).exec( 3.5, function() {
     equals( processingDiv.children[ 0 ].style.display, "none", "canvas '" + processingDiv.children[ 0 ].id + "' is hidden" );
     plus();
-    equals( processingDiv2.children[ 0 ].style.display, "none", "canvas '" + processingDiv.children[ 0 ].id + "' is hidden" );
+    equals( processingDiv2.children[ 0 ].style.display, "none", "canvas '" + processingDiv2.children[ 0 ].id + "' is hidden" );
     plus();
-    equals( processingDiv3.children[ 0 ].style.display, "none", "canvas '" + processingDiv.children[ 0 ].id + "' is hidden" );
+    equals( processingDiv3.children[ 0 ].style.display, "inline", "canvas '" + processingDiv3.children[ 0 ].id + "' is displayed" );
     plus();
   });
   
