@@ -66,7 +66,7 @@
     if ( document.getElementById( options.target ) ) {
       document.getElementById( options.target ).appendChild( containerDiv );
     } else { 
-      throw ( "flickr target container doesn't exist" ); 
+      throw ( "flickr target container doesn't exist" );
     }
     
     // get the userid from Flickr API by using the username and apikey
@@ -75,7 +75,7 @@
 
         _uri  = "http://api.flickr.com/services/rest/?method=flickr.people.findByUsername&";        
         _uri += "username=" + options.username + "&api_key=" + options.apikey + "&format=json&jsoncallback=flickr";
-        Popcorn.xhr.getJSONP( _uri, function( data ) {
+        Popcorn.getJSONP( _uri, function( data ) {
           _userid = data.user.nsid;
           getFlickrData();
         });
@@ -136,7 +136,7 @@
        * of the video reaches the start time provided by the
        * options variable
        */
-      start: function( event, options ){
+      start: function( event, options ) {
         containerDiv.style.display = "inline";
       },
       /**
@@ -145,7 +145,7 @@
        * of the video reaches the end time provided by the
        * options variable
        */
-      end: function( event, options ){      
+      end: function( event, options ) {      
         containerDiv.style.display = "none";       
       },
       _teardown: function( options ) {
@@ -154,13 +154,13 @@
     };
   },
   {
-    about:{
+    about: {
       name: "Popcorn Flickr Plugin",
       version: "0.2",
       author: "Scott Downe, Steven Weerdenburg, Annasob",
       website: "http://scottdowne.wordpress.com/"
     },
-    options:{
+    options: {
       start: {
         elem: "input", 
         type: "number", 
