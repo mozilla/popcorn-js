@@ -642,7 +642,7 @@
 
   //  Protected API methods
   Popcorn.protect = {
-    natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten".toLowerCase().split( /\s+/ )
+    natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten exec".toLowerCase().split( /\s+/ )
   };
 
   // Internal Only - Adds track events to the instance object
@@ -667,17 +667,17 @@
         byEnd = obj.data.trackEvents.byEnd, 
         idx;
 
-    for ( idx = byStart.length-1; idx >= 0; idx-- ) {
+    for ( idx = byStart.length - 1; idx >= 0; idx-- ) {
 
-      if ( track.start >= byStart[idx].start ) {
+      if ( track.start >= byStart[ idx ].start ) {
         byStart.splice( idx + 1, 0, track );
         break;
       }
     }
 
-    for ( idx = byEnd.length-1; idx >= 0; idx-- ) {
+    for ( idx = byEnd.length - 1; idx >= 0; idx-- ) {
 
-      if ( track.start >= byEnd[idx].start ) {
+      if ( track.end > byEnd[ idx ].end ) {
         byEnd.splice( idx + 1, 0, track );
         break;
       }
@@ -836,7 +836,7 @@
   Popcorn.plugin = function( name, definition, manifest ) {
 
     if ( Popcorn.protect.natives.indexOf( name.toLowerCase() ) >= 0 ) {
-      Popcorn.error("'" + name + "' is a protected function name");
+      Popcorn.error( "'" + name + "' is a protected function name" );
       return;
     }
 
@@ -956,6 +956,11 @@
       name = obj;
       obj = Popcorn.p;
 
+      if ( Popcorn.protect.natives.indexOf( name.toLowerCase() ) >= 0 ) {
+        Popcorn.error( "'" + name + "' is a protected function name" );
+        return;
+      }
+
       var registryLen = Popcorn.registry.length,
           registryIdx;
 
@@ -984,6 +989,8 @@
 
       if ( ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) &&
                 ( byEnd[ idx ] && byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) ) {
+
+        byStart[ idx ]._natives._teardown && byStart[ idx ]._natives._teardown.call( obj, byStart[ idx ] );
 
         byStart.splice( idx, 1 );
         byEnd.splice( idx, 1 );

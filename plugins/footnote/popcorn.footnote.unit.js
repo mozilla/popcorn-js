@@ -24,13 +24,13 @@ test("Popcorn Footnote Plugin", function () {
   
   popped.footnote({
     start: 0, // seconds
-    end: 1, // seconds
+    end: 2, // seconds
     text: 'This video made exclusively for drumbeat.org',
     target: 'footnotediv'
   })
   .footnote({
-    start: 1, // seconds
-    end: 2, // seconds
+    start: 2, // seconds
+    end: 4, // seconds
     text: 'Visit webmademovies.org for more details',
     target: 'footnotediv'
   });
@@ -46,12 +46,12 @@ test("Popcorn Footnote Plugin", function () {
     plus();
   });
 
-  popped.exec( 1, function() {
+  popped.exec( 3, function() {
     equals (footnotediv.children[1].style.display , "inline", "second footnote is visible on the page" );
     plus();
   });
 
-  popped.exec( 2, function() {
+  popped.exec( 4, function() {
     ok (footnotediv.children[1].style.display === 'none' &&  footnotediv.children[0].style.display === 'none', "footnote are no longer vidible on the page" );
     plus();
 

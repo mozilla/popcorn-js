@@ -24,13 +24,13 @@ test("Popcorn GML Plugin", function () {
   
   popped.gml({
     start: 0, // seconds
-    end: 1, // seconds
+    end: 2, // seconds
     gmltag: '29582',
     target: 'gmldiv'
   })
   .gml({
-    start: 1, // seconds
-    end: 2, // seconds
+    start: 2, // seconds
+    end: 4, // seconds
     gmltag: '155',
     target: 'gmldiv'
   }).volume( 0 );
@@ -42,12 +42,12 @@ test("Popcorn GML Plugin", function () {
     plus();
   });
   
-  popped.exec( 1, function() {
+  popped.exec( 3, function() {
     equals( gmldiv.children[1].style.display , "block", "second GML is visible on the page" );
     plus();
   });
   
-  popped.exec( 2, function() {
+  popped.exec( 4, function() {
     equals( gmldiv.children[1].style.display , "none", "second GML is no longer visible on the page" );
     plus();
     equals( gmldiv.children[0].style.display , "none", "first GML is no longer visible on the page" );
