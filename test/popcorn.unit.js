@@ -70,6 +70,36 @@ test("Popcorn.* Static Methods", function () {
   });
 });
 
+test("Popcorn.forEach", function() {
+
+  expect(3);
+
+  var count = 0, 
+    nodelist = document.querySelectorAll("div[id^='qunit-']"), 
+    array = [ 1, 2 ], 
+    object = { a: "1", b: "2" };
+
+  Popcorn.forEach( nodelist, function() {
+    count++;
+  });
+
+  equal(count, nodelist.length, nodelist.length + " elements in NodeList");
+  count = 0;
+
+  Popcorn.forEach( array, function() {
+    count++;
+  });
+
+  equal(count, array.length, array.length + " items in Array");
+  count = 0;
+
+  Popcorn.forEach( object, function() {
+    count++;
+  });
+
+  equal(count, Popcorn.sizeOf(object), Popcorn.sizeOf(object) + " properties in object");
+});
+
 test("Popcorn.util.toSeconds" , function () {
   var framerate = 24,
       storedStartTime,
@@ -433,8 +463,8 @@ test("Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
   
   var popped = Popcorn("#video");
 
-	// Calling exec() will create tracks and added them to the
-	// trackreference internally
+  // Calling exec() will create tracks and added them to the
+  // trackreference internally
   popped.exec( 1, function() { /* ... */ });
   popped.exec( 3, function() { /* ... */ });
   popped.exec( 5, function() { /* ... */ });
