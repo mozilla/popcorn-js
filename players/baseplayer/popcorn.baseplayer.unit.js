@@ -55,7 +55,7 @@ test( "API", function () {
   stop( 10000 );
   
   Popcorn.forEach( members, function ( type, prop ) {
-    ok( typeof player[prop] === type, "player." + prop + " is type: " + type );
+    ok( typeof player[ prop ] === type, "player." + prop + " is type: " + type );
     plus();
   });
 });
@@ -78,18 +78,18 @@ test( "Default Functionality", function () {
     }
   }
   
-  player._resource = document.getElementById('player_1');
+  player._resource = document.getElementById( 'player_1' );
   dimensions = player.getBoundingClientRect();
   
   Popcorn.forEach( expectedVals, function() {
-    expects+= 2;
+    expects += 2;
   });
   
   expect( expects );
   stop( 1000 );
   
   Popcorn.forEach( expectedVals, function( val, prop ) {
-    equals( player.getStyle( prop ), val+'px', "Style '" + prop + "' correctly got" );
+    equals( player.getStyle( prop ), val + 'px', "Style '" + prop + "' correctly got" );
     plus();
     
     equals( dimensions[prop], val, "Bounding Client " + prop + " works" );
@@ -137,7 +137,7 @@ test( "Extension and Method Overriding", function () {
     }
   }
   
-  expect(expects);
+  expect( expects );
   stop( 4000 );
   
   Popcorn.extend( player, {
@@ -150,7 +150,7 @@ test( "Extension and Method Overriding", function () {
       plus();
       
       // Must dispatch event so event listeners can work!
-      this.dispatchEvent("timeupdate");
+      this.dispatchEvent( "timeupdate" );
       
       // We don't want to cue custom timing loop using setTimeout because we only want this to run once
     }
@@ -162,12 +162,12 @@ test( "Extension and Method Overriding", function () {
   });
   
   popcorn = Popcorn( playerForPopcorn )
-            .exec( 2, function() {
-              ok( Math.abs(player2.currentTime() - playerForPopcorn.currentTime) < 0.2, "Time update is within a reasonable range" );
-              plus();
-              ok( true, "Exec triggereed from popcorn after 2 seconds" );
-              plus();
-            });
+  .exec( 2, function() {
+    ok( Math.abs( player2.currentTime() - playerForPopcorn.currentTime ) < 0.2, "Time update is within a reasonable range" );
+    plus();
+    ok( true, "Exec triggereed from popcorn after 2 seconds" );
+    plus();
+  });
   
   player.load();
   player2.play();

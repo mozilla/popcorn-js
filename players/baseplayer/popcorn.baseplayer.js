@@ -59,7 +59,7 @@
       
       setTimeout( function() {
         self.timeupdate.call( self );
-      }, 250 );
+      }, 50 );
     },
     
     // By default, assumes this.resource is a DOM Element
@@ -70,7 +70,7 @@
     
     // Add an event listener to the object
     addEventListener: function( evtName, fn ) {
-      if ( !this._events[evtName] ) {
+      if ( !this._events[ evtName ] ) {
         this._events[evtName] = [];
       }
       
@@ -96,7 +96,7 @@
         }
       }
       
-      Popcorn.forEach( this._events[eventName], function( val ) {
+      Popcorn.forEach( this._events[ eventName ], function( val ) {
         val.call( self, evt, self );
       });
     },
@@ -129,13 +129,13 @@
       
       if ( elem.currentStyle ) {
         // IE syntax
-        return elem.currentStyle[prop];
+        return elem.currentStyle[ prop ];
       } else if ( global.getComputedStyle ) {
         // Firefox, Chrome et. al
         return doc.defaultView.getComputedStyle( elem, null ).getPropertyValue( prop );
       } else {
         // Fallback, just in case
-        return elem.style[prop];
+        return elem.style[ prop ];
       }
     }
   };
