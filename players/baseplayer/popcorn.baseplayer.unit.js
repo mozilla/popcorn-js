@@ -119,16 +119,16 @@ test( "Default Functionality", function () {
     
     player.pause();
   });
-  
   player.play();
 });
 
 
 test( "Extension and Method Overriding", function () {
-  var expects = 4,
+  var expects = 5,
       count = 0,
       player = Popcorn.baseplayer(),
       playerForPopcorn = Popcorn.baseplayer(),
+      player2 = Popcorn("#video"),
       popcorn;
       
   function plus() {
@@ -163,11 +163,14 @@ test( "Extension and Method Overriding", function () {
   
   popcorn = Popcorn( playerForPopcorn )
             .exec( 2, function() {
+              ok( Math.abs(player2.currentTime() - playerForPopcorn.currentTime) < 0.2, "Time update is within a reasonable range" );
+              plus();
               ok( true, "Exec triggereed from popcorn after 2 seconds" );
               plus();
             });
   
   player.load();
+  player2.play();
   player.play();
   
   // Each player will define its own criteria for when readyState should be changed
