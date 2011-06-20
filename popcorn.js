@@ -655,8 +655,8 @@
       //  Push track event ids into the history
       obj.data.history.push( track._id );
 
-      track._natives.start = track._natives.start || Popcorn.nop;
-      track._natives.end   = track._natives.end || Popcorn.nop;
+      //track._natives.start = track._natives.start || Popcorn.nop;
+      //track._natives.end   = track._natives.end || Popcorn.nop;
     }
 
     track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );
@@ -816,6 +816,7 @@
     },
 
     removeTrackEvent: function( id ) {
+
       Popcorn.removeTrackEvent.call( null, this, id );
       return this;
     },
@@ -847,7 +848,11 @@
         setup,
         isfn = typeof definition === "function";
 
-    var extendFunction = function( first, second ) {
+    // combines calls of two function calls into one
+    var combineFn = function( first, second ) {
+
+      first = first || Popcorn.nop;
+      second = second || Popcorn.nop;
 
       return function() {
 
@@ -862,6 +867,12 @@
       manifest = definition.manifest || {};
     }
 
+    // apply safe, and empty default functions
+    definition._setup = definition._setup || Popcorn.nop;
+    definition._teardown = definition._teardown || Popcorn.nop;
+    definition.start = definition.start || Popcorn.nop;
+    definition.end = definition.end || Popcorn.nop;
+
     var pluginFn = function( setup, options ) {
 
       if ( !options ) {
@@ -869,23 +880,32 @@
       }
 
       //  Storing the plugin natives
-      options._natives = {}; //setup;
+      var natives = options._natives = {},
+          compose = "";
 
-      Popcorn.extend( options._natives, setup );
-      
+      Popcorn.extend( natives, setup );
+
       options._natives.type = name;
       options._running = false;
 
       // default to an empty string if no effect exists
       // split string into an array of effects
+      options.compose = options.compose && options.compose.split( " " ) || [];
       options.effect = options.effect && options.effect.split( " " ) || [];
 
-      for ( var i = 0; i < options.effect.length; i++ ) {
+      // join the two arrays together
+      options.compose = options.compose.concat( options.effect );
 
-        options._natives._setup = extendFunction( options._natives._setup, Popcorn.effects[ options.effect[ i ] ]._setup );
-        options._natives._teardown = extendFunction( options._natives._teardown, Popcorn.effects[ options.effect[ i ] ]._teardown );
-        options._natives.start = extendFunction( options._natives.start, Popcorn.effects[ options.effect[ i ] ].start );
-        options._natives.end = extendFunction( options._natives.end, Popcorn.effects[ options.effect[ i ] ].end );
+      for ( var i = 0, l = options.compose.length; i < l; i++ ) {
+
+        // if the requested compose is garbage, throw it away
+        compose = Popcorn.compositions[ options.compose[ i ] ] || {};
+
+        // extends previous functions with compose function
+        natives._setup = combineFn( natives._setup, compose._setup );
+        natives._teardown = combineFn( natives._teardown, compose._teardown );
+        natives.start = combineFn( natives.start, compose.start );
+        natives.end = combineFn( natives.end, compose.end );
       }
 
       //  Ensure a manifest object, an empty object is a sufficient fallback
@@ -1024,18 +1044,20 @@
     }
   };
 
-  Popcorn.effects = {};
+  Popcorn.compositions = {};
 
   //  Plugin inheritance
-  Popcorn.effect = function( name, definition, manifest ) {
+  Popcorn.compose = function( name, definition, manifest ) {
 
     //  If `manifest` arg is undefined, check for manifest within the `definition` object
     //  If no `definition.manifest`, an empty object is a sufficient fallback
     Popcorn.manifest[ name ] = manifest = manifest || definition.manifest || {};
 
     // register the effect by name
-    Popcorn.effects[ name ] = definition;
+    Popcorn.compositions[ name ] = definition;
   };
+
+  Popcorn.plugin.effect = Popcorn.effect = Popcorn.compose;
 
   // stores parsers keyed on filetype
   Popcorn.parsers = {};

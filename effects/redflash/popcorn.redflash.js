@@ -24,7 +24,7 @@
         } )
    *
    */
-  Popcorn.effect( "redflash" , {
+  Popcorn.compose( "redflash" , {
     
     manifest: {
       about:{
@@ -54,35 +54,4 @@
       console.log( "in effect teardown" );
     }
   });
-  Popcorn.effect( "redflash2" , {
-    
-    manifest: {
-      about:{
-        name: "Popcorn Redflash Effect",
-        version: "0.1",
-        author: "@scottdowne",
-        website: "scottdowne.wordpress.com"
-      },
-      options:{
-        effect: true
-      }
-    },
-    _setup: function( options ) {
-
-      console.log( "in effect 2 setup" );
-    },
-    start: function( event, options ){
-
-      console.log( "in effect start" );
-    },
-    end: function( event, options ){
-
-      console.log( "in effect end" );
-    },
-    _teardown: function( options ) {
-
-      console.log( "in effect teardown" );
-    }
-  });
-
 })( Popcorn );
