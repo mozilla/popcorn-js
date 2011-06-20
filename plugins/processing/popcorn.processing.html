@@ -6,31 +6,38 @@
   <script src="popcorn.processing.js"></script>
   
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
+    document.addEventListener( "DOMContentLoaded", function () {
+      var p = Popcorn( "#video" )
+      .volume( 0 )
       .play()
       .processing({
         start: 2,
         end: 10,
-        target: 'processing-div',
-        sketch: 'test.pjs',
+        target: "processing-div",
+        sketch: "test.pjs",
         noPause: true
-      } )
+      })
       .processing({
         start: 10,
         end: 15,
-        target: 'processing-div2',
-        sketch: 'test2.pjs',
+        target: "processing-div2",
+        sketch: "test2.pjs",
         noPause: false
-      } )
+      })
      .processing({
         start: 15,
         end: 20,
-        sketch: 'test.pjs',
-        target: 'processing-div2',
+        sketch: "test.pjs",
+        target: "processing-div2",
         noPause: true
-      } )
-    window.popped = p;
+      })
+      .processing({
+        start: 5,
+        end: 15,
+        sketch: "test2.pjs",
+        target: "processing-canvas",
+        noPause: false
+      });
     }, false);
 
   </script>
@@ -60,5 +67,6 @@
   </div>
   <div id="processing-div2" width="50%" height="50%">
   </div>
+  <canvas id="processing-canvas"></canvas>
   </body>
 </html>
