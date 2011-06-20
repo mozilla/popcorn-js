@@ -26,7 +26,7 @@
 
 (function ( Popcorn ) {
 
-  var processingLoaded = false;
+  var processingLoaded = false,
 
       toggle = function( on, options ) {
         var instance = options.pjsInstance,
