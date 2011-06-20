@@ -36,7 +36,6 @@
   css.href = "popcorn.timeline.css";
   head.insertBefore( css, head.firstChild );
 
-
   Popcorn.plugin( "timeline" , function( options ) {
 
     var target = document.getElementById( options.target );
