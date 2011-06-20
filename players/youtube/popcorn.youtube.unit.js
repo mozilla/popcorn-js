@@ -1,6 +1,4 @@
 test( "Popcorn YouTube Plugin Event Tests", function() {
-
-  var popcorn = Popcorn( Popcorn.youtube( 'video', "http://www.youtube.com/e/ac7KhViaVqc" ) );
   
   function plus(){ 
     if ( ++count == expects ) {
@@ -27,7 +25,8 @@ test( "Popcorn YouTube Plugin Event Tests", function() {
     'ended'
   ];
   
-  var count = 0,
+  var popcorn = Popcorn( Popcorn.youtube( 'video', "http://www.youtube.com/e/ac7KhViaVqc" ) ),
+      count = 0,
       eventCount = 0,
       added = [],
       set1Executed = false,
@@ -234,5 +233,34 @@ test( "Popcorn YouTube Plugin Url Regex Test", function() {
   }
   
   start(); 
+});
+
+test( "Controls and Annotations toggling", function() {
+
+  QUnit.reset();
+
+  expect( 6 );
+
+  var popcorn = Popcorn( Popcorn.youtube( "video", "http://www.youtube.com/watch?v=9oar9glUCL0" ) ),
+      targetDiv = document.getElementById( "video" );
+      testTarget = targetDiv.querySelector( "object" ).querySelector( "param:nth-of-type( 4 )" );
+  
+  ok( /controls=1/.test( testTarget.value ), "controls are defaulted to 1 ( displayed )" );
+  ok( /iv_load_policy=1/.test( testTarget.value ), "annotations ( iv_load_policy ) are defaulted to ( enabled )" );
+  
+  targetDiv.innerHTML = "";
+  
+  popcorn = Popcorn( Popcorn.youtube( "video", "http://www.youtube.com/watch?v=9oar9glUCL0", { controls: 1, annotations: 1 } ) );
+  testTarget = targetDiv.querySelector( "object" ).querySelector( "param:nth-of-type( 4 )" );
+  ok( /controls=1/.test( testTarget.value ), "controls is set to 1 ( displayed )" );
+  ok( /iv_load_policy=1/.test( testTarget.value ), "annotations ( iv_load_policy ) is set to 1 ( enabled )" );
+  
+  targetDiv.innerHTML = "";
+  
+  popcorn = Popcorn( Popcorn.youtube( "video", "http://www.youtube.com/watch?v=9oar9glUCL0", { controls: 0, annotations: 3 } ) );
+  testTarget = targetDiv.querySelector( "object" ).querySelector( "param:nth-of-type( 4 )" );
+  ok( /controls=0/.test( testTarget.value ), "controls is set to 0 ( hidden )" );
+  ok( /iv_load_policy=3/.test( testTarget.value ), "annotations ( iv_load_policy ) is set to 3 ( hidden )" );
+   
 });
 
