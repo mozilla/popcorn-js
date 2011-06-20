@@ -39,6 +39,10 @@
   Popcorn.plugin( "timeline" , function( options ) {
 
     var target = document.getElementById( options.target );
+    target.style.float = "left";
+    target.style.width = "400px";
+    target.style.height = "200px";
+    target.style.overflow = "auto";
 
     // create a new div and append it to the parent div so nothing
     // that already exists in the parent div gets overwritten
