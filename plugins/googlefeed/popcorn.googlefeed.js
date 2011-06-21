@@ -2,29 +2,54 @@
 (function (Popcorn) {
 
   var i = 1,
-      scriptLoading = false,
-      scriptLoaded  = false,
-      callBack      = function( data ) {
+      scriptLoaded  = false;
 
-        if ( typeof google !== 'undefined' && google.load ) {
+  var dynamicFeedLoad = function() {
+    var dontLoad = false;
 
-          google.load( "feeds", "1", {
-            callback: function () {
-            
-              Popcorn.getScript( "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js", function() {
+    if ( typeof GFdynamicFeedControl === "undefined" ) {
 
-                scriptLoaded = true;
-              }); 
-            }
-          });
-        } else {
+      Popcorn.getScript( "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js", function() {
+        scriptLoaded = true;
+      }); 
 
-          setTimeout( function() {
+    } else {
+      scriptLoaded = true;
+    }
 
-            callBack( data );
-          }, 1);
+    //  Checking if the css file is already included
+    for ( var k = 0; k < document.getElementsByTagName( "link" ).length; k++ ){
+      if ( document.getElementsByTagName( "link" )[ k ].href == "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css" ) {
+        dontLoad = true;
+      }
+    }
+
+    if ( !dontLoad ) {
+      var head = document.getElementsByTagName( "head" )[ 0 ];
+      var css = document.createElement( "link" );
+      css.type = "text/css";
+      css.rel = "stylesheet";
+      css.href =  "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css";
+      head.insertBefore( css, head.firstChild );
+    }
+  }
+
+  if ( typeof google === "undefined" ) {
+
+    Popcorn.getScript( "http://www.google.com/jsapi", function() {
+
+      google.load( "feeds", "1", {
+
+        callback: function () {
+
+          dynamicFeedLoad();              
         }
-      };
+      });
+    });
+
+  } else {
+    dynamicFeedLoad();
+  }
 
   /**
    * googlefeed popcorn plug-in
@@ -60,14 +85,14 @@
     newdiv.style.height = "100%";
     i++;
 
-    document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( newdiv );
+    document.getElementById( options.target ).appendChild( newdiv );
 
     var initialize = function() {
       //ensure that the script has been loaded
       if ( !scriptLoaded ) {
-        setTimeout(function () {
-          initialize();
-        }, 5);
+        setTimeout( function () {
+          initialize(); 
+        }, 5 );
       } else {
         // Create the feed control using the user entered url and title
         options.feed = new GFdynamicFeedControl( options.url, newdiv, {
@@ -77,21 +102,6 @@
         });
       }
     };
-    
-    if ( !scriptLoading ) {
-
-      scriptLoading = true;
-    
-      Popcorn.getScript( "http://www.google.com/jsapi", callBack );
-
-      //Doing this because I cannot find something similar to getScript() for css files
-      var head = document.getElementsByTagName("head")[0];
-      var css = document.createElement('link');
-      css.type = "text/css";
-      css.rel = "stylesheet";
-      css.href =  "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css";
-      head.insertBefore( css, head.firstChild );
-    }
 
     initialize();
     
@@ -116,7 +126,7 @@
        * of the video reaches the end time provided by the
        * options variable
        */
-      end: function(event, options){
+      end: function( event, options ){
         newdiv.setAttribute( "style", "display:none" );
       },
       _teardown: function( options ) {
@@ -127,9 +137,9 @@
   },
   {
     about: {
-      name: "Popcorn Google Feed Plugin",
+      name:    "Popcorn Google Feed Plugin",
       version: "0.1",
-      author: "David Seifried",
+      author:  "David Seifried",
       website: "dseifried.wordpress.com"
     },
     options: {
@@ -138,7 +148,7 @@
       target         : "feed-container",
       url            : { elem:"input", type:"text", label:"url" },
       title          : { elem:"input", type:"text", label:"title" },
-      orientation    : {elem:"select", options:["Vertical","Horizontal"], label:"orientation"}
+      orientation    : {elem:"select", options:["Vertical","Horizontal"], label:"orientation" }
     }
   });
   
