@@ -1,5 +1,5 @@
 // PLUGIN: Timeline
-(function (Popcorn) {
+(function ( Popcorn ) {
 
   /**
      * timeline popcorn plug-in
@@ -26,11 +26,10 @@
     *
   */
 
-  var i = 1;
-   
-  //  Included simple css to make it look a bit nicer
-  var head = document.getElementsByTagName( "head" )[ 0 ];
-  var css = document.createElement( 'link' );
+  var i = 1,
+      head = document.getElementsByTagName( "head" )[ 0 ],
+      css = document.createElement( "link" );
+
   css.type = "text/css";
   css.rel = "stylesheet";
   css.href = "popcorn.timeline.css";
@@ -38,14 +37,13 @@
 
   Popcorn.plugin( "timeline" , function( options ) {
 
-    var target = document.getElementById( options.target );
+    var target = document.getElementById( options.target ),
+        newdiv = document.createElement( "div" );
+
     target.style.width = "400px";
     target.style.height = "200px";
     target.style.overflow = "auto";
 
-    // create a new div and append it to the parent div so nothing
-    // that already exists in the parent div gets overwritten
-    var newdiv = document.createElement( "div" );
     newdiv.style.display = "none";
     newdiv.id = "timelineDiv" + i;
 
@@ -62,7 +60,6 @@
         target.insertBefore( newdiv, document.getElementById( "timelineDiv" + ( i - 1 ) ) );
       }
 
-      target.scrollTop = options.direction.toLowerCase() === "down" ? 0 : target.scrollHeight;
     }
     
     i++;
@@ -77,6 +74,10 @@
 
       start: function( event, options ) {
         newdiv.style.display = "block";
+        
+        if( options.direction === "down" ) {
+          target.scrollTop = target.scrollHeight;
+        }
       },
  
       end: function( event, options ) {
@@ -100,12 +101,37 @@
     },
 
     options: {
-      start :      { elem:"input", type:"text", label:"In" },
-      end :        { elem:"input", type:"text", label:"Out" },
-      target :     "feed-container",
-      title :      { elem:"input", type:"text", label:"title" },
-      text :       { elem:"input", type:"text", label:"text" },
-      innerHTML:   { elem:"input", type:"text", label:"innerHTML" }
+      start: { 
+        elem: "input",
+        type: "text",
+        label: "In"
+      },
+      end: {
+        elem: "input",
+        type: "text",
+        label: "Out"
+      },
+      target: "feed-container",
+      title: {
+        elem: "input", 
+        type: "text", 
+        label: "title" 
+      },
+      text: {
+        elem: "input", 
+        type: "text", 
+        label: "text" 
+      },
+      innerHTML: { 
+        elem: "input", 
+        type: "text", 
+        label: "innerHTML" 
+      },
+      direction: {
+        elem: "input",
+        type: "text",
+        label: "direction"
+      }
     }
   });
   
