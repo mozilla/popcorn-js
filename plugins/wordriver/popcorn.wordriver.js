@@ -23,7 +23,7 @@
       supports = {},
       prop;
 
-  document.head.appendChild( span );
+  document.getElementsByTagName( "head" )[ 0 ].appendChild( span );
 
   for ( var sIdx = 0, sLen = specProp.length; sIdx < sLen; sIdx++ ) {
 
@@ -40,7 +40,7 @@
   }
 
   // Garbage collect support test span
-  document.head.removeChild( span );
+  document.getElementsByTagName( "head" )[ 0 ].appendChild( span );
 
   /**
    * Word River popcorn plug-in 
