@@ -423,9 +423,8 @@ border: 1px solid #d9d9d9;
 margin-bottom: 15px;
 }
 
-.overlay{
+.applyoverlay{
 z-index: 9001;
-display: none;
 top: 0px;
 left: 0px;
 opacity: 0.2;

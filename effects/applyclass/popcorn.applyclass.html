@@ -5,28 +5,29 @@
   
   <script src="../../popcorn.js"></script>
   <script src="../../plugins/footnote/popcorn.footnote.js"></script>
-  <script src="popcorn.flash.js"></script>
+  <script src="popcorn.applyclass.js"></script>
+  <link href="style.css" rel="stylesheet" type="text/css" />
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener( "DOMContentLoaded", function () {
 
-      var p = Popcorn('#video')
+      var p = Popcorn( "#video" )
       .play() 
       .footnote({
         start: 5, // seconds
         end: 15, // seconds
-        target: "footenotediv",
-        text: 'This video made exclusively for drumbeat.org',
-        effect: "flash"
+        target: "footnotediv",
+        text: "This video made exclusively for drumbeat.org",
+        effect: "applyclass",
+        applyclass: ".overlay: applyoverlay, parent: hover"
       })
       .footnote({
         start: 20, // seconds
         end: 45, // seconds
-        target: "footenotediv",
-        text: 'Visit webmademovies.org for more details',
-        effect: "flash",
-        flashcolor: "green"
-      })
-
+        target: "footnotediv",
+        text: "Visit webmademovies.org for more details",
+        effect: "applyclass",
+        applyclass: ".overlay: applyoverlay, parent: hover"
+      });
     }, false);
 
   </script>
@@ -38,7 +39,7 @@
   <div>
     <video id='video' 
       controls preload='none' 
-      width= '250px'
+      width='250px'
       poster="../../test/poster.png"> 
 
       <source id='mp4'
@@ -53,6 +54,8 @@
 
     </video> 
   </div>
-  <div id="footenotediv"></div>
+    <section>
+      <div id="footnotediv"><div class="overlay"></div></div>
+    </section>
 </body>
 </html>

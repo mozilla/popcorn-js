@@ -81,7 +81,7 @@
     </articles>
   </manifest>
 
-  <timeline>
+  <timeline applyclass=".overlay: applyoverlay, parent: hover" effect="applyclass">
 
     <footnotes>
       <footnote in="00:00:00" out="00:14:00" target="footnotediv">Look around the page as info is updated!</footnote>
