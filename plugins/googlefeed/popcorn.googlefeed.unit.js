@@ -23,7 +23,7 @@ test("Popcorn Google Feed Plugin", function () {
     plus();
   
   popped.googlefeed({
-    start: 0, // seconds
+    start: 1, // seconds
     end: 2, // seconds
     target: "feed",
     url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
@@ -31,8 +31,8 @@ test("Popcorn Google Feed Plugin", function () {
     orientation: "Vertical"
 	})
 	.googlefeed({
-    start: 0, // seconds
-    end: 4, // seconds
+    start: 2, // seconds
+    end: 3, // seconds
     target: "feed1",
     url: "http://blog.pikimal.com/geek/feed/",
     title: "pikiGeek",
@@ -42,7 +42,7 @@ test("Popcorn Google Feed Plugin", function () {
 
   setupId = popped.getLastTrackEventId();
   
-  popped.exec( 0, function() {
+  popped.exec( 1, function() {
     ok(google.load, "Google Feed is available");
     plus();
     ok(GFdynamicFeedControl, "Dynamic Feed Control Available");
@@ -52,13 +52,13 @@ test("Popcorn Google Feed Plugin", function () {
     equals (document.getElementById('_feed1').offsetParent.id, "feed", "First feed is inside the 'feed' div" );
     plus();
   });
-  popped.exec( 3, function() {
+  popped.exec( 2, function() {
     ok (document.getElementById('_feed2'), "Second feed is on the page" );
     plus();
     equals (document.getElementById('_feed2').offsetParent.id, "feed1", "Second feed is inside the 'feed2' div" );
     plus();
   });
-  popped.exec( 4, function() {
+  popped.exec( 3, function() {
     ok (document.getElementById('_feed2').style.display === "none" && 
         document.getElementById('_feed1').style.display === "none", "Both feeds are no lnger visible" );
 	  plus();
