@@ -57,7 +57,7 @@
 
       this.baselineTime = new Date();
       
-      setTimeout( function() {
+      setTimeout(function() {
         self.timeupdate.call( self );
       }, 50 );
     },
@@ -71,10 +71,10 @@
     // Add an event listener to the object
     addEventListener: function( evtName, fn ) {
       if ( !this._events[ evtName ] ) {
-        this._events[evtName] = [];
+        this._events[ evtName ] = [];
       }
       
-      this._events[evtName].push( fn );
+      this._events[ evtName ].push( fn );
       return fn;
     },
     
