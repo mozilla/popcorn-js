@@ -47,8 +47,11 @@
     newdiv.style.display = "none";
     newdiv.id = "timelineDiv" + i;
 
-    options.direction = ( options.direction.toLowerCase()  === "up" || options.direction.toLowerCase()  === "down" )
-                      ? options.direction : "up";
+    //  Default to up if options.direction is non-existant or not up or down
+    options.direction = options.direction || "up";
+    if ( options.direction.toLowerCase()  !== "up" || options.direction.toLowerCase()  !== "down" ) {
+      options.direction = "up";
+    }
 
     if ( target ) {
 
