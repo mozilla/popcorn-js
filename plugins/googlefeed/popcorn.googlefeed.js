@@ -1,11 +1,16 @@
 // PLUGIN: Google Feed
-(function (Popcorn) {
+(function ( Popcorn ) {
 
   var i = 1,
-      scriptLoaded  = false;
+      scriptLoaded  = false,
 
-  var dynamicFeedLoad = function() {
-    var dontLoad = false;
+  dynamicFeedLoad = function() {
+    var dontLoad = false,
+        k = 0,
+        links = document.getElementsByTagName( "link" ),
+        len = links.length,
+        head = document.getElementsByTagName( "head" )[ 0 ],
+        css = document.createElement( "link" );
 
     if ( typeof GFdynamicFeedControl === "undefined" ) {
 
@@ -18,15 +23,13 @@
     }
 
     //  Checking if the css file is already included
-    for ( var k = 0; k < document.getElementsByTagName( "link" ).length; k++ ){
-      if ( document.getElementsByTagName( "link" )[ k ].href == "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css" ) {
+    for ( ; k < len; k++ ){
+      if ( links[ k ].href == "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css" ) {
         dontLoad = true;
       }
     }
 
     if ( !dontLoad ) {
-      var head = document.getElementsByTagName( "head" )[ 0 ];
-      var css = document.createElement( "link" );
       css.type = "text/css";
       css.rel = "stylesheet";
       css.href =  "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css";
@@ -78,16 +81,8 @@
   Popcorn.plugin( "googlefeed" , function( options ) {
     // create a new div and append it to the parent div so nothing
     // that already exists in the parent div gets overwritten
-    var newdiv = document.createElement( "div" );
-    newdiv.style.display = "none";
-    newdiv.id = "_feed"+i;
-    newdiv.style.width = "100%";
-    newdiv.style.height = "100%";
-    i++;
-
-    document.getElementById( options.target ).appendChild( newdiv );
-
-    var initialize = function() {
+    var newdiv = document.createElement( "div" ),
+    initialize = function() {
       //ensure that the script has been loaded
       if ( !scriptLoaded ) {
         setTimeout( function () {
@@ -96,12 +91,20 @@
       } else {
         // Create the feed control using the user entered url and title
         options.feed = new GFdynamicFeedControl( options.url, newdiv, {
-          vertical:   options.orientation.toLowerCase() == "vertical" ? true : false,
-          horizontal: options.orientation.toLowerCase() == "horizontal" ? true : false,
-          title:      options.title = options.title || "Blog"
+          vertical: options.orientation.toLowerCase() === "vertical" ? true : false,
+          horizontal: options.orientation.toLowerCase() === "horizontal" ? true : false,
+          title: options.title = options.title || "Blog"
         });
       }
     };
+
+    newdiv.style.display = "none";
+    newdiv.id = "_feed" + i;
+    newdiv.style.width = "100%";
+    newdiv.style.height = "100%";
+    i++;
+
+    document.getElementById( options.target ).appendChild( newdiv );
 
     initialize();
     
@@ -115,8 +118,8 @@
       start: function( event, options ){
         newdiv.setAttribute( "style", "display:inline" );
         // Default to vertical orientation if empty or incorrect input
-        if( !options.orientation || ( options.orientation.toLowerCase() != "vertical" &&
-          options.orientation.toLowerCase() != "horizontal" ) ) {
+        if( !options.orientation || ( options.orientation.toLowerCase() !== "vertical" &&
+          options.orientation.toLowerCase() !== "horizontal" ) ) {
           options.orientation = "vertical";
         }
       },
@@ -143,12 +146,32 @@
       website: "dseifried.wordpress.com"
     },
     options: {
-      start          : { elem:"input", type:"text", label:"In" },
-      end            : { elem:"input", type:"text", label:"Out" },
-      target         : "feed-container",
-      url            : { elem:"input", type:"text", label:"url" },
-      title          : { elem:"input", type:"text", label:"title" },
-      orientation    : {elem:"select", options:["Vertical","Horizontal"], label:"orientation" }
+      start: {
+        elem:"input", 
+        type:"text", 
+        label:"In" 
+      },
+      end: { 
+        elem:"input", 
+        type:"text", 
+        label:"Out" 
+      },
+      target: "feed-container",
+      url: { 
+        elem:"input", 
+        type:"text", 
+        label:"url" 
+      },
+      title: { 
+        elem:"input", 
+        type:"text", 
+        label:"title" 
+      },
+      orientation: {
+        elem:"select", 
+        options:["Vertical","Horizontal"], 
+        label:"orientation" 
+      }
     }
   });
   
