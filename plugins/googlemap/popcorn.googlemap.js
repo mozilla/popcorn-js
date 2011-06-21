@@ -159,6 +159,7 @@ var googleCallback;
             }
 
             options.zoom = options.zoom || 8; // default to 8
+
             map.setZoom( options.zoom );
 
             //Make sure heading is a number
