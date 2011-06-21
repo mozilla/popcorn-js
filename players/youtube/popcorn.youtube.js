@@ -120,13 +120,17 @@ var onYouTubePlayerReady;
     this.offsetParent = container.offsetParent;
     
     flashvars = {
-      playerapiid: this.playerId
+      playerapiid: this.playerId,
+      controls: this.controls,
+      iv_load_policy: this.iv_load_policy
     };
+
     params = {
       allowscriptaccess: 'always',
       allowfullscreen: 'true',
       // This is so we can overlay html on top of Flash
       wmode: 'transparent'
+      
     };
     
     attributes = {
@@ -181,6 +185,12 @@ var onYouTubePlayerReady;
     // If suppliied as '###' or '###px', convert to number and append 'px' back on end
     options.width = options.width && (+options.width)+"px";
     options.height = options.height && (+options.height)+"px";
+    
+    // show controls on video. Integer value - 1 is for show, 0 is for hide
+    this.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1; 
+    
+    // show video annotations, 1 is show, 3 is hide
+    this.iv_load_policy = +options.annotations === 1 || +options.annotations === 3 ? options.annotations : 1;
     
     this._target = document.getElementById( elementId );
     this._container = document.createElement( "div" );
