@@ -24,7 +24,7 @@
 
     //  Checking if the css file is already included
     for ( ; k < len; k++ ){
-      if ( links[ k ].href == "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css" ) {
+      if ( links[ k ].href === "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css" ) {
         dontLoad = true;
       }
     }
@@ -98,6 +98,12 @@
       }
     };
 
+    // Default to vertical orientation if empty or incorrect input
+    if( !options.orientation || ( options.orientation.toLowerCase() !== "vertical" &&
+      options.orientation.toLowerCase() !== "horizontal" ) ) {
+      options.orientation = "vertical";
+    }
+
     newdiv.style.display = "none";
     newdiv.id = "_feed" + i;
     newdiv.style.width = "100%";
@@ -117,11 +123,6 @@
        */
       start: function( event, options ){
         newdiv.setAttribute( "style", "display:inline" );
-        // Default to vertical orientation if empty or incorrect input
-        if( !options.orientation || ( options.orientation.toLowerCase() !== "vertical" &&
-          options.orientation.toLowerCase() !== "horizontal" ) ) {
-          options.orientation = "vertical";
-        }
       },
       /**
        * @member webpage
@@ -147,30 +148,30 @@
     },
     options: {
       start: {
-        elem:"input", 
-        type:"text", 
-        label:"In" 
+        elem: "input", 
+        type: "text", 
+        label: "In" 
       },
       end: { 
-        elem:"input", 
-        type:"text", 
-        label:"Out" 
+        elem: "input", 
+        type: "text", 
+        label: "Out" 
       },
       target: "feed-container",
       url: { 
-        elem:"input", 
-        type:"text", 
-        label:"url" 
+        elem: "input", 
+        type: "text", 
+        label: "url" 
       },
       title: { 
-        elem:"input", 
-        type:"text", 
-        label:"title" 
+        elem: "input", 
+        type: "text", 
+        label: "title" 
       },
       orientation: {
-        elem:"select", 
-        options:["Vertical","Horizontal"], 
-        label:"orientation" 
+        elem: "select", 
+        options: [ "Vertical","Horizontal" ], 
+        label: "orientation" 
       }
     }
   });
