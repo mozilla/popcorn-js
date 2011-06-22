@@ -1,13 +1,14 @@
 // PLUGIN: Subtitle
 
-(function (Popcorn) {
+(function ( Popcorn ) {
 
   var scriptLoaded = false,
-      callBack     = function( data ) {
+      i = 0,
+      callBack = function( data ) {
 
         if ( typeof google !== 'undefined' && google.load ) {
 
-          google.load("language", "1", {callback: function() {scriptLoaded = true;}});
+          google.load( "language", "1", { callback: function() { scriptLoaded = true; } } );
         } else {
 
           setTimeout( function() {
@@ -24,21 +25,21 @@
         var updatePosition = function() {
 
           // the video element must have height and width defined
-          context.container.style.fontSize   = "18px";
-          context.container.style.width      = context.media.offsetWidth + "px";
-          context.container.style.top        = context.position().top  + context.media.offsetHeight - context.container.offsetHeight - 40 + "px";
-          context.container.style.left       = context.position().left + "px";
+          context.container.style.fontSize = "18px";
+          context.container.style.width = context.media.offsetWidth + "px";
+          context.container.style.top = context.position().top  + context.media.offsetHeight - context.container.offsetHeight - 40 + "px";
+          context.container.style.left = context.position().left + "px";
 
           setTimeout( updatePosition, 10 );
         };
 
-        context.container = document.createElement('div');
-        context.container.id               = "subtitlediv";
-        context.container.style.position   = "absolute";
-        context.container.style.color      = "white";
+        context.container = document.createElement( 'div' );
+        context.container.id = "subtitlediv";
+        context.container.style.position = "absolute";
+        context.container.style.color = "white";
         context.container.style.textShadow = "black 2px 2px 6px";
         context.container.style.fontWeight = "bold";
-        context.container.style.textAlign  = "center";
+        context.container.style.textAlign = "center";
 
         updatePosition();
 
@@ -100,10 +101,13 @@
   var translate = function( options, text ) {
 
     options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
-
     google.language.translate( text, '', options.selectedLanguage, function( result ) {
-
-      options.container.innerHTML = result.translation;
+      
+      for( var k = 0; k < options.container.children.length; k++ ) {
+        if ( options.container.children[ k ].style.display === "inline" ) {   
+          options.container.children[ k ].innerHTML = result.translation;    
+        }  
+      }
 
     } );
   };
@@ -111,21 +115,37 @@
   Popcorn.plugin( "subtitle" , {
     
       manifest: {
-        about:{
+        about: {
           name: "Popcorn Subtitle Plugin",
           version: "0.1",
-          author:  "Scott Downe",
+          author: "Scott Downe",
           website: "http://scottdowne.wordpress.com/"
         },
-        options:{
-          start    : {elem:'input', type:'text', label:'In'},
-          end      : {elem:'input', type:'text', label:'Out'},
-          target  :  'subtitle-container',
-          text     : {elem:'input', type:'text', label:'Text'}
+        options: {
+          start: {
+            elem: 'input', 
+            type: 'text', 
+            label: 'In'
+          },
+          end: {
+            elem: 'input', 
+            type: 'text', 
+            label: 'Out'
+          },
+          target: 'subtitle-container',
+          text: {
+            elem: 'input', 
+            type: 'text', 
+            label: 'Text'
+          }
         }
       },
 
       _setup: function( options ) {
+        var newdiv = document.createElement( "div" );
+        newdiv.id = "subtitle-" + i;
+        newdiv.style.display = "none";
+        i++;
 
         // Creates a div for all subtitles to use
         ( !this.container && !options.target || options.target === 'subtitle-container' ) && 
@@ -137,11 +157,14 @@
         } else { // use shared default container
           options.container = this.container;
         }
+        
+        document.getElementById( options.container.id ).appendChild( newdiv );
+        options.innerContainer = newdiv;
 
         var accessibility = document.getElementById( options.accessibilitysrc );
 
         options.showSubtitle = function() {
-          options.container.innerHTML = options.text;
+          options.innerContainer.innerHTML = options.text;
         };
         options.toggleSubtitles = function() {};
         
@@ -149,7 +172,7 @@
           if ( !scriptLoaded ) {
             return;
           }
-          clearInterval(readyCheck);
+          clearInterval( readyCheck );
 
           if ( options.languagesrc ) {
             options.showSubtitle = translate;
@@ -162,7 +185,6 @@
 
             if ( !this.languageSources[ options.languagesrc ] ) {
               this.languageSources[ options.languagesrc ] = {};
-            
             }
 
             if ( !this.languageSources[ options.languagesrc ][ options.target ] ) {
@@ -171,7 +193,12 @@
               options.languageSrc.addEventListener( "change", function() {
 
                 options.toggleSubtitles();
-                options.showSubtitle( options, options.container.innerHTML );
+
+                for( var k = 0; k < options.container.children.length; k++ ) {
+                  if ( options.container.children[ k ].style.display === "inline" ) {   
+                    options.showSubtitle( options, options.container.children[ k ].innerHTML );   
+                  }  
+                }
 
               }, false );
 
@@ -182,15 +209,7 @@
             options.accessibility = accessibility;
 
             options.toggleSubtitles = function() {
-              options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
-              if ( options.accessibility.checked || options.selectedLanguage !== ( options.language || "") ) {
-                options.display = "inline";
-                options.container.style.display = options.display;
-              } else if ( options.selectedLanguage === ( options.language || "") ) {
-                options.display = "none";
-                options.container.style.display = options.display;
-              }
-
+              options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;              
             };
 
             options.accessibility.addEventListener( "change", options.toggleSubtitles, false );
@@ -207,8 +226,8 @@
        * of the video  reaches the start time provided by the 
        * options variable
        */
-      start: function(event, options){
-        options.container.style.display = options.display;
+      start: function( event, options ){
+        options.innerContainer.style.display = "inline";
         options.showSubtitle( options, options.text );
       },
       /**
@@ -217,9 +236,13 @@
        * of the video  reaches the end time provided by the 
        * options variable
        */
-      end: function(event, options){
-        options.container.style.display = options.display;
-        options.container.innerHTML = "";
+      end: function( event, options ) {
+        options.innerContainer.style.display = "none";
+        options.innerContainer.innerHTML = "";
+      },
+
+      _teardown: function ( options ) {
+        options.container.removeChild( options.innerContainer );
       }
    
   } );
