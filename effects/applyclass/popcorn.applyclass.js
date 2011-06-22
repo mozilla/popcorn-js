@@ -25,6 +25,12 @@
   var startFunction = Popcorn.nop,
       applyFunction = function() {
 
+        if ( !window.jQuery ) {
+
+          Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js", applyFunction );
+          return;
+        }
+
         startFunction = function( event, options ) {
 
           Popcorn.forEach( options.classes, function( val, key ) {
@@ -47,13 +53,7 @@
         };
       };
 
-  if ( typeof $ !== "undefined" ) {
-
-    applyFunction();
-  } else {
-
-    Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js", applyFunction );
-  }
+  applyFunction();
 
   Popcorn.compose( "applyclass", {
     

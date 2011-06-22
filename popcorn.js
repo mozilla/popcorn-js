@@ -843,7 +843,8 @@
     var reserved = [ "start", "end" ],
         plugin = {},
         setup,
-        isfn = typeof definition === "function";
+        isfn = typeof definition === "function",
+        methods = [ "_setup", "_teardown", "start", "end" ];
 
     // combines calls of two function calls into one
     var combineFn = function( first, second ) {
@@ -865,10 +866,10 @@
     }
 
     // apply safe, and empty default functions
-    definition._setup = definition._setup || Popcorn.nop;
-    definition._teardown = definition._teardown || Popcorn.nop;
-    definition.start = definition.start || Popcorn.nop;
-    definition.end = definition.end || Popcorn.nop;
+    methods.forEach(function( method ) {
+
+      definition[ method ] = definition[ method ] || Popcorn.nop;      
+    });
 
     var pluginFn = function( setup, options ) {
 
@@ -899,10 +900,10 @@
         compose = Popcorn.compositions[ options.compose[ i ] ] || {};
 
         // extends previous functions with compose function
-        natives._setup = combineFn( natives._setup, compose._setup );
-        natives._teardown = combineFn( natives._teardown, compose._teardown );
-        natives.start = combineFn( natives.start, compose.start );
-        natives.end = combineFn( natives.end, compose.end );
+        methods.forEach(function( method ) {
+
+          natives[ method ] = combineFn( natives[ method ], compose[ method ] );
+        });
       }
 
       //  Ensure a manifest object, an empty object is a sufficient fallback
