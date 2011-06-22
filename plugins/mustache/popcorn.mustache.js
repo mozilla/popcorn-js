@@ -147,7 +147,7 @@
                                        ).replace( /^\s*/mg, '' );
             document.getElementById( options.target ).innerHTML = html;
           }
-        }
+        };
 
         interval();
 
