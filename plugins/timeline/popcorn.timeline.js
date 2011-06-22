@@ -58,7 +58,7 @@
       target.appendChild( newdiv );
 
       // if this isnt the first div added to the target div
-      if( i && options.direction.length === 2 ){
+      if( options.direction.length === 2 ){
         // insert the current div before the previous div inserted
         target.insertBefore( newdiv, document.getElementById( "timelineDiv" + ( i - 1 ) ) );
       }
