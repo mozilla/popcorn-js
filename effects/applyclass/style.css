@@ -24,3 +24,13 @@ section.hover {
   background: #FFF;
 }
 
+.test1 {
+  background: green
+}
+
+.test2 {
+  -webkit-box-shadow: -1px 1px 1px #bdc7c6;
+  -moz-box-shadow: -1px 1px 1px #bdc7c6;
+  box-shadow:  -1px 1px 1px #bdc7c6;
+  border: 1px solid #333;
+}
