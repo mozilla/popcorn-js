@@ -5,7 +5,7 @@
   /**
    * apply css class to jquery selector
    * selector is relative to plugin target's id
-   * so .overlay is actually $( "#target .overlay")
+   * so .overlay is actually jQuery( "#target .overlay")
    *
    * @param {Object} options
    * 
@@ -38,10 +38,10 @@
             var obj;
             if ( key === "parent" ) {
 
-              obj = $("#" + options.target ).parent();
+              obj = jQuery("#" + options.target ).parent();
             } else {
 
-              obj = $("#" + options.target + " " + key );
+              obj = jQuery("#" + options.target + " " + key );
             }
 
             obj.addClass( val );
