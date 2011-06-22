@@ -803,7 +803,7 @@ test("Simulated", function () {
     p.listen( name, function (event) {
 
       if ( completed.indexOf(name) === -1 ) {
-        ok(true, name + " fired");
+        ok( true, name + " fired" );
         plus();
 
         completed.push(name);
@@ -845,7 +845,7 @@ test("Real", function () {
     p.listen( name, function (event) {
 
       if ( completed.indexOf(name) === -1 ) {
-        ok(true, name + " fired");
+        ok( true, name + " fired" );
         plus();
 
         completed.push(name);
@@ -1040,7 +1040,7 @@ test("Update Timer", function () {
 
           options.startFired = true;
           forwardStart = !forwardStart;
-          ok( forwardStart, "forward's start fired");
+          ok( forwardStart, "forward's start fired" );
           plus();
         }
       },
@@ -1051,7 +1051,7 @@ test("Update Timer", function () {
           options.endFired = true;
           forwardEnd = !forwardEnd;
           p2.currentTime(1).play();
-          ok( forwardEnd, "forward's end fired");
+          ok( forwardEnd, "forward's end fired" );
           plus();
         }
       }
@@ -1072,7 +1072,7 @@ test("Update Timer", function () {
           options.startFired = true;
           backwardStart = !backwardStart;
           p2.currentTime(0).play();
-          ok( true, "backward's start fired");
+          ok( true, "backward's start fired" );
           plus();
         }
       },
@@ -1082,7 +1082,7 @@ test("Update Timer", function () {
 
           options.endFired = true;
           backwardEnd = !backwardEnd;
-          ok( backwardEnd, "backward's end fired");
+          ok( backwardEnd, "backward's end fired" );
           plus();
           p2.currentTime( 5 ).play();
         }
