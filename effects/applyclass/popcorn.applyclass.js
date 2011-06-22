@@ -40,9 +40,7 @@
 
       for ( idx = 0, len = elements.length; idx < len; idx++ ) {
 
-        var element = elements[ idx ];
-
-        element.classList.toggle( val );
+        elements[ idx ].classList.toggle( val );
       }
     });
   };
@@ -61,14 +59,15 @@
     _setup: function( options ) {
 
       options.classes = {};
+      options.applyclass = options.applyclass || "";
 
-      var array = options.applyclass.replace( /\s/g, "" ).split( "," ),
+      var classes = options.applyclass.replace( /\s/g, "" ).split( "," ),
           item = [],
-          idx = 0, len = array.length;
+          idx = 0, len = classes.length;
 
       for ( ; idx < len; idx++ ) {
 
-        item = array[ idx ].split( ":");
+        item = classes[ idx ].split( ":" );
         options.classes[ item[ 0 ] ] = item[ 1 ] || "";
       }
     },
