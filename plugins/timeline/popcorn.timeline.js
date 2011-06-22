@@ -88,9 +88,9 @@
       },
 
       _teardown: function( options ) {
-        while ( target.childNodes.length >= 1 ) {
-            target.removeChild( document.getElementById( options.target ).firstChild );       
-        }  
+        while ( target.firstChild ) {
+          target.removeChild( target.firstChild );
+        } 
       }
     };
   },
