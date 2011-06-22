@@ -595,10 +595,10 @@
       listen: function( type, fn ) {
 
         var self = this,
-          hasEvents = true, 
-          eventHook = Popcorn.events.hooks[ type ], 
-          origType = type, 
-          tmp;
+		        hasEvents = true, 
+		        eventHook = Popcorn.events.hooks[ type ], 
+		        origType = type, 
+		        tmp;
 
         if ( !this.data.events[ type ] ) {
           this.data.events[ type ] = {};
