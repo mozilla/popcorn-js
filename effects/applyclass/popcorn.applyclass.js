@@ -22,38 +22,30 @@
    *
    */
 
-  var startFunction = Popcorn.nop,
-      applyFunction = function() {
+  var toggleClass = function( event, options ) {
 
-        if ( !window.jQuery ) {
+    var idx = 0, len = 0, elements;
 
-          Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js", applyFunction );
-          return;
-        }
+    Popcorn.forEach( options.classes, function( key, val ) {
 
-        startFunction = function( event, options ) {
+      elements = [];
 
-          Popcorn.forEach( options.classes, function( val, key ) {
+      if ( key === "parent" ) {
 
-            var obj;
-            if ( key === "parent" ) {
+        elements[ 0 ] = document.querySelectorAll("#" + options.target )[ 0 ].parentNode;
+      } else {
 
-              obj = jQuery("#" + options.target ).parent();
-            } else {
+        elements = document.querySelectorAll("#" + options.target + " " + key );
+      }
 
-              obj = jQuery("#" + options.target + " " + key );
-            }
+      for ( idx = 0, len = elements.length; idx < len; idx++ ) {
 
-            obj.addClass( val );
-            setTimeout( function() {
+        var element = elements[ idx ];
 
-              obj.removeClass( val );
-            }, 250 );
-          });
-        };
-      };
-
-  applyFunction();
+        element.classList.toggle( val );
+      }
+    });
+  };
 
   Popcorn.compose( "applyclass", {
     
@@ -77,12 +69,10 @@
       for ( ; idx < len; idx++ ) {
 
         item = array[ idx ].split( ":");
-        options.classes[ item[ 0 ] ] = item[ 1 ];
+        options.classes[ item[ 0 ] ] = item[ 1 ] || "";
       }
     },
-    start: function( event, options ) {
-
-      startFunction.call( this, event, options );
-    }
+    start: toggleClass,
+    end: toggleClass
   });
 })( Popcorn );
