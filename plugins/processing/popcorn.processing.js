@@ -77,6 +77,7 @@
         
         if ( options.codeReady && window.Processing ) {
           options.pjsInstance = new Processing( options.canvas, options.processingCode );
+          options.pjsInstance.noLoop();
           context.listen( "seeking", function() {
             if ( options.canvas.style.display === "inline" && options.noPause ) {
               options.pjsInstance.loop();
