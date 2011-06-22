@@ -165,6 +165,9 @@
         // Stores DOM event queues by type
         events: {},
 
+        // Stores Special event hooks data
+        hooks: {},
+
         // Store track event history data
         history: [],
 
@@ -601,14 +604,50 @@
       listen: function( type, fn ) {
 
         var self = this,
-            hasEvents = true;
+		        hasEvents = true, 
+		        eventHook = Popcorn.events.hooks[ type ], 
+		        origType = type, 
+		        tmp;
 
         if ( !this.data.events[ type ] ) {
           this.data.events[ type ] = {};
           hasEvents = false;
         }
 
-        //  Register
+        // Check and setup event hooks
+        if ( eventHook ) {
+
+          // Execute hook add method if defined
+          if ( eventHook.add ) {
+            eventHook.add.call( this );
+          }
+
+          // Reassign event type to our piggyback event type if defined
+          if ( eventHook.bind ) {
+            type = eventHook.bind;
+          }
+
+          // Reassign handler if defined
+          if ( eventHook.handler ) {
+            tmp = fn;
+
+            fn = function wrapper( event ) {
+              eventHook.handler.call( self, event, tmp );
+            };
+          }
+
+          // assume the piggy back event is registered
+          hasEvents = true;
+
+          // Setup event registry entry
+          if ( !this.data.events[ type ] ) {
+            this.data.events[ type ] = {};
+            // Toggle if the previous assumption was untrue
+            hasEvents = false;
+          }
+        }
+
+        //  Register event and handler
         this.data.events[ type ][ fn.name || ( fn.toString() + Popcorn.guid() ) ] = fn;
 
         // only attach one event of any type
@@ -621,8 +660,6 @@
                 obj.call( self, event );
               }
             });
-
-            //fn.call( self, event );
 
           }, false);
         }
@@ -640,6 +677,26 @@
         this.data.events[ type ] = null;
 
         return this;
+      }
+    },
+    hooks: {
+      canplayall: {
+        bind: "canplaythrough",
+        add: function() {
+          this.data.hooks.canplayall = {
+            fired: false
+          };
+        },
+        // declare special handling instructions
+        handler: function canplayall( event, callback ) {
+
+          if ( !this.data.hooks.canplayall.fired ) {
+            // trigger original user callback once
+            callback.call( this, event );
+
+            this.data.hooks.canplayall.fired = true;
+          }
+        }
       }
     }
   };

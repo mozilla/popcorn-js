@@ -623,6 +623,72 @@ test( "Popcorn.events", function() {
 
 });
 
+test("Popcorn.events.hooks", function() {
+
+  expect(1);
+  
+  ok( Popcorn.events.hooks, "Popcorn.events.hooks exists" );
+
+});
+
+test("Popcorn.events.hooks: canplayall", function() {
+  //qunit-fixture
+
+  var expects = 1,
+    count = 0, 
+    fired = 0;
+
+  expect(expects);
+
+  function plus(){ 
+    if ( ++count == expects ) {
+      start();
+    }
+  }
+
+  stop( 10000 );
+
+  var video = document.createElement("video"),
+    sources = {
+      mp4: document.createElement("source"), 
+      ogv: document.createElement("source"), 
+      webm: document.createElement("source")
+    },
+    url = "http://videos.mozilla.org/serv/webmademovies/popcornplug.";
+
+  video.id = "event-fixture";
+  video.controls = true;
+  video.preload = "auto";
+
+  Popcorn.forEach( sources, function( source, type ) {
+    source.src = url + type;
+    video.appendChild( source );
+  });
+
+  document.getElementById("qunit-fixture").appendChild( video );
+
+  var $pop = Popcorn("#event-fixture");
+
+  $pop.listen("canplayall", function( event ) {
+    equal( ++fired, 1, "canplayall is fired only once" );
+    plus();
+  });
+
+  $pop.listen("canplaythrough", function( event ) {
+    // this should trigger re-fires of the original event
+    this.currentTime(0);
+  });
+});
+
+/*
+<video height="180" width="300" id="video" controls> 
+<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.mp4"></source>
+<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.ogv"></source>
+<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.webm"></source>
+</video>
+
+*/
+
 module("Popcorn Position");
 test("position", function () {
 
