@@ -68,7 +68,10 @@
       for ( ; idx < len; idx++ ) {
 
         item = classes[ idx ].split( ":" );
-        options.classes[ item[ 0 ] ] = item[ 1 ] || "";
+
+        if ( item[ 0 ] ) {
+          options.classes[ item[ 0 ] ] = item[ 1 ] || "";
+        }
       }
     },
     start: toggleClass,
