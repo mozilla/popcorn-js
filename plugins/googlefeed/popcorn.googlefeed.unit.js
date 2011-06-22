@@ -1,21 +1,21 @@
 test("Popcorn Google Feed Plugin", function () {
   
-  var popped = Popcorn("#video"),
-      expects = 11,
+  var popped = Popcorn( "#video" ),
+      expects = 12,
       setupId, 
       count = 0;
   
   expect(expects);
   
   function plus() {
-    if ( ++count===expects) {
+    if ( ++count === expects) {
       start();
     }
   }
   
   stop();
 
-    ok ('googlefeed' in popped, "googlefeed is a method of the popped instance");
+    ok ( 'googlefeed' in popped, "googlefeed is a method of the popped instance" );
     plus();
     ok ( document.getElementById('feed').innerHTML === "", "initially, there is nothing inside the feed" );
     plus();
@@ -28,7 +28,6 @@ test("Popcorn Google Feed Plugin", function () {
     target: "feed",
     url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
     title: "Planet Feed",
-    orientation: "Vertical"
 	})
 	.googlefeed({
     start: 2, // seconds
@@ -43,23 +42,25 @@ test("Popcorn Google Feed Plugin", function () {
   setupId = popped.getLastTrackEventId();
   
   popped.exec( 1, function() {
-    ok(google.load, "Google Feed is available");
+    ok( google.load, "Google Feed is available");
     plus();
-    ok(GFdynamicFeedControl, "Dynamic Feed Control Available");
+    ok( GFdynamicFeedControl, "Dynamic Feed Control Available");
     plus();
-    ok (document.getElementById('_feed1'), "First feed is on the page" );
+    ok ( document.getElementById('_feed1'), "First feed is on the page" );
     plus();
-    equals (document.getElementById('_feed1').offsetParent.id, "feed", "First feed is inside the 'feed' div" );
+    equals ( document.getElementById('_feed1').offsetParent.id, "feed", "First feed is inside the 'feed' div" );
+    plus();
+    equals( popped.data.trackEvents.byStart[1].orientation, "vertical", "Defaulting to vertical orientation" );
     plus();
   });
   popped.exec( 2, function() {
-    ok (document.getElementById('_feed2'), "Second feed is on the page" );
+    ok ( document.getElementById('_feed2'), "Second feed is on the page" );
     plus();
-    equals (document.getElementById('_feed2').offsetParent.id, "feed1", "Second feed is inside the 'feed2' div" );
+    equals ( document.getElementById('_feed2').offsetParent.id, "feed1", "Second feed is inside the 'feed2' div" );
     plus();
   });
   popped.exec( 3, function() {
-    ok (document.getElementById('_feed2').style.display === "none" && 
+    ok ( document.getElementById('_feed2').style.display === "none" && 
         document.getElementById('_feed1').style.display === "none", "Both feeds are no lnger visible" );
 	  plus();
 
