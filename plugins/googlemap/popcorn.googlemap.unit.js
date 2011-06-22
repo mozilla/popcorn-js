@@ -1,30 +1,30 @@
 test("Popcorn Google Map Plugin", function () {
   
-  var popped = Popcorn("#video"),
-      expects = 13, 
+  var popped = Popcorn( "#video" ),
+      expects = 14, 
       count = 0,
       setupId;
   
-  expect(expects);
+  expect( expects );
   
   function plus() {
-    if ( ++count===expects) {
+    if ( ++count === expects ) {
       start();
     }
   }
   
   stop();
 
-  ok ('googlemap' in popped, "googlemap is a mehtod of the popped instance");
+  ok ( 'googlemap' in popped, "googlemap is a mehtod of the popped instance" );
   plus();
   
-  ok ( document.getElementById('map').innerHTML === "", "initially, there is nothing inside the map" );
+  ok ( document.getElementById( 'map' ).innerHTML === "", "initially, there is nothing inside the map" );
   plus();
   
-  ok ( document.getElementById('map2').innerHTML === "", "initially, there is nothing inside the map2" );
+  ok ( document.getElementById( 'map2' ).innerHTML === "", "initially, there is nothing inside the map2" );
   plus();
   
-  ok ( document.getElementById('map3').innerHTML === "", "initially, there is nothing inside the map3" );
+  ok ( document.getElementById( 'map3' ).innerHTML === "", "initially, there is nothing inside the map3" );
   plus();
   
   popped.googlemap({
@@ -33,8 +33,7 @@ test("Popcorn Google Map Plugin", function () {
     type: 'ROADMAP',
     target: 'map',
     lat: 43.665429,
-    lng: -79.403323,
-    zoom: 10
+    lng: -79.403323
   })
   .googlemap({
       start: 0, // seconds
@@ -61,13 +60,15 @@ test("Popcorn Google Map Plugin", function () {
   setupId = popped.getLastTrackEventId();
 
   popped.exec( 1, function() {
-    ok(google.maps, "Google maps is available");
+    ok( google.maps, "Google maps is available" );
     plus();
-    ok(google.maps.Geocoder, "Google maps Geocoder is available");
+    ok( google.maps.Geocoder, "Google maps Geocoder is available" );
     plus();
-    ok (document.getElementById('actualmap1'), "First map is on the page" );
+    ok ( document.getElementById( 'actualmap1' ), "First map is on the page" );
     plus();
-    equals (document.getElementById('actualmap1').offsetParent.id, "map", "First map is inside the 'map' div" );
+    equals ( document.getElementById( 'actualmap1' ).offsetParent.id, "map", "First map is inside the 'map' div" );
+    plus();
+    equals( popped.data.trackEvents.byStart[1].zoom, 8, "Defaulting to zoom of 8" );
     plus();
   });
 
@@ -84,13 +85,13 @@ test("Popcorn Google Map Plugin", function () {
   });
 
   popped.exec( 5, function() {
-    ok (document.getElementById('actualmap2').style.display === "none" && 
-        document.getElementById('actualmap1').style.display === "none" &&
-        document.getElementById('actualmap3').style.display === "none", "All maps are no longer visible" );
+    ok ( document.getElementById( 'actualmap2' ).style.display === "none" && 
+        document.getElementById( 'actualmap1' ).style.display === "none" &&
+        document.getElementById( 'actualmap3' ).style.display === "none", "All maps are no longer visible" );
     plus();
     popped.pause().removeTrackEvent( setupId );
 
-    ok( !document.getElementById('actualmap4'), "removed map was properly destroyed"  );
+    ok( !document.getElementById( 'actualmap4' ), "removed map was properly destroyed" );
     plus();
   });
 
