@@ -9,12 +9,13 @@
         k = 0,
         links = document.getElementsByTagName( "link" ),
         len = links.length,
-        head = document.getElementsByTagName( "head" )[ 0 ],
-        css = document.createElement( "link" );
+        head = document.head || document.getElementsByTagName( "head" )[ 0 ],
+        css = document.createElement( "link" ),
+        resource = "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.";
 
-    if ( typeof GFdynamicFeedControl === "undefined" ) {
+    if ( !window.GFdynamicFeedControl ) {
 
-      Popcorn.getScript( "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js", function() {
+      Popcorn.getScript( resource + "js", function() {
         scriptLoaded = true;
       }); 
 
@@ -24,7 +25,7 @@
 
     //  Checking if the css file is already included
     for ( ; k < len; k++ ){
-      if ( links[ k ].href === "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css" ) {
+      if ( links[ k ].href === resource + "css" ) {
         dontLoad = true;
       }
     }
@@ -32,12 +33,12 @@
     if ( !dontLoad ) {
       css.type = "text/css";
       css.rel = "stylesheet";
-      css.href =  "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css";
+      css.href =  resource + "css";
       head.insertBefore( css, head.firstChild );
     }
   };
 
-  if ( typeof google === "undefined" ) {
+  if ( !window.google ) {
 
     Popcorn.getScript( "http://www.google.com/jsapi", function() {
 
