@@ -27,7 +27,7 @@
         createDefaultContainer = Popcorn.nop;
 
         var updatePosition = function() {
-
+          var position = context.position();
           // the video element must have height and width defined
           style.fontSize = "18px";
           style.width = media.offsetWidth + "px";
@@ -39,7 +39,6 @@
 
         var ctxContainer = context.container = document.createElement( "div" ),
             style = ctxContainer.style,
-            position = context.position(),
             media = context.media;
 
         ctxContainer.id = "subtitlediv";
