@@ -1,7 +1,7 @@
 test("Popcorn Subtitle Plugin", function () {
  
-  var popped = Popcorn("#video"),
-      expects = 9,
+  var popped = Popcorn( "#video" ),
+      expects = 11,
       count = 0,
       subTop = 9001,
       subLeft = 9001,
@@ -10,14 +10,14 @@ test("Popcorn Subtitle Plugin", function () {
   expect(expects);
  
   function plus() {
-    if ( ++count===expects) {
+    if ( ++count === expects ) {
       start();
     }
   }
  
   stop();
    
-  ok ('subtitle' in popped, "subtitle is a method of the popped instance");
+  ok ( 'subtitle' in popped, "subtitle is a method of the popped instance" );
   plus();
  
   popped.subtitle({
@@ -47,12 +47,12 @@ test("Popcorn Subtitle Plugin", function () {
     .volume(0)
     .play();
  
-  subtitlediv = document.getElementById('subtitlediv');
- 
+  subtitlediv = document.getElementById( 'subtitlediv' );
+
   popped.exec( 0.5, function() {
    
     popped.media.pause();
-    equals( subtitlediv.innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
+    equals( subtitlediv.children[ 0 ].innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
     plus();
    
  
@@ -89,7 +89,7 @@ test("Popcorn Subtitle Plugin", function () {
     ok( Popcorn.position( subtitlediv ).top > popped.position().top, "subtitle top position moved" );
     plus();
  
-    equals (subtitlediv.innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
+    equals (subtitlediv.children[ 1 ].innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
     plus();
     popped.media.play();
    
@@ -98,7 +98,7 @@ test("Popcorn Subtitle Plugin", function () {
   popped.exec( 2.5, function() {
    
     popped.media.pause();
-    equals (subtitlediv.innerHTML, "", "subtitle is clear" );
+    equals (subtitlediv.children[ 1 ].innerHTML, "", "subtitle is clear" );
     plus();
     popped.media.play();
  
@@ -107,10 +107,22 @@ test("Popcorn Subtitle Plugin", function () {
   popped.exec( 3.5, function() {
  
     popped.media.play();
-    equals (subtitlediv.innerHTML, "this is the third subtitle of 2011", "subtitle displaying correct information" );
+    equals (subtitlediv.children[ 2 ].innerHTML, "this is the third subtitle of 2011", "subtitle displaying correct information" );
     plus();
     popped.media.play();
    
+  });
+
+  popped.exec( 5, function() {
+    ok ( document.getElementById( 'subtitle-0' ).style.display === "none" && 
+        document.getElementById( 'subtitle-1' ).style.display === "none" &&
+        document.getElementById( 'subtitle-2' ).style.display === "none", "All subtitles are no longer visible" );
+    plus();
+
+    popped.pause().removeTrackEvent( popped.data.trackEvents.byStart[ 6 ]._id );
+
+    ok( !document.getElementById( 'subtitle-2' ), "removed subtitle div was properly destroyed"  );
+    plus();
   });
 });
 
