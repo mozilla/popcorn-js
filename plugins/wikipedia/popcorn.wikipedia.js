@@ -3,7 +3,7 @@
 
 var wikiCallback;
 
-(function (Popcorn) {
+(function ( Popcorn ) {
   
   /**
    * Wikipedia popcorn plug-in 
@@ -41,13 +41,37 @@ var wikiCallback;
         website: "annasob.wordpress.com"
       },
       options:{
-        start         : {elem:'input', type:'text', label:'In'},
-        end           : {elem:'input', type:'text', label:'Out'},
-        lang          : {elem:'input', type:'text', label:'Language'},
-        src           : {elem:'input', type:'text', label:'Src'},
-        title         : {elem:'input', type:'text', label:'Title'},
-        numberofwords : {elem:'input', type:'text', label:'Num Of Words'},
-        target        : 'wikipedia-container'
+        start: {
+          elem: 'input', 
+          type: 'text', 
+          label: 'In'
+        },
+        end: {
+          elem: 'input', 
+          type: 'text', 
+          label: 'Out'
+        },
+        lang: {
+          elem: 'input', 
+          type: 'text', 
+          label: 'Language'
+        },
+        src: {
+          elem: 'input', 
+          type: 'text', 
+          label: 'Src'
+        },
+        title: {
+          elem: 'input', 
+          type: 'text', 
+          label: 'Title'
+        },
+        numberofwords: {
+          elem: 'input', 
+          type: 'text', 
+          label: 'Num Of Words'
+        },
+        target: 'wikipedia-container'
       }
     },
     /**
@@ -64,33 +88,41 @@ var wikiCallback;
       var  _text, _guid = Popcorn.guid(); 
       
       // if the user didn't specify a language default to english
-      if (typeof options.lang === 'undefined') { options.lang ="en"; }
+      if ( typeof options.lang === 'undefined' ) { 
+        options.lang = "en"; 
+      }
+
       // if the user didn't specify number of words to use default to 200 
       options.numberofwords  = options.numberofwords || 200;
             
       // wiki global callback function with a unique id
       // function gets the needed information from wikipedia
       // and stores it by appending values to the options object
-      window["wikiCallback"+ _guid]  = function ( data ) { 
+      window[ "wikiCallback" + _guid ]  = function ( data ) { 
+
         options._link = document.createElement( 'a' );
         options._link.setAttribute( 'href', options.src );
         options._link.setAttribute( 'target', '_blank' );
+
         // add the title of the article to the link
         options._link.innerHTML = options.title || data.parse.displaytitle;
+
         // get the content of the wiki article
         options._desc = document.createElement( 'p' );
+
         // get the article text and remove any special characters
-        _text = data.parse.text[ "*" ].substr( data.parse.text[ "*" ].indexOf('<p>') );
-        _text = _text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
+        _text = data.parse.text[ "*" ].substr( data.parse.text[ "*" ].indexOf( '<p>' ) );
+        _text = _text.replace( /((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "" );
         options._desc.innerHTML = _text.substr( 0,  options.numberofwords ) + " ...";
         
         options._fired = true;
       };
       
       if ( options.src ) {
-        Popcorn.getScript("http://" + options.lang + ".wikipedia.org/w/api.php?action=parse&props=text&page=" + options.src.slice( options.src.lastIndexOf("/")+1)  + "&format=json&callback=wikiCallback" + _guid);
+        Popcorn.getScript( "http://" + options.lang + ".wikipedia.org/w/api.php?action=parse&props=text&page=" 
+          + options.src.slice( options.src.lastIndexOf("/")+1)  + "&format=json&callback=wikiCallback" + _guid);
       } else {
-        throw ("Wikipedia plugin needs a 'src'");
+        throw ( "Wikipedia plugin needs a 'src'" );
       }
 
     },
@@ -135,6 +167,15 @@ var wikiCallback;
         document.getElementById( options.target ).removeChild( options._link );
         document.getElementById( options.target ).removeChild( options._desc );
       }
+    },
+
+    _teardown: function( options ){
+
+        if ( options._added ) {
+          options._link.parentNode && document.getElementById( options.target ).removeChild( options._link );
+          options._desc.parentNode && document.getElementById( options.target ).removeChild( options._desc );
+          delete options.target;
+        }
     }
   });
 
