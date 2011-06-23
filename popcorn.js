@@ -237,7 +237,7 @@
                 if ( !tracksByStart[ tracks.startIndex ]._natives || !!that[ tracksByStart[ tracks.startIndex ]._natives.type ] ) {
                   if ( tracksByStart[ tracks.startIndex ].end > currentTime && 
                         tracksByStart[ tracks.startIndex ]._running === false && 
-                          that.data.disabled.indexOf( tracksByStart[ tracks.endIndex ]._natives.type ) === -1 ) {
+                          that.data.disabled.indexOf( tracksByStart[ tracks.startIndex ]._natives.type ) === -1 ) {
                           
                     tracksByStart[ tracks.startIndex ]._running = true;
                     tracksByStart[ tracks.startIndex ]._natives.start.call( that, event, tracksByStart[ tracks.startIndex ] );
@@ -273,7 +273,7 @@
                 if ( !tracksByEnd[ tracks.endIndex ]._natives || !!that[ tracksByEnd[ tracks.endIndex ]._natives.type ] ) {
                   if ( tracksByEnd[ tracks.endIndex ].start <= currentTime && 
                         tracksByEnd[ tracks.endIndex ]._running === false  && 
-                          that.data.disabled.indexOf( tracksByStart[ tracks.endIndex ]._natives.type ) === -1 ) {
+                          that.data.disabled.indexOf( tracksByEnd[ tracks.endIndex ]._natives.type ) === -1 ) {
 
                     tracksByEnd[ tracks.endIndex ]._running = true;
                     tracksByEnd[ tracks.endIndex ]._natives.start.call( that, event, tracksByEnd[tracks.endIndex] );
