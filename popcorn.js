@@ -960,7 +960,6 @@
       // join the two arrays together
       options.compose = options.compose.concat( options.effect );
 
-      //for ( var i = 0, l = options.compose.length; i < l; i++ ) {
       options.compose.forEach(function( composeOption ) {
 
         // if the requested compose is garbage, throw it away
