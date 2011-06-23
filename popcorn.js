@@ -720,9 +720,6 @@
 
       //  Push track event ids into the history
       obj.data.history.push( track._id );
-
-      track._natives.start = track._natives.start || Popcorn.nop;
-      track._natives.end   = track._natives.end || Popcorn.nop;
     }
 
     track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );
@@ -882,6 +879,7 @@
     },
 
     removeTrackEvent: function( id ) {
+
       Popcorn.removeTrackEvent.call( null, this, id );
       return this;
     },
@@ -911,13 +909,33 @@
     var reserved = [ "start", "end" ],
         plugin = {},
         setup,
-        isfn = typeof definition === "function";
+        isfn = typeof definition === "function",
+        methods = [ "_setup", "_teardown", "start", "end" ];
+
+    // combines calls of two function calls into one
+    var combineFn = function( first, second ) {
+
+      first = first || Popcorn.nop;
+      second = second || Popcorn.nop;
+
+      return function() {
+
+        first.apply( this, arguments );
+        second.apply( this, arguments );
+      };
+    };
 
     //  If `manifest` arg is undefined, check for manifest within the `definition` object
     //  If no `definition.manifest`, an empty object is a sufficient fallback
     if ( !manifest ) {
       manifest = definition.manifest || {};
     }
+
+    // apply safe, and empty default functions
+    methods.forEach(function( method ) {
+
+      definition[ method ] = definition[ method ] || Popcorn.nop;      
+    });
 
     var pluginFn = function( setup, options ) {
 
@@ -926,9 +944,33 @@
       }
 
       //  Storing the plugin natives
-      options._natives = setup;
+      var natives = options._natives = {},
+          compose = "";
+
+      Popcorn.extend( natives, setup );
+
       options._natives.type = name;
       options._running = false;
+
+      // default to an empty string if no effect exists
+      // split string into an array of effects
+      options.compose = options.compose && options.compose.split( " " ) || [];
+      options.effect = options.effect && options.effect.split( " " ) || [];
+
+      // join the two arrays together
+      options.compose = options.compose.concat( options.effect );
+
+      for ( var i = 0, l = options.compose.length; i < l; i++ ) {
+
+        // if the requested compose is garbage, throw it away
+        compose = Popcorn.compositions[ options.compose[ i ] ] || {};
+
+        // extends previous functions with compose function
+        methods.forEach(function( method ) {
+
+          natives[ method ] = combineFn( natives[ method ], compose[ method ] );
+        });
+      }
 
       //  Ensure a manifest object, an empty object is a sufficient fallback
       options._natives.manifest = manifest;
@@ -942,23 +984,18 @@
         options.end = this.duration() || Number.MAX_VALUE;
       }
 
-      //  If a _setup was declared, then call it before
-      //  the events commence
-      if ( "_setup" in setup && typeof setup._setup === "function" ) {
+      // Resolves 239, 241, 242
+      if ( !options.target ) {
 
-        // Resolves 239, 241, 242
-        if ( !options.target ) {
+        //  Sometimes the manifest may be missing entirely
+        //  or it has an options object that doesn't have a `target` property
 
-          //  Sometimes the manifest may be missing entirely
-          //  or it has an options object that doesn't have a `target` property
+        var manifestopts = "options" in manifest && manifest.options;
 
-          var manifestopts = "options" in manifest && manifest.options;
-
-          options.target = manifestopts && "target" in manifestopts && manifestopts.target;
-        }
-
-        setup._setup.call( this, options );
+        options.target = manifestopts && "target" in manifestopts && manifestopts.target;
       }
+
+      options._natives._setup && options._natives._setup.call( this, options );
 
       Popcorn.addTrackEvent( this, options );
 
@@ -1071,92 +1108,20 @@
     }
   };
 
-
-  //  Popcorn Plugin Inheritance Helper Methods
-  //  Internal use only
-  Popcorn.plugin.getDefinition = function( name ) {
-
-    var registry = Popcorn.registryByName;
-
-    if ( registry[ name ] ) {
-      return registry[ name ];
-    }
-
-    Popcorn.error( "Cannot inherit from " + name + "; Object does not exist" );
-  };
-
-  //  Internal use only
-  Popcorn.plugin.delegate = function( instance, name, plugins ) {
-
-    return function() {
-      var args = arguments;
-      plugins.forEach( function( plugin ) {
-        // The new plugin simply calls the delegated methods on
-        // all of its parents in the order they were specified.
-        plugin[ name ] && plugin[ name ].apply( instance, args );
-      });
-    };
-  };
+  Popcorn.compositions = {};
 
   //  Plugin inheritance
-  Popcorn.plugin.inherit = function( name, parents, definition, manifest ) {
+  Popcorn.compose = function( name, definition, manifest ) {
 
+    //  If `manifest` arg is undefined, check for manifest within the `definition` object
+    //  If no `definition.manifest`, an empty object is a sufficient fallback
+    Popcorn.manifest[ name ] = manifest = manifest || definition.manifest || {};
 
-    // Get the names of all of the ancestor classes, in the order that
-    // we will be calling them. The override is for the class we're
-    // currently defining, since it's not in the registry yet.
-    var ancestors = [],
-        pluginFn, entry;
-
-    function getAncestors( name, override ) {
-      var parents = override || Popcorn.plugin.getDefinition( name ).parents;
-      for ( var i in parents ) {
-        if ( hasOwn.call( parents, i ) ) {
-          var p = parents[ i ];
-          getAncestors( p );
-          if ( ancestors.indexOf( p ) === -1 ) {
-            ancestors.push( p );
-          }
-        }
-      }
-    }
-
-    getAncestors( name, Popcorn.isArray( parents ) ? parents : [ parents ] );
-    ancestors.push( name );
-
-    // Now create the requested plugin under the reqested name.
-    pluginFn = Popcorn.plugin( name, function( options ) {
-
-      var self = this,
-          plugins;
-
-      function instantiate( definition ) {
-        return definition.call && definition.call( self, options ) || definition;
-      }
-
-      // When the newly-defined plugin is instantiated, it must
-      // explicitly instantiate all of its ancestors.
-      plugins = ancestors.map( function( name ) {
-        return instantiate( Popcorn.plugin.getDefinition( name ).base );
-      });
-
-      return {
-        _setup: Popcorn.plugin.delegate( self, "_setup", plugins ),
-        start: Popcorn.plugin.delegate( self, "start", plugins ),
-        end: Popcorn.plugin.delegate( self, "end", plugins )
-      };
-
-    }, manifest || definition.manifest );
-
-    entry = Popcorn.plugin.getDefinition( name );
-    entry.base = definition;
-    entry.parents = parents;
-
-    return pluginFn;
+    // register the effect by name
+    Popcorn.compositions[ name ] = definition;
   };
 
-  // Augment Popcorn;
-  Popcorn.inherit = Popcorn.plugin.inherit;
+  Popcorn.plugin.effect = Popcorn.effect = Popcorn.compose;
 
   // stores parsers keyed on filetype
   Popcorn.parsers = {};
