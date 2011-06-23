@@ -1118,6 +1118,149 @@ test("Manifest", function () {
 
 });
 
+test("Configurable Defaults", function () {
+  
+  var expects = 12,
+      count   = 0;
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+      Popcorn.removePlugin( "configurable" );
+      Popcorn.removePlugin( "multiconfig" );
+      Popcorn.removePlugin( "overridden" );
+    }
+  }
+
+  stop();
+      
+  Popcorn.plugin( "configurable", function () {
+    return {
+      _setup: function( options ) {
+
+        equal( options.target, "foo", 'options.target, "foo" in configurable _setup');
+        plus();
+      },
+      start: function( event, options ) {
+
+        // target: "foo"
+        // text: "bar"
+        // type: "thinger"      
+        equal( options.target, "foo", 'options.target, "foo" in configurable start');
+        plus();
+        equal( options.text, "bar", 'options.text, "bar" in configurable start');
+        plus();
+        equal( options.type, "thinger", 'options.type, "thinger" in configurable start');
+        plus();
+      },
+      end: function( event, options ) {
+        ok( true, "end fired");
+        plus();
+      }
+    };
+  },
+  {
+    about:{
+      name: "Popcorn Configurable Plugin",
+      version: "0.0",
+      author: "Rick Waldron",
+      website: ""
+    },
+    options: {
+      target: "manifest"
+    }
+  });
+
+  Popcorn.plugin( "multiconfig", function () {
+    return {
+      start: function( event, options ) {
+        equal( options.target, "quux", 'options.target, "quux" in multiconfig start');
+        plus();
+      },
+      end: function( event, options ) {
+        ok( true, "end fired");
+        plus();
+      }
+    };
+  });
+
+  Popcorn.plugin( "overridden", function () {
+    return {
+    	_setup: function( options ) {
+        equal( options.text, "hello!", 'options.text, overriden with "hello!" in overridden _setup');
+        plus();
+      
+        equal( options.target, "custom", 'options.target, overriden with "custom" in overridden _setup');
+        plus();
+    	},
+      start: function( event, options ) {
+        equal( options.text, "hello!", 'options.text, overriden with "hello!" in overridden start');
+        plus();
+      
+        equal( options.target, "custom", 'options.target, overriden with "custom" in overridden start');
+        plus();
+      },
+      end: function( event, options ) {
+        ok( true, "end fired");
+        plus();
+      }
+    };
+  });
+
+  var p = Popcorn("#video", {
+            defaults: {
+              overridden: {
+                target: "default"
+              }
+            }
+          });
+
+  p.defaults( "configurable", {
+
+    // set a default element target id
+    target: "foo"
+    
+  }).defaults([ 
+    { 
+      multiconfig: { 
+        target: "quux" 
+      } 
+    },
+    { 
+      configurable: { 
+        text: "bar",
+        type: "thinger"
+      } 
+    } 
+  ]).configurable({
+
+    // all calls will have:
+    // target: "foo"
+    // text: "bar"
+    // type: "thinger"
+    start: 3,
+    end: 4
+
+  }).multiconfig({
+
+    // all calls will have:
+    // target: "quux"
+    start: 4,
+    end: 5
+    
+  }).overridden({
+
+    // has a default set
+    // we need limitless overriding
+    start: 4,
+    end: 5,
+    target: "custom",
+    text: "hello!"
+
+  }).currentTime( 2 ).play();
+
+});
+
 test("Update Timer", function () {
 
   QUnit.reset();

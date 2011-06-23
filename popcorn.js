@@ -495,11 +495,44 @@
 
       return this;
     },
+
+    // Get the client bounding box of an instance element
     position: function() {
       return Popcorn.position( this.media );
-    }, 
+    },
+
+    // Toggle a plugin's playback behaviour (on or off) per instance
     toggle: function( plugin ) {
       return Popcorn[ this.data.disabled.indexOf( plugin ) > -1 ? "enable" : "disable" ]( this, plugin );
+    }, 
+
+    // Set default values for plugin options objects per instance
+    defaults: function( plugin, defaults ) {
+
+      // If an array of default configurations is provided,
+      // iterate and apply each to this instance
+      if ( Popcorn.isArray( plugin ) ) {
+
+        Popcorn.forEach( plugin, function( obj ) {
+          for ( var name in obj ) {
+            this.defaults( name, obj[ name ] );
+          }
+        }, this );
+
+        return this;
+      }
+
+      if ( !this.options.defaults ) {
+        this.options.defaults = {};
+      }
+
+      if ( !this.options.defaults[ plugin ] ) {
+        this.options.defaults[ plugin ] = {};
+      }
+
+      Popcorn.extend( this.options.defaults[ plugin ], defaults );
+
+      return this;
     }
   });
 
@@ -713,6 +746,14 @@
 
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
+
+    // Determine if this track has default options set for it
+    // If so, apply them to the track object
+    if ( track && track._natives && track._natives.type &&
+        ( obj.options.defaults && obj.options.defaults[ track._natives.type ] ) ) {
+
+      track = Popcorn.extend( {}, obj.options.defaults[ track._natives.type ], track );
+    }
 
     if ( track._natives ) {
       //  Supports user defined track event id
@@ -945,7 +986,9 @@
 
       //  Storing the plugin natives
       var natives = options._natives = {},
-          compose = "";
+          compose = "", 
+          defaults = this.options.defaults && this.options.defaults[ options._natives && options._natives.type ],
+          originalOpts, manifestOpts, mergedSetupOpts;
 
       Popcorn.extend( natives, setup );
 
@@ -984,20 +1027,36 @@
         options.end = this.duration() || Number.MAX_VALUE;
       }
 
+      // Store original options object as a restore point
+      originalOpts = options;
+      
+      // Merge with defaults if they exist, make sure per call is prioritized
+      mergedSetupOpts = defaults ? Popcorn.extend( {}, defaults, options ) :
+                          options;
+
       // Resolves 239, 241, 242
-      if ( !options.target ) {
+      if ( !mergedSetupOpts.target ) {
 
         //  Sometimes the manifest may be missing entirely
         //  or it has an options object that doesn't have a `target` property
+        manifestOpts = "options" in manifest && manifest.options;
 
-        var manifestopts = "options" in manifest && manifest.options;
+        mergedSetupOpts.target = manifestOpts && "target" in manifestOpts && manifestOpts.target;
+      }
+      
+      // Resolves 239, 241, 242
+      if ( !mergedSetupOpts.target ) {
 
-        options.target = manifestopts && "target" in manifestopts && manifestopts.target;
+        //  Sometimes the manifest may be missing entirely
+        //  or it has an options object that doesn't have a `target` property
+        manifestOpts = "options" in manifest && manifest.options;
+
+        mergedSetupOpts.target = manifestOpts && "target" in manifestOpts && manifestOpts.target;
       }
 
-      options._natives._setup && options._natives._setup.call( this, options );
+      options._natives._setup && options._natives._setup.call( this, mergedSetupOpts );
 
-      Popcorn.addTrackEvent( this, options );
+      Popcorn.addTrackEvent( this, originalOpts );
 
       //  Future support for plugin event definitions
       //  for all of the native events
