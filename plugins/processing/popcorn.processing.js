@@ -59,7 +59,14 @@
 
     var init = function( context ) {
     
-      var parentTarget = document.getElementById( options.target ),
+      var initProcessing,
+        canvas;
+      
+      options.parentTarget = document.getElementById( options.target );
+      
+      if ( !options.parentTarget ) {
+        throw ( "target container doesn't exist" );
+      }
       
       initProcessing = function() {
         var addListeners = function() {
@@ -92,15 +99,13 @@
         }
       };
       
-      if ( parentTarget.tagName === "CANVAS" ) {
-        options.canvas = parentTarget;
-      } else if ( parentTarget.tagName === "DIV" ) {
-        options.canvas = document.createElement( "canvas" );
-        parentTarget.appendChild( options.canvas );
-      }    
-      options.canvas.id = Popcorn.guid( options.target + "-sketch-" );
-      options.canvas.setAttribute( "data-processing-sources", options.sketch );
-      options.canvas.style.display = "none";
+      canvas = document.createElement( "canvas" );
+      canvas.id = Popcorn.guid( options.target + "-sketch-" );
+      canvas[ "data-processing-sources" ] =  options.sketch;
+      canvas.style.display = "none";   
+      options.canvas = canvas;
+      
+      options.parentTarget.appendChild( options.canvas );
       
       Popcorn.xhr({
         url: options.sketch,
@@ -150,6 +155,11 @@
 
       end: function( event, options ) {
         toggle.call( this, false, options );
+      },
+      
+      _teardown: function( options ) {
+        options.pjsInstance && options.pjsInstance.exit();
+        options.parentTarget && options.parentTarget.removeChild( options.canvas );
       }
     };
   });
