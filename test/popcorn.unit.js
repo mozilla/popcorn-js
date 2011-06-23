@@ -1118,6 +1118,156 @@ test("Manifest", function () {
 
 });
 
+test("Configurable Defaults", function () {
+  
+  var expects = 13,
+      count   = 0;
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+
+
+      ["configurable", "multiconfig", "overridden"].forEach(function( val ) {
+        Popcorn.removePlugin( val );
+        delete Popcorn.manifest[ val ];
+      });
+    }
+  }
+
+  stop();
+      
+  Popcorn.plugin( "configurable", function () {
+    return {
+      _setup: function( options ) {
+
+        options.persistant = true;
+
+        equal( options.target, "foo", 'options.target, "foo" in configurable _setup');
+        plus();
+      },
+      start: function( event, options ) {
+
+        ok( options.persistant, "options.persistant proves same object passed from _setup" );
+        plus();
+        // target: "foo"
+        // text: "bar"
+        // type: "thinger"      
+        equal( options.target, "foo", 'options.target, "foo" in configurable start');
+        plus();
+        equal( options.text, "bar", 'options.text, "bar" in configurable start');
+        plus();
+        equal( options.type, "thinger", 'options.type, "thinger" in configurable start');
+        plus();
+      },
+      end: function( event, options ) {
+        ok( true, "end fired");
+        plus();
+      }
+    };
+  },
+  {
+    about:{
+      name: "Popcorn Configurable Plugin",
+      version: "0.0",
+      author: "Rick Waldron",
+      website: ""
+    },
+    options: {
+      target: "manifest"
+    }
+  });
+
+  Popcorn.plugin( "multiconfig", function () {
+    return {
+      start: function( event, options ) {
+        equal( options.target, "quux", 'options.target, "quux" in multiconfig start');
+        plus();
+      },
+      end: function( event, options ) {
+        ok( true, "end fired");
+        plus();
+      }
+    };
+  });
+
+  Popcorn.plugin( "overridden", function () {
+    return {
+      _setup: function( options ) {
+        equal( options.text, "hello!", 'options.text, overriden with "hello!" in overridden _setup');
+        plus();
+      
+        equal( options.target, "custom", 'options.target, overriden with "custom" in overridden _setup');
+        plus();
+      },
+      start: function( event, options ) {
+        equal( options.text, "hello!", 'options.text, overriden with "hello!" in overridden start');
+        plus();
+      
+        equal( options.target, "custom", 'options.target, overriden with "custom" in overridden start');
+        plus();
+      },
+      end: function( event, options ) {
+        ok( true, "end fired");
+        plus();
+      }
+    };
+  });
+
+  var p = Popcorn("#video", {
+            defaults: {
+              overridden: {
+                target: "default"
+              }
+            }
+          });
+
+  p.defaults( "configurable", {
+
+    // set a default element target id
+    target: "foo"
+    
+  }).defaults([ 
+    { 
+      multiconfig: { 
+        target: "quux" 
+      } 
+    },
+    { 
+      configurable: { 
+        text: "bar",
+        type: "thinger"
+      } 
+    } 
+  ]).configurable({
+
+    // all calls will have:
+    // target: "foo"
+    // text: "bar"
+    // type: "thinger"
+    start: 3,
+    end: 4
+
+  }).multiconfig({
+
+    // all calls will have:
+    // target: "quux"
+    start: 4,
+    end: 5
+    
+  }).overridden({
+
+    // has a default set
+    // we need limitless overriding
+    start: 4,
+    end: 5,
+    target: "custom",
+    text: "hello!"
+
+  }).currentTime( 2 ).play();
+
+});
+
 test("Update Timer", function () {
 
   QUnit.reset();
@@ -1388,7 +1538,7 @@ test("Plugin Factory", function () {
 
 });
 
-test( "Plugin extend", function () {
+test( "Popcorn Compose", function () {
 
   QUnit.reset();
 
@@ -1423,13 +1573,13 @@ test( "Plugin extend", function () {
   expect( expects );
   stop( 15000 );
 
-  ok( Popcorn.compose, "compose method exists" );
+  ok( Popcorn.compose, "Popcorn.compose method exists" );
   plus();
 
-  ok( Popcorn.effect, "effect method exists" );
+  ok( Popcorn.effect, "Popcorn.effect method exists" );
   plus();
 
-  ok( Popcorn.plugin.effect, "effect method exists" );
+  ok( Popcorn.plugin.effect, "Popcorn.plugin.effect method exists" );
   plus();
 
   Popcorn.plugin( "testPlugin", {});
@@ -1520,7 +1670,7 @@ test( "Plugin extend", function () {
   })
   .exec( 1, function() {
     equals( test.one.running, 0, "no compose running" );
-   plus();
+    plus();
     equals( test.two.running, 0, "no effect running" );
     plus();
   })
@@ -1569,6 +1719,7 @@ test( "Plugin extend", function () {
   // runs once, 2 tests
   Popcorn.plugin( "pluginOptions1", {
     _setup: function( options ) {
+      console.log( "runs once?" );
       ok( options.pluginoption, "plugin option one exists at setup" );
       plus();
       ok( !options.composeoption, "compose option one does not exist at setup" );
