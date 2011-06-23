@@ -114,7 +114,7 @@ test("Popcorn Subtitle Plugin", function () {
   });
 
   popped.exec( 5, function() {
-    ok ( document.getElementById( 'subtitle-0 ').style.display === "none" && 
+    ok ( document.getElementById( 'subtitle-0' ).style.display === "none" && 
         document.getElementById( 'subtitle-1' ).style.display === "none" &&
         document.getElementById( 'subtitle-2' ).style.display === "none", "All subtitles are no longer visible" );
     plus();

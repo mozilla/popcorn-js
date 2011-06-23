@@ -8,7 +8,11 @@
 
         if ( typeof google !== 'undefined' && google.load ) {
 
-          google.load( "language", "1", { callback: function() { scriptLoaded = true; } } );
+          google.load( "language", "1", { 
+            callback: function() {
+              scriptLoaded = true; 
+            }
+          });
         } else {
 
           setTimeout( function() {
@@ -18,32 +22,34 @@
         }
       },
       createDefaultContainer = function( context ) {
-
+        
         // clear this function from future calls; we are done
         createDefaultContainer = Popcorn.nop;
 
         var updatePosition = function() {
 
           // the video element must have height and width defined
-          context.container.style.fontSize = "18px";
-          context.container.style.width = context.media.offsetWidth + "px";
-          context.container.style.top = context.position().top  + context.media.offsetHeight - context.container.offsetHeight - 40 + "px";
-          context.container.style.left = context.position().left + "px";
+          style.fontSize = "18px";
+          style.width = context.media.offsetWidth + "px";
+          style.top = context.position().top  + context.media.offsetHeight - context.container.offsetHeight - 40 + "px";
+          style.left = context.position().left + "px";
 
           setTimeout( updatePosition, 10 );
         };
 
-        context.container = document.createElement( 'div' );
-        context.container.id = "subtitlediv";
-        context.container.style.position = "absolute";
-        context.container.style.color = "white";
-        context.container.style.textShadow = "black 2px 2px 6px";
-        context.container.style.fontWeight = "bold";
-        context.container.style.textAlign = "center";
+        var ctxContainer = context.container = document.createElement( 'div' ),
+            style = ctxContainer.style;
+
+        ctxContainer.id = "subtitlediv";
+        style.position = "absolute";
+        style.color = "white";
+        style.textShadow = "black 2px 2px 6px";
+        style.fontWeight = "bold";
+        style.textAlign = "center";
 
         updatePosition();
 
-        document.body.appendChild( context.container );
+        document.body.appendChild( ctxContainer );
       };
 
   Popcorn.getScript( "http://www.google.com/jsapi", callBack );
@@ -101,15 +107,15 @@
   var translate = function( options, text ) {
 
     options.selectedLanguage = options.languageSrc.options[ options.languageSrc.selectedIndex ].value;
-    google.language.translate( text, '', options.selectedLanguage, function( result ) {
+    google.language.translate( text, "", options.selectedLanguage, function( result ) {
       
-      for( var k = 0; k < options.container.children.length; k++ ) {
-        if ( options.container.children[ k ].style.display === "inline" ) {   
-          options.container.children[ k ].innerHTML = result.translation;    
+      for( var k = 0, children = options.container.children, len = children.length; k < len; k++ ) {
+        if ( children[ k ].style.display === "inline" ) {   
+          children[ k ].innerHTML = result.translation;    
         }  
       }
 
-    } );
+    });
   };
 
   Popcorn.plugin( "subtitle" , {
@@ -123,36 +129,38 @@
         },
         options: {
           start: {
-            elem: 'input', 
-            type: 'text', 
-            label: 'In'
+            elem: "input", 
+            type: "text", 
+            label: "In"
           },
           end: {
-            elem: 'input', 
-            type: 'text', 
-            label: 'Out'
+            elem: "input", 
+            type: "text", 
+            label: "Out"
           },
-          target: 'subtitle-container',
+          target: "subtitle-container",
           text: {
-            elem: 'input', 
-            type: 'text', 
-            label: 'Text'
+            elem: "input", 
+            type: "text", 
+            label: "Text"
           }
         }
       },
 
       _setup: function( options ) {
-        var newdiv = document.createElement( "div" );
+        var newdiv = document.createElement( "div" ),
+            accessibility = document.getElementById( options.accessibilitysrc );
+
         newdiv.id = "subtitle-" + i;
         newdiv.style.display = "none";
         i++;
 
         // Creates a div for all subtitles to use
-        ( !this.container && !options.target || options.target === 'subtitle-container' ) && 
+        ( !this.container && !options.target || options.target === "subtitle-container" ) && 
           createDefaultContainer( this );
 
         // if a target is specified, use that
-        if ( options.target && options.target !== 'subtitle-container' ) {
+        if ( options.target && options.target !== "subtitle-container" ) {
           options.container = document.getElementById( options.target );
         } else { // use shared default container
           options.container = this.container;
@@ -160,8 +168,6 @@
         
         document.getElementById( options.container.id ).appendChild( newdiv );
         options.innerContainer = newdiv;
-
-        var accessibility = document.getElementById( options.accessibilitysrc );
 
         options.showSubtitle = function() {
           options.innerContainer.innerHTML = options.text;
@@ -194,9 +200,9 @@
 
                 options.toggleSubtitles();
 
-                for( var k = 0; k < options.container.children.length; k++ ) {
-                  if ( options.container.children[ k ].style.display === "inline" ) {   
-                    options.showSubtitle( options, options.container.children[ k ].innerHTML );   
+                for( var k = 0, children = options.container.children, len = children.length; k < len; k++ ) {
+                  if ( children[ k ].style.display === "inline" ) {   
+                    options.showSubtitle( options, children[ k ].innerHTML );   
                   }  
                 }
 
@@ -245,6 +251,6 @@
         options.container.removeChild( options.innerContainer );
       }
    
-  } );
+  });
 
 })( Popcorn );
