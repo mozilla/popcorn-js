@@ -1126,9 +1126,12 @@ test("Configurable Defaults", function () {
   function plus() {
     if ( ++count === expects ) {
       start();
-      Popcorn.removePlugin( "configurable" );
-      Popcorn.removePlugin( "multiconfig" );
-      Popcorn.removePlugin( "overridden" );
+
+
+      ["configurable", "multiconfig", "overridden"].forEach(function( val ) {
+        Popcorn.removePlugin( val );
+        delete Popcorn.manifest[ val ];
+      });
     }
   }
 
@@ -1186,13 +1189,13 @@ test("Configurable Defaults", function () {
 
   Popcorn.plugin( "overridden", function () {
     return {
-    	_setup: function( options ) {
+      _setup: function( options ) {
         equal( options.text, "hello!", 'options.text, overriden with "hello!" in overridden _setup');
         plus();
       
         equal( options.target, "custom", 'options.target, overriden with "custom" in overridden _setup');
         plus();
-    	},
+      },
       start: function( event, options ) {
         equal( options.text, "hello!", 'options.text, overriden with "hello!" in overridden start');
         plus();
@@ -1531,7 +1534,7 @@ test("Plugin Factory", function () {
 
 });
 
-test( "Plugin extend", function () {
+test( "Popcorn Compose", function () {
 
   QUnit.reset();
 
@@ -1566,13 +1569,13 @@ test( "Plugin extend", function () {
   expect( expects );
   stop( 15000 );
 
-  ok( Popcorn.compose, "compose method exists" );
+  ok( Popcorn.compose, "Popcorn.compose method exists" );
   plus();
 
-  ok( Popcorn.effect, "effect method exists" );
+  ok( Popcorn.effect, "Popcorn.effect method exists" );
   plus();
 
-  ok( Popcorn.plugin.effect, "effect method exists" );
+  ok( Popcorn.plugin.effect, "Popcorn.plugin.effect method exists" );
   plus();
 
   Popcorn.plugin( "testPlugin", {});
@@ -1663,7 +1666,7 @@ test( "Plugin extend", function () {
   })
   .exec( 1, function() {
     equals( test.one.running, 0, "no compose running" );
-   plus();
+    plus();
     equals( test.two.running, 0, "no effect running" );
     plus();
   })
@@ -1712,6 +1715,7 @@ test( "Plugin extend", function () {
   // runs once, 2 tests
   Popcorn.plugin( "pluginOptions1", {
     _setup: function( options ) {
+    	console.log( "runs once?" );
       ok( options.pluginoption, "plugin option one exists at setup" );
       plus();
       ok( !options.composeoption, "compose option one does not exist at setup" );
