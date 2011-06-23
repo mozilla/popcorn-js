@@ -64,7 +64,7 @@
       _setup: function( options ) {
 
         var attrib = "", 
-        license = licenses[ options.license.toLowerCase() ], 
+        license = options.license && licenses[ options.license.toLowerCase() ],
         tar = "target=_blank"; 
 
         // make a div to put the information into
