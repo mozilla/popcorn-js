@@ -6,7 +6,7 @@
       i = 0,
       callBack = function( data ) {
 
-        if ( typeof google !== 'undefined' && google.load ) {
+        if ( typeof google !== "undefined" && google.load ) {
 
           google.load( "language", "1", { 
             callback: function() {
@@ -30,15 +30,17 @@
 
           // the video element must have height and width defined
           style.fontSize = "18px";
-          style.width = context.media.offsetWidth + "px";
-          style.top = context.position().top  + context.media.offsetHeight - context.container.offsetHeight - 40 + "px";
-          style.left = context.position().left + "px";
+          style.width = media.offsetWidth + "px";
+          style.top = position.top  + media.offsetHeight - ctxContainer.offsetHeight - 40 + "px";
+          style.left = position.left + "px";
 
           setTimeout( updatePosition, 10 );
         };
 
-        var ctxContainer = context.container = document.createElement( 'div' ),
-            style = ctxContainer.style;
+        var ctxContainer = context.container = document.createElement( "div" ),
+            style = ctxContainer.style,
+            position = context.position(),
+            media = context.media;
 
         ctxContainer.id = "subtitlediv";
         style.position = "absolute";
@@ -162,7 +164,8 @@
         // if a target is specified, use that
         if ( options.target && options.target !== "subtitle-container" ) {
           options.container = document.getElementById( options.target );
-        } else { // use shared default container
+        } else { 
+          // use shared default container
           options.container = this.container;
         }
         
