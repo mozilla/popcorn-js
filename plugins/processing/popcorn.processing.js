@@ -158,6 +158,7 @@
       },
       
       _teardown: function( options ) {
+        options.pjsInstance && options.pjsInstance.exit();
         options.parentTarget && options.parentTarget.removeChild( options.canvas );
       }
     };

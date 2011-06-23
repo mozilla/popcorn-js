@@ -98,12 +98,10 @@ test( "Processing plugin tests", function() {
     equals( processingDiv4.children[ 0 ].style.display, "inline", "canvas '" + processingDiv4.children[ 0 ].id + "' is displayed" );
     plus();
   }).exec( 4.5, function() { 
-    var idx = 5, div, id;
+    var idx = 5;
     while ( --idx ) {
-      div = document.getElementById( "processing-div-" + ( idx ) );
-      id = trackids.pop();
-      popped.removeTrackEvent( id );
-      ok ( !div.children[0], "track event was removed" );
+      popped.removeTrackEvent( trackids.pop() );
+      ok ( !document.getElementById( "processing-div-" + ( idx ) ).children[ 0 ], "track event was removed" );
       plus();
     }
   });
