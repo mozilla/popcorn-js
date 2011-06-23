@@ -1120,7 +1120,7 @@ test("Manifest", function () {
 
 test("Configurable Defaults", function () {
   
-  var expects = 12,
+  var expects = 13,
       count   = 0;
 
   function plus() {
@@ -1141,11 +1141,15 @@ test("Configurable Defaults", function () {
     return {
       _setup: function( options ) {
 
+        options.persistant = true;
+
         equal( options.target, "foo", 'options.target, "foo" in configurable _setup');
         plus();
       },
       start: function( event, options ) {
 
+        ok( options.persistant, "options.persistant proves same object passed from _setup" );
+        plus();
         // target: "foo"
         // text: "bar"
         // type: "thinger"      
@@ -1715,7 +1719,7 @@ test( "Popcorn Compose", function () {
   // runs once, 2 tests
   Popcorn.plugin( "pluginOptions1", {
     _setup: function( options ) {
-    	console.log( "runs once?" );
+      console.log( "runs once?" );
       ok( options.pluginoption, "plugin option one exists at setup" );
       plus();
       ok( !options.composeoption, "compose option one does not exist at setup" );
