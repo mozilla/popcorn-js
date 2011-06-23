@@ -3,7 +3,7 @@ test("Popcorn wikipedia Plugin", function () {
   var popped        = Popcorn( "#video" ),
       expects       = 11, 
       count         = 0,
-      theArticle    = document.getElementById( 'wikidiv' );
+      theArticle    = document.getElementById( "wikidiv" );
        
   expect( expects );
   
@@ -15,7 +15,7 @@ test("Popcorn wikipedia Plugin", function () {
   
   stop();
    
-  ok ( 'wikipedia' in popped, "wikipedia is a mehtod of the popped instance" );
+  ok ( "wikipedia" in popped, "wikipedia is a mehtod of the popped instance" );
   plus();
   
   equals ( theArticle.innerHTML, "", "initially, there is nothing in the wikidiv" );
@@ -24,15 +24,15 @@ test("Popcorn wikipedia Plugin", function () {
   popped.wikipedia({
       start: 1, // seconds
       end: 3, // seconds
-      src: 'http://en.wikipedia.org/wiki/Cape_Town',
+      src: "http://en.wikipedia.org/wiki/Cape_Town",
       title: "this is an article",
-      target: 'wikidiv'
+      target: "wikidiv"
     } )
     .wikipedia({
       start: 4, // seconds
       end: 5, // seconds
-      src: 'http://en.wikipedia.org/wiki/S%C3%A3o_Paulo',
-      target: 'wikidiv'
+      src: "http://en.wikipedia.org/wiki/S%C3%A3o_Paulo",
+      target: "wikidiv"
     } )
     .volume(0)
     .play();

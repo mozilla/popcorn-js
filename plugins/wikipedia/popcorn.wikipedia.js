@@ -22,12 +22,12 @@ var wikiCallback;
    * @param {Object} options
    * 
    * Example:
-     var p = Popcorn('#video')
+     var p = Popcorn("#video")
         .wikipedia({
           start: 5, // seconds
           end: 15, // seconds
-          src: 'http://en.wikipedia.org/wiki/Cape_Town',
-          target: 'wikidiv'
+          src: "http://en.wikipedia.org/wiki/Cape_Town",
+          target: "wikidiv"
         } )
    *
    */
@@ -42,36 +42,36 @@ var wikiCallback;
       },
       options:{
         start: {
-          elem: 'input', 
-          type: 'text', 
-          label: 'In'
+          elem: "input", 
+          type: "text", 
+          label: "In"
         },
         end: {
-          elem: 'input', 
-          type: 'text', 
-          label: 'Out'
+          elem: "input", 
+          type: "text", 
+          label: "Out"
         },
         lang: {
-          elem: 'input', 
-          type: 'text', 
-          label: 'Language'
+          elem: "input", 
+          type: "text", 
+          label: "Language"
         },
         src: {
-          elem: 'input', 
-          type: 'text', 
-          label: 'Src'
+          elem: "input", 
+          type: "text", 
+          label: "Src"
         },
         title: {
-          elem: 'input', 
-          type: 'text', 
-          label: 'Title'
+          elem: "input", 
+          type: "text", 
+          label: "Title"
         },
         numberofwords: {
-          elem: 'input', 
-          type: 'text', 
-          label: 'Num Of Words'
+          elem: "input", 
+          type: "text", 
+          label: "Num Of Words"
         },
-        target: 'wikipedia-container'
+        target: "wikipedia-container"
       }
     },
     /**
@@ -88,7 +88,7 @@ var wikiCallback;
       var  _text, _guid = Popcorn.guid(); 
       
       // if the user didn't specify a language default to english
-      if ( typeof options.lang === 'undefined' ) { 
+      if ( !options.lang ) { 
         options.lang = "en"; 
       }
 
@@ -100,18 +100,18 @@ var wikiCallback;
       // and stores it by appending values to the options object
       window[ "wikiCallback" + _guid ]  = function ( data ) { 
 
-        options._link = document.createElement( 'a' );
-        options._link.setAttribute( 'href', options.src );
-        options._link.setAttribute( 'target', '_blank' );
+        options._link = document.createElement( "a" );
+        options._link.setAttribute( "href", options.src );
+        options._link.setAttribute( "target", "_blank" );
 
         // add the title of the article to the link
         options._link.innerHTML = options.title || data.parse.displaytitle;
 
         // get the content of the wiki article
-        options._desc = document.createElement( 'p' );
+        options._desc = document.createElement( "p" );
 
         // get the article text and remove any special characters
-        _text = data.parse.text[ "*" ].substr( data.parse.text[ "*" ].indexOf( '<p>' ) );
+        _text = data.parse.text[ "*" ].substr( data.parse.text[ "*" ].indexOf( "<p>" ) );
         _text = _text.replace( /((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "" );
         options._desc.innerHTML = _text.substr( 0,  options.numberofwords ) + " ...";
         
@@ -171,11 +171,11 @@ var wikiCallback;
 
     _teardown: function( options ){
 
-        if ( options._added ) {
-          options._link.parentNode && document.getElementById( options.target ).removeChild( options._link );
-          options._desc.parentNode && document.getElementById( options.target ).removeChild( options._desc );
-          delete options.target;
-        }
+      if ( options._added ) {
+        options._link.parentNode && document.getElementById( options.target ).removeChild( options._link );
+        options._desc.parentNode && document.getElementById( options.target ).removeChild( options._desc );
+        delete options.target;
+      }
     }
   });
 
