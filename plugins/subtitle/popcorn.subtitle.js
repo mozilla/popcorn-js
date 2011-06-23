@@ -6,7 +6,7 @@
       i = 0,
       callBack = function( data ) {
 
-        if ( typeof google !== "undefined" && google.load ) {
+        if ( window.google && google.load ) {
 
           google.load( "language", "1", { 
             callback: function() {
