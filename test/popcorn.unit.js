@@ -1275,6 +1275,7 @@ test("Update Timer", function () {
   var p2 = Popcorn("#video"),
       expects = 12,
       count   = 0,
+      execCount = 0,
       // These make sure events are only fired once
       // any second call will produce a failed test
       forwardStart  = false,
@@ -1385,34 +1386,50 @@ test("Update Timer", function () {
   // checking wrapper 2's start
   .exec( 5, function() {
 
-    ok( wrapperRunning.two, "wrapper two is running at second 5" );
-    plus();
-    ok( !wrapperRunning.one, "wrapper one is stopped at second 5" );
-    plus();
+    if ( execCount === 0 ) {
+
+      execCount++;
+      ok( wrapperRunning.two, "wrapper two is running at second 5" );
+      plus();
+      ok( !wrapperRunning.one, "wrapper one is stopped at second 5" );
+      plus();
+    }
   })
   // checking wrapper 1's start
   .exec( 6, function() {
 
-    ok( wrapperRunning.two, "wrapper two is running at second 6" );
-    plus();
-    ok( wrapperRunning.one, "wrapper one is running at second 6" );
-    plus();
+    if ( execCount === 1 ) {
+
+      execCount++;
+      ok( wrapperRunning.two, "wrapper two is running at second 6" );
+      plus();
+      ok( wrapperRunning.one, "wrapper one is running at second 6" );
+      plus();
+    }
   })
   // checking wrapper 1's end
   .exec( 7, function() {
 
-    ok( wrapperRunning.two, "wrapper two is running at second 7" );
-    plus();
-    ok( !wrapperRunning.one, "wrapper one is stopped at second 7" );
-    plus();
+    if ( execCount === 2 ) {
+
+      execCount++;
+      ok( wrapperRunning.two, "wrapper two is running at second 7" );
+      plus();
+      ok( !wrapperRunning.one, "wrapper one is stopped at second 7" );
+      plus();
+    }
   })
   // checking wrapper 2's end
   .exec( 8, function() {
 
-    ok( !wrapperRunning.two, "wrapper two is stopped at second 9" );
-    plus();
-    ok( !wrapperRunning.one, "wrapper one is stopped at second 9" );
-    plus();
+    if ( execCount === 3 ) {
+
+      execCount++;
+      ok( !wrapperRunning.two, "wrapper two is stopped at second 9" );
+      plus();
+      ok( !wrapperRunning.one, "wrapper one is stopped at second 9" );
+      plus();
+    }
   });
 
   p2.currentTime(3).play();
