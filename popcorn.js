@@ -1005,17 +1005,17 @@
       // join the two arrays together
       options.compose = options.compose.concat( options.effect );
 
-      for ( var i = 0, l = options.compose.length; i < l; i++ ) {
+      options.compose.forEach(function( composeOption ) {
 
         // if the requested compose is garbage, throw it away
-        compose = Popcorn.compositions[ options.compose[ i ] ] || {};
+        compose = Popcorn.compositions[ composeOption ] || {};
 
         // extends previous functions with compose function
         methods.forEach(function( method ) {
 
           natives[ method ] = combineFn( natives[ method ], compose[ method ] );
         });
-      }
+      });
 
       //  Ensure a manifest object, an empty object is a sufficient fallback
       options._natives.manifest = manifest;
