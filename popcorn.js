@@ -637,10 +637,10 @@
       listen: function( type, fn ) {
 
         var self = this,
-		        hasEvents = true, 
-		        eventHook = Popcorn.events.hooks[ type ], 
-		        origType = type, 
-		        tmp;
+            hasEvents = true, 
+            eventHook = Popcorn.events.hooks[ type ], 
+            origType = type, 
+            tmp;
 
         if ( !this.data.events[ type ] ) {
           this.data.events[ type ] = {};
@@ -987,13 +987,15 @@
       //  Storing the plugin natives
       var natives = options._natives = {},
           compose = "", 
-          defaults = this.options.defaults && this.options.defaults[ options._natives && options._natives.type ],
-          originalOpts, manifestOpts, mergedSetupOpts;
+          defaults, originalOpts, manifestOpts, mergedSetupOpts;
 
       Popcorn.extend( natives, setup );
 
       options._natives.type = name;
       options._running = false;
+
+      // Check for previously set default options
+      defaults = this.options.defaults && this.options.defaults[ options._natives && options._natives.type ];
 
       // default to an empty string if no effect exists
       // split string into an array of effects
@@ -1027,9 +1029,6 @@
         options.end = this.duration() || Number.MAX_VALUE;
       }
 
-      // Store original options object as a restore point
-      originalOpts = options;
-      
       // Merge with defaults if they exist, make sure per call is prioritized
       mergedSetupOpts = defaults ? Popcorn.extend( {}, defaults, options ) :
                           options;
@@ -1043,20 +1042,12 @@
 
         mergedSetupOpts.target = manifestOpts && "target" in manifestOpts && manifestOpts.target;
       }
-      
-      // Resolves 239, 241, 242
-      if ( !mergedSetupOpts.target ) {
 
-        //  Sometimes the manifest may be missing entirely
-        //  or it has an options object that doesn't have a `target` property
-        manifestOpts = "options" in manifest && manifest.options;
-
-        mergedSetupOpts.target = manifestOpts && "target" in manifestOpts && manifestOpts.target;
-      }
-
+      // Trigger _setup method if exists
       options._natives._setup && options._natives._setup.call( this, mergedSetupOpts );
 
-      Popcorn.addTrackEvent( this, originalOpts );
+      // Create new track event for this instance
+      Popcorn.addTrackEvent( this, options );
 
       //  Future support for plugin event definitions
       //  for all of the native events
