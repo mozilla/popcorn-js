@@ -1047,7 +1047,7 @@
       options._natives._setup && options._natives._setup.call( this, mergedSetupOpts );
 
       // Create new track event for this instance
-      Popcorn.addTrackEvent( this, options );
+      Popcorn.addTrackEvent( this, Popcorn.extend( mergedSetupOpts, options ) );
 
       //  Future support for plugin event definitions
       //  for all of the native events
