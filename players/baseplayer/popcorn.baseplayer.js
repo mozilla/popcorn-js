@@ -6,6 +6,7 @@
   Popcorn.baseplayer.init = function() {
     this.readyState = 0;
     this.currentTime = 0;
+    this.baselineTime = new Date();
     this.duration = 0;
     this.paused = 1;
     this.ended = 0;
@@ -45,19 +46,20 @@
     },
     
     timeupdate: function() {
-      // The player was paused since the last time update
-      if ( this.paused ) {
-        return;
-      }
 
       // So we can refer to the instance when setTimeout is run
       var self = this;
-      this.currentTime += 0.015;
       
-      this.dispatchEvent( "timeupdate" );
-      setTimeout( function() {
+      if( !this.paused ) {
+        this.currentTime += ( new Date() - this.baselineTime ) / 1000;
+        this.dispatchEvent( "timeupdate" );
+      }
+
+      this.baselineTime = new Date();
+      
+      setTimeout(function() {
         self.timeupdate.call( self );
-      }, 15 );
+      }, 50 );
     },
     
     // By default, assumes this.resource is a DOM Element
@@ -68,11 +70,11 @@
     
     // Add an event listener to the object
     addEventListener: function( evtName, fn ) {
-      if ( !this._events[evtName] ) {
-        this._events[evtName] = [];
+      if ( !this._events[ evtName ] ) {
+        this._events[ evtName ] = [];
       }
       
-      this._events[evtName].push( fn );
+      this._events[ evtName ].push( fn );
       return fn;
     },
     
@@ -94,7 +96,7 @@
         }
       }
       
-      Popcorn.forEach( this._events[eventName], function( val ) {
+      Popcorn.forEach( this._events[ eventName ], function( val ) {
         val.call( self, evt, self );
       });
     },
@@ -127,13 +129,13 @@
       
       if ( elem.currentStyle ) {
         // IE syntax
-        return elem.currentStyle[prop];
+        return elem.currentStyle[ prop ];
       } else if ( global.getComputedStyle ) {
         // Firefox, Chrome et. al
         return doc.defaultView.getComputedStyle( elem, null ).getPropertyValue( prop );
       } else {
         // Fallback, just in case
-        return elem.style[prop];
+        return elem.style[ prop ];
       }
     }
   };
