@@ -1,7 +1,7 @@
 test("Popcorn attribution Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 9, 
+      expects = 10, 
       count = 0,
       setupId,
       attributiondiv = document.getElementById('attribdiv');
@@ -28,7 +28,6 @@ test("Popcorn attribution Plugin", function () {
       end: 2, // seconds
       nameofwork: "A Shared Culture",
       copyrightholder:"Jesse Dylan",
-      license: "CC-BY-N6",
       licenseurl: "http://creativecommons.org/licenses/by-nc/2.0/",
       target: 'attribdiv'
     } )
@@ -59,6 +58,9 @@ test("Popcorn attribution Plugin", function () {
     plus();
 
     equals (attributiondiv.children[1].style.display , "inline", "second attribution is visible on the page" );
+    plus();
+
+    equals ( typeof popped.data.trackEvents.byStart[ 1 ]._license, "undefined", "undefined license is properly being handled" );
     plus();
   });
   
