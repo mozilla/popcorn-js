@@ -108,7 +108,6 @@ test("Popcorn Subtitle Plugin", function () {
   });
  
   popped.exec( 3.5, function() {
- 
 
     popped.media.play();
 
