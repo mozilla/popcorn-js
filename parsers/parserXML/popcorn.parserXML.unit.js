@@ -53,11 +53,8 @@ test("Popcorn 0.1 XML Parser Plugin", function () {
     end: function ( event, options ) {}
   });
 
-  poppercorn.parseXML("data/unit.XML");
-
-  // interval used to wait for data to be parsed
-  interval = setInterval( function() {
-    poppercorn.currentTime(5).play().currentTime(6);
-  }, 2000);
-  
+  poppercorn.parseXML("data/unit.XML", function() {
+    poppercorn.currentTime(5);
+  });  
 });
+
