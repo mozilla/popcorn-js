@@ -24,8 +24,10 @@
       <li><a onclick="clearEvents();" target="out" href="mustache/popcorn.mustache.unit.html">mustache</a></li>
       <li><a onclick="clearEvents();" target="out" href="openmap/popcorn.openmap.unit.html">openmap</a></li>
       <li><a onclick="clearEvents();" target="out" href="pause/popcorn.pause.unit.html">pause</a></li>
+      <li><a onclick="clearEvents();" target="out" href="processing/popcorn.processing.unit.html">processing</a></li>
       <li><a onclick="clearEvents();" target="out" href="subtitle/popcorn.subtitle.unit.html">subtitle</a></li>
       <li><a onclick="clearEvents();" target="out" href="tagthisperson/popcorn.tagthisperson.unit.html">tagthisperson</a></li>
+      <li><a onclick="clearEvents();" target="out" href="timeline/popcorn.timeline.unit.html">timeline</a></li>
       <li><a onclick="clearEvents();" target="out" href="twitter/popcorn.twitter.unit.html">twitter</a></li>
       <li><a onclick="clearEvents();" target="out" href="webpage/popcorn.webpage.unit.html">webpage</a></li>
       <li><a onclick="clearEvents();" target="out" href="wikipedia/popcorn.wikipedia.unit.html">wikipedia</a></li>
@@ -39,13 +41,13 @@
   function runAllTests(){
     var testUrl = [ "attribution", "code", "facebook", "flickr", "footnote", "gml", "googlemap", 
                     "googlenews", "googlefeed", "image", "lastfm", "linkedin", "lowerthird", 
-                    "mustache",  "openmap", "pause", "subtitle", "tagthisperson", "twitter",  
-                    "webpage", "wikipedia", "wordriver" ];
+                    "mustache",  "openmap", "pause", "processing", "subtitle", "tagthisperson", 
+                    "timeline", "twitter", "webpage", "wikipedia", "wordriver" ];
     
     var testDur = [ 17000, 20000, 10000, 20000, 3000, 11000,
                     13000, 13000, 10000, 10000, 6000,  13000,
-                    15000, 13000, 9000, 25000, 21000,
-                    10000, 21000, 21000 , 4000];
+                    15000, 13000, 9000, 6000, 25000, 21000,
+                    6000 ,10000, 21000, 21000 , 4000];
 
     var setTest = function( index ) {
       var url = function( str ) {
