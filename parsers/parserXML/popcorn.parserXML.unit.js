@@ -53,7 +53,8 @@ test("Popcorn 0.1 XML Parser Plugin", function () {
     end: function ( event, options ) {}
   });
 
-  poppercorn.parseXML("data/unit.XML", function() {
+  poppercorn.parseXML( "data/unit.XML", function() {
+
     poppercorn.currentTime(5);
   });  
 });
