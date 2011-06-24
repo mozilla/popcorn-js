@@ -26,10 +26,7 @@
 
 (function ( Popcorn ) {
 
-  var processingLoader = {
-        readyState: 0
-      },
-      toggle = function( on, options ) {
+  var toggle = function( on, options ) {
         var instance = options.pjsInstance,
             canvas = options.canvas;
             
@@ -55,20 +52,9 @@
       var initProcessing,
         canvas;
 
-      if ( processingLoader.readyState === 0 ) {
+      if ( !window.Processing ) {
 
-        processingLoader.readyState = 1;
-
-        if ( !window.Processing ) {
-
-          Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.min.js", function() {
-
-            processingLoader.readyState = 2;
-          });
-        } else {
-
-          processingLoader.readyState = 2;
-        }
+        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.min.js" );
       }
 
       options.parentTarget = document.getElementById( options.target );
@@ -91,7 +77,7 @@
           });
         };
         
-        if ( options.codeReady && processingLoader.readyState === 2 ) {
+        if ( options.codeReady && window.Processing ) {
           options.pjsInstance = new Processing( options.canvas, options.processingCode );
           options.pjsInstance.noLoop();
           context.listen( "seeking", function() {
