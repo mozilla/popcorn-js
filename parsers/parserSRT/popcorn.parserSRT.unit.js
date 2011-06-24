@@ -74,7 +74,7 @@ test("Popcorn 0.3 SRT Parser Plugin", function () {
     }
   }
   
-  poppercorn.parseSRT( document.getElementById( 'video' ).getAttribute( 'data-timeline-sources' ) );
+  poppercorn.parseSRT( "data/unit.srt" );
   
   expects = expectedSubs.length*4+1;
   expect( expects );

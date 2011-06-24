@@ -73,7 +73,7 @@ test( "Popcorn 0.3 TTML Parser Plugin", function () {
     }
   }
   
-  poppercorn.parseTTML( document.getElementById( 'video' ).getAttribute( "data-timeline-sources" ) );
+  poppercorn.parseTTML( "data/unit.ttml" );
   
   expect( expects );
   stop( 5000 );
