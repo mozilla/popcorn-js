@@ -29,7 +29,7 @@ test("Popcorn 0.3 TTXT Parser Plugin", function () {
     }
   }
   
-  poppercorn.parseTTXT(document.getElementById('video').getAttribute('data-timeline-sources'));
+  poppercorn.parseTTXT( "data/unit.TTXT" );
   
   expects = subs.length*3+1;
   expect(expects);

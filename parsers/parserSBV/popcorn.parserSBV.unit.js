@@ -29,7 +29,7 @@ test( "Popcorn 0.3 SBV Parser Plugin", function () {
     }
   }
   
-  poppercorn.parseSBV( document.getElementById( "video" ).getAttribute( "data-timeline-sources" ) );
+  poppercorn.parseSBV( "data/data.sbv" );
   
   expect(expects);
   
