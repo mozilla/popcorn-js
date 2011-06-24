@@ -26,34 +26,27 @@
 
 (function ( Popcorn ) {
 
-  var processingLoaded = false,
-
-  toggle = function( on, options ) {
-    var instance = options.pjsInstance,
-        canvas = options.canvas;
-        
-    if ( canvas && options.isReady ) {
-      if ( on ) {
-        canvas.style.display = "inline";
-        !this.media.paused && instance.loop();
-      } else {
-        canvas.style.display = "none";
-        instance.noLoop();
-      }
-    } else {
-      setTimeout (function() {
-        toggle.call( this, on, options );
-      }, 10 );
-    }
-  },
-
-  load = function() {
-    Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.js", function() {
-      processingLoaded = true;
-    });
-  };
-
-  load();
+  var processingLoader = {
+        readyState: 0
+      },
+      toggle = function( on, options ) {
+        var instance = options.pjsInstance,
+            canvas = options.canvas;
+            
+        if ( canvas && options.isReady ) {
+          if ( on ) {
+            canvas.style.display = "inline";
+            !this.media.paused && instance.loop();
+          } else {
+            canvas.style.display = "none";
+            instance.noLoop();
+          }
+        } else {
+          setTimeout (function() {
+            toggle.call( this, on, options );
+          }, 10 );
+        }
+      };
 
   Popcorn.plugin( "processing" , function ( options ) {
 
@@ -61,7 +54,23 @@
     
       var initProcessing,
         canvas;
-      
+
+      if ( processingLoader.readyState === 0 ) {
+
+        processingLoader.readyState = 1;
+
+        if ( !window.Processing ) {
+
+          Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.min.js", function() {
+
+            processingLoader.readyState = 2;
+          });
+        } else {
+
+          processingLoader.readyState = 2;
+        }
+      }
+
       options.parentTarget = document.getElementById( options.target );
       
       if ( !options.parentTarget ) {
@@ -82,7 +91,7 @@
           });
         };
         
-        if ( options.codeReady && window.Processing ) {
+        if ( options.codeReady && processingLoader.readyState === 2 ) {
           options.pjsInstance = new Processing( options.canvas, options.processingCode );
           options.pjsInstance.noLoop();
           context.listen( "seeking", function() {
@@ -139,13 +148,7 @@
       _setup: function( options ) {
         
         options.codeReady = false;
-        
-        var readyCheck = function() {
-          if ( !processingLoaded ) {
-            load();
-          }
-        };
-        readyCheck();
+
         init( this );
       },
 
