@@ -646,7 +646,7 @@ test("Popcorn.events.hooks: canplayall", function() {
     }
   }
 
-  stop( 10000 );
+  stop( 20000 );
 
   var video = document.createElement("video"),
     sources = {
@@ -658,7 +658,9 @@ test("Popcorn.events.hooks: canplayall", function() {
 
   video.id = "event-fixture";
   video.controls = true;
+  video.autoplay = true;
   video.preload = "auto";
+
 
   Popcorn.forEach( sources, function( source, type ) {
     source.src = url + type;
