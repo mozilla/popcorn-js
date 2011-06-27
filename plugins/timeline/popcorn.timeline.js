@@ -32,7 +32,7 @@
 
   css.type = "text/css";
   css.rel = "stylesheet";
-  css.href = "popcorn.timeline.css";
+  css.href = "//popcornjs.org/code/plugins/timeline/popcorn.timeline.css";
   head.insertBefore( css, head.firstChild );
 
   Popcorn.plugin( "timeline" , function( options ) {
