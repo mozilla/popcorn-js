@@ -29,7 +29,7 @@ test( "Popcorn 0.3 SSA/ASS Parser Plugin", function () {
     }
   }
   
-  poppercorn.parseSSA( document.getElementById( "video" ).getAttribute( "data-timeline-sources" ) );
+  poppercorn.parseSSA( "data/data.ssa" );
   
   expect( expects );
   stop( 5000 );

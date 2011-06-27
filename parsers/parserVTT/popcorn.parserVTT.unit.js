@@ -38,7 +38,7 @@ test( "Popcorn 0.3 WebSRT/VTT Parser Plugin", function () {
     }
   }
   
-  poppercorn.parseVTT( document.getElementById( 'video' ).getAttribute( 'data-timeline-sources' ) );
+  poppercorn.parseVTT( "data/unit.vtt" );
   expect( expects );
   stop( 5000 );
   

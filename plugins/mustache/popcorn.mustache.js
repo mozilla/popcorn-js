@@ -86,9 +86,11 @@
 
   Popcorn.plugin( 'mustache' , function( options ) {
 
-    Popcorn.getScript('https://github.com/janl/mustache.js/raw/master/mustache.js');
+    var getData, data, getTemplate, template, loaded = false;
 
-    var getData, data, getTemplate, template;
+    Popcorn.getScript('https://github.com/janl/mustache.js/raw/master/mustache.js', function() {
+      loaded = true; 
+    });
 
     var shouldReload = !!options.dynamic,
         typeOfTemplate = typeof options.template,
@@ -103,7 +105,7 @@
     } else if ( typeOfTemplate === 'string' ) {
       template = options.template;
     } else {
-      throw 'Mustache Plugin Error: options.template must be a String or a Function.';
+      Popcorn.error( 'Mustache Plugin Error: options.template must be a String or a Function.' );
     }
 
     if ( typeOfData === 'function' ) {
@@ -117,24 +119,38 @@
     } else if ( typeOfData === 'object' ) {
       data = options.data;
     } else {
-      throw 'Mustache Plugin Error: options.data must be a String, Object, or Function.';
+      Popcorn.error( 'Mustache Plugin Error: options.data must be a String, Object, or Function.' );
     }
 
     return {
       start: function( event, options ) {
-        // if dynamic, freshen json data on every call to start, just in case.
-        if ( getData ) {
-          data = getData( options );
-        }
 
-        if ( getTemplate ) {
-          template = getTemplate( options );
-        }
+        var interval = function() {
+          
+          if( !loaded ) {
+            setTimeout( function() {
+              interval();
+            }, 10 );
+          } else {
 
-        var html = Mustache.to_html( template,
-                                     data
-                                   ).replace( /^\s*/mg, '' );
-        document.getElementById( options.target ).innerHTML = html;
+            // if dynamic, freshen json data on every call to start, just in case.
+            if ( getData ) {
+              data = getData( options );
+            }
+
+            if ( getTemplate ) {
+              template = getTemplate( options );
+            }
+
+            var html = Mustache.to_html( template,
+                                         data
+                                       ).replace( /^\s*/mg, '' );
+            document.getElementById( options.target ).innerHTML = html;
+          }
+        };
+
+        interval();
+
       },
 
       end: function( event, options ) {

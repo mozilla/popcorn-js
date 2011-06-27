@@ -1,0 +1,70 @@
+<html>
+<head>
+  
+  <title>Popcorn processing Plug-in Simple Demo</title>
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.processing.js"></script>
+  
+  <script>
+    document.addEventListener( "DOMContentLoaded", function () {
+      var p = Popcorn( "#video" )
+      .volume( 0 )
+      .play()
+      .processing({
+        start: 2,
+        end: 10,
+        target: "processing-div",
+        sketch: "test.pjs",
+        noPause: true
+      })
+      .processing({
+        start: 10,
+        end: 15,
+        target: "processing-div2",
+        sketch: "test2.pjs",
+        noPause: false
+      })
+     .processing({
+        start: 15,
+        end: 20,
+        sketch: "test.pjs",
+        target: "processing-div2",
+        noPause: true
+      })
+      .processing({
+        start: 5,
+        end: 15,
+        sketch: "test2.pjs",
+        target: "processing-div",
+        noPause: false
+      });
+    }, false);
+
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn processing Plug-in Simple Demo</h1>
+  
+  <div>
+    <video id='video'
+      controls preload='none'
+      width= '250px'
+      poster="../../test/poster.png">
+
+      <source id='mp4'
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'>
+
+      <source id='ogv'
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'>
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+
+    </video>
+  </div>
+  <div id="processing-div" width="50%" height="50%">
+  </div>
+  <div id="processing-div2" width="50%" height="50%">
+  </div>
+</html>

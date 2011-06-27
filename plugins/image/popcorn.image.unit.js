@@ -39,9 +39,9 @@ test("Popcorn Image Plugin", function () {
   })
   .image({
     // seconds
-    start: 5,
+    start: 4,
     // seconds
-    end: 7,
+    end: 6,
     // no href
     src: sources[1],
     target: "imagediv"
@@ -50,7 +50,7 @@ test("Popcorn Image Plugin", function () {
     // seconds
     start: 5,
     // seconds
-    end: 7,
+    end: 6,
     // no href
     src: sources[2],
     target: "imagediv"  
@@ -65,19 +65,19 @@ test("Popcorn Image Plugin", function () {
     plus();
   });
   
-  popped.exec( 4, function() {
+  popped.exec( 3, function() {
     ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
     plus();
   });
   
-  popped.exec( 6, function() {
+  popped.exec( 5, function() {
     [].forEach.call( document.querySelectorAll( "#imagediv a img" ), function( img, idx ) {
       ok( img.src === sources[ idx ], "Image " + idx + " is in the right order" );
       plus();
     });
   });
   
-  popped.exec( 8, function() {
+  popped.exec( 7, function() {
     popped.pause().removeTrackEvent( setupId );
     ok( !imagediv.children[2], "removed image was properly destroyed" );
     plus();

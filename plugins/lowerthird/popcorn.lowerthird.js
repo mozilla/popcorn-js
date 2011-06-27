@@ -19,7 +19,7 @@
    * 
    * Example:
      var p = Popcorn('#video')
-        .footnote({
+        .lowerthird({
           start:          5,                 // seconds, mandatory
           end:            15,                // seconds, mandatory
           salutation:     'Mr',              // optional

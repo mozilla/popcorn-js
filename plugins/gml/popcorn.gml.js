@@ -2,8 +2,7 @@
 
 (function (Popcorn) {
 
-  var processingLoaded = false,
-      gmlPlayer = function( $p ) {
+  var gmlPlayer = function( $p ) {
 
         var _stroke = 0,
             onPt = 0, 
@@ -122,11 +121,6 @@
           dataReady();
         };
       };
-
-  Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.1.0/processing-1.1.0.js", function() {
-
-    processingLoaded = true;
-  });
   
   /**
    * Grafiti markup Language (GML) popcorn plug-in 
@@ -165,10 +159,16 @@
 
       document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options.container );
 
+      if ( !window.Processing ) {
+
+        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.min.js" );
+      }
+
       // makes sure both processing.js and the gml data are loaded
       var readyCheck = function() {
 
-        if ( processingLoaded ) {
+        if ( window.Processing ) {
+
           Popcorn.getJSONP( "http://000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
 
             options.pjsInstance = new Processing( options.container, gmlPlayer );
