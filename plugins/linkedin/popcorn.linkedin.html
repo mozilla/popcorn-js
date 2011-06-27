@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn LinkedIn Plug-in Demo</title>
+    <!--
+    ATTENTION
+  
+    This demo uses an API key obtained for testing the LinkedIn Popcorn.js
+    plugin. Please do not use it for other purposes. This API key is meant
+    to be used on localhost (port 80). For other purposes, please obtain an API key
+    from https://www.linkedin.com/secure/developer.
+  -->
+
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.linkedin.js"></script>
+  <script>
+    document.addEventListener( "DOMContentLoaded", function () {
+
+      var p = Popcorn( "#video" )
+      .volume( 0 )
+      .play()
+      .linkedin({
+        type: "share",
+        counter: "right",
+        url: "http://www.google.ca",
+        target: "sharediv",
+        apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
+        start: 1,
+        end: 4
+      })
+      .linkedin({
+        type: "recommendproduct",
+        counter: "top",
+        target: "recommenddiv",
+        companyid: "LinkedIn",
+        productid: "201714",
+        apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
+        start: 5,
+        end: 8
+      })
+      .linkedin({
+        type: "memberprofile",
+        memberid: "/in/jeffweiner08",
+        format: "inline",
+        target: "memberprofilediv",
+        apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
+        start: 9,
+        end: 15
+      })
+      .linkedin({
+        type: "companyinsider",
+        companyid: "1441",
+        target: "companyinsiderdiv",
+        apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
+        start: 9,
+        end: 15
+      })
+      .linkedin({
+        type: "companyprofile",
+        companyid: "1441",
+        format: "inline",
+        target: "companyprofilediv",
+        apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
+        start: 16,
+        end: 27
+      });
+    }, false );
+  </script>
+</head>
+<body>
+<h1 id="qunit-header">Popcorn LinkedIn Plug-in Demo</h1>
+  Right of video: 
+  <ul>
+  	 <li>share button: between 1 and 4 seconds</li> 
+  	 <li>recommend button: between 5  and 8 seconds</li> 
+  	 <li>member profile: between 9 and 15 seconds</li> 
+  </ul>
+  Below video:
+  <ul> 
+     <li>company insider: between 9 and 15 seconds</li> 
+     <li>company profile: between 16 and 27 seconds</li>
+  </ul>
+  <p>   
+     For a description of each plugin's purpose, go to: <a href="http://developer.linkedin.com/community/plugins">LinkedIn Plugins</a><br/>
+  </p>
+  
+  <div>
+    <video id="video" 
+      controls preload="none" 
+      width="350px"
+      poster="../../test/poster.png"> 
+
+      <source id="mp4"
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'> 
+
+      <source id="ogv"
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'> 
+
+      <p>Your user agent does not support the HTML5 Video element.</p> 
+
+    </video> 
+  </div>
+  <div id="sharediv" style="position:absolute;top:400px;left:400px;"></div>
+  <div id="recommenddiv" style="position:absolute;top:400px;left:400px;"></div>
+  <div id="memberprofilediv" style="position:absolute;top:400px;left:500px;"></div>
+  <div id="companyinsiderdiv"></div>
+  <div id="companyprofilediv"></div>
+</body>
+</html>

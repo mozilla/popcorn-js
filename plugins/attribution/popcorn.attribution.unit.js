@@ -1,13 +1,11 @@
 test("Popcorn attribution Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 7, 
+      expects = 10, 
       count = 0,
-      interval,
-      interval2,
-      interval3,
+      setupId,
       attributiondiv = document.getElementById('attribdiv');
-  
+
   expect(expects);
   
   function plus() {
@@ -27,16 +25,15 @@ test("Popcorn attribution Plugin", function () {
   
   popped.attribution({
       start: 0, // seconds
-      end: 5, // seconds
+      end: 2, // seconds
       nameofwork: "A Shared Culture",
       copyrightholder:"Jesse Dylan",
-      license: "CC-BY-N6",
       licenseurl: "http://creativecommons.org/licenses/by-nc/2.0/",
       target: 'attribdiv'
     } )
     .attribution({
-      start: 3, // seconds
-      end: 10, // seconds
+      start: 2, // seconds
+      end: 4, // seconds
       nameofwork: "Internet",
       nameofworkurl:"http://www.archive.org/details/CC1232_internet",
       copyrightholder:"The Computer Chronicles",
@@ -44,36 +41,40 @@ test("Popcorn attribution Plugin", function () {
       licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
       target: 'attribdiv'
     } )
-    .volume(0)
-    .play();
+    .volume(0);
+
+  setupId = popped.getLastTrackEventId();
+
+  popped.exec( 0, function() {
+    equals ( attributiondiv.childElementCount, 2, "attributiondiv now has two inner elements" );
+    plus();
+    equals (attributiondiv.children[0].style.display , "inline", "attribution is visible on the page" );
+    plus();
+  });
   
+  popped.exec( 2, function() {
+
+    ok( /target="_blank"/.test( attributiondiv.innerHTML ), "attributions create anchors that target=_blank" );
+    plus();
+
+    equals (attributiondiv.children[1].style.display , "inline", "second attribution is visible on the page" );
+    plus();
+
+    equals ( typeof popped.data.trackEvents.byStart[ 1 ]._license, "undefined", "undefined license is properly being handled" );
+    plus();
+  });
   
-  interval = setInterval( function() {
-    if( popped.currentTime() > 0 && popped.currentTime() <= 5 ) {
-      equals ( attributiondiv.childElementCount, 2, "attributiondiv now has two inner elements" );
-      plus();
-      equals (attributiondiv.children[0].style.display , "inline", "attribution is visible on the page" );
-      plus();
-      clearInterval( interval );
-    }
-  }, 2000);
+  popped.exec( 4, function() {
+    equals(attributiondiv.children[1].style.display , "none", "second attribution is no longer visible on the page" );
+    plus();
+    equals(attributiondiv.children[0].style.display , "none", "first attribution is no longer visible on the page" );
+    plus();
+
+    popped.pause().removeTrackEvent( setupId );
+    ok( !attributiondiv.children[1], "removed attribution was properly destroyed"  );
+    plus();
+  });
   
-  interval2 = setInterval( function() {
-    if( popped.currentTime() > 3 && popped.currentTime() < 10  ) {
-      equals (attributiondiv.children[1].style.display , "inline", "second attribution is visible on the page" );
-      plus();
-      clearInterval( interval2 );
-    }
-  }, 3000);
-  
-  interval3 = setInterval( function() {
-    if( popped.currentTime() > 10) {
-      equals (attributiondiv.children[1].style.display , "none", "second attribution is no longer visible on the page" );
-      plus();
-      equals (attributiondiv.children[0].style.display , "none", "first attribution is no longer visible on the page" );
-      plus();
-      clearInterval( interval3 );
-    }
-  }, 11000);
-  
+  popped.play();
+
 });

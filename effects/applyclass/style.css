@@ -1,0 +1,36 @@
+.applyoverlay {
+  z-index: 9001;
+  top: 0px;
+  left: 0px;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+  height: 100%;
+  width: 100%;
+  background: red;
+  position: absolute;
+}
+
+section {
+  display: inline-block;
+}
+
+section.hover {
+  -webkit-box-shadow: -1px 1px 1px #bdc7c6;
+  -moz-box-shadow: -1px 1px 1px #bdc7c6;
+  box-shadow:  -1px 1px 1px #bdc7c6;
+  border: 1px solid #333;
+  -moz-transform: scale(1.02);-webkit-transform: scale(1.02);
+  z-index: 999;
+  background: #FFF;
+}
+
+.test1 {
+  background: green
+}
+
+.test2 {
+  -webkit-box-shadow: -1px 1px 1px #bdc7c6;
+  -moz-box-shadow: -1px 1px 1px #bdc7c6;
+  box-shadow:  -1px 1px 1px #bdc7c6;
+  border: 1px solid #333;
+}

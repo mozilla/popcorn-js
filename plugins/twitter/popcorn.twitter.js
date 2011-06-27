@@ -1,6 +1,7 @@
 // PLUGIN: TWITTER
 
 (function (Popcorn) {
+  var scriptLoading = false;
 
   /**
    * Twitter popcorn plug-in 
@@ -30,15 +31,6 @@
    *
    */
 
-  if ( !window.TWTR ) {
-    var head = document.getElementsByTagName("head")[0] || document.documentElement,
-        script = document.createElement("script");
-
-    script.src = "http://widgets.twimg.com/j/2/widget.js";
-
-    head.insertBefore( script, head.firstChild );
-  }
-
   Popcorn.plugin( "twitter" , {
 
       manifest: {
@@ -52,7 +44,7 @@
           start   : {elem:'input', type:'number', label:'In'},
           end     : {elem:'input', type:'number', label:'Out'},
           src     : {elem:'input', type:'text',   label:'Source'},
-          target  : 'Twitter-container',
+          target  : 'twitter-container',
           height  : {elem:'input', type:'number', label:'Height'},
           width   : {elem:'input', type:'number', label:'Width'}
         }
@@ -60,13 +52,19 @@
 
       _setup: function( options ) {
 
+        if ( !window.TWTR && !scriptLoading ) {
+          scriptLoading = true;
+          Popcorn.getScript("http://widgets.twimg.com/j/2/widget.js");
+        }
+
         // setup widget div that is unique per track
         options.container = document.createElement( 'div' ); // create the div to store the widget
         options.container.setAttribute('id', Popcorn.guid()); // use this id to connect it to the widget
         options.container.style.display = "none"; // display none by default
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).appendChild( options.container ); // add the widget's div to the target div
-        }
+
+         // add the widget's div to the target div
+        document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options.container );
+
         // setup info for the widget
         var src     = options.src || "",
             width   = options.width || 250,
@@ -149,6 +147,10 @@
        */
       end: function( event, options ) {
         options.container.style.display = "none";
+      },
+      _teardown: function( options ) {
+
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options.container );
       }
     });
 

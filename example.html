@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Simple Demo</title>
+  <!-- You muct include the popcorn.js file. Ensure the path is correct -->
+  <script src="popcorn.js"></script>
+ 
+  <!-- You must include each plug-in needed for the demo individually. Ensure the path is correct -->
+  <!-- Footnote Plugin -->
+  <script src="plugins/footnote/popcorn.footnote.js"></script>
+  <!-- Subtitle Plugin -->
+  <script src="plugins/subtitle/popcorn.subtitle.js"></script>
+  
+  <!-- Link popcorn-js to the video by uing the id of the video element -->
+  <!-- You need to tell popcorn when you want each plugin to execute -->
+  <script>
+    // wait for DOM to load
+    document.addEventListener('DOMContentLoaded', function () {
+      // popcorn events are chainable this means that you can also do:
+      // p.play(); or p.footnote{};
+      // Make a popcorn instance, passing the id of the video element.
+      // notice the <video id='video' ... > at the bottom of the page.
+      var p = Popcorn('#video')
+      // use the footnote plugin
+      // notice the <div id='footnotediv'> tag at the bottom of the page
+      .footnote({
+        start: 0, // seconds
+        end: 15, // seconds
+        text: 'This video made exclusively for drumbeat.org',
+        target: 'footnotediv'
+      } )
+      // use the subtitle plugin
+      .subtitle({
+        start: 1, // seconds
+        end: 15, // seconds
+        text: 'this is a subtitle'
+      } )
+      // make the video play automatically 
+      .play();
+    }, false);
+
+  </script>
+</head>
+<body>
+  <h1>Popcorn Simple Demo</h1>
+  <p>You should see a footnote "This video made exclusively for drumbeat.org" appear right away</p>
+  <p>You should see a subtitle "this is a subtitle" appear at 1 sec away</p>
+  <!-- You need a video element with an id -->
+  <video id='video' 
+    controls 
+    width= '250px'
+    poster="test/poster.png"> 
+    <source id='mp4'
+      src="test/trailer.mp4"
+      type='video/mp4; codecs="avc1, mp4a"'> 
+    <source id='ogv'
+      src="test/trailer.ogv"
+      type='video/ogg; codecs="theora, vorbis"'> 
+    <p>Your user agent does not support the HTML5 Video element.</p> 
+  </video> 
+  <!-- this is needed for the footnote plugin -->
+  <div id="footnotediv"></div>
+</body>
+</html>

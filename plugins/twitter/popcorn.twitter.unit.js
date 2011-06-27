@@ -1,10 +1,9 @@
 test("Popcorn Twitter Plugin", function () {
   
   var popped = Popcorn("#video"),
-      expects = 6, 
+      expects = 7, 
       count = 0,
-      interval,
-      interval2,
+      setupId,
       twitterdiv = document.getElementById('twitterdiv');
   
   expect( expects );
@@ -32,29 +31,29 @@ test("Popcorn Twitter Plugin", function () {
 
   popped.twitter({
     start: 1, // seconds
-    end: 3, // seconds
+    end: 2, // seconds
     title: 'Steve Song',
     src: '@stevesong',
     target: 'twitterdiv',
-  } );
+  });
 
-  interval = setInterval( function() {
-    if( popped.currentTime() > 1 && popped.currentTime() < 3 ) {
-      ok( /display: inline;/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
-      plus();
-      ok( /twtr-widget/.test( twitterdiv.innerHTML ), "A Twitter widget exists" );
-      plus();
-      clearInterval( interval );
-    }
-  }, 500);
-  
-  interval2 = setInterval( function() {
-    if( popped.currentTime() > 3 ) {
-      ok( /display: none;/.test( twitterdiv.innerHTML ), "Div contents are hidden again" );
-      plus();
-      clearInterval( interval2 );
-    }
-  }, 500);
+  setupId = popped.getLastTrackEventId();
+
+  popped.exec( 1, function() {
+    ok( /display: inline;/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
+    plus();
+    ok( /twtr-widget/.test( twitterdiv.innerHTML ), "A Twitter widget exists" );
+    plus();
+  });
+
+  popped.exec( 2, function() {
+    ok( /display: none;/.test( twitterdiv.innerHTML ), "Div contents are hidden again" );
+    plus();
+
+    popped.pause().removeTrackEvent( setupId );
+    ok( !twitterdiv.children[0], "removed twitter was properly destroyed" );
+    plus();
+  });
   
   popped.play();
   

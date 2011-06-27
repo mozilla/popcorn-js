@@ -1,11 +1,15 @@
 test("Popcorn Image Plugin", function () {
-  
-  var popped = Popcorn("#video"),
-      expects = 5,
+
+  var popped = Popcorn( "#video" ),
+      expects = 9,
       count = 0,
-      interval,
-      interval2,
-      imagediv = document.getElementById('imagediv');
+      setupId,
+      imagediv = document.getElementById( "imagediv" ),
+      sources = [
+        "https://www.drumbeat.org/media//images/drumbeat-logo-splash.png",
+        "http://www.petmountain.com/category/mini/organic-dog-supplies/520/organic-dog-supplies.jpg", 
+        "http://www.botskool.com/sites/default/files/images/javascript.png"
+      ];
   
   expect( expects );
   
@@ -17,38 +21,67 @@ test("Popcorn Image Plugin", function () {
 
   stop();
  
-  ok('image' in popped, "image is a method of the popped instance");
+  ok( "image" in popped, "image is a method of the popped instance" );
   plus();
 
-  equals ( imagediv.innerHTML, "", "initially, there is nothing inside the imagediv" );
+  equals( imagediv.innerHTML, "", "initially, there is nothing inside the imagediv" );
   plus();
   
   popped.image({
-    start: 1, // seconds
-    end: 3, // seconds
-    href: 'http://www.drumbeat.org/',
-    src: 'http://www.drumbeat.org/sites/default/files/domain-2/drumbeat_logo.png',
-    target: 'imagediv'
-  } );
+    // seconds
+    start: 1,
+    // seconds
+    end: 3,
+    href: "http://www.drumbeat.org/",
+    src: sources[0],
+    text: "DRUMBEAT",
+    target: "imagediv"
+  })
+  .image({
+    // seconds
+    start: 4,
+    // seconds
+    end: 6,
+    // no href
+    src: sources[1],
+    target: "imagediv"
+  })
+  .image({
+    // seconds
+    start: 5,
+    // seconds
+    end: 6,
+    // no href
+    src: sources[2],
+    target: "imagediv"  
+  });
 
-  interval = setInterval( function() {
-    if( popped.currentTime() > 1 && popped.currentTime() < 3 ) {
-      ok( /display: inline;/.test( imagediv.innerHTML ), "Div contents are displayed" );
-      plus();
-      ok( /img/.test( imagediv.innerHTML ), "An image exists" );
-      plus();
-      clearInterval( interval );
-    }
-  }, 500);
+  setupId = popped.getLastTrackEventId();
+
+  popped.exec( 2, function() {
+    ok( /display: block;/.test( imagediv.innerHTML ), "Div contents are displayed" );
+    plus();
+    ok( /img/.test( imagediv.innerHTML ), "An image exists" );
+    plus();
+  });
   
-  interval2 = setInterval( function() {
-    if( popped.currentTime() > 3 ) {
-      ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
+  popped.exec( 3, function() {
+    ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
+    plus();
+  });
+  
+  popped.exec( 5, function() {
+    [].forEach.call( document.querySelectorAll( "#imagediv a img" ), function( img, idx ) {
+      ok( img.src === sources[ idx ], "Image " + idx + " is in the right order" );
       plus();
-      clearInterval( interval2 );
-    }
-  }, 500);
+    });
+  });
   
-  popped.play();
-  
+  popped.exec( 7, function() {
+    popped.pause().removeTrackEvent( setupId );
+    ok( !imagediv.children[2], "removed image was properly destroyed" );
+    plus();
+  });
+
+  popped.volume( 0 ).play();  
 });

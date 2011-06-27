@@ -3,7 +3,7 @@
 
 var wikiCallback;
 
-(function (Popcorn) {
+(function ( Popcorn ) {
   
   /**
    * Wikipedia popcorn plug-in 
@@ -22,12 +22,12 @@ var wikiCallback;
    * @param {Object} options
    * 
    * Example:
-     var p = Popcorn('#video')
+     var p = Popcorn("#video")
         .wikipedia({
           start: 5, // seconds
           end: 15, // seconds
-          src: 'http://en.wikipedia.org/wiki/Cape_Town',
-          target: 'wikidiv'
+          src: "http://en.wikipedia.org/wiki/Cape_Town",
+          target: "wikidiv"
         } )
    *
    */
@@ -41,13 +41,37 @@ var wikiCallback;
         website: "annasob.wordpress.com"
       },
       options:{
-        start         : {elem:'input', type:'text', label:'In'},
-        end           : {elem:'input', type:'text', label:'Out'},
-        lang          : {elem:'input', type:'text', label:'Language'},
-        src           : {elem:'input', type:'text', label:'Src'},
-        title         : {elem:'input', type:'text', label:'Title'},
-        numberofwords : {elem:'input', type:'text', label:'Num Of Words'},
-        target        : 'wiki-container'
+        start: {
+          elem: "input", 
+          type: "text", 
+          label: "In"
+        },
+        end: {
+          elem: "input", 
+          type: "text", 
+          label: "Out"
+        },
+        lang: {
+          elem: "input", 
+          type: "text", 
+          label: "Language"
+        },
+        src: {
+          elem: "input", 
+          type: "text", 
+          label: "Src"
+        },
+        title: {
+          elem: "input", 
+          type: "text", 
+          label: "Title"
+        },
+        numberofwords: {
+          elem: "input", 
+          type: "text", 
+          label: "Num Of Words"
+        },
+        target: "wikipedia-container"
       }
     },
     /**
@@ -64,34 +88,43 @@ var wikiCallback;
       var  _text, _guid = Popcorn.guid(); 
       
       // if the user didn't specify a language default to english
-      if (typeof options.lang === 'undefined') { options.lang ="en"; }
+      if ( !options.lang ) { 
+        options.lang = "en"; 
+      }
+
       // if the user didn't specify number of words to use default to 200 
       options.numberofwords  = options.numberofwords || 200;
             
       // wiki global callback function with a unique id
       // function gets the needed information from wikipedia
       // and stores it by appending values to the options object
-      window["wikiCallback"+ _guid]  = function (data) { 
-        options._link = document.createElement('a');
-        options._link.setAttribute('href', options.src);
-        options._link.setAttribute('target', '_blank');
+      window[ "wikiCallback" + _guid ]  = function ( data ) { 
+
+        options._link = document.createElement( "a" );
+        options._link.setAttribute( "href", options.src );
+        options._link.setAttribute( "target", "_blank" );
+
         // add the title of the article to the link
-        options._link.innerHTML = data.parse.displaytitle;
+        options._link.innerHTML = options.title || data.parse.displaytitle;
+
         // get the content of the wiki article
-        options._desc = document.createElement('p');
+        options._desc = document.createElement( "p" );
+
         // get the article text and remove any special characters
-        _text = data.parse.text["*"].substr(data.parse.text["*"].indexOf('<p>'));
-        _text = _text.replace(/((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "");
-        options._desc.innerHTML = _text.substr(0,  options.numberofwords ) + " ...";
+        _text = data.parse.text[ "*" ].substr( data.parse.text[ "*" ].indexOf( "<p>" ) );
+        _text = _text.replace( /((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "" );
+        options._desc.innerHTML = _text.substr( 0,  options.numberofwords ) + " ...";
         
         options._fired = true;
       };
       
-      var head   = document.getElementsByTagName("head")[0];
-      var script = document.createElement("script");
-      script.src = "http://"+options.lang+".wikipedia.org/w/api.php?action=parse&props=text&page=" + ( options.title || options.src.slice(options.src.lastIndexOf("/")+1)) + "&format=json&callback=wikiCallback"+ _guid;
+      if ( options.src ) {
+        Popcorn.getScript( "http://" + options.lang + ".wikipedia.org/w/api.php?action=parse&props=text&page=" + 
+          options.src.slice( options.src.lastIndexOf("/")+1)  + "&format=json&callback=wikiCallback" + _guid);
+      } else {
+        throw ( "Wikipedia plugin needs a 'src'" );
+      }
 
-      head.insertBefore( script, head.firstChild );        
     },
     /**
      * @member wikipedia 
@@ -99,20 +132,20 @@ var wikiCallback;
      * of the video  reaches the start time provided by the 
      * options variable
      */
-    start: function(event, options){
+    start: function( event, options ){
       // dont do anything if the information didn't come back from wiki
       var isReady = function () {
         
         if ( !options._fired ) {
-          setTimeout(function () {
+          setTimeout( function () {
             isReady();
           }, 13);
         } else {
       
-          if (options._link && options._desc) {
+          if ( options._link && options._desc ) {
             if ( document.getElementById( options.target ) ) {
-              document.getElementById( options.target ).appendChild(options._link);
-              document.getElementById( options.target ).appendChild(options._desc);
+              document.getElementById( options.target ).appendChild( options._link );
+              document.getElementById( options.target ).appendChild( options._desc );
               options._added = true;
             }
           }
@@ -127,15 +160,23 @@ var wikiCallback;
      * of the video  reaches the end time provided by the 
      * options variable
      */
-    end: function(event, options){
+    end: function( event, options ){
       // ensure that the data was actually added to the 
       // DOM before removal
-      if (options._added) {
-        document.getElementById( options.target ).removeChild(options._link);
-        document.getElementById( options.target ).removeChild(options._desc);
+      if ( options._added ) {
+        document.getElementById( options.target ).removeChild( options._link );
+        document.getElementById( options.target ).removeChild( options._desc );
+      }
+    },
+
+    _teardown: function( options ){
+
+      if ( options._added ) {
+        options._link.parentNode && document.getElementById( options.target ).removeChild( options._link );
+        options._desc.parentNode && document.getElementById( options.target ).removeChild( options._desc );
+        delete options.target;
       }
     }
-     
   });
 
 })( Popcorn );

@@ -2,47 +2,68 @@
 <html>
 <head>
   <title>Popcorn Flickr Plug-in Demo</title>
+  <!--
+    ATTENTION
   
+    This demo uses an API key obtained for testing the Flickr Popcorn.js
+    plugin. Please do not use it for other purposes.
+  -->
   <script src="../../popcorn.js"></script>
-  <script src="../../test/jquery.js"></script>
   <script src="popcorn.flickr.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
+    document.addEventListener( "DOMContentLoaded", function () {
+
+      var p = Popcorn( "#video" )
       .flickr({
-        start: 5, // seconds
-        end: 15, // seconds
-        userid: '35034346917@N01',
-        numberofimages: '8',
-        target: 'flickrdiv'
-      } )
+        start: 0,
+        end: 5,
+        username: "AniaSob",
+        apikey: "d1d249260dd1673ec8810c8ce5150ae1",
+        target: "flickrdiv"
+      })
       .flickr({
-        start: 20, // seconds
-        end: 45, // seconds
-        userid: '78868639@N00',
-        target: 'flickrdiv'
-      } )
+        start: 5,
+        end: 15,
+        userid: "35034346917@N01",
+        target: "flickrdiv"
+      })
+      .flickr({
+        start: 20,
+        end: 30,
+        tags: "georgia",
+        numberofimages: 8,
+        target: "flickrdiv"
+      })
+      .flickr({
+        start: 35,
+        end: 45,
+        userid: "35034346917@N01",
+        tags: "georgia",
+        numberofimages: 8,
+        target: "flickrdiv"
+      })
       .play();
-    }, false);
+    }, false );
 
   </script>
 </head>
 <body>
   <h1 id="qunit-header">Popcorn Flickr Plug-in Demo</h1>
-  <p>This plugin requires jquery</p>
-  <p>Flickr images will appear at 5 seconds and disappear at 15 seconds.</p>
-  <p>More Flickr images will appear at 20 seconds and disappear at 45 seconds.</p>
+  <p>Flickr images by 'AniaSob' will appear at 0 seconds and disappear at 5 seconds.
+  <br />Flickr images by '35034346917@N01' will appear at 5 seconds and disappear at 15 seconds.
+  <br />Flickr images tagged 'georgia' will appear at 20 seconds and disappear at 30 seconds.
+  <br />Flickr images by '35034346917@N01' and tagged 'georgia' will appear at 35 seconds and disappear at 45 seconds.</p>
   <div>
-    <video id='video' 
+    <video id="video"
       controls
-      width= '250px'
+      width= "250px"
       poster="../../test/poster.png"> 
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
         type='video/mp4; codecs="avc1, mp4a"'> 
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
         type='video/ogg; codecs="theora, vorbis"'> 
 

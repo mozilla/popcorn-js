@@ -16,7 +16,10 @@ if ( !window['console'] ) {
   //  Store the number of global properties that exist prior to Popcorn API definition
   
   var Setup = {
-    globalSize: 0
+    hasRun: false, 
+    globalSize: 0, 
+    globalCache: [], 
+    globalDiff: []
   };
 
   Setup.getGlobalSize = function() {
@@ -26,6 +29,14 @@ if ( !window['console'] ) {
     for( var p in window ) {
       if ( p !== "_firebug" ) {
         size++;
+        
+        if ( !Setup.hasRun ) {
+          Setup.globalCache.push( p );
+        } else {
+          if ( Setup.globalCache.indexOf( p ) === -1 ) {
+            Setup.globalDiff.push( p );
+          }
+        }
       }
     }
 
@@ -36,7 +47,11 @@ if ( !window['console'] ) {
     if ( !Setup.globalSize ) {
       Setup.globalSize = size;
     }
-
+    
+    if ( !Setup.hasRun ) {
+      Setup.hasRun = true;
+    }
+    
     return size;
   };
   

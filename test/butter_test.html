@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Butter Test</title>
+    <link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+    <style>
+      body {
+        margin: 3px;
+        padding: 0px;
+      }
+      h3 {
+        margin: 3px;
+        padding: 0px;
+      }
+      h2 {
+        display: inline;
+        margin: 3px;
+        padding: 0px;
+      }    
+      .pass {
+        color: #33FF00;
+      }
+      .expect {
+        color: #2d2d2d;
+      }    
+      .fail {
+        color: #FF0000;
+      }
+    </style>    
+    <script src="jquery.js"></script>
+    <script src="qunit/qunit.js"></script>
+    <script src="../popcorn.js"></script>
+    <script src="butter.unit.js"></script>
+
+    <script>
+    (function( Popcorn, $ ) {
+
+      var results = {
+            pass: 0, 
+            fail: 0,
+            expect: 40
+          };
+
+      $(function() {
+
+        function isComplete( callback ) {
+
+          if ( !QUnit.config.queue.length ) {
+            // is complete
+
+            callback && callback( QUnit.config.stats );
+
+          } else {
+            setTimeout(function() {
+              isComplete( callback );
+            }, 10 );
+          }
+        }
+
+        isComplete(function( qResults ) {
+
+          //  Hack together the results as used in ready.html
+          results.pass = qResults.all - qResults.bad;
+          results.fail = qResults.bad;
+          results.expect = qResults.all;
+
+          $.each( results, function( name, value ) {
+            $("#qunit-header").before( 
+              $("<h2>", {
+                className: name, 
+                html: name + ": " + value  
+              }) 
+            );
+          });
+        
+        });
+      });
+    })( Popcorn, jQuery );
+
+    </script>
+  </head>
+  <body>
+    <h3>Butter Dependencies<h3>
+    
+    <h1 id="qunit-header">Butter Popcorn Dependencies</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+    </div>
+    <div id="video-container" style="display:none">
+      <video id="video" />
+    </div>
+    <div id="test-target" style="display:none">
+    </div>
+  </body>
+</html>
