@@ -120,13 +120,17 @@ var onYouTubePlayerReady;
     this.offsetParent = container.offsetParent;
     
     flashvars = {
-      playerapiid: this.playerId
+      playerapiid: this.playerId,
+      controls: this.controls,
+      iv_load_policy: this.iv_load_policy
     };
+
     params = {
       allowscriptaccess: 'always',
       allowfullscreen: 'true',
       // This is so we can overlay html on top of Flash
       wmode: 'transparent'
+      
     };
     
     attributes = {
@@ -147,6 +151,7 @@ var onYouTubePlayerReady;
     // Video hadn't loaded yet when ctor was called
     vid.video = document.getElementById( playerId );
     vid.duration = vid.video.getDuration();
+
     
     // Issue load event
     vid.dispatchEvent( 'load' );
@@ -174,11 +179,18 @@ var onYouTubePlayerReady;
     this.loadStarted = false;
     this.loadedData = false;
     this.fullyLoaded = false;
+    this.paused = false;
     
     // If supplied as number, append  'px' on end
     // If suppliied as '###' or '###px', convert to number and append 'px' back on end
     options.width = options.width && (+options.width)+"px";
     options.height = options.height && (+options.height)+"px";
+    
+    // show controls on video. Integer value - 1 is for show, 0 is for hide
+    this.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1; 
+    
+    // show video annotations, 1 is show, 3 is hide
+    this.iv_load_policy = +options.annotations === 1 || +options.annotations === 3 ? options.annotations : 1;
     
     this._target = document.getElementById( elementId );
     this._container = document.createElement( "div" );
@@ -361,7 +373,10 @@ var onYouTubePlayerReady;
 
       // Prevent Youtube's behaviour to start playing video after seeking.
       if ( !playing ) {
+        this.video.paused = true;
         this.video.pauseVideo();
+      } else {
+        this.video.paused = false;
       }
 
       // Data need to be loaded again.
@@ -463,7 +478,7 @@ var onYouTubePlayerReady;
     },
     
     startTimeUpdater: function() {
-      var state = this.video.getPlayerState(),
+      var state = typeof this.video.getPlayerState != "function"  ? this.readyState : this.video.getPlayerState(),
           self = this,
           seeked = 0;
       
@@ -474,7 +489,7 @@ var onYouTubePlayerReady;
         seeked = 1;
       } else {
         this.previousCurrentTime = this.currentTime;
-        this.currentTime = this.video.getCurrentTime();
+        this.currentTime = typeof this.video.getCurrentTime != "function" ? this.currentTime : this.video.getCurrentTime();
       }
       
       if ( this.volume !== this.previousVolume ) {

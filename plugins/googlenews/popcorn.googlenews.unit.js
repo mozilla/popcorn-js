@@ -24,13 +24,13 @@ test( "Popcorn google news Plugin", function () {
   
   popped.googlenews({
     start: 0, // seconds
-    end: 1, // seconds
+    end: 2, // seconds
     topic: "Oil Spill",
     target: "googlenewsdiv"
   })
   .googlenews({
-    start: 1, // seconds
-    end: 2, // seconds
+    start: 2, // seconds
+    end: 4, // seconds
     topic: "Village Telco",
     target: "googlenewsdiv"
   })
@@ -45,12 +45,12 @@ test( "Popcorn google news Plugin", function () {
     plus();
   });
   
-  popped.exec( 1, function() {
+  popped.exec( 3, function() {
     equals( googlenewsdiv.children[1].style.display , "inline", "second googlenews is visible on the page" );
     plus();
   });
   
-  popped.exec( 2, function() {
+  popped.exec( 4, function() {
     equals( googlenewsdiv.children[1].style.display , "none", "second googlenews is no longer visible on the page" );
     plus();
     equals( googlenewsdiv.children[0].style.display , "none", "first googlenews is no longer visible on the page" );

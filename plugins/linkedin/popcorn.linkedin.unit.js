@@ -66,11 +66,11 @@ test("Popcorn LinkedIn Plugin", function () {
       companyid: "LinkedIn",
       productid: "201714",
       apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
-      start: 5,
-      end: 7
+      start: 1,
+      end: 3
     });
     
-    popped.exec( 6, function() {
+    popped.exec( 2, function() {
   
       ok( /block/.test( recommenddiv.style.display ), "recommenddiv contents are displayed" );
       plus();
@@ -78,7 +78,7 @@ test("Popcorn LinkedIn Plugin", function () {
       plus();
     });
     
-    popped.exec( 8, function() {
+    popped.exec( 4, function() {
   
       ok( /none/.test( recommenddiv.style.display ), "recommenddiv contents are hidden again" );
       plus();
@@ -94,11 +94,11 @@ test("Popcorn LinkedIn Plugin", function () {
       format: "inline",
       target: "memberprofilediv",
       apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
-      start: 9,
-      end: 11
+      start: 1,
+      end: 3
     });
 
-    popped.exec( 10, function() {
+    popped.exec( 2, function() {
   
       ok( /block/.test( memberprofilediv.style.display ), "memberprofilediv contents are displayed" );
       plus();
@@ -106,7 +106,7 @@ test("Popcorn LinkedIn Plugin", function () {
       plus();
     });
     
-    popped.exec( 12, function() {
+    popped.exec( 4, function() {
   
       ok( /none/.test( memberprofilediv.style.display ), "memberprofilediv contents are hidden again" );
       plus();
@@ -121,11 +121,11 @@ test("Popcorn LinkedIn Plugin", function () {
       companyid: "1441",
       target: "companyinsiderdiv",
       apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
-      start: 13,
-      end: 15
+      start: 1,
+      end: 3
     });
 
-    popped.exec( 14, function() {
+    popped.exec( 2, function() {
   
       ok( /block/.test( companyinsiderdiv.style.display ), "companyinsiderdiv contents are displayed" );
       plus();
@@ -133,7 +133,7 @@ test("Popcorn LinkedIn Plugin", function () {
       plus();
     });
     
-    popped.exec( 16, function() {
+    popped.exec( 4, function() {
   
       ok( /none/.test( companyinsiderdiv.style.display ), "companyinsiderdiv contents are hidden again" );
       plus();
@@ -149,13 +149,13 @@ test("Popcorn LinkedIn Plugin", function () {
       format: "inline",
       target: "companyprofilediv",
       apikey: "ZOLRI2rzQS_oaXELpPF0aksxwFFEvoxAFZRLfHjaAhcGPfOX0Ds4snkJpWwKs8gk",
-      start: 17,
-      end: 19
+      start: 1,
+      end: 3
     });
     
     setupId = popped.getLastTrackEventId();
 
-    popped.exec( 18, function() {
+    popped.exec( 2, function() {
   
       ok( /block/.test( companyprofilediv.style.display ), "companyprofilediv contents are displayed" );
       plus();
@@ -163,7 +163,7 @@ test("Popcorn LinkedIn Plugin", function () {
       plus();
     });
     
-    popped.exec( 20, function() {
+    popped.exec( 4, function() {
   
       ok( /none/.test( companyprofilediv.style.display ), "companyprofilediv contents are hidden again" );
       plus();
