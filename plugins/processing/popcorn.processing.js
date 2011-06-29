@@ -26,25 +26,6 @@
 
 (function ( Popcorn ) {
 
-  var toggle = function( on, options ) {
-        var instance = options.pjsInstance,
-            canvas = options.canvas;
-            
-        if ( canvas && options.isReady ) {
-          if ( on ) {
-            canvas.style.display = "inline";
-            !this.media.paused && instance.loop();
-          } else {
-            canvas.style.display = "none";
-            instance.noLoop();
-          }
-        } else {
-          setTimeout (function() {
-            toggle.call( this, on, options );
-          }, 10 );
-        }
-      };
-
   Popcorn.plugin( "processing" , function ( options ) {
 
     var init = function( context ) {
@@ -77,20 +58,24 @@
           });
         };
         
-        if ( options.codeReady && window.Processing ) {
+        if ( window.Processing ) {
+
           options.pjsInstance = new Processing( options.canvas, options.processingCode );
           options.pjsInstance.noLoop();
+          options.seeking = false;
           context.listen( "seeking", function() {
-            if ( options.canvas.style.display === "inline" && options.noPause ) {
-              options.pjsInstance.loop();
-            }
+             options._running && options.canvas.style.display === "inline" && options.noPause && options.pjsInstance.loop();
           });
+
+          options._running && !context.media.paused && options.pjsInstance.loop();
           
           options.noPause = options.noPause || false;
-          !options.noPause && addListeners();          
-          options.isReady = true;
+          !options.noPause && addListeners(); 
+          options.codeReady = true;         
         } else {
-          setTimeout ( initProcessing, 10 );
+          setTimeout ( function() {
+            initProcessing.call( this );
+            }, 10 );
         }
       };
       
@@ -106,9 +91,8 @@
         url: options.sketch,
         dataType: "text",
         success: function( responseCode ) {
-          options.codeReady = true;
           options.processingCode = responseCode;
-          initProcessing();
+          initProcessing.call( context );
         }
       });
     };
@@ -139,11 +123,15 @@
       },
 
       start: function( event, options ) {
-        toggle.call( this, true, options );
+
+        options.codeReady && !this.media.paused && options.pjsInstance.loop();
+        options.canvas.style.display = "inline";
       },
 
       end: function( event, options ) {
-        toggle.call( this, false, options );
+        
+        options.pjsInstance && options.pjsInstance.noLoop();
+        options.canvas.style.display = "none";
       },
       
       _teardown: function( options ) {
