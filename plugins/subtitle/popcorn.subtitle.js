@@ -22,9 +22,10 @@
         }
       },
       createDefaultContainer = function( context ) {
-        
-        // clear this function from future calls; we are done
-        createDefaultContainer = Popcorn.nop;
+
+        var ctxContainer = context.container = document.createElement( "div" ),
+            style = ctxContainer.style,
+            media = context.media;
 
         var updatePosition = function() {
           var position = context.position();
@@ -37,11 +38,7 @@
           setTimeout( updatePosition, 10 );
         };
 
-        var ctxContainer = context.container = document.createElement( "div" ),
-            style = ctxContainer.style,
-            media = context.media;
-
-        ctxContainer.id = "subtitlediv";
+        ctxContainer.id = Popcorn.guid();
         style.position = "absolute";
         style.color = "white";
         style.textShadow = "black 2px 2px 6px";
@@ -157,7 +154,7 @@
         i++;
 
         // Creates a div for all subtitles to use
-        ( !this.container && !options.target || options.target === "subtitle-container" ) && 
+        ( !this.container && ( !options.target || options.target === "subtitle-container" ) ) && 
           createDefaultContainer( this );
 
         // if a target is specified, use that
@@ -167,7 +164,7 @@
           // use shared default container
           options.container = this.container;
         }
-        
+
         document.getElementById( options.container.id ).appendChild( newdiv );
         options.innerContainer = newdiv;
 
