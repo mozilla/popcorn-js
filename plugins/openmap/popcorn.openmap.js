@@ -43,21 +43,33 @@
   // insert openlayers api script once
   if ( !_mapFired ) {
     _mapFired = true;
-    Popcorn.getScript('http://openlayers.org/api/OpenLayers.js',
+    Popcorn.getScript( "http://openlayers.org/api/OpenLayers.js",
     function() {
       _mapLoaded = true;
-    } );
+    });
+  }
+
+  function toggle( container, display ) {
+    if ( container.map ) {
+      
+      container.map.div.style.display = display;
+      return;
+    }
+
+    setTimeout(function() {
+      toggle( container, display );
+    }, 10 );
   }
 
   Popcorn.plugin( "openmap" , function( options ){
     var newdiv,
-        map,
         centerlonlat,
         projection,
         displayProjection,
         pointLayer,
         selectControl,
-        popup;
+        popup,
+        isGeoReady;
 
     // create a new div within the target div
     // this is later passed on to the maps api
@@ -70,7 +82,7 @@
     document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( newdiv );
 
     // callback function fires when the script is run
-    var isGeoReady = function() {
+    isGeoReady = function() {
       if ( !_mapLoaded ) {
         setTimeout( function () {
           isGeoReady();
@@ -84,70 +96,72 @@
             "http://tinygeocoder.com/create-api.php?q=" + options.location + "&callback=jsonp",
             function( latlng ) {
               centerlonlat = new OpenLayers.LonLat( latlng[1], latlng[0] );
-              map.setCenter( centerlonlat );
+              options.map.setCenter( centerlonlat );
             }
           );
         } else {
           centerlonlat = new OpenLayers.LonLat( options.lng, options.lat );
         }
         options.type = options.type || "ROADMAP";
-        if( options.type == "SATELLITE" ) {
+        if( options.type === "SATELLITE" ) {
           // add NASA WorldWind / LANDSAT map
-          map = new OpenLayers.Map( { div: newdiv, "maxResolution": 0.28125, tileSize: new OpenLayers.Size( 512, 512 ) } );
+          options.map = new OpenLayers.Map( { div: newdiv, "maxResolution": 0.28125, tileSize: new OpenLayers.Size( 512, 512 ) } );
           var worldwind = new OpenLayers.Layer.WorldWind( "LANDSAT", "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4, { T: "105" } );
-          map.addLayer( worldwind );
+          options.map.addLayer( worldwind );
           displayProjection = new OpenLayers.Projection( "EPSG:4326" );
           projection = new OpenLayers.Projection( "EPSG:4326" );
         }
-        else if( options.type == "TERRAIN" ) {
+        else if( options.type === "TERRAIN" ) {
           // add terrain map ( USGS )
           displayProjection = new OpenLayers.Projection( "EPSG:4326" );
           projection = new OpenLayers.Projection( "EPSG:4326" );
-          map = new OpenLayers.Map( {div: newdiv, projection: projection } );
+          options.map = new OpenLayers.Map( {div: newdiv, projection: projection } );
           var relief = new OpenLayers.Layer.WMS( "USGS Terraserver", "http://terraserver-usa.org/ogcmap.ashx?", { layers: 'DRG' } ); 
-          map.addLayer( relief );
+          options.map.addLayer( relief );
         }
         else {
           // add OpenStreetMap layer
           projection = new OpenLayers.Projection( 'EPSG:900913' );
           displayProjection = new OpenLayers.Projection( 'EPSG:4326' );
           centerlonlat = centerlonlat.transform( displayProjection, projection );
-          map = new OpenLayers.Map( { div: newdiv, projection: projection, "displayProjection": displayProjection } );
+          options.map = new OpenLayers.Map( { div: newdiv, projection: projection, "displayProjection": displayProjection } );
           var osm = new OpenLayers.Layer.OSM();
-          map.addLayer( osm );
+          options.map.addLayer( osm );
         }
-        if( map ) {
-          map.div.style.display = "none";
+        if( options.map ) {
+          options.map.div.style.display = "none";
         }
       }
     };
+    
     isGeoReady();
 
     return {
+    
       /**
        * @member openmap 
-       * The start function will be executed when the currentTime 
-       * of the video  reaches the start time provided by the 
-       * options variable
+       * The setup function will be executed when the plug-in is instantiated 
        */
-      start: function( event, options ) {
+      _setup: function( options ) {
+      
         var isReady = function () {
           // wait until OpenLayers has been loaded, and the start function is run, before adding map
-          if ( !map ) {
+          if ( !options.map ) {
             setTimeout( function () {
               isReady();
             }, 13 );
           } else {
-            map.div.style.display = "block";
+          
+            // default zoom is 2
+            options.zoom = options.zoom || 2;
+            
             // make sure options.zoom is a number
             if ( options.zoom && typeof options.zoom !== "number" ) {
               options.zoom = +options.zoom;
             }
-            // default zoom is 2
-            options.zoom = options.zoom || 2;
 
             // reset the location and zoom just in case the user played with the map
-            map.setCenter( centerlonlat, options.zoom );
+            options.map.setCenter( centerlonlat, options.zoom );
             if( options.markers ){
               var layerStyle = OpenLayers.Util.extend( {} , OpenLayers.Feature.Vector.style[ 'default' ] ),
                   featureSelected = function( clickInfo ) {
@@ -168,13 +182,13 @@
                     );
                     clickedFeature.popup = popup;
                     popup.feature = clickedFeature;
-                    map.addPopup( popup );
+                    options.map.addPopup( popup );
                   }, 
                   featureUnSelected = function( clickInfo ) {
                     feature = clickInfo.feature;
                     if ( feature.popup ) {
                       popup.feature = null;
-                      map.removePopup( feature.popup );
+                      options.map.removePopup( feature.popup );
                       feature.popup.destroy();
                       feature.popup = null;
                     }
@@ -202,13 +216,13 @@
                     );
                   };
               pointLayer = new OpenLayers.Layer.Vector( "Point Layer", { style: layerStyle } );
-              map.addLayer( pointLayer ); 
+              options.map.addLayer( pointLayer ); 
               for( var m = 0; m < options.markers.length; m++ ) {
                 var myMarker = options.markers[ m ];
                 if( myMarker.text ){
                   if( !selectControl ){
                     selectControl = new OpenLayers.Control.SelectFeature( pointLayer );
-                    map.addControl( selectControl );
+                    options.map.addControl( selectControl );
                     selectControl.activate();
                     pointLayer.events.on( {
                       "featureselected": featureSelected,
@@ -243,6 +257,17 @@
         
         isReady();
       },
+      
+      /**
+       * @member openmap 
+       * The start function will be executed when the currentTime 
+       * of the video  reaches the start time provided by the 
+       * options variable
+       */
+      start: function( event, options ) {
+        toggle( options, "block" );
+      },
+      
       /**
        * @member openmap
        * The end function will be executed when the currentTime 
@@ -250,12 +275,9 @@
        * options variable
        */
       end: function( event, options ) {
-        // if the map exists hide it do not delete the map just in 
-        // case the user seeks back to time b/w start and end
-        if ( map ) {
-          map.div.style.display = 'none';          
-        }
+          toggle( options, "none" );        
       },
+      
       _teardown: function( options ) {
 
         document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( newdiv );
