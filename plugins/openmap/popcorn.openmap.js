@@ -32,21 +32,15 @@
           target: 'map',
           lat: 43.665429,
           lng: -79.403323
-        } )
+        })
    *
    */
   var newdiv,
-      i = 1,
-      _mapFired = false,
-      _mapLoaded = false;
+      i = 1;
 
   // insert openlayers api script once
-  if ( !_mapFired ) {
-    _mapFired = true;
-    Popcorn.getScript( "http://openlayers.org/api/OpenLayers.js",
-    function() {
-      _mapLoaded = true;
-    });
+  if ( !window.OpenLayers ) {
+    Popcorn.getScript( "http://openlayers.org/api/OpenLayers.js", function() {});
   }
 
   function toggle( container, display ) {
@@ -61,7 +55,7 @@
     }, 10 );
   }
 
-  Popcorn.plugin( "openmap" , function( options ){
+  Popcorn.plugin( "openmap", function( options ){
     var newdiv,
         centerlonlat,
         projection,
@@ -69,26 +63,29 @@
         pointLayer,
         selectControl,
         popup,
-        isGeoReady;
+        isGeoReady,
+        target;
+        
+    target = document.getElementById( options.target );
 
     // create a new div within the target div
     // this is later passed on to the maps api
-    newdiv               = document.createElement( 'div' );
-    newdiv.id            = "openmapdiv" + i;
-    newdiv.style.width   = "100%";
-    newdiv.style.height  = "100%";
+    newdiv = document.createElement( "div" );
+    newdiv.id = "openmapdiv" + i;
+    newdiv.style.width = "100%";
+    newdiv.style.height = "100%";
     i++;
 
-    document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( newdiv );
+    target && target.appendChild( newdiv );
 
     // callback function fires when the script is run
     isGeoReady = function() {
-      if ( !_mapLoaded ) {
-        setTimeout( function () {
+      if ( !window.OpenLayers ) {
+        setTimeout(function() {
           isGeoReady();
         }, 50);
       } else {
-        if( options.location ){
+        if ( options.location ) {
           // set a dummy center at start
           location = new OpenLayers.LonLat( 0, 0 );
           // query TinyGeocoder and re-center in callback
@@ -103,7 +100,7 @@
           centerlonlat = new OpenLayers.LonLat( options.lng, options.lat );
         }
         options.type = options.type || "ROADMAP";
-        if( options.type === "SATELLITE" ) {
+        if ( options.type === "SATELLITE" ) {
           // add NASA WorldWind / LANDSAT map
           options.map = new OpenLayers.Map( { div: newdiv, "maxResolution": 0.28125, tileSize: new OpenLayers.Size( 512, 512 ) } );
           var worldwind = new OpenLayers.Layer.WorldWind( "LANDSAT", "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4, { T: "105" } );
@@ -111,15 +108,14 @@
           displayProjection = new OpenLayers.Projection( "EPSG:4326" );
           projection = new OpenLayers.Projection( "EPSG:4326" );
         }
-        else if( options.type === "TERRAIN" ) {
+        else if ( options.type === "TERRAIN" ) {
           // add terrain map ( USGS )
           displayProjection = new OpenLayers.Projection( "EPSG:4326" );
           projection = new OpenLayers.Projection( "EPSG:4326" );
           options.map = new OpenLayers.Map( {div: newdiv, projection: projection } );
           var relief = new OpenLayers.Layer.WMS( "USGS Terraserver", "http://terraserver-usa.org/ogcmap.ashx?", { layers: 'DRG' } ); 
           options.map.addLayer( relief );
-        }
-        else {
+        } else {
           // add OpenStreetMap layer
           projection = new OpenLayers.Projection( 'EPSG:900913' );
           displayProjection = new OpenLayers.Projection( 'EPSG:4326' );
@@ -128,7 +124,7 @@
           var osm = new OpenLayers.Layer.OSM();
           options.map.addLayer( osm );
         }
-        if( options.map ) {
+        if ( options.map ) {
           options.map.div.style.display = "none";
         }
       }
@@ -144,10 +140,10 @@
        */
       _setup: function( options ) {
       
-        var isReady = function () {
+        var isReady = function() {
           // wait until OpenLayers has been loaded, and the start function is run, before adding map
           if ( !options.map ) {
-            setTimeout( function () {
+            setTimeout(function() {
               isReady();
             }, 13 );
           } else {
@@ -162,11 +158,11 @@
 
             // reset the location and zoom just in case the user played with the map
             options.map.setCenter( centerlonlat, options.zoom );
-            if( options.markers ){
+            if ( options.markers ) {
               var layerStyle = OpenLayers.Util.extend( {} , OpenLayers.Feature.Vector.style[ 'default' ] ),
                   featureSelected = function( clickInfo ) {
                     clickedFeature = clickInfo.feature;
-                    if( !clickedFeature.attributes.text ){
+                    if ( !clickedFeature.attributes.text ) {
                       return;
                     }
                     popup = new OpenLayers.Popup.FramedCloud(
@@ -193,20 +189,20 @@
                       feature.popup = null;
                     }
                   },
-                  gcThenPlotMarker = function( myMarker ){
+                  gcThenPlotMarker = function( myMarker ) {
                     Popcorn.getJSONP(
                       "http://tinygeocoder.com/create-api.php?q=" + myMarker.location + "&callback=jsonp",
-                      function( latlng ){
+                      function( latlng ) {
                         var myPoint = new OpenLayers.Geometry.Point( latlng[1], latlng[0] ).transform( displayProjection, projection ),
                             myPointStyle = OpenLayers.Util.extend( {}, layerStyle );
-                        if( !myMarker.size || isNaN( myMarker.size ) ) {
+                        if ( !myMarker.size || isNaN( myMarker.size ) ) {
                           myMarker.size = 14;
                         }
                         myPointStyle.pointRadius = myMarker.size;
                         myPointStyle.graphicOpacity = 1;
                         myPointStyle.externalGraphic = myMarker.icon;
                         var myPointFeature = new OpenLayers.Feature.Vector( myPoint, null, myPointStyle );
-                        if( myMarker.text ) {
+                        if ( myMarker.text ) {
                           myPointFeature.attributes = { 
                             text: myMarker.text
                           };
@@ -217,33 +213,33 @@
                   };
               pointLayer = new OpenLayers.Layer.Vector( "Point Layer", { style: layerStyle } );
               options.map.addLayer( pointLayer ); 
-              for( var m = 0; m < options.markers.length; m++ ) {
+              for ( var m = 0, l = options.markers.length; m < l ; m++ ) {
                 var myMarker = options.markers[ m ];
                 if( myMarker.text ){
                   if( !selectControl ){
                     selectControl = new OpenLayers.Control.SelectFeature( pointLayer );
                     options.map.addControl( selectControl );
                     selectControl.activate();
-                    pointLayer.events.on( {
+                    pointLayer.events.on({
                       "featureselected": featureSelected,
                       "featureunselected": featureUnSelected
-                    } );
+                    });
                   }
                 }
-                if( myMarker.location ){
+                if ( myMarker.location ) {
                   var geocodeThenPlotMarker = gcThenPlotMarker;
                   geocodeThenPlotMarker(myMarker);
                 } else {
                   var myPoint = new OpenLayers.Geometry.Point( myMarker.lng, myMarker.lat ).transform( displayProjection, projection ),
                       myPointStyle = OpenLayers.Util.extend( {}, layerStyle );
-                  if( !myMarker.size || isNaN( myMarker.size ) ) {
+                  if ( !myMarker.size || isNaN( myMarker.size ) ) {
                     myMarker.size = 14;
                   }
                   myPointStyle.pointRadius = myMarker.size;
                   myPointStyle.graphicOpacity = 1;
                   myPointStyle.externalGraphic = myMarker.icon;
                   var myPointFeature = new OpenLayers.Feature.Vector( myPoint, null, myPointStyle );
-                  if( myMarker.text ) {
+                  if ( myMarker.text ) {
                     myPointFeature.attributes = { 
                       text: myMarker.text
                     };
@@ -280,7 +276,7 @@
       
       _teardown: function( options ) {
 
-        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( newdiv );
+        target && target.removeChild( newdiv );
         newdiv = map = centerlonlat = projection = displayProjection = pointLayer = selectControl = popup = null;
       }
     };
@@ -303,5 +299,5 @@
       location : { elem: 'input', type: 'text', label: 'Location'},
       markers  : { elem: 'input', type: 'text', label: 'List Markers'}
     }
-  } );
-} ) ( Popcorn );
+  });
+}) ( Popcorn );
