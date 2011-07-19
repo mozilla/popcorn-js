@@ -16,7 +16,13 @@
 
      var p = Popcorn('#video')
 
-     .code({})
+     .code({
+        start: 1,
+        end: 3,
+        onStart: function( options ) {
+          $('#test1').innerHTML = 'Yes';
+        }
+     })
 
       .code({
         start: 5,
