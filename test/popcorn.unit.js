@@ -390,9 +390,10 @@ test( "Object", function () {
 
   var popped = Popcorn( "#video" ),
       popObj = Popcorn( document.getElementById( "video" ) ),
-      methods = "load play pause currentTime mute volume roundTime exec removePlugin",
+      methods = "load play pause currentTime mute volume roundTime exec removePlugin duration " +
+                "preload playbackRate autoplay loop controls volume muted buffered readyState seeking paused played seekable ended",
       count = 0,
-      expects = 30;
+      expects = 60;
 
   expect( expects );
 
@@ -499,7 +500,7 @@ test("roundTime", function () {
 
 });
 
-
+  
 test("exec", function () {
 
   QUnit.reset();
