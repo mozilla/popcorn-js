@@ -1,7 +1,7 @@
 test( "Popcorn google news Plugin", function () {
   
   var popped = Popcorn( "#video" ),
-      expects = 8, 
+      expects = 9, 
       count = 0,
       setupId,
       googlenewsdiv = document.getElementById( "googlenewsdiv" );
@@ -21,6 +21,18 @@ test( "Popcorn google news Plugin", function () {
   
   equals ( googlenewsdiv.innerHTML, "", "initially, there is nothing inside the googlenewsdiv" );
   plus();
+
+  // empty track events should be safe
+  popped.googlenews({});
+
+  // debug should log errors on empty track events
+  Popcorn.plugin.debug = true;
+  try {
+    popped.googlenews({});
+  } catch( e ) {
+    ok(true, 'empty event was caught by debug');
+    plus();
+  }
   
   popped.googlenews({
     start: 0, // seconds
@@ -60,7 +72,7 @@ test( "Popcorn google news Plugin", function () {
     ok( !googlenewsdiv.children[1], "removed google news was properly destroyed" );
     plus();
   });
-  
+
   popped.play();
 
 });

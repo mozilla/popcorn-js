@@ -7,16 +7,11 @@
   
   <script>
     document.addEventListener( "DOMContentLoaded", function () {
+Popcorn.plugin.debug = true;
       var p = Popcorn( "#video" )
       .volume( 0 )
       .play()
-      .processing({
-        start: 2,
-        end: 10,
-        target: "processing-div",
-        sketch: "test.pjs",
-        noPause: true
-      })
+      .processing({})
       .processing({
         start: 10,
         end: 15,

@@ -1,7 +1,7 @@
 test("Popcorn Google Map Plugin", function () {
   
   var popped = Popcorn( "#video" ),
-      expects = 14, 
+      expects = 15, 
       count = 0,
       setupId;
   
@@ -94,6 +94,18 @@ test("Popcorn Google Map Plugin", function () {
     ok( !document.getElementById( 'actualmap4' ), "removed map was properly destroyed" );
     plus();
   });
+
+  // empty track events should be safe
+  popped.googlemap({});
+
+  // debug should log errors on empty track events
+  Popcorn.plugin.debug = true;
+  try {
+    popped.googlemap({});
+  } catch( e ) {
+    ok(true, 'empty event was caught by debug');
+    plus();
+  }
 
   popped.play();
   

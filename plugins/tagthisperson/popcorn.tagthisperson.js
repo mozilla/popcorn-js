@@ -64,7 +64,13 @@
         }
       },
       _setup: function( options ) {
-        var exists = false;
+        var exists = false,
+            target = document.getElementById( options.target );
+
+        if ( !target && Popcorn.plugin.debug ) {
+          throw new Error( "target container doesn't exist" );
+        }
+
         // loop through the existing objects to ensure no duplicates
         // the idea here is to have one object per unique options.target
         for ( var i = 0; i < peopleArray.length; i++ ) {

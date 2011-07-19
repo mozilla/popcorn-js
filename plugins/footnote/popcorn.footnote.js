@@ -41,11 +41,17 @@
       }
     },
     _setup: function(options) {
+
+      var target = document.getElementById( options.target );
+
       options._container = document.createElement( 'div' );
       options._container.style.display = "none";
       options._container.innerHTML  = options.text;
 
-      document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options._container );
+      if ( !target && Popcorn.plugin.debug ) {
+        throw new Error( "target container doesn't exist" );
+      }
+      target && target.appendChild( options._container );
     },
     /**
      * @member footnote 

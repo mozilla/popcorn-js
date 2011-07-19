@@ -57,7 +57,8 @@
         displayProjection,
         pointLayer,
         selectControl,
-        popup;
+        popup,
+        target = document.getElementById( options.target );
 
     // create a new div within the target div
     // this is later passed on to the maps api
@@ -67,7 +68,11 @@
     newdiv.style.height  = "100%";
     i++;
 
-    document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( newdiv );
+
+    if ( !target && Popcorn.plugin.debug ) {
+      throw new Error( "target container doesn't exist" );
+    }
+    target && target.appendChild( newdiv );
 
     // callback function fires when the script is run
     var isGeoReady = function() {

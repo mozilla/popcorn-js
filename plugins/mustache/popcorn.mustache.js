@@ -86,15 +86,19 @@
 
   Popcorn.plugin( 'mustache' , function( options ) {
 
-    var getData, data, getTemplate, template, loaded = false;
+    var getData, data, getTemplate, template;
 
-    Popcorn.getScript('https://github.com/janl/mustache.js/raw/master/mustache.js', function() {
-      loaded = true; 
-    });
+    Popcorn.getScript('https://github.com/janl/mustache.js/raw/master/mustache.js');
 
     var shouldReload = !!options.dynamic,
         typeOfTemplate = typeof options.template,
-        typeOfData = typeof options.data;
+        typeOfData = typeof options.data,
+        target = document.getElementById( options.target );
+
+    if ( !target && Popcorn.plugin.debug ) {
+      throw new Error( "target container doesn't exist" );
+    }
+    options.container = target || document.createElement( "div" );
 
     if ( typeOfTemplate === 'function' ) {
       if ( !shouldReload ) {
@@ -105,7 +109,8 @@
     } else if ( typeOfTemplate === 'string' ) {
       template = options.template;
     } else {
-      Popcorn.error( 'Mustache Plugin Error: options.template must be a String or a Function.' );
+      Popcorn.plugin.debug && Popcorn.error( 'Mustache Plugin Error: options.template must be a String or a Function.' );
+      template = "";
     }
 
     if ( typeOfData === 'function' ) {
@@ -119,15 +124,16 @@
     } else if ( typeOfData === 'object' ) {
       data = options.data;
     } else {
-      Popcorn.error( 'Mustache Plugin Error: options.data must be a String, Object, or Function.' );
+      Popcorn.plugin.debug && Popcorn.error( 'Mustache Plugin Error: options.data must be a String, Object, or Function.' );
+      data = "";
     }
 
     return {
       start: function( event, options ) {
 
         var interval = function() {
-          
-          if( !loaded ) {
+
+          if( !window.Mustache ) {
             setTimeout( function() {
               interval();
             }, 10 );
@@ -145,7 +151,7 @@
             var html = Mustache.to_html( template,
                                          data
                                        ).replace( /^\s*/mg, '' );
-            document.getElementById( options.target ).innerHTML = html;
+            options.container.innerHTML = html;
           }
         };
 
@@ -154,7 +160,7 @@
       },
 
       end: function( event, options ) {
-        document.getElementById( options.target ).innerHTML = '';
+        options.container.innerHTML = '';
       },
       _teardown: function( options ) {
         getData = data = getTemplate = template = null;

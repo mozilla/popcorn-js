@@ -1,7 +1,7 @@
 test("Popcorn Flickr Plugin", function () {
   
   var popped = Popcorn( "#video" ),
-      expects = 10, 
+      expects = 11, 
       count = 0,
       setupId,
       flickrdiv = document.getElementById( "flickrdiv" );
@@ -81,7 +81,19 @@ test("Popcorn Flickr Plugin", function () {
     ok( !flickrdiv.children[2], "Removed flickr was properly destroyed"  );
     plus();
   });
-  
+
+  // empty track events should be safe
+  popped.flickr({});
+
+  // debug should log errors on empty track events
+  Popcorn.plugin.debug = true;
+  try {
+    popped.flickr({});
+  } catch( e ) {
+    ok(true, 'empty event was caught by debug');
+    plus();
+  }
+
   popped.volume(0).play();
   
 });

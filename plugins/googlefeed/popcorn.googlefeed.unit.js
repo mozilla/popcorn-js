@@ -1,7 +1,7 @@
 test("Popcorn Google Feed Plugin", function () {
   
   var popped = Popcorn( "#video" ),
-      expects = 12,
+      expects = 13,
       setupId, 
       count = 0;
   
@@ -68,7 +68,19 @@ test("Popcorn Google Feed Plugin", function () {
     ok( !document.getElementById('feed1').children[0], "removed feed was properly destroyed"  );
     plus();
   });
-  
+
+  // empty track events should be safe
+  popped.googlefeed({});
+
+  // debug should log errors on empty track events
+  Popcorn.plugin.debug = true;
+  try {
+    popped.googlefeed({});
+  } catch( e ) {
+    ok(true, 'empty event was caught by debug');
+    plus();
+  }  
+
   popped.play();
   
 });

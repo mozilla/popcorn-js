@@ -1,7 +1,7 @@
 test("Popcorn wikipedia Plugin", function () {
   
   var popped        = Popcorn( "#video" ),
-      expects       = 11, 
+      expects       = 12, 
       count         = 0,
       theArticle    = document.getElementById( "wikidiv" );
        
@@ -67,4 +67,16 @@ test("Popcorn wikipedia Plugin", function () {
     equals ( theArticle.innerHTML, "", "wikidiv is now empty" );
     plus();
   });
+
+  // empty track events should be safe
+  popped.wikipedia({});
+
+  // debug should log errors on empty track events
+  Popcorn.plugin.debug = true;
+  try {
+    popped.wikipedia({});
+  } catch( e ) {
+    ok(true, 'empty event was caught by debug');
+    plus();
+  }
 });

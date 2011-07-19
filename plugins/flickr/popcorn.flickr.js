@@ -45,6 +45,7 @@
 
   Popcorn.plugin( "flickr" , function( options ) {
     var containerDiv,
+        target = document.getElementById( options.target ),
         _userid,
         _uri,
         _link,
@@ -65,11 +66,10 @@
     idx++;
     
     // ensure the target container the user chose exists
-    if ( document.getElementById( options.target ) ) {
-      document.getElementById( options.target ).appendChild( containerDiv );
-    } else { 
-      throw ( "flickr target container doesn't exist" );
+    if ( !target && Popcorn.plugin.debug ) {
+      throw new Error( "flickr target container doesn't exist" );
     }
+    target && target.appendChild( containerDiv );
     
     // get the userid from Flickr API by using the username and apikey
     var isUserIDReady = function() {
