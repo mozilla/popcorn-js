@@ -652,7 +652,7 @@
 
           // Execute hook add method if defined
           if ( eventHook.add ) {
-            eventHook.add.call( this );
+            eventHook.add.call( this, {}, fn );
           }
 
           // Reassign event type to our piggyback event type if defined
@@ -715,9 +715,19 @@
     hooks: {
       canplayall: {
         bind: "canplaythrough",
-        add: function() {
+        add: function( event, callback ) {
+
+          var state = false;
+
+          if ( this.media.readyState ) {
+
+            callback.call( this, event );
+
+            state = true;
+          }
+
           this.data.hooks.canplayall = {
-            fired: false
+            fired: state
           };
         },
         // declare special handling instructions

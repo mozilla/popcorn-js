@@ -682,6 +682,39 @@ test("Popcorn.events.hooks: canplayall", function() {
   });
 });
 
+test("Popcorn.events.hooks: canplayall fires immediately if ready", function() {
+  //qunit-fixture
+
+  var $pop = Popcorn("#video"),
+    expects = 1,
+    count = 0,
+    fired = 0;
+
+  expect(expects);
+
+  function plus(){
+    if ( ++count == expects ) {
+      start();
+    }
+  }
+
+  stop( 20000 );
+
+  function poll() {
+    if ( $pop.media.readyState >= 2 ) {
+      // this should trigger immediately
+      $pop.listen("canplayall", function( event ) {
+        equal( ++fired, 1, "canplayall is fired immediately if readyState permits" );
+        plus();
+      });
+    } else {
+      setTimeout( poll, 10 );
+    }
+  }
+
+  poll();
+});
+
 /*
 <video height="180" width="300" id="video" controls>
 <source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.mp4"></source>
