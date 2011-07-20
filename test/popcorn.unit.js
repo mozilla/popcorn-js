@@ -1270,6 +1270,37 @@ test("Configurable Defaults", function () {
 
 });
 
+test("Start Zero Immediately", function () {
+
+  var $pop = Popcorn("#video"),
+      expects = 1,
+      count   = 0;
+
+  function plus() {
+    if ( ++count === expects ) {
+      // clean up added events after tests
+      Popcorn.removePlugin("zero");
+      start();
+    }
+  }
+
+  stop();
+
+  $pop.pause().currentTime( 0 );
+
+  Popcorn.plugin( "zero", {
+    start: function() {
+      ok( true, "$pop.zero({ start:0, end: 2 }) ran without play()");
+      plus();
+    },
+    end: function() {}
+  });
+
+  $pop.zero({ 
+    start:0, 
+    end: 2 
+  });
+});
 test("Update Timer", function () {
 
   QUnit.reset();
