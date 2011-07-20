@@ -30,21 +30,21 @@
     Popcorn.plugin( name , {
 
       manifest: {
-        about:{
+        about: {
           name: "Popcorn " + name + " Plugin",
           version: "0.2",
           author: "@annasob, @rwaldron",
           website: "annasob.wordpress.com"
         },
-        options:{
-          start    : {elem:'input', type:'text', label:'In'},
-          end      : {elem:'input', type:'text', label:'Out'},
-          target   : name + '-container',
-          text     : {elem:'input', type:'text', label:'Text'}
+        options: {
+          start: { elem: "input", type: "text", label: "In" },
+          end: { elem: "input", type: "text", label: "Out" },
+          text: { elem: "input", type: "text", label: "Text" },
+          target: name + "-container"
         }
       },
-      _setup: function(options) {
-        options._container = document.createElement( 'div' );
+      _setup: function( options ) {
+        options._container = document.createElement( "div" );
         options._container.style.display = "none";
         options._container.innerHTML  = options.text;
 
@@ -58,7 +58,7 @@
        * of the video  reaches the start time provided by the
        * options variable
        */
-      start: function(event, options){
+      start: function( event, options ) {
         options._container.style.display = "inline";
       },
       /**
@@ -67,7 +67,7 @@
        * of the video  reaches the end time provided by the
        * options variable
        */
-      end: function(event, options){
+      end: function( event, options ) {
         options._container.style.display = "none";
       },
       _teardown: function( options ) {

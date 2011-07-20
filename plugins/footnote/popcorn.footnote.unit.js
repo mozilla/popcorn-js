@@ -1,38 +1,38 @@
 test("Popcorn Footnote Plugin", function () {
-  
+
   var popped = Popcorn("#video"),
-      expects = 8, 
+      expects = 8,
       count = 0,
       setupId,
-      footnotediv = document.getElementById('footnotediv');
-  
+      footnotediv = document.getElementById("footnotediv");
+
   expect(expects);
-  
+
   function plus() {
     if ( ++count===expects) {
       start();
     }
   }
-  
+
   stop();
-   
-  ok ('footnote' in popped, "footnote is a mehtod of the popped instance");
+
+  ok ("footnote" in popped, "footnote is a mehtod of the popped instance");
   plus();
-  
+
   equals ( footnotediv.childElementCount, 0, "initially, there is nothing inside the footnotediv" );
   plus();
-  
+
   popped.footnote({
     start: 0, // seconds
     end: 2, // seconds
-    text: 'This video made exclusively for drumbeat.org',
-    target: 'footnotediv'
+    text: "This video made exclusively for drumbeat.org",
+    target: "footnotediv"
   })
   .footnote({
     start: 2, // seconds
     end: 4, // seconds
-    text: 'Visit webmademovies.org for more details',
-    target: 'footnotediv'
+    text: "Visit webmademovies.org for more details",
+    target: "footnotediv"
   });
 
   setupId = popped.getLastTrackEventId();
@@ -60,5 +60,42 @@ test("Popcorn Footnote Plugin", function () {
     plus();
   });
   popped.play().volume(0);
-  
+
+});
+
+
+test("Popcorn Text Plugin", function () {
+
+  var popped = Popcorn("#video"),
+      expects = 2,
+      count = 0,
+      setupId,
+      textdiv = document.getElementById( "textdiv" );
+
+  expect(expects);
+
+  function plus() {
+    if ( ++count===expects) {
+      start();
+    }
+  }
+
+  ok( "text" in popped, "text is a method of the popped instance" );
+  plus();
+
+  popped.text({
+    start: 0, // seconds
+    end: 3, // seconds
+    text: "I am an alias",
+    target: "textdiv"
+  });
+
+  stop();
+
+  popped.exec( 2, function() {
+
+    equal( textdiv.children[0].innerHTML , "I am an alias", "I am an alias set by Popcorn.p.text" );
+    plus();
+
+  }).currentTime(1).play();
 });
