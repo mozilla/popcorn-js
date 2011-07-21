@@ -103,7 +103,7 @@
 
         var fragment = document.createElement( "p" );
 
-        containerDiv.innerHTML = "<p style='padding:" + _padding + ";'>" + data.title + "<p/>";
+        fragment.innerHTML = "<p style='padding:" + _padding + ";'>" + data.title + "<p/>";
 
         Popcorn.forEach( data.items, function ( item, i ) {
           if ( i < _count ) {
