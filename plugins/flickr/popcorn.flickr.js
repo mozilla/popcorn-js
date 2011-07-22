@@ -108,14 +108,14 @@
         Popcorn.forEach( data.items, function ( item, i ) {
           if ( i < _count ) {
 
-            _link = document.createElement( 'a' );
-            _link.setAttribute( 'href', item.link );
+            _link = document.createElement( "a" );
+            _link.setAttribute( "href", item.link );
             _link.setAttribute( "target", "_blank" );
-            _image = document.createElement( 'img' );
-            _image.setAttribute( 'src', item.media.m );
-            _image.setAttribute( 'height',_height );
-            _image.setAttribute( 'width', _width );
-            _image.setAttribute( 'style', 'border:' + _border + ';padding:' + _padding );
+            _image = document.createElement( "img" );
+            _image.setAttribute( "src", item.media.m );
+            _image.setAttribute( "height",_height );
+            _image.setAttribute( "width", _width );
+            _image.setAttribute( "style", "border:" + _border + ";padding:" + _padding );
             _link.appendChild( _image );
             fragment.appendChild( _link );
 
