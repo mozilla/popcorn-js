@@ -47,7 +47,7 @@
 
         updatePosition();
 
-        document.body.appendChild( ctxContainer );
+        context.media.parentNode.appendChild( ctxContainer );
       };
 
   Popcorn.getScript( "http://www.google.com/jsapi", callBack );
