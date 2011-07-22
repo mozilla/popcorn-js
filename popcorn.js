@@ -180,13 +180,13 @@
             start: -1,
             end: -1
           }],
-          byEnd:   [{
+          byEnd: [{
             start: -1,
             end: -1
           }],
           startIndex: 0,
-          endIndex:   0,
-          previousUpdateTime: 0
+          endIndex: 0,
+          previousUpdateTime: -1
         }
       };
 
