@@ -2,7 +2,7 @@ test("Popcorn Subtitle Plugin", function () {
  
   var popped = Popcorn( "#video" ),
       popped2 = Popcorn( "#video2" ),
-      expects = 16,
+      expects = 12,
       count = 0,
       subTop = 9001,
       subLeft = 9001,
@@ -26,25 +26,16 @@ test("Popcorn Subtitle Plugin", function () {
       start: 0,
       end: 2,
       text: 'this is the first subtitle of 2011',
-      language: "en",
-      languagesrc: "language",
-      accessibilitysrc: "accessibility"
     } )
   .subtitle({
       start: 2,
       end: 4,
       text: 'this is the second subtitle of 2011',
-      language: "en",
-      languagesrc: "language",
-      accessibilitysrc: "accessibility"
     } )
   .subtitle({
       start: 5,
       end: 7,
       text: 'this is the third subtitle of 2011',
-      language: "en",
-      languagesrc: "language",
-      accessibilitysrc: "accessibility"
     } )
     .volume(0)
     .play();
@@ -123,31 +114,6 @@ test("Popcorn Subtitle Plugin", function () {
 
     popped.media.play();
  
-  });
- 
-  popped.exec( 6, function() {
-
-    popped.media.play();
-
-    equals (subtitlediv.style.display, "inline", "subtitles being displayed with accessiblity on" );
-    plus();
-
-    // turn accessibility off
-    document.getElementById( "accessibility" ).click();
-
-    equals (subtitlediv.style.display, "none", "subtitles not being displayed with accessiblity off" );
-    plus();
-
-    // turn accessibility back on
-    document.getElementById( "accessibility" ).click();
-
-    equals (subtitlediv.style.display, "inline", "subtitles being displayed with accessiblity back on" );
-    plus();
-
-    equals (subtitlediv.children[ 2 ].innerHTML, "this is the third subtitle of 2011", "subtitle displaying correct information" );
-    plus();
-    popped.media.play();
-   
   });
 
   popped.exec( 8, function() {
