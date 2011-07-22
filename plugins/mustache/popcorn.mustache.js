@@ -108,8 +108,9 @@
       }
     } else if ( typeOfTemplate === 'string' ) {
       template = options.template;
+    } else if ( Popcorn.plugin.debug ) {
+      throw new Error( 'Mustache Plugin Error: options.template must be a String or a Function.' );
     } else {
-      Popcorn.plugin.debug && Popcorn.error( 'Mustache Plugin Error: options.template must be a String or a Function.' );
       template = "";
     }
 
@@ -123,8 +124,9 @@
       data = JSON.parse( options.data );
     } else if ( typeOfData === 'object' ) {
       data = options.data;
+    } else if ( Popcorn.plugin.debug ) {
+      thros new Error( 'Mustache Plugin Error: options.data must be a String, Object, or Function.' );
     } else {
-      Popcorn.plugin.debug && Popcorn.error( 'Mustache Plugin Error: options.data must be a String, Object, or Function.' );
       data = "";
     }
 
