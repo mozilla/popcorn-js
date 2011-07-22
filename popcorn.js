@@ -1,12 +1,12 @@
 (function(global, document) {
 
   //  Cache refs to speed up calls to native utils
-  
+
   var
-  
+
   AP = Array.prototype,
   OP = Object.prototype,
-  
+
   forEach = AP.forEach,
   slice = AP.slice,
   hasOwn = OP.hasOwnProperty,
@@ -22,7 +22,7 @@
 
   //  Non-public internal data object
   internal = {
-    events: { 
+    events: {
       hash: {},
       apis: {}
     }
@@ -235,10 +235,10 @@
               while ( tracksByStart[ tracks.startIndex ] && tracksByStart[ tracks.startIndex ].start <= currentTime ) {
                 //  If plugin does not exist on this instance, remove it
                 if ( !tracksByStart[ tracks.startIndex ]._natives || !!that[ tracksByStart[ tracks.startIndex ]._natives.type ] ) {
-                  if ( tracksByStart[ tracks.startIndex ].end > currentTime && 
-                        tracksByStart[ tracks.startIndex ]._running === false && 
+                  if ( tracksByStart[ tracks.startIndex ].end > currentTime &&
+                        tracksByStart[ tracks.startIndex ]._running === false &&
                           that.data.disabled.indexOf( tracksByStart[ tracks.startIndex ]._natives.type ) === -1 ) {
-                          
+
                     tracksByStart[ tracks.startIndex ]._running = true;
                     tracksByStart[ tracks.startIndex ]._natives.start.call( that, event, tracksByStart[ tracks.startIndex ] );
                   }
@@ -271,8 +271,8 @@
               while ( tracksByEnd[ tracks.endIndex ] && tracksByEnd[ tracks.endIndex ].end > currentTime ) {
                 // if plugin does not exist on this instance, remove it
                 if ( !tracksByEnd[ tracks.endIndex ]._natives || !!that[ tracksByEnd[ tracks.endIndex ]._natives.type ] ) {
-                  if ( tracksByEnd[ tracks.endIndex ].start <= currentTime && 
-                        tracksByEnd[ tracks.endIndex ]._running === false  && 
+                  if ( tracksByEnd[ tracks.endIndex ].start <= currentTime &&
+                        tracksByEnd[ tracks.endIndex ]._running === false  &&
                           that.data.disabled.indexOf( tracksByEnd[ tracks.endIndex ]._natives.type ) === -1 ) {
 
                     tracksByEnd[ tracks.endIndex ]._running = true;
@@ -399,13 +399,13 @@
         bounds[ p ] = Math.round( clientRect[ p ] );
       }
 
-      return Popcorn.extend({}, bounds, { top: top, left: left });     
-    }, 
+      return Popcorn.extend({}, bounds, { top: top, left: left });
+    },
 
     disable: function( instance, plugin ) {
 
       var disabled = instance.data.disabled;
-      
+
       if ( disabled.indexOf( plugin ) === -1 ) {
         disabled.push( plugin );
       }
@@ -414,7 +414,7 @@
     },
     enable: function( instance, plugin ) {
 
-      var disabled = instance.data.disabled, 
+      var disabled = instance.data.disabled,
           index = disabled.indexOf( plugin );
 
       if ( index > -1 ) {
@@ -504,7 +504,7 @@
     // Toggle a plugin's playback behaviour (on or off) per instance
     toggle: function( plugin ) {
       return Popcorn[ this.data.disabled.indexOf( plugin ) > -1 ? "enable" : "disable" ]( this, plugin );
-    }, 
+    },
 
     // Set default values for plugin options objects per instance
     defaults: function( plugin, defaults ) {
@@ -553,7 +553,7 @@
   // Privately compile events table at load time
   (function( events, data ) {
 
-    var apis = internal.events.apiTypes, 
+    var apis = internal.events.apiTypes,
     eventsList = events.Natives.split( /\s+/g ),
     idx = 0, len = eventsList.length, prop;
 
@@ -565,8 +565,8 @@
 
       data.apis[ val ] = {};
 
-      var apiEvents = events[ val ].split( /\s+/g ), 
-      len = apiEvents.length, 
+      var apiEvents = events[ val ].split( /\s+/g ),
+      len = apiEvents.length,
       k = 0;
 
       for ( ; k < len; k++ ) {
@@ -586,14 +586,14 @@
         return false;
       }
 
-      var eventApi = internal.events, 
+      var eventApi = internal.events,
         apis = eventApi.apiTypes,
-        apihash = eventApi.apis, 
+        apihash = eventApi.apis,
         idx = 0, len = apis.length, api, tmp;
 
       for ( ; idx < len; idx++ ) {
         tmp = apis[ idx ];
-        
+
         if ( apihash[ tmp ][ type ] ) {
           api = tmp;
           break;
@@ -637,9 +637,9 @@
       listen: function( type, fn ) {
 
         var self = this,
-            hasEvents = true, 
-            eventHook = Popcorn.events.hooks[ type ], 
-            origType = type, 
+            hasEvents = true,
+            eventHook = Popcorn.events.hooks[ type ],
+            origType = type,
             tmp;
 
         if ( !this.data.events[ type ] ) {
@@ -768,7 +768,7 @@
 
     //  Store this definition in an array sorted by times
     var byStart = obj.data.trackEvents.byStart,
-        byEnd = obj.data.trackEvents.byEnd, 
+        byEnd = obj.data.trackEvents.byEnd,
         idx;
 
     for ( idx = byStart.length - 1; idx >= 0; idx-- ) {
@@ -871,7 +871,7 @@
     var trackevents = [],
       refs = obj.data.trackEvents.byStart,
       length = refs.length,
-      idx = 0, 
+      idx = 0,
       ref;
 
     for ( ; idx < length; idx++ ) {
@@ -975,7 +975,7 @@
     // apply safe, and empty default functions
     methods.forEach(function( method ) {
 
-      definition[ method ] = definition[ method ] || Popcorn.nop;      
+      definition[ method ] = definition[ method ] || Popcorn.nop;
     });
 
     var pluginFn = function( setup, options ) {
@@ -986,7 +986,7 @@
 
       //  Storing the plugin natives
       var natives = options._natives = {},
-          compose = "", 
+          compose = "",
           defaults, originalOpts, manifestOpts, mergedSetupOpts;
 
       Popcorn.extend( natives, setup );
@@ -1284,7 +1284,7 @@
 
     options.dataType = options.dataType && options.dataType.toLowerCase() || null;
 
-    if ( options.dataType && 
+    if ( options.dataType &&
          ( options.dataType === "jsonp" || options.dataType === "script" ) ) {
 
       Popcorn.xhr.getJSONP(
