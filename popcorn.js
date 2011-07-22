@@ -450,7 +450,7 @@
           }
 
 
-          if ( arg !== false && arg !== null && typeof arg !== "undefined" ) {
+          if ( arg != null ) {
 
             this.media[ name ] = arg;
 
