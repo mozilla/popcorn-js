@@ -84,7 +84,7 @@ test("Popcorn Subtitle Plugin", function () {
     popped.media.style.position = "absolute";
     popped.media.style.left = "400px";
     popped.media.style.top = "600px";
-    popped.media.play()
+    popped.media.play();
    
   });
  
