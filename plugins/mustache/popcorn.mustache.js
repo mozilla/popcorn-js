@@ -125,7 +125,7 @@
     } else if ( typeOfData === 'object' ) {
       data = options.data;
     } else if ( Popcorn.plugin.debug ) {
-      thros new Error( 'Mustache Plugin Error: options.data must be a String, Object, or Function.' );
+      throw new Error( 'Mustache Plugin Error: options.data must be a String, Object, or Function.' );
     } else {
       data = "";
     }
