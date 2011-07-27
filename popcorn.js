@@ -433,7 +433,8 @@
   //  an object with defined methods
   Popcorn.extend(Popcorn.p, (function() {
 
-      var methods = "load play pause currentTime playbackRate mute volume duration",
+      var methods = "load play pause currentTime playbackRate mute volume duration preload playbackRate " +
+                    "autoplay loop controls muted buffered readyState seeking paused played seekable ended",
           ret = {};
 
 
@@ -449,7 +450,7 @@
           }
 
 
-          if ( arg !== false && arg !== null && typeof arg !== "undefined" ) {
+          if ( arg != null ) {
 
             this.media[ name ] = arg;
 
@@ -751,7 +752,8 @@
 
   //  Protected API methods
   Popcorn.protect = {
-    natives: "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten exec".toLowerCase().split( /\s+/ )
+    natives: ( "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten exec" +
+              "preload playbackRate autoplay loop controls muted buffered readyState seeking paused played seekable ended" ).toLowerCase().split( /\s+/ )
   };
 
   // Internal Only - Adds track events to the instance object
