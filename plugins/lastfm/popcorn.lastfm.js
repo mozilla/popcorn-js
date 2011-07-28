@@ -57,20 +57,6 @@
       
     
     return {
-      manifest: {
-        about:{
-          name:    "Popcorn LastFM Plugin",
-          version: "0.1",
-          author:  "Steven Weerdenburg",
-          website: "http://sweerdenburg.wordpress.com/"
-        },
-        options:{
-          start    : {elem:'input', type:'text', label:'In'},
-          end      : {elem:'input', type:'text', label:'Out'},
-          target   : 'lastfm-container',
-          artist   : {elem:'input', type:'text', label:'Artist'}
-        }
-      },
 
       _setup: function( options ) {
         options._container = document.createElement( 'div' );
@@ -118,6 +104,20 @@
         document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options._container );
       }
     };
-  })());
+  })(),
+  {
+    about:{
+      name:    "Popcorn LastFM Plugin",
+      version: "0.1",
+      author:  "Steven Weerdenburg",
+      website: "http://sweerdenburg.wordpress.com/"
+    },
+    options:{
+      start    : {elem:'input', type:'text', label:'In'},
+      end      : {elem:'input', type:'text', label:'Out'},
+      target   : 'lastfm-container',
+      artist   : {elem:'input', type:'text', label:'Artist'}
+    }
+  });
 
 })( Popcorn );

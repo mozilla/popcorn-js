@@ -133,8 +133,8 @@
         }
       }
     };
-  },
-  {
+  }, 
+  { 
     about: {
       name: 'Popcorn Code Plugin',
       version: '0.1',
