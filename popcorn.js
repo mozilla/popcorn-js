@@ -1469,48 +1469,53 @@
     // HH:MM:SS;FF
     // Hours and minutes are optional. They default to 0
     toSeconds: function( timeStr, framerate ) {
-        //Hours and minutes are optional
-        //Seconds must be specified
-        //Seconds can be followed by milliseconds OR by the frame information
+        // Hours and minutes are optional
+        // Seconds must be specified
+        // Seconds can be followed by milliseconds OR by the frame information
         var validTimeFormat = /^([0-9]+:){0,2}[0-9]+([.;][0-9]+)?$/,
-            errorMessage = "Invalid time format";
+            errorMessage = "Invalid time format",
+            digitPairs, digitPairsLength, lastIndex, lastElement,
+            frameInfo, frameTime;
 
         if ( typeof timeStr === "number" ) {
           return timeStr;
         } else if ( typeof timeStr === "string" ) {
-          if ( ! validTimeFormat.test( timeStr ) ) {
+          if ( !validTimeFormat.test( timeStr ) ) {
             Popcorn.error( errorMessage );
           }
         } else {
           Popcorn.error( errorMessage );
         }
 
-        var t = timeStr.split( ":" ),
-            lastIndex = t.length - 1,
-            lastElement = t[ lastIndex ];
+        digitPairs = timeStr.split( ":" );
+        lastIndex = digitPairs.length - 1;
+        lastElement = digitPairs[ lastIndex ];
 
-        //Fix last element:
+        // Fix last element:
         if ( lastElement.indexOf( ";" ) > -1 ) {
-          var frameInfo = lastElement.split( ";" ),
-              frameTime = 0;
+
+          frameInfo = lastElement.split( ";" );
+          frameTime = 0;
 
           if ( framerate && ( typeof framerate === "number" ) ) {
-              frameTime = parseFloat( frameInfo[ 1 ], 10 ) / framerate;
+            frameTime = parseFloat( frameInfo[ 1 ], 10 ) / framerate;
           }
 
-          t[ lastIndex ] =
-            parseInt( frameInfo[ 0 ], 10 ) + frameTime;
+          digitPairs[ lastIndex ] = parseInt( frameInfo[ 0 ], 10 ) + frameTime;
         }
 
-        if ( t.length === 1 ) {
-          return parseFloat( t[ 0 ], 10 );
-        } else if ( t.length === 2 ) {
-          return ( parseInt( t[ 0 ], 10 ) * 60 ) + parseFloat( t[ 1 ], 10 );
-        } else if ( t.length === 3 ) {
-          return ( parseInt( t[ 0 ], 10 ) * 3600 ) +
-                 ( parseInt( t[ 1 ], 10 ) * 60 ) +
-                 parseFloat( t[ 2 ], 10 );
-        }
+        return {
+
+          1: parseFloat( digitPairs[ 0 ], 10 ),
+
+          2: ( parseInt( digitPairs[ 0 ], 10 ) * 60 ) +
+                parseFloat( digitPairs[ 1 ], 10 ),
+
+          3: ( parseInt( digitPairs[ 0 ], 10 ) * 3600 ) +
+              ( parseInt( digitPairs[ 1 ], 10 ) * 60 ) +
+                parseFloat( digitPairs[ 2 ], 10 )
+
+        }[ digitPairs.length || 1 ];
     }
   };
 
