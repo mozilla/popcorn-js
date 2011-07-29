@@ -99,22 +99,6 @@
 
     return {
 
-      manifest: {
-        about: {
-          name: "Popcorn Processing Plugin",
-          version: "0.1",
-          author: "Christopher De Cairos, Benjamin Chalovich",
-          website: "cadecairos.blogspot.com, ben1amin.wordpress.org"
-        },
-        options: {
-          start :   { elem: "input", type: "text", label: "In" },
-          end :     { elem: "input", type: "text", label: "Out" },
-          target :  { elem: "input", type: "text", label: "Target" },
-          sketch :  { elem: "input", type: "text", label: "Sketch" },
-          noPause : { elem: "select", options: [ "TRUE", "FALSE" ], label: "No Loop" }
-        }
-      },
-
       _setup: function( options ) {
         
         options.codeReady = false;
@@ -139,5 +123,20 @@
         options.parentTarget && options.parentTarget.removeChild( options.canvas );
       }
     };
+  },
+  {
+    about: {
+      name: "Popcorn Processing Plugin",
+      version: "0.1",
+      author: "Christopher De Cairos, Benjamin Chalovich",
+      website: "cadecairos.blogspot.com, ben1amin.wordpress.org"
+    },
+    options: {
+      start :   { elem: "input", type: "text", label: "In" },
+      end :     { elem: "input", type: "text", label: "Out" },
+      target :  { elem: "input", type: "text", label: "Target" },
+      sketch :  { elem: "input", type: "text", label: "Sketch" },
+      noPause : { elem: "select", options: [ "TRUE", "FALSE" ], label: "No Loop" }
+    }
   });
 }( Popcorn ));
