@@ -59,17 +59,21 @@
       },
       _setup : function( options ) {
       
+        var target = document.getElementById( options.target );
+        options.container = document.createElement( 'div' );
+
+        if ( !target && Popcorn.plugin.debug ) {
+          throw new Error( "target container doesn't exist" );
+        }
+
+        var container = document.createElement( "div" );
+        target && target.appendChild( options.container );
+        options.container.appendChild( container );
+
         if ( !scriptLoading ) {
 
           scriptLoading = true;
           Popcorn.getScript( "http://www.google.com/jsapi", callBack );
-        }
-
-        options.container = document.createElement( 'div' );
-        var container = document.createElement( 'div' );
-        if ( document.getElementById( options.target ) ) {
-          document.getElementById( options.target ).appendChild( options.container );
-          options.container.appendChild( container );
         }
 
         var readyCheck = setInterval(function() {
@@ -78,7 +82,7 @@
           }
           clearInterval( readyCheck );
 
-          options.newsShow = new google.elements.NewsShow( container, {
+          options.newsShow = target && new google.elements.NewsShow( container, {
             format : "300x250",
             queryList : [
               { q: options.topic || "Top Stories" }

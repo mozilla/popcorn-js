@@ -1,7 +1,7 @@
 test( "Popcorn lower third Plugin", function () {
   
   var popped = Popcorn( "#video" ),
-      expects = 7, 
+      expects = 8, 
       count = 0,
       lowerthirddiv = document.getElementById( "lowerthirddiv" );
 
@@ -24,7 +24,20 @@ test( "Popcorn lower third Plugin", function () {
   ok( !popped.container, "initially, there is no default div" );
   plus();
   
-  
+  // empty track events should be safe
+  popped.lowerthird({});
+
+  // debug should log errors on error track events
+  Popcorn.plugin.debug = true;
+  try {
+    popped.lowerthird({
+      target: "does not exist"
+    });
+  } catch( e ) {
+    ok(true, 'invalid target event was caught by debug');
+    plus();
+  }
+
   popped.lowerthird({
       start: 0, // seconds
       end: 2, // seconds
@@ -48,14 +61,14 @@ test( "Popcorn lower third Plugin", function () {
   });
   
   popped.exec( 3, function() {
-    equals ( lowerthirddiv.innerHTML, "Dr Jekyll<br>Person", "second lowerthird is visible" );
+    equals ( lowerthirddiv.innerHTML, "<div>Dr Jekyll<br>Person</div>", "second lowerthird is visible" );
     plus();
   });
   
   popped.exec( 5, function() {
     equals ( popped.container.innerHTML, "", "first lowerthird is empty" );
     plus();
-    equals ( lowerthirddiv.innerHTML, "", "second lowerthird is empty" );
+    equals ( lowerthirddiv.innerHTML, "<div></div>", "second lowerthird is empty" );
     plus();
   });
   

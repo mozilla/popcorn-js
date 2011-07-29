@@ -40,8 +40,8 @@
 
       options.parentTarget = document.getElementById( options.target );
       
-      if ( !options.parentTarget ) {
-        throw ( "target container doesn't exist" );
+      if ( !options.parentTarget && Popcorn.plugin.debug ) {
+        throw new Error( "target container doesn't exist" );
       }
       
       initProcessing = function() {
@@ -85,16 +85,25 @@
       canvas.style.display = "none";   
       options.canvas = canvas;
       
-      options.parentTarget.appendChild( options.canvas );
-      
-      Popcorn.xhr({
-        url: options.sketch,
-        dataType: "text",
-        success: function( responseCode ) {
-          options.processingCode = responseCode;
-          initProcessing.call( context );
+      options.parentTarget && options.parentTarget.appendChild( options.canvas );
+
+      if ( options.sketch ) {
+
+        Popcorn.xhr({
+          url: options.sketch,
+          dataType: "text",
+          success: function( responseCode ) {
+            options.codeReady = true;
+            options.processingCode = responseCode;
+            initProcessing();
+          }
+        });
+      } else {
+
+        if ( Popcorn.plugin.debug ) {
+          throw new Error( "options.sketch is undefined" );
         }
-      });
+      }
     };
 
     return {

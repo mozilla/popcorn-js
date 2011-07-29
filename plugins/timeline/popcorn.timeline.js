@@ -40,10 +40,6 @@
     var target = document.getElementById( options.target ),
         newdiv = document.createElement( "div" );
 
-    target.style.width = "400px";
-    target.style.height = "200px";
-    target.style.overflow = "auto";
-
     newdiv.style.display = "none";
     newdiv.id = "timelineDiv" + i;
 
@@ -55,6 +51,9 @@
 
     if ( target ) {
 
+      target.style.width = "400px";
+      target.style.height = "200px";
+      target.style.overflow = "auto";
       target.appendChild( newdiv );
 
       // if this isnt the first div added to the target div
@@ -63,6 +62,8 @@
         target.insertBefore( newdiv, document.getElementById( "timelineDiv" + ( i - 1 ) ) );
       }
 
+    } else if ( Popcorn.plugin.debug ) {
+      throw new Error( "target container doesn't exist" );
     }
     
     i++;

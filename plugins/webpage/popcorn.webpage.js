@@ -43,7 +43,10 @@
       }
     },
     _setup : function( options ) {
-      // make an iframe 
+
+      var target = document.getElementById( options.target );
+
+      // make an iframe
       options._iframe  = document.createElement( 'iframe' );
       options._iframe.setAttribute('width', "100%");
       options._iframe.setAttribute('height', "100%");
@@ -51,8 +54,12 @@
       options._iframe.src = options.src;
       options._iframe.style.display = 'none';
 
+      if ( !target && Popcorn.plugin.debug ) {
+        throw new Error( "target container doesn't exist" );
+      }
+
       // add the hidden iframe to the DOM
-      document.getElementById( options.target ) && document.getElementById( options.target ).appendChild(options._iframe);
+      target && target.appendChild(options._iframe);
       
     },
     /**

@@ -1,7 +1,7 @@
 test('Popcorn Code Plugin', function () {
 
   var popped = Popcorn('#video'),
-      expects = 8,
+      expects = 9,
       count = 0,
       frames = 0,
       codeDiv = document.getElementById('code-div');
@@ -68,6 +68,18 @@ test('Popcorn Code Plugin', function () {
       popped.pause();
     }
   });
+
+  // empty track events should be safe
+  popped.code({});
+
+  // debug should log errors on empty track events
+  Popcorn.plugin.debug = true;
+  try {
+    popped.code({});
+  } catch( e ) {
+    ok(true, 'empty event was caught by debug');
+    plus();
+  }
 
   popped.volume(0);
   popped.play();

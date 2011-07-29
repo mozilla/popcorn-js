@@ -147,7 +147,8 @@
 
     _setup : function( options ) {
 
-      var self = this;
+      var self = this,
+          target = document.getElementById( options.target );
       
       options.endDrawing = options.endDrawing || options.end;
 
@@ -157,7 +158,10 @@
       options.container.style.display = "none";
       options.container.setAttribute( "id", "canvas" + options.gmltag );
 
-      document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options.container );
+      if ( !target && Popcorn.plugin.debug ) {
+        throw new Error( "target container doesn't exist" );
+      }
+      target && target.appendChild( options.container );
 
       if ( !window.Processing ) {
 
