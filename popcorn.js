@@ -1474,27 +1474,26 @@
         // Seconds can be followed by milliseconds OR by the frame information
         var validTimeFormat = /^([0-9]+:){0,2}[0-9]+([.;][0-9]+)?$/,
             errorMessage = "Invalid time format",
-            digitPairs, digitPairsLength, lastIndex, lastElement,
+            digitPairs, lastIndex, lastPair, firstPair,
             frameInfo, frameTime;
 
         if ( typeof timeStr === "number" ) {
           return timeStr;
-        } else if ( typeof timeStr === "string" ) {
-          if ( !validTimeFormat.test( timeStr ) ) {
-            Popcorn.error( errorMessage );
-          }
-        } else {
+        }
+
+        if ( typeof timeStr === "string" &&
+              !validTimeFormat.test( timeStr ) ) {
           Popcorn.error( errorMessage );
         }
 
         digitPairs = timeStr.split( ":" );
         lastIndex = digitPairs.length - 1;
-        lastElement = digitPairs[ lastIndex ];
+        lastPair = digitPairs[ lastIndex ];
 
         // Fix last element:
-        if ( lastElement.indexOf( ";" ) > -1 ) {
+        if ( lastPair.indexOf( ";" ) > -1 ) {
 
-          frameInfo = lastElement.split( ";" );
+          frameInfo = lastPair.split( ";" );
           frameTime = 0;
 
           if ( framerate && ( typeof framerate === "number" ) ) {
@@ -1504,14 +1503,16 @@
           digitPairs[ lastIndex ] = parseInt( frameInfo[ 0 ], 10 ) + frameTime;
         }
 
+        firstPair = digitPairs[ 0 ];
+
         return {
 
-          1: parseFloat( digitPairs[ 0 ], 10 ),
+          1: parseFloat( firstPair, 10 ),
 
-          2: ( parseInt( digitPairs[ 0 ], 10 ) * 60 ) +
+          2: ( parseInt( firstPair, 10 ) * 60 ) +
                 parseFloat( digitPairs[ 1 ], 10 ),
 
-          3: ( parseInt( digitPairs[ 0 ], 10 ) * 3600 ) +
+          3: ( parseInt( firstPair, 10 ) * 3600 ) +
               ( parseInt( digitPairs[ 1 ], 10 ) * 60 ) +
                 parseFloat( digitPairs[ 2 ], 10 )
 
