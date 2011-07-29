@@ -89,7 +89,7 @@
       },
 
       _teardown: function( options ) {
-        while ( target.firstChild ) {
+        while ( target && target.firstChild ) {
           target.removeChild( target.firstChild );
         } 
       }

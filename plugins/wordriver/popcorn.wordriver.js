@@ -139,7 +139,7 @@
         // if no more word spans exist in container, remove container
         container[ options.target ] &&
           !container[ options.target ].childElementCount &&
-          document.getElementById( options.target ).removeChild( container[ options.target ] ) &&
+          document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( container[ options.target ] ) &&
           delete container[ options.target ];
       }
   });

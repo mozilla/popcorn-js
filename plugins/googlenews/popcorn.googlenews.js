@@ -54,7 +54,7 @@
           start    : {elem:'input', type:'text', label:'In'},
           end      : {elem:'input', type:'text', label:'Out'},
           target   : 'news-container',
-          topic     : {elem:'select', type:'text', label:'Type'}
+          topic     : {elem:'input', type:'text', label:'Topic'}
         }
       },
       _setup : function( options ) {
