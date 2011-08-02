@@ -980,9 +980,7 @@
 
     //  If `manifest` arg is undefined, check for manifest within the `definition` object
     //  If no `definition.manifest`, an empty object is a sufficient fallback
-    if ( !manifest ) {
-      manifest = definition.manifest || {};
-    }
+    Popcorn.manifest[ name ] = manifest = manifest || definition.manifest || {};
 
     // apply safe, and empty default functions
     methods.forEach(function( method ) {
@@ -1077,11 +1075,6 @@
 
       return this;
     };
-
-    //  Augment the manifest object
-    if ( manifest || ( "manifest" in definition ) ) {
-      Popcorn.manifest[ name ] = manifest || definition.manifest;
-    }
 
     //  Assign new named definition
     plugin[ name ] = function( options ) {
