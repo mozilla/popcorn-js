@@ -809,6 +809,8 @@ test( "Popcorn.locale object", function() {
   // Change locale, trigger "locale:changed" event
   Popcorn.locale.set( "fr-CA" );
 
+
+
 });
 
 
