@@ -483,7 +483,7 @@ test("Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
 
 
 
-module("Popcorn Methods");
+module("Popcorn Prototype Methods");
 
 
 
@@ -500,7 +500,7 @@ test("roundTime", function () {
 
 });
 
-  
+
 test("exec", function () {
 
   QUnit.reset();
@@ -541,6 +541,61 @@ test("exec", function () {
   }).currentTime(3).play();
 
 });
+
+test("mute", function () {
+
+  var video = Popcorn("#video"),
+      audio = Popcorn("#audio"),
+      expects = 4,
+      count = 0;
+
+  expect( expects );
+
+  function plus(){
+    if ( ++count == expects ) {
+      start();
+    }
+  }
+
+  stop();
+
+
+  video.listen("muted", function() {
+
+    equal( this.media.muted, true, "Video `muted` attribute is true when muted" );
+    plus();
+
+    this.unmute();
+
+  }).listen("unmuted", function() {
+
+    equal( this.media.muted, false, "Video `muted` attribute is false when unmuted" );
+    plus();
+
+  });
+
+  audio.listen("muted", function() {
+
+    equal( this.media.muted, true, "Audio `muted` attribute is true when muted" );
+    plus();
+
+    this.unmute();
+
+  }).listen("unmuted", function() {
+
+    equal( this.media.muted, false, "Audio `muted` attribute is false when unmuted" );
+    plus();
+
+  });
+
+
+  video.mute();
+  audio.mute();
+
+});
+
+
+module("Popcorn Static Methods");
 
 test( "Popcorn.extend", function () {
 
@@ -1330,9 +1385,9 @@ test("Start Zero Immediately", function () {
     end: function() {}
   });
 
-  $pop.zero({ 
-    start:0, 
-    end: 2 
+  $pop.zero({
+    start:0,
+    end: 2
   });
 });
 test("Update Timer", function () {
