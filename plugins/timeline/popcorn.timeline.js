@@ -7,7 +7,7 @@
      * Options parameter will need a start, target, title, and text
      * -Start is the time that you want this plug-in to execute
      * -End is the time that you want this plug-in to stop executing, tho for this plugin an end time may not be needed ( optional )
-     * -Target is the id of the DOM element that you want the map to appear in. This element must be in the DOM
+     * -Target is the id of the DOM element that you want the timeline to appear in. This element must be in the DOM
      * -Title is the title of the current timeline box
      * -Text is text is simply related text that will be displayed
      * -innerHTML gives the user the option to add things such as links, buttons and so on
@@ -38,29 +38,47 @@
   Popcorn.plugin( "timeline" , function( options ) {
 
     var target = document.getElementById( options.target ),
-        newdiv = document.createElement( "div" );
+        contentDiv = document.createElement( "div" ),
+        container,
+        goingUp;
 
-    target.style.width = "400px";
-    target.style.height = "200px";
-    target.style.overflow = "auto";
+    if ( target && !target.firstChild ) {
+      target.appendChild ( container = document.createElement( "div" ) );
+      container.style.width = "inherit";
+      container.style.height = "inherit";
+      container.style.overflow = "auto";
+      container.id = "timeline-container";
+    } else {
+      container = target.firstChild;
+    }
 
-    newdiv.style.display = "none";
-    newdiv.id = "timelineDiv" + i;
+    contentDiv.style.display = "none";
+    contentDiv.id = "timelineDiv" + i;
 
     //  Default to up if options.direction is non-existant or not up or down
     options.direction = options.direction || "up";
-    if ( options.direction.toLowerCase() !== "up" || options.direction.toLowerCase() !== "down" ) {
-      options.direction = "up";
+    if ( options.direction.toLowerCase() === "up" ) {
+    
+      goingUp = true;
+    }
+    else if ( options.direction.toLowerCase() === "down" ) {
+
+      goingUp = false;
+    }
+    else {
+    
+      goingUp = true;
     }
 
-    if ( target ) {
-
-      target.appendChild( newdiv );
-
+    if ( target && container ) {
       // if this isnt the first div added to the target div
-      if( options.direction.length === 2 ){
+      if( goingUp ){
         // insert the current div before the previous div inserted
-        target.insertBefore( newdiv, document.getElementById( "timelineDiv" + ( i - 1 ) ) );
+        container.insertBefore( contentDiv, container.firstChild );
+      }
+      else {
+        
+        container.appendChild( contentDiv );
       }
 
     }
@@ -70,27 +88,26 @@
     //  Default to empty if not used
     //options.innerHTML = options.innerHTML || "";    
 
-    newdiv.innerHTML = "<p><span id='big'>" + options.title + "</span><br />" +
+    contentDiv.innerHTML = "<p><span id='big'>" + options.title + "</span><br />" +
     "<span id='mid'>" + options.text + "</span><br />" + options.innerHTML;
     
     return {
 
       start: function( event, options ) {
-        newdiv.style.display = "block";
+        contentDiv.style.display = "block";
         
         if( options.direction === "down" ) {
-          target.scrollTop = target.scrollHeight;
+          container.scrollTop = container.scrollHeight;
         }
       },
  
       end: function( event, options ) {
-        newdiv.style.display = "none";
+        contentDiv.style.display = "none";
       },
 
       _teardown: function( options ) {
-        while ( target.firstChild ) {
-          target.removeChild( target.firstChild );
-        } 
+
+        ( container && contentDiv ) && container.removeChild( contentDiv ) && !container.firstChild && target.removeChild( container );
       }
     };
   },
