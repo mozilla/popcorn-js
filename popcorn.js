@@ -1534,7 +1534,7 @@
 
   Popcorn.locale = {
 
-    // Popcorn.localte.get()
+    // Popcorn.locale.get()
     // returns reference to privately
     // defined localeData
     get: function() {
