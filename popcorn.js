@@ -505,7 +505,7 @@
     // Mute the calling media, optionally toggle
     mute: function( toggle ) {
 
-      var event = toggle == null || toggle === true? "muted" : "unmuted";
+      var event = toggle == null || toggle === true ? "muted" : "unmuted";
 
       // If `toggle` is explicitly `false`,
       // unmute the media and restore the volume level
