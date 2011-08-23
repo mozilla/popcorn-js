@@ -171,6 +171,11 @@
         // Store track event history data
         history: [],
 
+        // Stores ad-hoc state related data]
+        state: {
+          volume: this.media.volume
+        },
+
         // Store track event object references by trackId
         trackRefs: {},
 
@@ -433,7 +438,7 @@
   //  an object with defined methods
   Popcorn.extend(Popcorn.p, (function() {
 
-      var methods = "load play pause currentTime playbackRate mute volume duration preload playbackRate " +
+      var methods = "load play pause currentTime playbackRate volume duration preload playbackRate " +
                     "autoplay loop controls muted buffered readyState seeking paused played seekable ended",
           ret = {};
 
@@ -495,6 +500,37 @@
       });
 
       return this;
+    },
+
+    // Mute the calling media, optionally toggle
+    mute: function( toggle ) {
+
+      var event = toggle == null || toggle === true ? "muted" : "unmuted";
+
+      // If `toggle` is explicitly `false`,
+      // unmute the media and restore the volume level
+      if ( event === "unmuted" ) {
+        this.media.muted = false;
+        this.media.volume = this.data.state.volume;
+      }
+
+      // If `toggle` is either null or undefined,
+      // save the current volume and mute the media element
+      if ( event === "muted" ) {
+        this.data.state.volume = this.media.volume;
+        this.media.muted = true;
+      }
+
+      // Trigger either muted|unmuted event
+      this.trigger( event );
+
+      return this;
+    },
+
+    // Convenience method, unmute the calling media
+    unmute: function( toggle ) {
+
+      return this.mute( toggle == null ? false : !toggle );
     },
 
     // Get the client bounding box of an instance element
