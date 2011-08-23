@@ -15,22 +15,22 @@
     this.playbackRate = 1;
 
     // These are considered to be "on" by being defined. Initialize to undefined
-    this.autoplay;
-    this.loop;
+    this.autoplay = null;
+    this.loop = null;
 
     // List of events
     this._events = {};
 
     // The underlying player resource. May be <canvas>, <iframe>, <object>, array, etc
-    this._resource;
+    this._resource = null;
     // The container div of the resource
-    this._container;
+    this._container = null;
 
     this.offsetWidth = this.width = 0;
     this.offsetHeight = this.height = 0;
     this.offsetLeft = 0;
     this.offsetTop = 0;
-    this.offsetParent;
+    this.offsetParent = null;
   };
 
   Popcorn.baseplayer.init.prototype = {

@@ -285,8 +285,8 @@
 
       options.css && Popcorn.extend( this._target.style, options.css );
 
-      this.addEventFn;
-      this.evtHolder;
+      this.addEventFn = null;
+      this.evtHolder = null;
       this.paused = true;
       this.duration = Number.MAX_VALUE;
       this.ended = 0;

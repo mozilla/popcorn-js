@@ -394,7 +394,7 @@
       this._containerId = options.target;
       this._options = options;
       this._comments = [];
-      this._popcorn;
+      this._popcorn = null;
 
       pullFromContainer( this );
 
@@ -409,7 +409,7 @@
       this.top = 0;
       this.left = 0;
 
-      this.autoplay;
+      this.autoplay = null;
       this.played = 0;
 
       this.addEventListener( "load", function() {

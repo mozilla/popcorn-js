@@ -311,6 +311,7 @@ var onYouTubePlayerReady;
           self.dispatchEvent( 'waiting' );
         } else if ( state === YOUTUBE_STATE_CUED ) {
           // not handled
+          Popcorn.nop();
         }
       };
 
