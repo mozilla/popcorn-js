@@ -113,7 +113,9 @@ var wikiCallback;
         // get the article text and remove any special characters
         _text = data.parse.text[ "*" ].substr( data.parse.text[ "*" ].indexOf( "<p>" ) );
         _text = _text.replace( /((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "" );
-        options._desc.innerHTML = _text.substr( 0,  options.numberofwords ) + " ...";
+        
+        _text = _text.split( " " );
+        options._desc.innerHTML = ( _text.slice( 0, ( _text.length >= options.numberofwords ? options.numberofwords : _text.length ) ).join (" ") + " ..." ) ;
         
         options._fired = true;
       };
