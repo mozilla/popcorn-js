@@ -82,8 +82,10 @@ add_license = cat ${PREFIX}/LICENSE_HEADER | sed -e 's/@VERSION/${VERSION}/' > $
 # Run the file through jslint
 run_lint = @@$(RHINO) build/jslint-check.js $(1)
 
-all: setup lint lint-plugins lint-parsers lint-players lint-effects popcorn plugins parsers players effects complete min
-	@@echo "Popcorn build complete."
+all: setup popcorn plugins parsers players effects complete min
+	@@echo "Popcorn build complete.  To create a testing mirror, run: make testing."
+
+check: lint lint-plugins lint-parsers lint-players lint-effects
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
