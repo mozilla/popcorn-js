@@ -505,18 +505,18 @@
     // Mute the calling media, optionally toggle
     mute: function( toggle ) {
 
-      var event = toggle == null ? "muted" : "unmuted";
+      var event = toggle == null || toggle === true? "muted" : "unmuted";
 
       // If `toggle` is explicitly `false`,
       // unmute the media and restore the volume level
-      if ( toggle === false ) {
+      if ( event === "unmuted" ) {
         this.media.muted = false;
         this.media.volume = this.data.state.volume;
       }
 
       // If `toggle` is either null or undefined,
       // save the current volume and mute the media element
-      if ( toggle == null ) {
+      if ( event === "muted" ) {
         this.data.state.volume = this.media.volume;
         this.media.muted = true;
       }
@@ -528,8 +528,9 @@
     },
 
     // Convenience method, unmute the calling media
-    unmute: function() {
-      return this.mute( false );
+    unmute: function( toggle ) {
+
+      return this.mute( toggle == null ? false : !toggle );
     },
 
     // Get the client bounding box of an instance element
