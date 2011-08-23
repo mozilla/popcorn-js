@@ -38,11 +38,6 @@
   var newdiv,
       i = 1;
 
-  // insert openlayers api script once
-  if ( !window.OpenLayers ) {
-    Popcorn.getScript( "http://openlayers.org/api/OpenLayers.js", function() {});
-  }
-
   function toggle( container, display ) {
     if ( container.map ) {
       
@@ -139,6 +134,11 @@
        * The setup function will be executed when the plug-in is instantiated 
        */
       _setup: function( options ) {
+      
+        // insert openlayers api script once
+        if ( !window.OpenLayers ) {
+          Popcorn.getScript( "http://openlayers.org/api/OpenLayers.js", function() {});
+        }
       
         var isReady = function() {
           // wait until OpenLayers has been loaded, and the start function is run, before adding map
