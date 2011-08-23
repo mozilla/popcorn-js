@@ -242,7 +242,7 @@
                   ( !!Popcorn.registryByName[ tracksByStart[ tracks.startIndex ]._natives.type ] ||
                     !!that[ tracksByStart[ tracks.startIndex ]._natives.type ] ) ) {
 
-                  if ( tracksBySt  art[ tracks.startIndex ].end > currentTime &&
+                  if ( tracksByStart[ tracks.startIndex ].end > currentTime &&
                         tracksByStart[ tracks.startIndex ]._running === false &&
                           that.data.disabled.indexOf( tracksByStart[ tracks.startIndex ]._natives.type ) === -1 ) {
 
