@@ -55,17 +55,17 @@
         url: {
           elem: "input",
           type: "text",
-          label: "URL",
+          label: "URL"
         },
         apikey: {
           elem: "input",
           type: "text",
-          label: "API Key",
+          label: "API Key"
         },
         counter: {
           elem: "input",
           type: "text",
-          label: "Counter",
+          label: "Counter"
         },
         memberid: {
           elem:"input",
