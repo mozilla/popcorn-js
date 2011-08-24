@@ -137,7 +137,7 @@
       
         // insert openlayers api script once
         if ( !window.OpenLayers ) {
-          Popcorn.getScript( "http://openlayers.org/api/OpenLayers.js", function() {});
+          Popcorn.getScript( "http://openlayers.org/api/OpenLayers.js" );
         }
       
         var isReady = function() {
