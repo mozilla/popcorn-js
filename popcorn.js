@@ -182,6 +182,7 @@
         // Playback track event queues
         trackEvents: {
           byStart: [{
+
             start: -1,
             end: -1
           }],
@@ -224,7 +225,10 @@
 
               while ( tracksByEnd[ tracks.endIndex ] && tracksByEnd[ tracks.endIndex ].end <= currentTime ) {
                 //  If plugin does not exist on this instance, remove it
-                if ( !tracksByEnd[ tracks.endIndex ]._natives || !!that[ tracksByEnd[ tracks.endIndex ]._natives.type ] ) {
+                if ( !tracksByEnd[ tracks.endIndex ]._natives ||
+                    ( !!Popcorn.registryByName[ tracksByEnd[ tracks.endIndex ]._natives.type ] ||
+                      !!that[ tracksByEnd[ tracks.endIndex ]._natives.type ] ) ) {
+
                   if ( tracksByEnd[ tracks.endIndex ]._running === true ) {
                     tracksByEnd[ tracks.endIndex ]._running = false;
                     tracksByEnd[ tracks.endIndex ]._natives.end.call( that, event, tracksByEnd[ tracks.endIndex ] );
@@ -239,7 +243,10 @@
 
               while ( tracksByStart[ tracks.startIndex ] && tracksByStart[ tracks.startIndex ].start <= currentTime ) {
                 //  If plugin does not exist on this instance, remove it
-                if ( !tracksByStart[ tracks.startIndex ]._natives || !!that[ tracksByStart[ tracks.startIndex ]._natives.type ] ) {
+                if ( !tracksByStart[ tracks.startIndex ]._natives ||
+                  ( !!Popcorn.registryByName[ tracksByStart[ tracks.startIndex ]._natives.type ] ||
+                    !!that[ tracksByStart[ tracks.startIndex ]._natives.type ] ) ) {
+
                   if ( tracksByStart[ tracks.startIndex ].end > currentTime &&
                         tracksByStart[ tracks.startIndex ]._running === false &&
                           that.data.disabled.indexOf( tracksByStart[ tracks.startIndex ]._natives.type ) === -1 ) {
@@ -260,7 +267,10 @@
 
               while ( tracksByStart[ tracks.startIndex ] && tracksByStart[ tracks.startIndex ].start > currentTime ) {
                 // if plugin does not exist on this instance, remove it
-                if ( !tracksByStart[ tracks.startIndex ]._natives || !!that[ tracksByStart[ tracks.startIndex ]._natives.type ] ) {
+                if ( !tracksByStart[ tracks.startIndex ]._natives ||
+                  ( !!Popcorn.registryByName[ tracksByStart[ tracks.startIndex ]._natives.type ] ||
+                    !!that[ tracksByStart[ tracks.startIndex ]._natives.type ] ) ) {
+
                   if ( tracksByStart[ tracks.startIndex ]._running === true ) {
                     tracksByStart[ tracks.startIndex ]._running = false;
                     tracksByStart[ tracks.startIndex ]._natives.end.call( that, event, tracksByStart[ tracks.startIndex ] );
@@ -275,7 +285,10 @@
 
               while ( tracksByEnd[ tracks.endIndex ] && tracksByEnd[ tracks.endIndex ].end > currentTime ) {
                 // if plugin does not exist on this instance, remove it
-                if ( !tracksByEnd[ tracks.endIndex ]._natives || !!that[ tracksByEnd[ tracks.endIndex ]._natives.type ] ) {
+                if ( !tracksByEnd[ tracks.endIndex ]._natives ||
+                  ( !!Popcorn.registryByName[ tracksByEnd[ tracks.endIndex ]._natives.type ] ||
+                    !!that[ tracksByEnd[ tracks.endIndex ]._natives.type ] ) ) {
+
                   if ( tracksByEnd[ tracks.endIndex ].start <= currentTime &&
                         tracksByEnd[ tracks.endIndex ]._running === false  &&
                           that.data.disabled.indexOf( tracksByEnd[ tracks.endIndex ]._natives.type ) === -1 ) {
