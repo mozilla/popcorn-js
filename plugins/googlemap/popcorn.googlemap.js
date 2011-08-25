@@ -190,26 +190,30 @@ var googleCallback;
   
               //  Function to handle tweening using a set timeout
               var tween = function( rM, t ) {
-
+                
+                var computeHeading = google.maps.geometry.spherical.computeHeading;
                 setTimeout(function() {
+
+                  var current_time = that.media.currentTime;
     
                   //  Checks whether this is a generated route or not
-
                   if( typeof options.tween === "object" ) {
 
                     for ( var i = 0, m = rM.length; i < m; i++ ) {
 
+                      var waypoint = rM[ i ];
+
                       //  Checks if this position along the tween should be displayed or not
-                      if ( that.media.currentTime >= ( rM[ i ].interval * ( i + 1 ) ) / 1000 &&
-                         ( that.media.currentTime <= ( rM[ i ].interval * ( i + 2 ) ) / 1000 || 
-                           that.media.currentTime >= rM[ i ].interval * ( m ) / 1000 ) ) {
+                      if ( current_time >= ( waypoint.interval * ( i + 1 ) ) / 1000 &&
+                         ( current_time <= ( waypoint.interval * ( i + 2 ) ) / 1000 || 
+                           current_time >= waypoint.interval * ( m ) / 1000 ) ) {
 
                         sView3.setPosition( new google.maps.LatLng( rM[ i ].position.lat, rM[ i ].position.lng ) );
 
                         sView3.setPov({
-                          heading: rM[ i ].pov.heading || google.maps.geometry.spherical.computeHeading( rM[ k ], rM[ k + 1 ] ) || 0,
-                          zoom: rM[ i ].pov.zoom || 0,
-                          pitch: rM[ i ].pov.pitch || 0
+                          heading: waypoint.pov.heading || computeHeading( rM[ i ], rM[ i + 1 ] ) || 0,
+                          zoom: waypoint.pov.zoom || 0,
+                          pitch: waypoint.pov.pitch || 0
                         });
                       }
                     }
@@ -220,12 +224,14 @@ var googleCallback;
 
                     for ( var k = 0, l = rM.length; k < l; k++ ) {
 
-                      if( that.media.currentTime >= (options.interval * ( k + 1 ) ) / 1000 &&
-                        ( that.media.currentTime <= (options.interval * ( k + 2 ) ) / 1000 ||
-                          that.media.currentTime >= options.interval * ( l ) / 1000 ) ) {
+                      var interval = options.interval;
+
+                      if( current_time >= (interval * ( k + 1 ) ) / 1000 &&
+                        ( current_time <= (interval * ( k + 2 ) ) / 1000 ||
+                          current_time >= interval * ( l ) / 1000 ) ) {
 
                         sView2.setPov({
-                          heading: google.maps.geometry.spherical.computeHeading( rM[ k ], rM[ k + 1 ] ) || 0,
+                          heading: computeHeading( rM[ k ], rM[ k + 1 ] ) || 0,
                           zoom: options.zoom,
                           pitch: options.pitch || 0
                         }); 
