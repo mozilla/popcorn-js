@@ -47,7 +47,6 @@
       container.style.width = "inherit";
       container.style.height = "inherit";
       container.style.overflow = "auto";
-      container.id = "timeline-container";
     } else {
       container = target.firstChild;
     }
