@@ -40,7 +40,7 @@
     var target = document.getElementById( options.target ),
         contentDiv = document.createElement( "div" ),
         container,
-        goingUp;
+        goingUp = true;
 
     if ( target && !target.firstChild ) {
       target.appendChild ( container = document.createElement( "div" ) );
@@ -57,17 +57,9 @@
 
     //  Default to up if options.direction is non-existant or not up or down
     options.direction = options.direction || "up";
-    if ( options.direction.toLowerCase() === "up" ) {
-    
-      goingUp = true;
-    }
-    else if ( options.direction.toLowerCase() === "down" ) {
+    if ( options.direction.toLowerCase() === "down" ) {
 
       goingUp = false;
-    }
-    else {
-    
-      goingUp = true;
     }
 
     if ( target && container ) {
