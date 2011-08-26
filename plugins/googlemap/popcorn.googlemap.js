@@ -321,8 +321,11 @@ var googleCallback;
         }
       },
       _teardown: function (options) {
+
+        var target = document.getElementById(options.target);
+
         // the map must be manually removed
-        document.getElementById(options.target) && document.getElementById(options.target).removeChild(newdiv);
+        target && target.removeChild(newdiv);
         newdiv = map = location = null;
       }
     };

@@ -133,13 +133,14 @@
       },
       _teardown: function( options ) {
 
+        var target = document.getElementById( options.target );
         // removes word span from generated container
         options.word.parentNode && options._container.removeChild( options.word );
 
         // if no more word spans exist in container, remove container
         container[ options.target ] &&
           !container[ options.target ].childElementCount &&
-          document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( container[ options.target ] ) &&
+          target && target.removeChild( container[ options.target ] ) &&
           delete container[ options.target ];
       }
   });
