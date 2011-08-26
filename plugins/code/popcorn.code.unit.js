@@ -63,7 +63,7 @@ test('Popcorn Code Plugin', function () {
       codeDiv.innerHTML += '] Test 3 - onEnd';
       ok(true, 'Test 3 onEnd was run.');
       plus();
-      ok(frames > 100, 'Test 3 onFrames was run.');
+      ok(frames > 1, 'Test 3 onFrames was run.');
       plus();
       popped.pause();
     }
