@@ -118,7 +118,7 @@ test("Popcorn Subtitle Plugin", function () {
 
   popped.exec( 8, function() {
     popped.pause();
-    popped2.currentTime( 8 );
+    popped2.currentTime( 8 ).play();
   });
 
   popped2.exec( 8, function() {
