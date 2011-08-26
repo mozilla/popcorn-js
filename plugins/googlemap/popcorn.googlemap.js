@@ -208,10 +208,10 @@ var googleCallback;
                          ( current_time <= ( waypoint.interval * ( i + 2 ) ) / 1000 || 
                            current_time >= waypoint.interval * ( m ) / 1000 ) ) {
 
-                        sView3.setPosition( new google.maps.LatLng( rM[ i ].position.lat, rM[ i ].position.lng ) );
+                        sView3.setPosition( new google.maps.LatLng( waypoint.position.lat, waypoint.position.lng ) );
 
                         sView3.setPov({
-                          heading: waypoint.pov.heading || computeHeading( rM[ i ], rM[ i + 1 ] ) || 0,
+                          heading: waypoint.pov.heading || computeHeading( waypoint, rM[ i + 1 ] ) || 0,
                           zoom: waypoint.pov.zoom || 0,
                           pitch: waypoint.pov.pitch || 0
                         });
