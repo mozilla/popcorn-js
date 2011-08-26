@@ -197,7 +197,7 @@ var googleCallback;
                   var current_time = that.media.currentTime;
     
                   //  Checks whether this is a generated route or not
-                  if( typeof options.tween === "object" ) {
+                  if ( typeof options.tween === "object" ) {
 
                     for ( var i = 0, m = rM.length; i < m; i++ ) {
 
