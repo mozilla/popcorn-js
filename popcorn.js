@@ -1524,56 +1524,120 @@
     // HH:MM:SS;FF
     // Hours and minutes are optional. They default to 0
     toSeconds: function( timeStr, framerate ) {
-        // Hours and minutes are optional
-        // Seconds must be specified
-        // Seconds can be followed by milliseconds OR by the frame information
-        var validTimeFormat = /^([0-9]+:){0,2}[0-9]+([.;][0-9]+)?$/,
-            errorMessage = "Invalid time format",
-            digitPairs, lastIndex, lastPair, firstPair,
-            frameInfo, frameTime;
+      // Hours and minutes are optional
+      // Seconds must be specified
+      // Seconds can be followed by milliseconds OR by the frame information
+      var validTimeFormat = /^([0-9]+:){0,2}[0-9]+([.;][0-9]+)?$/,
+          errorMessage = "Invalid time format",
+          digitPairs, lastIndex, lastPair, firstPair,
+          frameInfo, frameTime;
 
-        if ( typeof timeStr === "number" ) {
-          return timeStr;
+      if ( typeof timeStr === "number" ) {
+        return timeStr;
+      }
+
+      if ( typeof timeStr === "string" &&
+            !validTimeFormat.test( timeStr ) ) {
+        Popcorn.error( errorMessage );
+      }
+
+      digitPairs = timeStr.split( ":" );
+      lastIndex = digitPairs.length - 1;
+      lastPair = digitPairs[ lastIndex ];
+
+      // Fix last element:
+      if ( lastPair.indexOf( ";" ) > -1 ) {
+
+        frameInfo = lastPair.split( ";" );
+        frameTime = 0;
+
+        if ( framerate && ( typeof framerate === "number" ) ) {
+          frameTime = parseFloat( frameInfo[ 1 ], 10 ) / framerate;
         }
 
-        if ( typeof timeStr === "string" &&
-              !validTimeFormat.test( timeStr ) ) {
-          Popcorn.error( errorMessage );
-        }
+        digitPairs[ lastIndex ] = parseInt( frameInfo[ 0 ], 10 ) + frameTime;
+      }
 
-        digitPairs = timeStr.split( ":" );
-        lastIndex = digitPairs.length - 1;
-        lastPair = digitPairs[ lastIndex ];
+      firstPair = digitPairs[ 0 ];
 
-        // Fix last element:
-        if ( lastPair.indexOf( ";" ) > -1 ) {
+      return {
 
-          frameInfo = lastPair.split( ";" );
-          frameTime = 0;
+        1: parseFloat( firstPair, 10 ),
 
-          if ( framerate && ( typeof framerate === "number" ) ) {
-            frameTime = parseFloat( frameInfo[ 1 ], 10 ) / framerate;
-          }
+        2: ( parseInt( firstPair, 10 ) * 60 ) +
+              parseFloat( digitPairs[ 1 ], 10 ),
 
-          digitPairs[ lastIndex ] = parseInt( frameInfo[ 0 ], 10 ) + frameTime;
-        }
+        3: ( parseInt( firstPair, 10 ) * 3600 ) +
+            ( parseInt( digitPairs[ 1 ], 10 ) * 60 ) +
+              parseFloat( digitPairs[ 2 ], 10 )
 
-        firstPair = digitPairs[ 0 ];
-
-        return {
-
-          1: parseFloat( firstPair, 10 ),
-
-          2: ( parseInt( firstPair, 10 ) * 60 ) +
-                parseFloat( digitPairs[ 1 ], 10 ),
-
-          3: ( parseInt( firstPair, 10 ) * 3600 ) +
-              ( parseInt( digitPairs[ 1 ], 10 ) * 60 ) +
-                parseFloat( digitPairs[ 2 ], 10 )
-
-        }[ digitPairs.length || 1 ];
+      }[ digitPairs.length || 1 ];
     }
   };
+
+
+  // Initialize locale data
+  // Based on http://en.wikipedia.org/wiki/Language_localisation#Language_tags_and_codes
+  function initLocale( arg ) {
+
+    var locale = typeof arg === "string" ? arg : [ arg.language, arg.region ].join( "-" ),
+        parts = locale.split( "-" );
+
+    // Setup locale data table
+    return {
+      iso6391: locale,
+      language: parts[ 0 ] || "",
+      region: parts[ 1 ] || ""
+    };
+  }
+
+  // Declare locale data table
+  var localeData = initLocale( global.navigator.language );
+
+  Popcorn.locale = {
+
+    // Popcorn.locale.get()
+    // returns reference to privately
+    // defined localeData
+    get: function() {
+      return localeData;
+    },
+
+    // Popcorn.locale.set( string|object );
+    set: function( arg ) {
+
+      localeData = initLocale( arg );
+
+      Popcorn.locale.broadcast();
+
+      return localeData;
+    },
+
+    // Popcorn.locale.broadcast( type )
+    // Sends events to all popcorn media instances that are
+    // listening for locale events
+    broadcast: function( type ) {
+
+      var instances = Popcorn.instances,
+          length = instances.length,
+          idx = 0,
+          instance;
+
+      type = type || "locale:changed";
+
+      // Iterate all current instances
+      for ( ; idx < length; idx++ ) {
+        instance = instances[ idx ];
+
+        // For those instances with locale event listeners,
+        // trigger a locale change event
+        if ( type in instance.data.events  ) {
+          instance.trigger( type );
+        }
+      }
+    }
+  };
+
 
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
