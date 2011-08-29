@@ -113,7 +113,9 @@ var wikiCallback;
         // get the article text and remove any special characters
         _text = data.parse.text[ "*" ].substr( data.parse.text[ "*" ].indexOf( "<p>" ) );
         _text = _text.replace( /((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "" );
-        options._desc.innerHTML = _text.substr( 0,  options.numberofwords ) + " ...";
+        
+        _text = _text.split( " " );
+        options._desc.innerHTML = ( _text.slice( 0, ( _text.length >= options.numberofwords ? options.numberofwords : _text.length ) ).join (" ") + " ..." ) ;
         
         options._fired = true;
       };
@@ -121,8 +123,8 @@ var wikiCallback;
       if ( options.src ) {
         Popcorn.getScript( "http://" + options.lang + ".wikipedia.org/w/api.php?action=parse&props=text&page=" + 
           options.src.slice( options.src.lastIndexOf("/")+1)  + "&format=json&callback=wikiCallback" + _guid);
-      } else {
-        throw ( "Wikipedia plugin needs a 'src'" );
+      } else if ( Popcorn.plugin.debug ) {
+        throw new Error( "Wikipedia plugin needs a 'src'" );
       }
 
     },

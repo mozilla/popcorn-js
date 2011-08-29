@@ -5,15 +5,15 @@
   <link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
   <script src="jquery.js"></script>
 
-  
+
   <script src="qunit/qunit.js"></script>
-  
-  <!-- 
-    do not move - this must be called immediately prior to 
+
+  <!--
+    do not move - this must be called immediately prior to
     popcorn-api-draft.js
   -->
   <script src="popcorn.unit.setup.js"></script>
-  
+
   <script src="../popcorn.js"></script>
   <script src="popcorn.unit.js"></script>
 </head>
@@ -30,31 +30,34 @@
   <h2 id="qunit-userAgent"></h2>
   <ol id="qunit-tests"></ol>
   <div id="qunit-fixture">
-    
-    
 
-  
-  
+
+
+
+
   </div>
-  
+
   <video id='video'
-    style="display:;width:300px" 
-    controls 
-    poster="poster.png"> 
+    style="display:;width:300px"
+    controls
+    preload="auto">
 
     <source id='mp4'
       src="trailer.mp4"
-      type='video/mp4; codecs="avc1, mp4a"'> 
+      type='video/mp4; codecs="avc1, mp4a"'>
 
     <source id='ogv'
       src="trailer.ogv"
-      type='video/ogg; codecs="theora, vorbis"'> 
+      type='video/ogg; codecs="theora, vorbis"'>
 
-    <p>Your user agent does not support the HTML5 Video element.</p> 
+    <p>Your user agent does not support the HTML5 Video element.</p>
 
   </video>
 
-  <audio id='audio' src="italia.ogg" data-timeline-sources="data/parserData.json" controls> 
+<<<<<<< HEAD
+  <audio id='audio' data-timeline-sources="data/parserData.json" controls>
+    <source src="italia.mp4" type='audio/mp4; codecs="mp4a.40.2"'>
+    <source src="italia.ogg" type='audio/ogg; codecs="vorbis"'>
   </audio>
 
 
@@ -63,7 +66,7 @@
   <!-- Position Tests Adapted From jQuery offsets/dimensions Tests -->
   <style type="text/css" media="screen">
     #position-tests { display:none;margin:0; position: fixed;top:0px;left:0px;  }
-    
+
     div.absolute { position: absolute; margin: 0px; width: 100px; height: 100px; background: #fff; }
     #absolute-1 { top: 0; left: 0; }
     #absolute-1-1 { top: 1px; left: 1px; }
@@ -78,7 +81,7 @@
     #fixed-2 { top: 20px; left: 20px; }
 
     div.static { position: static; top: 0; left: 0; width: 100px; height: 100px; background: #fff; overflow: hidden; }
-    #static-2 { top: 20px; left: 20px; }    
+    #static-2 { top: 20px; left: 20px; }
 
   </style>
 
@@ -110,6 +113,6 @@
 
   </div>
 
-  
+
 </body>
 </html>

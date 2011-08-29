@@ -101,21 +101,21 @@
   *   src
   *   startOffsetTime
   */
-  
+
   // Trackers
   var timeupdateInterval = 33,
       timeCheckInterval = 0.75,
       abs = Math.abs,
       registry = {};
-  
+
   // base object for DOM-related behaviour like events
   var EventManager = function ( owner ) {
     var evts = {};
-    
+
     function makeHandler( evtName ) {
       if ( !evts[evtName] ) {
         evts[evtName] = [];
-        
+
         // Create a wrapper function to all registered listeners
         this["on"+evtName] = function( args ) {
           Popcorn.forEach( evts[evtName], function( fn ) {
@@ -126,25 +126,25 @@
         };
       }
     }
-    
+
     return {
       addEventListener: function( evtName, fn, doFire ) {
         evtName = evtName.toLowerCase();
-        
+
         makeHandler.call( this, evtName );
         evts[evtName].push( fn );
-        
+
         if ( doFire ) {
           dispatchEvent( evtName );
         }
-        
+
         return fn;
       },
       // Add many listeners for a single event
       // Takes an event name and array of functions
       addEventListeners: function( evtName, events ) {
         evtName = evtName.toLowerCase();
-        
+
         makeHandler.call( this, evtName );
         evts[evtName] = evts[evtName].concat( events );
       },
@@ -152,7 +152,7 @@
         var evtArray = this.getEventListeners( evtName ),
             i,
             l;
-        
+
         // Find and remove from events array
         for ( i = 0, l = evtArray.length; i < l; i++) {
           if ( evtArray[i] === fn ) {
@@ -169,7 +169,7 @@
           return evts;
         }
       },
-      dispatchEvent: function( evt, args ) {        
+      dispatchEvent: function( evt, args ) {
         // If event object was passed in, toString will yield event type as string (timeupdate)
         // If a string, toString() will return the string itself (timeupdate)
         evt = "on"+evt.toString().toLowerCase();
@@ -177,16 +177,16 @@
       }
     };
   };
-      
+
   Popcorn.vimeo = function( mediaId, list, options ) {
     return new Popcorn.vimeo.init( mediaId, list, options );
   };
-  
+
   Popcorn.vimeo.onLoad = function( playerId ) {
     var player = registry[ playerId ];
-    
+
     player.swfObj = document.getElementById( playerId );
-    
+
     // For calculating position relative to video (like subtitles)
     player.offsetWidth = player.swfObj.offsetWidth;
     player.offsetHeight = player.swfObj.offsetHeight;
@@ -196,15 +196,15 @@
 
     player.dispatchEvent( "load" );
   };
-  
+
   Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" );
-  
+
   // A constructor, but we need to wrap it to allow for "static" functions
   Popcorn.vimeo.init = (function() {
     var rPlayerUri = /^http:\/\/player\.vimeo\.com\/video\/[\d]+/i,
         rWebUrl = /vimeo\.com\/[\d]+/,
         hasAPILoaded = false;
-    
+
     // Extract the numeric video id from container uri: 'http://player.vimeo.com/video/11127501' or 'http://player.vimeo.com/video/4282282'
     // Expect id to be a valid 32/64-bit unsigned integer
     // Returns string, empty string if could not match
@@ -212,11 +212,11 @@
       if ( !uri ) {
         return;
       }
-      
+
       var matches = uri.match( rPlayerUri );
       return matches ? matches[0].substr(30) : "";
     }
-    
+
     // Extract the numeric video id from url: 'http://vimeo.com/11127501' or simply 'vimeo.com/4282282'
     // Ignores protocol and subdomain, but one would expecct it to be http://www.vimeo.com/#######
     // Expect id to be a valid 32/64-bit unsigned integer
@@ -225,11 +225,11 @@
       if ( !url ) {
         return;
       }
-      
+
       var matches = url.match( rWebUrl );
       return matches ? matches[0].substr(10) : "";
     }
-      
+
     function makeSwf( self, vidId, containerId ) {
       if ( !window.swfobject ) {
         setTimeout( function() {
@@ -237,11 +237,11 @@
         }, 1);
         return;
       }
-      
+
       var params,
           flashvars,
           attributes = {};
-          
+
       flashvars = {
         clip_id: vidId,
         show_portrait: 1,
@@ -260,10 +260,10 @@
         // This is so we can overlay html ontop o fFlash
         wmode: 'transparent'
       };
-      
+
       swfobject.embedSWF( "http://vimeo.com/moogaloop.swf", containerId, self.offsetWidth, self.offsetHeight, "9.0.0", "expressInstall.swf", flashvars, params, attributes );
     }
-    
+
     // If container id is not supplied, assumed to be same as player id
     var ctor = function ( containerId, videoUrl, options ) {
       if ( !containerId ) {
@@ -271,7 +271,7 @@
       } else if ( /file/.test( location.protocol ) ) {
         throw "Must run from a web server!";
       }
-      
+
       var vidId,
           that = this,
           tmp;
@@ -280,13 +280,13 @@
       this._container.id = containerId + "object";
       this._target = document.getElementById( containerId );
       this._target.appendChild( this._container );
-      
+
       options = options || {};
 
       options.css && Popcorn.extend( this._target.style, options.css );
-      
-      this.addEventFn;
-      this.evtHolder;
+
+      this.addEventFn = null;
+      this.evtHolder = null;
       this.paused = true;
       this.duration = Number.MAX_VALUE;
       this.ended = 0;
@@ -296,11 +296,12 @@
       this.initialTime = 0;
       this.played = 0;
       this.readyState = 0;
-      
+      this.parentNode = this._target.parentNode;
+
       this.previousCurrentTime = this.currentTime;
       this.previousVolume = this.volume;
       this.evtHolder = new EventManager( this );
-      
+
       // For calculating position relative to video (like subtitles)
       this.width = this._target.style.width || "504px";
       this.height = this._target.style.height || "340px";
@@ -315,7 +316,7 @@
         this.offsetWidth = this._target.offsetWidth;
         this._target.style.width = tmp;
       }
-      
+
       if ( !/[\d]%/.test( this.height ) ) {
         this.offsetHeight = parseInt( this.height, 10 );
         this._target.style.height = this.height + "px";
@@ -326,48 +327,48 @@
         this.offsetHeight = this._target.offsetHeight;
         this._target.style.height = tmp;
       }
-      
+
       this.offsetLeft = 0;
       this.offsetTop = 0;
-      
+
       // Try and get a video id from a vimeo site url
       // Try either from ctor param or from iframe itself
       vidId = extractIdFromUrl( videoUrl ) || extractIdFromUri( videoUrl );
-      
+
       if ( !vidId ) {
         throw "No video id";
       }
-      
+
       registry[ this._container.id ] = this;
-      
+
       makeSwf( this, vidId, this._container.id );
-      
+
       // Set up listeners to internally track state as needed
       this.addEventListener( "load", function() {
         var hasLoaded = false;
-        
+
         that.duration = that.swfObj.api_getDuration();
         that.evtHolder.dispatchEvent( "durationchange" );
         that.evtHolder.dispatchEvent( "loadedmetadata" );
-        
+
         // Chain events and calls together so that this.currentTime reflects the current time of the video
         // Done by Getting the Current Time while the video plays
         that.addEventListener( "timeupdate", function() {
           that.currentTime = that.swfObj.api_getCurrentTime();
         });
-        
+
         // Add pause listener to keep track of playing state
-        
+
         that.addEventListener( "pause", function() {
           that.paused = true;
         });
-        
+
         // Add play listener to keep track of playing state
         that.addEventListener( "playing", function() {
           that.paused = false;
           that.ended = 0;
         });
-        
+
         // Add ended listener to keep track of playing state
         that.addEventListener( "ended", function() {
           if ( that.loop !== "loop" ) {
@@ -375,7 +376,7 @@
             that.ended = 1;
           }
         });
-        
+
         // Add progress listener to keep track of ready state
         that.addEventListener( "progress", function( data ) {
           if ( !hasLoaded ) {
@@ -383,7 +384,7 @@
             that.readyState = 3;
             that.evtHolder.dispatchEvent( "readystatechange" );
           }
-          
+
           // Check if fully loaded
           if ( data.percent === 100 ) {
             that.readyState = 4;
@@ -395,9 +396,9 @@
     };
     return ctor;
   })();
-  
+
   Popcorn.vimeo.init.prototype = Popcorn.vimeo.prototype;
-  
+
   // Sequence object prototype
   Popcorn.extend( Popcorn.vimeo.prototype, {
     // Do everything as functions instead of get/set
@@ -405,7 +406,7 @@
       if ( !val ) {
         return;
       }
-      
+
       this.loop = val;
       var isLoop = val === "loop" ? 1 : 0;
       // HTML convention says to loop if value is 'loop'
@@ -416,16 +417,16 @@
       if ( !val && val !== 0 ) {
         return;
       }
-      
+
       // Normalize in case outside range of expected values
       if ( val < 0 ) {
         val = -val;
       }
-      
+
       if ( val > 1 ) {
         val %= 1;
       }
-      
+
       // HTML video expects to be 0.0 -> 1.0, Vimeo expects 0-100
       this.volume = this.previousVolume = val;
       this.swfObj.api_setVolume( val*100 );
@@ -436,11 +437,11 @@
       if ( !time && time !== 0 ) {
         return;
       }
-      
+
       this.currentTime = this.previousCurrentTime = time;
       this.ended = time >= this.duration;
       this.swfObj.api_seekTo( time );
-      
+
       // Fire events for seeking and time change
       this.evtHolder.dispatchEvent( "seeked" );
       this.evtHolder.dispatchEvent( "timeupdate" );
@@ -452,13 +453,13 @@
         this.addEventListener( "load", this.play );
         return;
       }
-      
+
       if ( !this.played ) {
         this.played = 1;
         this.startTimeUpdater();
         this.evtHolder.dispatchEvent( "loadstart" );
       }
-      
+
       this.evtHolder.dispatchEvent( "play" );
       this.swfObj.api_play();
     },
@@ -469,7 +470,7 @@
         this.addEventListener( "load", this.pause );
         return;
       }
-      
+
       this.swfObj.api_pause();
     },
     // Toggle video muting
@@ -480,10 +481,10 @@
         this.addEventListener( "load", this.mute );
         return;
       }
-      
+
       if ( !this.muted() ) {
         this.oldVol = this.volume;
-        
+
         if ( this.paused ) {
           this.setVolume( 0 );
         } else {
@@ -507,7 +508,7 @@
         this.addEventListener( "load", this.load );
         return;
       }
-      
+
       this.play();
       this.pause();
     },
@@ -517,9 +518,9 @@
         this.addEventListener( "load", this.unload );
         return;
       }
-      
+
       this.pause();
-      
+
       this.swfObj.api_unload();
       this.evtHolder.dispatchEvent( "abort" );
       this.evtHolder.dispatchEvent( "emptied" );
@@ -529,10 +530,10 @@
     addEventListener: function( evt, fn ) {
       var playerEvt,
           that = this;
-      
+
       // In case event object is passed in
       evt = evt.type || evt.toLowerCase();
-      
+
       // If it's an HTML media event supported by player, map
       if ( evt === "seeked" ) {
         playerEvt = "onSeek";
@@ -548,11 +549,11 @@
         // Direct mapping, CamelCase the event name as vimeo API expects
         playerEvt = "on"+evt[0].toUpperCase() + evt.substr(1);
       }
-      
+
       // Vimeo only stores 1 callback per event
       // Have vimeo call internal collection of callbacks
       this.evtHolder.addEventListener( evt, fn, false );
-      
+
       // Link manual event structure with Vimeo's if not already
       if( playerEvt && this.evtHolder.getEventListeners( evt ).length === 1 ) {
         // Setup global functions on Popcorn.vimeo to sync player events to an internal collection
@@ -560,7 +561,7 @@
         if ( playerEvt === "onSeek" || playerEvt === "onProgress" || playerEvt === "onLoading" ) {
           Popcorn.vimeo[playerEvt] = function( arg1, arg2 ) {
             var player = registry[arg2];
-            
+
             player.evtHolder.dispatchEvent( evt, arg1 );
           };
         } else {
@@ -569,7 +570,7 @@
             player.evtHolder.dispatchEvent( evt );
           };
         }
-        
+
         this.swfObj.api_addEventListener( playerEvt, "Popcorn.vimeo."+playerEvt );
       }
     },
@@ -585,7 +586,7 @@
     startTimeUpdater: function() {
       var self = this,
           seeked = 0;
-      
+
       if ( abs( this.currentTime - this.previousCurrentTime ) > timeCheckInterval ) {
         // Has programatically set the currentTime
         this.setCurrentTime( this.currentTime );
@@ -593,15 +594,15 @@
       } else {
         this.previousCurrentTime = this.currentTime;
       }
-      
+
       if ( this.volume !== this.previousVolume ) {
         this.setVolume( this.volume );
       }
-      
+
       if ( !self.paused || seeked ) {
         this.dispatchEvent( 'timeupdate' );
       }
-      
+
       if( !self.ended ) {
         setTimeout( function() {
           self.startTimeUpdater.call(self);

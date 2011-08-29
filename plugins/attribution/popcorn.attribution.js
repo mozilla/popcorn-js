@@ -42,25 +42,7 @@
     target;
     
     return {
-      manifest: {
-        about:{
-          name: "Popcorn Attribution Plugin",
-          version: "0.2",
-          author: "@rwaldron",
-          website: "github.com/rwldrn"
-        },
-        options:{
-          start: { elem:"input", type:"text", label:"In" },
-          end: { elem:"input", type:"text", label:"Out" },
-          nameofwork: { elem:"input", type:"text", label:"Name of Work" },
-          nameofworkurl: { elem:"input", type:"text", label:"Url of Work" },
-          copyrightholder: { elem:"input", type:"text", label:"Copyright Holder" },
-          copyrightholderurl: { elem:"input", type:"text", label:"Copyright Holder Url" },
-          license: { elem:"input", type:"text", label:"License type" },
-          licenseurl: { elem:"input", type:"text", label:"License URL" },
-          target: "attribution-container"
-        }
-      },
+    
       _setup: function( options ) {
 
         var attrib = "", 
@@ -120,6 +102,9 @@
         
         options._container.innerHTML  = attrib;
 
+        if ( !target && Popcorn.plugin.debug ) {
+          throw new Error( "target container doesn't exist" );
+        }
         target && target.appendChild( options._container );
       },
       /**
@@ -148,5 +133,24 @@
         target && target.removeChild( options._container );
       }
     };
-  })());
+  })(),
+  {
+    about:{
+      name: "Popcorn Attribution Plugin",
+      version: "0.2",
+      author: "@rwaldron",
+      website: "github.com/rwldrn"
+    },
+    options:{
+      start: { elem:"input", type:"text", label:"In" },
+      end: { elem:"input", type:"text", label:"Out" },
+      nameofwork: { elem:"input", type:"text", label:"Name of Work" },
+      nameofworkurl: { elem:"input", type:"text", label:"Url of Work" },
+      copyrightholder: { elem:"input", type:"text", label:"Copyright Holder" },
+      copyrightholderurl: { elem:"input", type:"text", label:"Copyright Holder Url" },
+      license: { elem:"input", type:"text", label:"License type" },
+      licenseurl: { elem:"input", type:"text", label:"License URL" },
+      target: "attribution-container"
+    } 
+  });
 })( Popcorn );

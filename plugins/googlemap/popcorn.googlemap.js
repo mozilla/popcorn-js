@@ -76,7 +76,8 @@ var googleCallback;
    *
    */
   Popcorn.plugin("googlemap", function (options) {
-    var newdiv, map, location;
+    var newdiv, map, location,
+        target = document.getElementById( options.target );
 
     // if this is the firest time running the plugins
     // call the function that gets the sctipt
@@ -93,11 +94,10 @@ var googleCallback;
     i++;
 
     // ensure the target container the user chose exists
-    if (document.getElementById(options.target)) {
-      document.getElementById(options.target).appendChild(newdiv);
-    } else {
-      throw ("map target container doesn't exist");
+    if ( !target && Popcorn.plugin.debug ) {
+      throw new Error( "target container doesn't exist" );
     }
+    target && target.appendChild( newdiv );
 
     // ensure that google maps and its functions are loaded
     // before setting up the map parameters
@@ -191,25 +191,29 @@ var googleCallback;
               //  Function to handle tweening using a set timeout
               var tween = function( rM, t ) {
 
+                var computeHeading = google.maps.geometry.spherical.computeHeading;
                 setTimeout(function() {
+
+                  var current_time = that.media.currentTime;
     
                   //  Checks whether this is a generated route or not
+                  if ( typeof options.tween === "object" ) {
 
-                  if( typeof options.tween === "object" ) {
+                    for ( var i = 0, m = rM.length; i < m; i++ ) {
 
-                    for ( var i = 0; i < rM.length; i++ ) {
+                      var waypoint = rM[ i ];
 
                       //  Checks if this position along the tween should be displayed or not
-                      if ( that.media.currentTime >= ( rM[ i ].interval * ( i + 1 ) ) / 1000 &&
-                         ( that.media.currentTime <= ( rM[ i ].interval * ( i + 2 ) ) / 1000 || 
-                           that.media.currentTime >= rM[ i ].interval * ( rM.length ) / 1000 ) ) {
+                      if ( current_time >= ( waypoint.interval * ( i + 1 ) ) / 1000 &&
+                         ( current_time <= ( waypoint.interval * ( i + 2 ) ) / 1000 ||
+                           current_time >= waypoint.interval * ( m ) / 1000 ) ) {
 
-                        sView3.setPosition( new google.maps.LatLng( rM[ i ].position.lat, rM[ i ].position.lng ) );
+                        sView3.setPosition( new google.maps.LatLng( waypoint.position.lat, waypoint.position.lng ) );
 
                         sView3.setPov({
-                          heading: rM[ i ].pov.heading || 0,
-                          zoom: rM[ i ].pov.zoom || 0,
-                          pitch: rM[ i ].pov.pitch || 0
+                          heading: waypoint.pov.heading || computeHeading( waypoint, rM[ i + 1 ] ) || 0,
+                          zoom: waypoint.pov.zoom || 0,
+                          pitch: waypoint.pov.pitch || 0
                         });
                       }
                     }
@@ -218,19 +222,20 @@ var googleCallback;
                     tween( rM, rM[ 0 ].interval );
                   } else {
 
-                    for ( var k = 0; k < rM.length; k++ ) {
+                    for ( var k = 0, l = rM.length; k < l; k++ ) {
 
-                      if( that.media.currentTime >= (options.interval * ( k + 1 ) ) / 1000 &&
-                        ( that.media.currentTime <= (options.interval * ( k + 2 ) ) / 1000 ||
-                          that.media.currentTime >= options.interval * ( rM.length ) / 1000 ) ) {
+                      var interval = options.interval;
 
-                        sView2.setPosition( checkpoints[ k ] );
+                      if( current_time >= (interval * ( k + 1 ) ) / 1000 &&
+                        ( current_time <= (interval * ( k + 2 ) ) / 1000 ||
+                          current_time >= interval * ( l ) / 1000 ) ) {
 
                         sView2.setPov({
-                          heading: options.heading || 0,
+                          heading: computeHeading( rM[ k ], rM[ k + 1 ] ) || 0,
                           zoom: options.zoom,
                           pitch: options.pitch || 0
                         }); 
+                        sView2.setPosition( checkpoints[ k ] );
                       }
                     }
 
@@ -277,8 +282,9 @@ var googleCallback;
                 var showSteps = function ( directionResult, that ) {
                 
                   //  Push new google map lat and lng values into an array from our list of lat and lng values
-                  for ( var j = 0; j < directionResult.routes[ 0 ].overview_path.length; j++ ) {
-                    checkpoints.push( new google.maps.LatLng( directionResult.routes[ 0 ].overview_path[ j ].lat(), directionResult.routes[ 0 ].overview_path[ j ].lng() ) );
+                  var routes = directionResult.routes[ 0 ].overview_path;
+                  for ( var j = 0, k = routes.length; j < k; j++ ) {
+                    checkpoints.push( new google.maps.LatLng( routes[ j ].lat(), routes[ j ].lng() ) );
                   }   
                   
                   //  Check to make sure the interval exists, if not, set to a default of 1000
@@ -291,7 +297,7 @@ var googleCallback;
                 //  Same as the above to stop streetview maps from overflowing into one another
                 var sView3 = sView;
 
-                for ( var i = 0; i < options.tween.length; i++ ) {
+                for ( var i = 0, l = options.tween.length; i < l; i++ ) {
                  
                   //  Make sure interval exists, if not, set to 1000
                   options.tween[ i ].interval = options.tween[ i ].interval || 1000;
@@ -321,8 +327,11 @@ var googleCallback;
         }
       },
       _teardown: function (options) {
+
+        var target = document.getElementById(options.target);
+
         // the map must be manually removed
-        document.getElementById(options.target).removeChild(newdiv);
+        target && target.removeChild(newdiv);
         newdiv = map = location = null;
       }
     };

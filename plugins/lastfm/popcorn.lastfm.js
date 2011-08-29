@@ -57,29 +57,19 @@
       
     
     return {
-      manifest: {
-        about:{
-          name:    "Popcorn LastFM Plugin",
-          version: "0.1",
-          author:  "Steven Weerdenburg",
-          website: "http://sweerdenburg.wordpress.com/"
-        },
-        options:{
-          start    : {elem:'input', type:'text', label:'In'},
-          end      : {elem:'input', type:'text', label:'Out'},
-          target   : 'lastfm-container',
-          artist   : {elem:'input', type:'text', label:'Artist'}
-        }
-      },
 
       _setup: function( options ) {
         options._container = document.createElement( 'div' );
         options._container.style.display = "none";
         options._container.innerHTML = "";
-        
-        options.artist = options.artist.toLowerCase();
+        options.artist = options.artist && options.artist.toLowerCase() || "";
 
-        document.getElementById( options.target ) && document.getElementById( options.target ).appendChild( options._container );
+        var target = document.getElementById( options.target );
+
+        if ( !target && Popcorn.plugin.debug ) {
+          throw new Error( "target container doesn't exist" );
+        }
+        target && target.appendChild( options._container );
         
         if(!_artists[options.artist]) {
 
@@ -118,6 +108,20 @@
         document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options._container );
       }
     };
-  })());
+  })(),
+  {
+    about:{
+      name:    "Popcorn LastFM Plugin",
+      version: "0.1",
+      author:  "Steven Weerdenburg",
+      website: "http://sweerdenburg.wordpress.com/"
+    },
+    options:{
+      start    : {elem:'input', type:'text', label:'In'},
+      end      : {elem:'input', type:'text', label:'Out'},
+      target   : 'lastfm-container',
+      artist   : {elem:'input', type:'text', label:'Artist'}
+    }
+  });
 
 })( Popcorn );

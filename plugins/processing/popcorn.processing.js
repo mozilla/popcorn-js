@@ -26,25 +26,6 @@
 
 (function ( Popcorn ) {
 
-  var toggle = function( on, options ) {
-        var instance = options.pjsInstance,
-            canvas = options.canvas;
-            
-        if ( canvas && options.isReady ) {
-          if ( on ) {
-            canvas.style.display = "inline";
-            !this.media.paused && instance.loop();
-          } else {
-            canvas.style.display = "none";
-            instance.noLoop();
-          }
-        } else {
-          setTimeout (function() {
-            toggle.call( this, on, options );
-          }, 10 );
-        }
-      };
-
   Popcorn.plugin( "processing" , function ( options ) {
 
     var init = function( context ) {
@@ -59,8 +40,8 @@
 
       options.parentTarget = document.getElementById( options.target );
       
-      if ( !options.parentTarget ) {
-        throw ( "target container doesn't exist" );
+      if ( !options.parentTarget && Popcorn.plugin.debug ) {
+        throw new Error( "target container doesn't exist" );
       }
       
       initProcessing = function() {
@@ -77,20 +58,24 @@
           });
         };
         
-        if ( options.codeReady && window.Processing ) {
+        if ( window.Processing ) {
+
           options.pjsInstance = new Processing( options.canvas, options.processingCode );
           options.pjsInstance.noLoop();
+          options.seeking = false;
           context.listen( "seeking", function() {
-            if ( options.canvas.style.display === "inline" && options.noPause ) {
-              options.pjsInstance.loop();
-            }
+             options._running && options.canvas.style.display === "inline" && options.noPause && options.pjsInstance.loop();
           });
+
+          options._running && !context.media.paused && options.pjsInstance.loop();
           
           options.noPause = options.noPause || false;
-          !options.noPause && addListeners();          
-          options.isReady = true;
+          !options.noPause && addListeners(); 
+          options.codeReady = true;         
         } else {
-          setTimeout ( initProcessing, 10 );
+          setTimeout ( function() {
+            initProcessing.call( this );
+            }, 10 );
         }
       };
       
@@ -100,36 +85,28 @@
       canvas.style.display = "none";   
       options.canvas = canvas;
       
-      options.parentTarget.appendChild( options.canvas );
-      
-      Popcorn.xhr({
-        url: options.sketch,
-        dataType: "text",
-        success: function( responseCode ) {
-          options.codeReady = true;
-          options.processingCode = responseCode;
-          initProcessing();
+      options.parentTarget && options.parentTarget.appendChild( options.canvas );
+
+      if ( options.sketch ) {
+
+        Popcorn.xhr({
+          url: options.sketch,
+          dataType: "text",
+          success: function( responseCode ) {
+            options.codeReady = true;
+            options.processingCode = responseCode;
+            initProcessing();
+          }
+        });
+      } else {
+
+        if ( Popcorn.plugin.debug ) {
+          throw new Error( "options.sketch is undefined" );
         }
-      });
+      }
     };
 
     return {
-
-      manifest: {
-        about: {
-          name: "Popcorn Processing Plugin",
-          version: "0.1",
-          author: "Christopher De Cairos, Benjamin Chalovich",
-          website: "cadecairos.blogspot.com, ben1amin.wordpress.org"
-        },
-        options: {
-          start :   { elem: "input", type: "text", label: "In" },
-          end :     { elem: "input", type: "text", label: "Out" },
-          target :  { elem: "input", type: "text", label: "Target" },
-          sketch :  { elem: "input", type: "text", label: "Sketch" },
-          noPause : { elem: "select", options: [ "TRUE", "FALSE" ], label: "No Loop" }
-        }
-      },
 
       _setup: function( options ) {
         
@@ -139,11 +116,15 @@
       },
 
       start: function( event, options ) {
-        toggle.call( this, true, options );
+
+        options.codeReady && !this.media.paused && options.pjsInstance.loop();
+        options.canvas.style.display = "inline";
       },
 
       end: function( event, options ) {
-        toggle.call( this, false, options );
+        
+        options.pjsInstance && options.pjsInstance.noLoop();
+        options.canvas.style.display = "none";
       },
       
       _teardown: function( options ) {
@@ -151,5 +132,20 @@
         options.parentTarget && options.parentTarget.removeChild( options.canvas );
       }
     };
+  },
+  {
+    about: {
+      name: "Popcorn Processing Plugin",
+      version: "0.1",
+      author: "Christopher De Cairos, Benjamin Chalovich",
+      website: "cadecairos.blogspot.com, ben1amin.wordpress.org"
+    },
+    options: {
+      start :   { elem: "input", type: "text", label: "In" },
+      end :     { elem: "input", type: "text", label: "Out" },
+      target :  { elem: "input", type: "text", label: "Target" },
+      sketch :  { elem: "input", type: "text", label: "Sketch" },
+      noPause : { elem: "select", options: [ "TRUE", "FALSE" ], label: "No Loop" }
+    }
   });
 }( Popcorn ));

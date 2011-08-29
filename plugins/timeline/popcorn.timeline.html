@@ -16,7 +16,7 @@
         title: "This is a title",
         text: "this is some interesting text that goes inside",
         innerHTML: "Click here for <a href='http://www.google.ca'>Google</a>" ,
-        direction: "down"
+        direction: "up"
       } )
       .timeline({
         start: 3, // seconds
@@ -24,7 +24,7 @@
         title: "double as interesting",
         text: "this is some interesting text that goes inside",
         innerHTML: "Maybe a button? <button onClick=\"window.location.href='http://www.google.com'\">Click Me</button>",
-        direction: "down"
+        direction: "up"
       } )
      .timeline({
         start: 7, // seconds
@@ -33,41 +33,33 @@
         title: "3x as interesting",
         text: "this is some interesting text that goes inside",
         innerHTML: "",
+        direction: "up"
+      } )
+      .timeline({
+        start: 1, // seconds
+        target: "timeline2",
+        title: "This is a title",
+        text: "this is some interesting text that goes inside",
+        innerHTML: "Click here for <a href='http://www.google.ca'>Google</a>" ,
+        direction: "down"
+      } )
+      .timeline({
+        start: 3, // seconds
+        target: "timeline2",
+        title: "double as interesting",
+        text: "this is some interesting text that goes inside",
+        innerHTML: "Maybe a button? <button onClick=\"window.location.href='http://www.google.com'\">Click Me</button>",
         direction: "down"
       } )
      .timeline({
-        start: 9, // seconds
-        target: "timeline",
-        title: "4x as interesting",
-        text: "this is some interesting text that goes inside",
-        innerHTML: "perhaps tables <table border='1'>" +
-                      "<tr>" +
-                        "<td>row 1, cell 1</td>" +
-                        "<td>row 1, cell 2</td>" +
-                      "</tr>" +
-                      "<tr>" +
-                        "<td>row 2, cell 1</td>" +
-                       " <td>row 2, cell 2</td>" +
-                      "</tr>" +
-                    "</table>",
-        direction: "down"
-      } )
-      .timeline({
-        start: 14, // seconds
-        target: "timeline",
-        title: "5x as interesting",
-        text: "this is some interesting text that goes inside",
-        innerHTML: "Click here for <a href='http://www.apple.com'>Apple</a>",
-        direction: "down"
-      } )
-      .timeline({
-        start: 18, // seconds
-        target: "timeline",
-        title: "6x as interesting",
+        start: 7, // seconds
+        end: 700,
+        target: "timeline2",
+        title: "3x as interesting",
         text: "this is some interesting text that goes inside",
         innerHTML: "",
         direction: "down"
-      } );
+      } )
     }, false);
   </script>
 </head>
@@ -93,7 +85,8 @@
     </video>
   </div>
   <div style="width:1000px">
-    <div id="timeline"></div>
+    <div id="timeline" style="float:left;width: 250px; height: 250px;"></div>
+    <div id="timeline2" style="float:left;width: 250px; height: 250px;"></div>
   </div>
 </body>
 </html>

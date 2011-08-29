@@ -1,7 +1,7 @@
 test( "Popcorn wordriver Plugin", function () {
   
   var popped = Popcorn( "#video" ),
-      expects = 16, 
+      expects = 17, 
       count = 0,
       firstTrack,
       secondTrack,
@@ -93,6 +93,18 @@ test( "Popcorn wordriver Plugin", function () {
     equals( wordriverdiv.childElementCount, 0, "wordriverdiv now has no inner element, even though one still exists, but was never called" );
     plus();
   });
+
+  // empty track events should be safe
+  popped.wordriver({});
+
+  // debug should log errors on empty track events
+  Popcorn.plugin.debug = true;
+  try {
+    popped.wordriver({});
+  } catch( e ) {
+    ok(true, 'empty event was caught by debug');
+    plus();
+  }
   
   popped.play();
 

@@ -47,24 +47,15 @@
   Popcorn.plugin( "tagthisperson" , ( function() {
     
     return {
-      manifest: {
-        about:{
-          name: "Popcorn tagthisperson Plugin",
-          version: "0.1",
-          author: "@annasob",
-          website: "annasob.wordpress.com"
-        },
-        options:{
-          start    : {elem:'input', type:'text', label:'In'},
-          end      : {elem:'input', type:'text', label:'Out'},
-          target   : 'tagthisperson-container',
-          person   : {elem:'input', type:'text', label:'Name'},
-          image    : {elem:'input', type:'text', label:'Image Src'},
-          href     : {elem:'input', type:'text', label:'URL'}   
-        }
-      },
+    
       _setup: function( options ) {
-        var exists = false;
+        var exists = false,
+            target = document.getElementById( options.target );
+
+        if ( !target && Popcorn.plugin.debug ) {
+          throw new Error( "target container doesn't exist" );
+        }
+
         // loop through the existing objects to ensure no duplicates
         // the idea here is to have one object per unique options.target
         for ( var i = 0; i < peopleArray.length; i++ ) {
@@ -104,6 +95,22 @@
         document.getElementById( options.target ).innerHTML = options._p.toString();
       }
    };
-  })());
+  })(),
+  {
+    about:{
+      name: "Popcorn tagthisperson Plugin",
+      version: "0.1",
+      author: "@annasob",
+      website: "annasob.wordpress.com"
+    },
+    options:{
+      start    : {elem:'input', type:'text', label:'In'},
+      end      : {elem:'input', type:'text', label:'Out'},
+      target   : 'tagthisperson-container',
+      person   : {elem:'input', type:'text', label:'Name'},
+      image    : {elem:'input', type:'text', label:'Image Src'},
+      href     : {elem:'input', type:'text', label:'URL'}   
+    }
+  });
 
 })( Popcorn );

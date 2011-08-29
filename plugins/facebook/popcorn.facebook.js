@@ -95,6 +95,9 @@
     },
     
     _setup: function( options ) {
+
+      var target = document.getElementById( options.target );
+
       // facebook script requires a div named fb-root
       if ( !document.getElementById( "fb-root" ) ) {
         var fbRoot = document.createElement( "div" );
@@ -188,9 +191,10 @@
 
       setOptions[ options.type ]();
 
-      if ( document.getElementById( options.target ) ) {
-        document.getElementById( options.target ).appendChild( options._container );
+      if ( !target && Popcorn.plugin.debug ) {
+        throw new Error( "flickr target container doesn't exist" );
       }
+      target && target.appendChild( options._container );
     },
     /**
     * @member facebook

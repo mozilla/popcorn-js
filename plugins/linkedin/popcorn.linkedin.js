@@ -10,17 +10,17 @@
    * Start is the time that you want this plug-in to execute
    * End is the time that you want this plug-in to stop executing
    * Target is the id of the document element that the plugin needs to be attached to, this target element must exist on the DOM
-   * Type is the name of the plugin, options are share, memberprofile, companyinsider, companyprofile, or recommendproduct  
+   * Type is the name of the plugin, options are share, memberprofile, companyinsider, companyprofile, or recommendproduct
    * Apikey is your own api key from obtained from https://www.linkedin.com/secure/developer
    * Url is the desired url to share via LinkedIn. Defaults to the current page if no url is specified
    * Counter is the position where the counter will be positioned. This is used if the type is "share" or "recommendproduct"
    *  The options are right and top (don't include this option if you do not want a counter)
-   * Format is the data format of the member and company profile plugins. The options are inlined, hover, and click. Defaults to inline 
+   * Format is the data format of the member and company profile plugins. The options are inlined, hover, and click. Defaults to inline
    * Companyid must be specified if the type is "companyprofile," "companyinsider," or "recommendproduct"
    * Productid must be specified if the type is "recommendproduct"
-   * 
+   *
    * @param {Object} options
-   * 
+   *
    * Example:
    * <script src="popcorn.linkedin.js"></script>
    * ...
@@ -47,11 +47,67 @@
         website: "dsventura.blogspot.com"
       },
       options: {
-        type: { 
+        type: {
           elem: "input",
           type: "text",
           label: "Type"
-         },
+        },
+        url: {
+          elem: "input",
+          type: "text",
+          label: "URL"
+        },
+        apikey: {
+          elem: "input",
+          type: "text",
+          label: "API Key"
+        },
+        counter: {
+          elem: "input",
+          type: "text",
+          label: "Counter"
+        },
+        memberid: {
+          elem:"input",
+          type:"text",
+          label:"Member ID"
+        },
+        format: {
+          elem:"input",
+          type:"text",
+          label:"Format"
+        },
+        companyid: {
+          elem:"input",
+          type:"text",
+          label:"Company ID"
+        },
+        modules: {
+          elem:"input",
+          type:"text",
+          label:"Modules"
+        },
+        productid: {
+          elem:"input",
+          type:"text",
+          label:"productid"
+        },
+        related: {
+          elem:"input",
+          type:"text",
+          label:"related"
+        },
+        start: {
+          elem:"input",
+          type:"text",
+          label:"In"
+        },
+        end: {
+          elem:"input",
+          type:"text",
+          label:"Out"
+        },
+
         target: "linkedin-container"
       }
     },
@@ -62,24 +118,26 @@
           script = document.createElement( "script" );
 
       Popcorn.getScript("http://platform.linkedin.com/in.js");
-      
+
       options._container = document.createElement( "div" );
       options._container.appendChild( script );
-      
+
       if ( apikey ) {
         script.innerHTML = "api_key: " + apikey;
       }
       
-      options.type = options.type.toLowerCase();
-      
+      options.type = options.type && options.type.toLowerCase() || "";
+
       // Replace the LinkedIn plugin's error message to something more helpful
       var errorMsg = function() {
-
         options._container = document.createElement( "p" );
         options._container.innerHTML = "Plugin requires a valid <a href='https://www.linkedin.com/secure/developer'>apikey</a>";
-        document.getElementById( options.target ).appendChild( options._container );
+        if ( !target && Popcorn.plugin.debug ) {
+          throw ( "target container doesn't exist" );
+        }
+        target && target.appendChild( options._container );
       };
-      
+
       var setOptions = (function ( options ) {
 
         return {
@@ -138,18 +196,19 @@
           }
         };
       })( options );
-      
+
       if ( !apikey ) {
         errorMsg();
       } else {
         setOptions[ options.type ] && setOptions[ options.type ]();
       }
-      
-      if ( document.getElementById( options.target ) ) {
-        document.getElementById( options.target ).appendChild( options._container );
-      }
 
-      target.style.display = "none";
+      if ( !target && Popcorn.plugin.debug ) {
+        throw new Error( "target container doesn't exist" );
+      }
+      target && target.appendChild( options._container );
+
+      options._container.style.display = "none";
     },
     /**
      * @member linkedin
@@ -158,16 +217,16 @@
      * options variable
      */
     start: function( event, options ) {
-      options._container.parentNode.style.display = "block";
+      options._container.style.display = "block";
     },
     /**
      * @member linkedin
      * The end function will be executed when the currentTime
      * of the video reaches the end time provided by the
      * options variable
-     */    
+     */
     end: function( event, options ) {
-      options._container.parentNode.style.display = "none";
+      options._container.style.display = "none";
     },
     _teardown: function( options ) {
       var tar = document.getElementById( options.target );

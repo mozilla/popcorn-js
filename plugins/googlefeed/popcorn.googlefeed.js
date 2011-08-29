@@ -83,6 +83,7 @@
     // create a new div and append it to the parent div so nothing
     // that already exists in the parent div gets overwritten
     var newdiv = document.createElement( "div" ),
+        target = document.getElementById( options.target ),
     initialize = function() {
       //ensure that the script has been loaded
       if ( !scriptLoaded ) {
@@ -111,7 +112,10 @@
     newdiv.style.height = "100%";
     i++;
 
-    document.getElementById( options.target ).appendChild( newdiv );
+    if ( !target && Popcorn.plugin.debug ) {
+      throw new Error( "target container doesn't exist" );
+    }
+    target && target.appendChild( newdiv );
 
     initialize();
     

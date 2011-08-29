@@ -79,6 +79,10 @@
 
       _setup: function( options ) {
 
+        if ( !document.getElementById( options.target ) && Popcorn.plugin.debug ) {
+          throw new Error( "target container doesn't exist" );
+        } 
+
         options._duration = options.end - options.start;
         options._container = container[ options.target ] || setupContainer( options.target );
 
@@ -110,9 +114,8 @@
         spanLocation = spanLocation % ( options._container.offsetWidth - options.word.offsetWidth );
         options.word.style.left = spanLocation + "px";
         spanLocation += options.word.offsetWidth + 10;
-
         options.word.style[ supports.transform ] = "translateY(" +
-          ( document.getElementById( options.target ).offsetHeight - options.word.offsetHeight ) + "px)";
+          ( options._container.offsetHeight - options.word.offsetHeight ) + "px)";
 
         options.word.style.opacity = 1;
 
@@ -130,13 +133,14 @@
       },
       _teardown: function( options ) {
 
+        var target = document.getElementById( options.target );
         // removes word span from generated container
         options.word.parentNode && options._container.removeChild( options.word );
 
         // if no more word spans exist in container, remove container
         container[ options.target ] &&
           !container[ options.target ].childElementCount &&
-          document.getElementById( options.target ).removeChild( container[ options.target ] ) &&
+          target && target.removeChild( container[ options.target ] ) &&
           delete container[ options.target ];
       }
   });
