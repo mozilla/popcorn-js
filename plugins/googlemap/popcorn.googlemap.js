@@ -190,7 +190,7 @@ var googleCallback;
   
               //  Function to handle tweening using a set timeout
               var tween = function( rM, t ) {
-                
+
                 var computeHeading = google.maps.geometry.spherical.computeHeading;
                 setTimeout(function() {
 
@@ -205,7 +205,7 @@ var googleCallback;
 
                       //  Checks if this position along the tween should be displayed or not
                       if ( current_time >= ( waypoint.interval * ( i + 1 ) ) / 1000 &&
-                         ( current_time <= ( waypoint.interval * ( i + 2 ) ) / 1000 || 
+                         ( current_time <= ( waypoint.interval * ( i + 2 ) ) / 1000 ||
                            current_time >= waypoint.interval * ( m ) / 1000 ) ) {
 
                         sView3.setPosition( new google.maps.LatLng( waypoint.position.lat, waypoint.position.lng ) );
@@ -281,7 +281,7 @@ var googleCallback;
 
                 var showSteps = function ( directionResult, that ) {
                 
-                  //  Push new google map lat and lng values into an array from our list of lat and lng values    
+                  //  Push new google map lat and lng values into an array from our list of lat and lng values
                   var routes = directionResult.routes[ 0 ].overview_path;
                   for ( var j = 0, k = routes.length; j < k; j++ ) {
                     checkpoints.push( new google.maps.LatLng( routes[ j ].lat(), routes[ j ].lng() ) );
