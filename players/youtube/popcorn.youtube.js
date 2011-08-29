@@ -198,6 +198,7 @@ var onYouTubePlayerReady;
     this._container.style.height = this._target.style.height = options.height || this._target.style.height || "350px";
     this._container.style.width  = this._target.style.width  = options.width || this._target.style.width  || "460px";
     this._target.appendChild( this._container );
+    this.parentNode = this._target.parentNode;
 
     this.offsetHeight = +this._target.offsetHeight;
     this.offsetWidth = +this._target.offsetWidth;

@@ -296,6 +296,7 @@
       this.initialTime = 0;
       this.played = 0;
       this.readyState = 0;
+      this.parentNode = this._target.parentNode;
 
       this.previousCurrentTime = this.currentTime;
       this.previousVolume = this.volume;
