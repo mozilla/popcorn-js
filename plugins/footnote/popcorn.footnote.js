@@ -43,40 +43,41 @@
           target: name + "-container"
         }
       },
-      _setup: function( options ) {
-        options._container = document.createElement( "div" );
-        options._container.style.display = "none";
-        options._container.innerHTML  = options.text;
+    _setup: function(options) {
 
-        var target = document.getElementById( options.target );
+      var target = document.getElementById( options.target );
 
-        target && target.appendChild( options._container );
-      },
-      /**
-       * @member footnote
-       * The start function will be executed when the currentTime
-       * of the video  reaches the start time provided by the
-       * options variable
-       */
-      start: function( event, options ) {
-        options._container.style.display = "inline";
-      },
-      /**
-       * @member footnote
-       * The end function will be executed when the currentTime
-       * of the video  reaches the end time provided by the
-       * options variable
-       */
-      end: function( event, options ) {
-        options._container.style.display = "none";
-      },
-      _teardown: function( options ) {
+      options._container = document.createElement( 'div' );
+      options._container.style.display = "none";
+      options._container.innerHTML  = options.text;
 
-        var target = document.getElementById( options.target );
-
-        target && target.removeChild( options._container );
+      if ( !target && Popcorn.plugin.debug ) {
+        throw new Error( "target container doesn't exist" );
       }
-    });
+      target && target.appendChild( options._container );
+    },
+    /**
+     * @member footnote 
+     * The start function will be executed when the currentTime 
+     * of the video  reaches the start time provided by the 
+     * options variable
+     */
+    start: function(event, options){
+      options._container.style.display = "inline";
+    },
+    /**
+     * @member footnote 
+     * The end function will be executed when the currentTime 
+     * of the video  reaches the end time provided by the 
+     * options variable
+     */
+    end: function(event, options){
+      options._container.style.display = "none";
+    },
+    _teardown: function( options ) {
+      document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options._container );
+    }
   });
+});
 
 })( Popcorn );

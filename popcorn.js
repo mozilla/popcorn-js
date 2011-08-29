@@ -1163,6 +1163,8 @@
     return plugin;
   };
 
+  Popcorn.plugin.debug = false;
+
   //  removePlugin( type ) removes all tracks of that from all instances of popcorn
   //  removePlugin( obj, type ) removes all tracks of type from obj, where obj is a single instance of popcorn
   Popcorn.removePlugin = function( obj, name ) {

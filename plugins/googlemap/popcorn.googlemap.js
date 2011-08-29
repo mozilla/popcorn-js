@@ -76,7 +76,8 @@ var googleCallback;
    *
    */
   Popcorn.plugin("googlemap", function (options) {
-    var newdiv, map, location;
+    var newdiv, map, location,
+        target = document.getElementById( options.target );
 
     // if this is the firest time running the plugins
     // call the function that gets the sctipt
@@ -93,11 +94,10 @@ var googleCallback;
     i++;
 
     // ensure the target container the user chose exists
-    if (document.getElementById(options.target)) {
-      document.getElementById(options.target).appendChild(newdiv);
-    } else {
-      throw ("map target container doesn't exist");
+    if ( !target && Popcorn.plugin.debug ) {
+      throw new Error( "target container doesn't exist" );
     }
+    target && target.appendChild( newdiv );
 
     // ensure that google maps and its functions are loaded
     // before setting up the map parameters
@@ -321,8 +321,11 @@ var googleCallback;
         }
       },
       _teardown: function (options) {
+
+        var target = document.getElementById(options.target);
+
         // the map must be manually removed
-        document.getElementById(options.target).removeChild(newdiv);
+        target && target.removeChild(newdiv);
         newdiv = map = location = null;
       }
     };

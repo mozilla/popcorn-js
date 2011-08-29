@@ -66,16 +66,19 @@
         }
       },
       _setup: function( options ) {
-        var img = document.createElement( "img" );
+        var img = document.createElement( "img" ),
+            target = document.getElementById( options.target );
 
         options.link = document.createElement( "a" );
         options.link.style.position = "relative";
         options.link.style.textDecoration = "none";
 
-        if ( document.getElementById( options.target ) ) {
-          // add the widget's div to the target div
-          document.getElementById( options.target ).appendChild( options.link );
+
+        if ( !target && Popcorn.plugin.debug ) {
+          throw new Error( "target container doesn't exist" );
         }
+        // add the widget's div to the target div
+        target && target.appendChild( options.link );
 
         img.addEventListener( "load", function() {
 

@@ -125,15 +125,17 @@
       if ( apikey ) {
         script.innerHTML = "api_key: " + apikey;
       }
-
-      options.type = options.type.toLowerCase();
+      
+      options.type = options.type && options.type.toLowerCase() || "";
 
       // Replace the LinkedIn plugin's error message to something more helpful
       var errorMsg = function() {
-
         options._container = document.createElement( "p" );
         options._container.innerHTML = "Plugin requires a valid <a href='https://www.linkedin.com/secure/developer'>apikey</a>";
-        document.getElementById( options.target ).appendChild( options._container );
+        if ( !target && Popcorn.plugin.debug ) {
+          throw ( "target container doesn't exist" );
+        }
+        target && target.appendChild( options._container );
       };
 
       var setOptions = (function ( options ) {
@@ -201,11 +203,12 @@
         setOptions[ options.type ] && setOptions[ options.type ]();
       }
 
-      if ( document.getElementById( options.target ) ) {
-        document.getElementById( options.target ).appendChild( options._container );
+      if ( !target && Popcorn.plugin.debug ) {
+        throw new Error( "target container doesn't exist" );
       }
+      target && target.appendChild( options._container );
 
-      target.style.display = "none";
+      options._container.style.display = "none";
     },
     /**
      * @member linkedin
@@ -214,7 +217,7 @@
      * options variable
      */
     start: function( event, options ) {
-      options._container.parentNode.style.display = "block";
+      options._container.style.display = "block";
     },
     /**
      * @member linkedin
@@ -223,7 +226,7 @@
      * options variable
      */
     end: function( event, options ) {
-      options._container.parentNode.style.display = "none";
+      options._container.style.display = "none";
     },
     _teardown: function( options ) {
       var tar = document.getElementById( options.target );

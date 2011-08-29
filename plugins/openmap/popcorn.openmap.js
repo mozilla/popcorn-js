@@ -59,9 +59,7 @@
         selectControl,
         popup,
         isGeoReady,
-        target;
-        
-    target = document.getElementById( options.target );
+        target = document.getElementById( options.target );
 
     // create a new div within the target div
     // this is later passed on to the maps api
@@ -70,6 +68,10 @@
     newdiv.style.width = "100%";
     newdiv.style.height = "100%";
     i++;
+
+    if ( !target && Popcorn.plugin.debug ) {
+      throw new Error( "target container doesn't exist" );
+    }
 
     target && target.appendChild( newdiv );
 

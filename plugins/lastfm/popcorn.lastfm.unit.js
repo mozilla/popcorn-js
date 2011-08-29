@@ -6,7 +6,7 @@ test("Popcorn LastFM Plugin", function () {
     plugin. Please do not use it for other purposes.
   */
   var popped = Popcorn("#video"),
-      expects = 9, 
+      expects = 10, 
       count = 0,
       setupId,
       lastfmdiv = document.getElementById('lastfmdiv');
@@ -44,7 +44,6 @@ test("Popcorn LastFM Plugin", function () {
   .lastfm({
     start: 4, // seconds
     end: 7, // seconds
-    artist: '',
     target: 'lastfmdiv',
     apikey: '30ac38340e8be75f9268727cb4526b3d'
   });
@@ -75,6 +74,18 @@ test("Popcorn LastFM Plugin", function () {
     ok( !lastfmdiv.children[2], "removed artist was properly destroyed" );
     plus();
   });
+
+  // empty track events should be safe
+  popped.lastfm({});
+
+  // debug should log errors on empty track events
+  Popcorn.plugin.debug = true;
+  try {
+    popped.lastfm({});
+  } catch( e ) {
+    ok(true, 'empty event was caught by debug');
+    plus();
+  }
   
   popped.volume(0).play();
 });

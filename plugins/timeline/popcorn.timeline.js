@@ -72,6 +72,8 @@
         container.appendChild( contentDiv );
       }
 
+    } else if ( Popcorn.plugin.debug ) {
+      throw new Error( "target container doesn't exist" );
     }
     
     i++;

@@ -103,7 +103,7 @@
           options.container = this.container;
         }
 
-        document.getElementById( options.container.id ).appendChild( newdiv );
+        document.getElementById( options.container.id ) && document.getElementById( options.container.id ).appendChild( newdiv );
         options.innerContainer = newdiv;
 
         options.showSubtitle = function() {
