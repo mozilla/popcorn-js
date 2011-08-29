@@ -1592,7 +1592,7 @@
   }
 
   // Declare locale data table
-  var localeData = initLocale( global.navigator.language );
+  var localeData = initLocale( global.navigator.userLanguage || global.navigator.language );
 
   Popcorn.locale = {
 
