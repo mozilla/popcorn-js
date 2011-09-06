@@ -28,6 +28,18 @@
     }
   },
 
+  requestAnimFrame = (function(){
+    // shim from http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+    return global.requestAnimationFrame       || 
+      global.webkitRequestAnimationFrame || 
+      global.mozRequestAnimationFrame    || 
+      global.oRequestAnimationFrame      || 
+      global.msRequestAnimationFrame     || 
+      function(/* function */ callback, /* DOMElement */ element){
+        global.setTimeout(callback, 16);
+      };
+  }()),
+
   //  Declare constructor
   //  Returns an instance object.
   Popcorn = function( entity, options ) {
@@ -190,6 +202,7 @@
             start: -1,
             end: -1
           }],
+          animating:[],
           startIndex: 0,
           endIndex: 0,
           previousUpdateTime: -1
@@ -212,10 +225,26 @@
             end: videoDurationPlus
           });
 
-          that.media.addEventListener( "timeupdate", function( event ) {
+          if ( that.options.frameAnimation ) {
 
-            Popcorn.timeUpdate( that, event );
-          }, false );
+            var animate = function () {
+              Popcorn.timeUpdate( that, event );
+              that.trigger( "timeupdate" );
+
+              requestAnimFrame(animate);
+            };
+
+            requestAnimFrame(animate);
+
+          } else {
+
+            that.media.addEventListener( "timeupdate", function( event ) {
+
+              Popcorn.timeUpdate( that, event );
+            }, false );
+
+          }
+
         } else {
           global.setTimeout(function() {
             isReady( that );
@@ -775,6 +804,7 @@
         indexWasAt = 0,
         byStart = [],
         byEnd = [],
+        animating = [],
         history = [];
 
     Popcorn.forEach( obj.data.trackEvents.byStart, function( o, i, context ) {
@@ -802,6 +832,23 @@
 
     });
 
+    Popcorn.forEach( obj.data.trackEvents.animating, function( o, i, context ) {
+      // Preserve the original start/end trackEvents
+      if ( !o._id ) {
+        animating.push( obj.data.trackEvents.animating[i] );
+      }
+
+      // Filter for user track events (vs system track events)
+      if ( o._id ) {
+
+        // Filter for the trackevent to remove
+        if ( o._id !== trackId ) {
+          animating.push( obj.data.trackEvents.animating[i] );
+        }
+      }
+
+    });
+
     //  Update
     if ( indexWasAt <= obj.data.trackEvents.startIndex ) {
       obj.data.trackEvents.startIndex--;
@@ -813,6 +860,7 @@
 
     obj.data.trackEvents.byStart = byStart;
     obj.data.trackEvents.byEnd  = byEnd;
+    obj.data.trackEvents.animating  = animating;
 
     for ( var i = 0; i < historyLen; i++ ) {
       if ( obj.data.history[ i ] !== trackId ) {
@@ -879,7 +927,9 @@
         previousTime   = obj.data.trackEvents.previousUpdateTime,
         tracks         = obj.data.trackEvents,
         tracksByEnd    = tracks.byEnd,
-        tracksByStart  = tracks.byStart;
+        tracksByStart  = tracks.byStart,
+        tracksAnimating= tracks.animating,
+        animIndex = 0;
 
     //  Playbar advancing
     if ( previousTime < currentTime ) {
@@ -914,12 +964,25 @@
 
             tracksByStart[ tracks.startIndex ]._running = true;
             tracksByStart[ tracks.startIndex ]._natives.start.call( obj, event, tracksByStart[ tracks.startIndex ] );
+
+            if (tracksByStart[ tracks.startIndex ]._natives.frame) {
+              tracksAnimating.push(tracksByStart[ tracks.startIndex ]);
+            }
           }
           tracks.startIndex++;
         } else {
           // remove track event
           Popcorn.removeTrackEvent( obj, tracksByStart[ tracks.startIndex ]._id );
           return;
+        }
+      }
+
+      while (animIndex < tracksAnimating.length) {
+        if (tracksAnimating[animIndex]._running == false) {
+          tracksAnimating.splice(animIndex,1);
+        } else {
+          tracksAnimating[animIndex]._natives.frame.call( obj, event, tracksAnimating[animIndex], currentTime );
+          animIndex++;
         }
       }
 
@@ -956,6 +1019,10 @@
 
             tracksByEnd[ tracks.endIndex ]._running = true;
             tracksByEnd[ tracks.endIndex ]._natives.start.call( obj, event, tracksByEnd[tracks.endIndex] );
+
+            if (tracksByEnd[ tracks.endIndex ]._natives.frame) {
+              tracksAnimating.push(tracksByEnd[ tracks.endIndex ]);
+            }
           }
           tracks.endIndex--;
         } else {
@@ -964,6 +1031,16 @@
           return;
         }
       }
+
+      while (animIndex < tracksAnimating.length) {
+        if (tracksAnimating[animIndex]._running == false) {
+          tracksAnimating.splice(animIndex,1);
+        } else {
+          tracksAnimating[animIndex]._natives.frame.call( obj, event, tracksAnimating[animIndex], currentTime );
+          animIndex++;
+        }
+      }
+
     // time bar is not moving ( video is paused )
     }
 
@@ -1023,7 +1100,7 @@
         plugin = {},
         setup,
         isfn = typeof definition === "function",
-        methods = [ "_setup", "_teardown", "start", "end" ];
+        methods = [ "_setup", "_teardown", "start", "end", "frame" ];
 
     // combines calls of two function calls into one
     var combineFn = function( first, second ) {
@@ -1202,6 +1279,7 @@
 
     var byStart = obj.data.trackEvents.byStart,
         byEnd = obj.data.trackEvents.byEnd,
+        animating = obj.data.trackEvents.animating,
         idx, sl;
 
     // remove all trackEvents
@@ -1223,6 +1301,19 @@
         }
       }
     }
+
+    //remove all animating events
+    for ( idx = 0, sl = animating.length; idx < sl; idx++ ) {
+
+      if ( ( animating[ idx ] && animating[ idx ]._natives && animating[ idx ]._natives.type === name ) ) {
+
+        animating.splice( idx, 1 );
+
+        // update for loop if something removed, but keep checking
+        idx--; sl--;
+      }
+    }
+
   };
 
   Popcorn.compositions = {};
