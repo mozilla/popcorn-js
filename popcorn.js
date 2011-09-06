@@ -35,8 +35,8 @@
       global.mozRequestAnimationFrame    || 
       global.oRequestAnimationFrame      || 
       global.msRequestAnimationFrame     || 
-      function(/* function */ callback, /* DOMElement */ element){
-        global.setTimeout(callback, 16);
+      function( callback, element){
+        global.setTimeout( callback, 16 );
       };
   }()),
 
@@ -202,7 +202,7 @@
             start: -1,
             end: -1
           }],
-          animating:[],
+          animating: [],
           startIndex: 0,
           endIndex: 0,
           previousUpdateTime: -1
@@ -226,15 +226,19 @@
           });
 
           if ( that.options.frameAnimation ) {
+            // if Popcorn is created with frameAnimation option set to true,
+            // requestAnimFrame is used instead of "timeupdate" media event.
+            // This is for greater frame time accuracy, theoretically up to
+            // 60 frames per second as opposed to 4
 
             var animate = function () {
               Popcorn.timeUpdate( that, event );
               that.trigger( "timeupdate" );
 
-              requestAnimFrame(animate);
+              requestAnimFrame( animate );
             };
 
-            requestAnimFrame(animate);
+            requestAnimFrame( animate );
 
           } else {
 
@@ -832,22 +836,24 @@
 
     });
 
-    Popcorn.forEach( obj.data.trackEvents.animating, function( o, i, context ) {
-      // Preserve the original start/end trackEvents
-      if ( !o._id ) {
-        animating.push( obj.data.trackEvents.animating[i] );
-      }
-
-      // Filter for user track events (vs system track events)
-      if ( o._id ) {
-
-        // Filter for the trackevent to remove
-        if ( o._id !== trackId ) {
+    if ( obj.data.trackEvents.animating.length ) {
+      Popcorn.forEach( obj.data.trackEvents.animating, function( o, i, context ) {
+        // Preserve the original start/end trackEvents
+        if ( !o._id ) {
           animating.push( obj.data.trackEvents.animating[i] );
         }
-      }
 
-    });
+        // Filter for user track events (vs system track events)
+        if ( o._id ) {
+
+          // Filter for the trackevent to remove
+          if ( o._id !== trackId ) {
+            animating.push( obj.data.trackEvents.animating[i] );
+          }
+        }
+
+      });
+    }
 
     //  Update
     if ( indexWasAt <= obj.data.trackEvents.startIndex ) {
@@ -965,8 +971,8 @@
             tracksByStart[ tracks.startIndex ]._running = true;
             tracksByStart[ tracks.startIndex ]._natives.start.call( obj, event, tracksByStart[ tracks.startIndex ] );
 
-            if (tracksByStart[ tracks.startIndex ]._natives.frame) {
-              tracksAnimating.push(tracksByStart[ tracks.startIndex ]);
+            if ( tracksByStart[ tracks.startIndex ]._natives.frame ) {
+              tracksAnimating.push( tracksByStart[ tracks.startIndex ] );
             }
           }
           tracks.startIndex++;
@@ -977,11 +983,11 @@
         }
       }
 
-      while (animIndex < tracksAnimating.length) {
-        if (tracksAnimating[animIndex]._running == false) {
-          tracksAnimating.splice(animIndex,1);
+      while ( animIndex < tracksAnimating.length ) {
+        if ( !tracksAnimating[animIndex]._running ) {
+          tracksAnimating.splice( animIndex, 1 );
         } else {
-          tracksAnimating[animIndex]._natives.frame.call( obj, event, tracksAnimating[animIndex], currentTime );
+          tracksAnimating[ animIndex ]._natives.frame.call( obj, event, tracksAnimating[ animIndex ], currentTime );
           animIndex++;
         }
       }
@@ -1020,8 +1026,8 @@
             tracksByEnd[ tracks.endIndex ]._running = true;
             tracksByEnd[ tracks.endIndex ]._natives.start.call( obj, event, tracksByEnd[tracks.endIndex] );
 
-            if (tracksByEnd[ tracks.endIndex ]._natives.frame) {
-              tracksAnimating.push(tracksByEnd[ tracks.endIndex ]);
+            if ( tracksByEnd[ tracks.endIndex ]._natives.frame ) {
+              tracksAnimating.push( tracksByEnd[ tracks.endIndex ] );
             }
           }
           tracks.endIndex--;
@@ -1032,11 +1038,11 @@
         }
       }
 
-      while (animIndex < tracksAnimating.length) {
-        if (tracksAnimating[animIndex]._running == false) {
-          tracksAnimating.splice(animIndex,1);
+      while ( animIndex < tracksAnimating.length ) {
+        if ( !tracksAnimating[animIndex]._running ) {
+          tracksAnimating.splice( animIndex, 1 );
         } else {
-          tracksAnimating[animIndex]._natives.frame.call( obj, event, tracksAnimating[animIndex], currentTime );
+          tracksAnimating[ animIndex ]._natives.frame.call( obj, event, tracksAnimating[ animIndex ], currentTime );
           animIndex++;
         }
       }
@@ -1305,7 +1311,7 @@
     //remove all animating events
     for ( idx = 0, sl = animating.length; idx < sl; idx++ ) {
 
-      if ( ( animating[ idx ] && animating[ idx ]._natives && animating[ idx ]._natives.type === name ) ) {
+      if ( animating[ idx ] && animating[ idx ]._natives && animating[ idx ]._natives.type === name ) {
 
         animating.splice( idx, 1 );
 
