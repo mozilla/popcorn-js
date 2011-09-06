@@ -971,7 +971,10 @@
             tracksByStart[ tracks.startIndex ]._running = true;
             tracksByStart[ tracks.startIndex ]._natives.start.call( obj, event, tracksByStart[ tracks.startIndex ] );
 
-            if ( tracksByStart[ tracks.startIndex ]._natives.frame ) {
+            if ( tracksByStart[ tracks.startIndex ] &&
+              tracksByStart[ tracks.startIndex ]._running &&
+              tracksByStart[ tracks.startIndex ]._natives.frame ) {
+
               tracksAnimating.push( tracksByStart[ tracks.startIndex ] );
             }
           }
@@ -1026,7 +1029,10 @@
             tracksByEnd[ tracks.endIndex ]._running = true;
             tracksByEnd[ tracks.endIndex ]._natives.start.call( obj, event, tracksByEnd[tracks.endIndex] );
 
-            if ( tracksByEnd[ tracks.endIndex ]._natives.frame ) {
+            if ( tracksByEnd[ tracks.endIndex ] &&
+              tracksByEnd[ tracks.endIndex ]._running &&
+              tracksByEnd[ tracks.endIndex ]._natives.frame ) {
+
               tracksAnimating.push( tracksByEnd[ tracks.endIndex ] );
             }
           }
