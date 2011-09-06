@@ -4,13 +4,13 @@
   if ( !document.addEventListener ) {
     global.Popcorn = {};
 
-    var methods = ( "removeInstance addInstance getInstanceById removeInstanceById " + 
-          "forEach extend effects error guid sizeOf isArray nop position disable enable " + 
-          "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " + 
+    var methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
+          "forEach extend effects error guid sizeOf isArray nop position disable enable " +
+          "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
           "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
 
     while( methods.length ) {
-      global.Popcorn[ methods.shift() ] = function(){};
+      global.Popcorn[ methods.shift() ] = function() {};
     }
     return;
   }
@@ -1012,7 +1012,7 @@
 
     timeUpdate: function( event ) {
       Popcorn.timeUpdate.call( null, this, event );
-      return this; 
+      return this;
     }
   });
 
