@@ -886,21 +886,18 @@
         end = tracks.endIndex,
         start = tracks.startIndex,
 
-        registryByName = Popcorn.registryByName;
+        registryByName = Popcorn.registryByName,
 
+        byEnd, byStart, natives, type;
 
     //  Playbar advancing
     if ( previousTime < currentTime ) {
 
-
-
-
-
       while ( tracksBy.end[ end ] && tracksBy.end[ end ].end <= currentTime ) {
 
-        var byEnd = tracksBy.end[ end ],
-            natives = byEnd._natives,
-            type = natives && natives.type;
+				byEnd = tracksBy.end[ end ];
+				natives = byEnd._natives;
+        type = natives && natives.type;
 
         //  If plugin does not exist on this instance, remove it
         if ( !natives ||
@@ -922,9 +919,9 @@
 
       while ( tracksBy.start[ start ] && tracksBy.start[ start ].start <= currentTime ) {
 
-        var byStart = tracksBy.start[ start ],
-            natives = byStart._natives,
-            type = natives && natives.type;
+				byStart = tracksBy.start[ start ];
+        natives = byStart._natives;
+        type = natives && natives.type;
 
         //  If plugin does not exist on this instance, remove it
         if ( !natives ||
@@ -951,9 +948,9 @@
 
       while ( tracksBy.start[ start ] && tracksBy.start[ start ].start > currentTime ) {
 
-        var byStart = tracksBy.start[ start ],
-            natives = byStart._natives,
-            type = natives && natives.type;
+				byStart = tracksBy.start[ start ];
+        natives = byStart._natives;
+        type = natives && natives.type;
 
         // if plugin does not exist on this instance, remove it
         if ( !natives ||
@@ -974,9 +971,9 @@
 
       while ( tracksBy.end[ end ] && tracksBy.end[ end ].end > currentTime ) {
 
-        var byEnd = tracksBy.end[ end ],
-            natives = byEnd._natives,
-            type = natives && natives.type;
+				byEnd = tracksBy.end[ end ];
+        natives = byEnd._natives;
+        type = natives && natives.type;
 
         // if plugin does not exist on this instance, remove it
         if ( !natives ||
