@@ -989,9 +989,6 @@
           return;
         }
       }
-    // time bar is not moving ( video is paused )
-    } else if ( previousTime === currentTime ) {
-
     }
 
     tracks.endIndex = end;
