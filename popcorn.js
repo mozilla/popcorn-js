@@ -1488,6 +1488,165 @@
     return parser;
   };
 
+  Popcorn.player = function( name, player ) {
+
+    player = player || {};
+
+    var playerFn = function( target, src, options ) {
+
+      options = options || {};
+
+      // List of events
+      var date = new Date() / 1000,
+          baselineTime = date,
+          currentTime = 0,
+          timeout,
+          events = {},
+
+          // The container div of the resource
+          container = document.getElementById( rIdExp.exec( target ) && rIdExp.exec( target )[ 2 ] ) || document.createElement( "div" ),
+          basePlayer = {},
+          popcorn;
+
+      // copies a div into the media object
+      for( var val in container ) {
+
+        if ( typeof container[ val ] === "object" ) {
+
+          basePlayer[ val ] = container[ val ];
+        } else if ( typeof container[ val ] === "function" ) {
+
+          basePlayer[ val ] = ( function( value ) {
+
+            return function() {
+
+              return container[ value ].apply( container, arguments );
+            };
+          }( val ));
+        } else {
+
+          basePlayer.__defineGetter__( val, ( function( value ) {
+
+            return function() {
+
+              return container[ value ];
+            };
+          }( val )));
+        }
+      }
+
+      var timeupdate = function() {
+
+        date = new Date() / 1000;
+
+        if( !basePlayer.paused ) {
+
+          basePlayer.currentTime = basePlayer.currentTime + ( date - baselineTime );
+          basePlayer.dispatchEvent( "timeupdate" );
+          timeout = setTimeout( timeupdate, 10 );
+        }
+
+        baselineTime = date;
+      };
+
+      basePlayer.play = function() {
+
+        this.paused = false;
+
+        if ( basePlayer.readyState >= 4 ) {
+
+          baselineTime = new Date() / 1000;
+          basePlayer.dispatchEvent( "play" );
+          timeupdate();
+        }
+      };
+
+      basePlayer.pause = function() {
+
+        this.paused = true;
+        basePlayer.dispatchEvent( "pause" );
+      };
+
+      basePlayer.__defineSetter__( "currentTime", function( val ) {
+
+        // make sure val is a number
+        currentTime = +val;
+        basePlayer.dispatchEvent( "timeupdate" );
+        return currentTime;
+      });
+
+      basePlayer.__defineGetter__( "currentTime", function() {
+
+        return currentTime;
+      });
+
+      // Adds an event listener to the object
+      basePlayer.addEventListener = function( evtName, fn ) {
+
+        if ( !events[ evtName ] ) {
+
+          events[ evtName ] = [];
+        }
+        
+        events[ evtName ].push( fn );
+        return fn;
+      };
+        
+      // Can take event object or simple string
+      basePlayer.dispatchEvent = function( oEvent ) {
+
+        var evt,
+            self = this,
+            eventInterface,
+            eventName = oEvent.type;
+            
+        // A string was passed, create event object
+        if ( !eventName ) {
+
+          eventName = oEvent;
+          eventInterface  = Popcorn.events.getInterface( eventName );
+          
+          if ( eventInterface ) {
+
+            evt = document.createEvent( eventInterface );
+            evt.initEvent( eventName, true, true, window, 1 );
+          }
+        }
+        
+        Popcorn.forEach( events[ eventName ], function( val ) {
+
+          val.call( self, evt, self );
+        });
+      };
+
+      // Attempt to get src from playerFn parameter
+      basePlayer.src = src || "";
+      basePlayer.readyState = 0;
+      basePlayer.duration = 0;
+      basePlayer.paused = true;
+      basePlayer.ended = 0;
+
+      // basePlayer has no concept of sound
+      basePlayer.volume = 1;
+      basePlayer.muted = false;
+
+      if ( player._setup ) {
+
+        player._setup.call( basePlayer, options );
+      } else {
+
+        // there is no setup, which means there is nothing to load
+        basePlayer.readyState = 4;
+        basePlayer.dispatchEvent( 'load' );
+      }
+
+      popcorn = new Popcorn.p.init( basePlayer, options );
+
+      return popcorn;
+    };
+
+    Popcorn[ name ] = Popcorn[ name ] || playerFn;
+  };
 
   //  Cache references to reused RegExps
   var rparams = /\?/,
