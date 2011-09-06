@@ -878,11 +878,6 @@
     var currentTime = obj.media.currentTime,
         previousTime = obj.data.trackEvents.previousUpdateTime,
         tracks = obj.data.trackEvents,
-        tracksBy = {
-          start: tracks.byStart,
-          end: tracks.byEnd
-        },
-
         end = tracks.endIndex,
         start = tracks.startIndex,
 
@@ -893,10 +888,10 @@
     //  Playbar advancing
     if ( previousTime < currentTime ) {
 
-      while ( tracksBy.end[ end ] && tracksBy.end[ end ].end <= currentTime ) {
+      while ( tracks.byEnd[ end ] && tracks.byEnd[ end ].end <= currentTime ) {
 
-				byEnd = tracksBy.end[ end ];
-				natives = byEnd._natives;
+        byEnd = tracks.byEnd[ end ];
+        natives = byEnd._natives;
         type = natives && natives.type;
 
         //  If plugin does not exist on this instance, remove it
@@ -917,9 +912,9 @@
         }
       }
 
-      while ( tracksBy.start[ start ] && tracksBy.start[ start ].start <= currentTime ) {
+      while ( tracks.byStart[ start ] && tracks.byStart[ start ].start <= currentTime ) {
 
-				byStart = tracksBy.start[ start ];
+        byStart = tracks.byStart[ start ];
         natives = byStart._natives;
         type = natives && natives.type;
 
@@ -946,9 +941,9 @@
     // Playbar receding
     } else if ( previousTime > currentTime ) {
 
-      while ( tracksBy.start[ start ] && tracksBy.start[ start ].start > currentTime ) {
+      while ( tracks.byStart[ start ] && tracks.byStart[ start ].start > currentTime ) {
 
-				byStart = tracksBy.start[ start ];
+        byStart = tracks.byStart[ start ];
         natives = byStart._natives;
         type = natives && natives.type;
 
@@ -969,9 +964,9 @@
         }
       }
 
-      while ( tracksBy.end[ end ] && tracksBy.end[ end ].end > currentTime ) {
+      while ( tracks.byEnd[ end ] && tracks.byEnd[ end ].end > currentTime ) {
 
-				byEnd = tracksBy.end[ end ];
+        byEnd = tracks.byEnd[ end ];
         natives = byEnd._natives;
         type = natives && natives.type;
 
