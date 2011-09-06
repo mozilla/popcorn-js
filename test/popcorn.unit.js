@@ -2538,6 +2538,30 @@ test("getTrackEvent", function () {
 
 });
 
+test("timeUpdate functionality", function() {
+
+  var $pop = Popcorn( "#video" ),
+    count = 0,
+    expects = 5;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+
+      Popcorn.removeInstance( $pop );
+    }
+  }
+
+  Popcorn.plugin("timeUpdateTester", function() {
+    return {
+      start: function(){},
+      end: function(){}
+    };
+  });
+});
+
 test("Index Integrity", function () {
 
 

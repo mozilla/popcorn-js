@@ -755,6 +755,8 @@
         break;
       }
     }
+    
+    this.timeUpdate( obj, null );
 
     // Store references to user added trackevents in ref table
     if ( track._id ) {
@@ -882,7 +884,7 @@
         tracksByStart  = tracks.byStart;
 
     //  Playbar advancing
-    if ( previousTime < currentTime ) {
+    if ( previousTime <= currentTime ) {
 
       while ( tracksByEnd[ tracks.endIndex ] && tracksByEnd[ tracks.endIndex ].end <= currentTime ) {
         //  If plugin does not exist on this instance, remove it
