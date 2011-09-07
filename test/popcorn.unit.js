@@ -1816,130 +1816,11 @@ test("Update Timer (frameAnimation)", function () {
 });
 
 
-test("Plugin Factory (timeupdate)", function () {
+test("Plugin Factory", function () {
 
   QUnit.reset();
 
   var popped = Popcorn("#video"),
-      methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 34, // 15*2+2+2. executor/complicator each do 15
-      count = 0;
-
-  function plus() {
-    if ( ++count == expects ) {
-      Popcorn.removePlugin("executor");
-      Popcorn.removePlugin("complicator");
-      start();
-    }
-  }
-
-  expect( expects );
-  stop( 15000 );
-
-  Popcorn.plugin("executor", function () {
-
-    return {
-
-      start: function () {
-        var self = this;
-
-        // These ensure that a popcorn instance is the value of `this` inside a plugin definition
-
-        methods.split(/\s+/g).forEach(function (k,v) {
-          ok( k in self, "executor instance has method: " + k );
-
-          plus();
-        });
-
-        ok( "video" in this, "executor instance has `video` property" );
-        plus();
-        ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
-        plus();
-
-        ok( "data" in this, "executor instance has `data` property" );
-        plus();
-        ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
-        plus();
-
-        ok( "trackEvents" in this.data, "executor instance has `trackEvents` property" );
-        plus();
-        ok( Object.prototype.toString.call(popped.data.trackEvents) === "[object Object]", "executor trackEvents property is an object" )
-        plus();
-      },
-      end: function () {
-
-      }
-    };
-
-  });
-
-  ok( "executor" in popped, "executor plugin is now available to instance" );
-  plus();
-  equals( Popcorn.registry.length, 1, "One item in the registry");
-  plus();
-
-  popped.executor({
-    start: 1,
-    end: 2
-  });
-
-  Popcorn.plugin("complicator", {
-
-    start: function ( event ) {
-
-      var self = this;
-
-      // These ensure that a popcorn instance is the value of `this` inside a plugin definition
-
-      methods.split(/\s+/g).forEach(function (k,v) {
-        ok( k in self, "complicator instance has method: " + k );
-
-        plus();
-      });
-
-      ok( "video" in this, "complicator instance has `video` property" );
-      plus();
-      ok( Object.prototype.toString.call(popped.video) === "[object HTMLVideoElement]", "video property is a HTMLVideoElement" );
-      plus();
-
-      ok( "data" in this, "complicator instance has `data` property" );
-      plus();
-      ok( Object.prototype.toString.call(popped.data) === "[object Object]", "complicator data property is an object" );
-      plus();
-
-      ok( "trackEvents" in this.data, " complicatorinstance has `trackEvents` property" );
-      plus();
-      ok( Object.prototype.toString.call(popped.data.trackEvents) === "[object Object]", "complicator trackEvents property is an object" )
-      plus();
-    },
-    end: function () {
-
-      //start();
-
-    },
-    timeupdate: function () {
-    }
-  });
-
-  ok( "complicator" in popped, "complicator plugin is now available to instance" );
-  plus();
-  equals( Popcorn.registry.length, 2, "Two items in the registry");
-  plus();
-
-  popped.complicator({
-    start: 4,
-    end: 5
-  });
-
-  popped.currentTime(0).play();
-
-});
-
-test("Plugin Factory (frameAnimation)", function () {
-
-  QUnit.reset();
-
-  var popped = Popcorn("#video", { frameAnimation: true }),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
       expects = 34, // 15*2+2+2. executor/complicator each do 15
       count = 0;
@@ -2850,6 +2731,93 @@ test("Index Integrity", function () {
 
 
   var p = Popcorn("#video");
+
+  p.ff({
+    id: "removeable-track-event",
+    start: 40,
+    end: 41
+  });
+
+  p.currentTime(40).pause();
+
+  stop( 10000 );
+
+  equals(p.data.trackEvents.endIndex, 0, "p.data.trackEvents.endIndex is 0");
+  equals(p.data.trackEvents.startIndex, 0, "p.data.trackEvents.startIndex is 0");
+  equals(p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart.length is 3 - before play" );
+
+
+
+
+  p.listen("timeupdate", function () {
+
+    if ( p.roundTime() > 40 && p.roundTime() < 42 && !hasrun ) {
+    }
+
+    if ( p.roundTime() > 40 && p.roundTime() < 42 && hasrun && !lastrun ) {
+
+      lastrun = true;
+
+      equals( document.getElementById('index-test'), null, "document.getElementById('index-test') is null on second run - after removeTrackEvent" );
+
+      start();
+    }
+
+    if ( p.roundTime() >= 42 && !hasrun ) {
+
+      hasrun  = true;
+      p.pause();
+
+      equals(p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart.length is 3 - after play, before removeTrackEvent" );
+      equals(p.data.trackEvents.startIndex, 2, "p.data.trackEvents.startIndex is 2 - after play, before removeTrackEvent");
+      equals(p.data.trackEvents.endIndex, 2, "p.data.trackEvents.endIndex is 2 - after play, before removeTrackEvent");
+
+
+
+      p.removeTrackEvent("removeable-track-event");
+
+      equals(p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart.length is 2 - after removeTrackEvent" );
+      equals(p.data.trackEvents.startIndex, 1, "p.data.trackEvents.startIndex is 1 - after removeTrackEvent");
+      equals(p.data.trackEvents.endIndex, 1, "p.data.trackEvents.endIndex is 1 - after removeTrackEvent");
+
+
+
+      p.currentTime(40).play();
+
+
+
+    }
+  });
+
+  p.play();
+
+
+});
+
+test("Index Integrity (frameAnimation)", function () {
+
+
+
+  var trackLen, hasrun = false, lastrun = false;
+
+
+  Popcorn.plugin("ff", function () {
+    return {
+      start: function () {
+        var div = document.createElement('div');
+        div.id = "index-test";
+        div.innerHTML = "foo";
+
+        document.body.appendChild(div);
+      },
+      end: function () {
+        document.getElementById('index-test').parentNode.removeChild(document.getElementById('index-test'));
+      }
+    };
+  });
+
+
+  var p = Popcorn("#video", { frameAnimation: true });
 
   p.ff({
     id: "removeable-track-event",
