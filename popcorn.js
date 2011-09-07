@@ -28,6 +28,19 @@
     }
   },
 
+  //  Non-public `requestAnimFrame`
+  //  http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+  requestAnimFrame = (function(){
+    return global.requestAnimationFrame ||
+      global.webkitRequestAnimationFrame ||
+      global.mozRequestAnimationFrame ||
+      global.oRequestAnimationFrame ||
+      global.msRequestAnimationFrame ||
+      function( callback, element ) {
+        global.setTimeout( callback, 16 );
+      };
+  }()),
+
   //  Declare constructor
   //  Returns an instance object.
   Popcorn = function( entity, options ) {
@@ -190,6 +203,7 @@
             start: -1,
             end: -1
           }],
+          animating: [],
           startIndex: 0,
           endIndex: 0,
           previousUpdateTime: -1
@@ -199,23 +213,44 @@
       //  Wrap true ready check
       var isReady = function( that ) {
 
+        var duration, videoDurationPlus, animate;
+
         if ( that.media.readyState >= 2 ) {
           //  Adding padding to the front and end of the arrays
           //  this is so we do not fall off either end
 
-          var duration = that.media.duration,
-              //  Check for no duration info (NaN)
-              videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
+          duration = that.media.duration;
+          //  Check for no duration info (NaN)
+          videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
 
           Popcorn.addTrackEvent( that, {
             start: videoDurationPlus,
             end: videoDurationPlus
           });
 
-          that.media.addEventListener( "timeupdate", function( event ) {
+          if ( that.options.frameAnimation ) {
+            //  if Popcorn is created with frameAnimation option set to true,
+            //  requestAnimFrame is used instead of "timeupdate" media event.
+            //  This is for greater frame time accuracy, theoretically up to
+            //  60 frames per second as opposed to ~4 ( ~every 15-250ms)
+            animate = function () {
 
-            Popcorn.timeUpdate( that, event );
-          }, false );
+              Popcorn.timeUpdate( that, event );
+
+              that.trigger( "timeupdate" );
+
+              requestAnimFrame( animate );
+            };
+
+            requestAnimFrame( animate );
+
+          } else {
+
+            that.media.addEventListener( "timeupdate", function( event ) {
+
+              Popcorn.timeUpdate( that, event );
+            }, false );
+          }
         } else {
           global.setTimeout(function() {
             isReady( that );
@@ -775,6 +810,7 @@
         indexWasAt = 0,
         byStart = [],
         byEnd = [],
+        animating = [],
         history = [];
 
     Popcorn.forEach( obj.data.trackEvents.byStart, function( o, i, context ) {
@@ -802,6 +838,25 @@
 
     });
 
+    if ( obj.data.trackEvents.animating.length ) {
+      Popcorn.forEach( obj.data.trackEvents.animating, function( o, i, context ) {
+        // Preserve the original start/end trackEvents
+        if ( !o._id ) {
+          animating.push( obj.data.trackEvents.animating[i] );
+        }
+
+        // Filter for user track events (vs system track events)
+        if ( o._id ) {
+
+          // Filter for the trackevent to remove
+          if ( o._id !== trackId ) {
+            animating.push( obj.data.trackEvents.animating[i] );
+          }
+        }
+
+      });
+    }
+
     //  Update
     if ( indexWasAt <= obj.data.trackEvents.startIndex ) {
       obj.data.trackEvents.startIndex--;
@@ -813,6 +868,7 @@
 
     obj.data.trackEvents.byStart = byStart;
     obj.data.trackEvents.byEnd  = byEnd;
+    obj.data.trackEvents.animating  = animating;
 
     for ( var i = 0; i < historyLen; i++ ) {
       if ( obj.data.history[ i ] !== trackId ) {
@@ -878,8 +934,10 @@
     var currentTime = obj.media.currentTime,
         previousTime = obj.data.trackEvents.previousUpdateTime,
         tracks = obj.data.trackEvents,
+        tracksAnimating = tracks.animating,
         end = tracks.endIndex,
-        start = tracks.startIndex,
+        start = tracks.startIndex, 
+        animIndex = 0, 
 
         registryByName = Popcorn.registryByName,
 
@@ -929,12 +987,25 @@
 
             byStart._running = true;
             natives.start.call( obj, event, byStart );
+
+            if ( byStart && byStart._running && byStart._natives.frame ) {
+              tracksAnimating.push( byStart );
+            }
           }
           start++;
         } else {
           // remove track event
           Popcorn.removeTrackEvent( obj, byStart._id );
           return;
+        }
+      }
+
+      while ( animIndex < tracksAnimating.length ) {
+        if ( !tracksAnimating[ animIndex ]._running ) {
+          tracksAnimating.splice( animIndex, 1 );
+        } else {
+          tracksAnimating[ animIndex ]._natives.frame.call( obj, event, tracksAnimating[ animIndex ], currentTime );
+          animIndex++;
         }
       }
 
@@ -981,6 +1052,10 @@
 
             byEnd._running = true;
             natives.start.call( obj, event, byEnd );
+
+            if ( byEnd && byEnd._running && byEnd._natives.frame ) {
+              tracksAnimating.push( byEnd );
+            }
           }
           end--;
         } else {
@@ -989,12 +1064,22 @@
           return;
         }
       }
+
+      while ( animIndex < tracksAnimating.length ) {
+        if ( !tracksAnimating[ animIndex ]._running ) {
+          tracksAnimating.splice( animIndex, 1 );
+        } else {
+          tracksAnimating[ animIndex ]._natives.frame.call( obj, event, tracksAnimating[ animIndex ], currentTime );
+          animIndex++;
+        }
+      }
+
+    // time bar is not moving ( video is paused )
     }
 
     tracks.endIndex = end;
     tracks.startIndex = start;
     tracks.previousUpdateTime = currentTime;
-
   };
 
   //  Map and Extend TrackEvent functions to all Popcorn instances
@@ -1049,7 +1134,7 @@
         plugin = {},
         setup,
         isfn = typeof definition === "function",
-        methods = [ "_setup", "_teardown", "start", "end" ];
+        methods = [ "_setup", "_teardown", "start", "end", "frame" ];
 
     // combines calls of two function calls into one
     var combineFn = function( first, second ) {
@@ -1228,6 +1313,7 @@
 
     var byStart = obj.data.trackEvents.byStart,
         byEnd = obj.data.trackEvents.byEnd,
+        animating = obj.data.trackEvents.animating,
         idx, sl;
 
     // remove all trackEvents
@@ -1249,6 +1335,19 @@
         }
       }
     }
+
+    //remove all animating events
+    for ( idx = 0, sl = animating.length; idx < sl; idx++ ) {
+
+      if ( animating[ idx ] && animating[ idx ]._natives && animating[ idx ]._natives.type === name ) {
+
+        animating.splice( idx, 1 );
+
+        // update for loop if something removed, but keep checking
+        idx--; sl--;
+      }
+    }
+
   };
 
   Popcorn.compositions = {};
