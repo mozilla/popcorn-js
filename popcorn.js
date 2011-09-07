@@ -756,7 +756,7 @@
       }
     }
     
-    //this.timeUpdate( obj, null );
+    this.timeUpdate( obj, null );
 
     // Store references to user added trackevents in ref table
     if ( track._id ) {

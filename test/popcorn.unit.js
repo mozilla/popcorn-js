@@ -2597,8 +2597,8 @@ test("Index Integrity", function () {
 
   stop( 10000 );
 
-  equals(p.data.trackEvents.endIndex, 0, "p.data.trackEvents.endIndex is 0");
-  equals(p.data.trackEvents.startIndex, 0, "p.data.trackEvents.startIndex is 0");
+  equals(p.data.trackEvents.endIndex, 1, "p.data.trackEvents.endIndex is 1");
+  equals(p.data.trackEvents.startIndex, 1, "p.data.trackEvents.startIndex is 1");
   equals(p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart.length is 3 - before play" );
 
 
@@ -2657,6 +2657,8 @@ test("Popcorn.disable/enable/toggle", function() {
       expects = 5;
 
   expect( expects );
+
+  $pop.currentTime(39).play();
 
   function plus() {
     if ( ++count === expects ) {
