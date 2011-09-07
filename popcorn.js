@@ -410,7 +410,7 @@
 
       //  Creating a one second track event with an empty end
       Popcorn.addTrackEvent( this, {
-        start: time + 0.25,
+        start: time,
         end: time + 1,
         _running: false,
         _natives: {

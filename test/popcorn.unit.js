@@ -1890,6 +1890,8 @@ test( "Popcorn Compose", function () {
   equals( test.two.setup, 3, "three compose two setup" );
   plus();
 
+  popped.currentTime(0).pause();
+
   popped.exec( 0, function() {
     equals( test.one.running, 1, "one compose running" );
    plus();
