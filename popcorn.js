@@ -28,14 +28,15 @@
     }
   },
 
+  //  Non-public `requestAnimFrame`
+  //  http://paulirish.com/2011/requestanimationframe-for-smart-animating/
   requestAnimFrame = (function(){
-    // shim from http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-    return global.requestAnimationFrame       || 
-      global.webkitRequestAnimationFrame || 
-      global.mozRequestAnimationFrame    || 
-      global.oRequestAnimationFrame      || 
-      global.msRequestAnimationFrame     || 
-      function( callback, element){
+    return global.requestAnimationFrame ||
+      global.webkitRequestAnimationFrame ||
+      global.mozRequestAnimationFrame ||
+      global.oRequestAnimationFrame ||
+      global.msRequestAnimationFrame ||
+      function( callback, element ) {
         global.setTimeout( callback, 16 );
       };
   }()),
@@ -212,13 +213,15 @@
       //  Wrap true ready check
       var isReady = function( that ) {
 
+        var duration, videoDurationPlus, animate;
+
         if ( that.media.readyState >= 2 ) {
           //  Adding padding to the front and end of the arrays
           //  this is so we do not fall off either end
 
-          var duration = that.media.duration,
-              //  Check for no duration info (NaN)
-              videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
+          duration = that.media.duration;
+          //  Check for no duration info (NaN)
+          videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
 
           Popcorn.addTrackEvent( that, {
             start: videoDurationPlus,
@@ -226,13 +229,14 @@
           });
 
           if ( that.options.frameAnimation ) {
-            // if Popcorn is created with frameAnimation option set to true,
-            // requestAnimFrame is used instead of "timeupdate" media event.
-            // This is for greater frame time accuracy, theoretically up to
-            // 60 frames per second as opposed to 4
+            //  if Popcorn is created with frameAnimation option set to true,
+            //  requestAnimFrame is used instead of "timeupdate" media event.
+            //  This is for greater frame time accuracy, theoretically up to
+            //  60 frames per second as opposed to ~4 ( ~every 15-250ms)
+            animate = function () {
 
-            var animate = function () {
               Popcorn.timeUpdate( that, event );
+
               that.trigger( "timeupdate" );
 
               requestAnimFrame( animate );
@@ -246,9 +250,7 @@
 
               Popcorn.timeUpdate( that, event );
             }, false );
-
           }
-
         } else {
           global.setTimeout(function() {
             isReady( that );
@@ -1088,7 +1090,7 @@
 
     timeUpdate: function( event ) {
       Popcorn.timeUpdate.call( null, this, event );
-      return this; 
+      return this;
     }
   });
 
