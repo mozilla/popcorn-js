@@ -936,8 +936,8 @@
         tracks = obj.data.trackEvents,
         tracksAnimating = tracks.animating,
         end = tracks.endIndex,
-        start = tracks.startIndex, 
-        animIndex = 0, 
+        start = tracks.startIndex,
+        animIndex = 0,
 
         registryByName = Popcorn.registryByName,
 
