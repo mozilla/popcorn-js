@@ -2538,30 +2538,6 @@ test("getTrackEvent", function () {
 
 });
 
-test("timeUpdate functionality", function() {
-
-  var $pop = Popcorn( "#video" ),
-    count = 0,
-    expects = 5;
-
-  expect( expects );
-
-  function plus() {
-    if ( ++count === expects ) {
-      start();
-
-      Popcorn.removeInstance( $pop );
-    }
-  }
-
-  Popcorn.plugin("timeUpdateTester", function() {
-    return {
-      start: function(){},
-      end: function(){}
-    };
-  });
-});
-
 test("Index Integrity", function () {
 
 
@@ -2646,6 +2622,49 @@ test("Index Integrity", function () {
 
   p.play();
 
+
+});
+
+test("timeUpdate functionality", function() {
+
+  var $pop = Popcorn( "#video" ),
+    count = 0,
+    expects = 4;
+
+  expect( expects );
+
+  Popcorn.plugin("timeUpdateTester", function() {
+    return {
+      start: function () {
+        var div = document.createElement("div");
+        div.id = "timeUpdate-test";
+
+        document.body.appendChild(div);
+      },
+      end: function () {
+        document.getElementById("timeUpdate-test").parentNode.removeChild(document.getElementById("timeUpdate-test"));
+      }
+    };
+  });
+
+  equals( typeof Popcorn.timeUpdate, "function", "timeUpdate is a function of Popcorn" );
+
+  $pop.currentTime(40).pause();
+
+  equals( $pop.getTrackEvents().length, 0, "Initially no trackEvents" );
+  
+  $pop.timeUpdateTester({
+    id:"timeUpdateID",
+    start:40,
+    end: 41
+  });
+
+  equals( $pop.getTrackEvents().length, 1, "trackEvent successfully added" );
+
+  ok( document.getElementById( "timeUpdate-test" ), "trackEvent successfully added, content was displayed while video was paused" );
+
+  $pop.removeTrackEvent( "timeUpdateID" );
+  Popcorn.removeInstance( $pop );
 
 });
 
