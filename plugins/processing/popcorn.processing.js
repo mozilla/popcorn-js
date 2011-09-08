@@ -25,12 +25,14 @@
  */
 
 (function ( Popcorn ) {
+                
+  var called = false;
 
   Popcorn.plugin( "processing" , function ( options ) {
-
+  
     var init = function( context ) {
-        
-      function scriptReady() {
+
+      function scriptReady( options ) {
         var addListeners = function() {
           context.listen( "pause", function () {
             if ( options.canvas.style.display === "inline" ) {
@@ -53,8 +55,9 @@
             
               options.codeReady = false;
               
-              var s = new Processing.Sketch( responseCode );
-              s.onload = function() {
+              var s = Processing.compile( responseCode );
+              s.onLoad = function() {
+                console.log( "onLoad Called" );
                 options.codeReady = true;
                 ( options._running && !context.media.paused && options.pjsInstance.loop() ) || options.pjsInstance.noLoop() ;
               };
@@ -68,7 +71,6 @@
   
               options.noPause = options.noPause || false;
               !options.noPause && addListeners(); 
-              
 
             }
           });
@@ -80,12 +82,25 @@
         
       }
 
-      if ( !window.Processing ) {
+      if ( !window.Processing && !called ) {
 
-        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.3.0/processing-1.3.0.min.js", scriptReady );
+        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.3.0/processing-1.3.0.js", function() {
+          scriptReady( options )
+        });
+        called = true;
       } else {
-      
-        scriptReady();
+        readyCheck = function() {
+          if ( window.Processing ) {
+            scriptReady( options );
+            return;
+          }
+         
+          setTimeout( readyCheck, 5 ); 
+        
+        };
+        
+        readyCheck();
+        
       }
 
     };
@@ -104,7 +119,7 @@
             
         var canvas = document.createElement( "canvas" );
         canvas.id = Popcorn.guid( options.target + "-sketch-" );
-        canvas[ "data-processing-sources" ] =  options.sketch;
+        //canvas[ "data-processing-sources" ] =  options.sketch;
         canvas.style.display = "none";   
         options.canvas = canvas;
         
