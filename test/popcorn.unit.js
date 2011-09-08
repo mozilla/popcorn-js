@@ -1452,7 +1452,9 @@ test("Start Zero Immediately", function() {
 
   var $pop = Popcorn("#video"),
       expects = 1,
-      count   = 0;
+      count = 0;
+
+  expect(expects);
 
   function plus() {
     if ( ++count === expects ) {
@@ -1479,6 +1481,47 @@ test("Start Zero Immediately", function() {
     end: 2
   });
 });
+
+test("frame function (frameAnimation)", function() {
+
+  var $pop = Popcorn("#video", { frameAnimation: true }),
+      fired = 0,
+      expects = 1,
+      count = 0;
+
+  expect(expects);
+
+  function plus() {
+    if ( ++count === expects ) {
+      // clean up added events after tests
+      Popcorn.removePlugin("frameFn");
+      start();
+    }
+  }
+
+  stop();
+
+  $pop.pause().currentTime( 1 );
+
+  Popcorn.plugin( "frameFn", {
+    start: function() {
+    },
+    frame: function() {
+      fired++;
+    },
+    end: function() {
+      // if `frame` fired, then it will have value > 0
+      ok( fired, "frame fired. (actual: " + fired + ")" );
+      plus();
+    }
+  });
+
+  $pop.frameFn({
+    start: 1,
+    end: 3
+  }).play();
+});
+
 test("Update Timer (timeupdate)", function() {
 
   QUnit.reset();
