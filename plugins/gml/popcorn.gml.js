@@ -165,28 +165,17 @@
 
       if ( !window.Processing ) {
 
-        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.min.js" );
-      }
-
-      // makes sure both processing.js and the gml data are loaded
-      var readyCheck = function() {
-
-        if ( window.Processing ) {
-
+        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.min.js", function() {
+          
           Popcorn.getJSONP( "http://000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
 
             options.pjsInstance = new Processing( options.container, gmlPlayer );
             options.pjsInstance.construct( self.media, data, options );
             options._running && options.pjsInstance.loop();
           }, false );
+        });
+      }
 
-          return;
-        }
-
-        setTimeout( readyCheck, 5 );
-      };
-
-      readyCheck();
     },
     /**
      * @member gml 
