@@ -51,21 +51,24 @@
             dataType: "text",
             success: function( responseCode ) {
             
-              options.codeReady = true;
-              options.processingCode = responseCode;
-              options.pjsInstance = new Processing( options.canvas, options.processingCode );
-              options.pjsInstance.noLoop();
+              options.codeReady = false;
+              
+              var s = new Processing.Sketch( responseCode );
+              s.onload = function() {
+                options.codeReady = true;
+                ( options._running && !context.media.paused && options.pjsInstance.loop() ) || options.pjsInstance.noLoop() ;
+              };
+              
+              options.pjsInstance = new Processing( options.canvas, s );
               options.seeking = false;
               
               context.listen( "seeking", function() {
                  options._running && options.canvas.style.display === "inline" && options.noPause && options.pjsInstance.loop();
               });
-
-              options._running && !context.media.paused && options.pjsInstance.loop();
-              
+  
               options.noPause = options.noPause || false;
               !options.noPause && addListeners(); 
-              options.codeReady = true;
+              
 
             }
           });
@@ -79,7 +82,7 @@
 
       if ( !window.Processing ) {
 
-        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.min.js", scriptReady );
+        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.3.0/processing-1.3.0.min.js", scriptReady );
       } else {
       
         scriptReady();
