@@ -847,13 +847,11 @@
 
         // Filter for user track events (vs system track events)
         if ( o._id ) {
-
           // Filter for the trackevent to remove
           if ( o._id !== trackId ) {
             animating.push( obj.data.trackEvents.animating[i] );
           }
         }
-
       });
     }
 
@@ -867,8 +865,8 @@
     }
 
     obj.data.trackEvents.byStart = byStart;
-    obj.data.trackEvents.byEnd  = byEnd;
-    obj.data.trackEvents.animating  = animating;
+    obj.data.trackEvents.byEnd = byEnd;
+    obj.data.trackEvents.animating = animating;
 
     for ( var i = 0; i < historyLen; i++ ) {
       if ( obj.data.history[ i ] !== trackId ) {
@@ -934,14 +932,14 @@
     var currentTime = obj.media.currentTime,
         previousTime = obj.data.trackEvents.previousUpdateTime,
         tracks = obj.data.trackEvents,
-        tracksAnimating = tracks.animating,
+        animating = tracks.animating,
         end = tracks.endIndex,
         start = tracks.startIndex,
         animIndex = 0,
 
         registryByName = Popcorn.registryByName,
 
-        byEnd, byStart, natives, type;
+        byEnd, byStart, byAnimate, natives, type;
 
     //  Playbar advancing
     if ( previousTime < currentTime ) {
@@ -988,8 +986,12 @@
             byStart._running = true;
             natives.start.call( obj, event, byStart );
 
-            if ( byStart && byStart._running && byStart._natives.frame ) {
-              tracksAnimating.push( byStart );
+            // If the `frameAnimation` option is used,
+            // push the current byStart object into the `animating` cue
+            if ( obj.options.frameAnimation &&
+                ( byStart && byStart._running && byStart._natives.frame ) ) {
+
+              animating.push( byStart );
             }
           }
           start++;
@@ -1000,12 +1002,19 @@
         }
       }
 
-      while ( animIndex < tracksAnimating.length ) {
-        if ( !tracksAnimating[ animIndex ]._running ) {
-          tracksAnimating.splice( animIndex, 1 );
-        } else {
-          tracksAnimating[ animIndex ]._natives.frame.call( obj, event, tracksAnimating[ animIndex ], currentTime );
-          animIndex++;
+      // If the `frameAnimation` option is used, iterate the animating track
+      // and execute the `frame` callback
+      if ( obj.options.frameAnimation ) {
+        while ( animIndex < animating.length ) {
+
+          byAnimate = animating[ animIndex ];
+
+          if ( !byAnimate._running ) {
+            animating.splice( animIndex, 1 );
+          } else {
+            byAnimate._natives.frame.call( obj, event, byAnimate, currentTime );
+            animIndex++;
+          }
         }
       }
 
@@ -1053,8 +1062,12 @@
             byEnd._running = true;
             natives.start.call( obj, event, byEnd );
 
-            if ( byEnd && byEnd._running && byEnd._natives.frame ) {
-              tracksAnimating.push( byEnd );
+            // If the `frameAnimation` option is used,
+            // push the current byEnd object into the `animating` cue
+            if ( obj.options.frameAnimation &&
+                  ( byEnd && byEnd._running && byEnd._natives.frame ) ) {
+
+              animating.push( byEnd );
             }
           }
           end--;
@@ -1065,15 +1078,21 @@
         }
       }
 
-      while ( animIndex < tracksAnimating.length ) {
-        if ( !tracksAnimating[ animIndex ]._running ) {
-          tracksAnimating.splice( animIndex, 1 );
-        } else {
-          tracksAnimating[ animIndex ]._natives.frame.call( obj, event, tracksAnimating[ animIndex ], currentTime );
-          animIndex++;
+      // If the `frameAnimation` option is used, iterate the animating track
+      // and execute the `frame` callback
+      if ( obj.options.frameAnimation ) {
+        while ( animIndex < animating.length ) {
+
+          byAnimate = animating[ animIndex ];
+
+          if ( !byAnimate._running ) {
+            animating.splice( animIndex, 1 );
+          } else {
+            byAnimate._natives.frame.call( obj, event, byAnimate, currentTime );
+            animIndex++;
+          }
         }
       }
-
     // time bar is not moving ( video is paused )
     }
 
