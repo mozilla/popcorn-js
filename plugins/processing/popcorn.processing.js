@@ -50,11 +50,13 @@
             url: options.sketch,
             dataType: "text",
             success: function( responseCode ) {
+            
               options.codeReady = true;
               options.processingCode = responseCode;
               options.pjsInstance = new Processing( options.canvas, options.processingCode );
               options.pjsInstance.noLoop();
               options.seeking = false;
+              
               context.listen( "seeking", function() {
                  options._running && options.canvas.style.display === "inline" && options.noPause && options.pjsInstance.loop();
               });
@@ -96,7 +98,6 @@
         if ( !options.parentTarget && Popcorn.plugin.debug ) {
           throw new Error( "target container doesn't exist" );
         }
-        
             
         var canvas = document.createElement( "canvas" );
         canvas.id = Popcorn.guid( options.target + "-sketch-" );
