@@ -29,22 +29,8 @@
   Popcorn.plugin( "processing" , function ( options ) {
 
     var init = function( context ) {
-    
-      var initProcessing,
-        canvas;
-
-      if ( !window.Processing ) {
-
-        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.min.js" );
-      }
-
-      options.parentTarget = document.getElementById( options.target );
-      
-      if ( !options.parentTarget && Popcorn.plugin.debug ) {
-        throw new Error( "target container doesn't exist" );
-      }
-      
-      initProcessing = function() {
+        
+      function scriptReady() {
         var addListeners = function() {
           context.listen( "pause", function () {
             if ( options.canvas.style.display === "inline" ) {
@@ -58,52 +44,45 @@
           });
         };
         
-        if ( window.Processing ) {
+        if ( options.sketch ) {
 
-          options.pjsInstance = new Processing( options.canvas, options.processingCode );
-          options.pjsInstance.noLoop();
-          options.seeking = false;
-          context.listen( "seeking", function() {
-             options._running && options.canvas.style.display === "inline" && options.noPause && options.pjsInstance.loop();
+          Popcorn.xhr({
+            url: options.sketch,
+            dataType: "text",
+            success: function( responseCode ) {
+              options.codeReady = true;
+              options.processingCode = responseCode;
+              options.pjsInstance = new Processing( options.canvas, options.processingCode );
+              options.pjsInstance.noLoop();
+              options.seeking = false;
+              context.listen( "seeking", function() {
+                 options._running && options.canvas.style.display === "inline" && options.noPause && options.pjsInstance.loop();
+              });
+
+              options._running && !context.media.paused && options.pjsInstance.loop();
+              
+              options.noPause = options.noPause || false;
+              !options.noPause && addListeners(); 
+              options.codeReady = true;
+
+            }
           });
-
-          options._running && !context.media.paused && options.pjsInstance.loop();
+        } else if ( Popcorn.plugin.debug ) {
           
-          options.noPause = options.noPause || false;
-          !options.noPause && addListeners(); 
-          options.codeReady = true;         
-        } else {
-          setTimeout ( function() {
-            initProcessing.call( this );
-            }, 10 );
-        }
-      };
-      
-      canvas = document.createElement( "canvas" );
-      canvas.id = Popcorn.guid( options.target + "-sketch-" );
-      canvas[ "data-processing-sources" ] =  options.sketch;
-      canvas.style.display = "none";   
-      options.canvas = canvas;
-      
-      options.parentTarget && options.parentTarget.appendChild( options.canvas );
-
-      if ( options.sketch ) {
-
-        Popcorn.xhr({
-          url: options.sketch,
-          dataType: "text",
-          success: function( responseCode ) {
-            options.codeReady = true;
-            options.processingCode = responseCode;
-            initProcessing();
-          }
-        });
-      } else {
-
-        if ( Popcorn.plugin.debug ) {
           throw new Error( "options.sketch is undefined" );
+          return;
         }
+        
       }
+
+      if ( !window.Processing ) {
+
+        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.min.js", scriptReady );
+      } else {
+      
+        scriptReady();
+      }
+
     };
 
     return {
@@ -111,6 +90,21 @@
       _setup: function( options ) {
         
         options.codeReady = false;
+        
+        options.parentTarget = document.getElementById( options.target );
+            
+        if ( !options.parentTarget && Popcorn.plugin.debug ) {
+          throw new Error( "target container doesn't exist" );
+        }
+        
+            
+        var canvas = document.createElement( "canvas" );
+        canvas.id = Popcorn.guid( options.target + "-sketch-" );
+        canvas[ "data-processing-sources" ] =  options.sketch;
+        canvas.style.display = "none";   
+        options.canvas = canvas;
+        
+        options.parentTarget && options.parentTarget.appendChild( options.canvas );
 
         init( this );
       },
@@ -119,6 +113,7 @@
 
         options.codeReady && !this.media.paused && options.pjsInstance.loop();
         options.canvas.style.display = "inline";
+
       },
 
       end: function( event, options ) {
