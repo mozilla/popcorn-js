@@ -11,6 +11,7 @@ test("Popcorn 0.1 XML Parser Plugin", function () {
       start();
       // clean up added events after tests
       clearInterval( interval );
+      poppercorn.pause();
     }
   }
   
@@ -55,7 +56,7 @@ test("Popcorn 0.1 XML Parser Plugin", function () {
 
   poppercorn.parseXML( "data/unit.XML", function() {
 
-    poppercorn.currentTime(5);
+    poppercorn.currentTime(5).play();
   });  
 });
 
