@@ -1,24 +1,24 @@
 // PLUGIN: WEBPAGE
 
-(function (Popcorn) {
-  
+(function ( Popcorn ) {
+
   /**
-   * Webpages popcorn plug-in 
+   * Webpages popcorn plug-in
    * Creates an iframe showing a website specified by the user
    * Options parameter will need a start, end, id, target and src.
    * Start is the time that you want this plug-in to execute
-   * End is the time that you want this plug-in to stop executing 
+   * End is the time that you want this plug-in to stop executing
    * Id is the id that you want assigned to the iframe
-   * Target is the id of the document element that the iframe needs to be attached to, 
+   * Target is the id of the document element that the iframe needs to be attached to,
    * this target element must exist on the DOM
    * Src is the url of the website that you want the iframe to display
    *
    * @param {Object} options
-   * 
+   *
    * Example:
      var p = Popcorn('#video')
         .webpage({
-          id: "webpages-a", 
+          id: "webpages-a",
           start: 5, // seconds
           end: 15, // seconds
           src: 'http://www.webmademovies.org',
