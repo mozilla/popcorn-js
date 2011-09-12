@@ -1,40 +1,30 @@
-//  suppress console log errors
-if ( !window['console'] ) {
-  var console = {}, 
-      methods = 'log debug info warn error exception assert dir dirxml trace group groupEnd groupCollapsed time timeEnd profile profileEnd count clear notifyFirebug getFirebugElement firebug element'.split(' ');
-  
-  for ( var m in methods ) {
-    console[ methods[m] ] = function () {
-      //Array.prototype.slice.call(arguments)
-    };
-  }  
+if ( !window[ "console" ] ) {
+  jQuery.getScript( "https://getfirebug.com/firebug-lite-debug.js" );
 }
 
+(function( global ) {
 
-(function (global) { 
-  
   //  Store the number of global properties that exist prior to Popcorn API definition
-  
   var Setup = {
-    hasRun: false, 
-    globalSize: 0, 
-    globalCache: [], 
+    hasRun: false,
+    globalSize: 0,
+    globalCache: [],
     globalDiff: []
   };
 
   Setup.getGlobalSize = function() {
 
-    var size = 0;
+    var size = 0, prop;
 
-    for( var p in window ) {
-      if ( p !== "_firebug" ) {
+    for ( prop in window ) {
+      if ( prop !== "_firebug" ) {
         size++;
-        
+
         if ( !Setup.hasRun ) {
-          Setup.globalCache.push( p );
+          Setup.globalCache.push( prop );
         } else {
-          if ( Setup.globalCache.indexOf( p ) === -1 ) {
-            Setup.globalDiff.push( p );
+          if ( Setup.globalCache.indexOf( prop ) === -1 ) {
+            Setup.globalDiff.push( prop );
           }
         }
       }
@@ -42,33 +32,27 @@ if ( !window['console'] ) {
 
     //  account for self
     size++;
-    
+
     //  Store the number of global properties internally
     if ( !Setup.globalSize ) {
       Setup.globalSize = size;
     }
-    
+
     if ( !Setup.hasRun ) {
       Setup.hasRun = true;
     }
-    
+
     return size;
   };
-  
-  
-  
-  Setup.eventset  = "loadstart progress suspend emptied stalled play pause " + 
-                          "loadedmetadata loadeddata waiting playing canplay canplaythrough " + 
-                          "seeking seeked timeupdate ended ratechange durationchange volumechange";
-  
-  Setup.events = Setup.eventset.split(/\s+/g);                              
 
-  
-  
+  Setup.eventset = "loadstart progress suspend emptied stalled play pause " +
+                   "loadedmetadata loadeddata waiting playing canplay canplaythrough " +
+                   "seeking seeked timeupdate ended ratechange durationchange volumechange";
+
+  Setup.events = Setup.eventset.split(/\s+/g);
+
   global.Setup = Setup;
 
-})(window);
-
+})( window );
 
 Setup.getGlobalSize();
-

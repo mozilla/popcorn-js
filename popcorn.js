@@ -1,6 +1,19 @@
 (function(global, document) {
 
-  //  Cache refs to speed up calls to native utils
+  // Popcorn.js does not support archaic browsers
+  if ( !document.addEventListener ) {
+    global.Popcorn = {};
+
+    var methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
+          "forEach extend effects error guid sizeOf isArray nop position disable enable " +
+          "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
+          "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
+
+    while( methods.length ) {
+      global.Popcorn[ methods.shift() ] = function() {};
+    }
+    return;
+  }
 
   var
 
