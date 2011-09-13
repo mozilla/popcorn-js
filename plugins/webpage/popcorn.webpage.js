@@ -28,18 +28,34 @@
    */
   Popcorn.plugin( "webpage" , {
     manifest: {
-      about:{
+      about: {
         name: "Popcorn Webpage Plugin",
         version: "0.1",
         author: "@annasob",
         website: "annasob.wordpress.com"
       },
-      options:{
-        id     : {elem:'input', type:'text', label:'Id'},
-        start  : {elem:'input', type:'text', label:'In'},
-        end    : {elem:'input', type:'text', label:'Out'},
-        src    : {elem:'input', type:'text', label:'Src'},
-        target : 'iframe-container'
+      options: {
+        id: {
+          elem: "input",
+          type: "text",
+          label: "Id"
+        },
+        start: {
+          elem: "input",
+          type: "text",
+          label: "In"
+        },
+        end: {
+          elem: "input",
+          type: "text",
+          label: "Out"
+        },
+        src: {
+          elem: "input",
+          type: "text",
+          label: "Src"
+        },
+        target: "iframe-container"
       }
     },
     _setup : function( options ) {
@@ -47,41 +63,41 @@
       var target = document.getElementById( options.target );
 
       // make an iframe
-      options._iframe  = document.createElement( 'iframe' );
-      options._iframe.setAttribute('width', "100%");
-      options._iframe.setAttribute('height', "100%");
-      options._iframe.id  = options.id;
+      options._iframe = document.createElement( "iframe" );
+      options._iframe.setAttribute( "width", "100%" );
+      options._iframe.setAttribute( "height", "100%" );
+      options._iframe.id = options.id;
       options._iframe.src = options.src;
-      options._iframe.style.display = 'none';
+      options._iframe.style.display = "none";
 
       if ( !target && Popcorn.plugin.debug ) {
         throw new Error( "target container doesn't exist" );
       }
 
       // add the hidden iframe to the DOM
-      target && target.appendChild(options._iframe);
-      
+      target && target.appendChild( options._iframe );
+
     },
     /**
-     * @member webpage 
-     * The start function will be executed when the currentTime 
-     * of the video  reaches the start time provided by the 
+     * @member webpage
+     * The start function will be executed when the currentTime
+     * of the video  reaches the start time provided by the
      * options variable
      */
-    start: function(event, options){
+    start: function( event, options ){
       // make the iframe visible
       options._iframe.src = options.src;
-      options._iframe.style.display = 'inline';
+      options._iframe.style.display = "inline";
     },
     /**
-     * @member webpage 
-     * The end function will be executed when the currentTime 
-     * of the video  reaches the end time provided by the 
+     * @member webpage
+     * The end function will be executed when the currentTime
+     * of the video  reaches the end time provided by the
      * options variable
      */
-    end: function(event, options){
+    end: function( event, options ){
       // make the iframe invisible
-      options._iframe.style.display = 'none';
+      options._iframe.style.display = "none";
     },
     _teardown: function( options ) {
 

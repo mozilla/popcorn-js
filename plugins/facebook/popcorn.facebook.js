@@ -2,7 +2,7 @@
 
 (function(Popcorn, global ) {
 /**
-  * Facebook Popcorn plug-in 
+  * Facebook Popcorn plug-in
   * Places Facebook's "social plugins" inside a div ( http://developers.facebook.com/docs/plugins/ )
   * Sets options according to user input or default values
   * Options parameter will need a target, type, start and end time
@@ -31,7 +31,7 @@
   * Xid - unique identifier if more than one live-streams are on one page
   *
   * @param {Object} options
-  * 
+  *
   * Example:
     var p = Popcorn('#video')
       .facebook({
@@ -61,39 +61,119 @@
   }
 
   Popcorn.plugin( "facebook" , {
-    manifest:{
-      about:{
-        name   : "Popcorn Facebook Plugin",
+    manifest: {
+      about: {
+        name: "Popcorn Facebook Plugin",
         version: "0.1",
-        author : "Dan Ventura",
+        author: "Dan Ventura",
         website: "dsventura.blogspot.com"
       },
-      options:{
-        type   : {elem:"select", options:["LIKE", "LIKE-BOX", "ACTIVITY", "FACEPILE", "LIVE-STREAM", "SEND"], label:"Type"},
-        target : "facebook-container",
-        start  : {elem:'input', type:'number', label:'In'},
-        end    : {elem:'input', type:'number', label:'Out'},
+      options: {
+        type: {
+          elem: "select",
+          options: [ "LIKE", "LIKE-BOX", "ACTIVITY", "FACEPILE", "LIVE-STREAM", "SEND" ],
+          label: "Type"
+        },
+        target: "facebook-container",
+        start: {
+          elem: "input",
+          type: "number",
+          label: "In"
+        },
+        end: {
+          elem: "input",
+          type: "number",
+          label: "Out"
+        },
         // optional parameters:
-        font   : {elem:"input", type:"text", label:"font"},        
-        xid    : {elem:"input", type:"text", label:"Xid"},
-        href   : {elem:"input", type:"text", label:"Href"},
-        site   : {elem:"input", type:"text", label:"Site"},
-        height : {elem:"input", type:"text", label:"Height"},
-        width  : {elem:"input", type:"text", label:"Width"},
-        action : {elem:"select", options:["like", "recommend"], label:"Action"},
-        stream : {elem:"select", options:["false", "true"], label:"Stream"},
-        header : {elem:"select", options:["false", "true"], label:"Header"},
-        layout : {elem:"select", options:["standard", "button_count", "box_count"], label:"Layout"},
-        max_rows     : {elem:"input", type:"text", label:"Max_rows"},
-        border_color : {elem:"input", type:"text", label:"Border_color"},
-        event_app_id : {elem:"input", type:"text", label:"Event_app_id"},
-        colorscheme  : {elem:"select", options:["light", "dark"], label:"Colorscheme"},
-        show_faces   : {elem:"select", options:["false", "true"], label:"Showfaces"},
-        recommendations        : {elem:"select", options:["false", "true"], label:"Recommendations"},
-        always_post_to_friends : {elem:"input",  options:["false", "true"], label:"Always_post_to_friends"}
+        font: {
+          elem: "input",
+          type: "text",
+          label: "font"
+        },
+        xid: {
+          elem: "input",
+          type: "text",
+          label: "Xid"
+        },
+        href: {
+          elem: "input",
+          type: "text",
+          label: "Href"
+        },
+        site: {
+          elem: "input",
+          type: "text",
+          label:"Site"
+        },
+        height: {
+          elem: "input",
+          type: "text",
+          label: "Height"
+        },
+        width: {
+          elem: "input",
+          type: "text",
+          label: "Width"
+        },
+        action: {
+          elem: "select",
+          options: [ "like", "recommend" ],
+          label: "Action"
+        },
+        stream: {
+          elem: "select",
+          options: [ "false", "true" ],
+          label: "Stream"
+        },
+        header: {
+          elem: "select",
+          options: [ "false", "true" ],
+          label: "Header"
+        },
+        layout: {
+          elem: "select",
+          options: [ "standard", "button_count", "box_count" ],
+          label: "Layout"
+        },
+        max_rows: {
+          elem: "input",
+          type: "text",
+          label: "Max_rows"
+        },
+        border_color: {
+          elem: "input",
+          type: "text",
+          label: "Border_color"
+        },
+        event_app_id: {
+          elem: "input",
+          type: "text",
+          label: "Event_app_id"
+        },
+        colorscheme: {
+           elem: "select",
+           options: [ "light", "dark" ],
+           label: "Colorscheme"
+        },
+        show_faces: {
+           elem: "select",
+           options: [ "false", "true" ],
+           label: "Showfaces"
+        },
+        recommendations: {
+           elem: "select",
+           options: [ "false", "true" ],
+           label: "Recommendations"
+        },
+        always_post_to_friends: {
+          elem: "input",
+          options: [ "false", "true" ],
+          label: "Always_post_to_friends"
+        }
       }
     },
-    
+
     _setup: function( options ) {
 
       var target = document.getElementById( options.target );
@@ -104,18 +184,18 @@
         fbRoot.setAttribute( "id", "fb-root" );
         document.body.appendChild( fbRoot );
       }
-      
+
       if ( !ranOnce || options.event_app_id ) {
         ranOnce = true;
         // initialize facebook JS SDK
-        Popcorn.getScript("http://connect.facebook.net/en_US/all.js");
+        Popcorn.getScript( "http://connect.facebook.net/en_US/all.js" );
 
         global.fbAsyncInit = function() {
           FB.init({
-            appId  : ( options.event_app_id || "" ),
-            status : true,
-            cookie : true,
-            xfbml  : true
+            appId: ( options.event_app_id || "" ),
+            status: true,
+            cookie: true,
+            xfbml: true
           });
         };
       }
@@ -133,7 +213,6 @@
       }
 
       options._container = document.createElement( "fb:" + options.type );
-
 
       var setOptions = (function( options ) {
 
@@ -217,4 +296,3 @@
   });
 
 })( Popcorn, this );
-

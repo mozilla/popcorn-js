@@ -1,11 +1,11 @@
 // PLUGIN: GML
 
-(function (Popcorn) {
+(function ( Popcorn ) {
 
   var gmlPlayer = function( $p ) {
 
         var _stroke = 0,
-            onPt = 0, 
+            onPt = 0,
             onStroke = 0,
             x = null,
             y = null,
@@ -94,9 +94,9 @@
               var tag = data.gml.tag,
                   app_name =  tag.header && tag.header.client && tag.header.client.name;
 
-              rotation = app_name === 'Graffiti Analysis 2.0: DustTag' ||
-                         app_name === 'DustTag: Graffiti Analysis 2.0' ||
-                         app_name === 'Fat Tag - Katsu Edition';
+              rotation = app_name === "Graffiti Analysis 2.0: DustTag" ||
+                         app_name === "DustTag: Graffiti Analysis 2.0" ||
+                         app_name === "Fat Tag - Katsu Edition";
 
               play = function() {
 
@@ -121,18 +121,18 @@
           dataReady();
         };
       };
-  
+
   /**
-   * Grafiti markup Language (GML) popcorn plug-in 
+   * Grafiti markup Language (GML) popcorn plug-in
    * Renders a GML tag inside an HTML element
    * Options parameter will need a mandatory start, end, target, gmltag.
    * Optional parameters: none.
    * Start is the time that you want this plug-in to execute
-   * End is the time that you want this plug-in to stop executing 
+   * End is the time that you want this plug-in to stop executing
    * Target is the id of the document element that you wish to render the grafiti in
    * gmltag is the numerical reference to a gml tag via 000000book.com
    * @param {Object} options
-   * 
+   *
    * Example:
      var p = Popcorn('#video')
        .gml({
@@ -149,7 +149,7 @@
 
       var self = this,
           target = document.getElementById( options.target );
-      
+
       options.endDrawing = options.endDrawing || options.end;
 
       // create a canvas to put in the target div
@@ -189,9 +189,9 @@
       readyCheck();
     },
     /**
-     * @member gml 
-     * The start function will be executed when the currentTime 
-     * of the video  reaches the start time provided by the 
+     * @member gml
+     * The start function will be executed when the currentTime
+     * of the video  reaches the start time provided by the
      * options variable
      */
     start: function( event, options ) {
@@ -200,9 +200,9 @@
       options.container.style.display = "block";
     },
     /**
-     * @member gml 
-     * The end function will be executed when the currentTime 
-     * of the video  reaches the end time provided by the 
+     * @member gml
+     * The end function will be executed when the currentTime
+     * of the video  reaches the end time provided by the
      * options variable
      */
     end: function( event, options ) {
