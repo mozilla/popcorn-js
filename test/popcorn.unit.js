@@ -3219,6 +3219,7 @@ test("Popcorn.getScript()", function() {
   function plus() {
     if ( ++count === expects ) {
       start();
+      delete window["testFunction"];
     }
   }
 
@@ -3281,18 +3282,18 @@ test("Popcorn.getScript()", function() {
   );
 
 
-	var cb = function( id ) {
-		if ( window.testFunction ) {
-			ok( true, "testFunction called by plugin id#: " + id );
-			plus();
-		} else {
-			ok( false, "testFunction called by plugin id#: " + id );
-			plus();
-		}
-	}
+  var cb = function( id ) {
+    if ( window.testFunction ) {
+      ok( true, "testFunction called by plugin id#: " + id );
+      plus();
+    } else {
+      ok( false, "testFunction called by plugin id#: " + id );
+      plus();
+    }
+  }
 
-	Popcorn.getScript( "data/testfunction.js", function() { cb( 1 ); } );
-	Popcorn.getScript( "data/testfunction.js", function() { cb( 2 ); } );
+  Popcorn.getScript( "data/testfunction.js", function() { cb( 1 ); } );
+  Popcorn.getScript( "data/testfunction.js", function() { cb( 2 ); } );
 });
 
 
