@@ -1794,7 +1794,9 @@
       }
     }
   };
-
+  
+  // alias for exec function
+  Popcorn.p.cue = Popcorn.p.exec;
 
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;

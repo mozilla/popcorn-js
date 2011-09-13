@@ -542,6 +542,13 @@ test("exec", function() {
 
 });
 
+test( "cue (alias of exec)", function() {
+  expect( 3 );
+  ok( Popcorn.p.cue, "Popcorn.p.cue exists" );	
+  equal( typeof Popcorn.p.cue, "function", "Popcorn.p.cue is a function" );
+  deepEqual( Popcorn.p.cue, Popcorn.p.exec, "Popcorn.p.cue equals Popcorn.p.exec" );
+});
+
 test("mute", function() {
 
   var video = Popcorn("#video"),
