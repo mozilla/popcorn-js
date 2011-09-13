@@ -79,7 +79,7 @@
             type: "text",
             label: "Out"
           },
-          target:  "wordriver-container",
+          target: "wordriver-container",
           text: {
             elem: "input",
             type: "text",

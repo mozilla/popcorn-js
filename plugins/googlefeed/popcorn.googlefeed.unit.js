@@ -1,4 +1,4 @@
-test("Popcorn Google Feed Plugin", function () {
+test( "Popcorn Google Feed Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 13,
@@ -8,7 +8,7 @@ test("Popcorn Google Feed Plugin", function () {
   expect( expects );
 
   function plus() {
-    if ( ++count === expects) {
+    if ( ++count === expects ) {
       start();
     }
   }
@@ -46,7 +46,7 @@ test("Popcorn Google Feed Plugin", function () {
     plus();
     ok( GFdynamicFeedControl, "Dynamic Feed Control Available" );
     plus();
-    ok ( document.getElementById( "_feed1" ), "First feed is on the page" );
+    ok( document.getElementById( "_feed1" ), "First feed is on the page" );
     plus();
     equals ( document.getElementById( "_feed1" ).offsetParent.id, "feed", "First feed is inside the 'feed' div" );
     plus();
@@ -54,18 +54,18 @@ test("Popcorn Google Feed Plugin", function () {
     plus();
   });
   popped.exec( 2, function() {
-    ok ( document.getElementById( "_feed2" ), "Second feed is on the page" );
+    ok( document.getElementById( "_feed2" ), "Second feed is on the page" );
     plus();
-    equals ( document.getElementById( "_feed2" ).offsetParent.id, "feed1", "Second feed is inside the 'feed2' div" );
+    equals( document.getElementById( "_feed2" ).offsetParent.id, "feed1", "Second feed is inside the 'feed2' div" );
     plus();
   });
   popped.exec( 3, function() {
-    ok ( document.getElementById( "_feed2" ).style.display === "none" &&
+    ok( document.getElementById( "_feed2" ).style.display === "none" &&
         document.getElementById( "_feed1" ).style.display === "none", "Both feeds are no lnger visible" );
 	  plus();
 
     popped.pause().removeTrackEvent( setupId );
-    ok( !document.getElementById( "feed1" ).children[ 0 ], "removed feed was properly destroyed"  );
+    ok( !document.getElementById( "feed1" ).children[ 0 ], "removed feed was properly destroyed" );
     plus();
   });
 

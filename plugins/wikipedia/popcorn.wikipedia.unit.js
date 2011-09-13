@@ -1,4 +1,4 @@
-test( "Popcorn wikipedia Plugin", function () {
+test( "Popcorn wikipedia Plugin", function() {
   
   var popped = Popcorn( "#video" ),
       expects = 13, 
@@ -15,10 +15,10 @@ test( "Popcorn wikipedia Plugin", function () {
   
   stop();
    
-  ok ( "wikipedia" in popped, "wikipedia is a mehtod of the popped instance" );
+  ok( "wikipedia" in popped, "wikipedia is a mehtod of the popped instance" );
   plus();
   
-  equals ( theArticle.innerHTML, "", "initially, there is nothing in the wikidiv" );
+  equals( theArticle.innerHTML, "", "initially, there is nothing in the wikidiv" );
   plus();
   
   popped.wikipedia({

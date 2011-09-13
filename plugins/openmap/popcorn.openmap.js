@@ -110,7 +110,7 @@
           displayProjection = new OpenLayers.Projection( "EPSG:4326" );
           projection = new OpenLayers.Projection( "EPSG:4326" );
           options.map = new OpenLayers.Map( {div: newdiv, projection: projection } );
-          var relief = new OpenLayers.Layer.WMS( "USGS Terraserver", "http://terraserver-usa.org/ogcmap.ashx?", { layers: 'DRG' } );
+          var relief = new OpenLayers.Layer.WMS( "USGS Terraserver", "http://terraserver-usa.org/ogcmap.ashx?", { layers: "DRG" } );
           options.map.addLayer( relief );
         } else {
           // add OpenStreetMap layer

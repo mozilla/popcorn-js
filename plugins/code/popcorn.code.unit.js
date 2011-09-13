@@ -1,4 +1,4 @@
-test( "Popcorn Code Plugin", function () {
+test( "Popcorn Code Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 9,
@@ -9,7 +9,7 @@ test( "Popcorn Code Plugin", function () {
   expect( expects );
 
   function plus() {
-    if ( ++count === expects) {
+    if ( ++count === expects ) {
       start();
     }
   }
@@ -19,7 +19,7 @@ test( "Popcorn Code Plugin", function () {
   ok( "code" in popped, "code is a method of the popped instance" );
   plus();
 
-  equals ( codeDiv.innerHTML, "", "initially, there is nothing inside the code-div" );
+  equals( codeDiv.innerHTML, "", "initially, there is nothing inside the code-div" );
   plus();
 
   popped.code({

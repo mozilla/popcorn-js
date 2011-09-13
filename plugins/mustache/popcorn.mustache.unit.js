@@ -1,4 +1,4 @@
-test( "Popcorn Mustache Plugin", function () {
+test( "Popcorn Mustache Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 6,

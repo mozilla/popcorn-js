@@ -101,7 +101,7 @@ test( "Processing plugin tests", function() {
     var idx = 5;
     while ( --idx ) {
       popped.removeTrackEvent( trackids.pop() );
-      ok ( !document.getElementById( "processing-div-" + ( idx ) ).children[ 0 ], "track event was removed" );
+      ok( !document.getElementById( "processing-div-" + ( idx ) ).children[ 0 ], "track event was removed" );
       plus();
     }
   });
@@ -140,7 +140,7 @@ test( "Processing plugin tests", function() {
   try {
     popped.processing({});
   } catch( e ) {
-    ok(true, 'empty event was caught by debug');
+    ok( true, "empty event was caught by debug" );
     plus();
   }
 

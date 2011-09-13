@@ -84,7 +84,7 @@
   *
   */
 
-  Popcorn.plugin( "mustache" , function( options ) {
+  Popcorn.plugin( "mustache" , function( options ){
 
     var getData, data, getTemplate, template;
 

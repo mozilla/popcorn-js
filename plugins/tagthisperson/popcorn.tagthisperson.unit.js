@@ -1,4 +1,4 @@
-test( "Popcorn tagthisperson Plugin", function () {
+test( "Popcorn tagthisperson Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 8,

@@ -1,4 +1,4 @@
-test( "Popcorn Twitter Plugin", function () {
+test( "Popcorn Twitter Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 7,

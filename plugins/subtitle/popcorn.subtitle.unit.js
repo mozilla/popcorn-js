@@ -1,4 +1,4 @@
-test( "Popcorn Subtitle Plugin", function () {
+test( "Popcorn Subtitle Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       popped2 = Popcorn( "#video2" ),
@@ -19,7 +19,7 @@ test( "Popcorn Subtitle Plugin", function () {
 
   stop( 12000 );
 
-  ok ( "subtitle" in popped, "subtitle is a method of the popped instance" );
+  ok( "subtitle" in popped, "subtitle is a method of the popped instance" );
   plus();
 
   popped.subtitle({
@@ -98,7 +98,7 @@ test( "Popcorn Subtitle Plugin", function () {
     ok( Popcorn.position( subtitlediv ).top > popped.position().top, "subtitle top position moved" );
     plus();
 
-    equals ( subtitlediv.children[ 1 ].innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
+    equals( subtitlediv.children[ 1 ].innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
     plus();
 
     popped.media.play();
@@ -108,7 +108,7 @@ test( "Popcorn Subtitle Plugin", function () {
   popped.exec( 4, function() {
 
     popped.media.pause();
-    equals ( subtitlediv.children[ 1 ].innerHTML, "", "subtitle is clear" );
+    equals( subtitlediv.children[ 1 ].innerHTML, "", "subtitle is clear" );
     plus();
 
     popped.media.play();
@@ -123,16 +123,16 @@ test( "Popcorn Subtitle Plugin", function () {
   popped2.exec( 8, function() {
     popped2.media.pause();
 
-    equals ( subtitlediv.children[ 3 ].innerHTML, "instance one test", "subtitle displaying correct information" );
+    equals( subtitlediv.children[ 3 ].innerHTML, "instance one test", "subtitle displaying correct information" );
     plus();
-    equals ( subtitle2div.children[ 0 ].innerHTML, "instance two test", "subtitle displaying correct information" );
+    equals( subtitle2div.children[ 0 ].innerHTML, "instance two test", "subtitle displaying correct information" );
     plus();
 
     popped.media.play();
   });
 
   popped.exec( 10, function() {
-    ok ( document.getElementById( "subtitle-0" ).style.display === "none" &&
+    ok( document.getElementById( "subtitle-0" ).style.display === "none" &&
         document.getElementById( "subtitle-1" ).style.display === "none" &&
         document.getElementById( "subtitle-2" ).style.display === "none", "All subtitles are no longer visible" );
     plus();

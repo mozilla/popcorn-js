@@ -1,4 +1,4 @@
-test( "Popcorn Pause Plugin", function () {
+test( "Popcorn Pause Plugin", function() {
 
   var expectedTests = 3 ,
       anchorA = document.getElementById( "anchorA" ),
@@ -7,7 +7,7 @@ test( "Popcorn Pause Plugin", function () {
 
   var simulateClickOn = function ( paramElement ) {
 
-    if ( typeof paramElement.click == "Function" ) {
+    if ( typeof paramElement.click === "Function" ) {
       paramElement.click() ;
       return ;
     }
@@ -25,12 +25,12 @@ test( "Popcorn Pause Plugin", function () {
 
   var otherVideo = Popcorn( "#video2" , {
         pauseOnLinkClicked: true
-      });
+  });
   otherVideo.play() ;
 
   var popped = Popcorn( "#video" , {
         pauseOnLinkClicked: true
-      });
+  });
 
   popped.code ({
     start: 2.000,
@@ -38,7 +38,7 @@ test( "Popcorn Pause Plugin", function () {
     onStart: function ( options ) {
       var currentTime = popped.currentTime() ;
       simulateClickOn( anchorA ) ;
-      ok (
+      ok(
         ( currentTime + tolerance >= 2 ) && ( currentTime - tolerance <= 2 ) ,
         "Video successfully stopped with a click on an anchor at " +
         "second 2 approximately (" + currentTime + ")"
@@ -53,10 +53,10 @@ test( "Popcorn Pause Plugin", function () {
     onStart: function ( options ) {
       var currentTime = popped.currentTime() ;
       simulateClickOn( anchorB ) ;
-      ok (
+      ok(
         ( currentTime + tolerance >= 5.561 ) && ( currentTime - tolerance <= 5.561 ) ,
-        'Video successfully stopped with a click on an anchor at ' +
-        'second 5.561 approximately (' + currentTime + ')'
+        "Video successfully stopped with a click on an anchor at " +
+        "second 5.561 approximately (" + currentTime + ")"
       );
     start() ;
     }

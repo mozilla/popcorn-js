@@ -1,4 +1,4 @@
-test("Popcorn Flickr Plugin", function () {
+test( "Popcorn Flickr Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 11,
@@ -19,7 +19,7 @@ test("Popcorn Flickr Plugin", function () {
   ok( "flickr" in popped, "flickr is a method of the popped instance" );
   plus();
 
-  equals ( flickrdiv.innerHTML, "", "initially, there is nothing inside the flickrdiv" );
+  equals( flickrdiv.innerHTML, "", "initially, there is nothing inside the flickrdiv" );
   plus();
 
   popped.flickr({

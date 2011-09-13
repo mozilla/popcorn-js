@@ -34,7 +34,7 @@
   Popcorn.plugin( "twitter" , {
 
       manifest: {
-        about:{
+        about: {
           name: "Popcorn Twitter Plugin",
           version: "0.1",
           author: "Scott Downe",
@@ -82,7 +82,7 @@
         // setup widget div that is unique per track
         options.container = document.createElement( "div" );
         // use this id to connect it to the widget
-        options.container.setAttribute( "id", Popcorn.guid());
+        options.container.setAttribute( "id", Popcorn.guid() );
         // display none by default
         options.container.style.display = "none";
 

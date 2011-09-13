@@ -1,4 +1,4 @@
-test ("Popcorn LinkedIn Plugin", function () {
+test( "Popcorn LinkedIn Plugin", function() {
 
   if ( /localhost/.test( location.hostname ) ) {
 
@@ -170,7 +170,7 @@ test ("Popcorn LinkedIn Plugin", function () {
 
       // Make sure _teardown functionality works
       popped.pause().removeTrackEvent( setupId );
-      ok( !companyprofilediv.children[ 1 ], "companyprofilediv plugin was properly destroyed"  );
+      ok( !companyprofilediv.children[ 1 ], "companyprofilediv plugin was properly destroyed" );
       plus();
     });
 

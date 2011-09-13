@@ -1,4 +1,4 @@
-test( "Popcorn wordriver Plugin", function () {
+test( "Popcorn wordriver Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 17,
@@ -17,10 +17,10 @@ test( "Popcorn wordriver Plugin", function () {
 
   stop();
 
-  ok ( "wordriver" in popped, "wordriver is a method of the popped instance" );
+  ok( "wordriver" in popped, "wordriver is a method of the popped instance" );
   plus();
 
-  equals ( wordriverdiv.childElementCount, 0, "initially, there is nothing inside the wordriverdiv" );
+  equals( wordriverdiv.childElementCount, 0, "initially, there is nothing inside the wordriverdiv" );
   plus();
 
   popped.wordriver({

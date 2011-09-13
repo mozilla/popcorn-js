@@ -1,4 +1,4 @@
-test( "Popcorn lower third Plugin", function () {
+test( "Popcorn lower third Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 8,
@@ -8,14 +8,14 @@ test( "Popcorn lower third Plugin", function () {
   expect( expects );
 
   function plus() {
-    if ( ++count===expects ) {
+    if ( ++count === expects ) {
       start();
     }
   }
 
   stop();
 
-  ok ( "lowerthird" in popped, "lowerthird is a method of the popped instance" );
+  ok( "lowerthird" in popped, "lowerthird is a method of the popped instance" );
   plus();
 
   equals ( lowerthirddiv.innerHTML, "", "initially, there is nothing inside the lowerthirddiv" );
@@ -56,19 +56,19 @@ test( "Popcorn lower third Plugin", function () {
     .volume( 0 );
 
   popped.exec( 1, function() {
-    equals ( popped.container.innerHTML, "Mr Hyde<br>Monster", "first lowerthird is visible" );
+    equals( popped.container.innerHTML, "Mr Hyde<br>Monster", "first lowerthird is visible" );
     plus();
   });
 
   popped.exec( 3, function() {
-    equals ( lowerthirddiv.innerHTML, "<div>Dr Jekyll<br>Person</div>", "second lowerthird is visible" );
+    equals( lowerthirddiv.innerHTML, "<div>Dr Jekyll<br>Person</div>", "second lowerthird is visible" );
     plus();
   });
 
   popped.exec( 5, function() {
-    equals ( popped.container.innerHTML, "", "first lowerthird is empty" );
+    equals( popped.container.innerHTML, "", "first lowerthird is empty" );
     plus();
-    equals ( lowerthirddiv.innerHTML, "<div></div>", "second lowerthird is empty" );
+    equals( lowerthirddiv.innerHTML, "<div></div>", "second lowerthird is empty" );
     plus();
   });
 

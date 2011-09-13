@@ -1,4 +1,4 @@
-test( "Popcorn Image Plugin", function () {
+test( "Popcorn Image Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 9,

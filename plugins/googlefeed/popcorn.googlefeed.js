@@ -79,7 +79,7 @@
   *
   */
 
-  Popcorn.plugin( "googlefeed" , function( options ) {
+  Popcorn.plugin( "googlefeed", function( options ) {
 
     // create a new div and append it to the parent div so nothing
     // that already exists in the parent div gets overwritten
@@ -176,7 +176,7 @@
       },
       orientation: {
         elem: "select",
-        options: [ "Vertical","Horizontal" ],
+        options: [ "Vertical", "Horizontal" ],
         label: "orientation"
       }
     }

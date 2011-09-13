@@ -1,4 +1,4 @@
-test( "Popcorn Google Map Plugin", function () {
+test( "Popcorn Google Map Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 15,
@@ -15,16 +15,16 @@ test( "Popcorn Google Map Plugin", function () {
 
   stop();
 
-  ok ( "googlemap" in popped, "googlemap is a mehtod of the popped instance" );
+  ok( "googlemap" in popped, "googlemap is a method of the popped instance" );
   plus();
 
-  ok ( document.getElementById( "map" ).innerHTML === "", "initially, there is nothing inside the map" );
+  ok( document.getElementById( "map" ).innerHTML === "", "initially, there is nothing inside the map" );
   plus();
 
-  ok ( document.getElementById( "map2" ).innerHTML === "", "initially, there is nothing inside the map2" );
+  ok( document.getElementById( "map2" ).innerHTML === "", "initially, there is nothing inside the map2" );
   plus();
 
-  ok ( document.getElementById( "map3" ).innerHTML === "", "initially, there is nothing inside the map3" );
+  ok( document.getElementById( "map3" ).innerHTML === "", "initially, there is nothing inside the map3" );
   plus();
 
   popped.googlemap({
@@ -64,28 +64,28 @@ test( "Popcorn Google Map Plugin", function () {
     plus();
     ok( google.maps.Geocoder, "Google maps Geocoder is available" );
     plus();
-    ok ( document.getElementById( "actualmap1" ), "First map is on the page" );
+    ok( document.getElementById( "actualmap1" ), "First map is on the page" );
     plus();
-    equals ( document.getElementById( "actualmap1" ).offsetParent.id, "map", "First map is inside the 'map' div" );
+    equals( document.getElementById( "actualmap1" ).offsetParent.id, "map", "First map is inside the 'map' div" );
     plus();
     equals( popped.data.trackEvents.byStart[ 1 ].zoom, 8, "Defaulting to zoom of 8" );
     plus();
   });
 
   popped.exec( 1, function() {
-    ok ( document.getElementById( "actualmap2" ), "Second map is on the page" );
+    ok( document.getElementById( "actualmap2" ), "Second map is on the page" );
     plus();
-    equals ( document.getElementById( "actualmap2" ).offsetParent.id, "map2", "Second map is inside the 'map2' div" );
+    equals( document.getElementById( "actualmap2" ).offsetParent.id, "map2", "Second map is inside the 'map2' div" );
     plus();
   });
 
   popped.exec( 3, function() {
-    equals ( document.getElementById( "actualmap3" ).offsetParent.id, "map3", "Tweening map is inside the 'map3' div" );
+    equals( document.getElementById( "actualmap3" ).offsetParent.id, "map3", "Tweening map is inside the 'map3' div" );
     plus();
   });
 
   popped.exec( 5, function() {
-    ok ( document.getElementById( "actualmap2" ).style.display === "none" && 
+    ok( document.getElementById( "actualmap2" ).style.display === "none" && 
         document.getElementById( "actualmap1" ).style.display === "none" &&
         document.getElementById( "actualmap3" ).style.display === "none", "All maps are no longer visible" );
     plus();

@@ -1,4 +1,4 @@
-test( "Popcorn Facebook Plugin", function () {
+test( "Popcorn Facebook Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 9,
@@ -12,7 +12,7 @@ test( "Popcorn Facebook Plugin", function () {
   expect( expects );
 
   function plus() {
-    if ( ++count===expects ) {
+    if ( ++count === expects ) {
       start();
     }
   }
@@ -52,35 +52,35 @@ test( "Popcorn Facebook Plugin", function () {
     .volume( 0 )
     .play();
 
-  ok ( document.getElementById( "likediv" ), "likediv exists on the page" );
+  ok( document.getElementById( "likediv" ), "likediv exists on the page" );
   plus();
-  ok ( document.getElementById( "likeboxdiv" ), "likeboxdiv exists on the page" );
+  ok( document.getElementById( "likeboxdiv" ), "likeboxdiv exists on the page" );
   plus();
-  ok ( document.getElementById( "activitydiv" ), "activitydiv exists on the page" );
+  ok( document.getElementById( "activitydiv" ), "activitydiv exists on the page" );
   plus();
-  ok ( document.getElementById( "facepilediv" ), "facepilediv exists on the page" );
+  ok( document.getElementById( "facepilediv" ), "facepilediv exists on the page" );
   plus();
 
   // I inspected the html genterated by facebook, and found that there are no uniquely identifying attributes between plug-in types
   // so right now, we just check ot make sure that facebook is returning a plugin and displaying it at the correct time.
 
   popped.exec( 2, function() {
-    ok ( document.getElementById( "likediv" ).innerHTML, "likediv is not empty at 0:02 (expected)" );
+    ok( document.getElementById( "likediv" ).innerHTML, "likediv is not empty at 0:02 (expected)" );
     plus();
   });
 
   popped.exec( 3, function() {
-    ok ( document.getElementById( "likeboxdiv" ).innerHTML, "likeboxdiv is not empty at 0:03 (expected)" );
+    ok( document.getElementById( "likeboxdiv" ).innerHTML, "likeboxdiv is not empty at 0:03 (expected)" );
     plus();
   });
 
   popped.exec( 4, function() {
-    ok ( document.getElementById( "activitydiv" ).innerHTML, "Activitydiv is not empty at 0:04 (expected)" );
+    ok( document.getElementById( "activitydiv" ).innerHTML, "Activitydiv is not empty at 0:04 (expected)" );
     plus();
   });
 
   popped.exec( 5, function() {
-    ok ( document.getElementById( "facepilediv" ).innerHTML, "Facepilediv is not empty at 0:05 (expected)" );
+    ok( document.getElementById( "facepilediv" ).innerHTML, "Facepilediv is not empty at 0:05 (expected)" );
     plus();
   });
 });

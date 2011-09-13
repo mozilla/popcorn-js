@@ -58,7 +58,7 @@
         target: "iframe-container"
       }
     },
-    _setup : function( options ) {
+    _setup: function( options ) {
 
       var target = document.getElementById( options.target );
 

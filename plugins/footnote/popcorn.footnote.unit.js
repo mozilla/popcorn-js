@@ -1,4 +1,4 @@
-test( "Popcorn Footnote Plugin", function () {
+test( "Popcorn Footnote Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 8,
@@ -9,17 +9,17 @@ test( "Popcorn Footnote Plugin", function () {
   expect( expects );
 
   function plus() {
-    if ( ++count===expects) {
+    if ( ++count===expects ) {
       start();
     }
   }
 
   stop();
 
-  ok ( "footnote" in popped, "footnote is a mehtod of the popped instance" );
+  ok( "footnote" in popped, "footnote is a mehtod of the popped instance" );
   plus();
 
-  equals ( footnotediv.childElementCount, 0, "initially, there is nothing inside the footnotediv" );
+  equals( footnotediv.childElementCount, 0, "initially, there is nothing inside the footnotediv" );
   plus();
 
   popped.footnote({
@@ -38,21 +38,21 @@ test( "Popcorn Footnote Plugin", function () {
   setupId = popped.getLastTrackEventId();
 
   popped.exec( 0, function() {
-    equals ( footnotediv.childElementCount, 2, "footnotediv now has two inner elements" );
+    equals( footnotediv.childElementCount, 2, "footnotediv now has two inner elements" );
     plus();
-    equals ( footnotediv.children[ 0 ].innerHTML , "This video made exclusively for drumbeat.org", "footnote displaing correct information" );
+    equals( footnotediv.children[ 0 ].innerHTML, "This video made exclusively for drumbeat.org", "footnote displaing correct information" );
     plus();
-    equals ( footnotediv.children[ 0 ].style.display , "inline", "footnote is visible on the page" );
+    equals( footnotediv.children[ 0 ].style.display, "inline", "footnote is visible on the page" );
     plus();
   });
 
   popped.exec( 3, function() {
-    equals ( footnotediv.children[ 1 ].style.display , "inline", "second footnote is visible on the page" );
+    equals( footnotediv.children[ 1 ].style.display, "inline", "second footnote is visible on the page" );
     plus();
   });
 
   popped.exec( 4, function() {
-    ok ( footnotediv.children[ 1 ].style.display === "none" &&  footnotediv.children[0].style.display === 'none', "footnote are no longer vidible on the page" );
+    ok( footnotediv.children[ 1 ].style.display === "none" &&  footnotediv.children[ 0 ].style.display === 'none', "footnote are no longer vidible on the page" );
     plus();
 
     popped.pause().removeTrackEvent( setupId );
@@ -64,7 +64,7 @@ test( "Popcorn Footnote Plugin", function () {
 });
 
 
-test( "Popcorn Text Plugin", function () {
+test( "Popcorn Text Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 2,
@@ -94,7 +94,7 @@ test( "Popcorn Text Plugin", function () {
 
   popped.exec( 2, function() {
 
-    equal( textdiv.children[ 0 ].innerHTML , "I am an alias", "I am an alias set by Popcorn.p.text" );
+    equal( textdiv.children[ 0 ].innerHTML, "I am an alias", "I am an alias set by Popcorn.p.text" );
     plus();
 
   }).currentTime( 1 ).play();

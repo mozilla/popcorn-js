@@ -29,7 +29,7 @@
    *
    */
 
-  Popcorn.plugin( "lowerthird" , {
+  Popcorn.plugin( "lowerthird", {
 
       manifest: {
         about:{
@@ -60,7 +60,7 @@
             type: "text",
             label: "Text"
           },
-          role : {
+          role: {
             elem: "input",
             type: "text",
             label: "Text"
@@ -119,9 +119,9 @@
        * of the video reaches the end time provided by the
        * options variable
        */
-      end: function(event, options) {
+      end: function( event, options ) {
         options.container.innerHTML = "";
       }
 
-  } );
+  });
 })( Popcorn );

@@ -7,7 +7,7 @@
         if ( data.artist ) {
           var htmlString = "";
 
-          htmlString = "<h3>"+data.artist.name+"</h3>";
+          htmlString = "<h3>" + data.artist.name + "</h3>";
           htmlString += "<a href='" + data.artist.url + "' target='_blank' style='float:left;margin:0 10px 0 0;'><img src='" + data.artist.image[ 2 ][ "#text"] + "' alt=''></a>";
           htmlString += "<p>" + data.artist.bio.summary + "</p>";
           htmlString += "<hr /><p><h4>Tags</h4><ul>";

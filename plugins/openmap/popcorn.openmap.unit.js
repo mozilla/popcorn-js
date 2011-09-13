@@ -1,4 +1,4 @@
-test( "Popcorn OpenMap Plugin", function () {
+test( "Popcorn OpenMap Plugin", function() {
 
   var popped = Popcorn( "#video" ),
      expects = 15,
@@ -7,23 +7,23 @@ test( "Popcorn OpenMap Plugin", function () {
   expect( expects );
 
   function plus() {
-    if ( ++count===expects ) {
+    if ( ++count === expects ) {
       start();
     }
   }
 
   stop();
 
-  ok ( "openmap" in popped, "openmap is a method of the popped instance" );
+  ok( "openmap" in popped, "openmap is a method of the popped instance" );
   plus();
 
-  ok ( document.getElementById( "map" ).innerHTML === "", "initially, there is nothing inside map" );
+  ok( document.getElementById( "map" ).innerHTML === "", "initially, there is nothing inside map" );
   plus();
 
-  ok ( document.getElementById( "map2" ).innerHTML === "", "initially, there is nothing inside map2" );
+  ok( document.getElementById( "map2" ).innerHTML === "", "initially, there is nothing inside map2" );
   plus();
 
-  ok ( document.getElementById( "map3" ).innerHTML === "", "initially, there is nothing inside map3" );
+  ok( document.getElementById( "map3" ).innerHTML === "", "initially, there is nothing inside map3" );
   plus();
 
   popped.openmap({
@@ -70,32 +70,32 @@ test( "Popcorn OpenMap Plugin", function () {
     ok( OpenLayers, "OpenLayers is available" );
     plus();
 
-    ok ( document.getElementById( "openmapdiv1" ), "First map is on the page" );
+    ok( document.getElementById( "openmapdiv1" ), "First map is on the page" );
     plus();
 
-    equals ( document.getElementById( "openmapdiv1" ).offsetParent.id, "map", "First map is inside the 'map' div" );
+    equals( document.getElementById( "openmapdiv1" ).offsetParent.id, "map", "First map is inside the 'map' div" );
     plus();
 
-    ok ( document.getElementById( "openmapdiv2" ), "Second map is on the page" );
+    ok( document.getElementById( "openmapdiv2" ), "Second map is on the page" );
     plus();
 
-    equals ( document.getElementById( "openmapdiv2" ).offsetParent.id, "map2", "Second map is inside the 'map2' div" );
+    equals( document.getElementById( "openmapdiv2" ).offsetParent.id, "map2", "Second map is inside the 'map2' div" );
     plus();
 
-    ok ( document.getElementById( "openmapdiv3" ), "Third map is on the page" );
+    ok( document.getElementById( "openmapdiv3" ), "Third map is on the page" );
     plus();
 
-    equals ( document.getElementById( "openmapdiv3" ).offsetParent.id, "map3", "Third map is inside the 'map3' div" );
+    equals( document.getElementById( "openmapdiv3" ).offsetParent.id, "map3", "Third map is inside the 'map3' div" );
     plus();
 
-    ok ( document.getElementById( "openmapdiv4" ), "Fourth map is on the page" );
+    ok( document.getElementById( "openmapdiv4" ), "Fourth map is on the page" );
     plus();
-    equals ( document.getElementById( "openmapdiv4" ).offsetParent.id, "map4", "Fourth map is inside the 'map4' div" );
+    equals( document.getElementById( "openmapdiv4" ).offsetParent.id, "map4", "Fourth map is inside the 'map4' div" );
     plus();
 
   } )
   .exec( 5, function() {
-    ok ( document.getElementById( "openmapdiv2" ).style.display === "none" &&
+    ok( document.getElementById( "openmapdiv2" ).style.display === "none" &&
         document.getElementById( "openmapdiv3" ).style.display === "none" &&
         document.getElementById( "openmapdiv4" ).style.display === "none" &&
         document.getElementById( "openmapdiv1" ).style.display === "none", "All three maps are no longer visible" );
