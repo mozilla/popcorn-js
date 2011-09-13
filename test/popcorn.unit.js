@@ -511,7 +511,7 @@ test("exec", function() {
       hasLooped = false,
       loop = 0;
 
-  expect( expects + 4 );
+  expect( expects + 1 );
 
   function plus(){
     if ( ++count == expects ) {
@@ -519,9 +519,6 @@ test("exec", function() {
       setTimeout( function() {
 
         equals( loop, expects, "exec callback repeat check, only called twice" );
-        ok( Popcorn.p.cue, "Popcorn.p.cue exists" );
-				equal( typeof Popcorn.p.cue, "function", "Popcorn.p.cue is a function" );
-				deepEqual( Popcorn.p.cue, Popcorn.p.exec, "Popcorn.p.cue equals Popcorn.p.exec" );
         Popcorn.removePlugin( popped, "exec" );
         start();
 
@@ -543,6 +540,13 @@ test("exec", function() {
     }
   }).currentTime(3).play();
 
+});
+
+test( "cue (alias of exec)", function() {
+  expect( 3 );
+  ok( Popcorn.p.cue, "Popcorn.p.cue exists" );	
+  equal( typeof Popcorn.p.cue, "function", "Popcorn.p.cue is a function" );
+  deepEqual( Popcorn.p.cue, Popcorn.p.exec, "Popcorn.p.cue equals Popcorn.p.exec" );
 });
 
 test("mute", function() {
