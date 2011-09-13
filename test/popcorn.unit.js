@@ -3291,8 +3291,8 @@ test("Popcorn.getScript()", function() {
 		}
 	}
 
-	Popcorn.getScript( "testfunction.js", function() { cb( 1 ); } );
-	Popcorn.getScript( "testfunction.js", function() { cb( 2 ); } );
+	Popcorn.getScript( "data/testfunction.js", function() { cb( 1 ); } );
+	Popcorn.getScript( "data/testfunction.js", function() { cb( 2 ); } );
 });
 
 
