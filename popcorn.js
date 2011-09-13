@@ -1637,27 +1637,21 @@
 
     }
 
-    script.onload = script.onreadystatechange = function() {
+    script.onload = function() {
 
-      if ( !script.readyState || /loaded|complete/.test( script.readyState ) ) {
-
-        //  Handling remote script loading callbacks
-        if ( isScript ) {
-
-          //  getScript
-          success && success();
-        }
-
-        //  Executing for JSONP requests
-        if ( isFired ) {
-
-          //  Garbage collect the callback
-          delete window[ callback ];
-
-          //  Garbage collect the script resource
-          head.removeChild( script );
-        }
+      //  Handling remote script loading callbacks
+      if ( isScript ) {
+        //  getScript
+        success && success();
       }
+
+      //  Executing for JSONP requests
+      if ( isFired ) {
+        //  Garbage collect the callback
+        delete window[ callback ];
+      }
+      //  Garbage collect the script resource
+      head.removeChild( script );
     };
 
     script.src = url;
@@ -1794,7 +1788,7 @@
       }
     }
   };
-  
+
   // alias for exec function
   Popcorn.p.cue = Popcorn.p.exec;
 
