@@ -52,7 +52,7 @@ test("API", function () {
 test("Popcorn.* Static Methods", function () {
 
   var statics = [ "forEach", "extend", "error", "guid", "sizeOf", "nop",
-                  "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent", "position", "disable", "enable" ],
+                  "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent", "position", "disable", "enable", "timeUpdate" ],
     substatics = [ "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent"];
 
   expect(statics.length + substatics.length);
@@ -1647,6 +1647,57 @@ test("Update Timer", function () {
 
 });
 
+
+test("timeUpdate add track event while paused", function() {
+
+  var $pop = Popcorn( "#video" ),
+    count = 0,
+    expects = 3;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "timeUpdateTester" );
+      Popcorn.removeInstance( $pop );
+    }
+  }
+
+  Popcorn.plugin("timeUpdateTester", function() {
+    return {
+      start: function () {
+        var div = document.createElement("div");
+        div.id = "timeUpdate-test";
+
+        document.body.appendChild(div);
+      },
+      end: function () {
+        document.getElementById("timeUpdate-test").parentNode.removeChild(document.getElementById("timeUpdate-test"));
+      }
+    };
+  });
+
+  $pop.currentTime(40).pause();
+
+  equals( $pop.getTrackEvents().length, 0, "Initially no trackEvents" );
+  plus();
+
+  $pop.timeUpdateTester({
+    id:"timeUpdateID",
+    start:40,
+    end: 41
+  });
+
+  equals( $pop.getTrackEvents().length, 1, "trackEvent successfully added" );
+  plus();
+
+  ok( document.getElementById( "timeUpdate-test" ), "trackEvent successfully added, content was displayed while video was paused" );
+  plus();
+
+  $pop.removeTrackEvent( "timeUpdateID" );
+
+});
+
 test("Plugin Factory", function () {
 
   QUnit.reset();
@@ -2624,49 +2675,6 @@ test("Index Integrity", function () {
 
   p.play();
 
-
-});
-
-test("timeUpdate functionality", function() {
-
-  var $pop = Popcorn( "#video" ),
-    count = 0,
-    expects = 4;
-
-  expect( expects );
-
-  Popcorn.plugin("timeUpdateTester", function() {
-    return {
-      start: function () {
-        var div = document.createElement("div");
-        div.id = "timeUpdate-test";
-
-        document.body.appendChild(div);
-      },
-      end: function () {
-        document.getElementById("timeUpdate-test").parentNode.removeChild(document.getElementById("timeUpdate-test"));
-      }
-    };
-  });
-
-  equals( typeof Popcorn.timeUpdate, "function", "timeUpdate is a function of Popcorn" );
-
-  $pop.currentTime(40).pause();
-
-  equals( $pop.getTrackEvents().length, 0, "Initially no trackEvents" );
-  
-  $pop.timeUpdateTester({
-    id:"timeUpdateID",
-    start:40,
-    end: 41
-  });
-
-  equals( $pop.getTrackEvents().length, 1, "trackEvent successfully added" );
-
-  ok( document.getElementById( "timeUpdate-test" ), "trackEvent successfully added, content was displayed while video was paused" );
-
-  $pop.removeTrackEvent( "timeUpdateID" );
-  Popcorn.removeInstance( $pop );
 
 });
 
