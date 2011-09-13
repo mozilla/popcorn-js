@@ -544,7 +544,7 @@ test("exec", function() {
 
 test( "cue (alias of exec)", function() {
   expect( 3 );
-  ok( Popcorn.p.cue, "Popcorn.p.cue exists" );	
+  ok( Popcorn.p.cue, "Popcorn.p.cue exists" );
   equal( typeof Popcorn.p.cue, "function", "Popcorn.p.cue is a function" );
   deepEqual( Popcorn.p.cue, Popcorn.p.exec, "Popcorn.p.cue equals Popcorn.p.exec" );
 });
@@ -3276,39 +3276,23 @@ test("Popcorn.getScript()", function() {
       ok( ("has" in window) , "Popcorn.getScript https://github.com/rwldrn/has.js/raw/master/has.js loaded: `has` is available");
       plus();
 
-
       delete window["has"];
     }
   );
 
 
+	var cb = function( id ) {
+		if ( window.testFunction ) {
+			ok( true, "testFunction called by plugin id#: " + id );
+			plus();
+		} else {
+			ok( false, "testFunction called by plugin id#: " + id );
+			plus();
+		}
+	}
 
-  Popcorn.xhr({
-
-    url: "data/remoteA.js",
-
-    dataType: "script",
-
-    success: function( exists ) {
-
-      ok( exists, "Success, remoteA loaded once");
-      plus()
-    }
-  });
-
-  Popcorn.getScript(
-
-    "data/remoteB.js",
-
-    function( exists ) {
-
-      ok( exists, "Success, remoteB loaded once");
-      plus()
-
-    }
-  );
-
-
+	Popcorn.getScript( "testfunction.js", function() { cb( 1 ); } );
+	Popcorn.getScript( "testfunction.js", function() { cb( 2 ); } );
 });
 
 

@@ -1579,21 +1579,6 @@
 
   Popcorn.xhr.getJSONP = function( url, success, isScript ) {
 
-    //  If this is a script request, ensure that we do not call something that has already been loaded
-    if ( isScript ) {
-
-      var scripts = document.querySelectorAll( "script[src=\"" + url + "\"]" );
-
-      //  If there are scripts with this url loaded, early return
-      if ( scripts.length ) {
-
-        //  Execute success callback and pass "exists" flag
-        success && success( true );
-
-        return;
-      }
-    }
-
     var head = document.head || document.getElementsByTagName( "head" )[ 0 ] || document.documentElement,
       script = document.createElement( "script" ),
       paramStr = url.split( "?" )[ 1 ],
@@ -1619,22 +1604,19 @@
 
       //  If a callback name already exists
       if ( !!window[ callback ] ) {
-
         //  Create a new unique callback name
         callback = Popcorn.guid( callback );
       }
 
       //  Define the JSONP success callback globally
       window[ callback ] = function( data ) {
-
+        // Fire success callbacks
         success && success( data );
         isFired = true;
-
       };
 
       //  Replace callback param and callback name
       url = url.replace( parts.join( "=" ), parts[ 0 ] + "=" + callback );
-
     }
 
     script.onload = function() {
