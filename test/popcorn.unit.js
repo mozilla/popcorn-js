@@ -2614,16 +2614,16 @@ test( "In/Out aliases", function() {
 
   popcorn.currentTime( 0 ).pause();
 
-  equals( counter, 0, "Container is initially empty" );
+  equals( counter, 0, "Counter is at 0, neither in or out have been called" );
   plus();
 
   popcorn.exec( 2, function() {
-    equals( counter, 1, "Container is displaying 'Showing', in alias is working" );
+    equals( counter, 1, "Counter is at 1, in has been called" );
     plus();
   });
 
   popcorn.exec( 4, function() {
-    equals( counter, 2, "Container is displaying nothing again, out alias is working" );
+    equals( counter, 2, "Counter is at 2, out has been called" );
     plus();
   });
 
