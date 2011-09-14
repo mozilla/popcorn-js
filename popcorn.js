@@ -1232,6 +1232,15 @@
 
       //  Ensure a manifest object, an empty object is a sufficient fallback
       options._natives.manifest = manifest;
+      
+      
+      if ( options[ "in" ] ) {
+          options.start = options[ "in" ];
+      }
+
+      if ( options[ "out" ] ) {
+          options.end = options[ "out" ];
+      }
 
       //  Checks for expected properties
       if ( !( "start" in options ) ) {

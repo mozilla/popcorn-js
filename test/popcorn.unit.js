@@ -2578,6 +2578,66 @@ test("Defaulting Empty End Values", function() {
   });
 });
 
+test( "In/Out aliases", function() {
+  var popcorn = Popcorn( "#video" ),
+      expects = 3,
+      count = 0,
+      aliasDiv = document.createElement( "div" );
+      
+  document.body.appendChild( aliasDiv );
+
+  expect( expects );
+  stop( 5000 );
+
+  function plus() {
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "aliasTester" );
+      document.body.removeChild( aliasDiv );
+      start();
+    }
+  }
+
+  aliasDiv.id = "aliasDiv";
+
+  Popcorn.plugin( "aliasTester", function() {
+
+    return {
+      start: function() {
+        var div = document.getElementById( "aliasDiv" );
+        div.style.display = "inline";
+        div.innerHTML = "Showing";       
+      },
+      end: function() {
+        var div = document.getElementById( "aliasDiv" );
+        div.innerHTML = "";
+        div.style.display = "none";   
+      }
+    };
+  });
+
+  popcorn.aliasTester({
+    in: 1,
+    out: 3
+  });
+
+  popcorn.currentTime( 0 ).pause();
+
+  equals( aliasDiv.innerHTML, "", "Container is initially empty" );
+  plus();
+
+  popcorn.exec( 2, function() {
+    equals( aliasDiv.innerHTML, "Showing", "Container is displaying 'Showing', in alias is working" );
+    plus();
+  });
+
+  popcorn.exec( 4, function() {
+    equals( aliasDiv.innerHTML, "", "Container is displaying nothing again, out alias is working" );
+    plus();
+  });
+
+  popcorn.play();
+});
+
 module("Popcorn TrackEvents");
 test("Functions", function() {
 
