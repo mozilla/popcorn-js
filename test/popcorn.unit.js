@@ -2582,9 +2582,7 @@ test( "In/Out aliases", function() {
   var popcorn = Popcorn( "#video" ),
       expects = 3,
       count = 0,
-      aliasDiv = document.createElement( "div" );
-      
-  document.body.appendChild( aliasDiv );
+      counter = 0; 
 
   expect( expects );
   stop( 5000 );
@@ -2592,25 +2590,19 @@ test( "In/Out aliases", function() {
   function plus() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "aliasTester" );
-      document.body.removeChild( aliasDiv );
+      Popcorn.removeInstance( popcorn );
       start();
     }
   }
-
-  aliasDiv.id = "aliasDiv";
 
   Popcorn.plugin( "aliasTester", function() {
 
     return {
       start: function() {
-        var div = document.getElementById( "aliasDiv" );
-        div.style.display = "inline";
-        div.innerHTML = "Showing";       
+        counter++;
       },
       end: function() {
-        var div = document.getElementById( "aliasDiv" );
-        div.innerHTML = "";
-        div.style.display = "none";   
+        counter++;
       }
     };
   });
@@ -2622,16 +2614,16 @@ test( "In/Out aliases", function() {
 
   popcorn.currentTime( 0 ).pause();
 
-  equals( aliasDiv.innerHTML, "", "Container is initially empty" );
+  equals( counter, 0, "Container is initially empty" );
   plus();
 
   popcorn.exec( 2, function() {
-    equals( aliasDiv.innerHTML, "Showing", "Container is displaying 'Showing', in alias is working" );
+    equals( counter, 1, "Container is displaying 'Showing', in alias is working" );
     plus();
   });
 
   popcorn.exec( 4, function() {
-    equals( aliasDiv.innerHTML, "", "Container is displaying nothing again, out alias is working" );
+    equals( counter, 2, "Container is displaying nothing again, out alias is working" );
     plus();
   });
 
