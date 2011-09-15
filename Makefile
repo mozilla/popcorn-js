@@ -160,6 +160,10 @@ lint:
 	@@echo "Checking Popcorn against JSLint..."
 	@@$(call run_lint,popcorn.js)
 
+lint-core-tests:
+	@@echo "Checking core unit tests against JSLint..."
+	@@$(call run_lint,test/popcorn.unit.js)
+
 lint-plugins:
 	@@echo "Checking all plugins against JSLint..."
 	@@$(call run_lint,$(PLUGINS_SRC))
