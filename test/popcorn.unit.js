@@ -3671,3 +3671,14 @@ test("Parser Support", function() {
 
   });
 });
+
+module("Popcorn Test Runner End");
+test("Last Check", function() {
+  //  Trigger follow-up tests to run in iframes
+  (function( $ ) {
+    $("iframe[data-src]").attr( "src", function() {
+      return $(this).data("src");
+    });
+    ok( true, "iframe tests run");
+  })( jQuery );
+});
