@@ -268,7 +268,7 @@ test("Instances", function() {
   ok( instance instanceof Popcorn, "Instance instanceof Popcorn" );
   plus();
 
-  equal( Popcorn.instances.length, 2, "There are the correct number of Popcorn instances" );
+  equal( Popcorn.instances.length, 1, "There are the correct number of Popcorn instances" );
   plus();
 
   //  Create another instance
@@ -278,7 +278,7 @@ test("Instances", function() {
   var remove = Popcorn.instances[1];
 
   //  Remove and check the length of the currently cached instances
-  equal( Popcorn.removeInstanceById( remove.id ).length, 2, "Removing an instance by id: 1 instance remains" );
+  equal( Popcorn.removeInstanceById( remove.id ).length, 1, "Removing an instance by id: 1 instance remains" );
   plus();
 });
 
