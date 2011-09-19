@@ -85,7 +85,7 @@ test("Popcorn 0.3 JSON Parser Plugin - AUDIO", function () {
       trackData,
       trackEvents,
       interval,
-      audiocorn = Popcorn.getInstanceById("audio");
+      audiocorn = Popcorn("#audio");
 
   function plus() {
     if ( ++count === expects ) {
