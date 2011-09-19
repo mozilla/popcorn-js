@@ -50,7 +50,8 @@
     expect( 3 );
 
     var count = 0,
-        p = Popcorn.getInstanceById( "video" );
+        p = Popcorn.getInstanceById( "video" )
+        .volume( 0 );
 
     function plus() {
       if ( ++count === 3 ) {
