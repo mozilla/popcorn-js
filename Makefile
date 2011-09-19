@@ -226,7 +226,7 @@ lint-player-tests:
 	@@echo "Checking player unit tests against JSLint..."
 	@@$(call run_lint,$(PLAYERS_UNIT))
 
-lint-unit-tests: lint-plugin-tests lint-parser-tests lint-player-tests lint-effects-tests
+lint-unit-tests: lint-modules-tests lint-plugin-tests lint-parser-tests lint-player-tests lint-effects-tests
 	@@echo "completed"
 
 # Create a mirror copy of the tree in dist/ using popcorn-complete.js
