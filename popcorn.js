@@ -95,12 +95,11 @@
       events[ item ] = null;
     }
 
-    //instance.media.removeEventListener( "timeupdate", function( event ) {
-      //console.log("HERE");
-      //Popcorn.timeUpdate( that, event );
-    //}, false );
-
-    instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
+    if ( instance.media.readyState >= 2 ) {
+      instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
+    } else {
+      throw ( "Attempting to remove event listener before event has been added!" );
+    }  
 
     Popcorn.removeInstance( instance );
   };
@@ -282,17 +281,12 @@
 
           } else {
 
-        that.data.timeUpdateFunction = function( event ) {
-          console.log( "here" );
-          Popcorn.timeUpdate( that, event );
-        }
+            that.data.timeUpdateFunction = function( event ) {
+              console.log( "in time update" );
+              Popcorn.timeUpdate( that, event );
+            }
 
-         //  that.media.addEventListener( "timeupdate", function( event ) {
-           //  console.log("HERE");
-            // Popcorn.timeUpdate( that, event );
-           //}, false );
-           //
-           that.media.addEventListener( "timeupdate", that.data.timeUpdateFunction, false );
+            that.media.addEventListener( "timeupdate", that.data.timeUpdateFunction, false );
           }
         } else {
           global.setTimeout(function() {
