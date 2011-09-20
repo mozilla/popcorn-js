@@ -282,6 +282,80 @@ test("Instances", function() {
   plus();
 });
 
+test( "Popcorn.destroy", function() {
+  var popcorn = Popcorn( "#video" ),
+      expects = 8,
+      count = 0,
+      playCounter = 0,
+      timeUpdateCounter = 0;
+
+  expect( expects );
+
+  function plus() {
+    if( ++count === expects ) {
+      start();
+    }
+  }
+
+  function howMany() {
+    var counter = 0;
+
+    for( things in popcorn.data.events ) {
+      counter++;
+    }
+
+    return counter;
+  }
+
+  stop();
+
+  //  initially no listeners
+  equals( howMany(), 0, "Initially no events have been added" );
+  plus();
+
+  equals( playCounter, 0, "playCounter is intially 0" );
+  plus();
+
+  equals( timeUpdateCounter, 0, "timeUpdateCounter is intially 0" );
+  plus();
+
+  //  add some event listeners for testing
+  popcorn.listen( "timeupdate", function( event ) { timeUpdateCounter++; }, false );
+  popcorn.listen( "play", function( event ) { playCounter++; }, false );
+
+  popcorn.play( 0 );
+
+  popcorn.exec( 1, function() {
+    popcorn.pause();
+
+    equals( howMany(), 2, "popcorn.data.events has correct number of events - before Popcorn.destroy" );
+    plus();
+
+    equals( playCounter, 1, "playCounter triggered exactly 1 time" );
+    plus();
+
+    equals( timeUpdateCounter, 4, "timeUpdateCounter triggered exactly 4 times" );
+    plus();
+
+    playCounter = timeUpdateCounter = 0;
+
+    popcorn.destroy();
+    popcorn.currentTime( 0 ).play();
+
+    popcorn.exec( 0.25, function() {
+      popcorn.pause();
+
+      equals( playCounter, 0, "playCounter was not triggered - after destroy called" );
+      plus();
+
+      equals( timeUpdateCounter, 0, "timeUpdateCounter was not triggered - after destroy called" );
+      plus();
+    });
+
+  });
+
+});
+
 test("guid", function() {
 
   expect(6);

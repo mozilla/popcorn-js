@@ -4,7 +4,7 @@
   if ( !document.addEventListener ) {
     global.Popcorn = {};
 
-    var methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
+    var methods = ( "removeInstance destroy addInstance getInstanceById removeInstanceById " +
           "forEach extend effects error guid sizeOf isArray nop position disable enable " +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
           "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
@@ -80,6 +80,29 @@
 
     //  Return current modified instances
     return Popcorn.instances;
+  };
+
+  Popcorn.destroy = function( instance ) {
+    var events = instance.data.events,
+        singleEvent;
+
+    //  Iterate through all events and remove them
+    for( item in events ) {
+      singleEvent = events[ item ];
+      for( fn in singleEvent ) {
+        delete singleEvent[ fn ];
+      }
+      events[ item ] = null;
+    }
+
+    //instance.media.removeEventListener( "timeupdate", function( event ) {
+      //console.log("HERE");
+      //Popcorn.timeUpdate( that, event );
+    //}, false );
+
+    instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
+
+    Popcorn.removeInstance( instance );
   };
 
   //  Addes a Popcorn instance to the Popcorn instance array
@@ -259,10 +282,17 @@
 
           } else {
 
-            that.media.addEventListener( "timeupdate", function( event ) {
+        that.data.timeUpdateFunction = function( event ) {
+          console.log( "here" );
+          Popcorn.timeUpdate( that, event );
+        }
 
-              Popcorn.timeUpdate( that, event );
-            }, false );
+         //  that.media.addEventListener( "timeupdate", function( event ) {
+           //  console.log("HERE");
+            // Popcorn.timeUpdate( that, event );
+           //}, false );
+           //
+           that.media.addEventListener( "timeupdate", that.data.timeUpdateFunction, false );
           }
         } else {
           global.setTimeout(function() {
@@ -1142,6 +1172,11 @@
 
     timeUpdate: function( event ) {
       Popcorn.timeUpdate.call( null, this, event );
+      return this;
+    },
+
+    destroy: function() {
+      Popcorn.destroy.call( null, this );
       return this;
     }
   });
