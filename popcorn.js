@@ -4,8 +4,8 @@
   if ( !document.addEventListener ) {
     global.Popcorn = {};
 
-    var methods = ( "removeInstance destroy addInstance getInstanceById removeInstanceById " +
-          "forEach extend effects error guid sizeOf isArray nop position disable enable " +
+    var methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
+          "forEach extend effects error guid sizeOf isArray nop position disable enable destroy " +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
           "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
 
@@ -32,6 +32,7 @@
   readyStack = [],
   readyBound = false,
   readyFired = false,
+  isDestroyed = false,
 
   //  Non-public internal data object
   internal = {
@@ -80,28 +81,6 @@
 
     //  Return current modified instances
     return Popcorn.instances;
-  };
-
-  Popcorn.destroy = function( instance ) {
-    var events = instance.data.events,
-        singleEvent;
-
-    //  Iterate through all events and remove them
-    for( item in events ) {
-      singleEvent = events[ item ];
-      for( fn in singleEvent ) {
-        delete singleEvent[ fn ];
-      }
-      events[ item ] = null;
-    }
-
-    if ( instance.media.readyState >= 2 ) {
-      instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
-    } else {
-      throw ( "Attempting to remove event listener before event has been added!" );
-    }  
-
-    Popcorn.removeInstance( instance );
   };
 
   //  Addes a Popcorn instance to the Popcorn instance array
@@ -282,11 +261,10 @@
           } else {
 
             that.data.timeUpdateFunction = function( event ) {
-              console.log( "in time update" );
               Popcorn.timeUpdate( that, event );
             }
 
-            that.media.addEventListener( "timeupdate", that.data.timeUpdateFunction, false );
+            !isDestroyed && that.media.addEventListener( "timeupdate", that.data.timeUpdateFunction, false );
           }
         } else {
           global.setTimeout(function() {
@@ -420,6 +398,24 @@
       }
 
       return instance;
+    },
+    destroy: function( instance ) {
+      var events = instance.data.events,
+          singleEvent, item, fn;
+
+      //  Iterate through all events and remove them
+      for ( item in events ) {
+        singleEvent = events[ item ];
+        for ( fn in singleEvent ) {
+          delete singleEvent[ fn ];
+        }
+        events[ item ] = null;
+      }
+
+      instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
+      isDestroyed = true;
+
+      Popcorn.removeInstance( instance );
     }
   });
 
