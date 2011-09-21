@@ -32,7 +32,6 @@
   readyStack = [],
   readyBound = false,
   readyFired = false,
-  isDestroyed = false,
 
   //  Non-public internal data object
   internal = {
@@ -184,6 +183,8 @@
 
       this.options = options || {};
 
+      this.isDestroyed = false;
+
       this.data = {
 
         // Allows disabling a plugin per instance
@@ -263,8 +264,10 @@
             that.data.timeUpdateFunction = function( event ) {
               Popcorn.timeUpdate( that, event );
             }
-
-            !isDestroyed && that.media.addEventListener( "timeupdate", that.data.timeUpdateFunction, false );
+            
+            if ( !that.isDestroyed ) {
+              that.media.addEventListener( "timeupdate", that.data.timeUpdateFunction, false );
+            }
           }
         } else {
           global.setTimeout(function() {
@@ -412,8 +415,10 @@
         events[ item ] = null;
       }
 
-      instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
-      isDestroyed = true;
+      if ( !instance.isDestroyed ) {
+        instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
+        instance.isDestroyed = true;
+      }
 
       Popcorn.removeInstance( instance );
     }
