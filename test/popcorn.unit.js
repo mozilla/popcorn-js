@@ -601,6 +601,46 @@ test("mute", function() {
 
 });
 
+test("play(n) as shorthand to currentTime(n).play()", function() {
+
+  var $pop = Popcorn( "#video" ),
+    expects = 2,
+    count = 0,
+    fired = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count == expects ) {
+      start();
+    }
+  }
+
+  stop( 1000 );
+
+  function poll() {
+
+    if ( $pop.media.readyState >= 2 ) {
+      // this should trigger immediately
+
+      $pop.play( 10 ).pause();
+
+      equal( Math.round($pop.currentTime()), 10, "play(n) sets currentTime to 10" );
+      plus();
+
+      $pop.pause( 5 );
+
+      equal( Math.round($pop.currentTime()), 5, "pause(n) sets currentTime to 5" );
+      plus();
+
+    } else {
+      setTimeout( poll, 10 );
+    }
+  }
+
+  poll();
+});
+
 
 module("Popcorn Static Methods");
 
