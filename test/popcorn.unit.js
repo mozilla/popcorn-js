@@ -2598,10 +2598,10 @@ test( "In/Out aliases", function() {
   Popcorn.plugin( "aliasTester", function() {
 
     return {
-      start: function() {
+      in: function() {
         counter++;
       },
-      end: function() {
+      out: function() {
         counter++;
       }
     };
@@ -2613,6 +2613,11 @@ test( "In/Out aliases", function() {
   });
 
   popcorn.currentTime( 0 ).pause();
+
+  ok( popcorn.data.events[ "in" ], "in is a valid alias for start" );
+  plus();
+
+  ok( popcorn.data.events[ "out" ], "out is a valid alias for end" ); 
 
   equals( counter, 0, "Counter is at 0, neither in or out have been called" );
   plus();
