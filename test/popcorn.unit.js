@@ -284,7 +284,8 @@ test("Instances", function() {
 
 test( "Popcorn.destroy", function() {
   var popcorn = Popcorn( "#video" ),
-      expects = 8,
+      pcorn,
+      expects = 7,
       count = 0,
       playCounter = 0,
       timeUpdateCounter = 0;
@@ -293,24 +294,15 @@ test( "Popcorn.destroy", function() {
 
   function plus() {
     if( ++count === expects ) {
+      pcorn.destroy();
       start();
     }
-  }
-
-  function howMany() {
-    var counter = 0;
-
-    for( things in popcorn.data.events ) {
-      counter++;
-    }
-
-    return counter;
   }
 
   stop();
 
   //  initially no listeners
-  equals( howMany(), 0, "Initially no events have been added" );
+  equals( Popcorn.sizeOf( popcorn.data.events ), 0, "Initially no events have been added" );
   plus();
 
   equals( playCounter, 0, "playCounter is intially 0" );
@@ -323,35 +315,44 @@ test( "Popcorn.destroy", function() {
   popcorn.listen( "timeupdate", function( event ) { timeUpdateCounter++; }, false );
   popcorn.listen( "play", function( event ) { playCounter++; }, false );
 
-  popcorn.play( 0 );
+  popcorn.currentTime( 0 ).play();
 
   popcorn.exec( 1, function() {
     popcorn.pause();
 
-    equals( howMany(), 2, "popcorn.data.events has correct number of events - before Popcorn.destroy" );
+    equals( Popcorn.sizeOf( popcorn.data.events ), 2, "popcorn.data.events has correct number of events - before Popcorn.destroy" );
     plus();
 
     equals( playCounter, 1, "playCounter triggered exactly 1 time" );
     plus();
 
-    equals( timeUpdateCounter, 4, "timeUpdateCounter triggered exactly 4 times" );
+    equals( timeUpdateCounter, 5, "timeUpdateCounter triggered exactly 4 times" );
     plus();
 
     playCounter = timeUpdateCounter = 0;
 
     popcorn.destroy();
-    popcorn.currentTime( 0 ).play();
 
-    popcorn.exec( 0.25, function() {
-      popcorn.pause();
+    //  Doing this to ensure we are working, a fail will run before this if the old popcorn instances events were
+    //  not properly destroyed
+    pcorn = Popcorn( "#video" );
 
-      equals( playCounter, 0, "playCounter was not triggered - after destroy called" );
-      plus();
+    pcorn.exec( 3, function() {
+      pcorn.pause();
 
-      equals( timeUpdateCounter, 0, "timeUpdateCounter was not triggered - after destroy called" );
+      ok( true, "Second popcorn instance's event was fired instead of first popcorn instance" );
       plus();
     });
 
+    popcorn.currentTime( 0 ).play();
+    pcorn.currentTime( 0 ).play();
+  });
+
+  popcorn.exec( 2, function() {
+    popcorn.pause();
+
+    ok( false, "This exec should never have been run, destroy not working" );
+    plus();
   });
 
 });

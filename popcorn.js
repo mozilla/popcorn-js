@@ -264,7 +264,7 @@
             that.data.timeUpdateFunction = function( event ) {
               Popcorn.timeUpdate( that, event );
             }
-            
+
             if ( !that.isDestroyed ) {
               that.media.addEventListener( "timeupdate", that.data.timeUpdateFunction, false );
             }
