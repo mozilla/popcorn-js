@@ -422,7 +422,7 @@
             // Support for shorthanded play(n)/pause(n) jump to currentTime
             // If arg is not null or undefined and called by one of the
             // allowed shorthandable methods, then set the currentTime
-						// Supports time as seconds or SMPTE
+            // Supports time as seconds or SMPTE
             if ( arg != null && /play|pause/.test( name ) ) {
               this.media.currentTime = Popcorn.util.toSeconds( arg );
             }

@@ -601,7 +601,7 @@ test("mute", function() {
 
 });
 
-test("play(n) as shorthand to currentTime(n).play()", function() {
+test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function() {
 
   var $pop = Popcorn( "#video" ),
     expects = 2,
@@ -639,6 +639,58 @@ test("play(n) as shorthand to currentTime(n).play()", function() {
   }
 
   poll();
+});
+
+// Originally written for #705 by chris de cairos
+test( "play(n)/pause(n) custom stop()", function() {
+
+  // Implement custom stop() method
+  Popcorn.p.stop = function() {
+    return this.pause( 0 );
+  };
+
+  var outerHTML = document.getElementById("video").outerHTML,
+      count = 0,
+      expects = 2,
+      $pop;
+
+  document.getElementById("qunit-fixture").innerHTML = outerHTML.replace('id="video"', 'id="video-fixture"');
+
+  $pop = Popcorn( "#video-fixture" );
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      // Remove custom stop() method
+      delete Popcorn.p.stop;
+      start();
+    }
+  }
+
+  stop( 8000 );
+
+  $pop.listen( "canplayall", function() {
+
+    this.exec( 4, function() {
+
+      this.listen( "seeked", function() {
+
+        this.unlisten( "seeked" );
+
+        equal( this.currentTime(), 0, "currentTime is 0" );
+        plus();
+
+        equal( this.media.paused, true, "The media is paused" );
+        plus();
+
+      // Call custom "stop()"
+      }).stop();
+    });
+
+    // Play from 3s
+    this.play( 3 );
+  });
 });
 
 
@@ -1591,7 +1643,7 @@ test("Update Timer (timeupdate)", function() {
       Popcorn.removePlugin( "forwards" );
       Popcorn.removePlugin( "backwards" );
       Popcorn.removePlugin( "wrapper" );
-      p2.removePlugin( "exec" );
+      p2.removePlugin( "exec" ); // TODO: David, remove this during test suite cleanup ^RW
       start();
     }
   }
@@ -1759,7 +1811,7 @@ test("Update Timer (frameAnimation)", function() {
       Popcorn.removePlugin( "forwards" );
       Popcorn.removePlugin( "backwards" );
       Popcorn.removePlugin( "wrapper" );
-      p2.removePlugin( "exec" );
+      p2.removePlugin( "exec" ); // TODO: David, remove this during test suite cleanup ^RW
       start();
     }
   }
