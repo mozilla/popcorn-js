@@ -2768,8 +2768,6 @@ test( "Index Integrity (frameAnimation)", function() {
   function plus() {
     if ( ++count === expects ) {
       start();
-
-      Popcorn.removeInstance( $pop );
       Popcorn.removePlugin( "ff" );
     }
   }
@@ -2839,8 +2837,6 @@ test( "Popcorn.disable/enable/toggle (timeupdate)", function() {
   function plus() {
     if ( ++count === expects ) {
       start();
-
-      Popcorn.removeInstance( $pop );
       Popcorn.removePlugin( "toggler" );
     }
   }
