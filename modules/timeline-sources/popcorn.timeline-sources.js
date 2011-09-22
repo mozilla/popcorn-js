@@ -35,7 +35,7 @@
             if ( data.length === 1 ) {
 
               // parse a relative URL for the filename, split to get extension
-							data = source.match( /(.*)[\/\\]([^\/\\]+\.\w+)$/ )[ 2 ].split( "." );
+              data = source.match( /(.*)[\/\\]([^\/\\]+\.\w+)$/ )[ 2 ].split( "." );
 
               data[ 0 ] = "parse" + data[ 1 ].toUpperCase();
               data[ 1 ] = source;
