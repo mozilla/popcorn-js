@@ -84,18 +84,19 @@ test("Popcorn Text Plugin", function () {
   plus();
 
   popped.text({
-    start: 0, // seconds
-    end: 3, // seconds
+    start: 5, // seconds
+    end: 6, // seconds
     text: "I am an alias",
     target: "textdiv"
   });
 
   stop();
 
-  popped.exec( 2, function() {
+  popped.exec( 5, function() {
 
     equal( textdiv.children[0].innerHTML , "I am an alias", "I am an alias set by Popcorn.p.text" );
     plus();
 
-  }).currentTime(1).play();
+    popped.pause();
+  }).currentTime(5).play();
 });
