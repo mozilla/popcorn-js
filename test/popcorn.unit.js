@@ -222,66 +222,6 @@ test("Popcorn.util.toSeconds" , function() {
   }
 });
 
-test("Instances", function() {
-  var expects = 11,
-      count   = 0,
-      instance;
-
-  expect(expects);
-
-  function plus(){
-    if ( ++count == expects ) {
-      start();
-    }
-  }
-
-  stop();
-
-  Popcorn("#video");
-
-  ok( typeof Popcorn.addInstance === "function" , "Popcorn.addInstance is a provided static function");
-  plus();
-
-  ok( typeof Popcorn.removeInstance === "function" , "Popcorn.removeInstance is a provided static function");
-  plus();
-
-  ok( typeof Popcorn.getInstanceById === "function" , "Popcorn.getInstanceById is a provided static function");
-  plus();
-
-  ok( typeof Popcorn.removeInstanceById === "function" , "Popcorn.removeInstanceById is a provided static function");
-  plus();
-
-  ok( typeof Popcorn.instanceIds === "object" , "Popcorn.instanceIds is a provided cache object");
-  plus();
-
-  ok( "length" in Popcorn.instances && "join" in Popcorn.instances, "Popcorn.instances is a provided cache array");
-  plus();
-
-  instance = Popcorn.getInstanceById("video");
-
-  ok( instance.video, "Stored instance as a `video` property" );
-  plus();
-
-  ok( instance.data, "Stored instance as a `data` property" );
-  plus();
-
-  ok( instance instanceof Popcorn, "Instance instanceof Popcorn" );
-  plus();
-
-  equal( Popcorn.instances.length, 2, "There are the correct number of Popcorn instances" );
-  plus();
-
-  //  Create another instance
-  Popcorn("#video");
-
-  //  Get a reference to remove
-  var remove = Popcorn.instances[1];
-
-  //  Remove and check the length of the currently cached instances
-  equal( Popcorn.removeInstanceById( remove.id ).length, 2, "Removing an instance by id: 1 instance remains" );
-  plus();
-});
-
 test("guid", function() {
 
   expect(6);
@@ -477,8 +417,6 @@ test("Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
   });
 
   equal( Popcorn.sizeOf( popped.data.trackRefs ), 0, "There are 0 trackRefs in popped.data.trackRefs" );
-
-  //Popcorn.removeInstance( popped );
 });
 
 
@@ -812,7 +750,6 @@ test( "Popcorn.locale object", function() {
   function plus() {
     if ( ++count == expects ) {
       start();
-      Popcorn.removeInstance( $pop );
     }
   }
 
@@ -2909,8 +2846,6 @@ test("Popcorn.disable/enable/toggle (timeupdate)", function() {
   function plus() {
     if ( ++count === expects ) {
       start();
-
-      Popcorn.removeInstance( $pop );
       Popcorn.removePlugin( "toggler" );
     }
   }
