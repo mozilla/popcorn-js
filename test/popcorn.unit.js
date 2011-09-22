@@ -1795,7 +1795,6 @@ test("Update Timer (frameAnimation)", function() {
 });
 
 
-<<<<<<< HEAD
 test("timeUpdate add track event while paused", function() {
 
   var $pop = Popcorn( "#video" ),
