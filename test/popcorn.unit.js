@@ -531,6 +531,102 @@ test("mute", function() {
 
 });
 
+test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function() {
+
+  var $pop = Popcorn( "#video" ),
+    expects = 2,
+    count = 0,
+    fired = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count == expects ) {
+      start();
+    }
+  }
+
+  stop( 1000 );
+
+  function poll() {
+
+    if ( $pop.media.readyState >= 2 ) {
+      // this should trigger immediately
+
+      $pop.play( 10 ).pause();
+
+      equal( Math.round($pop.currentTime()), 10, "play(n) sets currentTime to 10" );
+      plus();
+
+      $pop.pause( 5 );
+
+      equal( Math.round($pop.currentTime()), 5, "pause(n) sets currentTime to 5" );
+      plus();
+
+    } else {
+      setTimeout( poll, 10 );
+    }
+  }
+
+  poll();
+});
+
+// Originally written for #705 by chris de cairos
+test( "play(n)/pause(n) custom stop()", function() {
+
+  // Implement custom stop() method
+  Popcorn.p.stop = function() {
+    return this.pause( 0 );
+  };
+
+  var outerHTML = [
+			"<video id='video-fixture' preload='auto' controls='' style='display:;width:300px' tabindex='0'>",
+			document.getElementById( "video" ).innerHTML,
+			"</video>"
+			].join( "\n" ),
+      count = 0,
+      expects = 2,
+      $pop;
+
+  document.getElementById("qunit-fixture").innerHTML = outerHTML;
+
+  $pop = Popcorn( "#video-fixture" );
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      // Remove custom stop() method
+      delete Popcorn.p.stop;
+      start();
+    }
+  }
+
+  stop( 8000 );
+
+  $pop.listen( "canplayall", function() {
+
+    this.exec( 4, function() {
+
+      this.listen( "seeked", function() {
+
+        this.unlisten( "seeked" );
+
+        equal( this.currentTime(), 0, "currentTime is 0" );
+        plus();
+
+        equal( this.media.paused, true, "The media is paused" );
+        plus();
+
+      // Call custom "stop()"
+      }).stop();
+    });
+
+    // Play from 3s
+    this.play( 3 );
+  });
+});
+
 
 module("Popcorn Static Methods");
 
@@ -1480,7 +1576,7 @@ test("Update Timer (timeupdate)", function() {
       Popcorn.removePlugin( "forwards" );
       Popcorn.removePlugin( "backwards" );
       Popcorn.removePlugin( "wrapper" );
-      p2.removePlugin( "exec" );
+      p2.removePlugin( "exec" ); // TODO: David, remove this during test suite cleanup ^RW
       start();
     }
   }
@@ -1648,7 +1744,7 @@ test("Update Timer (frameAnimation)", function() {
       Popcorn.removePlugin( "forwards" );
       Popcorn.removePlugin( "backwards" );
       Popcorn.removePlugin( "wrapper" );
-      p2.removePlugin( "exec" );
+      p2.removePlugin( "exec" ); // TODO: David, remove this during test suite cleanup ^RW
       start();
     }
   }
