@@ -775,6 +775,8 @@
         break;
       }
     }
+    
+    this.timeUpdate( obj, null );
 
     // Store references to user added trackevents in ref table
     if ( track._id ) {
@@ -927,7 +929,7 @@
         byEnd, byStart, byAnimate, natives, type;
 
     //  Playbar advancing
-    if ( previousTime < currentTime ) {
+    if ( previousTime <= currentTime ) {
 
       while ( tracks.byEnd[ end ] && tracks.byEnd[ end ].end <= currentTime ) {
 
