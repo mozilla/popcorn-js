@@ -419,10 +419,6 @@
         instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
         instance.isDestroyed = true;
       }
-
-      Popcorn.instances.splice( Popcorn.instanceIds[ instance.id ], 1 );
-
-      delete Popcorn.instanceIds[ instance.id ];
     }
   });
 
