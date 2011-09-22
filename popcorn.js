@@ -4,7 +4,7 @@
   if ( !document.addEventListener ) {
     global.Popcorn = {};
 
-    var methods = ( "forEach extend effects error guid sizeOf isArray nop position disable enable " +
+    var methods = ( "forEach extend effects error guid sizeOf isArray nop position disable enable destroy " +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
           "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
 
@@ -132,6 +132,8 @@
 
       this.options = options || {};
 
+      this.isDestroyed = false;
+
       this.data = {
 
         // Allows disabling a plugin per instance
@@ -208,10 +210,13 @@
 
           } else {
 
-            that.media.addEventListener( "timeupdate", function( event ) {
-
+            that.data.timeUpdateFunction = function( event ) {
               Popcorn.timeUpdate( that, event );
-            }, false );
+            };
+
+            if ( !that.isDestroyed ) {
+              that.media.addEventListener( "timeupdate", that.data.timeUpdateFunction, false );
+            }
           }
         } else {
           global.setTimeout(function() {
@@ -345,6 +350,24 @@
       }
 
       return instance;
+    },
+    destroy: function( instance ) {
+      var events = instance.data.events,
+          singleEvent, item, fn;
+
+      //  Iterate through all events and remove them
+      for ( item in events ) {
+        singleEvent = events[ item ];
+        for ( fn in singleEvent ) {
+          delete singleEvent[ fn ];
+        }
+        events[ item ] = null;
+      }
+
+      if ( !instance.isDestroyed ) {
+        instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
+        instance.isDestroyed = true;
+      }
     }
   });
 
@@ -1091,6 +1114,11 @@
 
     timeUpdate: function( event ) {
       Popcorn.timeUpdate.call( null, this, event );
+      return this;
+    },
+
+    destroy: function() {
+      Popcorn.destroy.call( null, this );
       return this;
     }
   });
