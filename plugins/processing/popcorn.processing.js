@@ -70,14 +70,13 @@
         } else if ( Popcorn.plugin.debug ) {
 
           throw new Error( "Popcorn.Processing: options.sketch is undefined" );
-          return;
         }
 
       }
 
       if (!window.Processing) {
         Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.3.0/processing-1.3.0.js", function() {
-          scriptReady( options )
+          scriptReady( options );
         });
       } else {
         scriptReady( options );
