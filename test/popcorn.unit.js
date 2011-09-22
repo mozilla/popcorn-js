@@ -649,12 +649,16 @@ test( "play(n)/pause(n) custom stop()", function() {
     return this.pause( 0 );
   };
 
-  var outerHTML = document.getElementById("video").outerHTML,
+  var outerHTML = [
+			"<video id='video-fixture' preload='auto' controls='' style='display:;width:300px' tabindex='0'>",
+			document.getElementById( "video" ).innerHTML,
+			"</video>"
+			].join( "\n" ),
       count = 0,
       expects = 2,
       $pop;
 
-  document.getElementById("qunit-fixture").innerHTML = outerHTML.replace('id="video"', 'id="video-fixture"');
+  document.getElementById("qunit-fixture").innerHTML = outerHTML;
 
   $pop = Popcorn( "#video-fixture" );
 
