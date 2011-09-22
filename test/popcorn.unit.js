@@ -1,7 +1,7 @@
 module("Popcorn API");
 test("API", function() {
 
-  var expects = 4,
+  var expects = 3,
       count = 0;
 
   expect(expects);
@@ -25,14 +25,6 @@ test("API", function() {
     plus();
 
   } catch (e) {};
-
-  try {
-
-    equals( Setup.getGlobalSize(), Setup.globalSize + 1 , "Popcorn API creates only 1 global reference");
-    plus();
-
-  } catch (e) {};
-
 
   try {
 
@@ -3615,28 +3607,13 @@ test("Parser Support", function() {
   });
 });
 
-
 module("Popcorn Test Runner End");
 test("Last Check", function() {
-
-  //   ALWAYS RUN LAST
-  try {
-
-    equals( Setup.getGlobalSize(), Setup.globalSize + 1 , "Popcorn API did not leak");
-
-    if ( !Setup.globalDiff.length ) {
-      //console.log(Setup.globalDiff);
-    }
-
-  } catch (e) {};
-
   //  Trigger follow-up tests to run in iframes
   (function( $ ) {
-
     $("iframe[data-src]").attr( "src", function() {
       return $(this).data("src");
     });
-
+    ok( true, "iframe tests run");
   })( jQuery );
-
 });
