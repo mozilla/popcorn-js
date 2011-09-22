@@ -1806,7 +1806,6 @@ test("timeUpdate add track event while paused", function() {
   function plus() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "timeUpdateTester" );
-      Popcorn.removeInstance( $pop );
     }
   }
 
