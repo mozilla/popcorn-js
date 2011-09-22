@@ -4,8 +4,7 @@
   if ( !document.addEventListener ) {
     global.Popcorn = {};
 
-    var methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
-          "forEach extend effects error guid sizeOf isArray nop position disable enable " +
+    var methods = ( "forEach extend effects error guid sizeOf isArray nop position disable enable destroy " +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
           "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
 
@@ -63,56 +62,6 @@
 
   //  Instance caching
   Popcorn.instances = [];
-  Popcorn.instanceIds = {};
-
-  Popcorn.removeInstance = function( instance ) {
-    //  If called prior to any instances being created
-    //  Return early to avoid splicing on nothing
-    if ( !Popcorn.instances.length ) {
-      return;
-    }
-
-    //  Remove instance from Popcorn.instances
-    Popcorn.instances.splice( Popcorn.instanceIds[ instance.id ], 1 );
-
-    //  Delete the instance id key
-    delete Popcorn.instanceIds[ instance.id ];
-
-    //  Return current modified instances
-    return Popcorn.instances;
-  };
-
-  //  Addes a Popcorn instance to the Popcorn instance array
-  Popcorn.addInstance = function( instance ) {
-
-    var instanceLen = Popcorn.instances.length,
-        instanceId = instance.media.id && instance.media.id;
-
-    //  If the media element has its own `id` use it, otherwise provide one
-    //  Ensure that instances have unique ids and unique entries
-    //  Uses `in` operator to avoid false positives on 0
-    instance.id = !( instanceId in Popcorn.instanceIds ) && instanceId ||
-                    "__popcorn" + instanceLen;
-
-    //  Create a reference entry for this instance
-    Popcorn.instanceIds[ instance.id ] = instanceLen;
-
-    //  Add this instance to the cache
-    Popcorn.instances.push( instance );
-
-    //  Return the current modified instances
-    return Popcorn.instances;
-  };
-
-  //  Request Popcorn object instance by id
-  Popcorn.getInstanceById = function( id ) {
-    return Popcorn.instances[ Popcorn.instanceIds[ id ] ];
-  };
-
-  //  Remove Popcorn object instance by id
-  Popcorn.removeInstanceById = function( id ) {
-    return Popcorn.removeInstance( Popcorn.instances[ Popcorn.instanceIds[ id ] ] );
-  };
 
   //  Declare a shortcut (Popcorn.p) to and a definition of
   //  the new prototype for our Popcorn constructor
@@ -179,9 +128,11 @@
       this[ ( this.media.nodeName && this.media.nodeName.toLowerCase() ) || "video" ] = this.media;
 
       //  Register new instance
-      Popcorn.addInstance( this );
+      Popcorn.instances.push( this );
 
       this.options = options || {};
+
+      this.isDestroyed = false;
 
       this.data = {
 
@@ -259,10 +210,13 @@
 
           } else {
 
-            that.media.addEventListener( "timeupdate", function( event ) {
-
+            that.data.timeUpdateFunction = function( event ) {
               Popcorn.timeUpdate( that, event );
-            }, false );
+            };
+
+            if ( !that.isDestroyed ) {
+              that.media.addEventListener( "timeupdate", that.data.timeUpdateFunction, false );
+            }
           }
         } else {
           global.setTimeout(function() {
@@ -396,6 +350,24 @@
       }
 
       return instance;
+    },
+    destroy: function( instance ) {
+      var events = instance.data.events,
+          singleEvent, item, fn;
+
+      //  Iterate through all events and remove them
+      for ( item in events ) {
+        singleEvent = events[ item ];
+        for ( fn in singleEvent ) {
+          delete singleEvent[ fn ];
+        }
+        events[ item ] = null;
+      }
+
+      if ( !instance.isDestroyed ) {
+        instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
+        instance.isDestroyed = true;
+      }
     }
   });
 
@@ -1142,6 +1114,11 @@
 
     timeUpdate: function( event ) {
       Popcorn.timeUpdate.call( null, this, event );
+      return this;
+    },
+
+    destroy: function() {
+      Popcorn.destroy.call( null, this );
       return this;
     }
   });
