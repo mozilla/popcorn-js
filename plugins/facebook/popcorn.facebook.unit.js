@@ -83,5 +83,23 @@ test("Popcorn Facebook Plugin", function () {
     ok ( document.getElementById( "facepilediv" ).innerHTML, "Facepilediv is not empty at 0:05 (expected)" );
     plus();
   });
+  
+});
+
+test( "Test Empty Block", function () {
+
+  Popcorn.plugin.debug = true;
+
+  var pop = Popcorn( "#video" );
+  
+  expect( 1 );
+  
+  // Tests for thrown Error on emtpy block
+  try {
+    pop.facebook({});
+  } catch( e ) {
+    ok( true, "Empty event was caught by debugger" );
+  }
+  
 });
 

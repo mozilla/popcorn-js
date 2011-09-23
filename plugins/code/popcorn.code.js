@@ -78,10 +78,8 @@
         return function( f, options ) {
     
           var _f = function() {
-            f();
-            if ( running ) {
-              runner( _f );
-            }
+            running && f();
+            running && runner( _f );
           };
     
           _f();

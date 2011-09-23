@@ -1,7 +1,7 @@
 module("Popcorn API");
 test("API", function() {
 
-  var expects = 4,
+  var expects = 3,
       count = 0;
 
   expect(expects);
@@ -28,14 +28,6 @@ test("API", function() {
 
   try {
 
-    equals( Setup.getGlobalSize(), Setup.globalSize + 1 , "Popcorn API creates only 1 global reference");
-    plus();
-
-  } catch (e) {};
-
-
-  try {
-
     Popcorn(function() {
 
       ok(1, "Popcorn calls its function argument");
@@ -52,7 +44,7 @@ test("API", function() {
 test("Popcorn.* Static Methods", function() {
 
   var statics = [ "forEach", "extend", "error", "guid", "sizeOf", "nop",
-                  "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent", "position", "disable", "enable" ],
+                  "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent", "position", "disable", "enable", "timeUpdate" ],
     substatics = [ "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent"];
 
   expect(statics.length + substatics.length);
@@ -98,6 +90,15 @@ test("Popcorn.forEach", function() {
   });
 
   equal(count, Popcorn.sizeOf(object), Popcorn.sizeOf(object) + " properties in object");
+});
+
+test("Popcorn.version", function() {
+  // We can't know the version itself, but we can make sure that we get a string.
+  // Popcorn.version should give something like "1.0.1" or a git sha "9a3e67" or
+  // the string "@VERSION" if it hasn't yet been replaced.
+  expect(1);
+
+  equal(typeof Popcorn.version, "string", "Popcorn.version exists and returns a string");
 });
 
 test("Popcorn.util.toSeconds" , function() {
@@ -220,66 +221,6 @@ test("Popcorn.util.toSeconds" , function() {
     areEquivalent = equivalentTimes( storedEndTime, currentPeriod.correctEndTime ) ;
     equals( areEquivalent, true, message );
   }
-});
-
-test("Instances", function() {
-  var expects = 11,
-      count   = 0,
-      instance;
-
-  expect(expects);
-
-  function plus(){
-    if ( ++count == expects ) {
-      start();
-    }
-  }
-
-  stop();
-
-  Popcorn("#video");
-
-  ok( typeof Popcorn.addInstance === "function" , "Popcorn.addInstance is a provided static function");
-  plus();
-
-  ok( typeof Popcorn.removeInstance === "function" , "Popcorn.removeInstance is a provided static function");
-  plus();
-
-  ok( typeof Popcorn.getInstanceById === "function" , "Popcorn.getInstanceById is a provided static function");
-  plus();
-
-  ok( typeof Popcorn.removeInstanceById === "function" , "Popcorn.removeInstanceById is a provided static function");
-  plus();
-
-  ok( typeof Popcorn.instanceIds === "object" , "Popcorn.instanceIds is a provided cache object");
-  plus();
-
-  ok( "length" in Popcorn.instances && "join" in Popcorn.instances, "Popcorn.instances is a provided cache array");
-  plus();
-
-  instance = Popcorn.getInstanceById("video");
-
-  ok( instance.video, "Stored instance as a `video` property" );
-  plus();
-
-  ok( instance.data, "Stored instance as a `data` property" );
-  plus();
-
-  ok( instance instanceof Popcorn, "Instance instanceof Popcorn" );
-  plus();
-
-  equal( Popcorn.instances.length, 2, "There are the correct number of Popcorn instances" );
-  plus();
-
-  //  Create another instance
-  Popcorn("#video");
-
-  //  Get a reference to remove
-  var remove = Popcorn.instances[1];
-
-  //  Remove and check the length of the currently cached instances
-  equal( Popcorn.removeInstanceById( remove.id ).length, 2, "Removing an instance by id: 1 instance remains" );
-  plus();
 });
 
 test("guid", function() {
@@ -477,8 +418,6 @@ test("Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
   });
 
   equal( Popcorn.sizeOf( popped.data.trackRefs ), 0, "There are 0 trackRefs in popped.data.trackRefs" );
-
-  //Popcorn.removeInstance( popped );
 });
 
 
@@ -599,6 +538,102 @@ test("mute", function() {
   video.mute();
   audio.mute();
 
+});
+
+test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function() {
+
+  var $pop = Popcorn( "#video" ),
+    expects = 2,
+    count = 0,
+    fired = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count == expects ) {
+      start();
+    }
+  }
+
+  stop( 1000 );
+
+  function poll() {
+
+    if ( $pop.media.readyState >= 2 ) {
+      // this should trigger immediately
+
+      $pop.play( 10 ).pause();
+
+      equal( Math.round($pop.currentTime()), 10, "play(n) sets currentTime to 10" );
+      plus();
+
+      $pop.pause( 5 );
+
+      equal( Math.round($pop.currentTime()), 5, "pause(n) sets currentTime to 5" );
+      plus();
+
+    } else {
+      setTimeout( poll, 10 );
+    }
+  }
+
+  poll();
+});
+
+// Originally written for #705 by chris de cairos
+test( "play(n)/pause(n) custom stop()", function() {
+
+  // Implement custom stop() method
+  Popcorn.p.stop = function() {
+    return this.pause( 0 );
+  };
+
+  var outerHTML = [
+			"<video id='video-fixture' preload='auto' controls='' style='display:;width:300px' tabindex='0'>",
+			document.getElementById( "video" ).innerHTML,
+			"</video>"
+			].join( "\n" ),
+      count = 0,
+      expects = 2,
+      $pop;
+
+  document.getElementById("qunit-fixture").innerHTML = outerHTML;
+
+  $pop = Popcorn( "#video-fixture" );
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      // Remove custom stop() method
+      delete Popcorn.p.stop;
+      start();
+    }
+  }
+
+  stop( 8000 );
+
+  $pop.listen( "canplayall", function() {
+
+    this.exec( 4, function() {
+
+      this.listen( "seeked", function() {
+
+        this.unlisten( "seeked" );
+
+        equal( this.currentTime(), 0, "currentTime is 0" );
+        plus();
+
+        equal( this.media.paused, true, "The media is paused" );
+        plus();
+
+      // Call custom "stop()"
+      }).stop();
+    });
+
+    // Play from 3s
+    this.play( 3 );
+  });
 });
 
 
@@ -812,7 +847,6 @@ test( "Popcorn.locale object", function() {
   function plus() {
     if ( ++count == expects ) {
       start();
-      Popcorn.removeInstance( $pop );
     }
   }
 
@@ -1551,7 +1585,7 @@ test("Update Timer (timeupdate)", function() {
       Popcorn.removePlugin( "forwards" );
       Popcorn.removePlugin( "backwards" );
       Popcorn.removePlugin( "wrapper" );
-      p2.removePlugin( "exec" );
+      p2.removePlugin( "exec" ); // TODO: David, remove this during test suite cleanup ^RW
       start();
     }
   }
@@ -1719,7 +1753,7 @@ test("Update Timer (frameAnimation)", function() {
       Popcorn.removePlugin( "forwards" );
       Popcorn.removePlugin( "backwards" );
       Popcorn.removePlugin( "wrapper" );
-      p2.removePlugin( "exec" );
+      p2.removePlugin( "exec" ); // TODO: David, remove this during test suite cleanup ^RW
       start();
     }
   }
@@ -1866,7 +1900,56 @@ test("Update Timer (frameAnimation)", function() {
 });
 
 
-test("Plugin Factory", function() {
+test("timeUpdate add track event while paused", function() {
+
+  var $pop = Popcorn( "#video" ),
+    count = 0,
+    expects = 3;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "timeUpdateTester" );
+    }
+  }
+
+  Popcorn.plugin("timeUpdateTester", function() {
+    return {
+      start: function () {
+        var div = document.createElement("div");
+        div.id = "timeUpdate-test";
+
+        document.body.appendChild(div);
+      },
+      end: function () {
+        document.getElementById("timeUpdate-test").parentNode.removeChild(document.getElementById("timeUpdate-test"));
+      }
+    };
+  });
+
+  $pop.currentTime(40).pause();
+
+  equals( $pop.getTrackEvents().length, 0, "Initially no trackEvents" );
+  plus();
+
+  $pop.timeUpdateTester({
+    id:"timeUpdateID",
+    start:40,
+    end: 41
+  });
+
+  equals( $pop.getTrackEvents().length, 1, "trackEvent successfully added" );
+  plus();
+
+  ok( document.getElementById( "timeUpdate-test" ), "trackEvent successfully added, content was displayed while video was paused" );
+  plus();
+
+  $pop.removeTrackEvent( "timeUpdateID" );
+
+});
+
+test("Plugin Factory", function () {
 
   QUnit.reset();
 
@@ -2108,6 +2191,8 @@ test( "Popcorn Compose", function() {
   plus();
   equals( test.two.setup, 3, "three compose two setup" );
   plus();
+
+  popped.currentTime(0).pause();
 
   popped.exec( 0, function() {
     equals( test.one.running, 1, "one compose running" );
@@ -2757,160 +2842,158 @@ test("getTrackEvent", function() {
 
 });
 
-test("Index Integrity (timeupdate)", function() {
 
-  var trackLen,
-    hasrun = false,
-    lastrun = false;
+test( "Index Integrity (timeUpdate)", function() {
 
-  Popcorn.plugin("ff", function() {
-    return {
-      start: function() {
-        var div = document.createElement("div");
-        div.id = "index-test";
-        div.innerHTML = "foo";
-
-        document.body.appendChild(div);
-      },
-      end: function() {
-        document.getElementById("index-test").parentNode.removeChild(document.getElementById("index-test"));
-      }
-    };
-  });
-
-  var p = Popcorn("#video");
-
-  p.ff({
-    id: "removeable-track-event",
-    start: 40,
-    end: 41
-  });
-
-  p.currentTime(40).pause();
-
-  stop( 10000 );
-
-  equals(p.data.trackEvents.endIndex, 0, "p.data.trackEvents.endIndex is 0");
-  equals(p.data.trackEvents.startIndex, 0, "p.data.trackEvents.startIndex is 0");
-  equals(p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart.length is 3 - before play" );
-
-  p.listen("timeupdate", function() {
-
-    if ( p.roundTime() > 40 && p.roundTime() < 42 && hasrun && !lastrun ) {
-
-      lastrun = true;
-
-      equals( document.getElementById("index-test"), null, "document.getElementById('index-test') is null on second run - after removeTrackEvent" );
-
-      start();
-    }
-
-    if ( p.roundTime() >= 42 && !hasrun ) {
-
-      hasrun  = true;
-      p.pause();
-
-      equals(p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart.length is 3 - after play, before removeTrackEvent" );
-      equals(p.data.trackEvents.startIndex, 2, "p.data.trackEvents.startIndex is 2 - after play, before removeTrackEvent");
-      equals(p.data.trackEvents.endIndex, 2, "p.data.trackEvents.endIndex is 2 - after play, before removeTrackEvent");
-
-      p.removeTrackEvent("removeable-track-event");
-
-      equals(p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart.length is 2 - after removeTrackEvent" );
-      equals(p.data.trackEvents.startIndex, 1, "p.data.trackEvents.startIndex is 1 - after removeTrackEvent");
-      equals(p.data.trackEvents.endIndex, 1, "p.data.trackEvents.endIndex is 1 - after removeTrackEvent");
-
-      p.currentTime(40).play();
-
-    }
-  });
-
-  p.play();
-});
-
-test("Index Integrity (frameAnimation)", function() {
-
-  var trackLen,
-    hasrun = false,
-    lastrun = false;
-
-  Popcorn.plugin("ff", function() {
-    return {
-      start: function() {
-        var div = document.createElement("div");
-        div.id = "index-test";
-        div.innerHTML = "foo";
-
-        document.body.appendChild(div);
-      },
-      end: function() {
-        document.getElementById("index-test").parentNode.removeChild(document.getElementById("index-test"));
-      }
-    };
-  });
-
-  var p = Popcorn("#video", { frameAnimation: true });
-
-  p.ff({
-    id: "removeable-track-event",
-    start: 40,
-    end: 41
-  });
-
-  p.currentTime(40).pause();
-
-  stop( 10000 );
-
-  equals(p.data.trackEvents.endIndex, 0, "p.data.trackEvents.endIndex is 0");
-  equals(p.data.trackEvents.startIndex, 0, "p.data.trackEvents.startIndex is 0");
-  equals(p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart.length is 3 - before play" );
-
-  p.listen("timeupdate", function() {
-
-    if ( p.roundTime() > 40 && p.roundTime() < 42 && hasrun && !lastrun ) {
-
-      lastrun = true;
-
-      equals( document.getElementById("index-test"), null, "document.getElementById('index-test') is null on second run - after removeTrackEvent" );
-
-      start();
-    }
-
-    if ( p.roundTime() >= 42 && !hasrun ) {
-
-      hasrun  = true;
-      p.pause();
-
-      equals(p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart.length is 3 - after play, before removeTrackEvent" );
-      equals(p.data.trackEvents.startIndex, 2, "p.data.trackEvents.startIndex is 2 - after play, before removeTrackEvent");
-      equals(p.data.trackEvents.endIndex, 2, "p.data.trackEvents.endIndex is 2 - after play, before removeTrackEvent");
-
-      p.removeTrackEvent("removeable-track-event");
-
-      equals(p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart.length is 2 - after removeTrackEvent" );
-      equals(p.data.trackEvents.startIndex, 1, "p.data.trackEvents.startIndex is 1 - after removeTrackEvent");
-      equals(p.data.trackEvents.endIndex, 1, "p.data.trackEvents.endIndex is 1 - after removeTrackEvent");
-
-      p.currentTime(40).play();
-    }
-  });
-
-  p.play();
-});
-
-test("Popcorn.disable/enable/toggle (timeupdate)", function() {
-
-  var $pop = Popcorn( "#video" ),
+  var $pop = Popcorn( "#video" );
       count = 0,
-      expects = 5;
+      expects = 8;
 
   expect( expects );
 
   function plus() {
     if ( ++count === expects ) {
       start();
+      Popcorn.removePlugin( "ff" );
+    }
+  }
 
-      Popcorn.removeInstance( $pop );
+  stop();
+
+  var trackLen,
+    hasrun = false,
+    lastrun = false;
+
+  Popcorn.plugin("ff", function() {
+    return {
+      start: function() {
+      },
+      end: function() {
+      }
+    };
+  });
+
+
+  stop( 10000 );
+
+  equal( $pop.data.trackEvents.endIndex, 1, "$pop.data.trackEvents.endIndex is 1");
+  plus();
+
+  equal( $pop.data.trackEvents.startIndex, 1, "$pop.data.trackEvents.startIndex is 1");
+  plus();
+
+  $pop.listen( "canplayall", function() {
+
+    $pop.ff({
+      id: "removeable-track-event",
+      start: 40,
+      end: 41
+    });
+
+    $pop.exec( 42, function() {
+      // 4 track events: startpad, endpad, ff and exec
+      equal( $pop.data.trackEvents.byStart.length, 4, "$pop.data.trackEvents.byStart.length is 4 - after play, before removeTrackEvent" );
+      plus();
+      equal( $pop.data.trackEvents.startIndex, 2, "$pop.data.trackEvents.startIndex is 2 - after play, before removeTrackEvent");
+      plus();
+      equal( $pop.data.trackEvents.endIndex, 2, "$pop.data.trackEvents.endIndex is 2 - after play, before removeTrackEvent");
+      plus();
+
+      $pop.removeTrackEvent("removeable-track-event");
+
+      equals( $pop.data.trackEvents.byStart.length, 3, "$pop.data.trackEvents.byStart.length is 3 - after removeTrackEvent" );
+      plus();
+      equals( $pop.data.trackEvents.startIndex, 1, "$pop.data.trackEvents.startIndex is 1 - after removeTrackEvent");
+      plus();
+      equals( $pop.data.trackEvents.endIndex, 1, "$pop.data.trackEvents.endIndex is 1 - after removeTrackEvent");
+      plus();
+
+    }).currentTime( 40 ).play();
+  });
+});
+
+test( "Index Integrity (frameAnimation)", function() {
+
+  var $pop = Popcorn( "#video", { frameAnimation: true }),
+      count = 0,
+      expects = 8;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+      Popcorn.removePlugin( "ff" );
+    }
+  }
+
+  stop();
+
+  var trackLen,
+    hasrun = false,
+    lastrun = false;
+
+  Popcorn.plugin("ff", function() {
+    return {
+      start: function() {
+      },
+      end: function() {
+      }
+    };
+  });
+
+
+  stop( 10000 );
+
+  equal( $pop.data.trackEvents.endIndex, 1, "$pop.data.trackEvents.endIndex is 1");
+  plus();
+
+  equal( $pop.data.trackEvents.startIndex, 1, "$pop.data.trackEvents.startIndex is 1");
+  plus();
+
+  $pop.listen( "canplayall", function() {
+
+    $pop.ff({
+      id: "removeable-track-event",
+      start: 40,
+      end: 41
+    });
+
+    $pop.exec( 42, function() {
+      // 4 track events: startpad, endpad, ff and exec
+      equal( $pop.data.trackEvents.byStart.length, 4, "$pop.data.trackEvents.byStart.length is 4 - after play, before removeTrackEvent" );
+      plus();
+      equal( $pop.data.trackEvents.startIndex, 2, "$pop.data.trackEvents.startIndex is 2 - after play, before removeTrackEvent");
+      plus();
+      equal( $pop.data.trackEvents.endIndex, 2, "$pop.data.trackEvents.endIndex is 2 - after play, before removeTrackEvent");
+      plus();
+
+      $pop.removeTrackEvent("removeable-track-event");
+
+      equals( $pop.data.trackEvents.byStart.length, 3, "$pop.data.trackEvents.byStart.length is 3 - after removeTrackEvent" );
+      plus();
+      equals( $pop.data.trackEvents.startIndex, 1, "$pop.data.trackEvents.startIndex is 1 - after removeTrackEvent");
+      plus();
+      equals( $pop.data.trackEvents.endIndex, 1, "$pop.data.trackEvents.endIndex is 1 - after removeTrackEvent");
+      plus();
+
+    }).currentTime( 40 ).play();
+  });
+});
+
+test( "Popcorn.disable/enable/toggle (timeupdate)", function() {
+
+  var $pop = Popcorn( "#video" ),
+      count = 0,
+      expects = 4;
+
+  expect( expects );
+
+  $pop.currentTime(39).play();
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
       Popcorn.removePlugin( "toggler" );
     }
   }
@@ -2938,10 +3021,6 @@ test("Popcorn.disable/enable/toggle (timeupdate)", function() {
     ok( !document.getElementById("toggler-test"), "No toggler container, disabled toggler plugin correctly never ran" );
     plus();
 
-    // Test per-instance toggle on
-    $pop.toggle( "toggler" );
-    ok( $pop.data.disabled.indexOf("toggler") === -1, "toggle() plugin: toggler is re-enabled" );
-    plus();
   });
 
   $pop.toggler({
@@ -2970,6 +3049,8 @@ test("Popcorn.disable/enable/toggle (timeupdate)", function() {
   plus();
 
   stop( 10000 );
+
+	$pop.currentTime( 39 ).play();
 });
 
 module("Popcorn XHR");
@@ -3865,28 +3946,13 @@ test("Parser Support", function() {
   });
 });
 
-
 module("Popcorn Test Runner End");
 test("Last Check", function() {
-
-  //   ALWAYS RUN LAST
-  try {
-
-    equals( Setup.getGlobalSize(), Setup.globalSize + 1 , "Popcorn API did not leak");
-
-    if ( !Setup.globalDiff.length ) {
-      //console.log(Setup.globalDiff);
-    }
-
-  } catch (e) {};
-
   //  Trigger follow-up tests to run in iframes
   (function( $ ) {
-
     $("iframe[data-src]").attr( "src", function() {
       return $(this).data("src");
     });
-
+    ok( true, "iframe tests run");
   })( jQuery );
-
 });
