@@ -24,6 +24,9 @@
   hasOwn = OP.hasOwnProperty,
   toString = OP.toString,
 
+  // Copy global Popcorn (may not exist)
+  _Popcorn = global.Popcorn,
+
   //  ID string matching
   rIdExp  = /^(#([\w\-\_\.]+))$/,
 
@@ -280,6 +283,14 @@
 
   // A Few reusable utils, memoized onto Popcorn
   Popcorn.extend( Popcorn, {
+    noConflict: function( deep ) {
+
+      if ( deep ) {
+        global.Popcorn = _Popcorn;
+      }
+
+      return Popcorn;
+    },
     error: function( msg ) {
       throw new Error( msg );
     },
@@ -784,7 +795,7 @@
         break;
       }
     }
-    
+
     this.timeUpdate( obj, null );
 
     // Store references to user added trackevents in ref table

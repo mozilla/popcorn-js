@@ -1,45 +1,59 @@
-module("Popcorn API");
-test("API", function() {
+module("Core");
+test( "Core", function() {
 
   var expects = 3,
       count = 0;
 
-  expect(expects);
+  expect( expects );
 
-  function plus(){ if ( ++count == expects ) start(); }
+  function plus() {
+    if ( ++count == expects ) {
+      start();
+    }
+  }
 
   stop( 10000 );
 
-
   try {
-
     ok( Popcorn, "Popcorn exists");
     plus();
-
   } catch (e) {};
 
-
   try {
-
     ok( typeof Popcorn === "function", "Popcorn is a function");
     plus();
-
   } catch (e) {};
 
   try {
-
     Popcorn(function() {
-
       ok(1, "Popcorn calls its function argument");
       plus();
-
-
     });
-
   } catch (e) {};
-
-
 });
+
+test( "noConflict", function() {
+
+  expect( 6 );
+
+  ok( Popcorn.noConflict, "Popcorn.noConflict exists" );
+  equal( typeof Popcorn.noConflict, "function", "Popcorn.noConflict is a function" );
+
+  var $$ = Popcorn;
+
+  deepEqual( Popcorn, Popcorn.noConflict(), "noConflict returned the Popcorn object" );
+  deepEqual( Popcorn, $$, "Make sure Popcorn wasn't touched." );
+
+
+  Popcorn = $$;
+
+  deepEqual( Popcorn.noConflict( true ), $$, "noConflict returned the Popcorn object" );
+  deepEqual( Popcorn, originalPopcorn, "Make sure Popcorn was reverted." );
+
+  Popcorn = $$;
+});
+
+
 
 test("Popcorn.* Static Methods", function() {
 
@@ -580,10 +594,10 @@ test( "play(n)/pause(n) custom stop()", function() {
   };
 
   var outerHTML = [
-			"<video id='video-fixture' preload='auto' controls='' style='display:;width:300px' tabindex='0'>",
-			document.getElementById( "video" ).innerHTML,
-			"</video>"
-			].join( "\n" ),
+      "<video id='video-fixture' preload='auto' controls='' style='display:;width:300px' tabindex='0'>",
+      document.getElementById( "video" ).innerHTML,
+      "</video>"
+      ].join( "\n" ),
       count = 0,
       expects = 2,
       $pop;
@@ -3041,7 +3055,7 @@ test( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
   stop( 10000 );
 
-	$pop.currentTime( 39 ).play();
+  $pop.currentTime( 39 ).play();
 });
 
 module("Popcorn XHR");
