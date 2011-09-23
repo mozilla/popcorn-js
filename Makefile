@@ -87,9 +87,14 @@ POPCORN_COMPLETE_LIST := --js ${POPCORN_SRC} \
 POPCORN_COMPLETE_DIST = ${DIST_DIR}/popcorn-complete.js
 POPCORN_COMPLETE_MIN = ${DIST_DIR}/popcorn-complete.min.js
 
-# Create a versioned license header for js files we ship: arg1=source arg2=dest
-add_license = cat ${PREFIX}/LICENSE_HEADER | sed -e 's/@VERSION/${VERSION}/' > $(2) ; \
-	                    cat $(1) >> $(2)
+# Create a versioned license header for js files we ship
+add_license = cat $(PREFIX)/LICENSE_HEADER | sed -e 's/@VERSION/${VERSION}/' > $(1).__hdr__ ; \
+	                    cat $(1).__hdr__ $(1) >> $(1).__tmp__ ; rm -f $(1).__hdr__ ; \
+	                    mv $(1).__tmp__ $(1)
+
+# Create a version parameter for Popcorn
+add_version = cat $(1) | sed -e 's/@VERSION/${VERSION}/' > $(1).__tmp__ ; \
+	                    mv $(1).__tmp__ $(1)
 
 # Run the file through jslint
 run_lint = @@$(RHINO) build/jslint-check.js $(1)
@@ -104,23 +109,25 @@ ${DIST_DIR}:
 
 popcorn: ${POPCORN_DIST}
 
-${POPCORN_DIST}: ${POPCORN_SRC} | ${DIST_DIR}
-	@@echo "Building" ${POPCORN_DIST}
-	@@$(call add_license, $(POPCORN_SRC), $(POPCORN_DIST))
+${POPCORN_DIST}: $(POPCORN_SRC) | $(DIST_DIR)
+	@@echo "Building" $(POPCORN_DIST)
+	@@cp $(POPCORN_SRC) $(POPCORN_DIST)
+	@@$(call add_license, $(POPCORN_DIST))
+	@@$(call add_version, $(POPCORN_DIST))
 
 min: ${POPCORN_MIN} ${MODULES_MIN} ${PLUGINS_MIN} ${PARSERS_MIN} ${PLAYERS_MIN} $(EFFECTS_MIN) ${POPCORN_COMPLETE_MIN}
 
 ${POPCORN_MIN}: ${POPCORN_DIST}
 	@@echo "Building" ${POPCORN_MIN}
-	@@$(call compile, --js ${POPCORN_DIST}, ${POPCORN_MIN}.tmp)
-	@@$(call add_license, ${POPCORN_MIN}.tmp, ${POPCORN_MIN})
-	@@rm ${POPCORN_MIN}.tmp
+	@@$(call compile, --js $(POPCORN_DIST), $(POPCORN_MIN))
+	@@$(call add_license, $(POPCORN_MIN))
+	@@$(call add_version, $(POPCORN_MIN))
 
 ${POPCORN_COMPLETE_MIN}: update ${POPCORN_SRC} ${MODULES_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} $(EFFECTS_SRC) ${DIST_DIR}
 	@@echo "Building" ${POPCORN_COMPLETE_MIN}
-	@@$(call compile, ${POPCORN_COMPLETE_LIST}, ${POPCORN_COMPLETE_MIN}.tmp)
-	@@$(call add_license, ${POPCORN_COMPLETE_MIN}.tmp, ${POPCORN_COMPLETE_MIN})
-	@@rm ${POPCORN_COMPLETE_MIN}.tmp
+	@@$(call compile, $(POPCORN_COMPLETE_LIST), $(POPCORN_COMPLETE_MIN))
+	@@$(call add_license, $(POPCORN_COMPLETE_MIN))
+	@@$(call add_version, $(POPCORN_COMPLETE_MIN))
 
 modules: ${MODULES_DIST}
 
@@ -174,9 +181,9 @@ $(EFFECTS_DIST): $(EFFECTS_SRC) $(DIST_DIR)
 
 complete: update ${POPCORN_SRC} ${MODULES_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) ${DIST_DIR}
 	@@echo "Building popcorn + modules + plugins + parsers + players + effects..."
-	@@cat ${POPCORN_SRC} ${MODULES_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) > ${POPCORN_COMPLETE_DIST}.tmp
-	@@$(call add_license, ${POPCORN_COMPLETE_DIST}.tmp, ${POPCORN_COMPLETE_DIST})
-	@@rm ${POPCORN_COMPLETE_DIST}.tmp
+	@@cat ${POPCORN_SRC} ${MODULES_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) > $(POPCORN_COMPLETE_DIST)
+	@@$(call add_license, $(POPCORN_COMPLETE_DIST))
+	@@$(call add_version, $(POPCORN_COMPLETE_DIST))
 
 lint:
 	@@echo "Checking Popcorn against JSLint..."
