@@ -41,7 +41,7 @@ test( "Popcorn Mustache Plugin", function() {
     data: function( plugin, options ) {
       return JSON.parse( '{"heading": "mustache - test 2/3"}' );
     },
-    target: "mustache-div",
+    target: "mustache-div"
   });
 
   // Template + Object literal
@@ -57,7 +57,8 @@ test( "Popcorn Mustache Plugin", function() {
   });
 
   var video = document.getElementById( "video" );
-  var two = six = ten = false;
+  var two, six, ten;
+      two = six = ten = false;
 
   video.addEventListener( "timeupdate", function() {
 

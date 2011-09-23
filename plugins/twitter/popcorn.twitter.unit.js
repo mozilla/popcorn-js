@@ -27,14 +27,14 @@ test( "Popcorn Twitter Plugin", function() {
     ok( TWTR, "Twitter constructor exists" );
     plus();
 
-  } catch ( e ) {};
+  } catch ( e ) {}
 
   popped.twitter({
     start: 1,
     end: 2,
     title: "Steve Song",
     src: "@stevesong",
-    target: "twitterdiv",
+    target: "twitterdiv"
   });
 
   setupId = popped.getLastTrackEventId();

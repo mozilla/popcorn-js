@@ -25,17 +25,17 @@ test( "Popcorn Subtitle Plugin", function() {
   popped.subtitle({
       start: 0,
       end: 2,
-      text: "this is the first subtitle of 2011",
+      text: "this is the first subtitle of 2011"
     })
   .subtitle({
       start: 2,
       end: 4,
-      text: "this is the second subtitle of 2011",
+      text: "this is the second subtitle of 2011"
     })
   .subtitle({
       start: 5,
       end: 7,
-      text: "this is the third subtitle of 2011",
+      text: "this is the third subtitle of 2011"
     } )
     .volume( 0 )
     .play();

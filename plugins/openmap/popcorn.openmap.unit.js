@@ -39,7 +39,7 @@ test( "Popcorn OpenMap Plugin", function() {
     start: 0,
     end: 4,
     type: "SATELLITE",
-    target: :map2",
+    target: "map2",
     lat: 40.943926,
     lng: -78.968525,
     zoom: 9

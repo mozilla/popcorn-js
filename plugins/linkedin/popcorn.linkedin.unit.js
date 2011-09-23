@@ -1,5 +1,12 @@
 test( "Popcorn LinkedIn Plugin", function() {
 
+  function plus() {
+
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
   if ( /localhost/.test( location.hostname ) ) {
 
     // run tests on localhost
@@ -14,13 +21,6 @@ test( "Popcorn LinkedIn Plugin", function() {
         companyprofilediv = document.getElementById( "companyprofilediv" );
 
     expect( expects );
-
-    function plus() {
-
-      if ( ++count === expects ) {
-        start();
-      }
-    }
 
     stop();
 

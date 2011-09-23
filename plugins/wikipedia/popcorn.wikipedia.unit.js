@@ -49,7 +49,7 @@ test( "Popcorn wikipedia Plugin", function() {
     notEqual( theArticle.children[ 1 ].innerHTML, "", "wikidiv has some content" );
     plus();
     // subtract 1 from length for the  '...' added in by the plugin
-    equals( theArticle.children[ 1 ].innerHTML.split( " " ).length -1, 22, "wikidiv contains 22 words" )
+    equals( theArticle.children[ 1 ].innerHTML.split( " " ).length -1, 22, "wikidiv contains 22 words" );
     plus();
   });
   

@@ -2,7 +2,8 @@ test( "Popcorn Timeline Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 17,
-      upIds = downIds = [],
+      upIds = [],
+      downIds = [],
       count = 0,
       timelineUp = document.getElementById( "timeline-up" ),
       timelineDown = document.getElementById( "timeline-down" );
@@ -108,10 +109,10 @@ test( "Popcorn Timeline Plugin", function() {
 	  plus();
 
     var uid, did;
-    while ( uid = upIds.pop() ) {
+    while ( uid === upIds.pop() ) {
       popped.removeTrackEvent( uid );
     }
-    while ( did = downIds.pop() ) {
+    while ( did === downIds.pop() ) {
       popped.removeTrackEvent( did );
     }
 
