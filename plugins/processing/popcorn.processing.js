@@ -26,13 +26,13 @@
 
 (function ( Popcorn ) {
 
-  Popcorn.plugin( "processing" , function ( options ) {
+  Popcorn.plugin( "processing", function( options ) {
 
     var init = function( context ) {
 
       function scriptReady( options ) {
         var addListeners = function() {
-          context.listen( "pause", function () {
+          context.listen( "pause", function() {
             if ( options.canvas.style.display === "inline" ) {
               options.pjsInstance.noLoop();
             }
@@ -64,17 +64,16 @@
 
               options.noPause = options.noPause || false;
               !options.noPause && addListeners();
-							options.codeReady = true;
+              options.codeReady = true;
             }
           });
         } else if ( Popcorn.plugin.debug ) {
 
           throw new Error( "Popcorn.Processing: options.sketch is undefined" );
         }
-
       }
 
-      if (!window.Processing) {
+      if ( !window.Processing ) {
         Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.3.0/processing-1.3.0.js", function() {
           scriptReady( options );
         });
@@ -97,7 +96,7 @@
         }
 
         var canvas = document.createElement( "canvas" );
-        canvas.id = Popcorn.guid( options.target + "-sketch-" );
+        canvas.id = Popcorn.guid( options.target + "-sketch" );
         canvas.style.display = "none";
         options.canvas = canvas;
 
@@ -133,11 +132,31 @@
       website: "cadecairos.blogspot.com, ben1amin.wordpress.org"
     },
     options: {
-      start :   { elem: "input", type: "text", label: "In" },
-      end :     { elem: "input", type: "text", label: "Out" },
-      target :  { elem: "input", type: "text", label: "Target" },
-      sketch :  { elem: "input", type: "text", label: "Sketch" },
-      noPause : { elem: "select", options: [ "TRUE", "FALSE" ], label: "No Loop" }
+      start: {
+        elem: "input",
+        type: "text",
+        label: "In"
+      },
+      end: {
+        elem: "input",
+        type: "text",
+        label: "Out"
+      },
+      target: {
+        elem: "input",
+        type: "text",
+        label: "Target"
+      },
+      sketch: {
+        elem: "input",
+        type: "text",
+        label: "Sketch"
+      },
+      noPause: {
+        elem: "select",
+        options: [ "TRUE", "FALSE" ],
+        label: "No Loop"
+      }
     }
   });
 }( Popcorn ));
