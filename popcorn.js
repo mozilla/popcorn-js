@@ -1207,9 +1207,8 @@
       options._natives.type = name;
       options._running = false;
 
-      natives[ "in" ] && ( natives.start = natives[ "in" ] );
-
-      natives[ "out" ] && ( natives.end = natives[ "out" ] );
+      natives.start = natives.start || natives[ "in" ];
+      natives.end = natives.end || natives[ "out" ]; 
 
       // Check for previously set default options
       defaults = this.options.defaults && this.options.defaults[ options._natives && options._natives.type ];
