@@ -1,6 +1,6 @@
 // PLUGIN: GML
 
-(function ( Popcorn ) {
+(function( Popcorn ) {
 
   var gmlPlayer = function( $p ) {
 

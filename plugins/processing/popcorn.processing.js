@@ -24,7 +24,7 @@
  *
  */
 
-(function ( Popcorn ) {
+(function( Popcorn ) {
 
   Popcorn.plugin( "processing", function( options ) {
 
