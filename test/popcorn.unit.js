@@ -106,6 +106,15 @@ test("Popcorn.forEach", function() {
   equal(count, Popcorn.sizeOf(object), Popcorn.sizeOf(object) + " properties in object");
 });
 
+test("Popcorn.version", function() {
+  // We can't know the version itself, but we can make sure that we get a string.
+  // Popcorn.version should give something like "1.0.1" or a git sha "9a3e67" or
+  // the string "@VERSION" if it hasn't yet been replaced.
+  expect(1);
+
+  equal(typeof Popcorn.version, "string", "Popcorn.version exists and returns a string");
+});
+
 test("Popcorn.util.toSeconds" , function() {
   var framerate = 24,
       storedStartTime,

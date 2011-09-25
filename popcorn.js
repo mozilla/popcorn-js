@@ -63,6 +63,9 @@
     return new Popcorn.p.init( entity, options || null );
   };
 
+  // Popcorn API version, automatically inserted via build system.
+  Popcorn.version = "@VERSION";
+
   //  Instance caching
   Popcorn.instances = [];
 
