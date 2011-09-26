@@ -2671,6 +2671,64 @@ test("Defaulting Empty End Values", function() {
   });
 });
 
+test( "In/Out aliases", function() {
+  var popcorn = Popcorn( "#video" ),
+      expects = 4,
+      count = 0,
+      counter = 0; 
+
+  expect( expects );
+  stop( 5000 );
+
+  function plus() {
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "aliasTester" );
+      Popcorn.removeInstance( popcorn );
+      start();
+    }
+  }
+
+  Popcorn.plugin( "aliasTester", function() {
+
+    return {
+      in: function() {
+        counter++;
+      },
+      out: function() {
+        counter++;
+      }
+    };
+  });
+
+  popcorn.aliasTester({
+    in: 1,
+    out: 3
+  });
+
+  popcorn.currentTime( 0 ).pause();
+
+  ok( popcorn.data.events[ "in" ], "in is a valid alias for start" );
+  plus();
+
+  ok( popcorn.data.events[ "out" ], "out is a valid alias for end" );
+  plus();
+
+  equals( counter, 0, "Counter is at 0, neither in or out have been called" );
+  plus();
+
+  popcorn.exec( 2, function() {
+    equals( counter, 1, "Counter is at 1, in has been called" );
+    plus();
+  });
+
+  popcorn.exec( 4, function() {
+    equals( counter, 2, "Counter is at 2, out has been called" );
+    plus();
+  });
+
+  popcorn.play();
+});
+
 module("Popcorn TrackEvents");
 test("Functions", function() {
 

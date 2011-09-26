@@ -1209,6 +1209,9 @@
       options._natives.type = name;
       options._running = false;
 
+      natives.start = natives.start || natives[ "in" ];
+      natives.end = natives.end || natives[ "out" ]; 
+
       // Check for previously set default options
       defaults = this.options.defaults && this.options.defaults[ options._natives && options._natives.type ];
 
@@ -1234,14 +1237,14 @@
 
       //  Ensure a manifest object, an empty object is a sufficient fallback
       options._natives.manifest = manifest;
-
+      
       //  Checks for expected properties
       if ( !( "start" in options ) ) {
-        options.start = 0;
+        options.start = options[ "in" ] || 0;
       }
 
       if ( !( "end" in options ) ) {
-        options.end = this.duration() || Number.MAX_VALUE;
+        options.end = options[ "out" ] || this.duration() || Number.MAX_VALUE;
       }
 
       // Merge with defaults if they exist, make sure per call is prioritized
