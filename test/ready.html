@@ -4,89 +4,89 @@
   <title>Popcorn API</title>
   <link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
 
-	<style>
-		body {
-			margin: 3px;
-			padding: 0px;
-		}
-		h3 {
-			margin: 3px;
-			padding: 0px;
-		}
-		h2 {
-			display: inline;
-			margin: 3px;
-			padding: 0px;
-		}		
-		.pass {
-			color: #33FF00;
-		}
-		.expect {
-			color: #2d2d2d;
-		}		
-		.fail {
-			color: #FF0000;
-		}
-	</style>
-	<script src="jquery.js"></script>
+  <style>
+    body {
+      margin: 3px;
+      padding: 0px;
+    }
+    h3 {
+      margin: 3px;
+      padding: 0px;
+    }
+    h2 {
+      display: inline;
+      margin: 3px;
+      padding: 0px;
+    }    
+    .pass {
+      color: #33FF00;
+    }
+    .expect {
+      color: #2d2d2d;
+    }    
+    .fail {
+      color: #FF0000;
+    }
+  </style>
+  <script src="jquery.js"></script>
   <script src="../popcorn.js"></script>
   <script>
-	(function( Popcorn, $ ) {
+  (function( Popcorn, $ ) {
 
-		var readyCalled = 0, 
-				readyOrder = [], 
-				readyComposed = "Ready Callback 1,Ready Callback 2", 
-				results = {
-					pass: 0, 
-					fail: 0,
-					expect: 2
-				};
+    var readyCalled = 0, 
+        readyOrder = [], 
+        readyComposed = "Ready Callback 1,Ready Callback 2", 
+        results = {
+          pass: 0, 
+          fail: 0,
+          expect: 2
+        };
 
-		$(function() {
-		  readyCalled++;
-		});
+    $(function() {
+      readyCalled++;
+    });
 
-		Popcorn(function (e) {
+    Popcorn(function (e) {
 
-		  readyCalled++;
-		  readyOrder.push("Ready Callback 1");
-		  
-		  Popcorn("#video").exec( 1, function () {
+      readyCalled++;
+      readyOrder.push("Ready Callback 1");
+      
+      Popcorn("#video").exec( 1, function () {
 
-				results[ 
-					( readyCalled === 3 ? "pass" : "fail" ) 
-				]++;
+        results[ 
+          ( readyCalled === 3 ? "pass" : "fail" ) 
+        ]++;
 
-				if ( readyOrder.join(",") === readyComposed ) {
-					results.pass++;
-				}
+        if ( readyOrder.join(",") === readyComposed ) {
+          results.pass++;
+        }
 
-				$.each( results, function( name, value ) {
-					$("video").before( 
-						$("<h2>", {
-							className: name, 
-							html: name + ": " + value  
-						}) 
-					);
-				});
+        $.each( results, function( name, value ) {
+          $("video").before( 
+            $("<h2>", {
+              className: name, 
+              html: name + ": " + value  
+            }) 
+          );
+        });
 
-		  }).play().volume(0);
-		  
-		});
+      }).play().volume(0);
+      
+    });
 
-		Popcorn(function () {
-		  
-		  readyCalled++;
-		  readyOrder.push("Ready Callback 2");
+    Popcorn(function () {
+      
+      readyCalled++;
+      readyOrder.push("Ready Callback 2");
 
-		});  	
-	})( Popcorn, jQuery );
+    });    
+  })( Popcorn, jQuery );
 
   </script>
   
 </head>
 <body>
-	<h3>Popcorn(/* DOM Ready */)<h3>
+  <h3>Popcorn(/* DOM Ready */)<h3>
 
   <video id='video'style="display:none" 
     controls 

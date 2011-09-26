@@ -1,6 +1,5 @@
 // PLUGIN: GML
-
-(function ( Popcorn ) {
+(function( Popcorn ) {
 
   var gmlPlayer = function( $p ) {
 
@@ -145,7 +144,7 @@
    */
   Popcorn.plugin( "gml" , {
 
-    _setup : function( options ) {
+    _setup: function( options ) {
 
       var self = this,
           target = document.getElementById( options.target );
@@ -163,30 +162,23 @@
       }
       target && target.appendChild( options.container );
 
-      if ( !window.Processing ) {
+      var scriptReady = function() {
+        Popcorn.getJSONP( "http://000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
 
-        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.2.1/processing-1.2.1.min.js" );
-      }
-
-      // makes sure both processing.js and the gml data are loaded
-      var readyCheck = function() {
-
-        if ( window.Processing ) {
-
-          Popcorn.getJSONP( "http://000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
-
-            options.pjsInstance = new Processing( options.container, gmlPlayer );
-            options.pjsInstance.construct( self.media, data, options );
-            options._running && options.pjsInstance.loop();
-          }, false );
-
-          return;
-        }
-
-        setTimeout( readyCheck, 5 );
+          options.pjsInstance = new Processing( options.container, gmlPlayer );
+          options.pjsInstance.construct( self.media, data, options );
+          options._running && options.pjsInstance.loop();
+        }, false );
       };
 
-      readyCheck();
+      if ( !window.Processing ) {
+
+        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.3.0/processing-1.3.0.min.js", scriptReady );
+      } else {
+
+        scriptReady();
+      }
+
     },
     /**
      * @member gml

@@ -271,7 +271,7 @@
       setOptions[ options.type ]();
 
       if ( !target && Popcorn.plugin.debug ) {
-        throw new Error( "flickr target container doesn't exist" );
+        throw new Error( "Facebook target container doesn't exist" );
       }
       target && target.appendChild( options._container );
     },
