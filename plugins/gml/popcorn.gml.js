@@ -1,5 +1,4 @@
 // PLUGIN: GML
-
 (function( Popcorn ) {
 
   var gmlPlayer = function( $p ) {
@@ -94,9 +93,9 @@
               var tag = data.gml.tag,
                   app_name =  tag.header && tag.header.client && tag.header.client.name;
 
-              rotation = app_name === 'Graffiti Analysis 2.0: DustTag' ||
-                         app_name === 'DustTag: Graffiti Analysis 2.0' ||
-                         app_name === 'Fat Tag - Katsu Edition';
+              rotation = app_name === "Graffiti Analysis 2.0: DustTag" ||
+                         app_name === "DustTag: Graffiti Analysis 2.0" ||
+                         app_name === "Fat Tag - Katsu Edition";
 
               play = function() {
 

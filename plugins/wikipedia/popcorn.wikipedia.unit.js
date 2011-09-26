@@ -1,9 +1,9 @@
-test("Popcorn wikipedia Plugin", function () {
+test( "Popcorn wikipedia Plugin", function() {
   
-  var popped        = Popcorn( "#video" ),
-      expects       = 13, 
-      count         = 0,
-      theArticle    = document.getElementById( "wikidiv" );
+  var popped = Popcorn( "#video" ),
+      expects = 13, 
+      count = 0,
+      theArticle = document.getElementById( "wikidiv" );
        
   expect( expects );
   
@@ -15,28 +15,28 @@ test("Popcorn wikipedia Plugin", function () {
   
   stop();
    
-  ok ( "wikipedia" in popped, "wikipedia is a mehtod of the popped instance" );
+  ok( "wikipedia" in popped, "wikipedia is a mehtod of the popped instance" );
   plus();
   
-  equals ( theArticle.innerHTML, "", "initially, there is nothing in the wikidiv" );
+  equals( theArticle.innerHTML, "", "initially, there is nothing in the wikidiv" );
   plus();
   
   popped.wikipedia({
-      start: 1, // seconds
-      end: 3, // seconds
+      start: 1,
+      end: 3,
       src: "http://en.wikipedia.org/wiki/Cape_Town",
       title: "this is an article",
       target: "wikidiv",
       numberofwords: 22
-    } )
+    })
     .wikipedia({
-      start: 4, // seconds
-      end: 5, // seconds
+      start: 4,
+      end: 5,
       src: "http://en.wikipedia.org/wiki/S%C3%A3o_Paulo",
       target: "wikidiv",
       numberofwords: 43
-    } )
-    .volume(0)
+    })
+    .volume( 0 )
     .play();
     
   popped.exec( 2, function() {
@@ -49,7 +49,7 @@ test("Popcorn wikipedia Plugin", function () {
     notEqual( theArticle.children[ 1 ].innerHTML, "", "wikidiv has some content" );
     plus();
     // subtract 1 from length for the  '...' added in by the plugin
-    equals( theArticle.children[ 1 ].innerHTML.split( " " ).length -1, 22, "wikidiv contains 22 words" )
+    equals( theArticle.children[ 1 ].innerHTML.split( " " ).length -1, 22, "wikidiv contains 22 words" );
     plus();
   });
   
@@ -84,7 +84,7 @@ test("Popcorn wikipedia Plugin", function () {
   try {
     popped.wikipedia({});
   } catch( e ) {
-    ok(true, 'empty event was caught by debug');
+    ok( true, "empty event was caught by debug" );
     plus();
   }
 });

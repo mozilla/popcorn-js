@@ -6,22 +6,22 @@
   <script src="../../popcorn.js"></script>
   <script src="popcorn.googlemap.js"></script>
   <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
-      .volume(0)
+    document.addEventListener( "DOMContentLoaded", function() {
+      var p = Popcorn( "#video" )
+      .volume( 0 )
       .play()
       .googlemap({
-        start: 0, // seconds
-        end: 20, // seconds
+        start: 0,
+        end: 20,
         type: "ROADMAP",
         target: "map",
         lat: 43.665429,
         lng: -79.403323,
         zoom: "10"
-      } )
+      })
       .googlemap({
-        start: 0, // seconds
-        end: 40, // seconds
+        start: 0,
+        end: 40,
         type: "STREETVIEW",
         target: "map3",
         location: "6th Line, Oakville, Ontario",
@@ -34,8 +34,8 @@
 				tween: "York university"
       })
       .googlemap({
-        start: 0, // seconds
-        end: 40, // seconds
+        start: 0,
+        end: 40,
         type: "STREETVIEW",
         target: "map5",
         location: "Buffallo",
@@ -48,8 +48,8 @@
 				tween: "Ottawa"
       })
       .googlemap({
-        start: 0, // seconds
-        end: 20, // seconds
+        start: 0,
+        end: 20,
         type: "STREETVIEW",
         target: "map4",
         lat: 35.7795324,
@@ -57,45 +57,80 @@
         zoom: "1",
         heading: "180",
         pitch: "1",
-        tween:[ 
+        tween: [
           {
-            position: {lat: 35.778056, lng: -78.63903579999999}, 
-            pov: {heading: 183.5, zoom: 1, pitch:1}, 
-            interval:2000 
+            position: {
+              lat: 35.778056,
+              lng: -78.63903579999999
+            },
+            pov: {
+              heading: 183.5,
+              zoom: 1,
+              pitch: 1
+            },
+            interval: 2000
           },
-          {	
-            position: {lat: 35.7770258, lng: -78.63929150000001}, 
-            pov: {heading: 180, zoom: 1, pitch:1},
-            interval:2000
+          {
+            position: {
+              lat: 35.7770258,
+              lng: -78.63929150000001
+            },
+            pov: {
+              heading: 180,
+              zoom: 1,
+              pitch: 1
+            },
+            interval: 2000
           },
-          {	
-            position: {lat: 35.775581, lng: -78.639395}, 
-            pov: {heading: 180, zoom: 1, pitch:1},
-            interval:2000
-          }, 
-          {	
-            position: {lat: 35.775581, lng: -78.639395}, 
-            pov: {heading: 105, zoom: 1, pitch:1},
-            interval:2000
+          {
+            position: {
+              lat: 35.775581,
+              lng: -78.639395
+            },
+            pov: {
+              heading: 180,
+              zoom: 1,
+              pitch: 1
+            },
+            interval: 2000
           },
-          {	
-            position: {lat: 35.775581, lng: -78.639395}, 
-          	pov: {heading: 0, zoom: 1, pitch:1},
-          	interval:2000
-          }	
+          {
+            position: {
+              lat: 35.775581,
+              lng: -78.639395
+            },
+            pov: {
+              heading: 105,
+              zoom: 1,
+              pitch: 1
+            },
+            interval: 2000
+          },
+          {
+            position: {
+              lat: 35.775581,
+              lng: -78.639395
+            },
+            pov: {
+              heading: 0,
+              zoom: 1,
+              pitch: 1
+            },
+          	interval: 2000
+          }
         ]
-      } )
+      })
       .googlemap({
-        start: 0, // seconds
-        end: 30, // seconds
+        start: 0,
+        end: 30,
         type: "ROADMAP",
         target: "map2",
         location:"boston",
         zoom: 15
-      } )
+      })
       .googlemap({
-        start: 0, // seconds
-        end: 20, // seconds
+        start: 0,
+        end: 20,
         type: "STREETVIEW",
         target: "map1",
         lat: 43.665429,
@@ -103,7 +138,7 @@
         zoom: "1",
         heading: "0",
         pitch: "1"
-      } );
+      });
     }, false);
   </script>
 </head>
@@ -118,16 +153,16 @@
   <p> A Google Map Streetview tweening from Buffallo to Ottawa  will appear at 0 seconds and disaapear at 40 seconds</p>
   <div>
 
-    <video id='video'
+    <video id="video"
       controls
-      width= '250px'
+      width="250px"
       poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
         type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
         type='video/ogg; codecs="theora, vorbis"'>
 

@@ -2,35 +2,33 @@
 <html>
 <head>
   <title>Popcorn Grafiti Markup Language Plug-in Demo</title>
-  
   <script src="../../popcorn.js"></script>
   <script src="popcorn.gml.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
-      .play() 
-      .volume(0)
+    document.addEventListener( "DOMContentLoaded", function() {
+      var p = Popcorn( "#video" )
+      .play()
+      .volume( 0 )
       .gml({
-        start: 0, // seconds
-        end: 5, // seconds
-        gmltag: '29582',
-        target: 'gmldiv'
+        start: 0,
+        end: 5,
+        gmltag: "29582",
+        target: "gmldiv"
       })
       .gml({
-        start: 10, // seconds
-        end: 20, // seconds
-        gmltag: '155',
-        target: 'gmldiv'
+        start: 10,
+        end: 20,
+        gmltag: "155",
+        target: "gmldiv"
       })
       .gml({
-        start: 20, // seconds
-        end: 40, // seconds
-        gmltag: '161',
-        target: 'gmldiv'
+        start: 20,
+        end: 40,
+        gmltag: "161",
+        target: "gmldiv"
       });
-
     }, false);
-      
+
   </script>
 </head>
 <body>
@@ -39,22 +37,22 @@
   <p> A Processing canvas displaying the GML tag <a href="http://000000book.com/data/155">155</a> will appear at 10-20 seconds.</p>
   <p> A Processing canvas displaying the GML tag <a href="http://000000book.com/data/161">161</a> will appear at 20-40 seconds.</p>
   <div>
-    <video id='video' 
-      controls preload='none' 
-      width= '250px'
-      poster="../../test/poster.png"> 
+    <video id="video"
+      controls preload="none"
+      width="250px"
+      poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+        type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+        type='video/ogg; codecs="theora, vorbis"'>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+      <p>Your user agent does not support the HTML5 Video element.</p>
 
-    </video> 
+    </video>
   </div>
   <div id="gmldiv"></div>
 </body>
