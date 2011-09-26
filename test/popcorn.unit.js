@@ -589,10 +589,10 @@ test( "play(n)/pause(n) custom stop()", function() {
   };
 
   var outerHTML = [
-			"<video id='video-fixture' preload='auto' controls='' style='display:;width:300px' tabindex='0'>",
-			document.getElementById( "video" ).innerHTML,
-			"</video>"
-			].join( "\n" ),
+      "<video id='video-fixture' preload='auto' controls='' style='display:;width:300px' tabindex='0'>",
+      document.getElementById( "video" ).innerHTML,
+      "</video>"
+      ].join( "\n" ),
       count = 0,
       expects = 2,
       $pop;
@@ -1911,6 +1911,7 @@ test("timeUpdate add track event while paused", function() {
   function plus() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "timeUpdateTester" );
+      start();
     }
   }
 
@@ -1928,15 +1929,16 @@ test("timeUpdate add track event while paused", function() {
     };
   });
 
-  $pop.currentTime(40).pause();
+  stop();
+  $pop.currentTime( 1 ).pause();
 
   equals( $pop.getTrackEvents().length, 0, "Initially no trackEvents" );
   plus();
 
   $pop.timeUpdateTester({
-    id:"timeUpdateID",
-    start:40,
-    end: 41
+    id: "timeUpdateID",
+    start: 1,
+    end: 1
   });
 
   equals( $pop.getTrackEvents().length, 1, "trackEvent successfully added" );
@@ -3050,7 +3052,7 @@ test( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
   stop( 10000 );
 
-	$pop.currentTime( 39 ).play();
+  $pop.currentTime( 39 ).play();
 });
 
 module("Popcorn XHR");
