@@ -2497,6 +2497,7 @@ test("Remove Plugin", function() {
   function plus() {
     if ( ++count === expects ) {
       start();
+      Popcorn.removePlugin( "cleanup" );
     }
   }
 
@@ -2616,26 +2617,34 @@ test("Remove Plugin", function() {
 
 });
 
+test( "Protected Names", function() {
 
+  var keys = Object.keys( Popcorn.p ),
+      len = keys.length,
+      count = 0,
+      popped = Popcorn( "#video" );
 
+  expect( len );
 
-test("Protected Names", function() {
-  //QUnit.reset();
+  function plus() {
+    if ( ++count === len ) {
+      start();
+    }
+  }
 
-  expect(8);
-
-  var popped = Popcorn("#video");
-
-  $.each( "load play pause currentTime playbackRate mute volume duration".split(/\s+/), function(k, name) {
+  Popcorn.forEach( keys, function( name ) {
     try {
 
-      Popcorn.plugin( name, {});
-    }   catch (e) {
+      Popcorn.plugin( name, {} );
+    } catch ( e ) {
 
       ok( name, "Attempting to overwrite '" + name + "' threw an exception " );
-
+      plus();
     };
   });
+
+  stop( 5000 );
+
 });
 
 test("Defaulting Empty End Values", function() {

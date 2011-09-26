@@ -750,12 +750,6 @@
     Popcorn.p[ key ] = Popcorn.events.fn[ key ];
   });
 
-  //  Protected API methods
-  Popcorn.protect = {
-    natives: ( "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten exec" +
-              "preload playbackRate autoplay loop controls muted buffered readyState seeking paused played seekable ended" ).toLowerCase().split( /\s+/ )
-  };
-
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
 
@@ -1775,6 +1769,11 @@
 
   // alias for exec function
   Popcorn.p.cue = Popcorn.p.exec;
+
+  //  Protected API methods
+  Popcorn.protect = {
+    natives: Object.keys( Popcorn.p ).join( "," ).toLowerCase().split( "," )
+  };
 
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
