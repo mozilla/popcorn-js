@@ -1904,7 +1904,7 @@ test("timeUpdate add track event while paused", function() {
 
   var $pop = Popcorn( "#video" ),
     count = 0,
-    expects = 3;
+    expects = 1;
 
   expect( expects );
 
@@ -1915,40 +1915,25 @@ test("timeUpdate add track event while paused", function() {
     }
   }
 
-  Popcorn.plugin("timeUpdateTester", function() {
+  stop();
+
+  Popcorn.plugin( "timeUpdateTester", function() {
     return {
       start: function () {
-        var div = document.createElement("div");
-        div.id = "timeUpdate-test";
-
-        document.body.appendChild(div);
+        ok( true, "timeupdater ran while paused");
+        plus();
       },
       end: function () {
-        document.getElementById("timeUpdate-test").parentNode.removeChild(document.getElementById("timeUpdate-test"));
       }
     };
   });
 
-  stop();
-  $pop.currentTime( 1 ).pause();
-
-  equals( $pop.getTrackEvents().length, 0, "Initially no trackEvents" );
-  plus();
+  $pop.currentTime( 1 ).pause()
 
   $pop.timeUpdateTester({
-    id: "timeUpdateID",
     start: 1,
-    end: 1
+    end: 2
   });
-
-  equals( $pop.getTrackEvents().length, 1, "trackEvent successfully added" );
-  plus();
-
-  ok( document.getElementById( "timeUpdate-test" ), "trackEvent successfully added, content was displayed while video was paused" );
-  plus();
-
-  $pop.removeTrackEvent( "timeUpdateID" );
-
 });
 
 test("Plugin Factory", function () {
