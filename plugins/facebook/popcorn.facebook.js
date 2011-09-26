@@ -47,25 +47,13 @@
   */
 
   var ranOnce = false;
-
-  function toggle( container, display ) {
-    if ( container ) {
-      container.style.display = display;
-
-      return;
-    }
-
-    setTimeout(function() {
-      toggle( container, display );
-    }, 10 );
-  }
-
+  
   Popcorn.plugin( "facebook" , {
     manifest: {
       about: {
         name: "Popcorn Facebook Plugin",
         version: "0.1",
-        author: "Dan Ventura",
+        author : "Dan Ventura, Matthew Schranz: @mjschranz",
         website: "dsventura.blogspot.com"
       },
       options: {
@@ -177,23 +165,7 @@
     _setup: function( options ) {
 
       var target = document.getElementById( options.target ),
-          _type = options.type,
-          _font = options.font,
-          _xid = options.xid,
-          _href = options.href,
-          _site = options.site,
-          _height = options.height,
-          _width = options.width,
-          _action = options.action,
-          _stream = options.stream,
-          _header = options.header,
-          _layout = options.layout,
-          _maxRows = options.max_rows,
-          _borderColor = options.border_color,
-          _colorScheme = options.colorscheme,
-          _showFaces = options.show_faces,
-          _recom = options.recommendations,
-          _APTF = options.always_post_to_friends;
+          _type = options.type;
 
       // facebook script requires a div named fb-root
       if ( !document.getElementById( "fb-root" ) ) {
@@ -216,24 +188,25 @@
           });
         };
       }
-
+      
+      // Lowercase to make value consistent no matter what user inputs
+      _type = _type.toLowerCase();
+      
       var validType = function( type ) {
-        return ( [ "like", "like-box", "activity", "facepile", "comments", "live-stream", "send" ].indexOf( type ) > -1 );
+        return ( ["like", "like-box", "activity", "facepile", "live-stream", "send"].indexOf( type ) > -1 );
       };
 
-      // default plugin is like button
-      _type = ( _type || "like" ).toLowerCase();
-
-      // default plugin is like button
+      // Checks if type is valid
       if ( !validType( _type ) ) {
-        _type = "like";
+        throw new Error( "Facebook plugin type was invalid." );
       }
-
+      
+      
       options._container = document.createElement( "fb:" +_type );
 
       var setOptions = (function( options ) {
 
-        options._container.style.display = "none";
+        //options._container.style.display = "none";
 
         // activity feed uses 'site' rather than 'href'
         var attr = _type === "activity" ? "site" : "href";
@@ -243,44 +216,44 @@
         return {
           "like": function () {
             options._container.setAttribute( "send", ( options.send || false ) );
-            options._container.setAttribute( "width", _width );
-            options._container.setAttribute( "show_faces", _showFaces );
-            options._container.setAttribute( "layout", _layout );
-            options._container.setAttribute( "font", _font );
-            options._container.setAttribute( "colorscheme", _colorScheme );
+            options._container.setAttribute( "width", options.width );
+            options._container.setAttribute( "show_faces", options.show_faces );
+            options._container.setAttribute( "layout", options.layout );
+            options._container.setAttribute( "font", options.font );
+            options._container.setAttribute( "colorscheme", options.colorscheme );
           },
           "like-box": function () {
-            options._container.setAttribute( "height", ( _height || 250 ) );
-            options._container.setAttribute( "width", _width );
-            options._container.setAttribute( "show_faces", _showFaces );
-            options._container.setAttribute( "stream", _stream );
-            options._container.setAttribute( "header", _header );
-            options._container.setAttribute( "colorscheme", _colorScheme );
+            options._container.setAttribute( "height", ( options.height || 250 ) );
+            options._container.setAttribute( "width", options.width );
+            options._container.setAttribute( "show_faces", options.show_faces );
+            options._container.setAttribute( "stream", options.stream );
+            options._container.setAttribute( "header", options.header );
+            options._container.setAttribute( "colorscheme", options.colorscheme );
           },
           "facepile": function () {
-            options._container.setAttribute( "height", _height );
-            options._container.setAttribute( "width", _width );
-            options._container.setAttribute( "max_rows", ( _maxRows || 1 ) );
+            options._container.setAttribute( "height", options.height );
+            options._container.setAttribute( "width", options.width );
+            options._container.setAttribute( "max_rows", ( options.max_rows || 1 ) );
           },
           "activity": function () {
-            options._container.setAttribute( "width", _width );
-            options._container.setAttribute( "height", _height );
-            options._container.setAttribute( "header", _header );
-            options._container.setAttribute( "border_color", _borderColor );
-            options._container.setAttribute( "recommendations", _recom );
-            options._container.setAttribute( "font", _font );
-            options._container.setAttribute( "colorscheme", _colorScheme );
+            options._container.setAttribute( "width", options.width );
+            options._container.setAttribute( "height", options.height );
+            options._container.setAttribute( "header", options.header );
+            options._container.setAttribute( "border_color", options.border_color );
+            options._container.setAttribute( "recommendations", options.recommendations );
+            options._container.setAttribute( "font", options.font );
+            options._container.setAttribute( "colorscheme", options.colorscheme );
           },
           "live-stream": function() {
-            options._container.setAttribute( "width", ( _width || 400 ) );
-            options._container.setAttribute( "height", ( _height || 500 ) );
-            options._container.setAttribute( "always_post_to_friends", ( _APTF || false ) );
+            options._container.setAttribute( "width", ( options.width || 400 ) );
+            options._container.setAttribute( "height", ( options.height || 500 ) );
+            options._container.setAttribute( "always_post_to_friends", ( options.always_post_to_friends || false ) );
             options._container.setAttribute( "event_app_id", options.event_app_id );
-            options._container.setAttribute( "xid", _xid );
+            options._container.setAttribute( "xid", options.xid );
           },
           "send": function() {
-            options._container.setAttribute( "font", _font );
-            options._container.setAttribute( "colorscheme", _colorScheme );
+            options._container.setAttribute( "font", options.font );
+            options._container.setAttribute( "colorscheme", options.colorscheme );
           }
         };
       })( options );
@@ -299,7 +272,7 @@
     * options variable
     */
     start: function( event, options ){
-      toggle( options._container, "inline" );
+      options._container.style.display = "inline";
     },
     /**
     * @member facebook
@@ -308,7 +281,8 @@
     * options variable
     */
     end: function( event, options ){
-      toggle ( options._container, "none" );
+      options._container.style.display = "none";
+      options._container.innerHTML = "";
     }
   });
 
