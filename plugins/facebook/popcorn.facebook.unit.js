@@ -82,7 +82,7 @@ test( "Test Initialized Facebook Blocks", function () {
         type: "asdasd",
         start : 1,
         end   : 6
-      } );
+    });
   } catch( e ) {
     ok( true, "Facebook plugin type was invalid." );  
   }  

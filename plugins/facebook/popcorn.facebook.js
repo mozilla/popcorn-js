@@ -189,6 +189,7 @@
         };
       }
       
+      
       // Lowercase to make value consistent no matter what user inputs
       _type = _type.toLowerCase();
       
@@ -203,63 +204,31 @@
       
       
       options._container = document.createElement( "fb:" +_type );
-
-      var setOptions = (function( options ) {
-
-        //options._container.style.display = "none";
-
+      
+      // All the the "types" for facebook share largely identical attributes, for loop suffices.
+      // ** Credit to Rick Waldron, it's essentially all his code in this function.
+      var setOptions = function() {
         // activity feed uses 'site' rather than 'href'
         var attr = _type === "activity" ? "site" : "href";
 
         options._container.setAttribute( attr, ( options[ attr ] || document.URL ) );
+      
+        // create an array of Facebook widget attributes
+        var fbAttrs = ( 
+          "width height layout show_faces stream header colorscheme" + 
+          " maxrows border_color recommendations font always_post_to_friends xid" 
+        ).split(" ");
 
-        return {
-          "like": function () {
-            options._container.setAttribute( "send", ( options.send || false ) );
-            options._container.setAttribute( "width", options.width );
-            options._container.setAttribute( "show_faces", options.show_faces );
-            options._container.setAttribute( "layout", options.layout );
-            options._container.setAttribute( "font", options.font );
-            options._container.setAttribute( "colorscheme", options.colorscheme );
-          },
-          "like-box": function () {
-            options._container.setAttribute( "height", ( options.height || 250 ) );
-            options._container.setAttribute( "width", options.width );
-            options._container.setAttribute( "show_faces", options.show_faces );
-            options._container.setAttribute( "stream", options.stream );
-            options._container.setAttribute( "header", options.header );
-            options._container.setAttribute( "colorscheme", options.colorscheme );
-          },
-          "facepile": function () {
-            options._container.setAttribute( "height", options.height );
-            options._container.setAttribute( "width", options.width );
-            options._container.setAttribute( "max_rows", ( options.max_rows || 1 ) );
-          },
-          "activity": function () {
-            options._container.setAttribute( "width", options.width );
-            options._container.setAttribute( "height", options.height );
-            options._container.setAttribute( "header", options.header );
-            options._container.setAttribute( "border_color", options.border_color );
-            options._container.setAttribute( "recommendations", options.recommendations );
-            options._container.setAttribute( "font", options.font );
-            options._container.setAttribute( "colorscheme", options.colorscheme );
-          },
-          "live-stream": function() {
-            options._container.setAttribute( "width", ( options.width || 400 ) );
-            options._container.setAttribute( "height", ( options.height || 500 ) );
-            options._container.setAttribute( "always_post_to_friends", ( options.always_post_to_friends || false ) );
-            options._container.setAttribute( "event_app_id", options.event_app_id );
-            options._container.setAttribute( "xid", options.xid );
-          },
-          "send": function() {
-            options._container.setAttribute( "font", options.font );
-            options._container.setAttribute( "colorscheme", options.colorscheme );
+        Popcorn.forEach( fbAttrs, function( attr ) {
+          // Test for null/undef. Allows 0, false & ""
+          if ( options[ attr ] != null ) {
+            options._container.setAttribute( attr, options[ attr ] );
           }
-        };
-      })( options );
-
-      setOptions[ _type ]();
-
+        });
+      };
+      
+      setOptions();
+      
       if ( !target && Popcorn.plugin.debug ) {
         throw new Error( "Facebook target container doesn't exist" );
       }
@@ -272,7 +241,7 @@
     * options variable
     */
     start: function( event, options ){
-      options._container.style.display = "inline";
+      options._container.style.display = "";
     },
     /**
     * @member facebook
