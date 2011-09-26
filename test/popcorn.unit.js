@@ -2580,7 +2580,7 @@ test("Defaulting Empty End Values", function() {
 
 test( "In/Out aliases", function() {
   var popcorn = Popcorn( "#video" ),
-      expects = 3,
+      expects = 4,
       count = 0,
       counter = 0; 
 
@@ -2617,7 +2617,8 @@ test( "In/Out aliases", function() {
   ok( popcorn.data.events[ "in" ], "in is a valid alias for start" );
   plus();
 
-  ok( popcorn.data.events[ "out" ], "out is a valid alias for end" ); 
+  ok( popcorn.data.events[ "out" ], "out is a valid alias for end" );
+  plus();
 
   equals( counter, 0, "Counter is at 0, neither in or out have been called" );
   plus();
