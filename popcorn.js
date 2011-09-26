@@ -1207,6 +1207,7 @@
       options._natives.type = name;
       options._running = false;
 
+      
       natives.start = natives.start || natives[ "in" ];
       natives.end = natives.end || natives[ "out" ]; 
 
