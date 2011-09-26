@@ -2,7 +2,9 @@
 
   // Popcorn.js does not support archaic browsers
   if ( !document.addEventListener ) {
-    global.Popcorn = {};
+    global.Popcorn = {
+      isSupported: false
+    };
 
     var methods = ( "forEach extend effects error guid sizeOf isArray nop position disable enable destroy " +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
@@ -63,8 +65,11 @@
     return new Popcorn.p.init( entity, options || null );
   };
 
-  // Popcorn API version, automatically inserted via build system.
+  //  Popcorn API version, automatically inserted via build system.
   Popcorn.version = "@VERSION";
+
+  //  Boolean flag allowing a client to determine if Popcorn can be supported
+  Popcorn.isSupported = true;
 
   //  Instance caching
   Popcorn.instances = [];

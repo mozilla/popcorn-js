@@ -53,7 +53,13 @@ test( "noConflict", function() {
   Popcorn = $$;
 });
 
+test("isSupported", function () {
 
+  expect( 2 );
+
+  ok( "isSupported" in Popcorn, "Popcorn.isSupported boolean flag exists");
+  ok( Popcorn.isSupported, "Popcorn.isSupported boolean flag is true");
+});
 
 test("Popcorn.* Static Methods", function() {
 
