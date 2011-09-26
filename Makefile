@@ -115,7 +115,7 @@ ${POPCORN_DIST}: $(POPCORN_SRC) | $(DIST_DIR)
 	@@$(call add_license, $(POPCORN_DIST))
 	@@$(call add_version, $(POPCORN_DIST))
 
-min: ${POPCORN_MIN} ${MODULES_MIN} ${PLUGINS_MIN} ${PARSERS_MIN} ${PLAYERS_MIN} $(EFFECTS_MIN) ${POPCORN_COMPLETE_MIN}
+min: setup ${POPCORN_MIN} ${MODULES_MIN} ${PLUGINS_MIN} ${PARSERS_MIN} ${PLAYERS_MIN} $(EFFECTS_MIN) ${POPCORN_COMPLETE_MIN}
 
 ${POPCORN_MIN}: ${POPCORN_DIST}
 	@@echo "Building" ${POPCORN_MIN}
@@ -123,13 +123,13 @@ ${POPCORN_MIN}: ${POPCORN_DIST}
 	@@$(call add_license, $(POPCORN_MIN))
 	@@$(call add_version, $(POPCORN_MIN))
 
-${POPCORN_COMPLETE_MIN}: update ${POPCORN_SRC} ${MODULES_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} $(EFFECTS_SRC) ${DIST_DIR}
+${POPCORN_COMPLETE_MIN}: ${POPCORN_SRC} ${MODULES_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} $(EFFECTS_SRC) ${DIST_DIR}
 	@@echo "Building" ${POPCORN_COMPLETE_MIN}
 	@@$(call compile, $(POPCORN_COMPLETE_LIST), $(POPCORN_COMPLETE_MIN))
 	@@$(call add_license, $(POPCORN_COMPLETE_MIN))
 	@@$(call add_version, $(POPCORN_COMPLETE_MIN))
 
-modules: ${MODULES_DIST}
+modules: setup ${MODULES_DIST}
 
 ${MODULES_MIN}: ${MODULES_DIST}
 	@@echo "Building" ${MODULES_MIN}
@@ -179,7 +179,7 @@ $(EFFECTS_DIST): $(EFFECTS_SRC) $(DIST_DIR)
 	@@echo "Building $(EFFECTS_DIST)"
 	@@cat $(EFFECTS_SRC) > $(EFFECTS_DIST)
 
-complete: update ${POPCORN_SRC} ${MODULES_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) ${DIST_DIR}
+complete: setup ${POPCORN_SRC} ${MODULES_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) ${DIST_DIR}
 	@@echo "Building popcorn + modules + plugins + parsers + players + effects..."
 	@@cat ${POPCORN_SRC} ${MODULES_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) > $(POPCORN_COMPLETE_DIST)
 	@@$(call add_license, $(POPCORN_COMPLETE_DIST))
@@ -264,16 +264,6 @@ clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
 	@@rm -rf ${DIST_DIR}
 
-# Setup any git submodules we need
-SEQUENCE_SRC = ${PLAYERS_DIR}/sequence/popcorn.sequence.js
-
-setup: ${SEQUENCE_SRC} update
-
-update:
+setup:
 	@@echo "Updating submodules..."
-	@@git submodule update
-	@@cd  players/sequence; git pull origin master
-
-${SEQUENCE_SRC}:
-	@@echo "Setting-up submodules..."
-	@@git submodule init
+	@@git submodule update --init
