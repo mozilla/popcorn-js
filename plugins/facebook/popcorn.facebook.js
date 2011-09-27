@@ -53,7 +53,7 @@
       about: {
         name: "Popcorn Facebook Plugin",
         version: "0.1",
-        author : "Dan Ventura, Matthew Schranz: @mjschranz",
+        author: "Dan Ventura, Matthew Schranz: @mjschranz",
         website: "dsventura.blogspot.com, mschranz.wordpress.com"
       },
       options: {
