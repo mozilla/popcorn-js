@@ -53,7 +53,13 @@ test( "noConflict", function() {
   Popcorn = $$;
 });
 
+test("isSupported", function () {
 
+  expect( 2 );
+
+  ok( "isSupported" in Popcorn, "Popcorn.isSupported boolean flag exists");
+  ok( Popcorn.isSupported, "Popcorn.isSupported boolean flag is true");
+});
 
 test("Popcorn.* Static Methods", function() {
 
@@ -2497,6 +2503,7 @@ test("Remove Plugin", function() {
   function plus() {
     if ( ++count === expects ) {
       start();
+      Popcorn.removePlugin( "cleanup" );
     }
   }
 
@@ -2616,26 +2623,34 @@ test("Remove Plugin", function() {
 
 });
 
+test( "Protected Names", function() {
 
+  var keys = Object.keys( Popcorn.p ),
+      len = keys.length,
+      count = 0,
+      popped = Popcorn( "#video" );
 
+  expect( len );
 
-test("Protected Names", function() {
-  //QUnit.reset();
+  function plus() {
+    if ( ++count === len ) {
+      start();
+    }
+  }
 
-  expect(8);
-
-  var popped = Popcorn("#video");
-
-  $.each( "load play pause currentTime playbackRate mute volume duration".split(/\s+/), function(k, name) {
+  Popcorn.forEach( keys, function( name ) {
     try {
 
-      Popcorn.plugin( name, {});
-    }   catch (e) {
+      Popcorn.plugin( name, {} );
+    } catch ( e ) {
 
       ok( name, "Attempting to overwrite '" + name + "' threw an exception " );
-
+      plus();
     };
   });
+
+  stop( 5000 );
+
 });
 
 test("Defaulting Empty End Values", function() {
@@ -2669,6 +2684,63 @@ test("Defaulting Empty End Values", function() {
     apikey: "CHAyhB5IisvLqqzGYNYbmA",
     mediaid: "13607892"
   });
+});
+
+test( "In/Out aliases", function() {
+  var popcorn = Popcorn( "#video" ),
+      expects = 5,
+      count = 0,
+      counter = 0; 
+
+  expect( expects );
+  stop();
+
+  function plus() {
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "aliasTester" );
+      start();
+    }
+  }
+
+  Popcorn.plugin( "aliasTester", function() {
+
+    return {
+      in: function() {
+        counter++;
+      },
+      out: function() {
+        counter++;
+      }
+    };
+  });
+
+  popcorn.aliasTester({
+    in: 1,
+    out: 3
+  });
+
+  popcorn.currentTime( 0 ).pause();
+
+  ok( popcorn.data.events[ "in" ], "in is a valid alias for start" );
+  plus();
+
+  ok( popcorn.data.events[ "out" ], "out is a valid alias for end" );
+  plus();
+
+  equals( counter, 0, "Counter is at 0, neither in or out have been called" );
+  plus();
+
+  popcorn.exec( 2, function() {
+    equals( counter, 1, "Counter is at 1, in has been called" );
+    plus();
+  });
+
+  popcorn.exec( 4, function() {
+    equals( counter, 2, "Counter is at 2, out has been called" );
+    plus();
+  });
+
+  popcorn.play();
 });
 
 module("Popcorn TrackEvents");

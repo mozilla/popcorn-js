@@ -1,15 +1,24 @@
 module("Core");
 test("Dummy", function () {
 
-  expect(1);
+  expect( 1 );
 
   ok( Popcorn, "Popcorn dummy exists");
 });
 
+test("isSupported", function () {
+
+  expect( 2 );
+
+  ok( "isSupported" in Popcorn, "Popcorn.isSupported boolean flag exists");
+  ok( !Popcorn.isSupported, "Popcorn.isSupported boolean flag is false");
+});
+
+
 module("Static Methods");
 (function() {
 
-  var method, 
+  var method,
       methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
           "forEach extend effects error guid sizeOf isArray nop position disable enable " +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
@@ -21,7 +30,7 @@ module("Static Methods");
 
     test( method, function () {
 
-      expect(1);
+      expect( 1 );
 
       ok( Popcorn[ method ], "Popcorn." + method + " exists");
     });
@@ -33,7 +42,7 @@ module("Static Methods");
 module("Attempt");
 (function() {
 
-  var method, 
+  var method,
       methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
           "forEach extend effects error guid sizeOf isArray nop position disable enable " +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
@@ -45,7 +54,7 @@ module("Attempt");
 
     test( method, function () {
 
-      expect(1);
+      expect( 1 );
 
       equal( Popcorn[ method ](), undefined, "Popcorn." + method + "() dummy returns undefined without throwing exception");
 
