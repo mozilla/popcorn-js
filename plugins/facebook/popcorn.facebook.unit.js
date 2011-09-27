@@ -1,6 +1,6 @@
-test("Popcorn Facebook Plugin", function () {
+test( "Popcorn Facebook Plugin", function () {
 
-  var popped = Popcorn("#video"),
+  var popped = Popcorn( "#video" ),
       expects = 5,
       count = 0,
       interval,
@@ -23,11 +23,11 @@ test("Popcorn Facebook Plugin", function () {
   plus();
 
   popped.facebook({
-        site   : "http://popcornjs.org/",
-        type   : "ACTIVITY",
-        target : "activitydiv",
-        start  : 3,
-        end    : 6
+        site: "http://popcornjs.org/",
+        type: "ACTIVITY",
+        target: "activitydiv",
+        start: 3,
+        end: 6
       })
       .facebook({
         href: "http://www.facebook.com/senecacollege",
@@ -41,7 +41,7 @@ test("Popcorn Facebook Plugin", function () {
     .play();
 
 
-  ok (document.getElementById('activitydiv'), "activitydiv exists on the page" );
+  ok ( document.getElementById( "activitydiv" ), "activitydiv exists on the page" );
   plus();
   ok( document.getElementById( "facepilediv" ), "facepilediv exists on the page" );
   plus();
@@ -80,8 +80,8 @@ test( "Test Initialized Facebook Blocks", function () {
     pop.facebook({
         target: "likediv",
         type: "asdasd",
-        start : 1,
-        end   : 6
+        start: 1,
+        end: 6
     });
   } catch( e ) {
     ok( true, "Facebook plugin type was invalid." );

@@ -1,6 +1,6 @@
 //PLUGIN: facebook
 
-(function(Popcorn, global ) {
+(function( Popcorn, global ) {
 /**
   * Facebook Popcorn plug-in
   * Places Facebook's "social plugins" inside a div ( http://developers.facebook.com/docs/plugins/ )
@@ -194,7 +194,7 @@
       _type = _type.toLowerCase();
 
       var validType = function( type ) {
-        return ( ["like", "like-box", "activity", "facepile", "live-stream", "send"].indexOf( type ) > -1 );
+        return ( [ "like", "like-box", "activity", "facepile", "live-stream", "send" ].indexOf( type ) > -1 );
       };
 
       // Checks if type is valid
