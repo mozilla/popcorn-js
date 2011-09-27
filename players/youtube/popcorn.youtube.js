@@ -100,6 +100,23 @@ Popcorn.player( "youtube", {
         Popcorn.player.defineProperty( media, "currentTime", {
           set: function( val ) {
 
+            // make sure val is a number
+            currentTime = seekTime = +val;
+            seeking = true;
+            media.dispatchEvent( "seeked" );
+            media.dispatchEvent( "timeupdate" );
+            youtubeObject.seekTo( currentTime );
+            return currentTime;
+          },
+          get: function() {
+
+            return currentTime;
+          }
+        });
+
+        Popcorn.player.defineProperty( media, "muted", {
+          set: function( val ) {
+
             if ( youtubeObject.isMuted() !== val ) {
 
               if ( val ) {
@@ -114,23 +131,6 @@ Popcorn.player( "youtube", {
             }
 
             return youtubeObject.isMuted();
-          },
-          get: function() {
-
-            return currentTime;
-          }
-        });
-
-        Popcorn.player.defineProperty( media, "muted", {
-          set: function( val ) {
-
-            // make sure val is a number
-            currentTime = seekTime = +val;
-            seeking = true;
-            media.dispatchEvent( "seeked" );
-            media.dispatchEvent( "timeupdate" );
-            youtubeObject.seekTo( currentTime );
-            return currentTime;
           },
           get: function() {
 
