@@ -50,7 +50,7 @@
         _uri,
         _link,
         _image,
-        _count = options.numberofimages || 4 ,
+        _count = options.numberofimages || 4,
         _height = options.height || "50px",
         _width = options.width || "50px",
         _padding = options.padding || "5px",
@@ -66,10 +66,10 @@
     idx++;
 
     // ensure the target container the user chose exists
-
     if ( !target && Popcorn.plugin.debug ) {
       throw new Error( "flickr target container doesn't exist" );
     }
+
     target && target.appendChild( containerDiv );
 
     // get the userid from Flickr API by using the username and apikey
@@ -90,16 +90,21 @@
         }, 5 );
       }
     };
+
     // get the photos from Flickr API by using the user_id and/or tags
     var getFlickrData = function() {
+
       _uri  = "http://api.flickr.com/services/feeds/photos_public.gne?";
+
       if ( _userid ) {
         _uri += "id=" + _userid + "&";
       }
       if ( options.tags ) {
         _uri += "tags=" + options.tags + "&";
       }
+
       _uri += "lang=en-us&format=json&jsoncallback=flickr";
+
       Popcorn.xhr.getJSONP( _uri, function( data ) {
 
         var fragment = document.createElement( "p" );

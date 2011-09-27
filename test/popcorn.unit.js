@@ -1,44 +1,64 @@
-module("Popcorn API");
-test("API", function() {
+module("Core");
+test( "Core", function() {
 
   var expects = 3,
       count = 0;
 
-  expect(expects);
+  expect( expects );
 
-  function plus(){ if ( ++count == expects ) start(); }
+  function plus() {
+    if ( ++count == expects ) {
+      start();
+    }
+  }
 
   stop( 10000 );
 
-
   try {
-
     ok( Popcorn, "Popcorn exists");
     plus();
-
   } catch (e) {};
 
-
   try {
-
     ok( typeof Popcorn === "function", "Popcorn is a function");
     plus();
-
   } catch (e) {};
 
   try {
-
     Popcorn(function() {
-
       ok(1, "Popcorn calls its function argument");
       plus();
-
-
     });
-
   } catch (e) {};
+});
+
+test( "noConflict", function() {
+
+  expect( 6 );
+
+  ok( Popcorn.noConflict, "Popcorn.noConflict exists" );
+  equal( typeof Popcorn.noConflict, "function", "Popcorn.noConflict is a function" );
+
+  var $$ = Popcorn;
+
+  deepEqual( Popcorn, Popcorn.noConflict(), "noConflict returned the Popcorn object" );
+  deepEqual( Popcorn, $$, "Make sure Popcorn wasn't touched." );
 
 
+  Popcorn = $$;
+
+  deepEqual( Popcorn.noConflict( true ), $$, "noConflict returned the Popcorn object" );
+  deepEqual( Popcorn, originalPopcorn, "Make sure Popcorn was reverted." );
+
+  Popcorn = $$;
+});
+
+test("isSupported", function () {
+
+  expect( 2 );
+
+  ok( "isSupported" in Popcorn, "Popcorn.isSupported boolean flag exists");
+  ok( Popcorn.isSupported, "Popcorn.isSupported boolean flag is true");
 });
 
 test("Popcorn.* Static Methods", function() {
@@ -589,10 +609,10 @@ test( "play(n)/pause(n) custom stop()", function() {
   };
 
   var outerHTML = [
-			"<video id='video-fixture' preload='auto' controls='' style='display:;width:300px' tabindex='0'>",
-			document.getElementById( "video" ).innerHTML,
-			"</video>"
-			].join( "\n" ),
+      "<video id='video-fixture' preload='auto' controls='' style='display:;width:300px' tabindex='0'>",
+      document.getElementById( "video" ).innerHTML,
+      "</video>"
+      ].join( "\n" ),
       count = 0,
       expects = 2,
       $pop;
@@ -1904,49 +1924,36 @@ test("timeUpdate add track event while paused", function() {
 
   var $pop = Popcorn( "#video" ),
     count = 0,
-    expects = 3;
+    expects = 1;
 
   expect( expects );
 
   function plus() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "timeUpdateTester" );
+      start();
     }
   }
 
-  Popcorn.plugin("timeUpdateTester", function() {
+  stop();
+
+  Popcorn.plugin( "timeUpdateTester", function() {
     return {
       start: function () {
-        var div = document.createElement("div");
-        div.id = "timeUpdate-test";
-
-        document.body.appendChild(div);
+        ok( true, "timeupdater ran while paused");
+        plus();
       },
       end: function () {
-        document.getElementById("timeUpdate-test").parentNode.removeChild(document.getElementById("timeUpdate-test"));
       }
     };
   });
 
-  $pop.currentTime(40).pause();
-
-  equals( $pop.getTrackEvents().length, 0, "Initially no trackEvents" );
-  plus();
+  $pop.currentTime( 1 ).pause()
 
   $pop.timeUpdateTester({
-    id:"timeUpdateID",
-    start:40,
-    end: 41
+    start: 1,
+    end: 2
   });
-
-  equals( $pop.getTrackEvents().length, 1, "trackEvent successfully added" );
-  plus();
-
-  ok( document.getElementById( "timeUpdate-test" ), "trackEvent successfully added, content was displayed while video was paused" );
-  plus();
-
-  $pop.removeTrackEvent( "timeUpdateID" );
-
 });
 
 test("Plugin Factory", function () {
@@ -2496,6 +2503,7 @@ test("Remove Plugin", function() {
   function plus() {
     if ( ++count === expects ) {
       start();
+      Popcorn.removePlugin( "cleanup" );
     }
   }
 
@@ -2615,26 +2623,34 @@ test("Remove Plugin", function() {
 
 });
 
+test( "Protected Names", function() {
 
+  var keys = Object.keys( Popcorn.p ),
+      len = keys.length,
+      count = 0,
+      popped = Popcorn( "#video" );
 
+  expect( len );
 
-test("Protected Names", function() {
-  //QUnit.reset();
+  function plus() {
+    if ( ++count === len ) {
+      start();
+    }
+  }
 
-  expect(8);
-
-  var popped = Popcorn("#video");
-
-  $.each( "load play pause currentTime playbackRate mute volume duration".split(/\s+/), function(k, name) {
+  Popcorn.forEach( keys, function( name ) {
     try {
 
-      Popcorn.plugin( name, {});
-    }   catch (e) {
+      Popcorn.plugin( name, {} );
+    } catch ( e ) {
 
       ok( name, "Attempting to overwrite '" + name + "' threw an exception " );
-
+      plus();
     };
   });
+
+  stop( 5000 );
+
 });
 
 test("Defaulting Empty End Values", function() {
@@ -2668,6 +2684,63 @@ test("Defaulting Empty End Values", function() {
     apikey: "CHAyhB5IisvLqqzGYNYbmA",
     mediaid: "13607892"
   });
+});
+
+test( "In/Out aliases", function() {
+  var popcorn = Popcorn( "#video" ),
+      expects = 5,
+      count = 0,
+      counter = 0; 
+
+  expect( expects );
+  stop();
+
+  function plus() {
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "aliasTester" );
+      start();
+    }
+  }
+
+  Popcorn.plugin( "aliasTester", function() {
+
+    return {
+      in: function() {
+        counter++;
+      },
+      out: function() {
+        counter++;
+      }
+    };
+  });
+
+  popcorn.aliasTester({
+    in: 1,
+    out: 3
+  });
+
+  popcorn.currentTime( 0 ).pause();
+
+  ok( popcorn.data.events[ "in" ], "in is a valid alias for start" );
+  plus();
+
+  ok( popcorn.data.events[ "out" ], "out is a valid alias for end" );
+  plus();
+
+  equals( counter, 0, "Counter is at 0, neither in or out have been called" );
+  plus();
+
+  popcorn.exec( 2, function() {
+    equals( counter, 1, "Counter is at 1, in has been called" );
+    plus();
+  });
+
+  popcorn.exec( 4, function() {
+    equals( counter, 2, "Counter is at 2, out has been called" );
+    plus();
+  });
+
+  popcorn.play();
 });
 
 module("Popcorn TrackEvents");
@@ -3050,7 +3123,7 @@ test( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
   stop( 10000 );
 
-	$pop.currentTime( 39 ).play();
+  $pop.currentTime( 39 ).play();
 });
 
 module("Popcorn XHR");

@@ -1,6 +1,6 @@
 // PLUGIN: Footnote/Text
 
-(function (Popcorn) {
+(function ( Popcorn ) {
 
   /**
    * Footnote popcorn plug-in
@@ -37,17 +37,29 @@
           website: "annasob.wordpress.com"
         },
         options: {
-          start: { elem: "input", type: "text", label: "In" },
-          end: { elem: "input", type: "text", label: "Out" },
-          text: { elem: "input", type: "text", label: "Text" },
+          start: {
+            elem: "input",
+            type: "text",
+            label: "In"
+          },
+          end: {
+            elem: "input",
+            type: "text",
+            label: "Out"
+          },
+          text: {
+            elem: "input",
+            type: "text",
+            label: "Text"
+          },
           target: name + "-container"
         }
       },
-    _setup: function(options) {
+    _setup: function( options ) {
 
       var target = document.getElementById( options.target );
 
-      options._container = document.createElement( 'div' );
+      options._container = document.createElement( "div" );
       options._container.style.display = "none";
       options._container.innerHTML  = options.text;
 
@@ -57,21 +69,21 @@
       target && target.appendChild( options._container );
     },
     /**
-     * @member footnote 
-     * The start function will be executed when the currentTime 
-     * of the video  reaches the start time provided by the 
+     * @member footnote
+     * The start function will be executed when the currentTime
+     * of the video  reaches the start time provided by the
      * options variable
      */
-    start: function(event, options){
+    start: function( event, options ){
       options._container.style.display = "inline";
     },
     /**
-     * @member footnote 
-     * The end function will be executed when the currentTime 
-     * of the video  reaches the end time provided by the 
+     * @member footnote
+     * The end function will be executed when the currentTime
+     * of the video  reaches the end time provided by the
      * options variable
      */
-    end: function(event, options){
+    end: function( event, options ){
       options._container.style.display = "none";
     },
     _teardown: function( options ) {

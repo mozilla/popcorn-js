@@ -1,9 +1,16 @@
-test("Popcorn LinkedIn Plugin", function () {
-  
+test( "Popcorn LinkedIn Plugin", function() {
+
+  function plus() {
+
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
   if ( /localhost/.test( location.hostname ) ) {
-    
+
     // run tests on localhost
-    var popped = Popcorn("#video"),
+    var popped = Popcorn( "#video" ),
         expects = 23,
         count = 0,
         setupId,
@@ -12,25 +19,18 @@ test("Popcorn LinkedIn Plugin", function () {
         memberprofilediv = document.getElementById( "memberprofilediv" ),
         companyinsiderdiv = document.getElementById( "companyinsiderdiv" ),
         companyprofilediv = document.getElementById( "companyprofilediv" );
-    
+
     expect( expects );
-    
-    function plus() {
-  
-      if ( ++count === expects ) {
-        start();
-      }
-    }
-  
+
     stop();
-   
+
     ok( "linkedin" in popped, "linkedin is a method of the popped instance" );
     plus();
-  
+
     // Testing the share plugin
     equals( sharediv.innerHTML, "", "initially, there is nothing inside the sharediv" );
     plus();
-    
+
     popped.linkedin({
       type: "share",
       counter: "right",
@@ -40,25 +40,25 @@ test("Popcorn LinkedIn Plugin", function () {
       start: 1,
       end: 3
     });
-  
+
     popped.exec( 2, function() {
-  
+
       ok( /block/.test( sharediv.children[ 0 ].style.display ), "sharediv contents are displayed" );
       plus();
       ok( /script/.test( sharediv.children[ 0 ].innerHTML ), "share plugin exists" );
       plus();
     });
-    
+
     popped.exec( 4, function() {
-  
+
       ok( /none/.test( sharediv.children[ 0 ].style.display ), "sharediv contents are hidden again" );
       plus();
     });
-    
+
     // Testing the recommendproduct plugin
     equals( recommenddiv.innerHTML, "", "initially, there is nothing inside the recommenddiv" );
     plus();
-    
+
     popped.linkedin({
       type: "recommendproduct",
       counter: "top",
@@ -69,25 +69,25 @@ test("Popcorn LinkedIn Plugin", function () {
       start: 1,
       end: 3
     });
-    
+
     popped.exec( 2, function() {
-  
+
       ok( /block/.test( recommenddiv.children[ 0 ].style.display ), "recommenddiv contents are displayed" );
       plus();
       ok( /script/.test( recommenddiv.children[ 0 ].innerHTML ), "recommend plugin exists" );
       plus();
     });
-    
+
     popped.exec( 4, function() {
-  
+
       ok( /none/.test( recommenddiv.children[ 0 ].style.display ), "recommenddiv contents are hidden again" );
       plus();
     });
-    
+
     // Testing memberprofile plugin
     equals( memberprofilediv.innerHTML, "", "initially, there is nothing inside the memberprofilediv" );
     plus();
-    
+
     popped.linkedin({
       type: "memberprofile",
       memberid: "/in/jeffweiner08",
@@ -99,23 +99,23 @@ test("Popcorn LinkedIn Plugin", function () {
     });
 
     popped.exec( 2, function() {
-  
+
       ok( /block/.test( memberprofilediv.children[ 0 ].style.display ), "memberprofilediv contents are displayed" );
       plus();
       ok( /script/.test( memberprofilediv.children[ 0 ].innerHTML ), "member profile plugin exists" );
       plus();
     });
-    
+
     popped.exec( 4, function() {
-  
+
       ok( /none/.test( memberprofilediv.children[ 0 ].style.display ), "memberprofilediv contents are hidden again" );
       plus();
     });
-    
+
     // Testing the company insider plugin
     equals( companyinsiderdiv.innerHTML, "", "initially, there is nothing inside the companyinsiderdiv" );
     plus();
-        
+
     popped.linkedin({
       type: "companyinsider",
       companyid: "1441",
@@ -126,15 +126,15 @@ test("Popcorn LinkedIn Plugin", function () {
     });
 
     popped.exec( 2, function() {
-  
+
       ok( /block/.test( companyinsiderdiv.children[ 0 ].style.display ), "companyinsiderdiv contents are displayed" );
       plus();
       ok( /script/.test( companyinsiderdiv.children[ 0 ].innerHTML ), "company insider plugin exists" );
       plus();
     });
-    
+
     popped.exec( 4, function() {
-  
+
       ok( /none/.test( companyinsiderdiv.children[ 0 ].style.display ), "companyinsiderdiv contents are hidden again" );
       plus();
     });
@@ -142,7 +142,7 @@ test("Popcorn LinkedIn Plugin", function () {
     // Testing company profile plugin
     equals( companyprofilediv.innerHTML, "", "initially, there is nothing inside the companyprofilediv" );
     plus();
-    
+
     popped.linkedin({
       type: "companyprofile",
       companyid: "1441",
@@ -152,25 +152,25 @@ test("Popcorn LinkedIn Plugin", function () {
       start: 1,
       end: 3
     });
-    
+
     setupId = popped.getLastTrackEventId();
 
     popped.exec( 2, function() {
-  
+
       ok( /block/.test( companyprofilediv.children[ 0 ].style.display ), "companyprofilediv contents are displayed" );
       plus();
       ok( /script/.test( companyprofilediv.children[ 0 ].innerHTML ), "company profile plugin exists" );
       plus();
     });
-    
+
     popped.exec( 4, function() {
-  
+
       ok( /none/.test( companyprofilediv.children[ 0 ].style.display ), "companyprofilediv contents are hidden again" );
       plus();
-      
+
       // Make sure _teardown functionality works
       popped.pause().removeTrackEvent( setupId );
-      ok( !companyprofilediv.children[1], "companyprofilediv plugin was properly destroyed"  );
+      ok( !companyprofilediv.children[ 1 ], "companyprofilediv plugin was properly destroyed" );
       plus();
     });
 
@@ -182,13 +182,13 @@ test("Popcorn LinkedIn Plugin", function () {
     try {
       popped.linkedin({});
     } catch( e ) {
-      ok(true, 'empty event was caught by debug');
+      ok( true, "empty event was caught by debug" );
       plus();
     }
 
     popped.volume( 0 ).play();
   } else {
-    
+
     // tests must be run on localhost
     ok( false, "LinkedIn apikey will only work under localhost" );
   }

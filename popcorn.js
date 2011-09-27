@@ -2,7 +2,9 @@
 
   // Popcorn.js does not support archaic browsers
   if ( !document.addEventListener ) {
-    global.Popcorn = {};
+    global.Popcorn = {
+      isSupported: false
+    };
 
     var methods = ( "forEach extend effects error guid sizeOf isArray nop position disable enable destroy " +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
@@ -23,6 +25,9 @@
   slice = AP.slice,
   hasOwn = OP.hasOwnProperty,
   toString = OP.toString,
+
+  // Copy global Popcorn (may not exist)
+  _Popcorn = global.Popcorn,
 
   //  ID string matching
   rIdExp  = /^(#([\w\-\_\.]+))$/,
@@ -60,8 +65,11 @@
     return new Popcorn.p.init( entity, options || null );
   };
 
-  // Popcorn API version, automatically inserted via build system.
+  //  Popcorn API version, automatically inserted via build system.
   Popcorn.version = "@VERSION";
+
+  //  Boolean flag allowing a client to determine if Popcorn can be supported
+  Popcorn.isSupported = true;
 
   //  Instance caching
   Popcorn.instances = [];
@@ -283,6 +291,14 @@
 
   // A Few reusable utils, memoized onto Popcorn
   Popcorn.extend( Popcorn, {
+    noConflict: function( deep ) {
+
+      if ( deep ) {
+        global.Popcorn = _Popcorn;
+      }
+
+      return Popcorn;
+    },
     error: function( msg ) {
       throw new Error( msg );
     },
@@ -739,12 +755,6 @@
     Popcorn.p[ key ] = Popcorn.events.fn[ key ];
   });
 
-  //  Protected API methods
-  Popcorn.protect = {
-    natives: ( "load play pause currentTime playbackRate mute volume duration removePlugin roundTime trigger listen unlisten exec" +
-              "preload playbackRate autoplay loop controls muted buffered readyState seeking paused played seekable ended" ).toLowerCase().split( /\s+/ )
-  };
-
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
 
@@ -787,7 +797,7 @@
         break;
       }
     }
-    
+
     this.timeUpdate( obj, null );
 
     // Store references to user added trackevents in ref table
@@ -1198,6 +1208,9 @@
       options._natives.type = name;
       options._running = false;
 
+      natives.start = natives.start || natives[ "in" ];
+      natives.end = natives.end || natives[ "out" ]; 
+
       // Check for previously set default options
       defaults = this.options.defaults && this.options.defaults[ options._natives && options._natives.type ];
 
@@ -1223,14 +1236,14 @@
 
       //  Ensure a manifest object, an empty object is a sufficient fallback
       options._natives.manifest = manifest;
-
+      
       //  Checks for expected properties
       if ( !( "start" in options ) ) {
-        options.start = 0;
+        options.start = options[ "in" ] || 0;
       }
 
       if ( !( "end" in options ) ) {
-        options.end = this.duration() || Number.MAX_VALUE;
+        options.end = options[ "out" ] || this.duration() || Number.MAX_VALUE;
       }
 
       // Merge with defaults if they exist, make sure per call is prioritized
@@ -1923,6 +1936,11 @@
 
   // alias for exec function
   Popcorn.p.cue = Popcorn.p.exec;
+
+  //  Protected API methods
+  Popcorn.protect = {
+    natives: Object.keys( Popcorn.p ).join( "," ).toLowerCase().split( "," )
+  };
 
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;

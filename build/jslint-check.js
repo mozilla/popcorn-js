@@ -10,7 +10,8 @@ var ok = {
   "Expected an assignment or function call and instead saw an expression.": true,
   "Expected a 'break' statement before 'case'.": true,
   "'e' is already defined.": true,
-  "Don't make functions within a loop.": true
+  "Don't make functions within a loop.": true,
+  "['out'] is better written in dot notation.": true
 };
 
 function check(src)

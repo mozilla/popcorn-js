@@ -1,6 +1,6 @@
 // PLUGIN: Code
 
-(function (Popcorn) {
+(function ( Popcorn ) {
 
   /**
    * Code Popcorn Plug-in
@@ -68,24 +68,24 @@
   *
   */
 
-  Popcorn.plugin( 'code' , function(options) {
+  Popcorn.plugin( "code" , function( options ) {
     var running = false;
-  
+
     // Setup a proper frame interval function (60fps), favouring paint events.
-    var step = ( function() {
-    
+    var step = (function() {
+
       var buildFrameRunner = function( runner ) {
         return function( f, options ) {
-    
+
           var _f = function() {
             running && f();
             running && runner( _f );
           };
-    
+
           _f();
         };
       };
-    
+
       // Figure out which level of browser support we have for this
       if ( window.webkitRequestAnimationFrame ) {
         return buildFrameRunner( window.webkitRequestAnimationFrame );
@@ -94,31 +94,31 @@
       } else {
         return buildFrameRunner( function( f ) {
           window.setTimeout( f, 16 );
-        } );
+        });
       }
-    
-    } )();
 
-    if ( !options.onStart || typeof options.onStart !== 'function' ) {
+    })();
+
+    if ( !options.onStart || typeof options.onStart !== "function" ) {
 
       if ( Popcorn.plugin.debug ) {
-        throw new Error( 'Popcorn Code Plugin Error: onStart must be a function.' );
+        throw new Error( "Popcorn Code Plugin Error: onStart must be a function." );
       }
       options.onStart = Popcorn.nop;
     }
 
-    if ( options.onEnd && typeof options.onEnd !== 'function' ) {
+    if ( options.onEnd && typeof options.onEnd !== "function" ) {
 
       if ( Popcorn.plugin.debug ) {
-        throw new Error( 'Popcorn Code Plugin Error: onEnd  must be a function.' );
+        throw new Error( "Popcorn Code Plugin Error: onEnd  must be a function." );
       }
       options.onEnd = undefined;
     }
 
-    if ( options.onFrame && typeof options.onFrame !== 'function' ) {
+    if ( options.onFrame && typeof options.onFrame !== "function" ) {
 
       if ( Popcorn.plugin.debug ) {
-        throw new Error( 'Popcorn Code Plugin Error: onFrame  must be a function.' );
+        throw new Error( "Popcorn Code Plugin Error: onFrame  must be a function." );
       }
       options.onFrame = undefined;
     }
@@ -143,20 +143,40 @@
         }
       }
     };
-  }, 
-  { 
+  },
+  {
     about: {
-      name: 'Popcorn Code Plugin',
-      version: '0.1',
-      author: 'David Humphrey (@humphd)',
-      website: 'http://vocamus.net/dave'
+      name: "Popcorn Code Plugin",
+      version: "0.1",
+      author: "David Humphrey (@humphd)",
+      website: "http://vocamus.net/dave"
     },
     options: {
-      start: {elem:'input', type:'text', label:'In'},
-      end: {elem:'input', type:'text', label:'Out'},
-      onStart: {elem:'input', type:'function', label:'onStart'},
-      onFrame: {elem:'input', type:'function', label:'onFrame'},
-      onEnd: {elem:'input', type:'function', label:'onEnd'}
+      start: {
+       elem: "input",
+       type: "text",
+       label: "In"
+      },
+      end: {
+        elem: "input",
+        type: "text",
+        label: "Out"
+      },
+      onStart: {
+        elem: "input",
+        type: "function",
+        label: "onStart"
+      },
+      onFrame: {
+        elem: "input",
+        type: "function",
+        label: "onFrame"
+      },
+      onEnd: {
+        elem: "input",
+        type: "function",
+        label: "onEnd"
+      }
     }
   });
 })( Popcorn );
