@@ -1504,12 +1504,12 @@
       var date = new Date() / 1000,
           baselineTime = date,
           currentTime = 0,
-          timeout,
           events = {},
 
           // The container div of the resource
           container = document.getElementById( rIdExp.exec( target ) && rIdExp.exec( target )[ 2 ] ) || document.createElement( "div" ),
           basePlayer = {},
+          timeout,
           popcorn;
 
       // copies a div into the media object
@@ -1520,7 +1520,7 @@
           basePlayer[ val ] = container[ val ];
         } else if ( typeof container[ val ] === "function" ) {
 
-          basePlayer[ val ] = ( function( value ) {
+          basePlayer[ val ] = (function( value ) {
 
             return function() {
 
@@ -1529,13 +1529,17 @@
           }( val ));
         } else {
 
-          basePlayer.__defineGetter__( val, ( function( value ) {
+          Popcorn.player.defineProperty( basePlayer, val, {
+            get: (function( value ) {
 
-            return function() {
+              return function() {
 
-              return container[ value ];
-            };
-          }( val )));
+                return container[ value ];
+              };
+            }( val )),
+            set: Popcorn.nop,
+            configurable: true
+          });
         }
       }
 
@@ -1543,7 +1547,7 @@
 
         date = new Date() / 1000;
 
-        if( !basePlayer.paused ) {
+        if ( !basePlayer.paused ) {
 
           basePlayer.currentTime = basePlayer.currentTime + ( date - baselineTime );
           basePlayer.dispatchEvent( "timeupdate" );
@@ -1571,17 +1575,19 @@
         basePlayer.dispatchEvent( "pause" );
       };
 
-      basePlayer.__defineSetter__( "currentTime", function( val ) {
+      Popcorn.player.defineProperty( basePlayer, "currentTime", {
+        get: function() {
 
-        // make sure val is a number
-        currentTime = +val;
-        basePlayer.dispatchEvent( "timeupdate" );
-        return currentTime;
-      });
+          return currentTime;
+        },
+        set: function( val ) {
 
-      basePlayer.__defineGetter__( "currentTime", function() {
-
-        return currentTime;
+          // make sure val is a number
+          currentTime = +val;
+          basePlayer.dispatchEvent( "timeupdate" );
+          return currentTime;
+        },
+        configurable: true
       });
 
       // Adds an event listener to the object
@@ -1650,6 +1656,12 @@
     };
 
     Popcorn[ name ] = Popcorn[ name ] || playerFn;
+  };
+
+  Popcorn.player.defineProperty = Object.defineProperty || function( object, description, options ) {
+
+    object.__defineGetter__( description, options.get || Popcorn.nop );
+    object.__defineSetter__( description, options.set || Popcorn.nop );
   };
 
   //  Cache references to reused RegExps

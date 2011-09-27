@@ -23,6 +23,11 @@ Popcorn.player( "youtube", {
 
     var youtubeInit = function() {
 
+      var flashvars,
+          params,
+          attributes,
+          src;
+
       // expose a callback to this scope, that is called from the global callback youtube calls
       onYouTubePlayerReady[ container.id ] = function() {
 
@@ -92,59 +97,62 @@ Popcorn.player( "youtube", {
           }
         };
 
-        media.__defineSetter__( "currentTime", function( val ) {
+        Popcorn.player.defineProperty( media, "currentTime", {
+          set: function( val ) {
 
-          // make sure val is a number
-          currentTime = seekTime = +val;
-          seeking = true;
-          media.dispatchEvent( "seeked" );
-          media.dispatchEvent( "timeupdate" );
-          youtubeObject.seekTo( currentTime );
-          return currentTime;
-        });
+            if ( youtubeObject.isMuted() !== val ) {
 
-        media.__defineGetter__( "currentTime", function() {
+              if ( val ) {
 
-          return currentTime;
-        });
+                youtubeObject.mute();
+              } else {
 
-        media.__defineSetter__( "muted", function( val ) {
+                youtubeObject.unMute();
+              }
 
-          if ( youtubeObject.isMuted() !== val ) {
-
-            if ( val ) {
-
-              youtubeObject.mute();
-            } else {
-
-              youtubeObject.unMute();
+              media.dispatchEvent( "volumechange" );
             }
 
-            media.dispatchEvent( "volumechange" );
+            return youtubeObject.isMuted();
+          },
+          get: function() {
+
+            return currentTime;
           }
-
-          return youtubeObject.isMuted();
         });
 
-        media.__defineGetter__( "muted", function() {
+        Popcorn.player.defineProperty( media, "muted", {
+          set: function( val ) {
 
-          return youtubeObject.isMuted();
-        });
+            // make sure val is a number
+            currentTime = seekTime = +val;
+            seeking = true;
+            media.dispatchEvent( "seeked" );
+            media.dispatchEvent( "timeupdate" );
+            youtubeObject.seekTo( currentTime );
+            return currentTime;
+          },
+          get: function() {
 
-        media.__defineSetter__( "volume", function( val ) {
-
-          if ( youtubeObject.getVolume() !== val ) {
-
-            youtubeObject.setVolume( val );
-            media.dispatchEvent( "volumechange" );
+            return youtubeObject.isMuted();
           }
-
-          return youtubeObject.getVolume();
         });
 
-        media.__defineGetter__( "volume", function() {
+        Popcorn.player.defineProperty( media, "volume", {
+          set: function( val ) {
 
-          return youtubeObject.getVolume();
+            if ( youtubeObject.getVolume() !== val ) {
+
+              youtubeObject.setVolume( val );
+              media.dispatchEvent( "volumechange" );
+            }
+
+            return youtubeObject.getVolume();
+          },
+          get: function() {
+
+            return youtubeObject.getVolume();
+          }
         });
 
         media.readyState = 4;
@@ -164,15 +172,26 @@ Popcorn.player( "youtube", {
       options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1; 
       options.annotations = +options.annotations === 1 || +options.annotations === 3 ? options.annotations : 1;
 
-      var flashvars = {
+      flashvars = {
         playerapiid: container.id,
         controls: options.controls,
         iv_load_policy: options.annotations
       };
 
-      swfobject.embedSWF( "http://www.youtube.com/e/" + /^.*[\/=](.{11})/.exec( media.src )[ 1 ] + "?enablejsapi=1&playerapiid=" + container.id + "&version=3", 
+      params = {
+        wmode: "transparent",
+        allowScriptAccess: "always"
+      };
+
+      attributes = {
+        id: container.id
+      };
+
+      src = /^.*[\/=](.{11})/.exec( media.src )[ 1 ];
+
+      swfobject.embedSWF( "http://www.youtube.com/e/" + src + "?enablejsapi=1&playerapiid=" + container.id + "&version=3", 
                           container.id, media.offsetWidth, media.offsetHeight, "8", null,
-                          flashvars, {wmode: "transparent", allowScriptAccess: "always"}, {id: container.id} );
+                          flashvars, params, attributes );
     };
 
     if ( !window.swfobject ) {
