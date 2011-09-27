@@ -194,7 +194,7 @@ Popcorn.player( "youtube", {
         media.paused && media.dispatchEvent( 'loadeddata' );
       };
 
-      options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1; 
+      options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1;
       options.annotations = +options.annotations === 1 || +options.annotations === 3 ? options.annotations : 1;
 
       flashvars = {
@@ -214,7 +214,7 @@ Popcorn.player( "youtube", {
 
       src = /^.*[\/=](.{11})/.exec( media.src )[ 1 ];
 
-      swfobject.embedSWF( "http://www.youtube.com/e/" + src + "?enablejsapi=1&playerapiid=" + container.id + "&version=3", 
+      swfobject.embedSWF( "http://www.youtube.com/e/" + src + "?enablejsapi=1&playerapiid=" + container.id + "&version=3",
                           container.id, media.offsetWidth, media.offsetHeight, "8", null,
                           flashvars, params, attributes );
     };
