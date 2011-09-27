@@ -9,7 +9,6 @@ Popcorn.player( "youtube", {
   _setup: function( options ) {
 
     var media = this,
-        player = {},
         youtubeObject,
         container = document.createElement( "div" ),
         currentTime = 0,
