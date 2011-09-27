@@ -1491,12 +1491,12 @@
       var date = new Date() / 1000,
           baselineTime = date,
           currentTime = 0,
-          timeout,
           events = {},
 
           // The container div of the resource
           container = document.getElementById( rIdExp.exec( target ) && rIdExp.exec( target )[ 2 ] ) || document.createElement( "div" ),
           basePlayer = {},
+          timeout,
           popcorn;
 
       // copies a div into the media object
