@@ -1597,11 +1597,11 @@
 
           events[ evtName ] = [];
         }
-        
+
         events[ evtName ].push( fn );
         return fn;
       };
-        
+
       // Can take event object or simple string
       basePlayer.dispatchEvent = function( oEvent ) {
 
@@ -1609,20 +1609,20 @@
             self = this,
             eventInterface,
             eventName = oEvent.type;
-            
+
         // A string was passed, create event object
         if ( !eventName ) {
 
           eventName = oEvent;
           eventInterface  = Popcorn.events.getInterface( eventName );
-          
+
           if ( eventInterface ) {
 
             evt = document.createEvent( eventInterface );
             evt.initEvent( eventName, true, true, window, 1 );
           }
         }
-        
+
         Popcorn.forEach( events[ eventName ], function( val ) {
 
           val.call( self, evt, self );
