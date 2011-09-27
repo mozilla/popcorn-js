@@ -2679,17 +2679,16 @@ test("Defaulting Empty End Values", function() {
 
 test( "In/Out aliases", function() {
   var popcorn = Popcorn( "#video" ),
-      expects = 4,
+      expects = 5,
       count = 0,
       counter = 0; 
 
   expect( expects );
-  stop( 5000 );
+  stop();
 
   function plus() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "aliasTester" );
-      Popcorn.removeInstance( popcorn );
       start();
     }
   }
