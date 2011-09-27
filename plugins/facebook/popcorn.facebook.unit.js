@@ -1,5 +1,5 @@
 test("Popcorn Facebook Plugin", function () {
-  
+
   var popped = Popcorn("#video"),
       expects = 5,
       count = 0,
@@ -65,16 +65,16 @@ test( "Test Initialized Facebook Blocks", function () {
   Popcorn.plugin.debug = true;
 
   var pop = Popcorn( "#video" );
-  
+
   expect( 2 );
-  
+
   // Tests for thrown Error on emtpy block
   try {
     pop.facebook({});
   } catch( e ) {
     ok( true, "Empty event was caught by debugger" );
   }
-  
+
   // Tests for thrown Error on invalid plugin type
   try {
     pop.facebook({
@@ -84,7 +84,7 @@ test( "Test Initialized Facebook Blocks", function () {
         end   : 6
     });
   } catch( e ) {
-    ok( true, "Facebook plugin type was invalid." );  
-  }  
+    ok( true, "Facebook plugin type was invalid." );
+  }
 });
 

@@ -47,7 +47,7 @@
   */
 
   var ranOnce = false;
-  
+
   Popcorn.plugin( "facebook" , {
     manifest: {
       about: {
@@ -188,11 +188,11 @@
           });
         };
       }
-      
-      
+
+
       // Lowercase to make value consistent no matter what user inputs
       _type = _type.toLowerCase();
-      
+
       var validType = function( type ) {
         return ( ["like", "like-box", "activity", "facepile", "live-stream", "send"].indexOf( type ) > -1 );
       };
@@ -201,10 +201,10 @@
       if ( !validType( _type ) ) {
         throw new Error( "Facebook plugin type was invalid." );
       }
-      
-      
+
+
       options._container = document.createElement( "fb:" +_type );
-      
+
       // All the the "types" for facebook share largely identical attributes, for loop suffices.
       // ** Credit to Rick Waldron, it's essentially all his code in this function.
       var setOptions = function() {
@@ -212,11 +212,11 @@
         var attr = _type === "activity" ? "site" : "href";
 
         options._container.setAttribute( attr, ( options[ attr ] || document.URL ) );
-      
+
         // create an array of Facebook widget attributes
-        var fbAttrs = ( 
-          "width height layout show_faces stream header colorscheme" + 
-          " maxrows border_color recommendations font always_post_to_friends xid" 
+        var fbAttrs = (
+          "width height layout show_faces stream header colorscheme" +
+          " maxrows border_color recommendations font always_post_to_friends xid"
         ).split(" ");
 
         Popcorn.forEach( fbAttrs, function( attr ) {
@@ -226,9 +226,9 @@
           }
         });
       };
-      
+
       setOptions();
-      
+
       if ( !target && Popcorn.plugin.debug ) {
         throw new Error( "Facebook target container doesn't exist" );
       }
