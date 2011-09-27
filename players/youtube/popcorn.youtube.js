@@ -15,7 +15,12 @@ Popcorn.player( "youtube", {
         currentTime = 0,
         seekTime = 0,
         seeking = false,
-        dataLoaded = false;
+        dataLoaded = false,
+
+        // state code for volume changed polling
+        volumeChanged = false,
+        lastMuted = false,
+        lastVolume = 0;
 
     container.id = media.id + Popcorn.guid();
 
@@ -68,7 +73,24 @@ Popcorn.player( "youtube", {
 
           currentTime = youtubeObject.getCurrentTime();
           media.dispatchEvent( "timeupdate" );
-          timeout = setTimeout( timeupdate, 10 );
+          setTimeout( timeupdate, 10 );
+        };
+
+        var volumeupdate = function() {
+
+          if ( lastMuted !== youtubeObject.isMuted() ) {
+
+            lastMuted = youtubeObject.isMuted();
+            media.dispatchEvent( "volumechange" );
+          }
+
+          if ( lastVolume !== youtubeObject.getVolume() ) {
+
+            lastVolume = youtubeObject.getVolume();
+            media.dispatchEvent( "volumechange" );
+          }
+
+          setTimeout( volumeupdate, 1000 );
         };
 
         media.play = function() {
@@ -127,6 +149,7 @@ Popcorn.player( "youtube", {
                 youtubeObject.unMute();
               }
 
+              lastMuted = youtubeObject.isMuted();
               media.dispatchEvent( "volumechange" );
             }
 
@@ -144,6 +167,7 @@ Popcorn.player( "youtube", {
             if ( youtubeObject.getVolume() !== val ) {
 
               youtubeObject.setVolume( val );
+              lastVolume = youtubeObject.getVolume();
               media.dispatchEvent( "volumechange" );
             }
 
@@ -160,6 +184,7 @@ Popcorn.player( "youtube", {
         dataLoaded = true;
         media.duration = youtubeObject.getDuration();
         media.dispatchEvent( 'durationchange' );
+        volumeupdate();
 
         if ( !media.paused ) {
 
