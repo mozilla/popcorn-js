@@ -23,22 +23,22 @@ test( "Popcorn Facebook Plugin", function () {
   plus();
 
   popped.facebook({
-        site: "http://popcornjs.org/",
-        type: "ACTIVITY",
-        target: "activitydiv",
-        start: 3,
-        end: 6
-      })
-      .facebook({
-        href: "http://www.facebook.com/senecacollege",
-        type: "FACEPILE",
-        target: "facepilediv",
-        start: 4,
-        end: 6,
-        width: 300
-      })
-    .volume( 0 )
-    .play();
+    site: "http://popcornjs.org/",
+    type: "ACTIVITY",
+    target: "activitydiv",
+    start: 3,
+    end: 6
+  })
+  .facebook({
+    href: "http://www.facebook.com/senecacollege",
+    type: "FACEPILE",
+    target: "facepilediv",
+    start: 4,
+    end: 6,
+    width: 300
+  })
+  .volume( 0 )
+  .play();
 
 
   ok ( document.getElementById( "activitydiv" ), "activitydiv exists on the page" );
@@ -78,10 +78,10 @@ test( "Test Initialized Facebook Blocks", function () {
   // Tests for thrown Error on invalid plugin type
   try {
     pop.facebook({
-        target: "likediv",
-        type: "asdasd",
-        start: 1,
-        end: 6
+      target: "likediv",
+      type: "asdasd",
+      start: 1,
+      end: 6
     });
   } catch( e ) {
     ok( true, "Facebook plugin type was invalid." );

@@ -203,7 +203,7 @@
       }
 
 
-      options._container = document.createElement( "fb:" +_type );
+      options._container = document.createElement( "fb:" + _type );
 
       // All the the "types" for facebook share largely identical attributes, for loop suffices.
       // ** Credit to Rick Waldron, it's essentially all his code in this function.
