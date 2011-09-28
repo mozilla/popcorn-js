@@ -1176,7 +1176,6 @@
       second = second || Popcorn.nop;
 
       return function() {
-
         first.apply( this, arguments );
         second.apply( this, arguments );
       };
@@ -1188,8 +1187,7 @@
 
     // apply safe, and empty default functions
     methods.forEach(function( method ) {
-
-      definition[ method ] = definition[ method ] || Popcorn.nop;
+      definition[ method ] = safeTry( definition[ method ] || Popcorn.nop, name );
     });
 
     var pluginFn = function( setup, options ) {
@@ -1209,7 +1207,7 @@
       options._running = false;
 
       natives.start = natives.start || natives[ "in" ];
-      natives.end = natives.end || natives[ "out" ]; 
+      natives.end = natives.end || natives[ "out" ];
 
       // Check for previously set default options
       defaults = this.options.defaults && this.options.defaults[ options._natives && options._natives.type ];
@@ -1229,14 +1227,13 @@
 
         // extends previous functions with compose function
         methods.forEach(function( method ) {
-
           natives[ method ] = combineFn( natives[ method ], compose[ method ] );
         });
       });
 
       //  Ensure a manifest object, an empty object is a sufficient fallback
       options._natives.manifest = manifest;
-      
+
       //  Checks for expected properties
       if ( !( "start" in options ) ) {
         options.start = options[ "in" ] || 0;
@@ -1310,6 +1307,30 @@
     return plugin;
   };
 
+  // Storage for plugin function errors
+  Popcorn.plugin.errors = [];
+
+  // Returns wrapped plugin function
+  function safeTry( fn, pluginName ) {
+    return function() {
+      try {
+        return fn.apply( this, arguments );
+      } catch ( ex ) {
+        // Push plugin function errors into logging queue
+        Popcorn.plugin.errors.push({
+          plugin: pluginName,
+          thrown: ex,
+          source: fn.toString()
+        });
+
+        // Trigger an error that the instance can listen for
+        // and react to
+        this.trigger( "error", Popcorn.plugin.errors );
+      }
+    };
+  }
+
+  // Debug-mode flag for plugin development
   Popcorn.plugin.debug = false;
 
   //  removePlugin( type ) removes all tracks of that from all instances of popcorn
