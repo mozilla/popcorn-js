@@ -9,7 +9,6 @@ Popcorn.player( "youtube", {
   _setup: function( options ) {
 
     var media = this,
-        player = {},
         youtubeObject,
         container = document.createElement( "div" ),
         currentTime = 0,
@@ -71,9 +70,12 @@ Popcorn.player( "youtube", {
 
         var timeupdate = function() {
 
-          currentTime = youtubeObject.getCurrentTime();
-          media.dispatchEvent( "timeupdate" );
-          setTimeout( timeupdate, 10 );
+          if ( !media.paused ) {
+
+            currentTime = youtubeObject.getCurrentTime();
+            media.dispatchEvent( "timeupdate" );
+            setTimeout( timeupdate, 10 );
+          }
         };
 
         var volumeupdate = function() {
@@ -90,7 +92,7 @@ Popcorn.player( "youtube", {
             media.dispatchEvent( "volumechange" );
           }
 
-          setTimeout( volumeupdate, 1000 );
+          setTimeout( volumeupdate, 250 );
         };
 
         media.play = function() {
@@ -180,10 +182,10 @@ Popcorn.player( "youtube", {
         });
 
         media.readyState = 4;
-        media.dispatchEvent( 'load' );
+        media.dispatchEvent( "load" );
         dataLoaded = true;
         media.duration = youtubeObject.getDuration();
-        media.dispatchEvent( 'durationchange' );
+        media.dispatchEvent( "durationchange" );
         volumeupdate();
 
         if ( !media.paused ) {
@@ -191,7 +193,7 @@ Popcorn.player( "youtube", {
           media.play();
         }
 
-        media.paused && media.dispatchEvent( 'loadeddata' );
+        media.paused && media.dispatchEvent( "loadeddata" );
       };
 
       options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1;

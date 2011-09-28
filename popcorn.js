@@ -1507,7 +1507,9 @@
           events = {},
 
           // The container div of the resource
-          container = document.getElementById( rIdExp.exec( target ) && rIdExp.exec( target )[ 2 ] ) || document.createElement( "div" ),
+          container = document.getElementById( rIdExp.exec( target ) && rIdExp.exec( target )[ 2 ] ) ||
+                        document.getElementById( target ) ||
+                          target,
           basePlayer = {},
           timeout,
           popcorn;
