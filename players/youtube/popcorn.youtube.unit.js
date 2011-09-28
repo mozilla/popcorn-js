@@ -26,7 +26,7 @@ test("Update Timer", function () {
   }
 
   // These tests come close to 10 seconds on chrome, increasing to 15
-  stop( 15000 );
+  stop();
 
   Popcorn.plugin( "forwards", function () {
     return {
@@ -67,7 +67,6 @@ test("Update Timer", function () {
 
           options.startFired = true;
           backwardStart = !backwardStart;
-          p2.currentTime(0).play();
           ok( true, "backward's start fired" );
           plus();
         }
@@ -80,7 +79,7 @@ test("Update Timer", function () {
           backwardEnd = !backwardEnd;
           ok( backwardEnd, "backward's end fired" );
           plus();
-          p2.currentTime( 5 ).play();
+          p2.currentTime( 0 ).play();
         }
       }
     };
@@ -286,34 +285,34 @@ test("Plugin Factory", function () {
 });
 
 test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
-  function plus(){ 
+  function plus(){
     if ( ++count == expects ) {
-      start(); 
+      start();
     }
   }
-  
+
   QUnit.reset();
-  
+
   var count = 0,
       expects = 3,
       popcorn = Popcorn.youtube( '#video2', 'http://www.youtube.com/watch?v=9oar9glUCL0' );
-      
+
   expect( expects );
   stop( 10000 );
-  
+
   equals( popcorn.media.id, 'video2', 'Video id set' );
   plus();
-  
+
   equals( popcorn.duration(), 0, 'Duration starts as 0');
   plus();
-  
+
   popcorn.listen( "durationchange", function() {
     notEqual( popcorn.duration(), 0, "Duration has been changed from 0" );
     plus();
-    
+
     popcorn.pause();
   });
-  
+
   popcorn.play();
 });
 
@@ -385,21 +384,21 @@ test( "Controls and Annotations toggling", function() {
 
   ok( /controls=1/.test( testTarget.value ), "controls are defaulted to 1 ( displayed )" );
   ok( /iv_load_policy=1/.test( testTarget.value ), "annotations ( iv_load_policy ) are defaulted to ( enabled )" );
-  
+
   targetDiv.innerHTML = "";
-  
+
   popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0", { controls: 1, annotations: 1 } );
 
   testTarget = targetDiv.querySelector( "object" ).querySelector( "param[name=flashvars]" );
   ok( /controls=1/.test( testTarget.value ), "controls is set to 1 ( displayed )" );
   ok( /iv_load_policy=1/.test( testTarget.value ), "annotations ( iv_load_policy ) is set to 1 ( enabled )" );
-  
+
   targetDiv.innerHTML = "";
-  
+
   popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0", { controls: 0, annotations: 3 } );
   testTarget = targetDiv.querySelector( "object" ).querySelector( "param[name=flashvars]" );
   ok( /controls=0/.test( testTarget.value ), "controls is set to 0 ( hidden )" );
   ok( /iv_load_policy=3/.test( testTarget.value ), "annotations ( iv_load_policy ) is set to 3 ( hidden )" );
-   
+
 });
 

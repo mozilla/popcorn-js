@@ -1509,6 +1509,56 @@ test("Configurable Defaults", function() {
 
 });
 
+test( "Exceptions", function() {
+
+  var $pop = Popcorn( "#video" ),
+      expects = 5,
+      count = 0;
+
+  Popcorn.plugin.errors = [];
+
+  function plus() {
+    if ( ++count == expects ) {
+      Popcorn.removePlugin( "exceptions" );
+      Popcorn.plugin.errors = [];
+      start();
+      $pop.destroy();
+    }
+  }
+
+  expect( expects );
+  stop( 5000 );
+
+  Popcorn.plugin( "exceptions", {
+    start: function() {
+      foo();
+    },
+    end: function() {
+    }
+  });
+
+  $pop.listen( "canplayall", function() {
+    this.exceptions({
+      start: 1,
+      end: 2
+    }).exec( 3, function() {
+      equal( Popcorn.plugin.errors.length, 1, "Popcorn.plugin.errors has one item");
+      plus();
+    }).currentTime( 0 ).play();
+
+    this.listen( "error", function( errors ) {
+      ok( errors.length, "`errors` array has error objects" );
+      plus();
+      ok( errors[ 0 ].thrown, "`errors[ 0 ].thrown` property exists" );
+      plus();
+      ok( errors[ 0 ].plugin, "`errors[ 0 ].plugin` property exists" );
+      plus();
+      ok( errors[ 0 ].source, "`errors[ 0 ].source` property exists" );
+      plus();
+    });
+  });
+});
+
 test("Start Zero Immediately", function() {
 
   var $pop = Popcorn("#video"),
@@ -2103,6 +2153,8 @@ test( "Popcorn Compose", function() {
       Popcorn.removePlugin("testPlugin");
       Popcorn.removePlugin("pluginOptions1");
       Popcorn.removePlugin("pluginOptions2");
+
+      popped.destroy();
       start();
     }
   }
@@ -2690,7 +2742,7 @@ test( "In/Out aliases", function() {
   var popcorn = Popcorn( "#video" ),
       expects = 5,
       count = 0,
-      counter = 0; 
+      counter = 0;
 
   expect( expects );
   stop();
