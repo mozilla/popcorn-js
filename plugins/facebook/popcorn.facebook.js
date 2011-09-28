@@ -46,7 +46,7 @@
   * This will show how many people "like" Seneca College's Facebook page, and show their profile pictures
   */
 
-  var ranOnce = false, idx = 0;
+  var ranOnce = false;
 
   Popcorn.plugin( "facebook" , {
     manifest: {
@@ -165,17 +165,8 @@
     _setup: function( options ) {
 
       var target = document.getElementById( options.target ),
-          _type = options.type,
-          facebookdiv;
-      
-      /*
-      // Ensure target container chosen by user exists
-      if ( !target && Popcorn.plugin.debug ) {
-        throw new Error( "Facebook target container doesn't exist" );
-      }
-      target && target.appendChild( containerDiv );
-      */
-      
+          _type = options.type;
+
       // facebook script requires a div named fb-root
       if ( !document.getElementById( "fb-root" ) ) {
         var fbRoot = document.createElement( "div" );
@@ -262,7 +253,7 @@
     },
     _teardown: function( options ){
       var target = document.getElementById( options.target );
-      target && target.removeChild( options._facebookdiv );
+      target && target.removeChild( options._container );
     }
   });
 
