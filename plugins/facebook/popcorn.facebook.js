@@ -207,27 +207,23 @@
 
       // All the the "types" for facebook share largely identical attributes, for loop suffices.
       // ** Credit to Rick Waldron, it's essentially all his code in this function.
-      var setOptions = function() {
-        // activity feed uses 'site' rather than 'href'
-        var attr = _type === "activity" ? "site" : "href";
+      // activity feed uses 'site' rather than 'href'
+      var attr = _type === "activity" ? "site" : "href";
 
-        options._container.setAttribute( attr, ( options[ attr ] || document.URL ) );
+      options._container.setAttribute( attr, ( options[ attr ] || document.URL ) );
 
-        // create an array of Facebook widget attributes
-        var fbAttrs = (
-          "width height layout show_faces stream header colorscheme" +
-          " maxrows border_color recommendations font always_post_to_friends xid"
-        ).split(" ");
+      // create an array of Facebook widget attributes
+      var fbAttrs = (
+        "width height layout show_faces stream header colorscheme" +
+        " maxrows border_color recommendations font always_post_to_friends xid"
+      ).split(" ");
 
-        Popcorn.forEach( fbAttrs, function( attr ) {
-          // Test for null/undef. Allows 0, false & ""
-          if ( options[ attr ] != null ) {
-            options._container.setAttribute( attr, options[ attr ] );
-          }
-        });
-      };
-
-      setOptions();
+      Popcorn.forEach( fbAttrs, function( attr ) {
+        // Test for null/undef. Allows 0, false & ""
+        if ( options[ attr ] != null ) {
+          options._container.setAttribute( attr, options[ attr ] );
+        }
+      });
 
       if ( !target && Popcorn.plugin.debug ) {
         throw new Error( "Facebook target container doesn't exist" );
@@ -251,7 +247,9 @@
     */
     end: function( event, options ){
       options._container.style.display = "none";
-      options._container.innerHTML = "";
+    },
+    _teardown: function( event, options ){
+      target && target.removeChild( options._container );
     }
   });
 

@@ -30,7 +30,7 @@ test( "Popcorn Facebook Plugin", function () {
     end: 6
   })
   .facebook({
-    href: "http://www.facebook.com/senecacollege",
+    href: "https://www.facebook.com/boardwalkempire",
     type: "FACEPILE",
     target: "facepilediv",
     start: 4,
