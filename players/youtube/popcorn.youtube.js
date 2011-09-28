@@ -70,9 +70,12 @@ Popcorn.player( "youtube", {
 
         var timeupdate = function() {
 
-          currentTime = youtubeObject.getCurrentTime();
-          media.dispatchEvent( "timeupdate" );
-          setTimeout( timeupdate, 10 );
+          if ( !media.paused ) {
+
+            currentTime = youtubeObject.getCurrentTime();
+            media.dispatchEvent( "timeupdate" );
+            setTimeout( timeupdate, 10 );
+          }
         };
 
         var volumeupdate = function() {
@@ -89,7 +92,7 @@ Popcorn.player( "youtube", {
             media.dispatchEvent( "volumechange" );
           }
 
-          setTimeout( volumeupdate, 1000 );
+          setTimeout( volumeupdate, 250 );
         };
 
         media.play = function() {
