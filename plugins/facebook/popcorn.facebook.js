@@ -212,17 +212,17 @@
       }
 
 
-      options.container = document.createElement( "div" );
-      options.container.id = "facebookdiv-" + Popcorn.guid();
-      facebookdiv = document.createElement( "fb:" + _type );
-      options.container.appendChild( facebookdiv );
+      options._container = document.createElement( "div" );
+      options._container.id = "facebookdiv-" + Popcorn.guid();
+      options._facebookdiv = document.createElement( "fb:" + _type );
+      options._container.appendChild( options._facebookdiv );
 
       // All the the "types" for facebook share largely identical attributes, for loop suffices.
       // ** Credit to Rick Waldron, it's essentially all his code in this function.
       // activity feed uses 'site' rather than 'href'
       var attr = _type === "activity" ? "site" : "href";
 
-      facebookdiv.setAttribute( attr, ( options[ attr ] || document.URL ) );
+      options._facebookdiv.setAttribute( attr, ( options[ attr ] || document.URL ) );
 
       // create an array of Facebook widget attributes
       var fbAttrs = (
@@ -233,14 +233,14 @@
       Popcorn.forEach( fbAttrs, function( attr ) {
         // Test for null/undef. Allows 0, false & ""
         if ( options[ attr ] != null ) {
-          facebookdiv.setAttribute( attr, options[ attr ] );
+          options._facebookdiv.setAttribute( attr, options[ attr ] );
         }
       });
 
       if ( !target && Popcorn.plugin.debug ) {
         throw new Error( "Facebook target container doesn't exist" );
       }
-      target && target.appendChild( options.container );
+      target && target.appendChild( options._container );
     },
     /**
     * @member facebook
@@ -249,7 +249,7 @@
     * options variable
     */
     start: function( event, options ){
-      options.container.style.display = "";
+      options._container.style.display = "";
     },
     /**
     * @member facebook
@@ -258,10 +258,11 @@
     * options variable
     */
     end: function( event, options ){
-      options.container.style.display = "none";
+      options._container.style.display = "none";
     },
-    _teardown: function( event, options ){
-      target && target.removeChild( facebookdiv );
+    _teardown: function( options ){
+      var target = document.getElementById( options.target );
+      target && target.removeChild( options._facebookdiv );
     }
   });
 
