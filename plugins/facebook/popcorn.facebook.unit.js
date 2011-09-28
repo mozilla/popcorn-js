@@ -1,7 +1,7 @@
 test( "Popcorn Facebook Plugin", function () {
 
   var popped = Popcorn( "#video" ),
-      expects = 5,
+      expects = 6,
       count = 0,
       interval,
       interval2,
@@ -39,7 +39,8 @@ test( "Popcorn Facebook Plugin", function () {
   })
   .volume( 0 )
   .play();
-
+  
+  setupId = popped.getLastTrackEventId();
 
   ok ( document.getElementById( "activitydiv" ), "activitydiv exists on the page" );
   plus();
@@ -56,7 +57,12 @@ test( "Popcorn Facebook Plugin", function () {
   popped.exec( 5, function() {
     ok( document.getElementById( "facepilediv" ).innerHTML, "Facepilediv is not empty at 0:05 (expected)" );
     plus();
+    
+    popped.pause().removeTrackEvent( setupId );
+    ok( !facepilediv, "removed facebook social plugin was properly destroyed" );
+    plus();
   });
+  
 });
 
 

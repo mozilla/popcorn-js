@@ -46,7 +46,7 @@
   * This will show how many people "like" Seneca College's Facebook page, and show their profile pictures
   */
 
-  var ranOnce = false;
+  var ranOnce = false, idx = 0;
 
   Popcorn.plugin( "facebook" , {
     manifest: {
@@ -165,8 +165,17 @@
     _setup: function( options ) {
 
       var target = document.getElementById( options.target ),
-          _type = options.type;
-
+          _type = options.type,
+          facebookdiv;
+      
+      /*
+      // Ensure target container chosen by user exists
+      if ( !target && Popcorn.plugin.debug ) {
+        throw new Error( "Facebook target container doesn't exist" );
+      }
+      target && target.appendChild( containerDiv );
+      */
+      
       // facebook script requires a div named fb-root
       if ( !document.getElementById( "fb-root" ) ) {
         var fbRoot = document.createElement( "div" );
@@ -203,14 +212,17 @@
       }
 
 
-      options._container = document.createElement( "fb:" + _type );
+      options.container = document.createElement( "div" );
+      options.container.id = "facebookdiv-" + Popcorn.guid();
+      facebookdiv = document.createElement( "fb:" + _type );
+      options.container.appendChild( facebookdiv );
 
       // All the the "types" for facebook share largely identical attributes, for loop suffices.
       // ** Credit to Rick Waldron, it's essentially all his code in this function.
       // activity feed uses 'site' rather than 'href'
       var attr = _type === "activity" ? "site" : "href";
 
-      options._container.setAttribute( attr, ( options[ attr ] || document.URL ) );
+      facebookdiv.setAttribute( attr, ( options[ attr ] || document.URL ) );
 
       // create an array of Facebook widget attributes
       var fbAttrs = (
@@ -221,14 +233,14 @@
       Popcorn.forEach( fbAttrs, function( attr ) {
         // Test for null/undef. Allows 0, false & ""
         if ( options[ attr ] != null ) {
-          options._container.setAttribute( attr, options[ attr ] );
+          facebookdiv.setAttribute( attr, options[ attr ] );
         }
       });
 
       if ( !target && Popcorn.plugin.debug ) {
         throw new Error( "Facebook target container doesn't exist" );
       }
-      target && target.appendChild( options._container );
+      target && target.appendChild( options.container );
     },
     /**
     * @member facebook
@@ -237,7 +249,7 @@
     * options variable
     */
     start: function( event, options ){
-      options._container.style.display = "";
+      options.container.style.display = "";
     },
     /**
     * @member facebook
@@ -246,10 +258,10 @@
     * options variable
     */
     end: function( event, options ){
-      options._container.style.display = "none";
+      options.container.style.display = "none";
     },
     _teardown: function( event, options ){
-      target && target.removeChild( options._container );
+      target && target.removeChild( facebookdiv );
     }
   });
 
