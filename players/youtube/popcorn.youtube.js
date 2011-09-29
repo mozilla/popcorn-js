@@ -14,7 +14,6 @@ Popcorn.player( "youtube", {
         currentTime = 0,
         seekTime = 0,
         seeking = false,
-        dataLoaded = false,
 
         // state code for volume changed polling
         volumeChanged = false,
@@ -100,12 +99,6 @@ Popcorn.player( "youtube", {
           media.paused = false;
           media.dispatchEvent( "play" );
 
-          if ( dataLoaded ) {
-
-            media.dispatchEvent( "loadeddata" );
-            dataLoaded = false;
-          }
-
           media.dispatchEvent( "playing" );
           timeupdate();
           youtubeObject.playVideo();
@@ -183,17 +176,11 @@ Popcorn.player( "youtube", {
 
         media.readyState = 4;
         media.dispatchEvent( "load" );
-        dataLoaded = true;
         media.duration = youtubeObject.getDuration();
         media.dispatchEvent( "durationchange" );
         volumeupdate();
 
-        if ( !media.paused ) {
-
-          media.play();
-        }
-
-        media.paused && media.dispatchEvent( "loadeddata" );
+        media.dispatchEvent( "loadeddata" );
       };
 
       options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1;
