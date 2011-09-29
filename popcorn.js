@@ -1176,7 +1176,6 @@
       second = second || Popcorn.nop;
 
       return function() {
-
         first.apply( this, arguments );
         second.apply( this, arguments );
       };
@@ -1188,8 +1187,7 @@
 
     // apply safe, and empty default functions
     methods.forEach(function( method ) {
-
-      definition[ method ] = definition[ method ] || Popcorn.nop;
+      definition[ method ] = safeTry( definition[ method ] || Popcorn.nop, name );
     });
 
     var pluginFn = function( setup, options ) {
@@ -1209,7 +1207,7 @@
       options._running = false;
 
       natives.start = natives.start || natives[ "in" ];
-      natives.end = natives.end || natives[ "out" ]; 
+      natives.end = natives.end || natives[ "out" ];
 
       // Check for previously set default options
       defaults = this.options.defaults && this.options.defaults[ options._natives && options._natives.type ];
@@ -1229,14 +1227,13 @@
 
         // extends previous functions with compose function
         methods.forEach(function( method ) {
-
           natives[ method ] = combineFn( natives[ method ], compose[ method ] );
         });
       });
 
       //  Ensure a manifest object, an empty object is a sufficient fallback
       options._natives.manifest = manifest;
-      
+
       //  Checks for expected properties
       if ( !( "start" in options ) ) {
         options.start = options[ "in" ] || 0;
@@ -1310,6 +1307,30 @@
     return plugin;
   };
 
+  // Storage for plugin function errors
+  Popcorn.plugin.errors = [];
+
+  // Returns wrapped plugin function
+  function safeTry( fn, pluginName ) {
+    return function() {
+      try {
+        return fn.apply( this, arguments );
+      } catch ( ex ) {
+        // Push plugin function errors into logging queue
+        Popcorn.plugin.errors.push({
+          plugin: pluginName,
+          thrown: ex,
+          source: fn.toString()
+        });
+
+        // Trigger an error that the instance can listen for
+        // and react to
+        this.trigger( "error", Popcorn.plugin.errors );
+      }
+    };
+  }
+
+  // Debug-mode flag for plugin development
   Popcorn.plugin.debug = false;
 
   //  removePlugin( type ) removes all tracks of that from all instances of popcorn
@@ -1492,6 +1513,179 @@
     return parser;
   };
 
+  Popcorn.player = function( name, player ) {
+
+    player = player || {};
+
+    var playerFn = function( target, src, options ) {
+
+      options = options || {};
+
+      // List of events
+      var date = new Date() / 1000,
+          baselineTime = date,
+          currentTime = 0,
+          events = {},
+
+          // The container div of the resource
+          container = document.getElementById( rIdExp.exec( target ) && rIdExp.exec( target )[ 2 ] ) ||
+                        document.getElementById( target ) ||
+                          target,
+          basePlayer = {},
+          timeout,
+          popcorn;
+
+      // copies a div into the media object
+      for( var val in container ) {
+
+        if ( typeof container[ val ] === "object" ) {
+
+          basePlayer[ val ] = container[ val ];
+        } else if ( typeof container[ val ] === "function" ) {
+
+          basePlayer[ val ] = (function( value ) {
+
+            return function() {
+
+              return container[ value ].apply( container, arguments );
+            };
+          }( val ));
+        } else {
+
+          Popcorn.player.defineProperty( basePlayer, val, {
+            get: (function( value ) {
+
+              return function() {
+
+                return container[ value ];
+              };
+            }( val )),
+            set: Popcorn.nop,
+            configurable: true
+          });
+        }
+      }
+
+      var timeupdate = function() {
+
+        date = new Date() / 1000;
+
+        if ( !basePlayer.paused ) {
+
+          basePlayer.currentTime = basePlayer.currentTime + ( date - baselineTime );
+          basePlayer.dispatchEvent( "timeupdate" );
+          timeout = setTimeout( timeupdate, 10 );
+        }
+
+        baselineTime = date;
+      };
+
+      basePlayer.play = function() {
+
+        this.paused = false;
+
+        if ( basePlayer.readyState >= 4 ) {
+
+          baselineTime = new Date() / 1000;
+          basePlayer.dispatchEvent( "play" );
+          timeupdate();
+        }
+      };
+
+      basePlayer.pause = function() {
+
+        this.paused = true;
+        basePlayer.dispatchEvent( "pause" );
+      };
+
+      Popcorn.player.defineProperty( basePlayer, "currentTime", {
+        get: function() {
+
+          return currentTime;
+        },
+        set: function( val ) {
+
+          // make sure val is a number
+          currentTime = +val;
+          basePlayer.dispatchEvent( "timeupdate" );
+          return currentTime;
+        },
+        configurable: true
+      });
+
+      // Adds an event listener to the object
+      basePlayer.addEventListener = function( evtName, fn ) {
+
+        if ( !events[ evtName ] ) {
+
+          events[ evtName ] = [];
+        }
+
+        events[ evtName ].push( fn );
+        return fn;
+      };
+
+      // Can take event object or simple string
+      basePlayer.dispatchEvent = function( oEvent ) {
+
+        var evt,
+            self = this,
+            eventInterface,
+            eventName = oEvent.type;
+
+        // A string was passed, create event object
+        if ( !eventName ) {
+
+          eventName = oEvent;
+          eventInterface  = Popcorn.events.getInterface( eventName );
+
+          if ( eventInterface ) {
+
+            evt = document.createEvent( eventInterface );
+            evt.initEvent( eventName, true, true, window, 1 );
+          }
+        }
+
+        Popcorn.forEach( events[ eventName ], function( val ) {
+
+          val.call( self, evt, self );
+        });
+      };
+
+      // Attempt to get src from playerFn parameter
+      basePlayer.src = src || "";
+      basePlayer.readyState = 0;
+      basePlayer.duration = 0;
+      basePlayer.paused = true;
+      basePlayer.ended = 0;
+
+      // basePlayer has no concept of sound
+      basePlayer.volume = 1;
+      basePlayer.muted = false;
+
+      if ( player._setup ) {
+
+        player._setup.call( basePlayer, options );
+      } else {
+
+        // there is no setup, which means there is nothing to load
+        basePlayer.readyState = 4;
+        basePlayer.dispatchEvent( 'load' );
+      }
+
+      popcorn = new Popcorn.p.init( basePlayer, options );
+
+      return popcorn;
+    };
+
+    Popcorn[ name ] = Popcorn[ name ] || playerFn;
+  };
+
+  Popcorn.player.defineProperty = Object.defineProperty || function( object, description, options ) {
+
+    object.__defineGetter__( description, options.get || Popcorn.nop );
+    object.__defineSetter__( description, options.set || Popcorn.nop );
+  };
 
   //  Cache references to reused RegExps
   var rparams = /\?/,
