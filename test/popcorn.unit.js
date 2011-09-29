@@ -1515,11 +1515,13 @@ test( "Exceptions", function() {
       expects = 5,
       count = 0;
 
+  Popcorn.plugin.debug = false;
   Popcorn.plugin.errors = [];
 
   function plus() {
     if ( ++count == expects ) {
       Popcorn.removePlugin( "exceptions" );
+      Popcorn.plugin.debug = true;
       Popcorn.plugin.errors = [];
       start();
       $pop.destroy();

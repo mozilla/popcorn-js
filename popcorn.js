@@ -1313,9 +1313,15 @@
   // Returns wrapped plugin function
   function safeTry( fn, pluginName ) {
     return function() {
+
+      if ( Popcorn.plugin.debug ) {
+        return fn.apply( this, arguments );
+      }
+
       try {
         return fn.apply( this, arguments );
       } catch ( ex ) {
+
         // Push plugin function errors into logging queue
         Popcorn.plugin.errors.push({
           plugin: pluginName,
