@@ -1525,6 +1525,8 @@
       var date = new Date() / 1000,
           baselineTime = date,
           currentTime = 0,
+          volume = 1,
+          muted = false,
           events = {},
 
           // The container div of the resource
@@ -1613,6 +1615,36 @@
         configurable: true
       });
 
+      Popcorn.player.defineProperty( basePlayer, "volume", {
+        get: function() {
+
+          return volume;
+        },
+        set: function( val ) {
+
+          // make sure val is a number
+          volume = +val;
+          basePlayer.dispatchEvent( "volumechange" );
+          return volume;
+        },
+        configurable: true
+      });
+
+      Popcorn.player.defineProperty( basePlayer, "muted", {
+        get: function() {
+
+          return muted;
+        },
+        set: function( val ) {
+
+          // make sure val is a number
+          muted = +val;
+          basePlayer.dispatchEvent( "volumechange" );
+          return muted;
+        },
+        configurable: true
+      });
+
       // Adds an event listener to the object
       basePlayer.addEventListener = function( evtName, fn ) {
 
@@ -1659,10 +1691,6 @@
       basePlayer.paused = true;
       basePlayer.ended = 0;
 
-      // basePlayer has no concept of sound
-      basePlayer.volume = 1;
-      basePlayer.muted = false;
-
       if ( player._setup ) {
 
         player._setup.call( basePlayer, options );
@@ -1670,8 +1698,26 @@
 
         // there is no setup, which means there is nothing to load
         basePlayer.readyState = 4;
-        basePlayer.dispatchEvent( 'load' );
+        basePlayer.dispatchEvent( "load" );
+        basePlayer.dispatchEvent( "loadeddata" );
       }
+
+      // when a custom player is loaded, load basePlayer state into custom player
+      basePlayer.addEventListener( "load", function() {
+
+        // if a player is not ready before currentTime is called, this will set it after it is ready
+        basePlayer.currentTime = currentTime;
+
+        // same as above with volume and muted
+        basePlayer.volume = volume;
+        basePlayer.muted = muted;
+      });
+
+      basePlayer.addEventListener( "loadeddata", function() {
+
+        // if play was called before player ready, start playing video
+        !basePlayer.paused && basePlayer.play();
+      });
 
       popcorn = new Popcorn.p.init( basePlayer, options );
 
