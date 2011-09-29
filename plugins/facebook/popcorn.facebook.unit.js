@@ -7,7 +7,7 @@ test( "Popcorn Facebook Plugin", function () {
       interval2,
       interval3,
       interval4,
-      subtitlediv;
+      likediv = document.getElementById( "likediv" );
 
   expect( expects );
 
