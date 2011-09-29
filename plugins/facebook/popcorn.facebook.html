@@ -14,7 +14,7 @@
         type: "live-stream",
         target: "activitydiv",
         start: 1,
-        end: 10,
+        end: 50,
         // id is from example http://developers.facebook.com/docs/reference/plugins/live-stream/
         event_app_id: 174243249296725
       })
@@ -23,13 +23,13 @@
         target: "likediv",
         layout: "box_count",
         start: 5,
-        end: 10
+        end: 50
       })
       .facebook({
         type: "send",
         target: "likediv",
         start: 1,
-        end: 5
+        end: 15
       })
       .facebook({
         href: "http://www.facebook.com/senecacollege",
@@ -38,7 +38,7 @@
         header: "false",
         target: "likeboxdiv",
         start: 6,
-        end: 10
+        end: 50
       })
       .facebook({
         site: "http://popcornjs.org/",
@@ -46,15 +46,15 @@
         target: "activitydiv",
         header: true,
         start: 11,
-        end: 15
+        end: 50
       })
       .facebook({
-        href: "http://www.facebook.com/senecacollege",
+        href: "https://www.facebook.com/boardwalkempire",
         type: "FACEPILE",
         target: "facepilediv",
         width: 300,
         start: 10,
-        end: 15
+        end: 50
       });
     }, false);
 

@@ -161,7 +161,12 @@ test("Update Timer", function () {
     }
   });
 
-  p2.currentTime(3).play();
+  p2.exec( 3, function() {
+
+    p2.play();
+  });
+
+  p2.currentTime(3);
 
 });
 
