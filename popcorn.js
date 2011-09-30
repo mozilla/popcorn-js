@@ -2025,9 +2025,28 @@
   // alias for exec function
   Popcorn.p.cue = Popcorn.p.exec;
 
+  function getItems() {
+
+    var item,
+        list = [];
+
+    if ( Object.keys ) {
+      list = Object.keys( Popcorn.p );
+    } else {
+
+      for ( item in Popcorn.p ) {
+        if ( hasOwn.call( Popcorn.p, item ) ) {
+          list.push( item );
+        }
+      }
+    }
+
+    return list.join( "," ).toLowerCase().split( ",");
+  }
+
   //  Protected API methods
   Popcorn.protect = {
-    natives: Object.keys( Popcorn.p ).join( "," ).toLowerCase().split( "," )
+    natives: getItems() 
   };
 
   //  Exposes Popcorn to global context
