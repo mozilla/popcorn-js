@@ -1314,6 +1314,7 @@
   function safeTry( fn, pluginName ) {
     return function() {
 
+      //  When Popcorn.plugin.debug is true, do not suppress errors
       if ( Popcorn.plugin.debug ) {
         return fn.apply( this, arguments );
       }
