@@ -85,7 +85,21 @@ test("Popcorn 0.3 JSON Parser Plugin - AUDIO", function () {
       trackData,
       trackEvents,
       interval,
-      audiocorn = Popcorn("#audio");
+      audiocorn;
+
+  function getInstance( id ){
+    var instance;
+    for ( var i = 0, l = Popcorn.instances.length; i < l; i++ ) {
+      instance = instance = Popcorn.instances[ i ];
+      console.log( instance );
+      if ( instance.media.id === id ) {
+        return instance;
+      }
+    }
+    throw( "instance not found" );
+  }
+
+  audiocorn = getInstance( "audio" );
 
   function plus() {
     if ( ++count === expects ) {
