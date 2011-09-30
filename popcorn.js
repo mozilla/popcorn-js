@@ -2027,11 +2027,15 @@
 
   function getItems() {
 
+    if ( Object.keys ) {
+      return Object.keys( Popcorn.p ).join( "," ).toLowerCase().split( "," ); 
+    }
+
     var item,
         list = [];
 
     for ( item in Popcorn.p ) {
-      if ( Popcorn.p.hasOwnProperty( item ) ) {
+      if ( hasOwn.call( Popcorn.p, item ) ) {
         list.push( item );
       }
     }
@@ -2041,7 +2045,7 @@
 
   //  Protected API methods
   Popcorn.protect = {
-    natives: Object.keys ? Object.keys( Popcorn.p ).join( "," ).toLowerCase().split( "," ) : getItems() 
+    natives: getItems() 
   };
 
   //  Exposes Popcorn to global context
