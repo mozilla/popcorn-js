@@ -35,7 +35,7 @@ test( "Processing plugin tests", function() {
   plus();
 
   popped.processing({
-    start: 0,
+    start: 0.25,
     end: 1,
     target: "processing-div-1",
     sketch: "test.pjs"
