@@ -1,5 +1,7 @@
 test( "Popcorn Facebook Plugin", function () {
 
+  Popcorn.plugin.debug = true;
+
   var popped = Popcorn( "#video" ),
       expects = 12,
       count = 0,
@@ -114,8 +116,6 @@ test( "Popcorn Facebook Plugin", function () {
 
 
 test( "Test Initialized Facebook Blocks", function () {
-
-  Popcorn.plugin.debug = true;
 
   var pop = Popcorn( "#video" );
 
