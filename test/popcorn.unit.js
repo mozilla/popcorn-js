@@ -2752,6 +2752,7 @@ test( "In/Out aliases", function() {
   function plus() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "aliasTester" );
+      Popcorn.destroy( popcorn );
       start();
     }
   }
