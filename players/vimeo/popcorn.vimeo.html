@@ -21,7 +21,7 @@
                 padding-left: 20px;
             }
         </style>
-        
+
         <script src="../../popcorn.js"></script>
         <script type="text/javascript" src="popcorn.vimeo.js"></script>
         <script src="../../plugins/footnote/popcorn.footnote.js"></script>
@@ -32,67 +32,61 @@
         <script src="../../plugins/image/popcorn.image.js"></script>
         <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
         <script src="../../plugins/twitter/popcorn.twitter.js"></script>
-        
+
         <script type="text/javascript">
             // Called as onload function
             // Set up interface controls
             VimeoEmbedLoaded = function( player ) {
                 var loop = 0,
                     volume = 1;
-                
+
                 // Hook up custom controls
                 // Single play/pause buttons
                 document.getElementById( "btnPlay" ).addEventListener( "click", function(e) {
                   player.play();
                 }, false);
-                
+
                 document.getElementById( "btnPause" ).addEventListener( "click", function(e) {
                     player.pause();
                 }, false);
-                
+
                 //Seek
                 document.getElementById( "btnSeek" ).addEventListener( "click", function() {
                   player.currentTime( 30 );
                 }, false);
 
-                // Loop
-                document.getElementById( "btnLoop" ).addEventListener( "click", function() {
-                  loop = loop === "loop" ? "" : "loop";
-                  player.video.setLoop( loop );
-                }, false);
-
                 // Volume
                 document.getElementById( "btnVolume" ).addEventListener( "click", function() {
-                  volume = volume === 1 ? 0.5 : 1;
+                  volume = volume === 100 ? 50 : 100;
                   player.volume( volume );
                 }, false);
-                
+
                 // Mute
                 document.getElementById( "btnMute" ).addEventListener( "click", function() {
-                  player.mute();
+                  player.mute( !player.media.muted );
                 }, false);
-                
+
                 // Hook into player events
                 // Timeupdate, as the video plays
                 player.listen( "timeupdate", function() {
                   document.getElementById( "player_time" ).innerHTML = player.currentTime();
                 });
-                
+
                 // When the volume changes
                 player.listen( "volumechange", function() {
                   document.getElementById( "player_vol" ).innerHTML = player.volume();
                 });
-                
+
                 // When the video duration changes
                 player.listen( "durationchange", function() {
                   document.getElementById( "player_duration" ).innerHTML = player.duration();
                 });
-                
+
                 // When the meddia ready state changes
                 player.listen( "readystatechange", function() {
                   document.getElementById( "player_state" ).innerHTML = player.readyState();
                 });
-                
+
                 // Output some initial UI values so we caan see what the player is doing
                 document.getElementById( "player_time" ).innerHTML = player.currentTime();
                 document.getElementById( "player_vol" ).innerHTML = player.volume();
@@ -101,12 +95,7 @@
 
             //On document ready
             document.addEventListener( "DOMContentLoaded", function() {
-              var player = Popcorn( Popcorn.vimeo( "player_1", "http://player.vimeo.com/video/11127501", {
-                  css: {
-                    width: "500px",
-                    height: "281px"
-                  }
-                }) )
+              var player = Popcorn.vimeo( "player_1", "http://player.vimeo.com/video/6960892" )
                     .footnote({
                       start: 5, // seconds
                       end: 40, // seconds
@@ -145,7 +134,7 @@
                       language: "en"
                     })
                     .webpage({
-                      id: "webpages-a", 
+                      id: "webpages-a",
                       start: 0, // seconds
                       end: 15, // seconds
                       src: 'http://webmademovies.org/',
@@ -165,34 +154,34 @@
                       href: 'http://www.drumbeat.org/',
                       src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
                       target: 'imagediv'
-                    })
-                    .listen( "load", function() {
+                    });
+                    player.listen( "load", function() {
+                      //console.log( "asdfasdf" );
                       VimeoEmbedLoaded( player );
                     })
-                    .listen( "loadstart", function() {
+                   .listen( "loadstart", function() {
                       document.getElementById( "player_load" ).innerHTML = "Started";
                     })
                     .listen( "canplaythrough", function() {
                       document.getElementById( "player_load" ).innerHTML = "Finished";
                     })
-                    .volume(0)
+                    //.volume(0)
                     .play();
             }, false);
         </script>
     </head>
     <body>
           <div>
-            <div id="player_1" ></div><br />
+            <div id="player_1" style="width: 400px; height: 400px;"></div><br />
             <button class="simple" id="btnPlay">Play</button>
             <button class="simple" id="btnPause">Pause</button>
             <button class="seek" id="btnSeek">Seek to 30</button>
-            <button class="loop" id="btnLoop">Toggle Loop</button>
             <button class="volume" id="btnVolume">Toggle Volume</button>
             <button class="volume" id="btnMute">Mute</button>
             <div>
               Current Time (s): <span id="player_time"></span>
               <br />Video Duration (s): <span id="player_duration"></span>
-              <br />Volume (0-1): <span id="player_vol"></span>
+              <br />Volume (0-100): <span id="player_vol"></span>
               <br />Load Status: <span id="player_load">Not Started</span>
             </div>
           </div>
@@ -243,9 +232,9 @@
               <strong>Web Page Area</strong><br />
             </div>
           </div>
-          
+
           <br />
           <br />
-          
+
     </body>
 </html>
