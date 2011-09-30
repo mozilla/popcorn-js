@@ -2027,16 +2027,17 @@
 
   function getItems() {
 
-    if ( Object.keys ) {
-      return Object.keys( Popcorn.p ).join( "," ).toLowerCase().split( "," ); 
-    }
-
     var item,
         list = [];
 
-    for ( item in Popcorn.p ) {
-      if ( hasOwn.call( Popcorn.p, item ) ) {
-        list.push( item );
+    if ( Object.keys ) {
+      list = Object.keys( Popcorn.p );
+    } else {
+
+      for ( item in Popcorn.p ) {
+        if ( hasOwn.call( Popcorn.p, item ) ) {
+          list.push( item );
+        }
       }
     }
 
