@@ -31,11 +31,8 @@ test("Popcorn 0.3 JSON Parser Plugin", function () {
 
       var idx = 0;
 
-      //console.log( data );
-
       Popcorn.forEach( data.json.data, function (dataObj) {
 
-        //console.log( dataObj );
         Popcorn.forEach( dataObj, function ( obj, key ) {
 
           equals( trackData.history[idx].indexOf(key), 0, "history item '" + trackData.history[idx] + "' matches data key '"+ key+ "' at correct index" );
@@ -87,11 +84,10 @@ test("Popcorn 0.3 JSON Parser Plugin - AUDIO", function () {
       interval,
       audiocorn;
 
-  function getInstance( id ){
+  function getInstance( id ) {
     var instance;
     for ( var i = 0, l = Popcorn.instances.length; i < l; i++ ) {
       instance = instance = Popcorn.instances[ i ];
-      console.log( instance );
       if ( instance.media.id === id ) {
         return instance;
       }
@@ -129,8 +125,7 @@ test("Popcorn 0.3 JSON Parser Plugin - AUDIO", function () {
 
           var historyItem = trackData.history[ idx ];
 
-          console.log( historyItem, key );
-          equal( historyItem.indexOf(key), 0, "history item '" + historyItem + "' matches data key '"+ key+ "' at correct index" );
+          equal( historyItem.indexOf( key ), 0, "history item '" + historyItem + "' matches data key '"+ key+ "' at correct index" );
           plus();
 
           idx++;
