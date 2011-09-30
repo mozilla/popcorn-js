@@ -2679,10 +2679,18 @@ test("Remove Plugin", function() {
 
 test( "Protected Names", function() {
 
-  var keys = Object.keys( Popcorn.p ),
-      len = keys.length,
+  var keys = [], 
+      len,
       count = 0,
       popped = Popcorn( "#video" );
+
+  for ( item in Popcorn.p ) {
+    if ( Popcorn.p.hasOwnProperty( item ) ) {
+      keys.push( item );
+    }
+  }
+
+  len = keys.length;
 
   expect( len );
 
@@ -2703,7 +2711,7 @@ test( "Protected Names", function() {
     };
   });
 
-  stop( 5000 );
+  stop();
 
 });
 
@@ -2760,7 +2768,7 @@ test( "In/Out aliases", function() {
   Popcorn.plugin( "aliasTester", function() {
 
     return {
-      in: function() {
+      "in": function() {
         counter++;
       },
       out: function() {
@@ -2770,7 +2778,7 @@ test( "In/Out aliases", function() {
   });
 
   popcorn.aliasTester({
-    in: 1,
+    "in": 1,
     out: 3
   });
 
