@@ -6,25 +6,25 @@ test( "Popcorn 0.3 WebSRT/VTT Parser Plugin", function () {
       poppercorn = Popcorn( "#video" ),
       expectedSubs = [
         {
-          id: "1",
-          text: "Senator, we're making<br />our final approach into Coruscant.",
+          id: "00:00:02.400 --> 00:00:07.200",
+          text: "A typical multiline<br />subtitle.",
           start: 2.4,
           end: 7.2
         },
         {
-          id: "2",
-          text: "Very good, Lieutenant.",
+          id: "00:09.712-->00:13.399",
+          text: "No whitespace between time tokens",
           start: 9.712,
           end: 13.399
         },
         {
-          id: "Track-3",
-          text: "It's a trap!",
+          id: "00:00:15.042 --> 00:00:18.042 A:start D:vertical L:98%",
+          text: "It's a trap! Ignore the timeline styling for now!",
           start: 15.042,
           end: 18.042
         },
         {
-          id: "ID9",
+          id: "00:00:20.000--> 00:00:21.670",
           text: "This text is <b>boldy <i>italicized</i></b>",
           start: 20.000,
           end: 21.670
@@ -50,11 +50,11 @@ test( "Popcorn 0.3 WebSRT/VTT Parser Plugin", function () {
         
         strictEqual( evt.id, sub.id, "Correctly parsed id" );
         plus();
-        strictEqual( evt.text, sub.text, "Correctly parsed text of " + evt.id );
+        strictEqual( evt.text, sub.text, "Correctly parsed text of '" + evt.id + "'" );
         plus();
-        strictEqual( evt.start, sub.start, "Correctly parsed start at " + evt.id );
+        strictEqual( evt.start, sub.start, "Correctly parsed start at '" + evt.id + "'" );
         plus();
-        strictEqual( evt.end, sub.end, "Correctly parsed end at " + evt.id );
+        strictEqual( evt.end, sub.end, "Correctly parsed end at '" + evt.id + "'" );
         plus();
       }
     });
