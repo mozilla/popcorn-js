@@ -636,23 +636,16 @@ test( "play(n)/pause(n) custom stop()", function() {
   $pop.listen( "canplayall", function() {
 
     this.exec( 4, function() {
-
-      this.listen( "seeked", function() {
-
-        this.unlisten( "seeked" );
+    
+      this.exec( 0, function() {
 
         equal( this.currentTime(), 0, "currentTime is 0" );
         plus();
 
         equal( this.media.paused, true, "The media is paused" );
         plus();
-
-      // Call custom "stop()"
       }).stop();
-    });
-
-    // Play from 3s
-    this.play( 3 );
+    }).play( 3 );
   });
 });
 
