@@ -59,7 +59,7 @@
       options: {
         type: {
           elem: "select",
-          options: [ "LIKE", "LIKE-BOX", "ACTIVITY", "FACEPILE", "LIVE-STREAM", "SEND" ],
+          options: [ "LIKE", "LIKE-BOX", "ACTIVITY", "FACEPILE", "LIVE-STREAM", "SEND", "COMMENTS" ],
           label: "Type"
         },
         target: "facebook-container",
@@ -158,6 +158,11 @@
           elem: "input",
           options: [ "false", "true" ],
           label: "Always_post_to_friends"
+        },
+        num_posts: {
+          elem: "input",
+          type: "number",
+          label: "Number of Comments"
         }
       }
     },
@@ -194,7 +199,7 @@
       _type = _type.toLowerCase();
 
       var validType = function( type ) {
-        return ( [ "like", "like-box", "activity", "facepile", "live-stream", "send" ].indexOf( type ) > -1 );
+        return ( [ "like", "like-box", "activity", "facepile", "live-stream", "send", "comments" ].indexOf( type ) > -1 );
       };
 
       // Checks if type is valid
@@ -218,7 +223,8 @@
       // create an array of Facebook widget attributes
       var fbAttrs = (
         "width height layout show_faces stream header colorscheme" +
-        " maxrows border_color recommendations font always_post_to_friends xid"
+        " maxrows border_color recommendations font always_post_to_friends xid" +
+        " num_posts"
       ).split(" ");
 
       Popcorn.forEach( fbAttrs, function( attr ) {

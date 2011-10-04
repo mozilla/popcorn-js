@@ -10,6 +10,7 @@
       var p = Popcorn( "#video" )
       .volume( 0 )
       .play()
+      /*
       .facebook({
         type: "live-stream",
         target: "activitydiv",
@@ -55,6 +56,13 @@
         width: 300,
         start: 10,
         end: 50
+      })*/
+      .facebook({
+        href: "facebook.com",
+        type: "COMMENTS",
+        target: "commentdiv",
+        start: 5,
+        end: 60
       });
     }, false);
 
@@ -85,6 +93,8 @@
     </video>
   </div>
   <div>
+    <div id="commentdiv"></div>
+    <br />
     <div id="likediv"></div>
     <br />
     <div id="likeboxdiv"></div>
