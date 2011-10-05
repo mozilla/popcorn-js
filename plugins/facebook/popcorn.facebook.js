@@ -233,7 +233,11 @@
           options._facebookdiv.setAttribute( attr, options[ attr ] );
         }
       });
-
+      
+      if ( _type === "comments" ) {
+        target.style.overflow = "auto";
+      }
+      
       if ( !target && Popcorn.plugin.debug ) {
         throw new Error( "Facebook target container doesn't exist" );
       }
