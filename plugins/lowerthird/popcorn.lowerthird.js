@@ -1,9 +1,8 @@
 // PLUGIN: lowerthird
+(function ( Popcorn ) {
 
-(function (Popcorn) {
-  
   /**
-   * Lower Third popcorn plug-in 
+   * Lower Third popcorn plug-in
    * Displays information about a speaker over the video, or in the target div
    * Options parameter will need a start, and end.
    * Optional parameters are target, salutation, name and role.
@@ -14,9 +13,9 @@
    * salutation is the speaker's Mr. Ms. Dr. etc.
    * name is the speaker's name.
    * role is information about the speaker, example Engineer.
-   * 
+   *
    * @param {Object} options
-   * 
+   *
    * Example:
      var p = Popcorn('#video')
         .lowerthird({
@@ -30,8 +29,8 @@
    *
    */
 
-  Popcorn.plugin( "lowerthird" , {
-    
+  Popcorn.plugin( "lowerthird", {
+
       manifest: {
         about:{
           name: "Popcorn lowerthird Plugin",
@@ -40,12 +39,32 @@
           website: "http://scottdowne.wordpress.com/"
         },
         options:{
-          start : {elem:'input', type:'text', label:'In'},
-          end : {elem:'input', type:'text', label:'Out'},
-          target : 'lowerthird-container',
-          salutation : {elem:'input', type:'text', label:'Text'},
-          name : {elem:'input', type:'text', label:'Text'},
-          role : {elem:'input', type:'text', label:'Text'}
+          start: {
+            elem: "input",
+            type: "text",
+            label: "In"
+          },
+          end: {
+            elem: "input",
+            type: "text",
+            label: "Out"
+          },
+          target: "lowerthird-container",
+          salutation : {
+            elem: "input",
+            type: "text",
+            label: "Text"
+          },
+          name: {
+            elem: "input",
+            type: "text",
+            label: "Text"
+          },
+          role: {
+            elem: "input",
+            type: "text",
+            label: "Text"
+          }
         }
       },
 
@@ -55,7 +74,7 @@
 
         // Creates a div for all Lower Thirds to use
         if ( !this.container ) {
-          this.container = document.createElement('div');
+          this.container = document.createElement( "div" );
 
           this.container.style.position = "absolute";
           this.container.style.color = "white";
@@ -72,13 +91,14 @@
         }
 
         // if a target is specified, use that
-        if ( options.target && options.target !== "lowerthird-container") {
+        if ( options.target && options.target !== "lowerthird-container" ) {
           options.container = document.createElement( "div" );
           if ( !target && Popcorn.plugin.debug ) {
             throw new Error( "target container doesn't exist" );
           }
           target && target.appendChild( options.container );
-        } else { // use shared default container
+        // use shared default container
+        } else {
           options.container = this.container;
         }
 
@@ -99,10 +119,9 @@
        * of the video reaches the end time provided by the
        * options variable
        */
-      end: function(event, options){
+      end: function( event, options ) {
         options.container.innerHTML = "";
       }
-   
-  } );
 
+  });
 })( Popcorn );

@@ -1,40 +1,40 @@
-test("Popcorn Twitter Plugin", function () {
-  
-  var popped = Popcorn("#video"),
-      expects = 7, 
+test( "Popcorn Twitter Plugin", function() {
+
+  var popped = Popcorn( "#video" ),
+      expects = 7,
       count = 0,
       setupId,
-      twitterdiv = document.getElementById('twitterdiv');
-  
+      twitterdiv = document.getElementById( "twitterdiv" );
+
   expect( expects );
-  
+
   function plus() {
-    if ( ++count === expects) {
+    if ( ++count === expects ) {
       start();
     }
   }
 
-  stop();   
- 
-  ok('twitter' in popped, "twitter is a method of the popped instance");
+  stop();
+
+  ok( "twitter" in popped, "twitter is a method of the popped instance" );
   plus();
 
   equals ( twitterdiv.innerHTML, "", "initially, there is nothing inside the twitterdiv" );
   plus();
-  
+
   try {
-    
-    ok( TWTR, "Twitter constructor exists");
+
+    ok( TWTR, "Twitter constructor exists" );
     plus();
-    
-  } catch (e) {};
+
+  } catch ( e ) {}
 
   popped.twitter({
-    start: 1, // seconds
-    end: 2, // seconds
-    title: 'Steve Song',
-    src: '@stevesong',
-    target: 'twitterdiv',
+    start: 1,
+    end: 2,
+    title: "Steve Song",
+    src: "@stevesong",
+    target: "twitterdiv"
   });
 
   setupId = popped.getLastTrackEventId();
@@ -51,10 +51,10 @@ test("Popcorn Twitter Plugin", function () {
     plus();
 
     popped.pause().removeTrackEvent( setupId );
-    ok( !twitterdiv.children[0], "removed twitter was properly destroyed" );
+    ok( !twitterdiv.children[ 0 ], "removed twitter was properly destroyed" );
     plus();
   });
-  
+
   popped.play();
-  
+
 });

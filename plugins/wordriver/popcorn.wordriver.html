@@ -2,46 +2,42 @@
 <html>
 <head>
   <title>Popcorn Wordriver Plug-in Demo</title>
-  
   <script src="../../popcorn.js"></script>
-
   <script src="popcorn.wordriver.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
-      .volume(0)
+    document.addEventListener( "DOMContentLoaded", function() {
+      var p = Popcorn( "#video" )
+      .volume( 0 )
       .play()
       .wordriver({
-				start: 1, // seconds
-				end: 3, // seconds
+				start: 1,
+				end: 3,
 				text: "hello",
 				target: "wordriverdiv",
 				color: "red"
       })
       .wordriver({
-				start: 3, // seconds
-				end: 6, // seconds
+				start: 3,
+				end: 6,
 				text: "world",
 				target: "wordriverdiv",
 				color: "blue"
       })
       .wordriver({
-				start: 1, // seconds
-				end: 4, // seconds
+				start: 1,
+				end: 4,
 				text: "hello",
 				target: "wordriverdiv2",
 				color: "red"
       })
       .wordriver({
-				start: 2, // seconds
-				end: 4, // seconds
+				start: 2,
+				end: 4,
 				text: "world",
 				target: "wordriverdiv2",
 				color: "blue"
       });
-
     }, false);
-
   </script>
 </head>
 <body>
@@ -49,21 +45,21 @@
   <p> A "hello world" word river will appear from 1 to 6.</p>
   <div>
 
-    <video id='video' 
+    <video id="video"
       controls height="480" width="854"
-      poster="../../test/poster.png"> 
+      poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+        type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+        type='video/ogg; codecs="theora, vorbis"'>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+      <p>Your user agent does not support the HTML5 Video element.</p>
 
-    </video> 
+    </video>
   </div>
   <div id="wordriverdiv" style="height: 200px; width: 200px;"></div>
   <div id="wordriverdiv2" style="height: 200px; width: 200px;"></div>

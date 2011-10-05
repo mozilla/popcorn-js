@@ -9,7 +9,9 @@ var ok = {
   "Use '!==' to compare with 'null'.": true,
   "Expected an assignment or function call and instead saw an expression.": true,
   "Expected a 'break' statement before 'case'.": true,
-  "'e' is already defined.": true
+  "'e' is already defined.": true,
+  "Don't make functions within a loop.": true,
+  "['out'] is better written in dot notation.": true
 };
 
 function check(src)
@@ -26,7 +28,7 @@ function check(src)
       print( "    Problem at line " + w.line + " character " + w.character + ": " + w.reason );
     }
   }
-  
+
   if ( found > 0 ) {
     print( "\n" + found + " Error(s) found." );
   } else {

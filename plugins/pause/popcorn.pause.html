@@ -6,11 +6,13 @@
   <script src="../../popcorn.js"></script>
   <script src="popcorn.pause.js"></script>
   <script>
-   var output;
+    var output;
 
-   document.addEventListener('DOMContentLoaded', function () {
-     var p = Popcorn( '#video' , { pauseOnLinkClicked : true } )
-         .play();
+    document.addEventListener( "DOMContentLoaded", function() {
+      var p = Popcorn( "#video" , {
+        pauseOnLinkClicked: true
+      })
+      .play();
     }, false);
   </script>
 </head>
@@ -22,14 +24,14 @@
       autobuffer="autobuffer"
       preload="auto"
       controls="controls"
-      width= '250px'
+      width="250px"
       poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
         type='video/mp4; codecs="avc1, mp4a"' />
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
         type='video/ogg; codecs="theora, vorbis"' />
 
