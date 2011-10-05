@@ -161,14 +161,14 @@
         },
         num_posts: {
           elem: "input",
-          type: "number",
-          label: "Number of Comments"
+          type: "text",
+          label: "Number_of_Comments"
         }
       }
     },
 
     _setup: function( options ) {
-
+      
       var target = document.getElementById( options.target ),
           _type = options.type;
 
