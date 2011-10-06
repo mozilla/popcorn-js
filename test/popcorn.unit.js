@@ -17,7 +17,7 @@ test( "Core", function() {
   try {
     ok( Popcorn, "Popcorn exists" );
     plus();
-  } catch (e) {};
+  } catch ( e ) {};
 
   try {
     ok( typeof Popcorn === "function", "Popcorn is a function" );
@@ -26,7 +26,7 @@ test( "Core", function() {
 
   try {
     Popcorn( function() {
-      ok (1, "Popcorn calls its function argument" );
+      ok( 1, "Popcorn calls its function argument" );
       plus();
     });
   } catch ( e ) {};
@@ -74,7 +74,7 @@ test( "Popcorn.* Static Methods", function() {
     equals( typeof Popcorn[ val ], "function" , "Popcorn." + val + "() is a provided static function" );
   });
 
-  substatics.forEach(function(val, idx) {
+  substatics.forEach( function( val, idx ) {
 
     equals( typeof Popcorn[ val ].ref, "function" , "Popcorn." + val + ".ref() is a private use static function" );
   });
@@ -110,7 +110,7 @@ test( "Popcorn.forEach", function() {
     count++;
   });
 
-  equal( count, Popcorn.sizeOf(object), Popcorn.sizeOf(object) + " properties in object" );
+  equal( count, Popcorn.sizeOf( object ), Popcorn.sizeOf( object ) + " properties in object" );
 });
 
 test( "Popcorn.version", function() {
@@ -257,7 +257,7 @@ test( "Popcorn.util.toSeconds" , function() {
 
 test("guid", function() {
 
-  expect(6);
+  expect( 6 );
 
   var count = 3,
       guids = [],
@@ -273,7 +273,7 @@ test("guid", function() {
       ok( temp, "Popcorn.guid() returns value" );
     }
 
-    guids.push(temp);
+    guids.push( temp );
   }
 
   guids = [];
@@ -288,9 +288,8 @@ test("guid", function() {
       ok( temp, "Popcorn.guid( 'pre' ) returns value" );
     }
 
-    guids.push(temp);
+    guids.push( temp );
   }
-
 });
 test( "isArray", function() {
 
@@ -325,7 +324,6 @@ test( "isArray", function() {
   ok( !Popcorn.isArray( false ), "!Popcorn.isArray(false), false" );
   ok( !Popcorn.isArray( { __proto__: Array.prototype, length:1, 0:1, 1:2 } ), "{__proto__: Array.prototype, length:1, 0:1, 1:2}" );
 });
-
 
 test( "Protected", function() {
 
@@ -2795,7 +2793,7 @@ module( "Popcorn TrackEvents" );
 test( "Functions", function() {
 
   //  TODO: break this into sep. units per function
-  expect(19);
+  expect( 19 );
 
   var popped = Popcorn( "#video" ), ffTrackId, rwTrackId, rw2TrackId, rw3TrackId, historyRef, trackEvents;
 
@@ -3432,10 +3430,10 @@ test( "Popcorn.getScript()", function() {
 
       ok( true, "getScript C returned" );
       plus();
-      ok( ("has" in window) , "Popcorn.getScript https://github.com/rwldrn/has.js/raw/master/has.js loaded: `has` is available");
+      ok( ( "has" in window ) , "Popcorn.getScript https://github.com/rwldrn/has.js/raw/master/has.js loaded: `has` is available" );
       plus();
 
-      delete window["has"];
+      delete window[ "has" ];
     }
   );
 
@@ -3455,7 +3453,7 @@ test( "Popcorn.getScript()", function() {
 });
 
 
-test("XML Response", function() {
+test( "XML Response", function() {
 
   var expects = 2,
       count = 0;
@@ -3466,31 +3464,29 @@ test("XML Response", function() {
     }
   }
 
-  expect(expects);
+  expect( expects );
 
   stop()
 
 
   Popcorn.xhr({
-    url: 'data/test.xml',
+    url: "data/test.xml",
     success: function( data ) {
 
-      ok(data, "xhr returns data");
+      ok( data, "xhr returns data" );
       plus();
 
       var parser = new DOMParser(),
-      xml = parser.parseFromString('<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml");
+      xml = parser.parseFromString( '<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml" );
 
 
-      equals( data.xml.toString(), xml.toString(), "data.xml returns a document of xml");
+      equals( data.xml.toString(), xml.toString(), "data.xml returns a document of xml" );
       plus();
-
     }
   });
-
 });
 
-test("dataType: XML Response", function() {
+test( "dataType: XML Response", function() {
 
   var expects = 2,
       count = 0;
@@ -3501,29 +3497,24 @@ test("dataType: XML Response", function() {
     }
   }
 
-  expect(expects);
-
+  expect( expects );
   stop()
 
-
   Popcorn.xhr({
-    url: 'data/test.xml',
+    url: "data/test.xml",
     dataType: "xml",
     success: function( data ) {
 
-      ok(data, "xhr returns data");
+      ok( data, "xhr returns data" );
       plus();
 
       var parser = new DOMParser(),
-      xml = parser.parseFromString('<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml");
+      xml = parser.parseFromString( '<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml" );
 
-
-      equals( data.toString(), xml.toString(), "dataType: 'xml', data.xml returns a document of xml");
+      equals( data.toString(), xml.toString(), "dataType: 'xml', data.xml returns a document of xml" );
       plus();
-
     }
   });
-
 });
 
 module( "Popcorn Player" );
@@ -3550,17 +3541,20 @@ test( "Base player functionality", function() {
 
   //QUnit.reset();
 
-  var p2 = Popcorn.baseplayer( '#video' ),
+  var p2 = Popcorn.baseplayer( "#video" ),
       expects = 12,
-      count   = 0,
+      count = 0,
       execCount = 0,
       // These make sure events are only fired once
       // any second call will produce a failed test
-      forwardStart  = false,
-      forwardEnd    = false,
+      forwardStart = false,
+      forwardEnd = false,
       backwardStart = false,
-      backwardEnd   = false,
-      wrapperRunning = { one: false, two: false, };
+      backwardEnd = false,
+      wrapperRunning = {
+        one: false,
+        two: false
+      };
 
   function plus() {
     if ( ++count === expects ) {
@@ -3594,7 +3588,7 @@ test( "Base player functionality", function() {
 
           options.endFired = true;
           forwardEnd = !forwardEnd;
-          p2.currentTime(1).play();
+          p2.currentTime( 1 ).play();
           ok( forwardEnd, "forward's end fired" );
           plus();
         }
@@ -3615,7 +3609,7 @@ test( "Base player functionality", function() {
 
           options.startFired = true;
           backwardStart = !backwardStart;
-          p2.currentTime(0).play();
+          p2.currentTime( 0 ).play();
           ok( true, "backward's start fired" );
           plus();
         }
@@ -3710,16 +3704,16 @@ test( "Base player functionality", function() {
     }
   });
 
-  p2.currentTime(3).play();
+  p2.currentTime( 3 ).play();
 });
 
-module("Popcorn Parser");
+module( "Popcorn Parser" );
 
-test("Parsing Functions", function() {
+test( "Parsing Functions", function() {
 
   var expects = 3,
       count = 0,
-      popperly = Popcorn("#video");
+      popperly = Popcorn( "#video" );
 
   function plus() {
     if ( ++count === expects ) {
@@ -3727,26 +3721,25 @@ test("Parsing Functions", function() {
     }
   }
 
-  expect(expects);
+  expect( expects );
 
   stop( 10000 );
 
-  ok(typeof Popcorn.parser === "function", "Popcorn.parser is a function");
+  ok( typeof Popcorn.parser === "function", "Popcorn.parser is a function" );
   plus();
 
   Popcorn.parser( "parseJSON" , "json", function( data ){
     return data;
   });
 
-  ok(typeof popperly.parseJSON === "function", "Popcorn.parser created a parseJSON function");
+  ok( typeof popperly.parseJSON === "function", "Popcorn.parser created a parseJSON function" );
   plus();
 
-  ok(typeof popperly.parseJSON().parseJSON("data/test.js").parseJSON === "function" , "parseJSON function is chainable");
+  ok( typeof popperly.parseJSON().parseJSON("data/test.js").parseJSON === "function" , "parseJSON function is chainable" );
   plus();
-
 });
 
-test("Parsing Integrity", function() {
+test( "Parsing Integrity", function() {
 
   var expects = 6,
       count = 0,
@@ -3761,46 +3754,44 @@ test("Parsing Integrity", function() {
     }
   }
 
-  expect(expects);
+  expect( expects );
 
   stop( 10000 );
 
   Popcorn.parser( "parseJSON2", function( data ){
-    ok( typeof data.json === "object", "data.json exists");
+    ok( typeof data.json === "object", "data.json exists" );
     plus();
     return data.json;
   });
 
   Popcorn.parser( "parseJSON3" , "json", function( data ){
-    ok( typeof data === "object", "data exists");
+    ok( typeof data === "object", "data exists" );
     plus();
     return data;
   });
 
-  Popcorn.plugin("parserTest", {
+  Popcorn.plugin( "parserTest", {
 
     start: function() {
-      ok(true, "parserTest started");
+      ok( true, "parserTest started" );
       plus();
     },
     end: function() {
-      ok(true, "parserTest ended");
+      ok( true, "parserTest ended" );
       plus();
     }
   });
 
-  poppercore.parseJSON2("data/parserData.json", function() {
+  poppercore.parseJSON2( "data/parserData.json", function() {
 
-    poppercore.parseJSON3("data/parserData.json", function() {
-      poppercore.currentTime(5).play();
+    poppercore.parseJSON3( "data/parserData.json", function() {
+      poppercore.currentTime( 5 ).play();
     });
-
   });
-
 });
 
 
-test("Parsing Handler - References unavailable plugin", function() {
+test( "Parsing Handler - References unavailable plugin", function() {
 
   var expects = 1,
       count = 0,
@@ -3817,7 +3808,7 @@ test("Parsing Handler - References unavailable plugin", function() {
     }
   }
 
-  expect(expects);
+  expect( expects );
 
   stop();
 
@@ -3826,20 +3817,18 @@ test("Parsing Handler - References unavailable plugin", function() {
     return data.json;
   });
 
-  poppercore.parseJson("data/parseMissing.json");
+  poppercore.parseJson( "data/parseMissing.json" );
 
   // interval used to wait for data to be parsed
   interval = setInterval( function() {
-    poppercore.currentTime(5).play().currentTime(6);
+    poppercore.currentTime( 5 ).play().currentTime( 6 );
 
     ok( true, "Ignored call to missing plugin " );
     plus();
-
-  }, 2000);
-
+  }, 2000 );
 });
 
-module("Audio");
+module( "Audio" );
 test( "Basic Audio Support (timeupdate)", function() {
 
   var popped = Popcorn( "#audio" ),
@@ -3911,8 +3900,12 @@ test( "Basic Audio Support (timeupdate)", function() {
 
 test( "Basic Audio Support (frameAnimation)", function() {
 
-  var popped = Popcorn( "#audio", { frameAnimation: true }),
-      popObj = Popcorn( document.getElementById( "audio" ), { frameAnimation: true }),
+  var popped = Popcorn( "#audio", {
+        frameAnimation: true
+      }),
+      popObj = Popcorn( document.getElementById( "audio" ), {
+        frameAnimation: true
+      }),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
       count = 0,
       expects = 30;
@@ -3978,7 +3971,7 @@ test( "Basic Audio Support (frameAnimation)", function() {
   });
 });
 
-test("Parser Support", function() {
+test( "Parser Support", function() {
 
   var expects = 3,
       count = 0,
@@ -3994,18 +3987,17 @@ test("Parser Support", function() {
     }
   }
 
-  expect(expects);
-  stop(5000);
+  expect( expects );
+  stop( 5000 );
 
-
-  Popcorn.plugin("testAudioParser", {
+  Popcorn.plugin( "testAudioParser", {
 
     start: function() {
-      ok(true, "testAudioParser started: " + Math.round(this.currentTime()) );
+      ok( true, "testAudioParser started: " + Math.round( this.currentTime() ) );
       plus();
     },
     end: function() {
-      ok(true, "testAudioParser ended: " + Math.round(this.currentTime()) );
+      ok( true, "testAudioParser ended: " + Math.round( this.currentTime() ) );
       plus();
     }
   });
@@ -4016,20 +4008,19 @@ test("Parser Support", function() {
     return data.json;
   });
 
-  audiocorn.parseAudio("data/parserAudio.json", function() {
+  audiocorn.parseAudio( "data/parserAudio.json", function() {
 
-    audiocorn.currentTime(4).play();
-
+    audiocorn.currentTime( 4 ).play();
   });
 });
 
-module("Popcorn Test Runner End");
-test("Last Check", function() {
+module( "Popcorn Test Runner End" );
+test( "Last Check", function() {
   //  Trigger follow-up tests to run in iframes
   (function( $ ) {
-    $("iframe[data-src]").attr( "src", function() {
-      return $(this).data("src");
+    $( "iframe[data-src]" ).attr( "src", function() {
+      return $( this ).data( "src" );
     });
-    ok( true, "iframe tests run");
+    ok( true, "iframe tests run" );
   })( jQuery );
 });
