@@ -95,10 +95,10 @@
 
           var volumeUpdate = function() {
 
-            m = isMuted();
+            var muted = isMuted(),
             vol = vimeoObject.api_getVolume();
-            if ( lastMuted !== m ) {
-              lastMuted = m;
+            if ( lastMuted !== muted ) {
+              lastMuted = muted;
               media.dispatchEvent( "volumechange" );
             }
 
@@ -108,10 +108,6 @@
             }
 
             setTimeout( volumeUpdate, 250 );
-          };
-
-          var mute = function() {
-
           };
 
           media.play = function() {
@@ -136,38 +132,50 @@
           Popcorn.player.defineProperty( media, "currentTime", {
 
             set: function( val ) {
+
               if ( !val ) {
                 return currentTime;
               }
+
               currentTime = seekTime = +val;
               seeking = true;
+
               media.dispatchEvent( "seeked" );
               media.dispatchEvent( "timeupdate" );
               vimeoObject.api_seekTo( currentTime );
+
               return currentTime;
             },
+
             get: function() {
+
               return currentTime;
             }
           });
 
           Popcorn.player.defineProperty( media, "muted", {
+
             set: function( val ) {
+
               if ( isMuted() !== val ) {
+
                 if ( val ) {
                   toggleMuteVolume = vimeoObject.api_getVolume();
                   vimeoObject.api_setVolume( 0 );
                 } else {
+
                   vimeoObject.api_setVolume( toggleMuteVolume );
                 }
               }
             },
             get: function() {
+
               return isMuted();
             }
           });
 
           Popcorn.player.defineProperty( media, "volume", {
+
             set: function( val ) {
 
               if ( !val || typeof val !== "number" || ( val < 0 && val > 1 ) ) {
@@ -183,6 +191,7 @@
               return vimeoObject.api_getVolume();
             },
             get: function() {
+
               return vimeoObject.api_getVolume();
             }
           });
@@ -194,12 +203,14 @@
           volumeUpdate();
 
           media.dispatchEvent( "loadeddata" );
-        }
+        };
 
         function extractId( videoUrl ) {
+
           if ( !videoUrl ) {
             return;
           }
+
           var rPlayerUri = /^http:\/\/player\.vimeo\.com\/video\/[\d]+/i,
               rWebUrl = /vimeo\.com\/[\d]+/;
 
@@ -208,6 +219,7 @@
         }
 
         if ( !( src = extractId( src ) ) ) {
+
           throw "Invalid Video Id";
         }
 
@@ -229,16 +241,13 @@
                             media.offsetWidth + "", media.offsetHeight + "", "9.0.0", "expressInstall.swf",
                             flashvars, params, attributes );
 
-        vimeoContainer.addEventListener( "load", function() {
-          console.log("asdfasdf");
-        });
-
       };
 
       if ( !window.swfobject ) {
 
         Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js", vimeoInit );
       } else {
+
         vimeoInit();
       }
     }

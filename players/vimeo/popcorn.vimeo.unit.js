@@ -1,10 +1,10 @@
-test("Update Timer", function () {
+test( "Update Timer", function() {
 
   QUnit.reset();
 
   var p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892" ),
       expects = 12,
-      count   = 0,
+      count = 0,
       execCount = 0,
       // These make sure events are only fired once
       // any second call will produce a failed test
@@ -29,9 +29,9 @@ test("Update Timer", function () {
   // These tests come close to 10 seconds on chrome, increasing to 15
   stop();
 
-  Popcorn.plugin( "forwards", function () {
+  Popcorn.plugin( "forwards", function() {
     return {
-      start: function ( event, options ) {
+      start: function( event, options ) {
 
         if ( !options.startFired ) {
 
@@ -41,13 +41,13 @@ test("Update Timer", function () {
           plus();
         }
       },
-      end: function ( event, options ) {
+      end: function( event, options ) {
 
         if ( !options.endFired ) {
 
           options.endFired = true;
           forwardEnd = !forwardEnd;
-          p2.currentTime(1).play();
+          p2.currentTime( 1 ).play();
           ok( forwardEnd, "forward's end fired" );
           plus();
         }
@@ -60,9 +60,9 @@ test("Update Timer", function () {
     end: 4
   });
 
-  Popcorn.plugin( "backwards", function () {
+  Popcorn.plugin( "backwards", function() {
     return {
-      start: function ( event, options ) {
+      start: function( event, options ) {
 
         if ( !options.startFired ) {
 
@@ -72,7 +72,7 @@ test("Update Timer", function () {
           plus();
         }
       },
-      end: function ( event, options ) {
+      end: function( event, options ) {
 
         if ( !options.endFired ) {
 
@@ -92,11 +92,11 @@ test("Update Timer", function () {
   });
 
   Popcorn.plugin( "wrapper", {
-    start: function ( event, options ) {
+    start: function( event, options ) {
 
       wrapperRunning[ options.wrapper ] = true;
     },
-    end: function ( event, options ) {
+    end: function( event, options ) {
 
       wrapperRunning[ options.wrapper ] = false;
     }
@@ -167,23 +167,25 @@ test("Update Timer", function () {
     p2.play();
   });
 
-  p2.currentTime(3);
+  p2.currentTime( 3 );
 
 });
 
-test("Plugin Factory", function () {
+test( "Plugin Factory", function() {
 
   QUnit.reset();
 
   var popped = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892" ),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-      expects = 34, // 15*2+2+2. executor/complicator each do 15
+
+      // 15*2+2+2. executor/complicator each do 15
+      expects = 34,
       count = 0;
 
   function plus() {
     if ( ++count == expects ) {
-      Popcorn.removePlugin("executor");
-      Popcorn.removePlugin("complicator");
+      Popcorn.removePlugin( "executor" );
+      Popcorn.removePlugin( "complicator" );
       popped.pause();
       start();
     }
@@ -192,16 +194,16 @@ test("Plugin Factory", function () {
   expect( expects );
   stop( 15000 );
 
-  Popcorn.plugin("executor", function () {
+  Popcorn.plugin( "executor", function() {
 
     return {
 
-      start: function () {
+      start: function() {
         var self = this;
 
         // These ensure that a popcorn instance is the value of `this` inside a plugin definition
 
-        methods.split(/\s+/g).forEach(function (k,v) {
+        methods.split( /\s+/g ).forEach( function( k, v ) {
           ok( k in self, "executor instance has method: " + k );
 
           plus();
@@ -209,20 +211,20 @@ test("Plugin Factory", function () {
 
         ok( "media" in this, "executor instance has `media` property" );
         plus();
-        ok( Object.prototype.toString.call(popped.media) === "[object Object]", "video property is a HTML DIV element" );
+        ok( Object.prototype.toString.call( popped.media ) === "[object Object]", "video property is a HTML DIV element" );
         plus();
 
         ok( "data" in this, "executor instance has `data` property" );
         plus();
-        ok( Object.prototype.toString.call(popped.data) === "[object Object]", "data property is an object" );
+        ok( Object.prototype.toString.call( popped.data ) === "[object Object]", "data property is an object" );
         plus();
 
         ok( "trackEvents" in this.data, "executor instance has `trackEvents` property" );
         plus();
-        ok( Object.prototype.toString.call(popped.data.trackEvents) === "[object Object]", "executor trackEvents property is an object" )
+        ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "executor trackEvents property is an object" )
         plus();
       },
-      end: function () {
+      end: function() {
 
       }
     };
@@ -239,15 +241,15 @@ test("Plugin Factory", function () {
     end: 2
   });
 
-  Popcorn.plugin("complicator", {
+  Popcorn.plugin( "complicator", {
 
-    start: function ( event ) {
+    start: function( event ) {
 
       var self = this;
 
       // These ensure that a popcorn instance is the value of `this` inside a plugin definition
 
-      methods.split(/\s+/g).forEach(function (k,v) {
+      methods.split( /\s+/g ).forEach( function( k, v ) {
         ok( k in self, "complicator instance has method: " + k );
 
         plus();
@@ -255,25 +257,24 @@ test("Plugin Factory", function () {
 
       ok( "media" in this, "complicator instance has `media` property" );
       plus();
-      ok( Object.prototype.toString.call(popped.media) === "[object Object]", "video property is a HTMLVideoElement" );
+      ok( Object.prototype.toString.call( popped.media ) === "[object Object]", "video property is a HTMLVideoElement" );
       plus();
 
       ok( "data" in this, "complicator instance has `data` property" );
       plus();
-      ok( Object.prototype.toString.call(popped.data) === "[object Object]", "complicator data property is an object" );
+      ok( Object.prototype.toString.call( popped.data ) === "[object Object]", "complicator data property is an object" );
       plus();
 
       ok( "trackEvents" in this.data, " complicatorinstance has `trackEvents` property" );
       plus();
-      ok( Object.prototype.toString.call(popped.data.trackEvents) === "[object Object]", "complicator trackEvents property is an object" )
+      ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "complicator trackEvents property is an object" )
       plus();
     },
-    end: function () {
-
-      //start();
+    end: function() {
 
     },
-    timeupdate: function () {
+    timeupdate: function() {
+
     }
   });
 
@@ -287,12 +288,12 @@ test("Plugin Factory", function () {
     end: 5
   });
 
-  popped.currentTime(0).play();
+  popped.currentTime( 0 ).play();
 
 });
 
 test( "Popcorn vimeo Plugin Url and Duration Tests", function() {
-  function plus(){
+  function plus() {
     if ( ++count == expects ) {
       popcorn.pause();
       start();
@@ -329,13 +330,13 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
   QUnit.reset();
 
   var urlTests = [
-    { name: 'standard',
-      url: 'http://player.vimeo.com/video/6960892',
-      expected: 'http://player.vimeo.com/video/6960892',
+    { name: "standard",
+      url: "http://player.vimeo.com/video/6960892",
+      expected: "http://player.vimeo.com/video/6960892",
     },
-    { name: 'short url',
-      url: 'http://vimeo.com/6960892',
-      expected: 'http://vimeo.com/6960892',
+    { name: "short url",
+      url: "http://vimeo.com/6960892",
+      expected: "http://vimeo.com/6960892",
     }
   ];
 
@@ -348,11 +349,11 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
   Popcorn.forEach( urlTests, function( values, key ) {
 
     var urlTest = urlTests[ key ],
-        popcorn = Popcorn.vimeo( '#player_2', urlTest.url );
+        popcorn = Popcorn.vimeo( "#player_2", urlTest.url );
 
     popcorn.listen( "loadeddata", function() {
 
-      equals( popcorn.media.src, urlTest.expected, 'Video id is correct for ' + urlTest.name + ': ' + urlTest.url );
+      equals( popcorn.media.src, urlTest.expected, "Video id is correct for " + urlTest.name + ": " + urlTest.url );
       popcorn.pause();
 
       count++;
