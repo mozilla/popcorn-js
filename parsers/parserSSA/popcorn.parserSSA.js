@@ -33,10 +33,10 @@
     var retObj = {
           title: "",
           remote: "",
-          data: []
+          data: [  ]
         },
         rNewLineFile = /(?:\r\n|\r|\n)/gm,
-        subs = [],
+        subs = [  ],
         lines,
         headers,
         i = 0,
@@ -48,15 +48,15 @@
     len = lines.length;
     
     // Ignore non-textual info
-    while ( i < len && lines[i] !== "[Events]" ) {
+    while ( i < len && lines[ i ] !== "[Events]" ) {
       i++;
     }
     
-    headers = parseFieldHeaders( lines[++i] );
+    headers = parseFieldHeaders( lines[ ++i ] );
     
-    while ( ++i < len && lines[i] && lines[i][0] !== "[" ) {
+    while ( ++i < len && lines[ i ] && lines[ i ][ 0 ] !== "[" ) {
       try {
-        subs.push( createTrack( "subtitle", parseSub( lines[i], headers ) ) );
+        subs.push( createTrack( "subtitle", parseSub( lines[ i ], headers ) ) );
       } catch ( e ) {}
     }
     
@@ -72,8 +72,8 @@
         sub;
         
     sub = {
-      start: toSeconds( fields[headers.start] ),
-      end: toSeconds( fields[headers.end] )
+      start: toSeconds( fields[ headers.start ] ),
+      end: toSeconds( fields[ headers.end ] )
     };
     
     // Invalid time, skip
@@ -97,17 +97,17 @@
       return -1;
     }
     
-    return parseInt( t[0], 10 )*3600 + parseInt( t[1], 10 )*60 + parseFloat( t[2], 10 );
+    return parseInt( t[ 0 ], 10 )*3600 + parseInt( t[ 1 ], 10 )*60 + parseFloat( t[ 2 ], 10 );
   }
   
   function getTextFromFields( fields, startIdx ) {
     var fieldLen = fields.length,
-        text = [],
+        text = [  ],
         i = startIdx;
     
     // There may be commas in the text which were split, append back together into one line      
     for( ; i < fieldLen; i++ ) {
-      text.push( fields[i] );
+      text.push( fields[ i ] );
     }
     
     return text.join( "," );
@@ -115,7 +115,7 @@
   
   function createTrack( name, attributes ) {
     var track = {};
-    track[name] = attributes;
+    track[ name ] = attributes;
     return track;
   }
   
@@ -128,11 +128,11 @@
      
      //Find where in Dialogue string the start, end and text info is
     for ( i = 0, len = fields.length; i < len; i++ ) {
-      if ( fields[i] === "Start" ) {
+      if ( fields[ i ] === "Start" ) {
         result.start = i;
-      } else if ( fields[i] === "End" ) {
+      } else if ( fields[ i ] === "End" ) {
         result.end = i;
-      } else if ( fields[i] === "Text" ) {
+      } else if ( fields[ i ] === "Text" ) {
         result.text = i;
       }
     }
