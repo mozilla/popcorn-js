@@ -10,7 +10,6 @@
       var p = Popcorn( "#video" )
       .volume( 0 )
       .play()
-      /*
       .facebook({
         type: "live-stream",
         target: "activitydiv",
@@ -39,7 +38,7 @@
         header: "false",
         target: "likeboxdiv",
         start: 6,
-        end: 15
+        end: 15 
       })
       .facebook({
         site: "http://popcornjs.org/",
@@ -57,14 +56,14 @@
         start: 10,
         end: 15
       })
-      */
       .facebook({
-        href: "popcornjs.org",
+        href: "example.com",
         type: "COMMENTS",
         target: "commentdiv",
         start: 5,
         end: 50,
-        width: 400
+        width: 400,
+        num_posts: 5
       });
     }, false);
 
@@ -95,8 +94,6 @@
     </video>
   </div>
   <div>
-    <div id="commentdiv"></div>
-    <br />
     <div id="likediv"></div>
     <br />
     <div id="likeboxdiv"></div>
@@ -104,6 +101,7 @@
   <div style="position:absolute;left:400px;top:150px">
     <div id="facepilediv"></div>
     <div id="activitydiv"></div>
+    <div id="commentdiv"></div>
   </div>
 </body>
 </html>
