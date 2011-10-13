@@ -116,12 +116,12 @@ test( "Popcorn Facebook Plugin", function () {
     // Checks if commentdiv is empty at specific time
     ok( document.getElementById( "commentdiv" ).innerHTML, "commentdiv is not empty at 0:04 (expected)" );
     plus();
-    
+
     // Checks if Comments Plugin was successfully destroyed with _teardown
     popped.pause().removeTrackEvent( setupId );
     ok( !document.getElementById( "commentdiv" ).innerHTML, "comments facebook social plugin was properly destroyed" );
     plus();
-    
+
     popped.play();
   });
 });

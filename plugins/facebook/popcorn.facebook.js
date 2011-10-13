@@ -168,7 +168,7 @@
     },
 
     _setup: function( options ) {
-      
+
       var target = document.getElementById( options.target ),
           _type = options.type;
 
@@ -227,17 +227,15 @@
         " num_posts"
       ).split(" ");
 
+      // For Each that loops through all of our attributes adding them to the divs properties
       Popcorn.forEach( fbAttrs, function( attr ) {
         // Test for null/undef. Allows 0, false & ""
         if ( options[ attr ] != null ) {
           options._facebookdiv.setAttribute( attr, options[ attr ] );
         }
       });
-      
-      if ( _type === "comments" ) {
-        target.style.overflow = "auto";
-      }
-      
+
+      // Checks if the plugins target container exists
       if ( !target && Popcorn.plugin.debug ) {
         throw new Error( "Facebook target container doesn't exist" );
       }
