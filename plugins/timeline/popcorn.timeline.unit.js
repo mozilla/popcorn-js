@@ -109,11 +109,16 @@ test( "Popcorn Timeline Plugin", function() {
 	  plus();
 
     var uid, did;
-    while ( uid === upIds.pop() ) {
+    uid = upIds.pop();
+    did = upIds.pop();
+
+    while ( uid ) {
       popped.removeTrackEvent( uid );
+      uid = upIds.pop();
     }
-    while ( did === downIds.pop() ) {
+    while ( did ) {
       popped.removeTrackEvent( did );
+      did = downIds.pop();
     }
 
     popped.pause();

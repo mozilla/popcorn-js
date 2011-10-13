@@ -636,23 +636,16 @@ test( "play(n)/pause(n) custom stop()", function() {
   $pop.listen( "canplayall", function() {
 
     this.exec( 4, function() {
-
-      this.listen( "seeked", function() {
-
-        this.unlisten( "seeked" );
+    
+      this.exec( 0, function() {
 
         equal( this.currentTime(), 0, "currentTime is 0" );
         plus();
 
         equal( this.media.paused, true, "The media is paused" );
         plus();
-
-      // Call custom "stop()"
       }).stop();
-    });
-
-    // Play from 3s
-    this.play( 3 );
+    }).play( 3 );
   });
 });
 
@@ -1515,11 +1508,13 @@ test( "Exceptions", function() {
       expects = 5,
       count = 0;
 
+  Popcorn.plugin.debug = false;
   Popcorn.plugin.errors = [];
 
   function plus() {
     if ( ++count == expects ) {
       Popcorn.removePlugin( "exceptions" );
+      Popcorn.plugin.debug = true;
       Popcorn.plugin.errors = [];
       start();
       $pop.destroy();
@@ -2677,10 +2672,18 @@ test("Remove Plugin", function() {
 
 test( "Protected Names", function() {
 
-  var keys = Object.keys( Popcorn.p ),
-      len = keys.length,
+  var keys = [], 
+      len,
       count = 0,
       popped = Popcorn( "#video" );
+
+  for ( item in Popcorn.p ) {
+    if ( Popcorn.p.hasOwnProperty( item ) ) {
+      keys.push( item );
+    }
+  }
+
+  len = keys.length;
 
   expect( len );
 
@@ -2701,7 +2704,7 @@ test( "Protected Names", function() {
     };
   });
 
-  stop( 5000 );
+  stop();
 
 });
 
@@ -2750,6 +2753,7 @@ test( "In/Out aliases", function() {
   function plus() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "aliasTester" );
+      Popcorn.destroy( popcorn );
       start();
     }
   }
@@ -2757,7 +2761,7 @@ test( "In/Out aliases", function() {
   Popcorn.plugin( "aliasTester", function() {
 
     return {
-      in: function() {
+      "in": function() {
         counter++;
       },
       out: function() {
@@ -2767,7 +2771,7 @@ test( "In/Out aliases", function() {
   });
 
   popcorn.aliasTester({
-    in: 1,
+    "in": 1,
     out: 3
   });
 
