@@ -68,32 +68,32 @@
         container.insertBefore( contentDiv, container.firstChild );
       }
       else {
-        
+
         container.appendChild( contentDiv );
       }
 
     } else if ( Popcorn.plugin.debug ) {
       throw new Error( "target container doesn't exist" );
     }
-    
+
     i++;
 
     //  Default to empty if not used
-    //options.innerHTML = options.innerHTML || "";    
+    //options.innerHTML = options.innerHTML || "";
 
     contentDiv.innerHTML = "<p><span id='big'>" + options.title + "</span><br />" +
     "<span id='mid'>" + options.text + "</span><br />" + options.innerHTML;
-    
+
     return {
 
       start: function( event, options ) {
         contentDiv.style.display = "block";
-        
+
         if( options.direction === "down" ) {
           container.scrollTop = container.scrollHeight;
         }
       },
- 
+
       end: function( event, options ) {
         contentDiv.style.display = "none";
       },
@@ -114,7 +114,7 @@
     },
 
     options: {
-      start: { 
+      start: {
         elem: "input",
         type: "text",
         label: "In"
@@ -126,19 +126,19 @@
       },
       target: "feed-container",
       title: {
-        elem: "input", 
-        type: "text", 
-        label: "title" 
+        elem: "input",
+        type: "text",
+        label: "title"
       },
       text: {
-        elem: "input", 
-        type: "text", 
-        label: "text" 
+        elem: "input",
+        type: "text",
+        label: "text"
       },
-      innerHTML: { 
-        elem: "input", 
-        type: "text", 
-        label: "innerHTML" 
+      innerHTML: {
+        elem: "input",
+        type: "text",
+        label: "innerHTML"
       },
       direction: {
         elem: "input",
@@ -147,5 +147,5 @@
       }
     }
   });
-  
+
 })( Popcorn );

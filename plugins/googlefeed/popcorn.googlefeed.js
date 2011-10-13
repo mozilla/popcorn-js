@@ -46,7 +46,7 @@
 
         callback: function () {
 
-          dynamicFeedLoad();              
+          dynamicFeedLoad();
         }
       });
     });
@@ -79,7 +79,8 @@
   *
   */
 
-  Popcorn.plugin( "googlefeed" , function( options ) {
+  Popcorn.plugin( "googlefeed", function( options ) {
+
     // create a new div and append it to the parent div so nothing
     // that already exists in the parent div gets overwritten
     var newdiv = document.createElement( "div" ),
@@ -88,7 +89,7 @@
       //ensure that the script has been loaded
       if ( !scriptLoaded ) {
         setTimeout( function () {
-          initialize(); 
+          initialize();
         }, 5 );
       } else {
         // Create the feed control using the user entered url and title
@@ -118,7 +119,7 @@
     target && target.appendChild( newdiv );
 
     initialize();
-    
+
     return {
       /**
        * @member webpage
@@ -146,39 +147,38 @@
   },
   {
     about: {
-      name:    "Popcorn Google Feed Plugin",
+      name: "Popcorn Google Feed Plugin",
       version: "0.1",
-      author:  "David Seifried",
+      author: "David Seifried",
       website: "dseifried.wordpress.com"
     },
     options: {
       start: {
-        elem: "input", 
-        type: "text", 
-        label: "In" 
+        elem: "input",
+        type: "text",
+        label: "In"
       },
-      end: { 
-        elem: "input", 
-        type: "text", 
-        label: "Out" 
+      end: {
+        elem: "input",
+        type: "text",
+        label: "Out"
       },
       target: "feed-container",
-      url: { 
-        elem: "input", 
-        type: "text", 
-        label: "url" 
+      url: {
+        elem: "input",
+        type: "text",
+        label: "url"
       },
-      title: { 
-        elem: "input", 
-        type: "text", 
-        label: "title" 
+      title: {
+        elem: "input",
+        type: "text",
+        label: "title"
       },
       orientation: {
-        elem: "select", 
-        options: [ "Vertical","Horizontal" ], 
-        label: "orientation" 
+        elem: "select",
+        options: [ "Vertical", "Horizontal" ],
+        label: "orientation"
       }
     }
   });
-  
 })( Popcorn );

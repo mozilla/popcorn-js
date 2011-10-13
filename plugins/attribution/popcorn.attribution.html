@@ -2,36 +2,34 @@
 <html>
 <head>
   <title>Popcorn attribution Plug-in Demo</title>
-  
+
   <script src="../../popcorn.js"></script>
   <script src="popcorn.attribution.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
-      .play() 
-      .volume(0)
+    document.addEventListener( "DOMContentLoaded", function () {
+      var p = Popcorn( "#video" )
+      .play()
+      .volume( 0 )
       .attribution({
-        start: 0, // seconds
-        end: 10, // seconds
+        start: 0,
+        end: 10,
         nameofwork: "A Shared Culture",
         copyrightholder:"Jesse Dylan",
         license: "CC-BY-N6",
         licenseurl: "http://creativecommons.org/licenses/by-nc/2.0/",
-        target: 'attribdiv'
-      } )
+        target: "attribdiv"
+      })
       .attribution({
-        start: 5, // seconds
-        end: 15, // seconds
+        start: 5,
+        end: 15,
         nameofwork: "Internet",
         nameofworkurl:"http://www.archive.org/details/CC1232_internet",
         copyrightholder:"The Computer Chronicles",
         license:"CC-BY-NC-ND",
         licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
-        target: 'attribdiv'
-      } )
-
+        target: "attribdiv"
+      })
     }, false);
-      
   </script>
 </head>
 <body>
@@ -39,22 +37,22 @@
   <p> A attribution displaying 'A Shared Culture, Jesse Dylan, license: CC-BY-N6' will appear at 0 seconds and disappear at 10 seconds.</p>
   <p> A attribution displaying 'Internet, The Computer Chronicles' will appear at 5 seconds and disappear at 15 seconds.</p>
   <div>
-    <video id='video' 
-      controls preload='none' 
-      width= '250px'
-      poster="../../test/poster.png"> 
+    <video id="video"
+      controls preload="none"
+      width="250px"
+      poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+        type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+        type='video/ogg; codecs="theora, vorbis"'>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+      <p>Your user agent does not support the HTML5 Video element.</p>
 
-    </video> 
+    </video>
   </div>
   <div id="attribdiv" width="50%" height="50%">
   </div>

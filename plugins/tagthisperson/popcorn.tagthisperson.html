@@ -2,35 +2,35 @@
 <html>
 <head>
   <title>Popcorn tagthisperson Plug-in Demo</title>
-  
+
   <script src="../../popcorn.js"></script>
   <script src="popcorn.tagthisperson.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
+    document.addEventListener( "DOMContentLoaded", function() {
+      var p = Popcorn( "#video" )
       .play() 
-      .volume(0)
+      .volume( 0 )
       .tagthisperson({
-        start: 0, // seconds
-        end: 10, // seconds
-        person: 'Anna Sob',
-        image: 'http://newshour.s3.amazonaws.com/photos%2Fspeeches%2Fguests%2FRichardNSmith_thumbnail.jpg',
-        href: 'http://annasob.wordpress.com',   
-        target: 'tagdiv'
-      } )
+        start: 0,
+        end: 10,
+        person: "Anna Sob",
+        image: "http://newshour.s3.amazonaws.com/photos%2Fspeeches%2Fguests%2FRichardNSmith_thumbnail.jpg",
+        href: "http://annasob.wordpress.com",
+        target: "tagdiv"
+      })
       .tagthisperson({
-        start: 5, // seconds
-        end: 15, // seconds
-        person: 'Scott',
-        href: 'http://scottdowne.wordpress.com/',
-        target: 'tagdiv'
-      } )
+        start: 5,
+        end: 15,
+        person: "Scott",
+        href: "http://scottdowne.wordpress.com/",
+        target: "tagdiv"
+      })
       .tagthisperson({
-        start: 0, // seconds
-        end: 15, // seconds
-        person: 'Mike',
-        target: 'tagdiv2'
-      } )
+        start: 0,
+        end: 15,
+        person: "Mike",
+        target: "tagdiv2"
+      })
     }, false);
 
   </script>
@@ -41,18 +41,18 @@
   <p> A separate tag displaying Anna Sob  with an image and a URL attached will appear at 0 seconds and disappear at 10 seconds.</p>
   <p> At 5 seconds Scott with a URL attached will be appended to this tag and disappear at 15 seconds.</p>
   <div>
-    <video id='video' 
-      controls preload='none' 
-      width= '250px'
-      poster="../../test/poster.png"> 
+    <video id="video"
+      controls preload="none"
+      width="250px"
+      poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+        type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+        type='video/ogg; codecs="theora, vorbis"'>
 
       <p>Your user agent does not support the HTML5 Video element.</p> 
 
