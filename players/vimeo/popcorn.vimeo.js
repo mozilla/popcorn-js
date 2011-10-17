@@ -178,7 +178,7 @@
 
             set: function( val ) {
 
-              if ( !val || typeof val !== "number" || ( val < 0 && val > 1 ) ) {
+              if ( !val || typeof val !== "number" || ( val < 0 || val > 1 ) ) {
                 return vimeoObject.api_getVolume();
               }
 
