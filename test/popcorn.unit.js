@@ -1134,7 +1134,7 @@ test( "Stored By Type", function() {
   p.listen( "play", function() {
     fired++;
 
-    ok( jtrue, "Play fired " + fired );
+    ok( true, "Play fired " + fired );
     plus();
   });
 
@@ -1257,7 +1257,7 @@ test( "Custom", function() {
 test( "UI/Mouse", function() {
 
   var expects = 1,
-      count = 0
+      count = 0,
       p;
 
   expect( expects );
@@ -1266,6 +1266,7 @@ test( "UI/Mouse", function() {
     if ( ++count == expects ) {
       start();
     }
+  }
 
   stop( 10000 );
 
@@ -1280,7 +1281,7 @@ test( "UI/Mouse", function() {
   p.trigger( "click" );
 });
 
-module( "Popcorn Plugin" )
+module( "Popcorn Plugin" );
 test( "Manifest", function() {
 
   var p = Popcorn( "#video" ),
@@ -1646,7 +1647,7 @@ test( "Update Timer (timeupdate)", function() {
       // any second call will produce a failed test
       forwardStart = false,
       forwardEnd = false,
-      backwardStar = false,
+      backwardStart = false,
       backwardEnd = false,
       wrapperRunning = {
         one: false,
