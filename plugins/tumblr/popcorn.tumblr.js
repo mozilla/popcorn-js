@@ -37,41 +37,54 @@
   };
 
   Popcorn.plugin( "tumblr" , {
-    manifest:{
-      about:{
+    manifest: {
+      about: {
         name   : "Popcorn Tumblr Plugin",
         version: "0.1",
         author : "Matthew Schranz, @mjschranz",
         website: "mschranz.wordpress.com"
       },
-      options:{
-        requestType : {
+      options: {
+        requestType: {
           elem: "select", 
           options:[ "INFO", "AVATAR", "FOLLOWERS", "BLOGPOST" ], 
           label: "Type_Of_Plugin" 
         },
-        target      : "tumblr-container",
-        start       : {elem:'input', type:'number', label:'In'},
-        end         : {elem:'input', type:'number', label:'Out'},
-        base_hostname : {elem:'input', type:'text', label:'User'},
+        target: "tumblr-container",
+        start: {
+          elem: 'input', 
+          type: 'number', 
+          label: 'Start_Time' 
+        },
+        end: {
+          elem: 'input', 
+          type: 'number', 
+          label: 'End_Time'
+        },
+        base_hostname: {
+          elem: 'input', 
+          type: 'text',
+          label: 'User_Name'
+        },
         // optional parameters:
-        size   : {elem:'select', options:[16, 24, 30, 40, 48, 64, 96, 128, 512], label:'avatarSize'}   
+        size: {
+          elem: 'select', 
+          options: [ 16, 24, 30, 40, 48, 64, 96, 128, 512 ], 
+          label: 'avatarSize'
+        }   
       }
     },
     _setup: function( options ) {
-      var target = document.getElementById( options.target ),
-          _blog = options.base_hostname,
-          _type = options.requestType,
-          _size = options.size;
+      var target = document.getElementById( options.target );
       
       // Valid types of retrieval requests
       var validType = function( type ) {
-        return ( ["info", "avatar", "followers", "blogpost"].indexOf( type ) > -1 );
+        return ( [ "info", "avatar", "followers", "blogpost" ].indexOf( type ) > -1 );
       };
       
       // Valid sizes for Avatar retrival requests
       var validSize = function( size ) {
-        return ( [16, 24, 30, 40, 48, 64, 96, 128, 512].indexOf( type ) > -1);
+        return ( [ 16, 24, 30, 40, 48, 64, 96, 128, 512 ].indexOf( type ) > -1);
       };
       
       // Default Type is avatar
@@ -90,7 +103,7 @@
       target && target.appendChild( options._container );
       
       // For now only getting the Avatar retrieval working so I know what I'm doing
-      Popcorn.getJSONP("http://api.tumblr.com/v2/blog/" + options.base_hostname + "/avatar&jsonp=tumblrCallBack", tumblrCallBack, false);    
+      Popcorn.getJSONP( "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/avatar&jsonp=tumblrCallBack", tumblrCallBack, false );    
     },
     start: function( event, options ){
       options._container.style.display = "inline";
