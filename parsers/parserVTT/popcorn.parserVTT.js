@@ -94,7 +94,7 @@
     }
     
     return time;
-  };
+  }
   
   function createTrack( name, attributes ) {
     var track = {};
