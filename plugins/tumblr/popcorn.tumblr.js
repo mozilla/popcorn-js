@@ -45,7 +45,11 @@
         website: "mschranz.wordpress.com"
       },
       options:{
-        requestType : {elem:"select", options:["INFO", "AVATAR", "FOLLOWERS", "BLOGPOST"], label:"Type"},
+        requestType : {
+          elem: "select", 
+          options:[ "INFO", "AVATAR", "FOLLOWERS", "BLOGPOST" ], 
+          label: "Type_Of_Plugin" 
+        },
         target      : "tumblr-container",
         start       : {elem:'input', type:'number', label:'In'},
         end         : {elem:'input', type:'number', label:'Out'},
