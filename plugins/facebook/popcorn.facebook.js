@@ -194,7 +194,6 @@
         };
       }
 
-
       // Lowercase to make value consistent no matter what user inputs
       _type = _type.toLowerCase();
 
@@ -206,7 +205,6 @@
       if ( !validType( _type ) ) {
         throw new Error( "Facebook plugin type was invalid." );
       }
-
 
       options._container = document.createElement( "div" );
       options._container.id = "facebookdiv-" + Popcorn.guid();
