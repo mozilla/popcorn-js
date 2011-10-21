@@ -1799,6 +1799,27 @@
 
     var data, json = null;
 
+    function textToXML ( text ) {
+      try {
+        if ( window.DOMParser ) {
+
+          var parser = new DOMParser();
+          return parser.parseFromString( text, "text/xml" );
+
+        } else {
+
+          var xml = new ActiveXObject( "Microsoft.XMLDOM" );
+
+          xml.async = false;
+          xml.loadXML( text );
+
+          return xml;
+        }
+      } catch ( e ) {
+        // return null on error
+      }
+    }
+
     settings.ajax.onreadystatechange = function() {
 
       if ( settings.ajax.readyState === 4 ) {
@@ -1814,6 +1835,11 @@
           text: settings.ajax.responseText,
           json: json
         };
+
+        if ( !data.xml || !data.xml.documentElement ) {
+          // Check for null documentElement as well so IE will cooperate
+          data.xml = textToXML( settings.ajax.responseText );
+        }
 
         //  If a dataType was specified, return that type of data
         if ( settings.dataType ) {
