@@ -1801,14 +1801,23 @@
 
     function textToXML ( text ) {
       try {
+        var xml = null;
+        
         if ( window.DOMParser ) {
 
           var parser = new DOMParser();
-          return parser.parseFromString( text, "text/xml" );
+          xml = parser.parseFromString( text, "text/xml" );
+          
+          var found = xml.getElementsByTagName( "parsererror" );
 
+          if ( !found || !found.length || !found[ 0 ].childNodes.length ) {
+            return xml;
+          }
+
+          return null;
         } else {
 
-          var xml = new ActiveXObject( "Microsoft.XMLDOM" );
+          xml = new ActiveXObject( "Microsoft.XMLDOM" );
 
           xml.async = false;
           xml.loadXML( text );
@@ -1816,7 +1825,7 @@
           return xml;
         }
       } catch ( e ) {
-        // return null on error
+        // suppress
       }
     }
 
