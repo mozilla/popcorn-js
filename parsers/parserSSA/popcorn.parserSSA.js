@@ -97,7 +97,7 @@
       return -1;
     }
 
-    return parseInt( t[ 0 ], 10 )*3600 + parseInt( t[ 1 ], 10 ) * 60 + parseFloat( t[ 2 ], 10 );
+    return parseInt( t[ 0 ], 10 ) * 3600 + parseInt( t[ 1 ], 10 ) * 60 + parseFloat( t[ 2 ], 10 );
   }
 
   function getTextFromFields( fields, startIdx ) {
@@ -105,7 +105,7 @@
         text = [  ],
         i = startIdx;
 
-    // There may be commas in the text which were split, append back together into one line      
+    // There may be commas in the text which were split, append back together into one line
     for( ; i < fieldLen; i++ ) {
       text.push( fields[ i ] );
     }
