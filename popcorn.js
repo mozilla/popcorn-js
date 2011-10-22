@@ -1799,29 +1799,14 @@
 
     var data, json = null;
 
+    // Returns null on error
     function textToXML ( text ) {
       try {
-        var xml = null;
-        
-        if ( window.DOMParser ) {
+        var parser = new DOMParser();
+        var xml = parser.parseFromString( text, "text/xml" );
+        var foundErrors = xml.getElementsByTagName( "parsererror" );
 
-          var parser = new DOMParser();
-          xml = parser.parseFromString( text, "text/xml" );
-          
-          var found = xml.getElementsByTagName( "parsererror" );
-
-          if ( !found || !found.length || !found[ 0 ].childNodes.length ) {
-            return xml;
-          }
-
-          return null;
-        } else {
-
-          xml = new ActiveXObject( "Microsoft.XMLDOM" );
-
-          xml.async = false;
-          xml.loadXML( text );
-
+        if ( !foundErrors || !foundErrors.length || !foundErrors[ 0 ].childNodes.length ) {
           return xml;
         }
       } catch ( e ) {
