@@ -20,11 +20,17 @@
           seeking = false,
           volumeChanged = false,
           lastMuted = false,
-          lastVolume = 0;
+          lastVolume = 0,
+          height,
+          width;
 
       vimeoContainer.id = media.id + Popcorn.guid();
 
       media.appendChild( vimeoContainer );
+
+      // setting vimeo player's height and width, default to 560 x 315
+      width = media.style.width ? ""+media.offsetWidth : "560";
+      height = media.style.height ? ""+media.offsetHeight : "315";
 
       var vimeoInit = function() {
 
@@ -179,20 +185,20 @@
             set: function( val ) {
 
               if ( !val || typeof val !== "number" || ( val < 0 || val > 1 ) ) {
-                return vimeoObject.api_getVolume();
+                return vimeoObject.api_getVolume() / 100;
               }
 
               if ( vimeoObject.api_getVolume() !== val ) {
-                vimeoObject.api_setVolume( val );
+                vimeoObject.api_setVolume( val * 100 );
                 lastVolume = vimeoObject.api_getVolume();
                 media.dispatchEvent( "volumechange" );
               }
 
-              return vimeoObject.api_getVolume();
+              return vimeoObject.api_getVolume() / 100;
             },
             get: function() {
 
-              return vimeoObject.api_getVolume();
+              return vimeoObject.api_getVolume() / 100;
             }
           });
 
@@ -238,7 +244,7 @@
         };
 
         swfobject.embedSWF( "http://vimeo.com/moogaloop.swf", vimeoContainer.id,
-                            media.offsetWidth + "", media.offsetHeight + "", "9.0.0", "expressInstall.swf",
+                            width, height, "9.0.0", "expressInstall.swf",
                             flashvars, params, attributes );
 
       };

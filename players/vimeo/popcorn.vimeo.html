@@ -56,7 +56,7 @@
 
         // Volume
         document.getElementById( "btnVolume" ).addEventListener( "click", function() {
-          volume = volume === 100 ? 50 : 100;
+          volume = volume === 1 ? 0.5 : 1;
           player.volume( volume );
         }, false);
 
@@ -178,7 +178,7 @@
         <div>
           Current Time (s): <span id="player_time"></span>
           <br />Video Duration (s): <span id="player_duration"></span>
-          <br />Volume (0-100): <span id="player_vol"></span>
+          <br />Volume (0-1): <span id="player_vol"></span>
           <br />Load Status: <span id="player_load">Not Started</span>
         </div>
       </div>
