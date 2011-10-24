@@ -18,7 +18,7 @@ Popcorn.player( "youtube", {
         // state code for volume changed polling
         volumeChanged = false,
         lastMuted = false,
-        lastVolume = 0;
+        lastVolume = 100;
 
     container.id = media.id + Popcorn.guid();
 
@@ -159,18 +159,18 @@ Popcorn.player( "youtube", {
         Popcorn.player.defineProperty( media, "volume", {
           set: function( val ) {
 
-            if ( youtubeObject.getVolume() !== val ) {
+            if ( youtubeObject.getVolume() / 100 !== val ) {
 
-              youtubeObject.setVolume( val );
+              youtubeObject.setVolume( val * 100 );
               lastVolume = youtubeObject.getVolume();
               media.dispatchEvent( "volumechange" );
             }
 
-            return youtubeObject.getVolume();
+            return youtubeObject.getVolume() / 100;
           },
           get: function() {
 
-            return youtubeObject.getVolume();
+            return youtubeObject.getVolume() / 100;
           }
         });
 
