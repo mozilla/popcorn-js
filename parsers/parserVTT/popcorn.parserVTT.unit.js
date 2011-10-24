@@ -1,5 +1,5 @@
-test( "Popcorn 0.3 WebSRT/VTT Parser Plugin", function () {
-  
+test( "Popcorn 1.0 WebSRT/VTT Parser Plugin", function () {
+
   var count = 0,
       numSubs = 0,
       sub,
@@ -30,24 +30,24 @@ test( "Popcorn 0.3 WebSRT/VTT Parser Plugin", function () {
           end: 21.670
         }
       ],
-      expects = expectedSubs.length*4 + 1;
-      
+      expects = expectedSubs.length  *4 + 1;
+
   function plus() {
     if ( ++count === expects ) {
       start();
     }
   }
-  
+
   poppercorn.parseVTT( "data/unit.vtt" );
   expect( expects );
   stop( 5000 );
-  
+
   // Allow load time
   setTimeout(function () {
     Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
       if( evt._natives.type === "subtitle" ) {
-        sub = expectedSubs[numSubs++];
-        
+        sub = expectedSubs[ numSubs++ ];
+
         strictEqual( evt.id, sub.id, "Correctly parsed id" );
         plus();
         strictEqual( evt.text, sub.text, "Correctly parsed text of '" + evt.id + "'" );
@@ -58,10 +58,9 @@ test( "Popcorn 0.3 WebSRT/VTT Parser Plugin", function () {
         plus();
       }
     });
-    
+
     equals( expectedSubs.length, numSubs, "Parsed all subtitles" );
     plus();
 
   }, 500);
-  
 });
