@@ -243,7 +243,7 @@
           wmode: "transparent"
         };
 
-        swfobject.embedSWF( "http://vimeo.com/moogaloop.swf", vimeoContainer.id,
+        swfobject.embedSWF( "//vimeo.com/moogaloop.swf", vimeoContainer.id,
                             width, height, "9.0.0", "expressInstall.swf",
                             flashvars, params, attributes );
 
@@ -251,7 +251,7 @@
 
       if ( !window.swfobject ) {
 
-        Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js", vimeoInit );
+        Popcorn.getScript( "//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js", vimeoInit );
       } else {
 
         vimeoInit();
