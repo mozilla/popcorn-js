@@ -1,6 +1,6 @@
 // PLUGIN: Tumblr
 
-(function (Popcorn) {
+(function ( Popcorn, global ) {
 
   /**
   * Tumblr Popcorn Plugin.
@@ -39,9 +39,9 @@
   Popcorn.plugin( "tumblr" , {
     manifest: {
       about: {
-        name   : "Popcorn Tumblr Plugin",
+        name: "Popcorn Tumblr Plugin",
         version: "0.1",
-        author : "Matthew Schranz, @mjschranz",
+        author: "Matthew Schranz, @mjschranz",
         website: "mschranz.wordpress.com"
       },
       options: {
@@ -92,10 +92,13 @@
         throw new Error( "Invalid tumblr plugin type." );
       }
       
+      /*
+       * For now commenting out so I can see if tumblr API will set their specified default on its own.
       // Default is 64
       if ( !validSize( _size ) ) {
         _size = 64;
       }
+      */
       
       if ( !target && Popcorn.plugin.debug ) {
           throw new Error( "Target Tumblr container doesn't exist" );
@@ -116,4 +119,4 @@
       document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options._container );
     }
   });
-})(Popcorn);
+})( Popcorn, this );
