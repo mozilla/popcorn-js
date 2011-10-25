@@ -30,7 +30,7 @@ test( "Popcorn 1.0 WebSRT/VTT Parser Plugin", function () {
           end: 21.670
         }
       ],
-      expects = expectedSubs.length  *4 + 1;
+      expects = expectedSubs.length * 4 + 1;
 
   function plus() {
     if ( ++count === expects ) {
