@@ -74,7 +74,7 @@
 
         if ( !window.TWTR && !scriptLoading ) {
           scriptLoading = true;
-          Popcorn.getScript( "http://widgets.twimg.com/j/2/widget.js" );
+          Popcorn.getScript( "//widgets.twimg.com/j/2/widget.js" );
         }
 
         var target = document.getElementById( options.target );

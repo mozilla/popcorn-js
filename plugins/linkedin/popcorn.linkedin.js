@@ -117,7 +117,7 @@
           target = document.getElementById( options.target ),
           script = document.createElement( "script" );
 
-      Popcorn.getScript( "http://platform.linkedin.com/in.js" );
+      Popcorn.getScript( "//platform.linkedin.com/in.js" );
 
       options._container = document.createElement( "div" );
       options._container.appendChild( script );

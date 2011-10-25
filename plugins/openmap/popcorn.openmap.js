@@ -87,7 +87,7 @@
           location = new OpenLayers.LonLat( 0, 0 );
           // query TinyGeocoder and re-center in callback
           Popcorn.getJSONP(
-            "http://tinygeocoder.com/create-api.php?q=" + options.location + "&callback=jsonp",
+            "//tinygeocoder.com/create-api.php?q=" + options.location + "&callback=jsonp",
             function( latlng ) {
               centerlonlat = new OpenLayers.LonLat( latlng[ 1 ], latlng[ 0 ] );
               options.map.setCenter( centerlonlat );
@@ -100,7 +100,7 @@
         if ( options.type === "SATELLITE" ) {
           // add NASA WorldWind / LANDSAT map
           options.map = new OpenLayers.Map( { div: newdiv, "maxResolution": 0.28125, tileSize: new OpenLayers.Size( 512, 512 ) } );
-          var worldwind = new OpenLayers.Layer.WorldWind( "LANDSAT", "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4, { T: "105" } );
+          var worldwind = new OpenLayers.Layer.WorldWind( "LANDSAT", "//worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4, { T: "105" } );
           options.map.addLayer( worldwind );
           displayProjection = new OpenLayers.Projection( "EPSG:4326" );
           projection = new OpenLayers.Projection( "EPSG:4326" );
@@ -110,7 +110,7 @@
           displayProjection = new OpenLayers.Projection( "EPSG:4326" );
           projection = new OpenLayers.Projection( "EPSG:4326" );
           options.map = new OpenLayers.Map( {div: newdiv, projection: projection } );
-          var relief = new OpenLayers.Layer.WMS( "USGS Terraserver", "http://terraserver-usa.org/ogcmap.ashx?", { layers: "DRG" } );
+          var relief = new OpenLayers.Layer.WMS( "USGS Terraserver", "//terraserver-usa.org/ogcmap.ashx?", { layers: "DRG" } );
           options.map.addLayer( relief );
         } else {
           // add OpenStreetMap layer
@@ -139,7 +139,7 @@
 
         // insert openlayers api script once
         if ( !window.OpenLayers ) {
-          Popcorn.getScript( "http://openlayers.org/api/OpenLayers.js" );
+          Popcorn.getScript( "//openlayers.org/api/OpenLayers.js" );
         }
 
         var isReady = function() {
@@ -193,7 +193,7 @@
                   },
                   gcThenPlotMarker = function( myMarker ) {
                     Popcorn.getJSONP(
-                      "http://tinygeocoder.com/create-api.php?q=" + myMarker.location + "&callback=jsonp",
+                      "//tinygeocoder.com/create-api.php?q=" + myMarker.location + "&callback=jsonp",
                       function( latlng ) {
                         var myPoint = new OpenLayers.Geometry.Point( latlng[1], latlng[0] ).transform( displayProjection, projection ),
                             myPointStyle = OpenLayers.Util.extend( {}, layerStyle );

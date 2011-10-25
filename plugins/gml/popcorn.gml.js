@@ -163,7 +163,7 @@
       target && target.appendChild( options.container );
 
       var scriptReady = function() {
-        Popcorn.getJSONP( "http://000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
+        Popcorn.getJSONP( "//000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
 
           options.pjsInstance = new Processing( options.container, gmlPlayer );
           options.pjsInstance.construct( self.media, data, options );
@@ -173,7 +173,7 @@
 
       if ( !window.Processing ) {
 
-        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.3.0/processing-1.3.0.min.js", scriptReady );
+        Popcorn.getScript( "//processingjs.org/content/download/processing-js-1.3.0/processing-1.3.0.min.js", scriptReady );
       } else {
 
         scriptReady();

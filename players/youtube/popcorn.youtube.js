@@ -203,14 +203,14 @@ Popcorn.player( "youtube", {
 
       src = /^.*[\/=](.{11})/.exec( media.src )[ 1 ];
 
-      swfobject.embedSWF( "http://www.youtube.com/e/" + src + "?enablejsapi=1&playerapiid=" + container.id + "&version=3",
+      swfobject.embedSWF( "//www.youtube.com/e/" + src + "?enablejsapi=1&playerapiid=" + container.id + "&version=3",
                           container.id, media.offsetWidth, media.offsetHeight, "8", null,
                           flashvars, params, attributes );
     };
 
     if ( !window.swfobject ) {
 
-      Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js", youtubeInit );
+      Popcorn.getScript( "//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js", youtubeInit );
     } else {
 
       youtubeInit();

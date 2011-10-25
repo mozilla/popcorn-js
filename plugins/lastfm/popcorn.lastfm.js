@@ -77,7 +77,7 @@
             count: 0,
             htmlString: "Unknown Artist"
           };
-          Popcorn.getJSONP( "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + options.artist + "&api_key=" + options.apikey + "&format=json&callback=lastFMcallback", lastFMcallback, false );
+          Popcorn.getJSONP( "//ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + options.artist + "&api_key=" + options.apikey + "&format=json&callback=lastFMcallback", lastFMcallback, false );
         }
         _artists[ options.artist ].count++;
 
