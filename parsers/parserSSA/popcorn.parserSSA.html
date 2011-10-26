@@ -2,15 +2,15 @@
 <html>
 <head>
   <title>Popcorn 0.3 SSA parser Plug-in Demo</title>
-  
+
   <script src="../../popcorn.js"></script>
   <script src="../../test/jquery.js"></script>
   <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
   <script src="popcorn.parserSSA.js"></script>
 
   <script>
-    document.addEventListener( 'DOMContentLoaded', function () {
-      var p = Popcorn( '#video' )
+    document.addEventListener( "DOMContentLoaded", function () {
+      var p = Popcorn( "#video" )
       .volume( 0 )
       .play();
     }, false);
@@ -22,23 +22,23 @@
   <br />From 9.71 to 13.39 seconds, "Very good, Lieutenant." is shown
   <br />From 15.04 to 18.04 seconds, "It's a trap!" is shown</p>
   <div>
-    <video id='video'
+    <video id="video"
       controls
-      width= '250px'
+      width= "250px"
       data-timeline-sources="data/data.ssa"
-      poster="../../test/poster.png"> 
+      poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+        type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+        type='video/ogg; codecs="theora, vorbis"'>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+      <p>Your user agent does not support the HTML5 Video element.</p>
 
-    </video> 
+    </video>
   </div>
   <h4>Subtitle Source<h4>
   <iframe id="srcDisplay" src="data/data.ssa"></iframe>

@@ -59,7 +59,7 @@
       options: {
         type: {
           elem: "select",
-          options: [ "LIKE", "LIKE-BOX", "ACTIVITY", "FACEPILE", "LIVE-STREAM", "SEND" ],
+          options: [ "LIKE", "LIKE-BOX", "ACTIVITY", "FACEPILE", "LIVE-STREAM", "SEND", "COMMENTS" ],
           label: "Type"
         },
         target: "facebook-container",
@@ -86,12 +86,12 @@
         },
         href: {
           elem: "input",
-          type: "text",
+          type: "url",
           label: "Href"
         },
         site: {
           elem: "input",
-          type: "text",
+          type: "url",
           label:"Site"
         },
         height: {
@@ -158,6 +158,11 @@
           elem: "input",
           options: [ "false", "true" ],
           label: "Always_post_to_friends"
+        },
+        num_posts: {
+          elem: "input",
+          type: "text",
+          label: "Number_of_Comments"
         }
       }
     },
@@ -189,19 +194,17 @@
         };
       }
 
-
       // Lowercase to make value consistent no matter what user inputs
       _type = _type.toLowerCase();
 
       var validType = function( type ) {
-        return ( [ "like", "like-box", "activity", "facepile", "live-stream", "send" ].indexOf( type ) > -1 );
+        return ( [ "like", "like-box", "activity", "facepile", "live-stream", "send", "comments" ].indexOf( type ) > -1 );
       };
 
       // Checks if type is valid
       if ( !validType( _type ) ) {
         throw new Error( "Facebook plugin type was invalid." );
       }
-
 
       options._container = document.createElement( "div" );
       options._container.id = "facebookdiv-" + Popcorn.guid();
@@ -218,9 +221,11 @@
       // create an array of Facebook widget attributes
       var fbAttrs = (
         "width height layout show_faces stream header colorscheme" +
-        " maxrows border_color recommendations font always_post_to_friends xid"
+        " maxrows border_color recommendations font always_post_to_friends xid" +
+        " num_posts"
       ).split(" ");
 
+      // For Each that loops through all of our attributes adding them to the divs properties
       Popcorn.forEach( fbAttrs, function( attr ) {
         // Test for null/undef. Allows 0, false & ""
         if ( options[ attr ] != null ) {
@@ -228,6 +233,7 @@
         }
       });
 
+      // Checks if the plugins target container exists
       if ( !target && Popcorn.plugin.debug ) {
         throw new Error( "Facebook target container doesn't exist" );
       }
