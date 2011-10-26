@@ -52,7 +52,7 @@
         },
         src: {
           elem: "input",
-          type: "text",
+          type: "url",
           label: "Src"
         },
         target: "iframe-container"

@@ -86,12 +86,12 @@
         },
         href: {
           elem: "input",
-          type: "text",
+          type: "url",
           label: "Href"
         },
         site: {
           elem: "input",
-          type: "text",
+          type: "url",
           label:"Site"
         },
         height: {
