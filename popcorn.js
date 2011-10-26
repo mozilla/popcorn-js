@@ -8,7 +8,7 @@
 
     var methods = ( "forEach extend effects error guid sizeOf isArray nop position disable enable destroy " +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
-          "timeUpdate refreshTimeline plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
+          "timeUpdate refresh plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
 
     while( methods.length ) {
       global.Popcorn[ methods.shift() ] = function() {};
@@ -357,7 +357,7 @@
         disabled.push( plugin );
       }
 
-      Popcorn.refreshTimeline( instance );
+      Popcorn.refresh( instance );
 
       return instance;
     },
@@ -370,7 +370,7 @@
         disabled.splice( index, 1 );
       }
 
-      Popcorn.refreshTimeline( instance );
+      Popcorn.refresh( instance );
 
       return instance;
     },
@@ -784,7 +784,8 @@
     //  Store this definition in an array sorted by times
     var byStart = obj.data.trackEvents.byStart,
         byEnd = obj.data.trackEvents.byEnd,
-        startIndex, endIndex;
+        startIndex, endIndex,
+        currentTime;
 
     for ( startIndex = byStart.length - 1; startIndex >= 0; startIndex-- ) {
 
@@ -804,11 +805,11 @@
 
     // Display track event immediately if it's enabled and current
     if ( track._natives &&
-      (!!Popcorn.registryByName[ track._natives.type ] ||
-      !!obj[ track._natives.type ] ) ) {
+        ( !!Popcorn.registryByName[ track._natives.type ] || !!obj[ track._natives.type ] ) ) {
 
-      if ( track.end > obj.media.currentTime &&
-        track.start <= obj.media.currentTime &&
+      currentTime = obj.media.currentTime;
+      if ( track.end > currentTime &&
+        track.start <= currentTime &&
         obj.data.disabled.indexOf( track._natives.type ) === -1 ) {
 
         track._running = true;
@@ -818,7 +819,7 @@
           track._natives.frame ) {
 
           obj.data.trackEvents.animating.push( track );
-          track._natives.frame.call( obj, null, track, obj.media.currentTime );
+          track._natives.frame.call( obj, null, track, currentTime );
         }
       }
     }
@@ -1148,7 +1149,7 @@
     tracks.previousUpdateTime = currentTime;
   };
 
-  Popcorn.refreshTimeline = function ( obj ) {
+  Popcorn.refresh = function ( obj ) {
     var currentTime = obj.media.currentTime,
       tracks = obj.data.trackEvents,
       animating = tracks.animating,
@@ -1167,12 +1168,11 @@
       type = natives && natives.type;
 
       if ( !natives ||
-        ( !!registryByName[ type ] ||
-          !!obj[ type ] ) ) {
+          ( !!registryByName[ type ] || !!obj[ type ] ) ) {
 
         if ( byStart.start <= currentTime &&
           byStart.end > currentTime &&
-          disabled.indexOf ( type ) === -1 ) {
+          disabled.indexOf( type ) === -1 ) {
 
           if ( !byStart._running ) {
             byStart._running = true;
@@ -1192,8 +1192,8 @@
           natives.end.call( obj, null, byStart );
 
           if ( obj.options.frameAnimation && byStart._natives.frame ) {
-            animIndex = animating.indexOf ( byStart );
-            if (animIndex >= 0 ) {
+            animIndex = animating.indexOf( byStart );
+            if ( animIndex >= 0 ) {
               animating.splice( animIndex, 1 );
             }
           }
