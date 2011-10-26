@@ -166,7 +166,7 @@
       target: "feed-container",
       url: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "url"
       },
       title: {

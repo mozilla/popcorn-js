@@ -58,7 +58,7 @@ var wikiCallback;
         },
         src: {
           elem: "input", 
-          type: "text", 
+          type: "url", 
           label: "Src"
         },
         title: {
