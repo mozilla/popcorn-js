@@ -149,7 +149,7 @@
       },
       sketch: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "Sketch"
       },
       noPause: {
