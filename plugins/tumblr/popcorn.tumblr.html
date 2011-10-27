@@ -1,59 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Popcorn Facebook Plug-in Demo</title>
+  <title>Popcorn Tumblr Plug-in Demo</title>
   
   <script src="../../popcorn.js"></script>
-  <script src="popcorn.facebook.js"></script>
+  <script src="popcorn.tumblr.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var p = Popcorn('#video')
       .volume(0)
       .play()
-      .facebook({
-        type        : "live-stream",
-        target      : "activitydiv",
-        start       : 1,
-        end         : 10,
-        event_app_id: 174243249296725 // id is from example http://developers.facebook.com/docs/reference/plugins/live-stream/
+      .tumblr({
+        type: "info",
+        target: "tumblrdiv",
+        start: 1,
+        end: 5
       } )
-      .facebook({
-        type  : "LIKE",
-        target: "likediv",
-        layout: "box_count",
-        start : 5,
-        end   : 10
+      .tumblr({
+        type: "avatar",
+        target: "tumblrdiv",
+        start: 6,
+        end: 10,
+        size: 96
       } )
-      .facebook({
-        type   : "send",
-        target : "likediv",
-        start  : 1,
-        end    : 5
+      .tumblr({
+        type: "followers",
+        target: "tumblrdiv",
+        start: 11,
+        end: 15,
+        limit: 5
       } )
-      .facebook({
-        href  : "http://www.facebook.com/senecacollege",
-        type  : "LIKE-BOX",
-        show_faces : "true",
-        header: "false",
-        target: "likeboxdiv",
-        start : 6,
-        end   : 10
-      } )
-      .facebook({
-        site  : "http://popcornjs.org/",
-        type  : "ACTIVITY",
-        target: "activitydiv",
-        header: true,
-        start : 11,
-        end   : 15
-      } )
-      .facebook({
-        href  : "http://www.facebook.com/senecacollege",
-        type  : "FACEPILE",
-        target: "facepilediv",
-        width : 300,
-        start : 10,
-        end   : 15
+      .tumblr({
+        requestType: "blogpost",
+        target: "tumblrdiv",
+        start: 16,
+        end: 20,
+        blogType: "photo"
       } );
     }, false);
 
@@ -61,9 +43,7 @@
 </head>
 <body>
 <h1 id="qunit-header">Popcorn Tumblr Plug-in Demo</h1>
-  <p>"Avatar" plugin directly below video. href is the page it's on. "Like box" is below "like". href is set to Seneca College's Facebook page<br/>
-  "Facepile" is to the right of the video (must be logged into facebook). href is also set to Seneca College's Facebook page. <br/>
-  "Activity feed" is below "Facepile". href is set to popcornjs.org.</p>
+  <p>All types of tumblr plugins are shown below the video. The first will be information pulled from a blog info request, the second will be the avatar belonging to the provided blog URI, the third will show information about a/some followers of the provided blog URI and the fourth will pull information from a blog post on the provided blog URI. </p>
   
   <div>
     <video id='video' 
@@ -84,13 +64,7 @@
     </video> 
   </div>
   <div>
-    <div id="likediv"></div>
-    <br />
-    <div id="likeboxdiv"></div>
-  </div>
-  <div style="position:absolute;left:400px;top:150px">
-    <div id="facepilediv"></div>
-    <div id="activitydiv"></div>
+    <div id="tumblrdiv"></div>
   </div>
 </body>
 </html>

@@ -18,11 +18,11 @@
   * Example:
     var p = Popcorn('#video')
       .tumblr({
-        start  : 5,                      // seconds, mandatory
-        end    : 15,                     // seconds, mandatory
-        type   : 'avatar',               // mandatory
-        target : 'tumblrBlogInfodiv',    // mandatory
-        size   : 96                      // Optional
+        start: 5,                     // seconds, mandatory
+        end: 15,                      // seconds, mandatory
+        requestType: 'avatar',        // mandatory
+        target: 'tumblrBlogInfodiv',  // mandatory
+        size: 96                      // Optional
       } )
   *
   */
@@ -52,29 +52,45 @@
         },
         target: "tumblr-container",
         start: {
-          elem: 'input', 
-          type: 'number', 
-          label: 'Start_Time' 
+          elem: "input", 
+          type: "number", 
+          label: "Start_Time" 
         },
         end: {
-          elem: 'input', 
-          type: 'number', 
-          label: 'End_Time'
+          elem: "input", 
+          type: "number", 
+          label: "End_Time"
         },
         base_hostname: {
-          elem: 'input', 
-          type: 'text',
-          label: 'User_Name'
+          elem: "input", 
+          type: "text",
+          label: "User_Name"
         },
         // optional parameters:
         size: {
-          elem: 'select', 
+          elem: "select", 
           options: [ 16, 24, 30, 40, 48, 64, 96, 128, 512 ], 
-          label: 'avatarSize'
+          label: "avatarSize"
         },
         blogType: {
-          elem: 'select',
-          options: [ "
+          elem: "select",
+          options: [ "TEXT", "QUOTE", "LINK", "PHOTO", "VIDEO", "AUDIO", "ANSWER" ],
+          label: "Blog_Type"
+        },
+        blogId: {
+          elem: "input",
+          type: "number",
+          label: "Blog_ID"
+        },
+        tag: {
+          elem: "input",
+          type: "text",
+          label: "Blog_Tag"
+        },
+        limit: {
+          elem: "input",
+          number: "number",
+          label: "Follower_Limit"
         } 
       }
     },
@@ -88,12 +104,20 @@
       
       // Valid sizes for Avatar retrival requests
       var validSize = function( size ) {
-        return ( [ 16, 24, 30, 40, 48, 64, 96, 128, 512 ].indexOf( type ) > -1);
+        return ( [ 16, 24, 30, 40, 48, 64, 96, 128, 512 ].indexOf( type ) > -1 );
+      };
+      
+      // If retrieval is for a blog, check if it's a valid type
+      var validBlogType = function( bType ) {
+        return ( [ "TEXT", "QUOTE", "LINK", "PHOTO", "VIDEO", "AUDIO", "ANSWER" ].indexOf( bType ) > -1 );
       };
       
       // Default Type is avatar
-      if ( !validType( _type ) ) {
+      if ( !validType( options.requestType ) ) {
         throw new Error( "Invalid tumblr plugin type." );
+      }
+      else if (  !validBlogType( options.blogType ) ) {
+        throw new Error( "Invalid Blog Type." );
       }
       
       /*
