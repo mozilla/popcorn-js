@@ -1797,22 +1797,8 @@
 
   Popcorn.xhr.httpData = function( settings ) {
 
-    var data, json = null;
-
-    // Returns null on error
-    function textToXML ( text ) {
-      try {
-        var parser = new DOMParser();
-        var xml = parser.parseFromString( text, "text/xml" );
-        var foundErrors = xml.getElementsByTagName( "parsererror" );
-
-        if ( !foundErrors || !foundErrors.length || !foundErrors[ 0 ].childNodes.length ) {
-          return xml;
-        }
-      } catch ( e ) {
-        // suppress
-      }
-    }
+    var data, json = null,
+        parser, xml = null;
 
     settings.ajax.onreadystatechange = function() {
 
@@ -1831,8 +1817,20 @@
         };
 
         if ( !data.xml || !data.xml.documentElement ) {
-          // Check for null documentElement as well so IE will cooperate
-          data.xml = textToXML( settings.ajax.responseText );
+          if ( data.xml ) {
+            data.xml = null;
+          }
+
+          try {
+            parser = new DOMParser();
+            xml = parser.parseFromString( settings.ajax.responseText, "text/xml" );
+
+            if ( !xml.getElementsByTagName( "parsererror" ).length ) {
+              data.xml = xml;
+            }
+          } catch ( e ) {
+            // suppress
+          }
         }
 
         //  If a dataType was specified, return that type of data
