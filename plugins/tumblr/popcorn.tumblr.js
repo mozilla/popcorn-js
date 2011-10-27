@@ -71,7 +71,11 @@
           elem: 'select', 
           options: [ 16, 24, 30, 40, 48, 64, 96, 128, 512 ], 
           label: 'avatarSize'
-        }   
+        },
+        blogType: {
+          elem: 'select',
+          options: [ "
+        } 
       }
     },
     _setup: function( options ) {
