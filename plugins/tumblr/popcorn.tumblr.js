@@ -66,6 +66,11 @@
           type: "text",
           label: "User_Name"
         },
+        api_key: {
+          elem: "input",
+          type: "text",
+          label: "Application_Key"
+        },
         // optional parameters:
         size: {
           elem: "select", 

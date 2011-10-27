@@ -2,7 +2,13 @@
 <html>
 <head>
   <title>Popcorn Tumblr Plug-in Demo</title>
+    <!--
+    ATTENTION
   
+    This demo uses an API key obtained for testing the Tumblr Popcorn.js
+    plugin. Please do not use it for other purposes.
+    
+    -->
   <script src="../../popcorn.js"></script>
   <script src="popcorn.tumblr.js"></script>
   <script>
@@ -11,20 +17,21 @@
       .volume(0)
       .play()
       .tumblr({
-        type: "info",
+        requestType: "info",
         target: "tumblrdiv",
         start: 1,
-        end: 5
+        end: 5,
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
       } )
       .tumblr({
-        type: "avatar",
+        requestType: "avatar",
         target: "tumblrdiv",
         start: 6,
         end: 10,
         size: 96
       } )
       .tumblr({
-        type: "followers",
+        requestType: "followers",
         target: "tumblrdiv",
         start: 11,
         end: 15,
@@ -35,7 +42,8 @@
         target: "tumblrdiv",
         start: 16,
         end: 20,
-        blogType: "photo"
+        blogType: "photo",
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
       } );
     }, false);
 
