@@ -175,6 +175,7 @@ Popcorn.player( "youtube", {
         });
 
         media.readyState = 4;
+        media.dispatchEvent( "canplaythrough" );
         media.dispatchEvent( "load" );
         media.duration = youtubeObject.getDuration();
         media.dispatchEvent( "durationchange" );
