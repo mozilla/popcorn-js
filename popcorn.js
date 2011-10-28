@@ -8,7 +8,7 @@
 
     var methods = ( "forEach extend effects error guid sizeOf isArray nop position disable enable destroy " +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
-          "timeUpdate refresh plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
+          "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
 
     while( methods.length ) {
       global.Popcorn[ methods.shift() ] = function() {};
@@ -57,6 +57,62 @@
         global.setTimeout( callback, 16 );
       };
   }()),
+
+  refresh = function ( obj ) {
+    var currentTime = obj.media.currentTime,
+      tracks = obj.data.trackEvents,
+      animating = tracks.animating,
+      start = tracks.startIndex,
+      animIndex = 0,
+      disabled = obj.data.disabled,
+      registryByName = Popcorn.registryByName,
+      byStart, natives, type;
+
+    start = Math.min( start + 1, tracks.byStart.length - 2 );
+
+    while ( start > 0 && tracks.byStart[ start ] ) {
+
+      byStart = tracks.byStart [ start ];
+      natives = byStart._natives;
+      type = natives && natives.type;
+
+      if ( !natives ||
+          ( !!registryByName[ type ] || !!obj[ type ] ) ) {
+
+        if ( byStart.start <= currentTime &&
+          byStart.end > currentTime &&
+          disabled.indexOf( type ) === -1 ) {
+
+          if ( !byStart._running ) {
+            byStart._running = true;
+            natives.start.call( obj, null, byStart );
+
+            // if the 'frameAnimation' option is used,
+            // push the current byStart object into the `animating` cue
+            if ( obj.options.frameAnimation &&
+              ( byStart && byStart._running && byStart.natives.frame ) ) {
+
+              natives.frame.call( obj, null, byStart, currentTime );
+            }
+          }
+        } else if ( byStart._running === true ) {
+
+          byStart._running = false;
+          natives.end.call( obj, null, byStart );
+
+          if ( obj.options.frameAnimation && byStart._natives.frame ) {
+            animIndex = animating.indexOf( byStart );
+            if ( animIndex >= 0 ) {
+              animating.splice( animIndex, 1 );
+            }
+          }
+
+        }
+      }
+
+      start--;
+    }
+  },
 
   //  Declare constructor
   //  Returns an instance object.
@@ -357,7 +413,7 @@
         disabled.push( plugin );
       }
 
-      Popcorn.refresh( instance );
+      refresh( instance );
 
       return instance;
     },
@@ -370,7 +426,7 @@
         disabled.splice( index, 1 );
       }
 
-      Popcorn.refresh( instance );
+      refresh( instance );
 
       return instance;
     },
@@ -1147,62 +1203,6 @@
     tracks.endIndex = end;
     tracks.startIndex = start;
     tracks.previousUpdateTime = currentTime;
-  };
-
-  Popcorn.refresh = function ( obj ) {
-    var currentTime = obj.media.currentTime,
-      tracks = obj.data.trackEvents,
-      animating = tracks.animating,
-      start = tracks.startIndex,
-      animIndex = 0,
-      disabled = obj.data.disabled,
-      registryByName = Popcorn.registryByName,
-      byStart, natives, type;
-
-    start = Math.min( start + 1, tracks.byStart.length - 2 );
-
-    while ( start > 0 && tracks.byStart[ start ] ) {
-
-      byStart = tracks.byStart [ start ];
-      natives = byStart._natives;
-      type = natives && natives.type;
-
-      if ( !natives ||
-          ( !!registryByName[ type ] || !!obj[ type ] ) ) {
-
-        if ( byStart.start <= currentTime &&
-          byStart.end > currentTime &&
-          disabled.indexOf( type ) === -1 ) {
-
-          if ( !byStart._running ) {
-            byStart._running = true;
-            natives.start.call( obj, null, byStart );
-
-            // if the 'frameAnimation' option is used,
-            // push the current byStart object into the `animating` cue
-            if ( obj.options.frameAnimation &&
-              ( byStart && byStart._running && byStart.natives.frame ) ) {
-
-              natives.frame.call( obj, null, byStart, currentTime );
-            }
-          }
-        } else if ( byStart._running === true ) {
-
-          byStart._running = false;
-          natives.end.call( obj, null, byStart );
-
-          if ( obj.options.frameAnimation && byStart._natives.frame ) {
-            animIndex = animating.indexOf( byStart );
-            if ( animIndex >= 0 ) {
-              animating.splice( animIndex, 1 );
-            }
-          }
-
-        }
-      }
-
-      start--;
-    }
   };
 
   //  Map and Extend TrackEvent functions to all Popcorn instances
