@@ -1,3 +1,36 @@
+test( "Options Check", function() {
+  QUnit.reset();
+  expect( 7 );
+  var varz = {
+      title: 0,
+      byline: 0,
+      portrait:0,
+      autoplay:1,
+      loop:1,
+      color: "FFAADD",
+      fullscreen: 0
+    },
+    p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892", varz );
+
+  stop();
+
+  p2.listen( "loadeddata", function() {
+    var flashvars = $( 'param[name="flashvars"]' ).attr( "value" );
+
+    var splitvars = flashvars.split( "&" );
+
+    for ( var i = 0, len = splitvars.length; i < len; i++ ) {
+      var item = splitvars[ i ].split( "=" );
+      if ( varz.hasOwnProperty( item[ 0 ] ) ) {
+        equal( varz[ item[ 0 ] ], item[ 1 ], item[ 0 ] + " is the expected value" );
+      }
+    }
+
+    start();
+  });
+
+});
+
 test( "Update Timer", function() {
 
   QUnit.reset();
