@@ -82,6 +82,7 @@
           options: [ "TEXT", "QUOTE", "LINK", "PHOTO", "VIDEO", "AUDIO", "ANSWER" ],
           label: "Blog_Type"
         },
+        // Required for BLOGPOST requests
         blogId: {
           elem: "input",
           type: "number",
