@@ -108,11 +108,6 @@
         return ( [ "info", "avatar", "followers", "blogpost" ].indexOf( type ) > -1 );
       };
       
-      // Valid sizes for Avatar retrival requests
-      var validSize = function( size ) {
-        return ( [ 16, 24, 30, 40, 48, 64, 96, 128, 512 ].indexOf( type ) > -1 );
-      };
-      
       // If retrieval is for a blog, check if it's a valid type
       var validBlogType = function( bType ) {
         return ( [ "TEXT", "QUOTE", "LINK", "PHOTO", "VIDEO", "AUDIO", "ANSWER" ].indexOf( bType ) > -1 );
@@ -125,14 +120,6 @@
       else if ( !validBlogType( options.blogType ) ) {
         throw new Error( "Invalid Blog Type." );
       }
-      
-      /*
-       * For now commenting out so I can see if tumblr API will set their specified default on its own.
-      // Default is 64
-      if ( !validSize( _size ) ) {
-        _size = 64;
-      }
-      */
       
       if ( !target && Popcorn.plugin.debug ) {
           throw new Error( "Target Tumblr container doesn't exist" );
