@@ -122,7 +122,7 @@
       if ( !validType( options.requestType ) ) {
         throw new Error( "Invalid tumblr plugin type." );
       }
-      else if (  !validBlogType( options.blogType ) ) {
+      else if ( !validBlogType( options.blogType ) ) {
         throw new Error( "Invalid Blog Type." );
       }
       
