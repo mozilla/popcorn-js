@@ -1817,10 +1817,8 @@
         };
 
         if ( !data.xml || !data.xml.documentElement ) {
-          if ( data.xml ) {
-            data.xml = null;
-          }
-
+          data.xml = null;
+          
           try {
             parser = new DOMParser();
             xml = parser.parseFromString( settings.ajax.responseText, "text/xml" );
@@ -1829,7 +1827,7 @@
               data.xml = xml;
             }
           } catch ( e ) {
-            // suppress
+            // data.xml remains null
           }
         }
 
