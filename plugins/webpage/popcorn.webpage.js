@@ -62,6 +62,9 @@
 
       var target = document.getElementById( options.target );
 
+      // make src an iframe acceptable string
+      options.src = options.src.replace( /^(https?:)?(\/\/)?/, "//" );
+
       // make an iframe
       options._iframe = document.createElement( "iframe" );
       options._iframe.setAttribute( "width", "100%" );
