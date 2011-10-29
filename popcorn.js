@@ -1209,7 +1209,7 @@
       natives.start = natives.start || natives[ "in" ];
       natives.end = natives.end || natives[ "out" ];
 
-      // extend teardown to also, always, call end
+      // extend teardown to always call end if running
       natives._teardown = combineFn (function() {
 
         // end function signature is not the same as teardown,
