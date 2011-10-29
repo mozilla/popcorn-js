@@ -97,7 +97,6 @@
             width = options.width || 250,
             height = options.height || 200,
             profile = /^@/.test( src ),
-            hash = /^#/.test( src ),
             widgetOptions = {
               version: 2,
               // use this id to connect it to the div
@@ -138,7 +137,7 @@
 
               new TWTR.Widget( widgetOptions ).render().setUser( src ).start();
 
-            } else if ( hash ) {
+            } else {
 
               widgetOptions.type = "search";
               widgetOptions.search = src;
