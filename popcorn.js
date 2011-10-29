@@ -1816,9 +1816,10 @@
           json: json
         };
 
+        // Normalize: data.xml is non-null in IE9 regardless of if response is valid xml
         if ( !data.xml || !data.xml.documentElement ) {
           data.xml = null;
-          
+
           try {
             parser = new DOMParser();
             xml = parser.parseFromString( settings.ajax.responseText, "text/xml" );
