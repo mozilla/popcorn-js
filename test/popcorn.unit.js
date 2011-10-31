@@ -2956,6 +2956,7 @@ test( "Index Integrity ( timeUpdate )", function() {
     if ( ++count === expects ) {
       start();
       Popcorn.removePlugin( "ff" );
+      $pop.removePlugin( "exec" );
     }
   }
 
@@ -3026,6 +3027,7 @@ test( "Index Integrity (frameAnimation)", function() {
     if ( ++count === expects ) {
       start();
       Popcorn.removePlugin( "ff" );
+      $pop.removePlugin( "exec" );
     }
   }
 
