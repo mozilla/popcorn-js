@@ -2423,7 +2423,7 @@ test( "Teardown end tester", function() {
   });
 
   // start and end times to deault to entire video,
-  // to ensuring end function will never be called outside of _teardown
+  // to ensure the end function will never be called outside of _teardown
   popped.teardownEndTester({});
 
   popped.currentTime( 0 ).play();
