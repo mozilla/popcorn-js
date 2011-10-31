@@ -42,7 +42,8 @@ test( "Popcorn Twitter Plugin", function() {
   setupId = popped.getLastTrackEventId();
 
   popped.exec( 1, function() {
-    ok( /display: inline;/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
+
+    ok( /display: inline/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
     plus();
     ok( /twtr-widget/.test( twitterdiv.innerHTML ), "A Twitter widget exists" );
     plus();
@@ -50,7 +51,7 @@ test( "Popcorn Twitter Plugin", function() {
 
   popped.exec( 2, function() {
 
-    ok( /display: none;/.test( twitterdiv.innerHTML ), "Div contents are hidden again" );
+    ok( /display: none/.test( twitterdiv.innerHTML ), "Div contents are hidden again" );
     plus();
 
     popped.pause().removeTrackEvent( setupId );
@@ -98,7 +99,7 @@ test( "Popcorn Twitter Plugin", function() {
 
   popped.exec( 4, function() {
 
-    ok( /display: inline;/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
+    ok( /display: inline/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
     plus();
     ok( /twtr-widget/.test( twitterdiv.innerHTML ), "A Twitter widget exists" );
     plus();
@@ -106,7 +107,7 @@ test( "Popcorn Twitter Plugin", function() {
 
   popped.exec( 5, function() {
 
-    ok( /display: inline;/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
+    ok( /display: inline/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
     plus();
     ok( /twtr-widget/.test( twitterdiv.innerHTML ), "A Twitter widget exists" );
     plus();
