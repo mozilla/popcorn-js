@@ -25,7 +25,7 @@ var googleCallback;
     // for some reason the Google Map API adds content to the body
     if ( document.body ) {
       _mapFired = true;
-      Popcorn.getScript( "http://maps.google.com/maps/api/js?sensor=false&callback=googleCallback" );
+      Popcorn.getScript( "//maps.google.com/maps/api/js?sensor=false&callback=googleCallback" );
     } else {
       setTimeout(function () {
         loadMaps();
