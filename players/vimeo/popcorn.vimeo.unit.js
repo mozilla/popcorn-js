@@ -36,7 +36,7 @@ test( "Update Timer", function() {
   QUnit.reset();
 
   var p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892" ),
-      expects = 12,
+      expects = 16,
       count = 0,
       execCount = 0,
       // These make sure events are only fired once
@@ -61,6 +61,30 @@ test( "Update Timer", function() {
 
   // These tests come close to 10 seconds on chrome, increasing to 15
   stop();
+
+  p2.listen( "canplaythrough", function() {
+    p2.unlisten( "canplaythrough" );
+    ok( true, "'canplaythrough' fired" );
+    plus();
+  });
+
+  p2.listen( "load", function() {
+    p2.unlisten( "load" );
+    ok( true, "'load' fired" );
+    plus();
+  });
+
+  p2.listen( "durationchange", function() {
+    p2.unlisten( "durationchange" );
+    ok( true, "'durationchange' fired" );
+    plus();
+  });
+
+  p2.listen( "loadeddata", function() {
+    p2.unlisten( "loadeddata" );
+    ok( true, "'loadeddata' fired" );
+    plus();
+  });
 
   Popcorn.plugin( "forwards", function() {
     return {
@@ -225,7 +249,7 @@ test( "Plugin Factory", function() {
   }
 
   expect( expects );
-  stop( 15000 );
+  stop( 20000 );
 
   Popcorn.plugin( "executor", function() {
 

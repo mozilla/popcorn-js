@@ -203,6 +203,7 @@
           });
 
           media.readyState = 4;
+          media.dispatchEvent( "canplaythrough" );
           media.dispatchEvent( "load" );
           media.duration = vimeoObject.api_getDuration();
           media.dispatchEvent( "durationchange" );
