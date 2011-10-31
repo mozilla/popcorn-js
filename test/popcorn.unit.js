@@ -2219,6 +2219,8 @@ test( "Popcorn Compose", function() {
     }
   });
 
+  popped.pause( popped.duration() );
+
   popped.testPlugin({
     start: 0,
     end: 1,
@@ -2267,13 +2269,11 @@ test( "Popcorn Compose", function() {
   equal( test.two.setup, 3, "three compose two setup" );
   plus();
 
-  popped.currentTime( 0 ).pause();
-
   popped.exec( 0, function() {
     equal( test.one.running, 1, "one compose running" );
-   plus();
-   equal( test.two.running, 1, "one effect running" );
-   plus();
+    plus();
+    equal( test.two.running, 1, "one effect running" );
+    plus();
   })
   .exec( 1, function() {
     equal( test.one.running, 0, "no compose running" );
@@ -2326,7 +2326,6 @@ test( "Popcorn Compose", function() {
   // runs once, 2 tests
   Popcorn.plugin( "pluginOptions1", {
     _setup: function( options ) {
-      console.log( "runs once?" );
       ok( options.pluginoption, "plugin option one exists at setup" );
       plus();
       ok( !options.composeoption, "compose option one does not exist at setup" );
