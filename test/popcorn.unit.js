@@ -1363,6 +1363,25 @@ test( "Manifest", function() {
   });
 });
 
+test( "Manifest removal", function() {
+
+  var popcorn = Popcorn( "#video" );
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 0, "Before creating new plugin" );
+
+  Popcorn.plugin( "tester", {
+  
+    start: function() {},
+    end: function() {}
+  });
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 1, "After creating new plugin" );
+
+  Popcorn.removePlugin( "tester" );
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 0, "After deleting plugin" );
+});
+
 test( "Configurable Defaults", function() {
 
   var expects = 13,
