@@ -214,10 +214,10 @@
 
               that.trigger( "timeupdate" );
 
-              requestAnimFrame( animate );
+              !that.isDestroyed && requestAnimFrame( animate );
             };
 
-            requestAnimFrame( animate );
+            !that.isDestroyed && requestAnimFrame( animate );
 
           } else {
 
@@ -384,7 +384,7 @@
       }
 
       if ( !instance.isDestroyed ) {
-        instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
+        instance.data.timeUpdateFunction && instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
         instance.isDestroyed = true;
       }
     }
@@ -2046,7 +2046,7 @@
 
   //  Protected API methods
   Popcorn.protect = {
-    natives: getItems() 
+    natives: getItems()
   };
 
   //  Exposes Popcorn to global context

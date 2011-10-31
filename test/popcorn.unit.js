@@ -1608,6 +1608,7 @@ test( "frame function (frameAnimation)", function() {
     if ( ++count === expects ) {
       // clean up added events after tests
       Popcorn.removePlugin( "frameFn" );
+      $pop.destroy();
       start();
     }
   }
@@ -1831,6 +1832,7 @@ test( "Update Timer (frameAnimation)", function() {
       Popcorn.removePlugin( "forwards" );
       Popcorn.removePlugin( "backwards" );
       Popcorn.removePlugin( "wrapper" );
+      p2.destroy();
       start();
     }
   }
@@ -2956,7 +2958,7 @@ test( "Index Integrity ( timeUpdate )", function() {
     if ( ++count === expects ) {
       start();
       Popcorn.removePlugin( "ff" );
-      $pop.removePlugin( "exec" );
+      $pop.destroy();
     }
   }
 
@@ -3027,7 +3029,7 @@ test( "Index Integrity (frameAnimation)", function() {
     if ( ++count === expects ) {
       start();
       Popcorn.removePlugin( "ff" );
-      $pop.removePlugin( "exec" );
+      $pop.destroy();
     }
   }
 
@@ -3908,7 +3910,8 @@ test( "Basic Audio Support (frameAnimation)", function() {
   function plus() {
 
     if ( ++count === expects ) {
-
+      popped.destroy();
+      popObj.destroy();
       start();
     }
   }
