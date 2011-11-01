@@ -30,6 +30,8 @@ Popcorn.player( "youtube", {
           params,
           attributes,
           src,
+          width,
+          height,
           query;
 
       // expose a callback to this scope, that is called from the global callback youtube calls
@@ -204,8 +206,12 @@ Popcorn.player( "youtube", {
       src = /^.*(?:\/|v=)(.{11})/.exec( media.src )[ 1 ];
       query = ( media.src.split( "?" )[ 1 ] || "" ).replace( /v=.{11}/, "" );
 
+      // setting youtube player's height and width, default to 560 x 315
+      width = media.style.width ? ""+media.offsetWidth : "560";
+      height = media.style.height ? ""+media.offsetHeight : "315";
+
       swfobject.embedSWF( "//www.youtube.com/e/" + src + "?" + query + "&enablejsapi=1&playerapiid=" + container.id + "&version=3",
-                          container.id, media.offsetWidth, media.offsetHeight, "8", null, flashvars, params, attributes );
+                          container.id, width, height, "8", null, flashvars, params, attributes );
     };
 
     if ( !window.swfobject ) {

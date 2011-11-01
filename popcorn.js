@@ -1665,10 +1665,18 @@
 
           basePlayer[ val ] = (function( value ) {
 
-            return function() {
+            // this is a stupid ugly kludgy hack in honour of Safari
+            // in Safari a NodeList is a function, not an object
+            if ( "length" in container[ value ] && !container[ value ].call ) {
 
-              return container[ value ].apply( container, arguments );
-            };
+              return container[ value ];
+            } else {
+
+              return function() {
+
+                return container[ value ].apply( container, arguments );
+              };
+            }
           }( val ));
         } else {
 

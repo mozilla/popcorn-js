@@ -407,3 +407,31 @@ test( "Controls and Annotations toggling", function() {
 
 });
 
+test( "Player height and width", function() {
+
+  QUnit.reset();
+
+  expect( 4 );
+
+  stop( 10000 );
+  var popcorn1 = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=9oar9glUCL0" ),
+      popcorn2 = Popcorn.youtube( "#video5", "http://www.youtube.com/watch?v=9oar9glUCL0" ),
+      readyStatePoll = function() {
+
+        if ( popcorn1.media.readyState !== 4 && popcorn2.media.readyState !== 4 ) {
+
+          setTimeout( readyStatePoll, 10 );
+        } else {
+
+          equal( popcorn1.media.children[ 0 ].width, 560, "Youtube player default width is 560" );
+          equal( popcorn1.media.children[ 0 ].height, 315, "Youtube player default height is 315" );
+
+          equal( popcorn2.media.children[ 0 ].width, 0, "Youtube player explicit width is 0" );
+          equal( popcorn2.media.children[ 0 ].height, 0, "Youtube player explicit height is 0" );
+          start();
+        }
+      };
+
+  readyStatePoll();
+});
+
