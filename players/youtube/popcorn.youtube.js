@@ -204,9 +204,8 @@ Popcorn.player( "youtube", {
       src = /^.*(?:\/|v=)(.{11})/.exec( media.src )[ 1 ];
       query = ( media.src.split( "?" )[ 1 ] || "" ).replace( /v=.{11}/, "" );
 
-      swfobject.embedSWF( "//www.youtube.com/e/" + src + "?enablejsapi=1&playerapiid=" + container.id + "&version=3",
-                          container.id, media.offsetWidth, media.offsetHeight, "8", null,
-                          flashvars, params, attributes );
+      swfobject.embedSWF( "//www.youtube.com/e/" + src + "?" + query + "&enablejsapi=1&playerapiid=" + container.id + "&version=3",
+                          container.id, media.offsetWidth, media.offsetHeight, "8", null, flashvars, params, attributes );
     };
 
     if ( !window.swfobject ) {
