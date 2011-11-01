@@ -102,7 +102,7 @@
       
       // Trim left and right whitespace from text and change non-explicit line breaks to spaces
       sub.text = node.textContent.replace(/^[\s]+|[\s]+$/gm, "").replace(/(?:\r\n|\r|\n)/gm, "<br />");
-      sub.id = node.getAttribute( "xml:id" );
+      sub.id = node.getAttribute( "xml:id" ) || node.getAttribute( "id" );
       sub.start = toSeconds ( node.getAttribute( "begin" ), timeOffset );
       sub.end = toSeconds( node.getAttribute( "end" ), timeOffset );
       sub.target = region;

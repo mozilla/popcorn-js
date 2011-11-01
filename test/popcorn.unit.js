@@ -1363,6 +1363,25 @@ test( "Manifest", function() {
   });
 });
 
+test( "Manifest removal", function() {
+
+  var popcorn = Popcorn( "#video" );
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 0, "Before creating new plugin" );
+
+  Popcorn.plugin( "tester", {
+  
+    start: function() {},
+    end: function() {}
+  });
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 1, "After creating new plugin" );
+
+  Popcorn.removePlugin( "tester" );
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 0, "After deleting plugin" );
+});
+
 test( "Configurable Defaults", function() {
 
   var expects = 13,
@@ -1608,6 +1627,7 @@ test( "frame function (frameAnimation)", function() {
     if ( ++count === expects ) {
       // clean up added events after tests
       Popcorn.removePlugin( "frameFn" );
+      $pop.destroy();
       start();
     }
   }
@@ -1831,6 +1851,7 @@ test( "Update Timer (frameAnimation)", function() {
       Popcorn.removePlugin( "forwards" );
       Popcorn.removePlugin( "backwards" );
       Popcorn.removePlugin( "wrapper" );
+      p2.destroy();
       start();
     }
   }
@@ -2200,6 +2221,8 @@ test( "Popcorn Compose", function() {
     }
   });
 
+  popped.pause( popped.duration() );
+
   popped.testPlugin({
     start: 0,
     end: 1,
@@ -2248,13 +2271,11 @@ test( "Popcorn Compose", function() {
   equal( test.two.setup, 3, "three compose two setup" );
   plus();
 
-  popped.currentTime( 0 ).pause();
-
   popped.exec( 0, function() {
     equal( test.one.running, 1, "one compose running" );
-   plus();
-   equal( test.two.running, 1, "one effect running" );
-   plus();
+    plus();
+    equal( test.two.running, 1, "one effect running" );
+    plus();
   })
   .exec( 1, function() {
     equal( test.one.running, 0, "no compose running" );
@@ -2307,7 +2328,6 @@ test( "Popcorn Compose", function() {
   // runs once, 2 tests
   Popcorn.plugin( "pluginOptions1", {
     _setup: function( options ) {
-      console.log( "runs once?" );
       ok( options.pluginoption, "plugin option one exists at setup" );
       plus();
       ok( !options.composeoption, "compose option one does not exist at setup" );
@@ -2376,6 +2396,58 @@ test( "Popcorn Compose", function() {
   composeOptionsTwo = popped.getLastTrackEventId();
 
   popped.currentTime( 0 ).play();
+});
+
+test( "Teardown end tester", function() {
+
+  QUnit.reset();
+
+  var popped = Popcorn( "#video" ),
+      expects = 4,
+      count = 0;
+
+  function plus() {
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "teardownEndTester" );
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 15000 );
+
+  Popcorn.plugin( "teardownEndTester", {
+    _setup: function( options ) {
+      options.endCalled = false;
+      options.teardownCalled = false;
+    },
+    start: function( event, options ) {
+    },
+    end: function( event, options ) {
+      // passes if end is called before teardown, and only called once
+      equal( options.endCalled, false, "ensure only teardown can call this end" );
+      plus();
+      equal( options.teardownCalled, false, "ensure teardown is not yet called" );
+      plus();
+      options.endCalled = true;
+    },
+    _teardown: function( options ) {
+
+      // passes if teardown is called after end, and only called once
+      equal( options.endCalled, true, "ensure end was previously called" );
+      plus();
+      equal( options.teardownCalled, false, "ensure teardown is not yet called" );
+      plus();
+      options.teardownCalled = true;
+    }
+  });
+
+  // start and end times to deault to entire video,
+  // to ensure the end function will never be called outside of _teardown
+  popped.teardownEndTester({});
+
+  popped.currentTime( 0 ).play();
+  popped.removePlugin( "teardownEndTester" );
 });
 
 test( "Plugin Breaker", function() {
@@ -2956,6 +3028,7 @@ test( "Index Integrity ( timeUpdate )", function() {
     if ( ++count === expects ) {
       start();
       Popcorn.removePlugin( "ff" );
+      $pop.destroy();
     }
   }
 
@@ -3026,6 +3099,7 @@ test( "Index Integrity (frameAnimation)", function() {
     if ( ++count === expects ) {
       start();
       Popcorn.removePlugin( "ff" );
+      $pop.destroy();
     }
   }
 
@@ -3217,6 +3291,71 @@ test( "dataType: Text Response", function() {
     }
   });
 });
+
+test( "XML Conversion", function() {
+
+  var expects,
+      count = 0,
+      i,
+      len,
+      validXML = [ "data/test.xml", "data/test.ttml" ],
+      invalidXML = [ "data/test.txt", "data/remoteA.js" ];
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
+  expects = validXML.length * 2 + invalidXML.length * 3;
+
+  expect( expects );
+
+  stop();
+
+  function testValidXML( fileName ) {
+    Popcorn.xhr({
+      url: fileName,
+      success: function( data ) {
+
+        ok( data, "xhr returns data" );
+        plus();
+
+        var parser = new DOMParser(),
+        xml = parser.parseFromString( '<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml" );
+
+        equal( data.xml.toString(), xml.toString(), "data.xml returns a document of xml for " + fileName );
+        plus();
+      }
+    });
+  }
+
+  function testInvalidXML( fileName ) {
+    Popcorn.xhr({
+      url: fileName,
+      success: function( data ) {
+
+        ok( data, "xhr returns data" );
+        plus();
+
+        ok( !data.xml, "data.xml is null for non-xml file: " + fileName );
+        plus();
+
+        ok( data.text, "data.text is still not null" );
+        plus();
+      }
+    });
+  }
+
+  for ( i = 0, len = validXML.length; i < len; i++ ) {
+    testValidXML( validXML[ i ] );
+  }
+
+  for ( i = 0, len = invalidXML.length; i < len; i++ ) {
+    testInvalidXML( invalidXML[ i ] );
+  }
+});
+
 
 test( "JSON Response", function() {
 
@@ -3476,6 +3615,7 @@ test( "XML Response", function() {
     }
   });
 });
+
 
 test( "dataType: XML Response", function() {
 
@@ -3906,7 +4046,8 @@ test( "Basic Audio Support (frameAnimation)", function() {
   function plus() {
 
     if ( ++count === expects ) {
-
+      popped.destroy();
+      popObj.destroy();
       start();
     }
   }

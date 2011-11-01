@@ -203,6 +203,7 @@
           });
 
           media.readyState = 4;
+          media.dispatchEvent( "canplaythrough" );
           media.dispatchEvent( "load" );
           media.duration = vimeoObject.api_getDuration();
           media.dispatchEvent( "durationchange" );
@@ -231,12 +232,13 @@
 
         flashvars = {
           clip_id: src,
-          show_portrait: 1,
-          show_byline: 1,
-          show_title: 1,
           js_api: 1,
-          js_swf_id: vimeoContainer.id
+          js_swf_id: vimeoContainer.id,
         };
+
+        //  extend options from user to flashvars. NOTE: Videos owned by Plus Vimeo users may override these options
+        Popcorn.extend( flashvars, options );
+
         params = {
           allowscriptaccess: "always",
           allowfullscreen: "true",

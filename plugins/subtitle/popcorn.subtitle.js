@@ -107,7 +107,7 @@
         options.innerContainer = newdiv;
 
         options.showSubtitle = function() {
-          options.innerContainer.innerHTML = options.text;
+          options.innerContainer.innerHTML = options.text || "";
         };
       },
       /**

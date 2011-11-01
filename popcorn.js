@@ -58,6 +58,62 @@
       };
   }()),
 
+  refresh = function ( obj ) {
+    var currentTime = obj.media.currentTime,
+      tracks = obj.data.trackEvents,
+      animating = tracks.animating,
+      start = tracks.startIndex,
+      animIndex = 0,
+      disabled = obj.data.disabled,
+      registryByName = Popcorn.registryByName,
+      byStart, natives, type;
+
+    start = Math.min( start + 1, tracks.byStart.length - 2 );
+
+    while ( start > 0 && tracks.byStart[ start ] ) {
+
+      byStart = tracks.byStart [ start ];
+      natives = byStart._natives;
+      type = natives && natives.type;
+
+      if ( !natives ||
+          ( !!registryByName[ type ] || !!obj[ type ] ) ) {
+
+        if ( byStart.start <= currentTime &&
+          byStart.end > currentTime &&
+          disabled.indexOf( type ) === -1 ) {
+
+          if ( !byStart._running ) {
+            byStart._running = true;
+            natives.start.call( obj, null, byStart );
+
+            // if the 'frameAnimation' option is used,
+            // push the current byStart object into the `animating` cue
+            if ( obj.options.frameAnimation &&
+              ( byStart && byStart._running && byStart.natives.frame ) ) {
+
+              natives.frame.call( obj, null, byStart, currentTime );
+            }
+          }
+        } else if ( byStart._running === true ) {
+
+          byStart._running = false;
+          natives.end.call( obj, null, byStart );
+
+          if ( obj.options.frameAnimation && byStart._natives.frame ) {
+            animIndex = animating.indexOf( byStart );
+            if ( animIndex >= 0 ) {
+              animating.splice( animIndex, 1 );
+            }
+          }
+
+        }
+      }
+
+      start--;
+    }
+  },
+
   //  Declare constructor
   //  Returns an instance object.
   Popcorn = function( entity, options ) {
@@ -214,10 +270,10 @@
 
               that.trigger( "timeupdate" );
 
-              requestAnimFrame( animate );
+              !that.isDestroyed && requestAnimFrame( animate );
             };
 
-            requestAnimFrame( animate );
+            !that.isDestroyed && requestAnimFrame( animate );
 
           } else {
 
@@ -357,6 +413,8 @@
         disabled.push( plugin );
       }
 
+      refresh( instance );
+
       return instance;
     },
     enable: function( instance, plugin ) {
@@ -367,6 +425,8 @@
       if ( index > -1 ) {
         disabled.splice( index, 1 );
       }
+
+      refresh( instance );
 
       return instance;
     },
@@ -384,7 +444,7 @@
       }
 
       if ( !instance.isDestroyed ) {
-        instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
+        instance.data.timeUpdateFunction && instance.media.removeEventListener( "timeupdate", instance.data.timeUpdateFunction, false );
         instance.isDestroyed = true;
       }
     }
@@ -780,25 +840,60 @@
     //  Store this definition in an array sorted by times
     var byStart = obj.data.trackEvents.byStart,
         byEnd = obj.data.trackEvents.byEnd,
-        idx;
+        startIndex, endIndex,
+        currentTime;
 
-    for ( idx = byStart.length - 1; idx >= 0; idx-- ) {
+    for ( startIndex = byStart.length - 1; startIndex >= 0; startIndex-- ) {
 
-      if ( track.start >= byStart[ idx ].start ) {
-        byStart.splice( idx + 1, 0, track );
+      if ( track.start >= byStart[ startIndex ].start ) {
+        byStart.splice( startIndex + 1, 0, track );
         break;
       }
     }
 
-    for ( idx = byEnd.length - 1; idx >= 0; idx-- ) {
+    for ( endIndex = byEnd.length - 1; endIndex >= 0; endIndex-- ) {
 
-      if ( track.end > byEnd[ idx ].end ) {
-        byEnd.splice( idx + 1, 0, track );
+      if ( track.end > byEnd[ endIndex ].end ) {
+        byEnd.splice( endIndex + 1, 0, track );
         break;
       }
     }
 
-    this.timeUpdate( obj, null );
+    // Display track event immediately if it's enabled and current
+    if ( track._natives &&
+        ( !!Popcorn.registryByName[ track._natives.type ] || !!obj[ track._natives.type ] ) ) {
+
+      currentTime = obj.media.currentTime;
+      if ( track.end > currentTime &&
+        track.start <= currentTime &&
+        obj.data.disabled.indexOf( track._natives.type ) === -1 ) {
+
+        track._running = true;
+        track._natives.start.call( obj, null, track );
+        
+        if ( obj.options.frameAnimation &&
+          track._natives.frame ) {
+
+          obj.data.trackEvents.animating.push( track );
+          track._natives.frame.call( obj, null, track, currentTime );
+        }
+      }
+    }
+
+    // update startIndex and endIndex
+    if ( startIndex <= obj.data.trackEvents.startIndex &&
+      track.start <= obj.data.trackEvents.previousUpdateTime ) {
+
+      obj.data.trackEvents.startIndex++;
+    }
+
+    if ( endIndex <= obj.data.trackEvents.endIndex &&
+      track.end < obj.data.trackEvents.previousUpdateTime ) {
+
+      obj.data.trackEvents.endIndex++;
+    }
+
+    this.timeUpdate( obj, null, true );
 
     // Store references to user added trackevents in ref table
     if ( track._id ) {
@@ -1209,6 +1304,16 @@
       natives.start = natives.start || natives[ "in" ];
       natives.end = natives.end || natives[ "out" ];
 
+      // extend teardown to always call end if running
+      natives._teardown = combineFn (function() {
+
+        // end function signature is not the same as teardown,
+        // put null on the front of arguments for the event parameter
+        Array.prototype.unshift.call( arguments, null );
+        // only call end if event is running
+        arguments[ 1 ]._running && natives.end.apply( this, arguments );
+      }, natives._teardown );
+
       // Check for previously set default options
       defaults = this.options.defaults && this.options.defaults[ options._natives && options._natives.type ];
 
@@ -1364,6 +1469,7 @@
         if ( Popcorn.registry[ registryIdx ].name === name ) {
           Popcorn.registry.splice( registryIdx, 1 );
           delete Popcorn.registryByName[ name ];
+          delete Popcorn.manifest[ name ];
 
           // delete the plugin
           delete obj[ name ];
@@ -1797,7 +1903,8 @@
 
   Popcorn.xhr.httpData = function( settings ) {
 
-    var data, json = null;
+    var data, json = null,
+        parser, xml = null;
 
     settings.ajax.onreadystatechange = function() {
 
@@ -1814,6 +1921,22 @@
           text: settings.ajax.responseText,
           json: json
         };
+
+        // Normalize: data.xml is non-null in IE9 regardless of if response is valid xml
+        if ( !data.xml || !data.xml.documentElement ) {
+          data.xml = null;
+
+          try {
+            parser = new DOMParser();
+            xml = parser.parseFromString( settings.ajax.responseText, "text/xml" );
+
+            if ( !xml.getElementsByTagName( "parsererror" ).length ) {
+              data.xml = xml;
+            }
+          } catch ( e ) {
+            // data.xml remains null
+          }
+        }
 
         //  If a dataType was specified, return that type of data
         if ( settings.dataType ) {
@@ -2046,7 +2169,7 @@
 
   //  Protected API methods
   Popcorn.protect = {
-    natives: getItems() 
+    natives: getItems()
   };
 
   //  Exposes Popcorn to global context

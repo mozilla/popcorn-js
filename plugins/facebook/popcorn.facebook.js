@@ -182,7 +182,7 @@
       if ( !ranOnce || options.event_app_id ) {
         ranOnce = true;
         // initialize facebook JS SDK
-        Popcorn.getScript( "http://connect.facebook.net/en_US/all.js" );
+        Popcorn.getScript( "//connect.facebook.net/en_US/all.js" );
 
         global.fbAsyncInit = function() {
           FB.init({

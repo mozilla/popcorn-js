@@ -29,7 +29,8 @@ Popcorn.player( "youtube", {
       var flashvars,
           params,
           attributes,
-          src;
+          src,
+          query;
 
       // expose a callback to this scope, that is called from the global callback youtube calls
       onYouTubePlayerReady[ container.id ] = function() {
@@ -175,6 +176,7 @@ Popcorn.player( "youtube", {
         });
 
         media.readyState = 4;
+        media.dispatchEvent( "canplaythrough" );
         media.dispatchEvent( "load" );
         media.duration = youtubeObject.getDuration();
         media.dispatchEvent( "durationchange" );
@@ -187,9 +189,7 @@ Popcorn.player( "youtube", {
       options.annotations = +options.annotations === 1 || +options.annotations === 3 ? options.annotations : 1;
 
       flashvars = {
-        playerapiid: container.id,
-        controls: options.controls,
-        iv_load_policy: options.annotations
+        playerapiid: container.id
       };
 
       params = {
@@ -201,16 +201,16 @@ Popcorn.player( "youtube", {
         id: container.id
       };
 
-      src = /^.*[\/=](.{11})/.exec( media.src )[ 1 ];
+      src = /^.*(?:\/|v=)(.{11})/.exec( media.src )[ 1 ];
+      query = ( media.src.split( "?" )[ 1 ] || "" ).replace( /v=.{11}/, "" );
 
-      swfobject.embedSWF( "http://www.youtube.com/e/" + src + "?enablejsapi=1&playerapiid=" + container.id + "&version=3",
-                          container.id, media.offsetWidth, media.offsetHeight, "8", null,
-                          flashvars, params, attributes );
+      swfobject.embedSWF( "//www.youtube.com/e/" + src + "?" + query + "&enablejsapi=1&playerapiid=" + container.id + "&version=3",
+                          container.id, media.offsetWidth, media.offsetHeight, "8", null, flashvars, params, attributes );
     };
 
     if ( !window.swfobject ) {
 
-      Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js", youtubeInit );
+      Popcorn.getScript( "//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js", youtubeInit );
     } else {
 
       youtubeInit();

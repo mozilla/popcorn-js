@@ -143,3 +143,32 @@ test( "Popcorn Subtitle Plugin", function() {
     plus();
   });
 });
+
+test( "subtitle data tests", function() {
+
+  var popped = Popcorn( "#video" ),
+      expects = 1,
+      count = 0,
+      container = document.getElementById( "sub-content" );
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
+  stop( 12000 );
+
+  popped.subtitle({
+    start: 0,
+    end: 10,
+    target: "sub-content"
+  });
+
+  popped.pause( 0 );
+
+  equals( container.children[ 0 ].innerHTML, "", "subtitle with no text defaults to an empty string" );
+  plus();
+});
