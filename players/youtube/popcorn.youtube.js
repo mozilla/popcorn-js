@@ -210,7 +210,7 @@ Popcorn.player( "youtube", {
       width = media.style.width ? ""+media.offsetWidth : "560";
       height = media.style.height ? ""+media.offsetHeight : "315";
 
-      swfobject.embedSWF( "//www.youtube.com/e/" + src + "?enablejsapi=1&playerapiid=" + container.id + "&version=3",
+      swfobject.embedSWF( "//www.youtube.com/e/" + src + "?" + query + "&enablejsapi=1&playerapiid=" + container.id + "&version=3",
                           container.id, width, height, "8", null, flashvars, params, attributes );
     };
 
