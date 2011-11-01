@@ -3237,6 +3237,71 @@ test( "dataType: Text Response", function() {
   });
 });
 
+test( "XML Conversion", function() {
+
+  var expects,
+      count = 0,
+      i,
+      len,
+      validXML = [ "data/test.xml", "data/test.ttml" ],
+      invalidXML = [ "data/test.txt", "data/remoteA.js" ];
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
+  expects = validXML.length * 2 + invalidXML.length * 3;
+
+  expect( expects );
+
+  stop();
+
+  function testValidXML( fileName ) {
+    Popcorn.xhr({
+      url: fileName,
+      success: function( data ) {
+
+        ok( data, "xhr returns data" );
+        plus();
+
+        var parser = new DOMParser(),
+        xml = parser.parseFromString( '<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml" );
+
+        equal( data.xml.toString(), xml.toString(), "data.xml returns a document of xml for " + fileName );
+        plus();
+      }
+    });
+  }
+
+  function testInvalidXML( fileName ) {
+    Popcorn.xhr({
+      url: fileName,
+      success: function( data ) {
+
+        ok( data, "xhr returns data" );
+        plus();
+
+        ok( !data.xml, "data.xml is null for non-xml file: " + fileName );
+        plus();
+
+        ok( data.text, "data.text is still not null" );
+        plus();
+      }
+    });
+  }
+
+  for ( i = 0, len = validXML.length; i < len; i++ ) {
+    testValidXML( validXML[ i ] );
+  }
+
+  for ( i = 0, len = invalidXML.length; i < len; i++ ) {
+    testInvalidXML( invalidXML[ i ] );
+  }
+});
+
+
 test( "JSON Response", function() {
 
   var expects = 2,
@@ -3495,6 +3560,7 @@ test( "XML Response", function() {
     }
   });
 });
+
 
 test( "dataType: XML Response", function() {
 

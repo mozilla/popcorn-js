@@ -1798,7 +1798,8 @@
 
   Popcorn.xhr.httpData = function( settings ) {
 
-    var data, json = null;
+    var data, json = null,
+        parser, xml = null;
 
     settings.ajax.onreadystatechange = function() {
 
@@ -1815,6 +1816,22 @@
           text: settings.ajax.responseText,
           json: json
         };
+
+        // Normalize: data.xml is non-null in IE9 regardless of if response is valid xml
+        if ( !data.xml || !data.xml.documentElement ) {
+          data.xml = null;
+
+          try {
+            parser = new DOMParser();
+            xml = parser.parseFromString( settings.ajax.responseText, "text/xml" );
+
+            if ( !xml.getElementsByTagName( "parsererror" ).length ) {
+              data.xml = xml;
+            }
+          } catch ( e ) {
+            // data.xml remains null
+          }
+        }
 
         //  If a dataType was specified, return that type of data
         if ( settings.dataType ) {
