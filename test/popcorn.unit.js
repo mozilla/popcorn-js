@@ -138,7 +138,7 @@ test( "Popcorn.getTrackEvents", function() {
   equal( Popcorn.getTrackEvents( popcorn ).length, 1, "Currently only one track event" );
 
   equal( typeof Popcorn.getTrackEvents( popcorn ), "object", "Popcorn.getTrackEvents() returns an object" ); 
-  
+
   Popcorn.removeTrackEvent( popcorn, Popcorn.getTrackEvents( popcorn )[ 0 ]._id );
 
   equal( Popcorn.getTrackEvents( popcorn ).length, 0, "Popcorn.getTrackEvents() has no items after removal" );
@@ -180,9 +180,8 @@ test( "Popcorn.getTrackEvent", function() {
 
   equal( typeof Popcorn.getTrackEvent( popcorn, "asdf" ), "object", "Popcorn.getTrackEvent() returns an object" ); 
   plus();
-  
-});
 
+});
 
 test( "Popcorn.forEach", function() {
 
