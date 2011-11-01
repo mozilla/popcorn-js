@@ -203,8 +203,8 @@
 
       this.data = {
 
-				// Executed by either timeupdate event or in rAF loop
-				timeUpdate: Popcorn.nop,
+        // Executed by either timeupdate event or in rAF loop
+        timeUpdate: Popcorn.nop,
 
         // Allows disabling a plugin per instance
         disabled: [],
