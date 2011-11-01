@@ -233,7 +233,7 @@
         flashvars = {
           clip_id: src,
           js_api: 1,
-          js_swf_id: vimeoContainer.id,
+          js_swf_id: vimeoContainer.id
         };
 
         //  extend options from user to flashvars. NOTE: Videos owned by Plus Vimeo users may override these options
