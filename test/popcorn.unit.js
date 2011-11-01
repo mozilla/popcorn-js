@@ -99,13 +99,13 @@ test( "Popcorn.sizeOf", function() {
 
   equal( typeof Popcorn.sizeOf, "function", "Popcorn.sizeOf() is a provided static function" );
 
-  equal( Popcorn.sizeOf( [ "a", "b", "c" ] ), 3, "Popcorn.sizeOf working with arrays" );
+  equal( Popcorn.sizeOf([ "a", "b", "c" ]), 3, "Popcorn.sizeOf working with arrays" );
 
-  equal( Popcorn.sizeOf( [ ] ), 0, "Popcorn.sizeOf working with empty arrays" );
+  equal( Popcorn.sizeOf([ ]), 0, "Popcorn.sizeOf working with empty arrays" );
 
-  equal( Popcorn.sizeOf( { a: 1, b: "test" } ), 2, "Popcorn.sizeOf working with objects" );
+  equal( Popcorn.sizeOf({ a: 1, b: "test" }), 2, "Popcorn.sizeOf working with objects" );
 
-  equal( Popcorn.sizeOf( { } ), 0, "Popcorn.sizeOf working with empty objects" );
+  equal( Popcorn.sizeOf({ }), 0, "Popcorn.sizeOf working with empty objects" );
 
   equal( Popcorn.sizeOf(), 0, "Popcorn.sizeOf safely handling no parameter being passed in" );
 });
@@ -133,7 +133,7 @@ test( "Popcorn.getTrackEvents", function() {
 
   equal( Popcorn.getTrackEvents( popcorn ).length, 0, "Popcorn.getTrackEvents() currently has no trackEvents" ); 
 
-  popcorn.exec( 1 , function(){ } );
+  popcorn.exec( 1, function(){ });
 
   equal( Popcorn.getTrackEvents( popcorn ).length, 1, "Currently only one track event" );
 
