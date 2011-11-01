@@ -1304,6 +1304,16 @@
       natives.start = natives.start || natives[ "in" ];
       natives.end = natives.end || natives[ "out" ];
 
+      // extend teardown to always call end if running
+      natives._teardown = combineFn (function() {
+
+        // end function signature is not the same as teardown,
+        // put null on the front of arguments for the event parameter
+        Array.prototype.unshift.call( arguments, null );
+        // only call end if event is running
+        arguments[ 1 ]._running && natives.end.apply( this, arguments );
+      }, natives._teardown );
+
       // Check for previously set default options
       defaults = this.options.defaults && this.options.defaults[ options._natives && options._natives.type ];
 

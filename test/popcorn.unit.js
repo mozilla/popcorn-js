@@ -2398,6 +2398,58 @@ test( "Popcorn Compose", function() {
   popped.currentTime( 0 ).play();
 });
 
+test( "Teardown end tester", function() {
+
+  QUnit.reset();
+
+  var popped = Popcorn( "#video" ),
+      expects = 4,
+      count = 0;
+
+  function plus() {
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "teardownEndTester" );
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 15000 );
+
+  Popcorn.plugin( "teardownEndTester", {
+    _setup: function( options ) {
+      options.endCalled = false;
+      options.teardownCalled = false;
+    },
+    start: function( event, options ) {
+    },
+    end: function( event, options ) {
+      // passes if end is called before teardown, and only called once
+      equal( options.endCalled, false, "ensure only teardown can call this end" );
+      plus();
+      equal( options.teardownCalled, false, "ensure teardown is not yet called" );
+      plus();
+      options.endCalled = true;
+    },
+    _teardown: function( options ) {
+
+      // passes if teardown is called after end, and only called once
+      equal( options.endCalled, true, "ensure end was previously called" );
+      plus();
+      equal( options.teardownCalled, false, "ensure teardown is not yet called" );
+      plus();
+      options.teardownCalled = true;
+    }
+  });
+
+  // start and end times to deault to entire video,
+  // to ensure the end function will never be called outside of _teardown
+  popped.teardownEndTester({});
+
+  popped.currentTime( 0 ).play();
+  popped.removePlugin( "teardownEndTester" );
+});
+
 test( "Plugin Breaker", function() {
 
   QUnit.reset();
