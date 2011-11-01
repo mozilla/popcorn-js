@@ -481,8 +481,8 @@ test( "Instance", function() {
 	ok( a.data.trackEvents.endIndex, "instance a has data.trackEvents.endIndex property" );
 	ok( b.data.trackEvents.endIndex, "instance b has data.trackEvents.endIndex property" );
 
-	ok( a.data.trackEvents.previousUpdateTime === 0, "instance a has data.trackEvents.previousUpdateTime property" );
-	ok( b.data.trackEvents.previousUpdateTime === 0, "instance b has data.trackEvents.previousUpdateTime property" );
+	ok( a.data.trackEvents.previousUpdateTime >= -1, "instance a has data.trackEvents.previousUpdateTime property" );
+	ok( b.data.trackEvents.previousUpdateTime >= -1, "instance b has data.trackEvents.previousUpdateTime property" );
 
 });
 
