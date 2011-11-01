@@ -10,6 +10,7 @@
   <script>
     document.addEventListener( 'DOMContentLoaded', function () {
       var p = Popcorn( '#video' )
+      .parseTTML("data/data.ttml")
       .volume( 0 )
       .play();
     }, false);
@@ -31,8 +32,7 @@
     <video id='video'
       controls
       width= '250px'
-      data-timeline-sources="data/data.ttml"
-      poster="../../test/poster.png"> 
+      poster="../../test/poster.png">
 
       <source id='mp4'
         src="../../test/trailer.mp4"
