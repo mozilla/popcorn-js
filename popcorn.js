@@ -10,7 +10,7 @@
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
           "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
 
-    while( methods.length ) {
+    while ( methods.length ) {
       global.Popcorn[ methods.shift() ] = function() {};
     }
     return;
@@ -58,30 +58,30 @@
       };
   }()),
 
-  refresh = function ( obj ) {
+  refresh = function( obj ) {
     var currentTime = obj.media.currentTime,
+      animation = obj.options.frameAnimation,
+      disabled = obj.data.disabled,
       tracks = obj.data.trackEvents,
       animating = tracks.animating,
       start = tracks.startIndex,
-      animIndex = 0,
-      disabled = obj.data.disabled,
       registryByName = Popcorn.registryByName,
+      animIndex = 0,
       byStart, natives, type;
 
     start = Math.min( start + 1, tracks.byStart.length - 2 );
 
     while ( start > 0 && tracks.byStart[ start ] ) {
 
-      byStart = tracks.byStart [ start ];
+      byStart = tracks.byStart[ start ];
       natives = byStart._natives;
       type = natives && natives.type;
 
       if ( !natives ||
           ( !!registryByName[ type ] || !!obj[ type ] ) ) {
 
-        if ( byStart.start <= currentTime &&
-          byStart.end > currentTime &&
-          disabled.indexOf( type ) === -1 ) {
+        if ( ( byStart.start <= currentTime && byStart.end > currentTime ) &&
+                disabled.indexOf( type ) === -1 ) {
 
           if ( !byStart._running ) {
             byStart._running = true;
@@ -89,8 +89,8 @@
 
             // if the 'frameAnimation' option is used,
             // push the current byStart object into the `animating` cue
-            if ( obj.options.frameAnimation &&
-              ( byStart && byStart._running && byStart.natives.frame ) ) {
+            if ( animation &&
+                ( byStart && byStart._running && byStart.natives.frame ) ) {
 
               natives.frame.call( obj, null, byStart, currentTime );
             }
@@ -100,13 +100,12 @@
           byStart._running = false;
           natives.end.call( obj, null, byStart );
 
-          if ( obj.options.frameAnimation && byStart._natives.frame ) {
+          if ( animation && byStart._natives.frame ) {
             animIndex = animating.indexOf( byStart );
             if ( animIndex >= 0 ) {
               animating.splice( animIndex, 1 );
             }
           }
-
         }
       }
 
@@ -870,7 +869,7 @@
 
         track._running = true;
         track._natives.start.call( obj, null, track );
-        
+
         if ( obj.options.frameAnimation &&
           track._natives.frame ) {
 
