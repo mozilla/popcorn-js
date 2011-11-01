@@ -122,12 +122,12 @@
       },
       image: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "Image Src"
       },
       href: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "URL"
       }
     }

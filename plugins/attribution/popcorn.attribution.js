@@ -159,7 +159,7 @@
       },
       nameofworkurl: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "Url of Work"
       },
       copyrightholder: {
@@ -169,7 +169,7 @@
       },
       copyrightholderurl: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "Copyright Holder Url"
       },
       license: {
@@ -179,7 +179,7 @@
        },
       licenseurl: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "License URL"
       },
       target: "attribution-container"

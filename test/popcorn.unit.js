@@ -1363,6 +1363,25 @@ test( "Manifest", function() {
   });
 });
 
+test( "Manifest removal", function() {
+
+  var popcorn = Popcorn( "#video" );
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 0, "Before creating new plugin" );
+
+  Popcorn.plugin( "tester", {
+  
+    start: function() {},
+    end: function() {}
+  });
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 1, "After creating new plugin" );
+
+  Popcorn.removePlugin( "tester" );
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 0, "After deleting plugin" );
+});
+
 test( "Configurable Defaults", function() {
 
   var expects = 13,
@@ -2200,6 +2219,8 @@ test( "Popcorn Compose", function() {
     }
   });
 
+  popped.pause( popped.duration() );
+
   popped.testPlugin({
     start: 0,
     end: 1,
@@ -2248,13 +2269,11 @@ test( "Popcorn Compose", function() {
   equal( test.two.setup, 3, "three compose two setup" );
   plus();
 
-  popped.currentTime( 0 ).pause();
-
   popped.exec( 0, function() {
     equal( test.one.running, 1, "one compose running" );
-   plus();
-   equal( test.two.running, 1, "one effect running" );
-   plus();
+    plus();
+    equal( test.two.running, 1, "one effect running" );
+    plus();
   })
   .exec( 1, function() {
     equal( test.one.running, 0, "no compose running" );
@@ -2307,7 +2326,6 @@ test( "Popcorn Compose", function() {
   // runs once, 2 tests
   Popcorn.plugin( "pluginOptions1", {
     _setup: function( options ) {
-      console.log( "runs once?" );
       ok( options.pluginoption, "plugin option one exists at setup" );
       plus();
       ok( !options.composeoption, "compose option one does not exist at setup" );
@@ -3218,6 +3236,71 @@ test( "dataType: Text Response", function() {
   });
 });
 
+test( "XML Conversion", function() {
+
+  var expects,
+      count = 0,
+      i,
+      len,
+      validXML = [ "data/test.xml", "data/test.ttml" ],
+      invalidXML = [ "data/test.txt", "data/remoteA.js" ];
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
+  expects = validXML.length * 2 + invalidXML.length * 3;
+
+  expect( expects );
+
+  stop();
+
+  function testValidXML( fileName ) {
+    Popcorn.xhr({
+      url: fileName,
+      success: function( data ) {
+
+        ok( data, "xhr returns data" );
+        plus();
+
+        var parser = new DOMParser(),
+        xml = parser.parseFromString( '<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml" );
+
+        equal( data.xml.toString(), xml.toString(), "data.xml returns a document of xml for " + fileName );
+        plus();
+      }
+    });
+  }
+
+  function testInvalidXML( fileName ) {
+    Popcorn.xhr({
+      url: fileName,
+      success: function( data ) {
+
+        ok( data, "xhr returns data" );
+        plus();
+
+        ok( !data.xml, "data.xml is null for non-xml file: " + fileName );
+        plus();
+
+        ok( data.text, "data.text is still not null" );
+        plus();
+      }
+    });
+  }
+
+  for ( i = 0, len = validXML.length; i < len; i++ ) {
+    testValidXML( validXML[ i ] );
+  }
+
+  for ( i = 0, len = invalidXML.length; i < len; i++ ) {
+    testInvalidXML( invalidXML[ i ] );
+  }
+});
+
+
 test( "JSON Response", function() {
 
   var expects = 2,
@@ -3476,6 +3559,7 @@ test( "XML Response", function() {
     }
   });
 });
+
 
 test( "dataType: XML Response", function() {
 

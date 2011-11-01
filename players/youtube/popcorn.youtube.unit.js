@@ -385,25 +385,25 @@ test( "Controls and Annotations toggling", function() {
 
   var popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0" ),
       targetDiv = document.getElementById( "video" );
-      testTarget = targetDiv.querySelector( "object" ).querySelector( "param[name=flashvars]" );
+      testTarget = targetDiv.querySelector( "object" ).data;
 
-  ok( /controls=1/.test( testTarget.value ), "controls are defaulted to 1 ( displayed )" );
-  ok( /iv_load_policy=1/.test( testTarget.value ), "annotations ( iv_load_policy ) are defaulted to ( enabled )" );
-
-  targetDiv.innerHTML = "";
-
-  popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0", { controls: 1, annotations: 1 } );
-
-  testTarget = targetDiv.querySelector( "object" ).querySelector( "param[name=flashvars]" );
-  ok( /controls=1/.test( testTarget.value ), "controls is set to 1 ( displayed )" );
-  ok( /iv_load_policy=1/.test( testTarget.value ), "annotations ( iv_load_policy ) is set to 1 ( enabled )" );
+  ok( !/controls/.test( testTarget ), "controls are defaulted to 1 ( displayed )" );
+  ok( !/iv_load_policy/.test( testTarget ), "annotations ( iv_load_policy ) are defaulted to ( enabled )" );
 
   targetDiv.innerHTML = "";
 
-  popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0", { controls: 0, annotations: 3 } );
-  testTarget = targetDiv.querySelector( "object" ).querySelector( "param[name=flashvars]" );
-  ok( /controls=0/.test( testTarget.value ), "controls is set to 0 ( hidden )" );
-  ok( /iv_load_policy=3/.test( testTarget.value ), "annotations ( iv_load_policy ) is set to 3 ( hidden )" );
+  popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0&controls=1&iv_load_policy=1" );
+
+  testTarget = targetDiv.querySelector( "object" ).data;
+  ok( /controls=1/.test( testTarget ), "controls is set to 1 ( displayed )" );
+  ok( /iv_load_policy=1/.test( testTarget ), "annotations ( iv_load_policy ) is set to 1 ( enabled )" );
+
+  targetDiv.innerHTML = "";
+
+  popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0&controls=0&iv_load_policy=3" );
+  testTarget = targetDiv.querySelector( "object" ).data;
+  ok( /controls=0/.test( testTarget ), "controls is set to 0 ( hidden )" );
+  ok( /iv_load_policy=3/.test( testTarget ), "annotations ( iv_load_policy ) is set to 3 ( hidden )" );
 
 });
 

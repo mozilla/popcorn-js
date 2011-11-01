@@ -26,7 +26,7 @@ test( "Popcorn Webpage Plugin", function() {
     id: "webpages-a",
     start: 0,
     end: 1,
-    src: "http://webmademovies.org",
+    src: "webmademovies.org",
     target: "webpagediv"
   })
   .webpage({
