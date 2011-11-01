@@ -870,7 +870,7 @@
 
         track._running = true;
         track._natives.start.call( obj, null, track );
-        
+
         if ( obj.options.frameAnimation &&
           track._natives.frame ) {
 
@@ -1305,13 +1305,16 @@
       natives.end = natives.end || natives[ "out" ];
 
       // extend teardown to always call end if running
-      natives._teardown = combineFn (function() {
+      natives._teardown = combineFn(function() {
+
+        var args = slice.call( arguments );
 
         // end function signature is not the same as teardown,
         // put null on the front of arguments for the event parameter
-        Array.prototype.unshift.call( arguments, null );
+        args.unshift( null );
+
         // only call end if event is running
-        arguments[ 1 ]._running && natives.end.apply( this, arguments );
+        args[ 1 ]._running && natives.end.apply( this, args );
       }, natives._teardown );
 
       // Check for previously set default options
