@@ -80,6 +80,109 @@ test( "Popcorn.* Static Methods", function() {
   });
 });
 
+test( "Popcorn.error", function() {
+
+  expect( 2 );
+  equal( typeof Popcorn.error, "function", "Popcorn.error() is a provided static function" );
+
+  try{
+    Popcorn.error( "This is a Popcorn error" );
+  }
+  catch( e ) {
+    equal( e.message, "This is a Popcorn error", "Popcorn.error throwing custom error messages" );
+  }
+});
+
+test( "Popcorn.sizeOf", function() {
+
+  expect( 6 );
+
+  equal( typeof Popcorn.sizeOf, "function", "Popcorn.sizeOf() is a provided static function" );
+
+  equal( Popcorn.sizeOf([ "a", "b", "c" ]), 3, "Popcorn.sizeOf working with arrays" );
+
+  equal( Popcorn.sizeOf([ ]), 0, "Popcorn.sizeOf working with empty arrays" );
+
+  equal( Popcorn.sizeOf({ a: 1, b: "test" }), 2, "Popcorn.sizeOf working with objects" );
+
+  equal( Popcorn.sizeOf({ }), 0, "Popcorn.sizeOf working with empty objects" );
+
+  equal( Popcorn.sizeOf(), 0, "Popcorn.sizeOf safely handling no parameter being passed in" );
+});
+
+test( "Popcorn.nop", function() {
+
+  expect( 2 );
+
+  equal( typeof Popcorn.nop, "function", "Popcorn.nop is a provided static function" );
+
+  equal( typeof Popcorn.nop(), "undefined", "Popcorn.nop returning undefined" );
+});
+
+test( "Popcorn.getTrackEvents", function() {
+
+  expect( 7 );
+
+  var popcorn = Popcorn( "#video" );
+
+  equal( typeof Popcorn.getTrackEvents, "function", "Popcorn.getTrackEvents() is a provided static function" );
+
+  equal( typeof Popcorn.getTrackEvents.ref, "function", "Popcorn.getTrackEvents.ref() is a private use  static function" );
+
+  equal( typeof Popcorn.getTrackEvents( popcorn ), "object", "Popcorn.getTrackEvents() returns an object" ); 
+
+  equal( Popcorn.getTrackEvents( popcorn ).length, 0, "Popcorn.getTrackEvents() currently has no trackEvents" ); 
+
+  popcorn.exec( 1, function(){ });
+
+  equal( Popcorn.getTrackEvents( popcorn ).length, 1, "Currently only one track event" );
+
+  equal( typeof Popcorn.getTrackEvents( popcorn ), "object", "Popcorn.getTrackEvents() returns an object" ); 
+
+  Popcorn.removeTrackEvent( popcorn, Popcorn.getTrackEvents( popcorn )[ 0 ]._id );
+
+  equal( Popcorn.getTrackEvents( popcorn ).length, 0, "Popcorn.getTrackEvents() has no items after removal" );
+});
+
+test( "Popcorn.getTrackEvent", function() {
+
+  var popcorn = Popcorn( "#video" ),
+      count = 0,
+      expects = 3;
+
+  expect( expects );
+
+  function plus() {
+
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "temp" );
+      Popcorn.removeTrackEvent( popcorn, Popcorn.getTrackEvents( popcorn )[ 0 ]._id );
+    }
+  }
+
+  equal( typeof Popcorn.getTrackEvent, "function", "Popcorn.getTrackEvent() is a provided static function" );
+  plus();
+
+  equal( typeof Popcorn.getTrackEvent.ref, "function", "Popcorn.getTrackEvent.ref() is a private use  static function" );
+  plus();
+
+  Popcorn.plugin( "temp", {
+    setup: function( options ) { },
+    start: function( event, options ) { },
+    end: function( event, options ) { }
+  });
+
+  popcorn.temp({
+    id: "asdf",
+    start: 1,
+    end: 2,
+  });
+
+  equal( typeof Popcorn.getTrackEvent( popcorn, "asdf" ), "object", "Popcorn.getTrackEvent() returns an object" ); 
+  plus();
+
+});
+
 test( "Popcorn.forEach", function() {
 
   expect( 3 );
