@@ -1364,6 +1364,7 @@
         if ( Popcorn.registry[ registryIdx ].name === name ) {
           Popcorn.registry.splice( registryIdx, 1 );
           delete Popcorn.registryByName[ name ];
+          delete Popcorn.manifest[ name ];
 
           // delete the plugin
           delete obj[ name ];
