@@ -526,6 +526,69 @@ test( "Object", function() {
   });
 });
 
+test( "Instance", function() {
+
+  var a = Popcorn( "#video" ),
+      b = Popcorn( "#video", { frameAnimation: true });
+
+  expect( 36 );
+
+  ok( a.options, "instance a has options property" );
+  ok( b.options, "instance b has options property" );
+
+  ok( a.isDestroyed === false , "instance a has isDestroyed property" );
+  ok( b.isDestroyed === false, "instance b has isDestroyed property" );
+
+  ok( a.data, "instance a has data property" );
+  ok( b.data, "instance b has data property" );
+
+  ok( a.data.timeUpdate, "instance a has data.timeUpdate property" );
+  ok( b.data.timeUpdate, "instance b has data.timeUpdate property" );
+
+  ok( a.data.disabled, "instance a has data.disabled property" );
+  ok( b.data.disabled, "instance b has data.disabled property" );
+
+  ok( a.data.events, "instance a has data.events property" );
+  ok( b.data.events, "instance b has data.events property" );
+
+  ok( a.data.hooks, "instance a has data.hooks property" );
+  ok( b.data.hooks, "instance b has data.hooks property" );
+
+  ok( a.data.history, "instance a has data.history property" );
+  ok( b.data.history, "instance b has data.history property" );
+
+  ok( a.data.state, "instance a has data.state property" );
+  ok( b.data.state, "instance b has data.state property" );
+
+  ok( a.data.state.volume, "instance a has data.state.volume property" );
+  ok( b.data.state.volume, "instance b has data.state.volume property" );
+
+  ok( a.data.trackRefs, "instance a has data.trackRefs property" );
+  ok( b.data.trackRefs, "instance b has data.trackRefs property" );
+
+  ok( a.data.trackEvents, "instance a has data.trackEvents property" );
+  ok( b.data.trackEvents, "instance b has data.trackEvents property" );
+
+  ok( a.data.trackEvents.byStart, "instance a has data.trackEvents.byStart property" );
+  ok( b.data.trackEvents.byStart, "instance b has data.trackEvents.byStart property" );
+
+  ok( a.data.trackEvents.byEnd, "instance a has data.trackEvents.byEnd property" );
+  ok( b.data.trackEvents.byEnd, "instance b has data.trackEvents.byEnd property" );
+
+  ok( a.data.trackEvents.animating, "instance a has data.trackEvents.animating property" );
+  ok( b.data.trackEvents.animating, "instance b has data.trackEvents.animating property" );
+
+  ok( a.data.trackEvents.startIndex, "instance a has data.trackEvents.startIndex property" );
+  ok( b.data.trackEvents.startIndex, "instance b has data.trackEvents.startIndex property" );
+
+  ok( a.data.trackEvents.endIndex, "instance a has data.trackEvents.endIndex property" );
+  ok( b.data.trackEvents.endIndex, "instance b has data.trackEvents.endIndex property" );
+
+  ok( a.data.trackEvents.previousUpdateTime >= -1, "instance a has data.trackEvents.previousUpdateTime property" );
+  ok( b.data.trackEvents.previousUpdateTime >= -1, "instance b has data.trackEvents.previousUpdateTime property" );
+
+});
+
 module( "Popcorn Static" );
 
 test( "Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
@@ -1473,7 +1536,7 @@ test( "Manifest removal", function() {
   equal( Popcorn.sizeOf( Popcorn.manifest ), 0, "Before creating new plugin" );
 
   Popcorn.plugin( "tester", {
-  
+
     start: function() {},
     end: function() {}
   });
