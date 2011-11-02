@@ -49,13 +49,13 @@
           },
           href: {
             elem: "input",
-            type: "text",
+            type: "url",
             label: "Link URL"
           },
           target: "image-container",
           src: {
             elem: "input",
-            type: "text",
+            type: "url",
             label: "Source URL"
           },
           text: {

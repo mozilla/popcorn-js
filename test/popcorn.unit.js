@@ -80,6 +80,109 @@ test( "Popcorn.* Static Methods", function() {
   });
 });
 
+test( "Popcorn.error", function() {
+
+  expect( 2 );
+  equal( typeof Popcorn.error, "function", "Popcorn.error() is a provided static function" );
+
+  try{
+    Popcorn.error( "This is a Popcorn error" );
+  }
+  catch( e ) {
+    equal( e.message, "This is a Popcorn error", "Popcorn.error throwing custom error messages" );
+  }
+});
+
+test( "Popcorn.sizeOf", function() {
+
+  expect( 6 );
+
+  equal( typeof Popcorn.sizeOf, "function", "Popcorn.sizeOf() is a provided static function" );
+
+  equal( Popcorn.sizeOf([ "a", "b", "c" ]), 3, "Popcorn.sizeOf working with arrays" );
+
+  equal( Popcorn.sizeOf([ ]), 0, "Popcorn.sizeOf working with empty arrays" );
+
+  equal( Popcorn.sizeOf({ a: 1, b: "test" }), 2, "Popcorn.sizeOf working with objects" );
+
+  equal( Popcorn.sizeOf({ }), 0, "Popcorn.sizeOf working with empty objects" );
+
+  equal( Popcorn.sizeOf(), 0, "Popcorn.sizeOf safely handling no parameter being passed in" );
+});
+
+test( "Popcorn.nop", function() {
+
+  expect( 2 );
+
+  equal( typeof Popcorn.nop, "function", "Popcorn.nop is a provided static function" );
+
+  equal( typeof Popcorn.nop(), "undefined", "Popcorn.nop returning undefined" );
+});
+
+test( "Popcorn.getTrackEvents", function() {
+
+  expect( 7 );
+
+  var popcorn = Popcorn( "#video" );
+
+  equal( typeof Popcorn.getTrackEvents, "function", "Popcorn.getTrackEvents() is a provided static function" );
+
+  equal( typeof Popcorn.getTrackEvents.ref, "function", "Popcorn.getTrackEvents.ref() is a private use  static function" );
+
+  equal( typeof Popcorn.getTrackEvents( popcorn ), "object", "Popcorn.getTrackEvents() returns an object" ); 
+
+  equal( Popcorn.getTrackEvents( popcorn ).length, 0, "Popcorn.getTrackEvents() currently has no trackEvents" ); 
+
+  popcorn.exec( 1, function(){ });
+
+  equal( Popcorn.getTrackEvents( popcorn ).length, 1, "Currently only one track event" );
+
+  equal( typeof Popcorn.getTrackEvents( popcorn ), "object", "Popcorn.getTrackEvents() returns an object" ); 
+
+  Popcorn.removeTrackEvent( popcorn, Popcorn.getTrackEvents( popcorn )[ 0 ]._id );
+
+  equal( Popcorn.getTrackEvents( popcorn ).length, 0, "Popcorn.getTrackEvents() has no items after removal" );
+});
+
+test( "Popcorn.getTrackEvent", function() {
+
+  var popcorn = Popcorn( "#video" ),
+      count = 0,
+      expects = 3;
+
+  expect( expects );
+
+  function plus() {
+
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "temp" );
+      Popcorn.removeTrackEvent( popcorn, Popcorn.getTrackEvents( popcorn )[ 0 ]._id );
+    }
+  }
+
+  equal( typeof Popcorn.getTrackEvent, "function", "Popcorn.getTrackEvent() is a provided static function" );
+  plus();
+
+  equal( typeof Popcorn.getTrackEvent.ref, "function", "Popcorn.getTrackEvent.ref() is a private use  static function" );
+  plus();
+
+  Popcorn.plugin( "temp", {
+    setup: function( options ) { },
+    start: function( event, options ) { },
+    end: function( event, options ) { }
+  });
+
+  popcorn.temp({
+    id: "asdf",
+    start: 1,
+    end: 2,
+  });
+
+  equal( typeof Popcorn.getTrackEvent( popcorn, "asdf" ), "object", "Popcorn.getTrackEvent() returns an object" ); 
+  plus();
+
+});
+
 test( "Popcorn.forEach", function() {
 
   expect( 3 );
@@ -421,6 +524,69 @@ test( "Object", function() {
     ok( k in popObj, "instance by reference has method: " + k );
     plus();
   });
+});
+
+test( "Instance", function() {
+
+  var a = Popcorn( "#video" ),
+      b = Popcorn( "#video", { frameAnimation: true });
+
+  expect( 36 );
+
+  ok( a.options, "instance a has options property" );
+  ok( b.options, "instance b has options property" );
+
+  ok( a.isDestroyed === false , "instance a has isDestroyed property" );
+  ok( b.isDestroyed === false, "instance b has isDestroyed property" );
+
+  ok( a.data, "instance a has data property" );
+  ok( b.data, "instance b has data property" );
+
+  ok( a.data.timeUpdate, "instance a has data.timeUpdate property" );
+  ok( b.data.timeUpdate, "instance b has data.timeUpdate property" );
+
+  ok( a.data.disabled, "instance a has data.disabled property" );
+  ok( b.data.disabled, "instance b has data.disabled property" );
+
+  ok( a.data.events, "instance a has data.events property" );
+  ok( b.data.events, "instance b has data.events property" );
+
+  ok( a.data.hooks, "instance a has data.hooks property" );
+  ok( b.data.hooks, "instance b has data.hooks property" );
+
+  ok( a.data.history, "instance a has data.history property" );
+  ok( b.data.history, "instance b has data.history property" );
+
+  ok( a.data.state, "instance a has data.state property" );
+  ok( b.data.state, "instance b has data.state property" );
+
+  ok( a.data.state.volume, "instance a has data.state.volume property" );
+  ok( b.data.state.volume, "instance b has data.state.volume property" );
+
+  ok( a.data.trackRefs, "instance a has data.trackRefs property" );
+  ok( b.data.trackRefs, "instance b has data.trackRefs property" );
+
+  ok( a.data.trackEvents, "instance a has data.trackEvents property" );
+  ok( b.data.trackEvents, "instance b has data.trackEvents property" );
+
+  ok( a.data.trackEvents.byStart, "instance a has data.trackEvents.byStart property" );
+  ok( b.data.trackEvents.byStart, "instance b has data.trackEvents.byStart property" );
+
+  ok( a.data.trackEvents.byEnd, "instance a has data.trackEvents.byEnd property" );
+  ok( b.data.trackEvents.byEnd, "instance b has data.trackEvents.byEnd property" );
+
+  ok( a.data.trackEvents.animating, "instance a has data.trackEvents.animating property" );
+  ok( b.data.trackEvents.animating, "instance b has data.trackEvents.animating property" );
+
+  ok( a.data.trackEvents.startIndex, "instance a has data.trackEvents.startIndex property" );
+  ok( b.data.trackEvents.startIndex, "instance b has data.trackEvents.startIndex property" );
+
+  ok( a.data.trackEvents.endIndex, "instance a has data.trackEvents.endIndex property" );
+  ok( b.data.trackEvents.endIndex, "instance b has data.trackEvents.endIndex property" );
+
+  ok( a.data.trackEvents.previousUpdateTime >= -1, "instance a has data.trackEvents.previousUpdateTime property" );
+  ok( b.data.trackEvents.previousUpdateTime >= -1, "instance b has data.trackEvents.previousUpdateTime property" );
+
 });
 
 module( "Popcorn Static" );
@@ -1363,6 +1529,25 @@ test( "Manifest", function() {
   });
 });
 
+test( "Manifest removal", function() {
+
+  var popcorn = Popcorn( "#video" );
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 0, "Before creating new plugin" );
+
+  Popcorn.plugin( "tester", {
+
+    start: function() {},
+    end: function() {}
+  });
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 1, "After creating new plugin" );
+
+  Popcorn.removePlugin( "tester" );
+
+  equal( Popcorn.sizeOf( Popcorn.manifest ), 0, "After deleting plugin" );
+});
+
 test( "Configurable Defaults", function() {
 
   var expects = 13,
@@ -1608,6 +1793,7 @@ test( "frame function (frameAnimation)", function() {
     if ( ++count === expects ) {
       // clean up added events after tests
       Popcorn.removePlugin( "frameFn" );
+      $pop.destroy();
       start();
     }
   }
@@ -1831,6 +2017,7 @@ test( "Update Timer (frameAnimation)", function() {
       Popcorn.removePlugin( "forwards" );
       Popcorn.removePlugin( "backwards" );
       Popcorn.removePlugin( "wrapper" );
+      p2.destroy();
       start();
     }
   }
@@ -2200,6 +2387,8 @@ test( "Popcorn Compose", function() {
     }
   });
 
+  popped.pause( popped.duration() );
+
   popped.testPlugin({
     start: 0,
     end: 1,
@@ -2248,13 +2437,11 @@ test( "Popcorn Compose", function() {
   equal( test.two.setup, 3, "three compose two setup" );
   plus();
 
-  popped.currentTime( 0 ).pause();
-
   popped.exec( 0, function() {
     equal( test.one.running, 1, "one compose running" );
-   plus();
-   equal( test.two.running, 1, "one effect running" );
-   plus();
+    plus();
+    equal( test.two.running, 1, "one effect running" );
+    plus();
   })
   .exec( 1, function() {
     equal( test.one.running, 0, "no compose running" );
@@ -2307,7 +2494,6 @@ test( "Popcorn Compose", function() {
   // runs once, 2 tests
   Popcorn.plugin( "pluginOptions1", {
     _setup: function( options ) {
-      console.log( "runs once?" );
       ok( options.pluginoption, "plugin option one exists at setup" );
       plus();
       ok( !options.composeoption, "compose option one does not exist at setup" );
@@ -2376,6 +2562,58 @@ test( "Popcorn Compose", function() {
   composeOptionsTwo = popped.getLastTrackEventId();
 
   popped.currentTime( 0 ).play();
+});
+
+test( "Teardown end tester", function() {
+
+  QUnit.reset();
+
+  var popped = Popcorn( "#video" ),
+      expects = 4,
+      count = 0;
+
+  function plus() {
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "teardownEndTester" );
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 15000 );
+
+  Popcorn.plugin( "teardownEndTester", {
+    _setup: function( options ) {
+      options.endCalled = false;
+      options.teardownCalled = false;
+    },
+    start: function( event, options ) {
+    },
+    end: function( event, options ) {
+      // passes if end is called before teardown, and only called once
+      equal( options.endCalled, false, "ensure only teardown can call this end" );
+      plus();
+      equal( options.teardownCalled, false, "ensure teardown is not yet called" );
+      plus();
+      options.endCalled = true;
+    },
+    _teardown: function( options ) {
+
+      // passes if teardown is called after end, and only called once
+      equal( options.endCalled, true, "ensure end was previously called" );
+      plus();
+      equal( options.teardownCalled, false, "ensure teardown is not yet called" );
+      plus();
+      options.teardownCalled = true;
+    }
+  });
+
+  // start and end times to deault to entire video,
+  // to ensure the end function will never be called outside of _teardown
+  popped.teardownEndTester({});
+
+  popped.currentTime( 0 ).play();
+  popped.removePlugin( "teardownEndTester" );
 });
 
 test( "Plugin Breaker", function() {
@@ -2956,6 +3194,7 @@ test( "Index Integrity ( timeUpdate )", function() {
     if ( ++count === expects ) {
       start();
       Popcorn.removePlugin( "ff" );
+      $pop.destroy();
     }
   }
 
@@ -3026,6 +3265,7 @@ test( "Index Integrity (frameAnimation)", function() {
     if ( ++count === expects ) {
       start();
       Popcorn.removePlugin( "ff" );
+      $pop.destroy();
     }
   }
 
@@ -3217,6 +3457,71 @@ test( "dataType: Text Response", function() {
     }
   });
 });
+
+test( "XML Conversion", function() {
+
+  var expects,
+      count = 0,
+      i,
+      len,
+      validXML = [ "data/test.xml", "data/test.ttml" ],
+      invalidXML = [ "data/test.txt", "data/remoteA.js" ];
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
+  expects = validXML.length * 2 + invalidXML.length * 3;
+
+  expect( expects );
+
+  stop();
+
+  function testValidXML( fileName ) {
+    Popcorn.xhr({
+      url: fileName,
+      success: function( data ) {
+
+        ok( data, "xhr returns data" );
+        plus();
+
+        var parser = new DOMParser(),
+        xml = parser.parseFromString( '<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml" );
+
+        equal( data.xml.toString(), xml.toString(), "data.xml returns a document of xml for " + fileName );
+        plus();
+      }
+    });
+  }
+
+  function testInvalidXML( fileName ) {
+    Popcorn.xhr({
+      url: fileName,
+      success: function( data ) {
+
+        ok( data, "xhr returns data" );
+        plus();
+
+        ok( !data.xml, "data.xml is null for non-xml file: " + fileName );
+        plus();
+
+        ok( data.text, "data.text is still not null" );
+        plus();
+      }
+    });
+  }
+
+  for ( i = 0, len = validXML.length; i < len; i++ ) {
+    testValidXML( validXML[ i ] );
+  }
+
+  for ( i = 0, len = invalidXML.length; i < len; i++ ) {
+    testInvalidXML( invalidXML[ i ] );
+  }
+});
+
 
 test( "JSON Response", function() {
 
@@ -3476,6 +3781,7 @@ test( "XML Response", function() {
     }
   });
 });
+
 
 test( "dataType: XML Response", function() {
 
@@ -3906,7 +4212,8 @@ test( "Basic Audio Support (frameAnimation)", function() {
   function plus() {
 
     if ( ++count === expects ) {
-
+      popped.destroy();
+      popObj.destroy();
       start();
     }
   }

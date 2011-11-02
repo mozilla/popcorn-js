@@ -3,7 +3,7 @@ test( "Popcorn Facebook Plugin", function () {
   Popcorn.plugin.debug = true;
 
   var popped = Popcorn( "#video" ),
-      expects = 12,
+      expects = 15,
       count = 0,
       interval,
       interval2,
@@ -28,15 +28,15 @@ test( "Popcorn Facebook Plugin", function () {
     site: "http://popcornjs.org/",
     type: "ACTIVITY",
     target: "activitydiv",
-    start: 3,
-    end: 11
+    start: 1,
+    end: 6
   })
   .facebook({
     href: "https://www.facebook.com/boardwalkempire",
     type: "FACEPILE",
     target: "facepilediv",
-    start: 4,
-    end: 11,
+    start: 1,
+    end: 6,
     width: 300
   })
   .facebook({
@@ -44,13 +44,13 @@ test( "Popcorn Facebook Plugin", function () {
     target: "likediv",
     layout: "box_count",
     start: 2,
-    end: 11
+    end: 6
   })
   .facebook({
     type: "send",
     target: "likediv",
     start: 1,
-    end: 11
+    end: 6
   })
   .facebook({
     href: "http://www.facebook.com/senecacollege",
@@ -59,7 +59,15 @@ test( "Popcorn Facebook Plugin", function () {
     header: "false",
     target: "likeboxdiv",
     start: 2,
-    end: 13
+    end: 6
+  })
+  .facebook({
+    href: "example.com",
+    type: "COMMENTS",
+    target: "commentdiv",
+    start: 1,
+    end: 6,
+    num_posts: 5
   })
   .volume( 0 )
   .play();
@@ -71,9 +79,11 @@ test( "Popcorn Facebook Plugin", function () {
   plus();
   ok( document.getElementById( "facepilediv" ), "facepilediv exists on the page" );
   plus();
-  ok ( document.getElementById( "likediv" ), "activitydiv exists on the page" );
+  ok ( document.getElementById( "likediv" ), "likediv exists on the page" );
   plus();
-  ok( document.getElementById( "likeboxdiv" ), "facepilediv exists on the page" );
+  ok( document.getElementById( "likeboxdiv" ), "likeboxdiv exists on the page" );
+  plus();
+  ok( document.getElementById( "commentdiv" ), "commentdiv exists on the page" );
   plus();
 
   // I inspected the html genterated by facebook, and found that there are no uniquely identifying attributes between plug-in types
@@ -97,21 +107,23 @@ test( "Popcorn Facebook Plugin", function () {
     // Checks if likeboxdiv is empty at specific time
     ok( document.getElementById( "likeboxdiv" ).innerHTML, "likeboxdiv is not empty at 0:04 (expected)" );
     plus();
-  });
-
-  // Checks if facepilediv is empty at a specific time
-  popped.exec( 5, function() {
-    ok( document.getElementById( "facepilediv" ).innerHTML, "Facepilediv is not empty at 0:05 (expected)" );
+    // Checks if facepilediv is empty at specific time
+    ok( document.getElementById( "facepilediv" ).innerHTML, "Facepilediv is not empty at 0:04 (expected)" );
     plus();
-  });
+    // Checks if likediv is empty at specific time
+    ok( document.getElementById( "likediv" ).innerHTML, "likediv is not empty at 0:04 (expected)" );
+    plus();
+    // Checks if commentdiv is empty at specific time
+    ok( document.getElementById( "commentdiv" ).innerHTML, "commentdiv is not empty at 0:04 (expected)" );
+    plus();
 
-  // Checks if _teardown function is run properly on like-box
-  popped.exec( 12, function() {
+    // Checks if Comments Plugin was successfully destroyed with _teardown
     popped.pause().removeTrackEvent( setupId );
-    ok( !document.getElementById( "likeboxdiv" ).innerHTML, "likebox facebook social plugin was properly destroyed" );
+    ok( !document.getElementById( "commentdiv" ).innerHTML, "comments facebook social plugin was properly destroyed" );
     plus();
-  });
 
+    popped.play();
+  });
 });
 
 

@@ -8,13 +8,15 @@ test( "Popcorn Twitter Plugin", function() {
 
   expect( expects );
 
+  Popcorn.plugin.debug = true;
+
   function plus() {
     if ( ++count === expects ) {
       start();
     }
   }
 
-  stop();
+  stop( 20000 );
 
   ok( "twitter" in popped, "twitter is a method of the popped instance" );
   plus();
@@ -40,14 +42,16 @@ test( "Popcorn Twitter Plugin", function() {
   setupId = popped.getLastTrackEventId();
 
   popped.exec( 1, function() {
-    ok( /display: inline;/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
+
+    ok( /display: inline/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
     plus();
     ok( /twtr-widget/.test( twitterdiv.innerHTML ), "A Twitter widget exists" );
     plus();
   });
 
   popped.exec( 2, function() {
-    ok( /display: none;/.test( twitterdiv.innerHTML ), "Div contents are hidden again" );
+
+    ok( /display: none/.test( twitterdiv.innerHTML ), "Div contents are hidden again" );
     plus();
 
     popped.pause().removeTrackEvent( setupId );
@@ -56,5 +60,61 @@ test( "Popcorn Twitter Plugin", function() {
   });
 
   popped.play();
+});
+
+test( "Popcorn Twitter Plugin", function() {
+
+  var popped = Popcorn( "#video" ),
+      expects = 4,
+      count = 0,
+      twitterdiv = document.getElementById( "twitterdiv" );
+
+  expect( expects );
+
+  Popcorn.plugin.debug = true;
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
+  stop( 20000 );
+
+  popped.twitter({
+    start: 4,
+    end: 5,
+    title: "bieber hash",
+    src: "#oilspill",
+    target: "twitterdiv"
+  });
+
+  popped.twitter({
+    start: 5,
+    end: 6,
+    title: "plain text search",
+    src: "processing.js",
+    target: "twitterdiv"
+  });
+
+  popped.exec( 4, function() {
+
+    ok( /display: inline/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
+    plus();
+    ok( /twtr-widget/.test( twitterdiv.innerHTML ), "A Twitter widget exists" );
+    plus();
+  });
+
+  popped.exec( 5, function() {
+
+    ok( /display: inline/.test( twitterdiv.innerHTML ), "Div contents are displayed" );
+    plus();
+    ok( /twtr-widget/.test( twitterdiv.innerHTML ), "A Twitter widget exists" );
+    plus();
+
+    popped.pause();
+  });
+
+  popped.play( 4 );
 
 });

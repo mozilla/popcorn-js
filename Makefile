@@ -81,6 +81,7 @@ MODULES_UNIT := $(shell find $(MODULES_DIR) -name 'popcorn.*.unit.js' -print)
 # popcorn + plugins
 POPCORN_COMPLETE_LIST := --js ${POPCORN_SRC} \
                          $(shell for js in ${MODULES_SRC} ; do echo --js $$js ; done) \
+                         $(shell for js in ${EFFECTS_SRC} ; do echo --js $$js ; done) \
                          $(shell for js in ${PLUGINS_SRC} ; do echo --js $$js ; done) \
                          $(shell for js in ${PARSERS_SRC} ; do echo --js $$js ; done) \
                          $(shell for js in ${PLAYERS_SRC} ; do echo --js $$js ; done)
