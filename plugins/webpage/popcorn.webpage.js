@@ -52,7 +52,7 @@
         },
         src: {
           elem: "input",
-          type: "text",
+          type: "url",
           label: "Src"
         },
         target: "iframe-container"
@@ -61,6 +61,9 @@
     _setup: function( options ) {
 
       var target = document.getElementById( options.target );
+
+      // make src an iframe acceptable string
+      options.src = options.src.replace( /^(https?:)?(\/\/)?/, "//" );
 
       // make an iframe
       options._iframe = document.createElement( "iframe" );

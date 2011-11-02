@@ -385,25 +385,53 @@ test( "Controls and Annotations toggling", function() {
 
   var popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0" ),
       targetDiv = document.getElementById( "video" );
-      testTarget = targetDiv.querySelector( "object" ).querySelector( "param[name=flashvars]" );
+      testTarget = targetDiv.querySelector( "object" ).data;
 
-  ok( /controls=1/.test( testTarget.value ), "controls are defaulted to 1 ( displayed )" );
-  ok( /iv_load_policy=1/.test( testTarget.value ), "annotations ( iv_load_policy ) are defaulted to ( enabled )" );
-
-  targetDiv.innerHTML = "";
-
-  popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0", { controls: 1, annotations: 1 } );
-
-  testTarget = targetDiv.querySelector( "object" ).querySelector( "param[name=flashvars]" );
-  ok( /controls=1/.test( testTarget.value ), "controls is set to 1 ( displayed )" );
-  ok( /iv_load_policy=1/.test( testTarget.value ), "annotations ( iv_load_policy ) is set to 1 ( enabled )" );
+  ok( !/controls/.test( testTarget ), "controls are defaulted to 1 ( displayed )" );
+  ok( !/iv_load_policy/.test( testTarget ), "annotations ( iv_load_policy ) are defaulted to ( enabled )" );
 
   targetDiv.innerHTML = "";
 
-  popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0", { controls: 0, annotations: 3 } );
-  testTarget = targetDiv.querySelector( "object" ).querySelector( "param[name=flashvars]" );
-  ok( /controls=0/.test( testTarget.value ), "controls is set to 0 ( hidden )" );
-  ok( /iv_load_policy=3/.test( testTarget.value ), "annotations ( iv_load_policy ) is set to 3 ( hidden )" );
+  popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0&controls=1&iv_load_policy=1" );
 
+  testTarget = targetDiv.querySelector( "object" ).data;
+  ok( /controls=1/.test( testTarget ), "controls is set to 1 ( displayed )" );
+  ok( /iv_load_policy=1/.test( testTarget ), "annotations ( iv_load_policy ) is set to 1 ( enabled )" );
+
+  targetDiv.innerHTML = "";
+
+  popcorn = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=9oar9glUCL0&controls=0&iv_load_policy=3" );
+  testTarget = targetDiv.querySelector( "object" ).data;
+  ok( /controls=0/.test( testTarget ), "controls is set to 0 ( hidden )" );
+  ok( /iv_load_policy=3/.test( testTarget ), "annotations ( iv_load_policy ) is set to 3 ( hidden )" );
+
+});
+
+test( "Player height and width", function() {
+
+  QUnit.reset();
+
+  expect( 4 );
+
+  stop( 10000 );
+  var popcorn1 = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=9oar9glUCL0" ),
+      popcorn2 = Popcorn.youtube( "#video5", "http://www.youtube.com/watch?v=9oar9glUCL0" ),
+      readyStatePoll = function() {
+
+        if ( popcorn1.media.readyState !== 4 && popcorn2.media.readyState !== 4 ) {
+
+          setTimeout( readyStatePoll, 10 );
+        } else {
+
+          equal( popcorn1.media.children[ 0 ].width, 560, "Youtube player default width is 560" );
+          equal( popcorn1.media.children[ 0 ].height, 315, "Youtube player default height is 315" );
+
+          equal( popcorn2.media.children[ 0 ].width, 0, "Youtube player explicit width is 0" );
+          equal( popcorn2.media.children[ 0 ].height, 0, "Youtube player explicit height is 0" );
+          start();
+        }
+      };
+
+  readyStatePoll();
 });
 

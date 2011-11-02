@@ -74,7 +74,7 @@
       }
 
       if ( !window.Processing ) {
-        Popcorn.getScript( "http://processingjs.org/content/download/processing-js-1.3.0/processing-1.3.0.js", function() {
+        Popcorn.getScript( "//wac.1237.edgecastcdn.net/801237/cdn.processingjs.org/content/download/processing-js-1.3.6/processing-1.3.6.min.js", function() {
           scriptReady( options );
         });
       } else {
@@ -149,7 +149,7 @@
       },
       sketch: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "Sketch"
       },
       noPause: {

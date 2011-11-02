@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Popcorn 0.3 SBV parser Plug-in Demo</title>
-  
-  <script src="../../popcorn.js"></script>
-  <script src="../../test/jquery.js"></script>
-  <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
-  <script src="popcorn.parserSBV.js"></script>
-  
-  <script>
-    document.addEventListener( 'DOMContentLoaded', function () {
-      var p = Popcorn( '#video' )
-      .volume( 0 )
-      .play();
-    }, false);
-  </script>
-</head>
-<body>
-  <h1 id="qunit-header">Popcorn 0.3 SBV parser Plug-in Demo</h1>
-  <p>From 2.4 to 7.2 seconds, "Senator, we're making our final approach into Coruscant." is shown
-  <br />From 9.712 to 13.399 seconds, "Very good, Lieutenant." is shown
-  <br />From 15.042 to 18.042 seconds, "It's a trap!" is shown</p>
-  <div>
-  <div>
-    <video id='video'
-      controls
-      width= '250px'
-      data-timeline-sources="data/data.sbv"
-      poster="../../test/poster.png"> 
+  <head>
+    <title>Popcorn 1.0 SBV parser Plug-in Demo</title>
 
-      <source id='mp4'
-        src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+    <script src="../../popcorn.js"></script>
+    <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
+    <script src="popcorn.parserSBV.js"></script>
 
-      <source id='ogv'
-        src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+    <script>
+      document.addEventListener( "DOMContentLoaded", function () {
+        var p = Popcorn( "#video" )
+        .parseSBV( "data/data.sbv" )
+        .volume( 0 )
+        .play();
+      }, false);
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn 1.0 SBV parser Plug-in Demo</h1>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+    <p>From 2.4 to 7.2 seconds, "Senator, we're making our final approach into Coruscant." is shown
+    <br />From 9.712 to 13.399 seconds, "Very good, Lieutenant." is shown
+    <br />From 15.042 to 18.042 seconds, "It's a trap!" is shown</p>
 
-    </video> 
-  </div>
-  
-  <h4>Subtitle Source<h4>
-  <iframe id="srcDisplay" src="data/data.sbv"></iframe>
-</body>
+    <div>
+      <video id="video"
+        controls
+        width= "250px"
+        poster="../../test/poster.png">
+
+        <source id="mp4"
+          src="../../test/trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../test/trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+
+    <h4>Subtitle Source<h4>
+    <iframe id="srcDisplay" src="data/data.sbv"></iframe>
+  </body>
 </html>

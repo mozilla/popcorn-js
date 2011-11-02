@@ -1,251 +1,233 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Popcorn Vimeo Player Example</title>
-        <style>
-            iframe{
-                display:block;
-                border:0;
-            }
-            body > div {
-                width: 100%;
-                float: left;
-                overflow: hidden;
-            }
-            div div {
-                margin-bottom:20px;
-            }
+  <head>
+    <title>Popcorn Vimeo Player Example</title>
+    <style>
+      iframe{
+        display: block;
+        border: 0;
+      }
+      body > div {
+        width: 100%;
+        float: left;
+        overflow: hidden;
+      }
+      div div {
+        margin-bottom: 20px;
+      }
+      .api_output {
+        float: right;
+        padding-left: 20px;
+      }
+    </style>
 
-            .api_output {
-                float:right;
-                padding-left: 20px;
-            }
-        </style>
-        
-        <script src="../../popcorn.js"></script>
-        <script type="text/javascript" src="popcorn.vimeo.js"></script>
-        <script src="../../plugins/footnote/popcorn.footnote.js"></script>
-        <script src="../../plugins/flickr/popcorn.flickr.js"></script>
-        <script src="../../plugins/attribution/popcorn.attribution.js"></script>
-        <script src="../../plugins/webpage/popcorn.webpage.js"></script>
-         <script src="../../plugins/googlefeed/popcorn.googlefeed.js"></script>
-        <script src="../../plugins/image/popcorn.image.js"></script>
-        <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
-        <script src="../../plugins/twitter/popcorn.twitter.js"></script>
-        
-        <script type="text/javascript">
-            // Called as onload function
-            // Set up interface controls
-            VimeoEmbedLoaded = function( player ) {
-                var loop = 0,
-                    volume = 1;
-                
-                // Hook up custom controls
-                // Single play/pause buttons
-                document.getElementById( "btnPlay" ).addEventListener( "click", function(e) {
-                  player.play();
-                }, false);
-                
-                document.getElementById( "btnPause" ).addEventListener( "click", function(e) {
-                    player.pause();
-                }, false);
-                
-                //Seek
-                document.getElementById( "btnSeek" ).addEventListener( "click", function() {
-                  player.currentTime( 30 );
-                }, false);
+    <script src="../../popcorn.js"></script>
+    <script type="text/javascript" src="popcorn.vimeo.js"></script>
+    <script src="../../plugins/footnote/popcorn.footnote.js"></script>
+    <script src="../../plugins/flickr/popcorn.flickr.js"></script>
+    <script src="../../plugins/attribution/popcorn.attribution.js"></script>
+    <script src="../../plugins/webpage/popcorn.webpage.js"></script>
+    <script src="../../plugins/googlefeed/popcorn.googlefeed.js"></script>
+    <script src="../../plugins/image/popcorn.image.js"></script>
+    <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
+    <script src="../../plugins/twitter/popcorn.twitter.js"></script>
 
-                // Loop
-                document.getElementById( "btnLoop" ).addEventListener( "click", function() {
-                  loop = loop === "loop" ? "" : "loop";
-                  player.video.setLoop( loop );
-                }, false);
+    <script type="text/javascript">
+      // Called as onload function
+      // Set up interface controls
+      VimeoEmbedLoaded = function( player ) {
+        var loop = 0,
+            volume = 1;
 
-                // Volume
-                document.getElementById( "btnVolume" ).addEventListener( "click", function() {
-                  volume = volume === 1 ? 0.5 : 1;
-                  player.volume( volume );
-                }, false);
-                
-                // Mute
-                document.getElementById( "btnMute" ).addEventListener( "click", function() {
-                  player.mute();
-                }, false);
-                
-                // Hook into player events
-                // Timeupdate, as the video plays
-                player.listen( "timeupdate", function() {
-                  document.getElementById( "player_time" ).innerHTML = player.currentTime();
-                });
-                
-                // When the volume changes
-                player.listen( "volumechange", function() {
-                  document.getElementById( "player_vol" ).innerHTML = player.volume();
-                });
-                
-                // When the video duration changes
-                player.listen( "durationchange", function() {
-                  document.getElementById( "player_duration" ).innerHTML = player.duration();
-                });
-                
-                // When the meddia ready state changes
-                player.listen( "readystatechange", function() {
-                  document.getElementById( "player_state" ).innerHTML = player.readyState();
-                });
-                
-                // Output some initial UI values so we caan see what the player is doing
-                document.getElementById( "player_time" ).innerHTML = player.currentTime();
-                document.getElementById( "player_vol" ).innerHTML = player.volume();
-                document.getElementById( "player_duration" ).innerHTML = player.duration();
-            };
+        // Hook up custom controls
+        // Single play/pause buttons
+        document.getElementById( "btnPlay" ).addEventListener( "click", function( e ) {
+          player.play();
+        }, false);
 
-            //On document ready
-            document.addEventListener( "DOMContentLoaded", function() {
-              var player = Popcorn( Popcorn.vimeo( "player_1", "http://player.vimeo.com/video/11127501", {
-                  css: {
-                    width: "500px",
-                    height: "281px"
-                  }
-                }) )
-                    .footnote({
-                      start: 5, // seconds
-                      end: 40, // seconds
-                      text: 'The video is "RiP: A Remix Manifesto", by Brett Gaylor',
-                      target: 'footnotediv'
-                    })
-                    .flickr({
-                      start: 20, // seconds
-                      end: 40, // seconds
-                      tags: 'georgia',
-                      numberofimages: '8',
-                      target: 'flickrdiv'
-                    })
-                    .twitter({
-                      start: 20, // seconds
-                      end: 45, // seconds
-                      title: 'Oil Spill',
-                      src: '#oilspill',
-                      target: 'twitterdiv'
-                    })
-                    .attribution({
-                      start: 5, // seconds
-                      end: 60, // seconds
-                      nameofwork: "Internet",
-                      nameofworkurl:"http://www.archive.org/details/CC1232_internet",
-                      copyrightholder:"The Computer Chronicles",
-                      license:"CC-BY-NC-ND",
-                      licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
-                      target: 'attribdiv'
-                    })
-                    .subtitle({
-                      start: 5, // seconds
-                      end: 15, // seconds
-                      text: 'This is overlaid on top of the video. You can hightlight it!',
-                      display: 'inline',
-                      language: "en"
-                    })
-                    .webpage({
-                      id: "webpages-a", 
-                      start: 0, // seconds
-                      end: 15, // seconds
-                      src: 'http://webmademovies.org/',
-                      target: 'webpagediv'
-                    })
-                    .googlefeed({
-                        start: 0, // seconds
-                        end: 15, // seconds
-                        target: "feeddiv",
-                        url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
-                        title: "Planet Feed",
-                        orientation: "Vertical"
-                    })
-                    .image({
-                      start: 5, // seconds
-                      end: 15, // seconds
-                      href: 'http://www.drumbeat.org/',
-                      src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
-                      target: 'imagediv'
-                    })
-                    .listen( "load", function() {
-                      VimeoEmbedLoaded( player );
-                    })
-                    .listen( "loadstart", function() {
-                      document.getElementById( "player_load" ).innerHTML = "Started";
-                    })
-                    .listen( "canplaythrough", function() {
-                      document.getElementById( "player_load" ).innerHTML = "Finished";
-                    })
-                    .volume(0)
-                    .play();
-            }, false);
-        </script>
-    </head>
-    <body>
-          <div>
-            <div id="player_1" ></div><br />
-            <button class="simple" id="btnPlay">Play</button>
-            <button class="simple" id="btnPause">Pause</button>
-            <button class="seek" id="btnSeek">Seek to 30</button>
-            <button class="loop" id="btnLoop">Toggle Loop</button>
-            <button class="volume" id="btnVolume">Toggle Volume</button>
-            <button class="volume" id="btnMute">Mute</button>
-            <div>
-              Current Time (s): <span id="player_time"></span>
-              <br />Video Duration (s): <span id="player_duration"></span>
-              <br />Volume (0-1): <span id="player_vol"></span>
-              <br />Load Status: <span id="player_load">Not Started</span>
-            </div>
-          </div>
-           <div style="float:right;">
-            <h3>Description</h3>
-            <p>
-              This demo will showcase how a Vimeo flash video can be integrated into Popcorn. This  is done by making the flash video masquerade as HTML 5 video.<br />
-              Due to the Flash security model, this demo must be  run from a web server<br />
-            <hr >
-              Vimeo does not support their player to be chromeless (hidden controls), but custsom controls have been developed and tied into their player.<br />
-              Clicking play/pause or seeking in either the video or via custsom controls will cause the other to update.<br />
-              Clicking on the embed option in the Vimeo player while the video is playing will cause the video to pause and custom controls to update.<br />
-              The vimeo video can be specified in the HTML source by giving the vimeo web site url (http://vimeo.com/VIDEOID) to either the Popcorn.vimeo or as the iframe src attribute.<br/>
-            </p>
-            <h4>Expected Events</h4>
-            <ul>
-              <li>From 5 to 40 seconds, the footnote 'The video is "RiP: A Remix Manifesto", by Brett Gaylor' will appear below 'Footnote Area'.</li>
-              <li>From 20 to 40 seconds, the a flickr stream of 8 images  tagged 'georgia' will appear below 'Flickr Area'.</li>
-              <li>From 20 to 45 seconds, tweets tagged #oilspill will appear below 'Twitter Area'.</li>
-              <li>From 5 to 60 seconds, the Creative Commons license will appear below 'Attributions Area'.</li>
-              <li>From 5 to 15 seconds, the Mozilla Drumbeat logo will appear below 'Image Area'.</li>
-              <li>From 5 to 15 seconds, the subtitle 'This is overlaid on top of the video. You can hightlight it!' will appear in front of the video.</li>
-              <li>From 0 to 20 seconds, blogs from 'http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml' will appear below 'Google Feed Area'.</li>
-              <li>From 0 to 15 seconds, the site 'http://webmademovies.org/' will appear below 'Web Page Area'.</li>
-            </ul>
-            <br />
-            <br />
-            <br />
-            <div id="footnotediv" width="50%" height="50%">
-              <strong>Footnote Area</strong><br />
-            </div>
-            <div id="attribdiv" width="50%" height="50%">
-              <strong>Attributions Area</strong><br />
-            </div>
-            <div id="flickrdiv" width="50%" height="50%">
-              <strong>Flickr Area</strong><br />
-            </div>
-            <div id="twitterdiv" width="50%" height="50%">
-              <strong>Twitter Area</strong><br />
-            </div>
-            <div id="imagediv" width="50%" height="50%">
-              <strong>Image Area</strong><br />
-            </div>
-            <div id="feeddiv" width="50%" height="50%">
-              <strong>Google Feed Area</strong><br />
-            </div>
-            <div id="webpagediv" width="100px" height="50px">
-              <strong>Web Page Area</strong><br />
-            </div>
-          </div>
-          
-          <br />
-          <br />
-          
-    </body>
+        document.getElementById( "btnPause" ).addEventListener( "click", function( e ) {
+          player.pause();
+        }, false);
+
+        //Seek
+        document.getElementById( "btnSeek" ).addEventListener( "click", function() {
+          player.currentTime( 30 );
+        }, false);
+
+        // Volume
+        document.getElementById( "btnVolume" ).addEventListener( "click", function() {
+          volume = volume === 1 ? 0.5 : 1;
+          player.volume( volume );
+        }, false);
+
+        // Mute
+        document.getElementById( "btnMute" ).addEventListener( "click", function() {
+          player.mute( !player.media.muted );
+        }, false);
+
+        // Hook into player events
+        // Timeupdate, as the video plays
+        player.listen( "timeupdate", function() {
+          document.getElementById( "player_time" ).innerHTML = player.currentTime();
+        });
+
+        // When the volume changes
+        player.listen( "volumechange", function() {
+          document.getElementById( "player_vol" ).innerHTML = player.volume();
+        });
+
+        // When the video duration changes
+        player.listen( "durationchange", function() {
+          document.getElementById( "player_duration" ).innerHTML = player.duration();
+        });
+
+        // When the meddia ready state changes
+        player.listen( "readystatechange", function() {
+          document.getElementById( "player_state" ).innerHTML = player.readyState();
+        });
+
+        // Output some initial UI values so we caan see what the player is doing
+        document.getElementById( "player_time" ).innerHTML = player.currentTime();
+        document.getElementById( "player_vol" ).innerHTML = player.volume();
+        document.getElementById( "player_duration" ).innerHTML = player.duration();
+      };
+
+      //On document ready
+      document.addEventListener( "DOMContentLoaded", function() {
+        var player = Popcorn.vimeo( "player_1", "http://player.vimeo.com/video/6960892" )
+        .footnote({
+          start: 5,
+          end: 40,
+          text: "The video popcorn being popped.",
+          target: "footnotediv"
+        })
+        .flickr({
+          start: 20,
+          end: 40,
+          tags: "georgia",
+          numberofimages: "8",
+          target: "flickrdiv"
+        })
+        .twitter({
+          start: 20,
+          end: 45,
+          title: "Oil Spill",
+          src: "#oilspill",
+          target: "twitterdiv"
+        })
+        .attribution({
+          start: 5,
+          end: 60,
+          nameofwork: "Internet",
+          nameofworkurl: "http://www.archive.org/details/CC1232_internet",
+          copyrightholder: "The Computer Chronicles",
+          license: "CC-BY-NC-ND",
+          licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
+          target: "attribdiv"
+        })
+        .subtitle({
+          start: 5,
+          end: 15,
+          text: "This is overlaid on top of the video. You can hightlight it!",
+          display: "inline",
+          language: "en"
+        })
+        .webpage({
+          id: "webpages-a",
+          start: 0,
+          end: 15,
+          src: "http://webmademovies.org/",
+          target: "webpagediv"
+        })
+        .googlefeed({
+          start: 0,
+          end: 15,
+          target: "feeddiv",
+          url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
+          title: "Planet Feed",
+          orientation: "Vertical"
+        })
+        .image({
+          start: 5,
+          end: 15,
+          href: "http://www.drumbeat.org/",
+          src: "https://www.drumbeat.org/media//images/drumbeat-logo-splash.png",
+          target: "imagediv"
+        });
+        player.listen( "load", function() {
+          VimeoEmbedLoaded( player );
+        })
+       .listen( "loadstart", function() {
+          document.getElementById( "player_load" ).innerHTML = "Started";
+        })
+        .listen( "canplaythrough", function() {
+          document.getElementById( "player_load" ).innerHTML = "Finished";
+        })
+        .play();
+      }, false);
+    </script>
+  </head>
+  <body>
+      <div>
+        <div id="player_1" style="width: 400px; height: 400px;"></div><br />
+        <button class="simple" id="btnPlay">Play</button>
+        <button class="simple" id="btnPause">Pause</button>
+        <button class="seek" id="btnSeek">Seek to 30</button>
+        <button class="volume" id="btnVolume">Toggle Volume</button>
+        <button class="volume" id="btnMute">Mute</button>
+        <div>
+          Current Time (s): <span id="player_time"></span>
+          <br />Video Duration (s): <span id="player_duration"></span>
+          <br />Volume (0-1): <span id="player_vol"></span>
+          <br />Load Status: <span id="player_load">Not Started</span>
+        </div>
+      </div>
+      <div style="float:right;">
+      <h3>Description</h3>
+      <p>
+        This demo will showcase how a Vimeo flash video can be integrated into Popcorn. This  is done by making the flash video masquerade as HTML 5 video.<br />
+        Due to the Flash security model, this demo must be  run from a web server<br />
+      <hr >
+        Vimeo does not support their player to be chromeless (hidden controls), but custsom controls have been developed and tied into their player.<br />
+        Clicking play/pause or seeking in either the video or via custsom controls will cause the other to update.<br />
+        Clicking on the embed option in the Vimeo player while the video is playing will cause the video to pause and custom controls to update.<br />
+        The vimeo video can be specified in the HTML source by giving the vimeo web site url (http://vimeo.com/VIDEOID) to either the Popcorn.vimeo or as the iframe src attribute.<br/>
+      </p>
+      <h4>Expected Events</h4>
+      <ul>
+        <li>From 5 to 40 seconds, the footnote 'The video is popcorn being Popped' will appear below 'Footnote Area'.</li>
+        <li>From 20 to 40 seconds, the a flickr stream of 8 images  tagged 'georgia' will appear below 'Flickr Area'.</li>
+        <li>From 20 to 45 seconds, tweets tagged #oilspill will appear below 'Twitter Area'.</li>
+        <li>From 5 to 60 seconds, the Creative Commons license will appear below 'Attributions Area'.</li>
+        <li>From 5 to 15 seconds, the Mozilla Drumbeat logo will appear below 'Image Area'.</li>
+        <li>From 5 to 15 seconds, the subtitle 'This is overlaid on top of the video. You can hightlight it!' will appear in front of the video.</li>
+        <li>From 0 to 20 seconds, blogs from 'http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml' will appear below 'Google Feed Area'.</li>
+        <li>From 0 to 15 seconds, the site 'http://webmademovies.org/' will appear below 'Web Page Area'.</li>
+      </ul>
+      <br />
+      <br />
+      <br />
+      <div id="footnotediv" width="50%" height="50%">
+        <strong>Footnote Area</strong><br />
+      </div>
+      <div id="attribdiv" width="50%" height="50%">
+        <strong>Attributions Area</strong><br />
+      </div>
+      <div id="flickrdiv" width="50%" height="50%">
+        <strong>Flickr Area</strong><br />
+      </div>
+      <div id="twitterdiv" width="50%" height="50%">
+        <strong>Twitter Area</strong><br />
+      </div>
+      <div id="imagediv" width="50%" height="50%">
+        <strong>Image Area</strong><br />
+      </div>
+      <div id="feeddiv" width="50%" height="50%">
+        <strong>Google Feed Area</strong><br />
+      </div>
+      <div id="webpagediv" width="100px" height="50px">
+        <strong>Web Page Area</strong><br />
+      </div>
+    </div>
+  </body>
 </html>

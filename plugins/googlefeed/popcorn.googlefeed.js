@@ -11,7 +11,7 @@
         len = links.length,
         head = document.head || document.getElementsByTagName( "head" )[ 0 ],
         css = document.createElement( "link" ),
-        resource = "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.";
+        resource = "//www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.";
 
     if ( !window.GFdynamicFeedControl ) {
 
@@ -40,7 +40,7 @@
 
   if ( !window.google ) {
 
-    Popcorn.getScript( "http://www.google.com/jsapi", function() {
+    Popcorn.getScript( "//www.google.com/jsapi", function() {
 
       google.load( "feeds", "1", {
 
@@ -166,7 +166,7 @@
       target: "feed-container",
       url: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "url"
       },
       title: {
