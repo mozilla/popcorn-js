@@ -10,6 +10,7 @@
     <script>
       document.addEventListener( "DOMContentLoaded", function () {
         var p = Popcorn( "#video" )
+        .parseVTT( "data/data.VTT" )
         .volume( 0 )
         .play();
       }, false);
@@ -17,14 +18,25 @@
   </head>
   <body>
     <h1 id="qunit-header">Popcorn 1.0 WebSRT/VTT parser Plug-in Demo</h1>
-    <p>From 2.4 to 7.2 seconds, "Senator, we're making our final approach into Coruscant." is shown
-    <br />From 9.712 to 13.399 seconds, "Very good, Lieutenant." is shown
-    <br />From 15.542 to 18.542 seconds, "It's a trap!" is shown, with trap in italics</p>
+    <p>From 11 to 13 seconds, "We are in New York City" is shown
+    <br />From 13 to 16 seconds, "We're actually at the Lucern Hotel, just down the street" is shown
+    <br />From 16 to 18 seconds, "from the American Museum of Natural History" is shown
+    <br />From 18 to 20 seconds, "And with me is Neil DeGrasse Tyson" is shown
+    <br />From 20 to 22 seconds, "Astrophysicist, Director of the Hayden Planetarium" is shown
+    <br />From 22 to 24 seconds, "at the AMNH." is shown
+    <br />From 24 to 26 seconds, "Thank you for walking down here." is shown
+    <br />From 27 to 30 seconds, "And I want to do a follow-up on the last conversation we did." is shown
+    <br />From 30 to 31.5 seconds, "When we e-mailed—" is shown
+    <br />From 31.5 to 32 seconds, "When we e-mailed—Didn't we talk about enough in that conversation?" is shown
+    <br />From 32 to 32.5 seconds, "When we e-mailed—Didn't we talk about enough in that conversation?No! No no no no; 'cos 'cos obviously 'cos" is shown
+    <br />From 32.5 to 33.5 seconds, "No! No no no no; 'cos 'cos obviously 'cos<i>Laughs</i>" is shown
+    <br />From 33.5 to 35.5 seconds, "No! No no no no; 'cos 'cos obviously 'cos" is shown
+    <br />From 35.5 to 38 seconds, "You know I'm so excited my glasses are falling off here." is shown
+    </p>
     <div>
       <video id="video"
         controls
         width= "250px"
-        data-timeline-sources="data/data.vtt"
         poster="../../test/poster.png">
 
         <source id="mp4"
