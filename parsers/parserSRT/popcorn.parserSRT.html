@@ -1,56 +1,57 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Popcorn 0.3 SRT parser Plug-in Demo</title>
-  
-  <script src="../../popcorn.js"></script>
-  <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
-  <script src="popcorn.parserSRT.js"></script>
+  <head>
+    <title>Popcorn 1.0 SRT parser Plug-in Demo</title>
 
-  <script>
-    document.addEventListener( 'DOMContentLoaded', function () {
-      var p = Popcorn( '#video' )
-      .volume( 0 )
-      .play();
-    }, false);
-  </script>
-</head>
-<body>
-  <h1 id="qunit-header">Popcorn 0.3 SRT parser Plug-in Demo</h1>
-  
-  <p>From 2.4 to 5.2 seconds, "[Background Music Playing]" is shown
-  <br />From 6 to 13.7 seconds, "&lt;true&gt; To say that 2 is greater than three (3 &gt; 2) would be lying&lt;true&gt;" is shown
-  <br />From 15.712 to 17.399 seconds, "Oh my god, Watch out! It's coming!!" is shown
-  <br />From 25.712 to 30.399 seconds, "[Bird noises]" is shown</p>
-  <div>
-    <video id='video'
-      controls
-      width="250px"
-      data-timeline-sources="data/data.srt"
-      poster="../../test/poster.png"> 
+    <script src="../../popcorn.js"></script>
+    <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
+    <script src="popcorn.parserSRT.js"></script>
 
-      <source id='mp4'
-        src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+    <script>
+      document.addEventListener( "DOMContentLoaded", function () {
+        var p = Popcorn( "#video" )
+        .parseSRT( "data/data.srt" )
+        .volume( 0 )
+        .play();
+      }, false);
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn 1.0 SRT parser Plug-in Demo</h1>
 
-      <source id='ogv'
-        src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+    <p>From 2.4 to 5.2 seconds, "[Background Music Playing]" is shown
+    <br />From 6 to 13.7 seconds, "&lt;true&gt; To say that 2 is greater than three (3 &gt; 2) would be lying&lt;true&gt;" is shown
+    <br />From 15.712 to 17.399 seconds, "Oh my god, Watch out! It's coming!!" is shown
+    <br />From 25.712 to 30.399 seconds, "[Bird noises]" is shown</p>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+    <div>
+      <video id="video"
+        controls
+        width="250px"
+        poster="../../test/poster.png">
 
-    </video> 
-  </div>
-  
-  <h4>Subtitle Source<h4>
-  <iframe id="srcDisplay" src="./data/data.srt"></iframe>
-  
-  <style>
-    .displays {
-      width: 300px;
-      height: 300px;
-    }
-  </style>
+        <source id="mp4"
+          src="../../test/trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
 
-</body>
+        <source id="ogv"
+          src="../../test/trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+
+    <h4>Subtitle Source<h4>
+    <iframe id="srcDisplay" src="./data/data.srt"></iframe>
+
+    <style>
+      .displays {
+        width: 300px;
+        height: 300px;
+      }
+    </style>
+
+  </body>
 </html>

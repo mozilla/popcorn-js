@@ -1,46 +1,47 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Popcorn 0.3 SSA parser Plug-in Demo</title>
+  <head>
+    <title>Popcorn 1.0 SSA parser Plug-in Demo</title>
 
-  <script src="../../popcorn.js"></script>
-  <script src="../../test/jquery.js"></script>
-  <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
-  <script src="popcorn.parserSSA.js"></script>
+    <script src="../../popcorn.js"></script>
+    <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
+    <script src="popcorn.parserSSA.js"></script>
 
-  <script>
-    document.addEventListener( "DOMContentLoaded", function () {
-      var p = Popcorn( "#video" )
-      .volume( 0 )
-      .play();
-    }, false);
-  </script>
-</head>
-<body>
-  <h1 id="qunit-header">Popcorn 0.3 SSA parser Plug-in Demo</h1>
-  <p>From 2.4 to 7.2 seconds, "Senator, we're making our final approach into Coruscant." is shown
-  <br />From 9.71 to 13.39 seconds, "Very good, Lieutenant." is shown
-  <br />From 15.04 to 18.04 seconds, "It's a trap!" is shown</p>
-  <div>
-    <video id="video"
-      controls
-      width= "250px"
-      data-timeline-sources="data/data.ssa"
-      poster="../../test/poster.png">
+    <script>
+      document.addEventListener( "DOMContentLoaded", function () {
+        var p = Popcorn( "#video" )
+        .parseSSA( "data/data.ssa" )
+        .volume( 0 )
+        .play();
+      }, false);
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn 1.0 SSA parser Plug-in Demo</h1>
 
-      <source id="mp4"
-        src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'>
+    <p>From 2.4 to 7.2 seconds, "Senator, we're making our final approach into Coruscant." is shown
+    <br />From 9.71 to 13.39 seconds, "Very good, Lieutenant." is shown
+    <br />From 15.04 to 18.04 seconds, "It's a trap!" is shown</p>
 
-      <source id="ogv"
-        src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'>
+    <div>
+      <video id="video"
+        controls
+        width= "250px"
+        poster="../../test/poster.png">
 
-      <p>Your user agent does not support the HTML5 Video element.</p>
+        <source id="mp4"
+          src="../../test/trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
 
-    </video>
-  </div>
-  <h4>Subtitle Source<h4>
-  <iframe id="srcDisplay" src="data/data.ssa"></iframe>
-</body>
+        <source id="ogv"
+          src="../../test/trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+    <h4>Subtitle Source<h4>
+    <iframe id="srcDisplay" src="data/data.ssa"></iframe>
+  </body>
 </html>
