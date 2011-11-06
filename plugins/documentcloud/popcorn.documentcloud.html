@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<head>
+  <script src="../../popcorn.js"></script>
+  <script src="../../players/youtube/popcorn.youtube.js"></script>
+  <script src="popcorn.documentcloud.js"></script>
+  <script>
+    Popcorn(function() {
+      var popcorn = Popcorn(Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=kffacxfA7G4&ob=av3n' ))
+        .documentcloud({
+          start: 3,
+          url: "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html",
+          width: 900,
+          height: 500,
+          showAnnotations: false,
+          page: 3,
+          target: "documentcloud-div"
+        })
+      .mute()
+      .play();
+    });
+  </script>
+</head>
+<body>
+  <div id="video" style="width: 560px; height: 315px;"></div>
+	<div id="documentcloud-div"></div>
+</body>
+</html>
