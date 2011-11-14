@@ -163,7 +163,6 @@
     },
     end: function( event, options ){
       options._container.style.display = "none";
-      options._container.innerHTML = "";
     },
     _teardown: function( options ){
       document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options._container );
