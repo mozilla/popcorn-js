@@ -29,10 +29,9 @@
   
   tumblrCallBack = function ( data ) {
     if( data.avatar_url ){
-      var _image;
+      var _htmlString;
       
-      _image = document.createElement( "img" );
-      _image = document.
+      _htmlString = "<img src=" + data.st.image[2]['#text'] +'" alt="">
     }
   };
 
@@ -82,8 +81,7 @@
           options: [ "TEXT", "QUOTE", "LINK", "PHOTO", "VIDEO", "AUDIO", "ANSWER" ],
           label: "Blog_Type"
         },
-        // Required for BLOGPOST requests
-        blogId: {
+        blogId: { // Required for BLOGPOST requests
           elem: "input",
           type: "number",
           label: "Blog_ID"
@@ -127,7 +125,9 @@
       target && target.appendChild( options._container );
       
       // For now only getting the Avatar retrieval working so I know what I'm doing
-      Popcorn.getJSONP( "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/avatar&jsonp=tumblrCallBack", tumblrCallBack, false );    
+      // Popcorn.getJSONP( "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/avatar&jsonp=tumblrCallBack", tumblrCallBack, false ); 
+      
+         
     },
     start: function( event, options ){
       options._container.style.display = "inline";
