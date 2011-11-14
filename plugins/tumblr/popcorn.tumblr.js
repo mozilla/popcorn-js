@@ -26,13 +26,11 @@
       } )
   *
   */
-  
-  tumblrCallBack = function ( data ) {
-    if( data.avatar_url ){
-      var _htmlString;
-      
-    }
-  };
+  var htmlString = "",
+    tumblrCallBack = function ( data ) {
+      if( data.response.posts[0] )
+        htmlString = "Test";
+    };
 
   Popcorn.plugin( "tumblr" , {
     manifest: {
@@ -107,22 +105,26 @@
       
       // If retrieval is for a blog, check if it's a valid type
       var validBlogType = function( bType ) {
-        return ( [ "text", "quote", "link", "photo", "video", "audio", "answer" ].indexOf( bType ) > -1 );
+        return ( [ "text", "quote", "link", "photo", "video", "audio", "answer", "" ].indexOf( bType ) > -1 );
       };
       
+      // Lowercase the types incase user enters it in another way
       options.requestType = options.requestType.toLowerCase();
       options.blogType = ( options.blogType || "" ).toLowerCase();
       
+      // Check Request Type
       if ( !validType( options.requestType ) ) {
         throw new Error( "Invalid tumblr plugin type." );
       }
       
+      // If Request is BLOGPOST, check if it's a valid blog type
       if ( !validBlogType( options.blogType ) && options.requestType === "blogpost" ) {
         throw new Error( "Invalid Blog Type." );
       }
       
+      // Check if target container exists
       if ( !target && Popcorn.plugin.debug ) {
-        throw new Error( "Target Tumblr container doesn't exist" );
+          throw new Error( "Target Tumblr container doesn't exist" );
       }
       
       options._container = document.createElement( "div" );
@@ -130,10 +132,26 @@
       options._tumblrdiv = document.createElement( "tumblr:" + options.requestType );
       options._container.appendChild( options._tumblrdiv );
       
+      // If it's an avatar request, simply set the innerHTML to an img element with the src as the request URL
       if( options.requestType === "avatar" )
         options._tumblrdiv.innerHTML = "<img src=" + 'http://api.tumblr.com/v2/blog/' + options.base_hostname + '/avatar/' + options.size + "alt='BlogAvatar' />";
+      else if( options.requestType === "followers" )
+        options._tumblrdiv.innerHTML = "Followers not yet implemented";
       else {
-        Popcorn.getJSONP( "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/avatar&jsonp=tumblrCallBack", tumblrCallBack, false );
+        var type;
+        
+        // Construct type based if it's a blogpost or blog info as request string differs
+        if( options.requestType === "blogpost" )
+          type = "posts/" + options.blogType;
+        else
+          type = "info";
+          
+        var requestString = "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/" + type + "?" + options.api_key + "&id=" + options.blogId +
+                            "&tag=" + options.tag + "&limit=" + options.limit + "&jsonp=tumblrCallBack";
+                            
+        Popcorn.getJSONP( requestString, tumblrCallBack, false );
+        
+        options._tumblrdiv.innerHTML = htmlString;
       }
       
       options._container.style.display = "none";
