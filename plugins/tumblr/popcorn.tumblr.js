@@ -31,7 +31,6 @@
     if( data.avatar_url ){
       var _htmlString;
       
-      _htmlString = "<img src=" + data.st.image[2]['#text'] +'" alt="">
     }
   };
 
@@ -65,12 +64,12 @@
           type: "text",
           label: "User_Name"
         },
-        api_key: {
+        // optional parameters:
+        api_key: { // Required for Blog Info and Blog Post retrievals
           elem: "input",
           type: "text",
           label: "Application_Key"
         },
-        // optional parameters:
         size: {
           elem: "select", 
           options: [ 16, 24, 30, 40, 48, 64, 96, 128, 512 ], 
@@ -108,29 +107,41 @@
       
       // If retrieval is for a blog, check if it's a valid type
       var validBlogType = function( bType ) {
-        return ( [ "TEXT", "QUOTE", "LINK", "PHOTO", "VIDEO", "AUDIO", "ANSWER" ].indexOf( bType ) > -1 );
+        return ( [ "text", "quote", "link", "photo", "video", "audio", "answer" ].indexOf( bType ) > -1 );
       };
+      
+      /*
+      options.requestType = options.requestType.toLowerCase();
+      options.blogType = options.blogType.toLowerCase();
       
       // Default Type is avatar
       if ( !validType( options.requestType ) ) {
         throw new Error( "Invalid tumblr plugin type." );
       }
-      else if ( !validBlogType( options.blogType ) ) {
+      
+      if ( !validBlogType( options.blogType ) && options.requestType === "blogpost" ) {
         throw new Error( "Invalid Blog Type." );
       }
       
       if ( !target && Popcorn.plugin.debug ) {
           throw new Error( "Target Tumblr container doesn't exist" );
       }
-      target && target.appendChild( options._container );
+      */
+      
+      options._container = document.createElement( "div" );
+      options._container.id = "tumblrdiv-" + Popcorn.guid();
+      options._tumblrdiv = document.createElement( "tumblr:" + options.requestType );
+      options._container.appendChild( options._tumblrdiv );
       
       // For now only getting the Avatar retrieval working so I know what I'm doing
       // Popcorn.getJSONP( "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/avatar&jsonp=tumblrCallBack", tumblrCallBack, false ); 
       
-         
+      options._tumblrdiv.innerHTML = "<img src=" + 'http://api.tumblr.com/v2/blog/' + options.base_hostname + '/avatar/' + options.size + "alt='BlogAvatar' />";
+      
+      target && target.appendChild( options._container ); 
     },
     start: function( event, options ){
-      options._container.style.display = "inline";
+      options._container.style.display = "";
     },
     end: function( event, options ){
       options._container.style.display = "none";
