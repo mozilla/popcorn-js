@@ -80,7 +80,9 @@
           type: "number",
           label: "Follower_Limit"
         },
-        // Optional for Photo BlogPosts, defaulted to 500 pixels
+        /* Optional for Photo BlogPosts, defaulted to 250 pixels if not provided or provided width
+        * is not found in alt_sizes array of photos
+        */
         photoWidth: {
           elem: "input",
           type: "number",
@@ -156,16 +158,41 @@
                 htmlString += post.body;
               }
               else if( post.type === "photo" ){
-                var mWidth = !options.photoWidth ? "500" : options.photoWidth, i, k;
-                var picURLs = [ post.photos.length ]; 
-                
+                var width = !options.photoWidth ? 250 : options.photoWidth, i, k, m, defaultSizeIndex = -1;
+                var picURIs = [ data.response.posts[0].photos.length ], picCaptions = [ data.response.posts[0].photos.length ]; 
+              
+                // Finds the correct photo based on specified size, saves URI and Caption
                 for( i = 0; i < post.photos.length; i++ ){
-                  for( k = 0; k < post.photos[i].alt_sizes.length; k++ ){
-                    if( post.photos[i].alt_sizes[k].width === mWidth )
-                      
+                  for( k = 0; k < post.photos[ i ].alt_sizes.length; k++ ){            
+                    // See If users desired photo size 
+                    if( post.photos[ i ].alt_sizes[ k ].width === width ){
+                      picURIs[ i ] = post.photos[ i ].alt_sizes[ k ].url;
+                      picCaptions[ i ] = post.photos[ i ].caption;
+                      defaultSizeIndex = 0;
+                      break;
+                    }
+                    else 
+                      // Our default size is going to be 250
+                      if( post.photos[ i ].alt_sizes[ k ].width === 250 )
+                        defaultSizeIndex = k;        
                   }
+                  
+                  // Current means of handling if alt_sizes doesn't have our default image size
+                  if( defaultSizeIndex === -1 )
+                    throw new Error( "Clearly your blog has a picture that is so tiny it isn't even 100px wide. Consider using a bigger" +
+                                     " picture or try a smaller size." );
+                  
+                  // If a matching photo is never found, use the default size.
+                  if( k === post.photos[ i ].alt_sizes.length )
+                    picURIs[ i ] = post.photos[ i ].alt_sizes[ defaultSizeIndex ].url;
                 }
                 
+                // Finally, all the potential setup is done. Below is the actual code putting everything in our div element
+                for( m = 0; m < picURIs.length; m++ ){
+                  htmlString += (m + 1) + ". " + picCaptions[ m ] + "<br/> <img src='" + picURIs[ m ] + "' alt='Pic" + i + "' /><br/>";
+                }
+                
+                htmlString += "<br/>" + post.caption;
               }
               else if( post.type === "quote" ){
                 // Quotes don't come with a title, so for a link to the post I'm going to use the blogname
