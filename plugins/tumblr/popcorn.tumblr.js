@@ -20,17 +20,14 @@
       .tumblr({
         start: 5,                     // seconds, mandatory
         end: 15,                      // seconds, mandatory
-        requestType: 'avatar',        // mandatory
+        requestType: 'blogpost',      // mandatory
         target: 'tumblrBlogInfodiv',  // mandatory
+        blogId: 123456789             // Mandatory if requestType is 'blogpost'
+        api_key: ew29j2o1mw91m1wom1s9 // Mandatory is requestType is 'blogpost' or 'info'
         size: 96                      // Optional
       } )
   *
   */
-  var htmlString = "",
-    tumblrCallBack = function ( data ) {
-      if( data.response.posts[0] )
-        htmlString = "Test";
-    };
 
   Popcorn.plugin( "tumblr" , {
     manifest: {
@@ -73,26 +70,22 @@
           options: [ 16, 24, 30, 40, 48, 64, 96, 128, 512 ], 
           label: "avatarSize"
         },
-        blogType: {
-          elem: "select",
-          options: [ "TEXT", "QUOTE", "LINK", "PHOTO", "VIDEO", "AUDIO", "ANSWER" ],
-          label: "Blog_Type"
-        },
         blogId: { // Required for BLOGPOST requests
           elem: "input",
           type: "number",
           label: "Blog_ID"
         },
-        tag: {
-          elem: "input",
-          type: "text",
-          label: "Blog_Tag"
-        },
         limit: {
           elem: "input",
-          number: "number",
+          type: "number",
           label: "Follower_Limit"
-        } 
+        },
+        // Optional for Photo BlogPosts, defaulted to 500 pixels
+        photoWidth: {
+          elem: "input",
+          type: "number",
+          label: "Photo_Width"
+        }
       }
     },
     _setup: function( options ) {
@@ -103,23 +96,23 @@
         return ( [ "info", "avatar", "followers", "blogpost" ].indexOf( type ) > -1 );
       };
       
-      // If retrieval is for a blog, check if it's a valid type
-      var validBlogType = function( bType ) {
-        return ( [ "text", "quote", "link", "photo", "video", "audio", "answer", "" ].indexOf( bType ) > -1 );
-      };
-      
       // Lowercase the types incase user enters it in another way
       options.requestType = options.requestType.toLowerCase();
       options.blogType = ( options.blogType || "" ).toLowerCase();
+      
+      // Check if blog url ( base_hostname ) is blank
+      if( !options.base_hostname || ( !options.api_key && ( options.requestType === "info" || options.requestType === "blogpost" ) ) ){
+        throw new Error( "Must provide a blog URL to the plugin and an api key for Blog Info and Blog Post Requests." );
+      }
       
       // Check Request Type
       if ( !validType( options.requestType ) ) {
         throw new Error( "Invalid tumblr plugin type." );
       }
       
-      // If Request is BLOGPOST, check if it's a valid blog type
-      if ( !validBlogType( options.blogType ) && options.requestType === "blogpost" ) {
-        throw new Error( "Invalid Blog Type." );
+      // Check if a blogID is supplied
+      if( !options.blogId && options.requestType === "blogpost" ){
+        throw new Error( "Error. Blog ID required for Blogpost requests." );
       }
       
       // Check if target container exists
@@ -134,24 +127,105 @@
       
       // If it's an avatar request, simply set the innerHTML to an img element with the src as the request URL
       if( options.requestType === "avatar" )
-        options._tumblrdiv.innerHTML = "<img src=" + 'http://api.tumblr.com/v2/blog/' + options.base_hostname + '/avatar/' + options.size + "alt='BlogAvatar' />";
+        options._tumblrdiv.innerHTML = "<img src=" + 'http://api.tumblr.com/v2/blog/' + options.base_hostname + '/avatar/' + options.size + " alt='BlogAvatar' />";
       else if( options.requestType === "followers" )
         options._tumblrdiv.innerHTML = "Followers not yet implemented";
       else {
-        var type;
-        
         // Construct type based if it's a blogpost or blog info as request string differs
         if( options.requestType === "blogpost" )
           type = "posts/" + options.blogType;
         else
           type = "info";
           
-        var requestString = "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/" + type + "?" + options.api_key + "&id=" + options.blogId +
-                            "&tag=" + options.tag + "&limit=" + options.limit + "&jsonp=tumblrCallBack";
+        var requestString = "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/" + type + "?api_key=" + options.api_key + "&id=" + options.blogId +
+                            "&limit=" + options.limit + "&jsonp=tumblrCallBack";
                             
-        Popcorn.getJSONP( requestString, tumblrCallBack, false );
-        
-        options._tumblrdiv.innerHTML = htmlString;
+        Popcorn.getJSONP( requestString, function( data ) {
+          var htmlString = "";
+          var post = data.response.posts[0];
+          
+          if( data.meta.msg === "OK" ){ 
+            if( options.requestType === "blogpost" ){
+              // Date Post was published, common to all blogpost requests
+              htmlString = "Date Published: " + post.date.slice( 0, post.date.indexOf( " " ) ) + "<br/><br/>";
+            
+              if( post.type === "text" ){
+                // Make a title that provides a link to the Blog URL
+                htmlString += "<a href='" + post.post_url + "' target='_blank'>" + post.title + "</a><br/><br/>";
+                // Add whatever html that is inside the blog's body
+                htmlString += post.body;
+              }
+              else if( post.type === "photo" ){
+                var mWidth = !options.photoWidth ? "500" : options.photoWidth, i, k;
+                var picURLs = [ post.photos.length ]; 
+                
+                for( i = 0; i < post.photos.length; i++ ){
+                  for( k = 0; k < post.photos[i].alt_sizes.length; k++ ){
+                    if( post.photos[i].alt_sizes[k].width === mWidth )
+                      
+                  }
+                }
+                
+              }
+              else if( post.type === "quote" ){
+                // Quotes don't come with a title, so for a link to the post I'm going to use the blogname
+                htmlString += "<a href'" + post.post_url + "' target='_blank'>" + post.text + "</a><br/><br/>";
+                htmlString += "<br/>Source: <b>" + post.source + "</b>";
+              }
+              else if( post.type === "link" ){
+                // Using the blog title as a link to it
+                htmlString += "<a href='" + post.post_url + "' target='_blank'>" + post.title + "</a><br/><br/>";
+                htmlString += post.description; 
+              }
+              else if( post.type === "chat" ){
+                // Brainstorm up ideas how to make each dialogue object to appear up "better" rather than just all be there at once
+                htmlString += "To be implemented";
+              }
+              else if( post.type === "audio" ){  
+                // Artist/Track info is not always returned so checking first.
+                if( !post.artist ) {
+                  console.log( post.artist );
+                  htmlString += "<a href='" + post.source_url + "' target='_blank'>" + post.source_title + "</a><br/>";
+                }
+                else {
+                  htmlString += "Artist: " + post.artist + "<br/> <a href='" + post.source_url+ "' target='_blank' style='float:left;margin:0 10px 0 0;'><img src='" + post.album_art + "' alt='" + post.album + "'></a><hr/>";
+                  htmlString += post.track_number + " - " + post.track_name + "<br/>";
+                }
+                
+                // Obviously the player itself is something that will be displayed either way so it is included outside the check
+                htmlString += post.player + "   " + post.plays  + " plays<br/>";
+                htmlString += post.caption;
+              }
+              else if( post.type === "video" ){
+                // Do Stuff
+              }
+              else if( post.type === "answer" ){
+                // Do Stuff
+              }
+              // Add tags to htmlString, common to all Blogpost requests
+              htmlString += "<br/><br/>Tags: ";
+              
+              // Check first if blog had any tags in the first place  
+              if( post.tags.length !== 0 ){
+                var i = 0;
+                htmlString += post.tags[0];
+                for ( i = 1; i < post.tags.length; i++ ){
+                  htmlString += ", " + post.tags[i];
+                }
+              }
+              else
+                htmlString += "No Tags Used";
+            }
+            else {
+              console.log( "Stuff Goes here for Blog Info Requests" );
+            }
+          }
+          else {
+            throw new Error( "Error. Request failed. Status code: " + data.meta.status );
+          }
+          
+          options._tumblrdiv.innerHTML = htmlString;
+        }, false );
       }
       
       options._container.style.display = "none";

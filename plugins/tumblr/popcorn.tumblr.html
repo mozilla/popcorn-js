@@ -17,10 +17,12 @@
       .volume(0)
       .play()
       .tumblr( {
-        requestType: "info",
+        requestType: "blogpost",
         target: "tumblrdiv",
         start: 1,
         end: 5,
+        base_hostname: "tumblrplugin.tumblr.com",
+        blogId: 10444839996,
         api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
       } )
       .tumblr( {
@@ -29,13 +31,14 @@
         start: 6,
         end: 10,
         base_hostname: "tumblrplugin.tumblr.com",
-        size: 96
+        size: 512
       } )
       .tumblr( {
         requestType: "followers",
         target: "tumblrdiv",
         start: 11,
         end: 15,
+        base_hostname: "tumblrplugin.tumblr.com",
         limit: 5
       } )
       .tumblr( {
@@ -43,7 +46,26 @@
         target: "tumblrdiv",
         start: 16,
         end: 20,
-        blogType: "photo",
+        base_hostname: "tumblrplugin.tumblr.com",
+        blogId: 12836106846,
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+      } )
+      .tumblr( {
+        requestType: "blogpost",
+        target: "tumblrdiv",
+        start: 21,
+        end: 25,
+        base_hostname: "tumblrplugin.tumblr.com",
+        blogId: 12836979043,
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+      } )
+      .tumblr( {
+        requestType: "blogpost",
+        target: "tumblrdiv",
+        start: 26,
+        end: 30,
+        base_hostname: "tumblrplugin.tumblr.com",
+        blogId: 10444919078,
         api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
       } );
     }, false);
