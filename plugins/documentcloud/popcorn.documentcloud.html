@@ -8,13 +8,18 @@
       var popcorn = Popcorn(Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=kffacxfA7G4&ob=av3n' ))
         .documentcloud({
           start: 3,
+          end: 7,
           url: "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html",
           width: 900,
           height: 500,
           showAnnotations: false,
-          page: 3,
+          page: 9000,
           target: "documentcloud-div"
-        })
+        });
+      var te = popcorn.getLastTrackEventId();
+      popcorn.exec( 9, function() {
+        popcorn.removeTrackEvent( te );
+      })
       .mute()
       .play();
     });

@@ -89,13 +89,9 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
       // Record the fact that the viewer is loaded.
       DV.loaded = true;
 
-      // Request the viewer JavaScript.
-      Popcorn.getScript('http://s3.documentcloud.org/viewer/viewer.js');
-    },
-
-
-    start: function(event, options) {
-      var url = options.url.replace(/\.html$/, '.js'), // swap .html URL to .js for API call
+      //setup elem...
+      function load() {
+       var url = options.url.replace(/\.html$/, '.js'), // swap .html URL to .js for API call
         target = options.target,
         container = '#' + target, // need #id for document cloud call
         containerDiv = document.getElementById(target),
@@ -110,40 +106,66 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
         search = options.search || true,
         page = options.page;
 
-      // TODO: cache viewers we have so we don't reload viewer in order to change pages...
+        // TODO: cache viewers we have so we don't reload viewer in order to change pages...
 
-      // Figure out if we need a callback to change the page #
-      var afterLoad = options.page ?
-        function() {
-          var api = new DV.Api(DV.viewers[_.keys(DV.viewers)[0]]);
-          api.setCurrentPage(3);
-        } :
-        function() {};
+        // Figure out if we need a callback to change the page #
+        var afterLoad = options.page ?
+          function() {
+            var api = new DV.Api(DV.viewers[_.keys(DV.viewers)[0]]);
+            api.setCurrentPage( page );
+            containerDiv.style.visibility = "hidden";
+          } :
+          function() {};
 
-      DV.load(url, {
-        width: width,
-        height: height,
-        sidebar: sidebar,
-        text: text,
-        pdf: pdf,
-        showAnnotations: showAnnotations,
-        zoom: zoom,
-        search: search,
-        container: container,
-        afterLoad: afterLoad
-      });
+        DV.load(url, {
+          width: width,
+          height: height,
+          sidebar: sidebar,
+          text: text,
+          pdf: pdf,
+          showAnnotations: showAnnotations,
+          zoom: zoom,
+          search: search,
+          container: container,
+          afterLoad: afterLoad
+        });
+      };
+
+      // Request the viewer JavaScript.
+      Popcorn.getScript('http://s3.documentcloud.org/viewer/viewer.js', load );
+    },
+
+
+    start: function(event, options) {
+      var elem = document.getElementById(options.target);
+
+      if ( elem ) {
+        elem.style.visibility = "visible";
+      }
     },
 
     end: function(event, options) {
-      // TODO: this causes viewer listeners to throw when it vanishes.  Need a clean way to remove viewer...
       var elem = document.getElementById(options.target);
 
-      while (elem.hasChildNodes()) {
-        elem.removeChild(elem.lastChild);
+      if ( elem ) {
+        elem.style.visibility = "hidden";
       }
     },
 
     _teardown: function( options ) {
+      // TODO: this causes viewer listeners to throw when it vanishes.  Need a clean way to remove viewer...
+      var elem = document.getElementById(options.target),
+      key = _.keys( DV.viewers )[ 0 ];
+
+      if ( key && DV.viewers[ key ] ) {
+        var api = new DV.Api(DV.viewers[_.keys(DV.viewers)[0]]);
+        api.clearHashListeners();
+        delete DV.viewers[ key ];
+      }
+
+      while ( elem.hasChildNodes() ) {
+        elem.removeChild( elem.lastChild );
+      }
     }
 
   });
