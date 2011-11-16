@@ -2,28 +2,24 @@
 <html>
 <head>
   <title>Popcorn Subtitle Plug-in Demo</title>
-  
   <script src="../../popcorn.js"></script>
-
   <script src="popcorn.subtitle.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
-      .volume(0)
-      .play() 
+    document.addEventListener( "DOMContentLoaded", function() {
+      var p = Popcorn( "#video" )
+      .volume( 0 )
+      .play()
       .subtitle({
-        start: 5, // seconds
-        end: 15, // seconds
-        text: 'this is the first subtitle of 2011',
-      } )
+        start: 5,
+        end: 15,
+        text: "this is the first subtitle of 2011",
+      })
       .subtitle({
-        start: 20, // seconds
-        end: 45, // seconds
-        text: 'this is the second subtitle of 2011',
-      } )
-
+        start: 20,
+        end: 45,
+        text: "this is the second subtitle of 2011",
+      })
     }, false);
-
   </script>
 </head>
 <body>
@@ -32,21 +28,21 @@
   <p> A subtitle displaying 'this is the second subtitle of 2011' will appear at 20 seconds and disappear at 45 seconds.</p>
   <div>
 
-    <video id='video' 
+    <video id="video"
       controls height="480" width="854"
-      poster="../../test/poster.png"> 
+      poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+        type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+        type='video/ogg; codecs="theora, vorbis"'>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+      <p>Your user agent does not support the HTML5 Video element.</p>
 
-    </video> 
+    </video>
   </div>
 
 </body>

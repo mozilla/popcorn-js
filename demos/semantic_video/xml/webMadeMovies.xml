@@ -93,28 +93,23 @@
       <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" src="@stevesong" target="personaltwitter" width="238" height="120"/>
       <wikipedia in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberofwords="200" lang="en" target="wikidiv"/>
       <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
-      <googlenews in="00:00:05:02" out="00:00:10:07" target="googlenewsdiv" topic="Village Telco"/>
 
       <twitter in="00:00:10:07" out="00:00:18:04" title="Oil Spill" src="#oilspill" target="twitter" width="238" height="120"/>
-      <googlenews in="00:00:10:07" out="00:00:18:04" target="googlenewsdiv" topic="Oil Spill"/>
       <attribution in="00:00:10:07" out="00:00:18:04" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>
 
       <tagthisperson target="inthisvideo" in="00:00:18:04" out="00:00:25:02" person="Keyboard Cat"/>
       <twitter in="00:00:18:04" out="00:00:25:02" title="Keyboard Cat" src="#keyboardcat" target="twitter" width="238" height="120"/>
       <attribution in="00:00:18:04" out="00:00:25:02" target="container5">KeyBoard Cat, Charlie Schmidt</attribution>
-      <googlenews in="00:00:18:04" out="00:00:25:02" target="googlenewsdiv" topic="Keyboard Cat"/>
 
       <tagthisperson target="inthisvideo" in="00:00:28:09" out="00:00:29:07" person="Jeffrey Warren" />
       <attribution in="00:00:28:09" out="00:00:29:07" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>
       <tagthisperson target="inthisvideo" in="00:00:29:08" out="00:00:31:00" person="Village Telco Guy" />
 
       <wikipedia in="00:00:32:00" out="00:00:41:00" resourceid="theinternet" numberofwords="200" target="wikidiv"/>
-      <googlenews in="00:00:32:00" out="00:00:41:00" target="googlenewsdiv" topic="the internet"/>
 
       <tagthisperson target="inthisvideo" in="00:00:41:00" out="00:01:07:09" person="Jeffrey Warren" />
       <flickr in="00:00:41:00" out="00:01:07:09" target="personalflickr" userid="35034346917@N01" numberofimages="8" padding="4px"/>
       <twitter in="00:00:41:00" out="00:01:07:09" title="Oil Spill" src="#oilspill" target="twitter" width="238" height="120"/>
-      <googlenews in="00:00:41:00" out="00:01:07:09" target="googlenewsdiv" topic="Oil Spill"/>
       <googlemap resourceid="grandislewiki" in="00:00:41:00" out="00:01:07:09" lat="29.2720" lng="-90.0233 " target="container2" zoom="8"/>
       <wikipedia in="00:00:41:00" out="00:01:07:09" resourceid="oilspill" numberofwords="200" target="wikidiv"/>
       <footnote in="00:00:41:00" out="00:01:07:09" target="footnotediv">Learn more about Grass Roots mapping at www.grassrootsmapping.org</footnote>
@@ -153,12 +148,8 @@
       <wikipedia in="00:02:57:01" out="00:03:03:00" resourceid="timbernerslee" numberofwords="200" target="wikidiv"/>
       <twitter in="00:02:57:01" out="00:03:03:00" title="Tim Berners-Lee" src="@timberners_lee" target="twitter" width="238" height="120"/>
 
-      <googlenews in="00:02:57:01" out="00:03:03:00" target="googlenewsdiv" topic="Tim Berners-Lee"/>
-
       <wikipedia in="00:03:03:01" out="00:03:28:00" resourceid="worldwideweb" numberofwords="200" target="wikidiv"/>
-      <googlenews in="00:03:03:01" out="00:03:28:00" target="googlenewsdiv" topic="World Wide Web"/>
 
-      <googlenews in="00:03:28:00" out="00:03:32:00" target="googlenewsdiv" topic="Wikipedia"/>
       <wikipedia in="00:03:28:01" out="00:03:32:00" resourceid="wikipedia" numberofwords="200" target="wikidiv"/>
 
       <wikipedia in="00:03:36:00" out="00:03:43:00" resourceid="openstandards" numberofwords="200" target="wikidiv"/>

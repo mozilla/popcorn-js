@@ -1,6 +1,6 @@
 //PLUGIN: linkedin
 
-(function (Popcorn){
+(function ( Popcorn ){
 
   /**
    * LinkedIn Popcorn plug-in
@@ -68,44 +68,44 @@
           label: "Counter"
         },
         memberid: {
-          elem:"input",
-          type:"text",
-          label:"Member ID"
+          elem: "input",
+          type: "text",
+          label: "Member ID"
         },
         format: {
-          elem:"input",
-          type:"text",
-          label:"Format"
+          elem: "input",
+          type: "text",
+          label: "Format"
         },
         companyid: {
-          elem:"input",
-          type:"text",
-          label:"Company ID"
+          elem: "input",
+          type: "text",
+          label: "Company ID"
         },
         modules: {
-          elem:"input",
-          type:"text",
-          label:"Modules"
+          elem: "input",
+          type: "text",
+          label: "Modules"
         },
         productid: {
-          elem:"input",
-          type:"text",
-          label:"productid"
+          elem: "input",
+          type: "text",
+          label: "productid"
         },
         related: {
-          elem:"input",
-          type:"text",
-          label:"related"
+          elem: "input",
+          type: "text",
+          label: "related"
         },
         start: {
-          elem:"input",
-          type:"text",
-          label:"In"
+          elem: "input",
+          type: "text",
+          label: "In"
         },
         end: {
-          elem:"input",
-          type:"text",
-          label:"Out"
+          elem: "input",
+          type: "text",
+          label: "Out"
         },
 
         target: "linkedin-container"
@@ -117,7 +117,7 @@
           target = document.getElementById( options.target ),
           script = document.createElement( "script" );
 
-      Popcorn.getScript("http://platform.linkedin.com/in.js");
+      Popcorn.getScript( "//platform.linkedin.com/in.js" );
 
       options._container = document.createElement( "div" );
       options._container.appendChild( script );
@@ -125,7 +125,7 @@
       if ( apikey ) {
         script.innerHTML = "api_key: " + apikey;
       }
-      
+
       options.type = options.type && options.type.toLowerCase() || "";
 
       // Replace the LinkedIn plugin's error message to something more helpful

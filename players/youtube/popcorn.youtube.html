@@ -15,6 +15,7 @@
       <script>
         // Helper function to get elements
         function element(id) {
+
           return document.getElementById(id);
         }
         
@@ -22,7 +23,7 @@
           var paused = true,
               popcorn;
           
-          popcorn = Popcorn( Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=9oar9glUCL0', { width: 400, controls: 0, annotations: 3 } ) );
+          popcorn = Popcorn.youtube( '#video', 'http://www.youtube.com/watch?v=9oar9glUCL0' );
           
           popcorn = popcorn
             .footnote({
@@ -94,19 +95,18 @@
             element( 'player-time' ).innerHTML = popcorn.currentTime();
           })
           // Update button labels
-          .listen( 'playing' , function() {
+          .listen( 'play' , function() {
             paused = false;
             element( 'btn-play-pause' ).innerHTML = 'Pause';
           })
           .listen('pause', function() {
             paused = true;
             element( 'btn-play-pause' ).innerHTML = 'Play';
-          })
-          popcorn.mute()
-          .play();
-            
+          });
+
           // Setup UI after loaded
           popcorn.listen( 'load', function() {
+
             element( 'player-status' ).innerHTML = 'Ready';
             element( 'player_vol' ).innerHTML = popcorn.volume();
             
@@ -121,6 +121,7 @@
 
             // Seek
             element('btn-seek').addEventListener('click', function() {
+
               popcorn.currentTime( 30 );
             }, false);
 
@@ -131,7 +132,7 @@
             }, false);
             
             element('btn-mute').addEventListener('click', function() {
-              popcorn.mute();
+              popcorn.mute( !popcorn.media.muted );
             }, false);
           });
         }, false );

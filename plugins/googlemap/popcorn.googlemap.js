@@ -1,31 +1,31 @@
 
 // PLUGIN: Google Maps
 var googleCallback;
-(function (Popcorn) {
+(function ( Popcorn ) {
 
   var i = 1,
     _mapFired = false,
     _mapLoaded = false,
     geocoder, loadMaps;
-  //google api callback 
-  googleCallback = function (data) {
-    // ensure all of the maps functions needed are loaded 
+  //google api callback
+  googleCallback = function ( data ) {
+    // ensure all of the maps functions needed are loaded
     // before setting _maploaded to true
-    if (typeof google !== "undefined" && google.maps && google.maps.Geocoder && google.maps.LatLng) {
+    if ( typeof google !== "undefined" && google.maps && google.maps.Geocoder && google.maps.LatLng ) {
       geocoder = new google.maps.Geocoder();
       _mapLoaded = true;
     } else {
       setTimeout(function () {
-        googleCallback(data);
+        googleCallback( data );
       }, 1);
     }
   };
   // function that loads the google api
   loadMaps = function () {
     // for some reason the Google Map API adds content to the body
-    if (document.body) {
+    if ( document.body ) {
       _mapFired = true;
-      Popcorn.getScript("http://maps.google.com/maps/api/js?sensor=false&callback=googleCallback");
+      Popcorn.getScript( "//maps.google.com/maps/api/js?sensor=false&callback=googleCallback" );
     } else {
       setTimeout(function () {
         loadMaps();
@@ -75,19 +75,19 @@ var googleCallback;
    } )
    *
    */
-  Popcorn.plugin("googlemap", function (options) {
+  Popcorn.plugin( "googlemap", function ( options ) {
     var newdiv, map, location,
         target = document.getElementById( options.target );
 
     // if this is the firest time running the plugins
     // call the function that gets the sctipt
-    if (!_mapFired) {
+    if ( !_mapFired ) {
       loadMaps();
     }
 
     // create a new div this way anything in the target div is left intact
     // this is later passed on to the maps api
-    newdiv = document.createElement("div");
+    newdiv = document.createElement( "div" );
     newdiv.id = "actualmap" + i;
     newdiv.style.width = "100%";
     newdiv.style.height = "100%";
@@ -102,26 +102,26 @@ var googleCallback;
     // ensure that google maps and its functions are loaded
     // before setting up the map parameters
     var isMapReady = function () {
-      if (_mapLoaded) {
-        if (options.location) {
+      if ( _mapLoaded ) {
+        if ( options.location ) {
           // calls an anonymous google function called on separate thread
           geocoder.geocode({
             "address": options.location
-          }, function (results, status) {
-            if (status === google.maps.GeocoderStatus.OK) {
-              options.lat = results[0].geometry.location.lat();
-              options.lng = results[0].geometry.location.lng();
-              location = new google.maps.LatLng(options.lat, options.lng);
-              map = new google.maps.Map(newdiv, {
-                mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID
+          }, function ( results, status ) {
+            if ( status === google.maps.GeocoderStatus.OK ) {
+              options.lat = results[ 0 ].geometry.location.lat();
+              options.lng = results[ 0 ].geometry.location.lng();
+              location = new google.maps.LatLng( options.lat, options.lng );
+              map = new google.maps.Map( newdiv, {
+                mapTypeId: google.maps.MapTypeId[ options.type ] || google.maps.MapTypeId.HYBRID
               });
               map.getDiv().style.display = "none";
             }
           });
         } else {
-          location = new google.maps.LatLng(options.lat, options.lng);
-          map = new google.maps.Map(newdiv, {
-            mapTypeId: google.maps.MapTypeId[options.type] || google.maps.MapTypeId.HYBRID
+          location = new google.maps.LatLng( options.lat, options.lng );
+          map = new google.maps.Map( newdiv, {
+            mapTypeId: google.maps.MapTypeId[ options.type ] || google.maps.MapTypeId.HYBRID
           });
           map.getDiv().style.display = "none";
         }
@@ -150,7 +150,7 @@ var googleCallback;
           if ( map ) {
             map.getDiv().style.display = "block";
             // reset the location and zoom just in case the user plaid with the map
-            google.maps.event.trigger(map, 'resize');
+            google.maps.event.trigger( map, "resize" );
             map.setCenter( location );
 
             // make sure options.zoom is a number
@@ -171,8 +171,6 @@ var googleCallback;
               options.pitch = +options.pitch;
             }
 
-						
-
             if ( options.type === "STREETVIEW" ) {
               // Switch this map into streeview mode
               map.setStreetView(
@@ -187,7 +185,7 @@ var googleCallback;
                   }
                 })
               );
-  
+
               //  Function to handle tweening using a set timeout
               var tween = function( rM, t ) {
 
@@ -195,7 +193,7 @@ var googleCallback;
                 setTimeout(function() {
 
                   var current_time = that.media.currentTime;
-    
+
                   //  Checks whether this is a generated route or not
                   if ( typeof options.tween === "object" ) {
 
@@ -234,16 +232,16 @@ var googleCallback;
                           heading: computeHeading( rM[ k ], rM[ k + 1 ] ) || 0,
                           zoom: options.zoom,
                           pitch: options.pitch || 0
-                        }); 
+                        });
                         sView2.setPosition( checkpoints[ k ] );
                       }
                     }
 
                     tween( checkpoints, options.interval );
-                  }   
+                  }
                 }, t );
               };
-              
+
               //  Determines if we should use hardcoded values ( using options.tween ),
               //  or if we should use a start and end location and let google generate
               //  the route for us
@@ -252,7 +250,7 @@ var googleCallback;
               //  Creating another variable to hold the streetview map for tweening,
               //  Doing this because if there was more then one streetview map, the tweening would sometimes appear in other maps
               var sView2 = sView;
-                
+
                 //  Create an array to store all the lat/lang values along our route
                 var checkpoints = [];
 
@@ -280,13 +278,13 @@ var googleCallback;
                 });
 
                 var showSteps = function ( directionResult, that ) {
-                
+
                   //  Push new google map lat and lng values into an array from our list of lat and lng values
                   var routes = directionResult.routes[ 0 ].overview_path;
                   for ( var j = 0, k = routes.length; j < k; j++ ) {
                     checkpoints.push( new google.maps.LatLng( routes[ j ].lat(), routes[ j ].lng() ) );
-                  }   
-                  
+                  }
+
                   //  Check to make sure the interval exists, if not, set to a default of 1000
                   options.interval = options.interval || 1000;
                   tween( checkpoints, 10 );
@@ -298,7 +296,7 @@ var googleCallback;
                 var sView3 = sView;
 
                 for ( var i = 0, l = options.tween.length; i < l; i++ ) {
-                 
+
                   //  Make sure interval exists, if not, set to 1000
                   options.tween[ i ].interval = options.tween[ i ].interval || 1000;
                   tween( options.tween, 10 );
@@ -319,19 +317,19 @@ var googleCallback;
        * of the video reaches the end time provided by the
        * options variable
        */
-      end: function (event, options) {
+      end: function ( event, options ) {
         // if the map exists hide it do not delete the map just in
         // case the user seeks back to time b/w start and end
-        if (map) {
+        if ( map ) {
           map.getDiv().style.display = "none";
         }
       },
-      _teardown: function (options) {
+      _teardown: function ( options ) {
 
-        var target = document.getElementById(options.target);
+        var target = document.getElementById( options.target );
 
         // the map must be manually removed
-        target && target.removeChild(newdiv);
+        target && target.removeChild( newdiv );
         newdiv = map = location = null;
       }
     };
@@ -356,7 +354,7 @@ var googleCallback;
       target: "map-container",
       type: {
         elem: "select",
-        options: ["ROADMAP", "SATELLITE", "STREETVIEW", "HYBRID", "TERRAIN"],
+        options: [ "ROADMAP", "SATELLITE", "STREETVIEW", "HYBRID", "TERRAIN" ],
         label: "Type"
       },
       zoom: {
@@ -391,5 +389,5 @@ var googleCallback;
       }
     }
   });
-})(Popcorn);
+})( Popcorn );
 

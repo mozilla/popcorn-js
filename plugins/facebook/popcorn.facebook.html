@@ -2,59 +2,69 @@
 <html>
 <head>
   <title>Popcorn Facebook Plug-in Demo</title>
-  
+
   <script src="../../popcorn.js"></script>
   <script src="popcorn.facebook.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
-      .volume(0)
+    document.addEventListener( "DOMContentLoaded", function () {
+      var p = Popcorn( "#video" )
+      .volume( 0 )
       .play()
       .facebook({
-        type        : "live-stream",
-        target      : "activitydiv",
-        start       : 1,
-        end         : 10,
-        event_app_id: 174243249296725 // id is from example http://developers.facebook.com/docs/reference/plugins/live-stream/
-      } )
+        type: "live-stream",
+        target: "activitydiv",
+        start: 1,
+        end: 50,
+        // id is from example http://developers.facebook.com/docs/reference/plugins/live-stream/
+        event_app_id: 174243249296725
+      })
       .facebook({
-        type  : "LIKE",
+        type: "LIKE",
         target: "likediv",
         layout: "box_count",
-        start : 5,
-        end   : 10
-      } )
+        start: 5,
+        end: 15
+      })
       .facebook({
-        type   : "send",
-        target : "likediv",
-        start  : 1,
-        end    : 5
-      } )
+        type: "send",
+        target: "likediv",
+        start: 10,
+        end: 15
+      })
       .facebook({
-        href  : "http://www.facebook.com/senecacollege",
-        type  : "LIKE-BOX",
-        show_faces : "true",
+        href: "http://www.facebook.com/senecacollege",
+        type: "LIKE-BOX",
+        show_faces: "true",
         header: "false",
         target: "likeboxdiv",
-        start : 6,
-        end   : 10
-      } )
+        start: 6,
+        end: 15
+      })
       .facebook({
-        site  : "http://popcornjs.org/",
-        type  : "ACTIVITY",
+        site: "http://popcornjs.org/",
+        type: "ACTIVITY",
         target: "activitydiv",
         header: true,
-        start : 11,
-        end   : 15
-      } )
+        start: 11,
+        end: 15
+      })
       .facebook({
-        href  : "http://www.facebook.com/senecacollege",
-        type  : "FACEPILE",
+        href: "https://www.facebook.com/boardwalkempire",
+        type: "FACEPILE",
         target: "facepilediv",
-        width : 300,
-        start : 10,
-        end   : 15
-      } );
+        width: 300,
+        start: 10,
+        end: 15
+      })
+      .facebook({
+        href: "example.com",
+        type: "COMMENTS",
+        target: "commentdiv",
+        start: 5,
+        end: 50,
+        width: 400,
+        num_posts: 5
+      });
     }, false);
 
   </script>
@@ -64,24 +74,24 @@
   <p>"Like" plugin directly below video. href is the page it's on. "Like box" is below "like". href is set to Seneca College's Facebook page<br/>
   "Facepile" is to the right of the video (must be logged into facebook). href is also set to Seneca College's Facebook page. <br/>
   "Activity feed" is below "Facepile". href is set to popcornjs.org.</p>
-  
+
   <div>
-    <video id='video' 
-      controls preload='none' 
-      width= '350px'
-      poster="../../test/poster.png"> 
+    <video id="video"
+      controls preload="none"
+      width="350px"
+      poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+        type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+        type='video/ogg; codecs="theora, vorbis"'>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+      <p>Your user agent does not support the HTML5 Video element.</p>
 
-    </video> 
+    </video>
   </div>
   <div>
     <div id="likediv"></div>
@@ -91,6 +101,7 @@
   <div style="position:absolute;left:400px;top:150px">
     <div id="facepilediv"></div>
     <div id="activitydiv"></div>
+    <div id="commentdiv"></div>
   </div>
 </body>
 </html>

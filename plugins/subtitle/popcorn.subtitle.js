@@ -33,7 +33,7 @@
       };
 
   /**
-   * Subtitle popcorn plug-in 
+   * Subtitle popcorn plug-in
    * Displays a subtitle over the video, or in the target div
    * Options parameter will need a start, and end.
    * Optional parameters are target and text.
@@ -44,7 +44,7 @@
    * Text is the text of the subtitle you want to display.
    *
    * @param {Object} options
-   * 
+   *
    * Example:
      var p = Popcorn('#video')
         .subtitle({
@@ -57,7 +57,7 @@
    */
 
   Popcorn.plugin( "subtitle" , {
-    
+
       manifest: {
         about: {
           name: "Popcorn Subtitle Plugin",
@@ -67,19 +67,19 @@
         },
         options: {
           start: {
-            elem: "input", 
-            type: "text", 
+            elem: "input",
+            type: "text",
             label: "In"
           },
           end: {
-            elem: "input", 
-            type: "text", 
+            elem: "input",
+            type: "text",
             label: "Out"
           },
           target: "subtitle-container",
           text: {
-            elem: "input", 
-            type: "text", 
+            elem: "input",
+            type: "text",
             label: "Text"
           }
         }
@@ -92,13 +92,13 @@
         newdiv.style.display = "none";
 
         // Creates a div for all subtitles to use
-        ( !this.container && ( !options.target || options.target === "subtitle-container" ) ) && 
+        ( !this.container && ( !options.target || options.target === "subtitle-container" ) ) &&
           createDefaultContainer( this );
 
         // if a target is specified, use that
         if ( options.target && options.target !== "subtitle-container" ) {
           options.container = document.getElementById( options.target );
-        } else { 
+        } else {
           // use shared default container
           options.container = this.container;
         }
@@ -107,13 +107,13 @@
         options.innerContainer = newdiv;
 
         options.showSubtitle = function() {
-          options.innerContainer.innerHTML = options.text;
+          options.innerContainer.innerHTML = options.text || "";
         };
       },
       /**
-       * @member subtitle 
-       * The start function will be executed when the currentTime 
-       * of the video  reaches the start time provided by the 
+       * @member subtitle
+       * The start function will be executed when the currentTime
+       * of the video  reaches the start time provided by the
        * options variable
        */
       start: function( event, options ){
@@ -121,9 +121,9 @@
         options.showSubtitle( options, options.text );
       },
       /**
-       * @member subtitle 
-       * The end function will be executed when the currentTime 
-       * of the video  reaches the end time provided by the 
+       * @member subtitle
+       * The end function will be executed when the currentTime
+       * of the video  reaches the end time provided by the
        * options variable
        */
       end: function( event, options ) {
@@ -134,7 +134,7 @@
       _teardown: function ( options ) {
         options.container.removeChild( options.innerContainer );
       }
-   
+
   });
 
 })( Popcorn );

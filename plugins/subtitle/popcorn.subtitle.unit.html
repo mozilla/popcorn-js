@@ -4,13 +4,11 @@
   <title>Popcorn Subtitle Plug-in Test</title>
   <link rel="stylesheet" href="../../test/qunit/qunit.css" type="text/css" media="screen">
   <script src="../../test/qunit/qunit.js"></script>
-  <!-- 
-    do not move - this must be called immediately prior to 
+  <!--
+    do not move - this must be called immediately prior to
     popcorn-api-draft.js
   -->
-  
   <script src="../../popcorn.js"></script>
-  
   <script src="popcorn.subtitle.js"></script>
   <script src="popcorn.subtitle.unit.js"></script>
 </head>
@@ -21,42 +19,43 @@
   <h2 id="qunit-userAgent"></h2>
   <ol id="qunit-tests"></ol>
   <div id="qunit-fixture">  </div>
-  
-  <video id='video' 
-    controls preload='none' 
-    width= '250px'
-    poster="../../test/poster.png"> 
 
-    <source id='mp4'
+  <video id="video"
+    controls preload="none"
+    width="250px"
+    poster="../../test/poster.png">
+
+    <source id="mp4"
       src="../../test/trailer.mp4"
-      type='video/mp4; codecs="avc1, mp4a"'> 
+      type='video/mp4; codecs="avc1, mp4a"'>
 
-    <source id='ogv'
+    <source id="ogv"
       src="../../test/trailer.ogv"
-      type='video/ogg; codecs="theora, vorbis"'> 
-      
-    <source id='webm'
+      type='video/ogg; codecs="theora, vorbis"'>
+
+    <source id="webm"
       src="../../test/trailer.webm"
       type='video/webm; codecs="vp8, vorbis"'>
 
-    <p>Your user agent does not support the HTML5 Video element.</p> 
+    <p>Your user agent does not support the HTML5 Video element.</p>
 
   </video>
-  <video id='video2' 
-    controls preload='none' 
-    width= '250px'
-    poster="../../test/poster.png"> 
+  <video id="video2"
+    controls preload="none"
+    width="250px"
+    poster="../../test/poster.png">
 
-    <source id='mp4'
+    <source id="mp4"
       src="../../test/trailer.mp4"
-      type='video/mp4; codecs="avc1, mp4a"'> 
+      type='video/mp4; codecs="avc1, mp4a"'>
 
-    <source id='ogv'
+    <source id="ogv"
       src="../../test/trailer.ogv"
-      type='video/ogg; codecs="theora, vorbis"'> 
+      type='video/ogg; codecs="theora, vorbis"'>
 
-    <p>Your user agent does not support the HTML5 Video element.</p> 
+    <p>Your user agent does not support the HTML5 Video element.</p>
 
-  </video> 
+  </video>
+  <div id="sub-content"></div>
 </body>
 </html>

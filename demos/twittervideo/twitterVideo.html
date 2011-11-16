@@ -43,11 +43,11 @@
           // and displaying the video accordingly, displays error message if the
           // video type is incompatable
 					if( document.getElementById( 'vidUrl' ).value.search( "youtube" ) != -1 ){
-						popcorn = Popcorn( Popcorn.youtube( 'video', document.getElementById( 'vidUrl' ).value ) );
+						popcorn = Popcorn.youtube( '#video', document.getElementById( 'vidUrl' ).value );
 						ok = true;
 					}
 					else if( document.getElementById( 'vidUrl' ).value.search( "vimeo" ) != -1 ){
-						popcorn = Popcorn( Popcorn.vimeo( 'video', document.getElementById( 'vidUrl' ).value ) );
+						popcorn = Popcorn.vimeo( '#video', document.getElementById( 'vidUrl' ).value );
 						ok = true;
 					}
 					else if( document.getElementById( 'vidUrl' ).value.search( "ogv" ) != -1 ){
@@ -84,7 +84,7 @@
 
 					if(ok){
             // Add twitter widget with associated parameters
-						popcorn = popcorn
+						popcorn
 							.twitter({
 								start: 0, // seconds
 								end: 45, // seconds
@@ -107,7 +107,7 @@
 			<p>Twitter Hashtag:</p>
 			<input id="hashtag" size="20" value="#seneca"/>
 			<button class="start" id="srtBtn">Play</button><br />
-      <div id="video" width="360" height="300" ></div><br />
+      <div id="video" style="width: 360px; height: 300px;" ></div><br />
 			<div id="twitterdiv" style="position:relative;float:left;width:400px;height:600px"></div>
     </div>
   </body>

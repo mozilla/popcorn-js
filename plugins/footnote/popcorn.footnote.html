@@ -2,25 +2,25 @@
 <html>
 <head>
   <title>Popcorn footnote Plug-in Demo</title>
-  
+
   <script src="../../popcorn.js"></script>
   <script src="popcorn.footnote.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
-      .play() 
+      var p = Popcorn( "#video" )
+      .play()
       .footnote({
-        start: 5, // seconds
-        end: 15, // seconds
-        text: 'This video made exclusively for drumbeat.org',
-        target: 'footnotediv'
-      } )
+        start: 5,
+        end: 15,
+        text: "This video made exclusively for drumbeat.org",
+        target: "footnotediv"
+      })
       .footnote({
-        start: 20, // seconds
-        end: 45, // seconds
-        text: 'Visit webmademovies.org for more details',
-        target: 'footnotediv'
-      } )
+        start: 20,
+        end: 45,
+        text: "Visit webmademovies.org for more details",
+        target: "footnotediv"
+      })
 
     }, false);
 
@@ -31,22 +31,22 @@
   <p> A footnote displaying This video made exclusively for drumbeat.org' will appear at 5 seconds and disappear at 15 seconds.</p>
   <p> A footnote displaying 'Visit webmademovies.org for more details' will appear at 20 seconds and disappear at 45 seconds.</p>
   <div>
-    <video id='video' 
-      controls preload='none' 
-      width= '250px'
-      poster="../../test/poster.png"> 
+    <video id="video"
+      controls preload="none"
+      width="250px"
+      poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+        type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+        type='video/ogg; codecs="theora, vorbis"'>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+      <p>Your user agent does not support the HTML5 Video element.</p>
 
-    </video> 
+    </video>
   </div>
   <div id="footnotediv" width="50%" height="50%">
   </div>

@@ -1,7 +1,7 @@
 // PLUGIN: tagthisperson
 
-(function (Popcorn) {
-    
+(function ( Popcorn ) {
+
   var peopleArray = [];
   // one People object per options.target
   var People = function() {
@@ -17,21 +17,21 @@
       return r.toString();
     };
   };
-  
+
   /**
-   * tagthisperson popcorn plug-in 
+   * tagthisperson popcorn plug-in
    * Adds people's names to an element on the page.
    * Options parameter will need a start, end, target, image and person.
    * Start is the time that you want this plug-in to execute
-   * End is the time that you want this plug-in to stop executing 
+   * End is the time that you want this plug-in to stop executing
    * Person is the name of the person who you want to tag
    * Image is the url to the image of the person - optional
-   * href is the url to the webpage of the person - optional   
-   * Target is the id of the document element that the text needs to be 
+   * href is the url to the webpage of the person - optional
+   * Target is the id of the document element that the text needs to be
    * attached to, this target element must exist on the DOM
-   * 
+   *
    * @param {Object} options
-   * 
+   *
    * Example:
      var p = Popcorn('#video')
         .tagthisperson({
@@ -45,9 +45,9 @@
    *
    */
   Popcorn.plugin( "tagthisperson" , ( function() {
-    
+
     return {
-    
+
       _setup: function( options ) {
         var exists = false,
             target = document.getElementById( options.target );
@@ -60,7 +60,7 @@
         // the idea here is to have one object per unique options.target
         for ( var i = 0; i < peopleArray.length; i++ ) {
           if ( peopleArray[ i ].name === options.target ) {
-            options._p = peopleArray[ i ];  
+            options._p = peopleArray[ i ];
             exists = true;
             break;
           }
@@ -72,9 +72,9 @@
         }
       },
       /**
-       * @member tagthisperson 
-       * The start function will be executed when the currentTime 
-       * of the video  reaches the start time provided by the 
+       * @member tagthisperson
+       * The start function will be executed when the currentTime
+       * of the video  reaches the start time provided by the
        * options variable
        */
       start: function( event, options ){
@@ -84,9 +84,9 @@
         document.getElementById( options.target ).innerHTML = options._p.toString();
       },
       /**
-       * @member tagthisperson 
-       * The end function will be executed when the currentTime 
-       * of the video  reaches the end time provided by the 
+       * @member tagthisperson
+       * The end function will be executed when the currentTime
+       * of the video  reaches the end time provided by the
        * options variable
        */
       end: function( event, options ){
@@ -104,12 +104,32 @@
       website: "annasob.wordpress.com"
     },
     options:{
-      start    : {elem:'input', type:'text', label:'In'},
-      end      : {elem:'input', type:'text', label:'Out'},
-      target   : 'tagthisperson-container',
-      person   : {elem:'input', type:'text', label:'Name'},
-      image    : {elem:'input', type:'text', label:'Image Src'},
-      href     : {elem:'input', type:'text', label:'URL'}   
+      start: {
+        elem: "input",
+        type: "text",
+        label: "In"
+      },
+      end: {
+        elem: "input",
+        type: "text",
+        label: "Out"
+      },
+      target : "tagthisperson-container",
+      person: {
+        elem: "input",
+        type: "text",
+        label: "Name"
+      },
+      image: {
+        elem: "input",
+        type: "url",
+        label: "Image Src"
+      },
+      href: {
+        elem: "input",
+        type: "url",
+        label: "URL"
+      }
     }
   });
 

@@ -1,31 +1,31 @@
 // PLUGIN: LASTFM
 
-(function (Popcorn) {
+(function ( Popcorn ) {
 
   var _artists = {},
-      lastFMcallback = function(data){
-        if (data.artist) {
+      lastFMcallback = function( data ) {
+        if ( data.artist ) {
           var htmlString = "";
 
-          htmlString = '<h3>'+data.artist.name+'</h3>';
-          htmlString += '<a href="'+data.artist.url+'" target="_blank" style="float:left;margin:0 10px 0 0;"><img src="'+ data.artist.image[2]['#text'] +'" alt=""></a>';
-          htmlString += '<p>'+ data.artist.bio.summary +'</p>';
-          htmlString += '<hr /><p><h4>Tags</h4><ul>';
+          htmlString = "<h3>" + data.artist.name + "</h3>";
+          htmlString += "<a href='" + data.artist.url + "' target='_blank' style='float:left;margin:0 10px 0 0;'><img src='" + data.artist.image[ 2 ][ "#text"] + "' alt=''></a>";
+          htmlString += "<p>" + data.artist.bio.summary + "</p>";
+          htmlString += "<hr /><p><h4>Tags</h4><ul>";
 
           Popcorn.forEach( data.artist.tags.tag, function( val, i) {
-            htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
+            htmlString += "<li><a href='" + val.url + "'>" + val.name + "</a></li>";
           });
 
-          htmlString += '</ul></p>';
-          htmlString += '<hr /><p><h4>Similar</h4><ul>';
+          htmlString += "</ul></p>";
+          htmlString += "<hr /><p><h4>Similar</h4><ul>";
 
           Popcorn.forEach( data.artist.similar.artist, function( val, i) {
-            htmlString += '<li><a href="'+ val.url +'">'+ val.name +'</a></li>';
+            htmlString += "<li><a href='" + val.url + "'>" + val.name + "</a></li>";
           });
 
-          htmlString += '</ul></p>';
+          htmlString += "</ul></p>";
 
-          _artists[data.artist.name.toLowerCase()].htmlString = htmlString;
+          _artists[ data.artist.name.toLowerCase() ].htmlString = htmlString;
         }
       };
 
@@ -39,9 +39,9 @@
    * Target is the id of the document element that the images are
    *  appended to, this target element must exist on the DOM
    * ApiKey is the API key registered with LastFM for use with their API
-   * 
+   *
    * @param {Object} options
-   *  
+   *
    * Example:
      var p = Popcorn('#video')
         .lastfm({
@@ -54,12 +54,12 @@
    *
    */
   Popcorn.plugin( "lastfm" , (function(){
-      
-    
+
+
     return {
 
       _setup: function( options ) {
-        options._container = document.createElement( 'div' );
+        options._container = document.createElement( "div" );
         options._container.style.display = "none";
         options._container.innerHTML = "";
         options.artist = options.artist && options.artist.toLowerCase() || "";
@@ -70,32 +70,32 @@
           throw new Error( "target container doesn't exist" );
         }
         target && target.appendChild( options._container );
-        
-        if(!_artists[options.artist]) {
 
-          _artists[options.artist] = {
+        if ( !_artists[ options.artist ] ) {
+
+          _artists[ options.artist ] = {
             count: 0,
             htmlString: "Unknown Artist"
           };
-          Popcorn.getJSONP("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist="+ options.artist +"&api_key="+options.apikey+"&format=json&callback=lastFMcallback", lastFMcallback, false );
+          Popcorn.getJSONP( "//ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=" + options.artist + "&api_key=" + options.apikey + "&format=json&callback=lastFMcallback", lastFMcallback, false );
         }
-        _artists[options.artist].count++;
-        
+        _artists[ options.artist ].count++;
+
       },
       /**
-       * @member LastFM 
-       * The start function will be executed when the currentTime 
-       * of the video  reaches the start time provided by the 
+       * @member LastFM
+       * The start function will be executed when the currentTime
+       * of the video  reaches the start time provided by the
        * options variable
        */
       start: function( event, options ) {
-        options._container.innerHTML = _artists[options.artist].htmlString;
+        options._container.innerHTML = _artists[ options.artist ].htmlString;
         options._container.style.display = "inline";
       },
       /**
-       * @member LastFM 
-       * The end function will be executed when the currentTime 
-       * of the video  reaches the end time provided by the 
+       * @member LastFM
+       * The end function will be executed when the currentTime
+       * of the video  reaches the end time provided by the
        * options variable
        */
       end: function( event, options ) {
@@ -111,16 +111,28 @@
   })(),
   {
     about:{
-      name:    "Popcorn LastFM Plugin",
+      name: "Popcorn LastFM Plugin",
       version: "0.1",
-      author:  "Steven Weerdenburg",
+      author: "Steven Weerdenburg",
       website: "http://sweerdenburg.wordpress.com/"
     },
-    options:{
-      start    : {elem:'input', type:'text', label:'In'},
-      end      : {elem:'input', type:'text', label:'Out'},
-      target   : 'lastfm-container',
-      artist   : {elem:'input', type:'text', label:'Artist'}
+    options: {
+      start: {
+        elem: "input",
+        type: "text",
+        label: "In"
+      },
+      end: {
+        elem: "input",
+        type: "text",
+        label: "Out"
+      },
+      target: "lastfm-container",
+      artist: {
+        elem: "input",
+        type: "text",
+        label: "Artist"
+      }
     }
   });
 

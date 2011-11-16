@@ -26,7 +26,7 @@ test( "Popcorn Webpage Plugin", function() {
     id: "webpages-a",
     start: 0,
     end: 1,
-    src: "http://webmademovies.org",
+    src: "webmademovies.org",
     target: "webpagediv"
   })
   .webpage({
@@ -61,7 +61,7 @@ test( "Popcorn Webpage Plugin", function() {
   });
 
   popped.exec( 2, function() {
-    ok (theiFrame[ 0 ].style.display === "none" && theiFrame[ 1 ].style.display === "none", "both iframes are hidden" );
+    ok( theiFrame[ 0 ].style.display === "none" && theiFrame[ 1 ].style.display === "none", "both iframes are hidden" );
     plus();
 
     popped.pause().removeTrackEvent( setupId );

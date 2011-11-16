@@ -8,19 +8,19 @@
   <script>
    var output;
 
-   document.addEventListener('DOMContentLoaded', function () {
-     output = document.getElementById('output');
+   document.addEventListener( "DOMContentLoaded", function () {
+     output = document.getElementById( "output" );
      var $ = function( id ) {
        return document.getElementById( id.substring( 1 ) );
      };
 
-     var p = Popcorn('#video')
+     var p = Popcorn( "#video" )
 
      .code({
         start: 1,
         end: 3,
         onStart: function( options ) {
-          $('#test1').innerHTML = 'Yes';
+          $( "#test1" ).innerHTML = "Yes";
         }
      })
 
@@ -28,10 +28,10 @@
         start: 5,
         end: 8,
         onStart: function( options ) {
-          $('#test2a').innerHTML = 'Yes';
+          $( "#test2a" ).innerHTML = "Yes";
         },
         onEnd: function ( options ) {
-          $('#test2b').innerHTML = 'Yes';
+          $( "#test2b" ).innerHTML = "Yes";
         }
       })
 
@@ -39,20 +39,20 @@
         start: 10,
         end: 14,
         onStart: function( options ) {
-          $('#test3a').innerHTML = 'Yes';
+          $( "#test3a" ).innerHTML = "Yes";
         },
         onFrame: (function() {
           var count = 0;
           return function ( options ) {
-            $('#test3b').innerHTML = 'Yes (count = ' + ++count + ')';
+            $( "#test3b" ).innerHTML = "Yes (count = " + ++count + ")";
           }
         })(),
         onEnd: function ( options ) {
-          $('#test3c').innerHTML = 'Yes';
+          $( "#test3c" ).innerHTML = "Yes";
         }
       })
 
-      .volume(0)
+      .volume( 0 )
       .play();
     }, false);
   </script>
@@ -61,18 +61,18 @@
   <h1 id="qunit-header">Popcorn Code Plugin Demo</h1>
   <p>Arbitrary JavaScript functions are run.</p>
   <div>
-    <video id='video'
+    <video id="video"
       autobuffer
       preload="auto"
       controls
-      width= '250px'
+      width="250px"
       poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
         type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
         type='video/ogg; codecs="theora, vorbis"'>
 

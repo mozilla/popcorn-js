@@ -1,21 +1,21 @@
 // PLUGIN: IMAGE
 
-(function (Popcorn) {
+(function ( Popcorn ) {
 
 /**
- * Images popcorn plug-in 
+ * Images popcorn plug-in
  * Shows an image element
  * Options parameter will need a start, end, href, target and src.
  * Start is the time that you want this plug-in to execute
- * End is the time that you want this plug-in to stop executing 
- * href is the url of the destination of a link - optional 
- * Target is the id of the document element that the iframe needs to be attached to, 
+ * End is the time that you want this plug-in to stop executing
+ * href is the url of the destination of a link - optional
+ * Target is the id of the document element that the iframe needs to be attached to,
  * this target element must exist on the DOM
  * Src is the url of the image that you want to display
- * text is the overlayed text on the image - optional  
+ * text is the overlayed text on the image - optional
  *
  * @param {Object} options
- * 
+ *
  * Example:
    var p = Popcorn('#video')
       .image({
@@ -30,7 +30,7 @@
  */
   Popcorn.plugin( "image", {
       manifest: {
-        about:{
+        about: {
           name: "Popcorn image Plugin",
           version: "0.1",
           author: "Scott Downe",
@@ -49,13 +49,13 @@
           },
           href: {
             elem: "input",
-            type: "text",
+            type: "url",
             label: "Link URL"
           },
           target: "image-container",
           src: {
-            elem: "input", 
-            type: "text",   
+            elem: "input",
+            type: "url",
             label: "Source URL"
           },
           text: {
@@ -84,16 +84,16 @@
 
           // borders look really bad, if someone wants it they can put it on their div target
           img.style.borderStyle = "none";
-          
+
           if ( options.href ) {
             options.link.href = options.href;
           }
 
           options.link.target = "_blank";
 
-          var fontHeight = ( img.height / 12 ) + "px", 
+          var fontHeight = ( img.height / 12 ) + "px",
               divText = document.createElement( "div" );
-          
+
           Popcorn.extend( divText.style, {
 
             color: "black",
@@ -108,7 +108,7 @@
           divText.innerHTML = options.text || "";
           options.link.appendChild( divText );
           options.link.appendChild( img );
-          divText.style.top = ( img.height / 2 ) - ( divText.offsetHeight / 2 ) + "px"; 
+          divText.style.top = ( img.height / 2 ) - ( divText.offsetHeight / 2 ) + "px";
           options.link.style.display = "none";
         }, false );
 
@@ -116,18 +116,18 @@
       },
 
       /**
-       * @member image 
-       * The start function will be executed when the currentTime 
-       * of the video  reaches the start time provided by the 
+       * @member image
+       * The start function will be executed when the currentTime
+       * of the video  reaches the start time provided by the
        * options variable
        */
       start: function( event, options ) {
         options.link.style.display = "block";
       },
       /**
-       * @member image 
-       * The end function will be executed when the currentTime 
-       * of the video  reaches the end time provided by the 
+       * @member image
+       * The end function will be executed when the currentTime
+       * of the video  reaches the end time provided by the
        * options variable
        */
       end: function( event, options ) {
