@@ -303,7 +303,7 @@
             }
           }
           else {
-            throw new Error( "Error. Request failed. Status code: " + data.meta.status );
+            throw new Error( "Error. Request failed. Status code: " + data.meta.status + " - Message: " + data.meta.msg );
           }
           
           options._tumblrdiv.innerHTML = htmlString;
