@@ -1202,8 +1202,8 @@
     // time bar is not moving ( video is paused )
     }
 
-    tracks.endIndex = end;
-    tracks.startIndex = start;
+    tracks.endIndex = end < tracks.byEnd.length ? end : tracks.byEnd.length -1;
+    tracks.startIndex = start < tracks.byStart.length ? start : tracks.byStart.length - 1;
     tracks.previousUpdateTime = currentTime;
   };
 
