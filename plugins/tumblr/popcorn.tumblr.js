@@ -75,11 +75,6 @@
           type: "number",
           label: "Blog_ID"
         },
-        limit: {
-          elem: "input",
-          type: "number",
-          label: "Follower_Limit"
-        },
         /* Optional for Photo and Video BlogPosts, defaulted to 250 pixels for photos and 400 for videos if not provided or provided width
         * is not found in their arrays. If multiple videos or photos are in the blogpost then it will use this same size for all of them unless
         * it is not found, which it will then use the default. If default is not present an error will be thrown.
