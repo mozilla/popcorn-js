@@ -9,7 +9,7 @@ test( "Popcorn Tumblr Plugin", function () {
       interval2,
       interval3,
       interval4,
-      bloginfodiv = document.getElementById( "bloginfodiv" );
+      textblogdiv = document.getElementById( "textblogdiv" );
 
   expect( expects );
 
@@ -21,36 +21,67 @@ test( "Popcorn Tumblr Plugin", function () {
 
   stop();
 
-  ok ( "facebook" in popped, "facebook is a method of the popped instance" );
+  ok ( "tumblr" in popped, "Tumblr is a method of the popped instance" );
   plus();
 
-  popped.tumblr({
+  popped.tumblr( {
+    // Video
+    requestType: "blogpost",
+    target: "videoblogdiv",
+    start: 1,
+    end: 6,
+    base_hostname: "tumblrplugin.tumblr.com",
+    blogId: 12884797390,
+    width: 500,
+    api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+  } )
+  .tumblr( {
+    // Audio
+    requestType: "blogpost",
+    target: "audioblogdiv",
+    start: 1,
+    end: 6,
+    base_hostname: "tumblrplugin.tumblr.com",
+    blogId: 12836979043,
+    api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+  } )
+  .tumblr( {
+    // Photo
+    requestType: "blogpost",
+    target: "photoblogdiv",
+    start: 16,
+    end: 20,
+    base_hostname: "tumblrplugin.tumblr.com",
+    blogId: 12836106846,
+    width: 500,
+    api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+  } )
+  .tumblr( {
+    // Avatar
+    requestType: "avatar",
+    target: "avatardiv",
+    start: 6,
+    end: 10,
+    base_hostname: "tumblrplugin.tumblr.com",
+    size: 512
+  } )
+  .tumblr( {
+    // Blog Info
     requestType: "info",
     target: "bloginfodiv",
     start: 1,
-    end: 5,
+    end: 6,
+    base_hostname: "www.davidslog.com",
     api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
   } )
-  .tumblr({
-    requestType: "avatar",
-    target: "avatardiv",
-    start: 1,
-    end: 5,
-    size: 96
-  } )
-  .tumblr({
-    requestType: "followers",
-    target: "followersdiv",
-    start: 1,
-    end: 5,
-    limit: 5
-  } )
-  .tumblr({
+  .tumblr( {
+    // Text
     requestType: "blogpost",
-    target: "blogpostdiv",
+    target: "textblogdiv",
     start: 1,
-    end: 6,
-    blogType: "photo",
+    end: 5,
+    base_hostname: "tumblrplugin.tumblr.com",
+    blogId: 10444839996,
     api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
   } )
   .volume( 0 )

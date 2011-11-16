@@ -120,7 +120,7 @@
       
       // Check if target container exists
       if ( !target && Popcorn.plugin.debug ) {
-          throw new Error( "Target Tumblr container doesn't exist" );
+        throw new Error( "Target Tumblr container doesn't exist" );
       }
       
       options._container = document.createElement( "div" );
@@ -145,10 +145,11 @@
                             
         Popcorn.getJSONP( requestString, function( data ) {
           var htmlString = "";
-          var post = data.response.posts[0], n = post.type;
           
           if( data.meta.msg === "OK" ){ 
             if( options.requestType === "blogpost" ){
+              var post = data.response.posts[0], n = post.type;
+              
               // Date Post was published, common to all blogpost requests
               htmlString = "Date Published: " + post.date.slice( 0, post.date.indexOf( " " ) ) + "<br/><br/>";
               
@@ -195,8 +196,8 @@
                   }
                 
                   // Finally, all the potential setup is done. Below is the actual code putting everything in our div element
-                  for( var m in picURIs ){
-                    htmlString += (m + 1) + ". " + picCaptions[ m ] + "<br/> <img src='" + picURIs[ m ] + "' alt='Pic" + i + "' /><br/>";
+                  for( m in picURIs ){
+                    htmlString += picCaptions[ m ] + "<br/> <img src='" + picURIs[ m ] + "' alt='Pic" + i + "' /><br/>";
                     m++;
                   }
                 
@@ -227,13 +228,17 @@
                   
                 case "link":
                   // Using the blog title as a link to it
-                  htmlString += "<a href='" + post.post_url + "' target='_blank'>" + post.title + "</a><br/><br/>";
+                  htmlString += "<a href='" + post.post_url + "' target='_blank'>" + post.title + "</a><br/>";
                   htmlString += post.description;
                   break;
                 
                 case "chat":
                   // Brainstorm up ideas how to make each dialogue object to appear up "better" rather than just all be there at once
-                  htmlString += "To be implemented";
+                  htmlString += "<strong><u>" + post.title + "</u></strong><br/><br/>";
+                  
+                  for ( i in post.dialogue )
+                    htmlString += post.dialogue[ i ].label + " " + post.dialogue[ i ].phrase + "<br/>";
+
                   break;
                   
                 case "video":
@@ -270,7 +275,9 @@
                   break;
                   
                 case "answer":
-                  htmlString += "TODO";
+                  htmlString += "Inquirer: <a href='" + post.asking_url + "' target='_blank'>" + post.asking_name + "</a><br/><br/>";
+                  htmlString += "Question: " + post.question + "<br/>";
+                  htmlString += "Answer: " + post.answer;
                   break;
                   
                 default:
@@ -291,7 +298,9 @@
                 htmlString += "No Tags Used";
             }
             else {
-              console.log( "Stuff Goes here for Blog Info Requests" );
+              // Blog Info Requests
+              htmlString += "<a href='" + data.response.blog.url + "' target='_blank'>" + data.response.blog.title + "</a><br/>";
+              htmlString += data.response.blog.description;
             }
           }
           else {
