@@ -80,10 +80,11 @@
           type: "number",
           label: "Follower_Limit"
         },
-        /* Optional for Photo BlogPosts, defaulted to 250 pixels if not provided or provided width
-        * is not found in alt_sizes array of photos
+        /* Optional for Photo and Video BlogPosts, defaulted to 250 pixels for photos and 400 for videos if not provided or provided width
+        * is not found in their arrays. If multiple videos or photos are in the blogpost then it will use this same size for all of them unless
+        * it is not found, which it will then use the default. If default is not present an error will be thrown.
         */
-        photoWidth: {
+        width: {
           elem: "input",
           type: "number",
           label: "Photo_Width"
@@ -144,90 +145,136 @@
                             
         Popcorn.getJSONP( requestString, function( data ) {
           var htmlString = "";
-          var post = data.response.posts[0];
+          var post = data.response.posts[0], n = post.type;
           
           if( data.meta.msg === "OK" ){ 
             if( options.requestType === "blogpost" ){
               // Date Post was published, common to all blogpost requests
               htmlString = "Date Published: " + post.date.slice( 0, post.date.indexOf( " " ) ) + "<br/><br/>";
-            
-              if( post.type === "text" ){
-                // Make a title that provides a link to the Blog URL
-                htmlString += "<a href='" + post.post_url + "' target='_blank'>" + post.title + "</a><br/><br/>";
-                // Add whatever html that is inside the blog's body
-                htmlString += post.body;
-              }
-              else if( post.type === "photo" ){
-                var width = !options.photoWidth ? 250 : options.photoWidth, i, k, m, defaultSizeIndex = -1;
-                var picURIs = [ data.response.posts[0].photos.length ], picCaptions = [ data.response.posts[0].photos.length ]; 
               
-                // Finds the correct photo based on specified size, saves URI and Caption
-                for( i = 0; i < post.photos.length; i++ ){
-                  for( k = 0; k < post.photos[ i ].alt_sizes.length; k++ ){            
-                    // See If users desired photo size 
-                    if( post.photos[ i ].alt_sizes[ k ].width === width ){
-                      picURIs[ i ] = post.photos[ i ].alt_sizes[ k ].url;
-                      picCaptions[ i ] = post.photos[ i ].caption;
+              switch( n ) {
+                case "text":
+                  // Make a title that provides a link to the Blog URL
+                  htmlString += "<a href='" + post.post_url + "' target='_blank'>" + post.title + "</a><br/><br/>";
+                  // Add whatever html that is inside the blog's body
+                  htmlString += post.body;
+                  break;
+                
+                case "photo":
+                  var width = !options.width ? 250 : options.width, defaultSizeIndex = -1;
+                  var picURIs = [ post.photos.length ], picCaptions = [ post.photos.length ];
+              
+                  // Finds the correct photo based on specified size, saves URI and Caption
+                  for( var i in post.photos ){
+                    for( var k in post.photos[ i ].alt_sizes ){            
+                      // See If users desired photo size 
+                      if( post.photos[ i ].alt_sizes[ k ].width === width ){
+                        picURIs[ i ] = post.photos[ i ].alt_sizes[ k ].url;
+                        picCaptions[ i ] = post.photos[ i ].caption;
+                        defaultSizeIndex = 0;
+                        break;
+                      }
+                      else 
+                        // Our default size is going to be 250
+                        if( post.photos[ i ].alt_sizes[ k ].width === 250 )
+                          defaultSizeIndex = k; 
+                        
+                      k++;       
+                    }
+                  
+                    // Current means of handling if alt_sizes doesn't have our default image size
+                    if( defaultSizeIndex === -1 )
+                      throw new Error( "Clearly your blog has a picture that is so tiny it isn't even 100px wide. Consider using a bigger" +
+                                       " picture or try a smaller size." );
+                  
+                    // If a matching photo is never found, use the default size.
+                    if( k === post.photos[ i ].alt_sizes.length )
+                      picURIs[ i ] = post.photos[ i ].alt_sizes[ defaultSizeIndex ].url;
+                  
+                    i++;
+                  }
+                
+                  // Finally, all the potential setup is done. Below is the actual code putting everything in our div element
+                  for( var m in picURIs ){
+                    htmlString += (m + 1) + ". " + picCaptions[ m ] + "<br/> <img src='" + picURIs[ m ] + "' alt='Pic" + i + "' /><br/>";
+                    m++;
+                  }
+                
+                  htmlString += "<br/>" + post.caption;
+                  break;
+                
+                case "quote":
+                  // Quotes don't come with a title, so for a link to the post I'm going to use the blogname
+                  htmlString += "<a href'" + post.post_url + "' target='_blank'>" + post.text + "</a><br/><br/>";
+                  htmlString += "<br/>Source: <b>" + post.source + "</b>";
+                  break;
+                  
+                case "audio":
+                  // Artist/Track info is not always returned so checking first.
+                  if( !post.artist ) {
+                    console.log( post.artist );
+                    htmlString += "<a href='" + post.source_url + "' target='_blank'>" + post.source_title + "</a><br/>";
+                  }
+                  else {
+                    htmlString += "Artist: " + post.artist + "<br/> <a href='" + post.source_url+ "' target='_blank' style='float:left;margin:0 10px 0 0;'><img src='" + post.album_art + "' alt='" + post.album + "'></a><hr/>";
+                    htmlString += post.track_number + " - " + post.track_name + "<br/>";
+                  }
+                
+                  // Obviously the player itself is something that will be displayed either way so it is included outside the check
+                  htmlString += post.player + "   " + post.plays  + " plays<br/>";
+                  htmlString += post.caption;
+                  break;
+                  
+                case "link":
+                  // Using the blog title as a link to it
+                  htmlString += "<a href='" + post.post_url + "' target='_blank'>" + post.title + "</a><br/><br/>";
+                  htmlString += post.description;
+                  break;
+                
+                case "chat":
+                  // Brainstorm up ideas how to make each dialogue object to appear up "better" rather than just all be there at once
+                  htmlString += "To be implemented";
+                  break;
+                  
+                case "video":
+                  var width = !options.photoWidth ? 400 : options.photoWidth, defaultSizeIndex = -1, i = 0;
+                  var videoCode;
+                
+                  for( i in post.player ){
+                    // First try to see if the current index matches the specified width
+                    // If it doesn't, check if it equals our default width incase user didn't 
+                    // ever specify a width or if their width is never found.
+                    if ( post.player[ i ].width === width ){
+                      videoCode = post.player[ i ].embed_code;
                       defaultSizeIndex = 0;
                       break;
                     }
-                    else 
-                      // Our default size is going to be 250
-                      if( post.photos[ i ].alt_sizes[ k ].width === 250 )
-                        defaultSizeIndex = k;        
+                    else
+                      if( post.player[ i ].width === 400 )
+                          defaultSizeIndex = i;
+                                          
+                    i++; 
                   }
-                  
-                  // Current means of handling if alt_sizes doesn't have our default image size
+                
+                  console.log( i );
+                  // If specified width never found, use default
+                  if( i === post.player.length )
+                    videoCode = post.player[ defaultSizeIndex ].embed_code;
+                
+                  // Will run if user's size is never found and our default is never found
                   if( defaultSizeIndex === -1 )
-                    throw new Error( "Clearly your blog has a picture that is so tiny it isn't even 100px wide. Consider using a bigger" +
-                                     " picture or try a smaller size." );
+                    throw new Error( "Specified video size was not found and default was never found. Please try another width." );
                   
-                  // If a matching photo is never found, use the default size.
-                  if( k === post.photos[ i ].alt_sizes.length )
-                    picURIs[ i ] = post.photos[ i ].alt_sizes[ defaultSizeIndex ].url;
-                }
-                
-                // Finally, all the potential setup is done. Below is the actual code putting everything in our div element
-                for( m = 0; m < picURIs.length; m++ ){
-                  htmlString += (m + 1) + ". " + picCaptions[ m ] + "<br/> <img src='" + picURIs[ m ] + "' alt='Pic" + i + "' /><br/>";
-                }
-                
-                htmlString += "<br/>" + post.caption;
-              }
-              else if( post.type === "quote" ){
-                // Quotes don't come with a title, so for a link to the post I'm going to use the blogname
-                htmlString += "<a href'" + post.post_url + "' target='_blank'>" + post.text + "</a><br/><br/>";
-                htmlString += "<br/>Source: <b>" + post.source + "</b>";
-              }
-              else if( post.type === "link" ){
-                // Using the blog title as a link to it
-                htmlString += "<a href='" + post.post_url + "' target='_blank'>" + post.title + "</a><br/><br/>";
-                htmlString += post.description; 
-              }
-              else if( post.type === "chat" ){
-                // Brainstorm up ideas how to make each dialogue object to appear up "better" rather than just all be there at once
-                htmlString += "To be implemented";
-              }
-              else if( post.type === "audio" ){  
-                // Artist/Track info is not always returned so checking first.
-                if( !post.artist ) {
-                  console.log( post.artist );
-                  htmlString += "<a href='" + post.source_url + "' target='_blank'>" + post.source_title + "</a><br/>";
-                }
-                else {
-                  htmlString += "Artist: " + post.artist + "<br/> <a href='" + post.source_url+ "' target='_blank' style='float:left;margin:0 10px 0 0;'><img src='" + post.album_art + "' alt='" + post.album + "'></a><hr/>";
-                  htmlString += post.track_number + " - " + post.track_name + "<br/>";
-                }
-                
-                // Obviously the player itself is something that will be displayed either way so it is included outside the check
-                htmlString += post.player + "   " + post.plays  + " plays<br/>";
-                htmlString += post.caption;
-              }
-              else if( post.type === "video" ){
-                // Do Stuff
-              }
-              else if( post.type === "answer" ){
-                // Do Stuff
+                  // Finally build the html for the div element
+                  htmlString += videoCode + "<br/>" + post.caption; 
+                  break;
+                  
+                case "answer":
+                  htmlString += "TODO";
+                  break;
+                  
+                default:
+                  console.log( "It's working!" );
               }
               // Add tags to htmlString, common to all Blogpost requests
               htmlString += "<br/><br/>Tags: ";
