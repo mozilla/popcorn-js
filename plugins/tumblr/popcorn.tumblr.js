@@ -40,7 +40,7 @@
       options: {
         requestType: {
           elem: "select", 
-          options:[ "INFO", "AVATAR", "FOLLOWERS", "BLOGPOST" ], 
+          options:[ "INFO", "AVATAR", "BLOGPOST" ], 
           label: "Type_Of_Plugin" 
         },
         target: "tumblr-container",
@@ -96,7 +96,7 @@
       
       // Valid types of retrieval requests
       var validType = function( type ) {
-        return ( [ "info", "avatar", "followers", "blogpost" ].indexOf( type ) > -1 );
+        return ( [ "info", "avatar", "blogpost" ].indexOf( type ) > -1 );
       };
       
       // Lowercase the types incase user enters it in another way
