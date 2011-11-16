@@ -131,9 +131,8 @@
       // If it's an avatar request, simply set the innerHTML to an img element with the src as the request URL
       if( options.requestType === "avatar" )
         options._tumblrdiv.innerHTML = "<img src=" + 'http://api.tumblr.com/v2/blog/' + options.base_hostname + '/avatar/' + options.size + " alt='BlogAvatar' />";
-      else if( options.requestType === "followers" )
-        options._tumblrdiv.innerHTML = "Followers not yet implemented";
       else {
+      
         // Construct type based if it's a blogpost or blog info as request string differs
         if( options.requestType === "blogpost" )
           type = "posts/" + options.blogType;
