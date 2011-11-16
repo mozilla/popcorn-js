@@ -97,7 +97,7 @@ test( "Popcorn Tumblr Plugin", function () {
     ok( document.getElementById( "followersdiv" ).innerHTML, "likediv is not empty at 0:03 (expected)" );
     plus();
   });
-  
+
   // Simply checking if the HTML is present in the div
   popped.exec( 4, function() {
     // Checks if avatardiv is emtpy at specific time
@@ -113,7 +113,7 @@ test( "Popcorn Tumblr Plugin", function () {
     ok( document.getElementById( "audioblogdiv" ).innerHTML, "blogpostdiv is not empty at 0:04 (expected)" );
     plus();
   });
-  
+
   popped.exec( 5, function() {
     // Checks if the Text Blog Post was successfully destroyed with _teardown
     popped.pause().removeTrackEvent( setupId );
@@ -151,7 +151,7 @@ test( "Test Initialized Tumblr Blocks throwing Errors", function () {
   } catch( e ) {
     ok( true, "tumblr plugin type was invalid." );
   }
-  
+
   // No blogId supplied for blogpost request
   try {
     pop.facebook({
@@ -165,7 +165,7 @@ test( "Test Initialized Tumblr Blocks throwing Errors", function () {
   } catch( e ) {
     ok( true, "Caught no blogId for blogpost type." );
   }
-  
+
   // Checking no API KEY
   try {
     pop.facebook({
@@ -179,7 +179,7 @@ test( "Test Initialized Tumblr Blocks throwing Errors", function () {
   } catch( e ) {
     ok( true, "Caught no API_KEY for blogpost type." );
   }
-  
+
   // Checking no base_hostname provided
   try {
     pop.facebook({
@@ -193,7 +193,7 @@ test( "Test Initialized Tumblr Blocks throwing Errors", function () {
   } catch( e ) {
     ok( true, "Caught no base_hostname for blogpost type." );
   }
-  
+
   // Checking for a failure in request from API using an invalid blogId
   try {
     pop.facebook({
