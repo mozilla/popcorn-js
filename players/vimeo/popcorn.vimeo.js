@@ -29,8 +29,8 @@
       media.appendChild( vimeoContainer );
 
       // setting vimeo player's height and width, default to 560 x 315
-      width = media.style.width ? ""+media.offsetWidth : "560";
-      height = media.style.height ? ""+media.offsetHeight : "315";
+      width = media.style.width || "560";
+      height = media.style.height || "315";
 
       var vimeoInit = function() {
 
