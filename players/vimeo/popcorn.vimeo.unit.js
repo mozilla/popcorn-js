@@ -45,7 +45,7 @@ test( "Update Timer", function() {
       forwardEnd    = false,
       backwardStart = false,
       backwardEnd   = false,
-      wrapperRunning = { one: false, two: false, };
+      wrapperRunning = { one: false, two: false };
 
   function plus() {
     if ( ++count === expects ) {
@@ -278,7 +278,7 @@ test( "Plugin Factory", function() {
 
         ok( "trackEvents" in this.data, "executor instance has `trackEvents` property" );
         plus();
-        ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "executor trackEvents property is an object" )
+        ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "executor trackEvents property is an object" );
         plus();
       },
       end: function() {
@@ -324,7 +324,7 @@ test( "Plugin Factory", function() {
 
       ok( "trackEvents" in this.data, " complicatorinstance has `trackEvents` property" );
       plus();
-      ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "complicator trackEvents property is an object" )
+      ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "complicator trackEvents property is an object" );
       plus();
     },
     end: function() {
@@ -389,11 +389,11 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
   var urlTests = [
     { name: "standard",
       url: "http://player.vimeo.com/video/6960892",
-      expected: "http://player.vimeo.com/video/6960892",
+      expected: "http://player.vimeo.com/video/6960892"
     },
     { name: "short url",
       url: "http://vimeo.com/6960892",
-      expected: "http://vimeo.com/6960892",
+      expected: "http://vimeo.com/6960892"
     }
   ];
 
@@ -421,4 +421,32 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
       }
     });
   });
+});
+
+test( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
+
+  QUnit.reset();
+  var popped,
+      elem,
+      expects = 2,
+      count = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  popped = Popcorn.vimeo( "#player_3", "http://player.vimeo.com/video/6960892" );
+
+  popped.listen( "loadeddata", function() {
+    elem = document.querySelector( "div#player_3 object" );
+    equals( elem.height, popped.media.offsetHeight, "The media object is reporting the correct offsetHeight" );
+    plus();
+    equals( elem.width, popped.media.offsetWidth, "The media object is reporting the correct offsetWidth" );
+    plus();
+  });
+
+  stop();
 });

@@ -29,8 +29,8 @@
       media.appendChild( vimeoContainer );
 
       // setting vimeo player's height and width, default to 560 x 315
-      width = media.style.width || "560";
-      height = media.style.height || "315";
+      width = media.style.width ? media.style.width.split( "px" )[ 0 ] : "560";
+      height = media.style.height ? media.style.height.split( "px" )[ 0 ] : "315";
 
       var vimeoInit = function() {
 
@@ -205,14 +205,14 @@
           Popcorn.player.defineProperty( media, "offsetHeight", {
             get: function() {
 
-              return +vimeoObject.height;
+              return +vimeoObject.height.split( "px" )[ 0 ];
             }
           });
 
           Popcorn.player.defineProperty( media, "offsetWidth", {
             get: function() {
 
-              return +vimeoObject.width;
+              return +vimeoObject.width.split( "px" )[ 0 ];
             }
           });
 
