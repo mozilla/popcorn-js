@@ -1806,6 +1806,20 @@
         configurable: true
       });
 
+      Popcorn.player.defineProperty( basePlayer, "offsetWidth", {
+        get: function() {
+
+          return +container.offsetWidth;
+        }
+      });
+
+      Popcorn.player.defineProperty( basePlayer, "offsetHeight", {
+        get: function() {
+
+          return +container.offsetHeight;
+        }
+      });
+
       // Adds an event listener to the object
       basePlayer.addEventListener = function( evtName, fn ) {
 

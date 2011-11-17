@@ -202,6 +202,20 @@
             }
           });
 
+          Popcorn.player.defineProperty( media, "offsetHeight", {
+            get: function() {
+
+              return +vimeoObject.height;
+            }
+          });
+
+          Popcorn.player.defineProperty( media, "offsetWidth", {
+            get: function() {
+
+              return +vimeoObject.width;
+            }
+          });
+
           media.readyState = 4;
           media.dispatchEvent( "canplaythrough" );
           media.dispatchEvent( "load" );
