@@ -49,7 +49,7 @@ test( "Popcorn Flickr Plugin", function() {
 
   popped.exec( 2, function() {
 
-    ok( /display: inline;/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
+    ok( /display: inline\b;?/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
     plus();
     ok( /img/.test( flickrdiv.innerHTML ), "An image exists" );
     plus();
@@ -59,13 +59,13 @@ test( "Popcorn Flickr Plugin", function() {
 
     var numberOfImages = document.getElementById( "flickrdiv" ).childNodes[ 1 ].getElementsByTagName( "a" ).length;
 
-    ok( /display: inline;/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
+    ok( /display: inline\b;?/.test( flickrdiv.innerHTML ), "Div contents are displayed" );
     plus();
 
     ok( /img/.test( flickrdiv.innerHTML ), "An image exists" );
     plus();
 
-    ok( /display: inline;/.test( flickrdiv.innerHTML ), "Images tagged 'georgia' are displayed in div" );
+    ok( /display: inline\b;?/.test( flickrdiv.innerHTML ), "Images tagged 'georgia' are displayed in div" );
     plus();
 
     equal( numberOfImages, 8, "There are 8 images tagged 'georgia' being displayed" );
@@ -74,7 +74,7 @@ test( "Popcorn Flickr Plugin", function() {
 
   popped.exec( 11, function() {
 
-    ok( /display: none;/.test( flickrdiv.innerHTML ), "Div contents are hidden again" );
+    ok( /display: none\b;?/.test( flickrdiv.innerHTML ), "Div contents are hidden again" );
     plus();
 
     popped.pause().removeTrackEvent( setupId );
