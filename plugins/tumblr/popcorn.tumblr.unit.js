@@ -3,7 +3,7 @@ test( "Popcorn Tumblr Plugin", function () {
   Popcorn.plugin.debug = true;
 
   var popped = Popcorn( "#video" ),
-      expects = 7,
+      expects = 6,
       count = 0,
       interval,
       interval2,
@@ -71,7 +71,7 @@ test( "Popcorn Tumblr Plugin", function () {
     target: "bloginfodiv",
     start: 1,
     end: 4,
-    base_hostname: "www.davidslog.com",
+    base_hostname: "http://www.davidslog.com",
     api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
   } )
   .tumblr( {
@@ -91,10 +91,7 @@ test( "Popcorn Tumblr Plugin", function () {
 
   popped.exec( 3, function() {
     // Checks display style is set correctly on startup
-    equals( textblogdiv.style.display , "", "bloginfodiv is visible on the page with '' display style" );
-    plus();
-    // Checks if likediv is empty at specific time
-    ok( document.getElementById( "followersdiv" ).innerHTML, "likediv is not empty at 0:03 (expected)" );
+    equals( textblogdiv.style.display , "", "textblogdiv is visible on the page with '' display style" );
     plus();
   });
 
@@ -104,13 +101,13 @@ test( "Popcorn Tumblr Plugin", function () {
     ok( document.getElementById( "avatardiv" ).innerHTML, "avatardiv is not empty at 0:04 (expected)" );
     plus();
     // Checks if photoblogdiv is empty at specific time
-    ok( document.getElementById( "photoblogdiv" ).innerHTML, "followersdiv is not empty at 0:04 (expected)" );
+    ok( document.getElementById( "photoblogdiv" ).innerHTML, "photoblogdiv is not empty at 0:04 (expected)" );
     plus();
     // Checks if videoblogdiv is empty at specific time
-    ok( document.getElementById( "videoblogdiv" ).innerHTML, "blogpostdiv is not empty at 0:04 (expected)" );
+    ok( document.getElementById( "videoblogdiv" ).innerHTML, "videoblogdiv is not empty at 0:04 (expected)" );
     plus();
     // Checks if audioblogdiv is empty at specific time
-    ok( document.getElementById( "audioblogdiv" ).innerHTML, "blogpostdiv is not empty at 0:04 (expected)" );
+    ok( document.getElementById( "audioblogdiv" ).innerHTML, "audioblogdiv is not empty at 0:04 (expected)" );
     plus();
   });
 
