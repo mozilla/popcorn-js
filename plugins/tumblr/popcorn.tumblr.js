@@ -41,11 +41,11 @@
           picCaptions = [ options.post.photos.length ], len;
 
       // Finds the correct photo based on specified size, saves URI and Caption]
-      for ( var i = 0; i < options.post.photos.length; i++ ) {
+      for ( var i = 0, len = options.post.photos.length; i < len; i++ ) {
         // Store the current photo object being accessed
         var photo = options.post.photos[ i ];
         
-        for ( var k = 0, len = photo.alt_sizes.length; k < len; k++ ) {
+        for ( var k = 0, len2 = photo.alt_sizes.length; k < len2; k++ ) {
           // Store the current alt_sizes object being accessed
           var size = photo.alt_sizes[ k ];
 
