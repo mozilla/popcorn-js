@@ -1,4 +1,4 @@
-// PARSER: 0.3 TTML
+// PARSER: 1.0 TTML
 (function (Popcorn) {
   /**
    * TTML popcorn parser plug-in
@@ -133,28 +133,27 @@
       i = getMetricIndex( t_in );
       return parseFloat( t_in.substr( 0, i ) ) * getMultipler( t_in.substr( i ) ) + ( offset || 0 );
     }
+  }
+  
+  // In a time string such as 3.4ms, get the index of the first character (m) of the time metric (ms)
+  function getMetricIndex( t_in ) {
+    var i = t_in.length - 1;
 
-
-    // In a time string such as 3.4ms, get the index of the first character (m) of the time metric (ms)
-    function getMetricIndex( t_in ) {
-      var i = t_in.length - 1;
-
-      while ( i >= 0 && t_in[ i ] <= "9" && t_in[ i ] >= "0" ) {
-        i--;
-      }
-
-      return i;
+    while ( i >= 0 && t_in[ i ] <= "9" && t_in[ i ] >= "0" ) {
+      i--;
     }
 
-    // Determine multiplier for metric relative to seconds
-    function getMultipler( metric ) {
-      return {
-        "h" : 3600,
-        "m" : 60,
-        "s" : 1,
-        "ms" : 0.001
-      }[ metric ] || -1;
-    }
+    return i;
+  }
+
+  // Determine multiplier for metric relative to seconds
+  function getMultipler( metric ) {
+    return {
+      "h" : 3600,
+      "m" : 60,
+      "s" : 1,
+      "ms" : 0.001
+    }[ metric ] || -1;
   }
 
   // Creates an object of all attributes keyed by name
