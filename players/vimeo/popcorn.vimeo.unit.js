@@ -268,17 +268,17 @@ test( "Plugin Factory", function() {
 
         ok( "media" in this, "executor instance has `media` property" );
         plus();
-        ok( Object.prototype.toString.call( popped.media ) === "[object Object]", "video property is a HTML DIV element" );
+        ok( typeof popped.media === "object", "video property is a HTML DIV element" );
         plus();
 
         ok( "data" in this, "executor instance has `data` property" );
         plus();
-        ok( Object.prototype.toString.call( popped.data ) === "[object Object]", "data property is an object" );
+        ok( typeof popped.data === "object", "data property is an object" );
         plus();
 
         ok( "trackEvents" in this.data, "executor instance has `trackEvents` property" );
         plus();
-        ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "executor trackEvents property is an object" );
+        ok( typeof popped.data.trackEvents === "object", "executor trackEvents property is an object" );
         plus();
       },
       end: function() {
@@ -314,17 +314,17 @@ test( "Plugin Factory", function() {
 
       ok( "media" in this, "complicator instance has `media` property" );
       plus();
-      ok( Object.prototype.toString.call( popped.media ) === "[object Object]", "video property is a HTMLVideoElement" );
+      ok( typeof popped.media === "object", "video property is a HTMLVideoElement" );
       plus();
 
       ok( "data" in this, "complicator instance has `data` property" );
       plus();
-      ok( Object.prototype.toString.call( popped.data ) === "[object Object]", "complicator data property is an object" );
+      ok( typeof popped.data === "object", "complicator data property is an object" );
       plus();
 
       ok( "trackEvents" in this.data, " complicatorinstance has `trackEvents` property" );
       plus();
-      ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "complicator trackEvents property is an object" );
+      ok( typeof popped.data.trackEvents === "object", "complicator trackEvents property is an object" );
       plus();
     },
     end: function() {
