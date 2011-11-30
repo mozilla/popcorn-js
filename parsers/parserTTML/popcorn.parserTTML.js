@@ -24,6 +24,10 @@
       </body>
     </tt>
    */
+
+  var rWhitespace = /^[\s]+|[\s]+$/gm,
+      rLineBreak = /(?:\r\n|\r|\n)/gm;
+
   Popcorn.parser( "parseTTML", function( data ) {
     var returnData = {
           title: "",
@@ -56,7 +60,6 @@
 
     return returnData;
 
-
     // Parse the children of the given node
     function parseChildren( node, timeOffset ) {
       var currNode = node.firstChild,
@@ -88,9 +91,7 @@
 
     // Parse a node for text content
     function parseNode( node, timeOffset ) {
-      var rWhitespace = /^[\s]+|[\s]+$/gm,
-          rLineBreak = /(?:\r\n|\r|\n)/gm,
-          sub = {};
+      var sub = {};
 
       // Trim left and right whitespace from text and convert non-explicit line breaks
       sub.text = node.textContent.replace( rWhitespace, "" ).replace( rLineBreak, "<br />" );
