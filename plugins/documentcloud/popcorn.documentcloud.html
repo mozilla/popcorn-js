@@ -6,21 +6,39 @@
   <script>
     Popcorn(function() {
       var popcorn = Popcorn(Popcorn.youtube( 'video', 'http://www.youtube.com/watch?v=kffacxfA7G4&ob=av3n' ))
-        .documentcloud({
-          start: 3,
-          end: 7,
-          url: "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html",
-          width: 900,
-          height: 500,
-          showAnnotations: false,
-          page: 9000,
-          target: "documentcloud-div"
-        });
+      .documentcloud({
+        start: 3,
+        end: 6,
+        url: "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html",
+        width: 900,
+        height: 500,
+        showAnnotations: true,
+        page: 5,
+        target: "documentcloud-div"
+      });
       var te = popcorn.getLastTrackEventId();
-      popcorn.exec( 9, function() {
+      popcorn.documentcloud({
+        start: 7,
+        end: 10,
+        url: "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html",
+        page: 25,
+        target: "documentcloud-div"
+      });
+      var te2 = popcorn.getLastTrackEventId();
+      popcorn.documentcloud({
+        start: 11,
+        end: 20,
+        url: "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html",
+        aid: 9899,
+        target: "documentcloud-div"
+      });
+      /*popcorn.exec( 17, function() {
         popcorn.removeTrackEvent( te );
       })
-      .mute()
+      .exec( 25, function() {
+        popcorn.removeTrackEvent( te2 );
+      });*/
+      popcorn.volume( 0 )
       .play();
     });
   </script>

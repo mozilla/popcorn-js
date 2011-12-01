@@ -1,6 +1,6 @@
 // PLUGIN: documentcloud
 
-(function (Popcorn, document) {
+(function( Popcorn, document ) {
 
   /**
    * Document Cloud popcorn plug-in
@@ -8,7 +8,7 @@
    * @param {Object} options
    *
    * Example:
-   *  var p = Popcorn('#video')
+   *  var p = Popcorn("#video")
    *     // Let the pdf plugin load your PDF file for you using pdfUrl.
    *     .documentcloud({
    *       start: 45
@@ -34,7 +34,7 @@ afterLoad: function() {} // callback...
 
 
   DV.onload = function(){  }
-  DV.load('http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.js', {
+  DV.load("http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.js", {
     width: 970,
     height: 800,
     container: "#DV-viewer-70050-urbina-day-1-in-progress"
@@ -45,129 +45,183 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
 
    */
 
-  Popcorn.plugin( "documentcloud" , {
+   // track registered plugins by document
+   var documentRegistry = {};
+var called = 0;
+  Popcorn.plugin( "documentcloud", {
 
     manifest: {
-      about:{
+      about: {
         name: "Popcorn Document Cloud Plugin",
         version: "0.1",
-        author: "@humphd",
+        author: "@humphd, @ChrisDeCairos",
         website: "http://vocamus.net/dave"
       },
-      options:{
-        start      : {elem:'input', type:'text', label:'In'},
-        end        : {elem:'input', type:'text', label:'Out'},
-        target     : 'pdf-container',
-        width      : {elem:'input', type:'text', label:'Width'},
-        height     : {elem:'input', type:'text', label:'Height'},
-        src        : {elem:'input', type:'text', label:'PDF URL'},
+      options: {
+        start      : { elem:"input", type:"text", label:"In" },
+        end        : { elem:"input", type:"text", label:"Out" },
+        target     : "pdf-container",
+        width      : { elem: "input", type: "text", label: "Width" },
+        height     : { elem: "input", type: "text", label: "Height" },
+        src        : { elem: "input", type: "text", label: "PDF URL" },
         // TODO: Not sure how to deal with pdfDoc, which can only be done with script
         // pdfDoc     : ???
-        preload    : {elem:'input', type:'boolean', label:'Preload'},
-        page       : {elem:'input', type:'number', label:'Page Number'}
+        preload    : { elem: "input", type: "boolean", label: "Preload" },
+        page       : { elem: "input", type: "number", label: "Page Number" },
+        aid        : { elem: "input", type: "number", label: "Annotation Id" }
       }
     },
 
 
-    _setup: function(options) {
-      // If the viewer is already loaded, don't repeat the process.
-      if (window.DV && window.DV.loaded) {
-        return;
+    _setup: function( options ) {
+      var DV = window.DV = window.DV || {};
+
+      function readyCheck() {
+        if( window.DV.loaded ) {
+          load();
+        } else {
+          setTimeout( readyCheck, 25 );
+        }
       }
 
-      var DV = window.DV = window.DV || {};
-      DV.recordHit = "http://www.documentcloud.org/pixel.gif";
+      // If the viewer is already loaded, don't repeat the process.
+      if ( !DV.loading ) {
+        DV.loading = true;
+        DV.recordHit = "//www.documentcloud.org/pixel.gif";
 
-      var link   = document.createElement('link');
-      link.rel   = 'stylesheet';
-      link.type  = 'text/css';
-      link.media = 'screen';
-      link.href  = 'http://s3.documentcloud.org/viewer/viewer-datauri.css';
-      var head   = document.getElementsByTagName('head')[0];
-      head.appendChild(link);
+        var link = document.createElement( "link" ),
+            head = document.getElementsByTagName( "head" )[ 0 ];
 
-      // Record the fact that the viewer is loaded.
-      DV.loaded = true;
+        link.rel = "stylesheet";
+        link.type = "text/css";
+        link.media = "screen";
+        link.href = "//s3.documentcloud.org/viewer/viewer-datauri.css";
+
+        head.appendChild( link );
+
+        // Record the fact that the viewer is loaded.
+        DV.loaded = false;
+
+        // Request the viewer JavaScript.
+        Popcorn.getScript( "//s3.documentcloud.org/viewer/viewer.js", function() {
+          DV.loading = false;
+          load();
+        });
+      } else {
+
+        readyCheck();
+      }
 
       //setup elem...
       function load() {
-       var url = options.url.replace(/\.html$/, '.js'), // swap .html URL to .js for API call
-        target = options.target,
-        container = '#' + target, // need #id for document cloud call
-        containerDiv = document.getElementById(target),
-        containerDivSize = Popcorn.position(containerDiv),
-        width = options.width || containerDivSize.width, //970, // need to use size of div if not given
-        height = options.height || containerDivSize.height, //800, //
-        sidebar = options.sidebar || true,
-        text = options.text || true,
-        pdf = options.pdf || true,
-        showAnnotations = options.showAnnotations || true,
-        zoom = options.zoom || 700,
-        search = options.search || true,
-        page = options.page;
+        DV.loaded = false;
+        // swap .html URL to .js for API call
+        var url = options.url.replace( /\.html$/, ".js" ),
+          target = options.target,
+          // need #id for document cloud call
+          container = "#" + target,
+          containerDiv = document.getElementById( target ),
+          containerDivSize = Popcorn.position( containerDiv ),
+          // need to use size of div if not given
+          width = options.width || containerDivSize.width,
+          height = options.height || containerDivSize.height,
+          sidebar = options.sidebar || true,
+          text = options.text || true,
+          pdf = options.pdf || true,
+          showAnnotations = options.showAnnotations || true,
+          zoom = options.zoom || 700,
+          search = options.search || true,
+          page = options.page;
 
-        // TODO: cache viewers we have so we don't reload viewer in order to change pages...
+        function setOptions( viewer ) {
+          options._key = viewer.api.getId();
 
-        // Figure out if we need a callback to change the page #
-        var afterLoad = options.page ?
-          function() {
-            var api = new DV.Api(DV.viewers[_.keys(DV.viewers)[0]]);
-            api.setCurrentPage( page );
-            containerDiv.style.visibility = "hidden";
-          } :
-          function() {};
+          options._changeView = function ( viewer ) {
+            if ( options.aid ) {
+              viewer.pageSet.showAnnotation( viewer.api.getAnnotation( options.aid ) );
+            } else {
+              viewer.api.setCurrentPage( options.page );
+            }
+          };
+        }
 
-        DV.load(url, {
-          width: width,
-          height: height,
-          sidebar: sidebar,
-          text: text,
-          pdf: pdf,
-          showAnnotations: showAnnotations,
-          zoom: zoom,
-          search: search,
-          container: container,
-          afterLoad: afterLoad
-        });
-      };
+        function documentIsLoaded( url ) {
+          var found = false;
+          Popcorn.forEach( DV.viewers, function( viewer, idx ) {
+            if( viewer.api.getSchema().canonicalURL === url ) {
+              setOptions( viewer );
+              //options._changeView( viewer );
+              documentRegistry[ options._key ] += 1;
+              found = true;
+              DV.loaded = true;
+            }
+          });
+          return found;
+        }
+        if ( !documentIsLoaded( options.url ) ) {
+          // Figure out if we need a callback to change the page #
+          var afterLoad = options.page || options.aid ?
+            function( viewer ) {
+              setOptions( viewer );
+              options._changeView( viewer );
+              documentRegistry[ options._key ] = 1;
+              containerDiv.style.visibility = "hidden";
+              viewer.elements.pages.hide();
+              DV.loaded = true;
+            } :
+            function( viewer ) {
+              setOptions( viewer );
+              documentRegistry[ options._key ] = 1;
+              DV.loaded = true;
+            };
+          DV.load( url, {
+            width: width,
+            height: height,
+            sidebar: sidebar,
+            text: text,
+            pdf: pdf,
+            showAnnotations: showAnnotations,
+            zoom: zoom,
+            search: search,
+            container: container,
+            afterLoad: afterLoad
+          });
+        }
+      }
 
-      // Request the viewer JavaScript.
-      Popcorn.getScript('http://s3.documentcloud.org/viewer/viewer.js', load );
     },
 
+    start: function( event, options ) {
+      var elem = document.getElementById( options.target ),
+          viewer = DV.viewers[ options._key ];
+      ( options.page || options.aid ) && viewer &&
+        options._changeView( viewer );
 
-    start: function(event, options) {
-      var elem = document.getElementById(options.target);
-
-      if ( elem ) {
+      if ( elem && viewer) {
         elem.style.visibility = "visible";
+        viewer.elements.pages.show();
       }
     },
 
-    end: function(event, options) {
-      var elem = document.getElementById(options.target);
+    end: function( event, options ) {
+      var elem = document.getElementById( options.target );
 
-      if ( elem ) {
+      if ( elem && DV.viewers[ options._key ] ) {
         elem.style.visibility = "hidden";
+        DV.viewers[ options._key ].elements.pages.hide();
       }
     },
 
     _teardown: function( options ) {
-      // TODO: this causes viewer listeners to throw when it vanishes.  Need a clean way to remove viewer...
-      var elem = document.getElementById(options.target),
-      key = _.keys( DV.viewers )[ 0 ];
+      var elem = document.getElementById( options.target ),
+          key = options._key;
+      if ( key && DV.viewers[ key ] && --documentRegistry[ key ] === 0 ) {
+        DV.viewers[ key ].api.unload();
 
-      if ( key && DV.viewers[ key ] ) {
-        var api = new DV.Api(DV.viewers[_.keys(DV.viewers)[0]]);
-        api.clearHashListeners();
-        delete DV.viewers[ key ];
-      }
-
-      while ( elem.hasChildNodes() ) {
-        elem.removeChild( elem.lastChild );
+        while ( elem.hasChildNodes() ) {
+          elem.removeChild( elem.lastChild );
+        }
       }
     }
-
   });
-
 })( Popcorn, window.document );
