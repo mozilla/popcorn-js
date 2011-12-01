@@ -12,8 +12,8 @@
   <script src="../../popcorn.js"></script>
   <script src="popcorn.tumblr.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
+    document.addEventListener( "DOMContentLoaded", function () {
+      var p = Popcorn( "#video" )
       .volume(0)
       .play()
       .tumblr( {
@@ -21,7 +21,7 @@
         target: "tumblrdiv",
         start: 6,
         end: 10,
-        base_hostname: "http://citriccomics.tumblr.com",
+        base_hostname: "https://citriccomics.tumblr.com",
         size: 512
       } )
       // Text Type
@@ -114,18 +114,18 @@
   <p>All types of tumblr plugins are shown below the video. This includes a Blog Info example, an Avatar example and an example of each type of Blog Post ( chat, link, quote, video, audio, text, photo and answer ).</p>
 
   <div>
-    <video id='video'
-      controls preload='none'
-      width= '350px'
+    <video id="video"
+      controls preload="none"
+      width= "350px"
       poster="../../test/poster.png">
 
-      <source id='mp4'
+      <source id="mp4"
         src="../../test/trailer.mp4"
         type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
+      <source id="ogv"
         src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'>
+        type="video/ogg;" codecs="theora, vorbis">
 
       <p>Your user agent does not support the HTML5 Video element.</p>
 

@@ -37,8 +37,9 @@
       options.htmlString += options.post.body;
     },
     photo: function( options ) {
-      var width = options.width || 250, defaultSizeIndex = -1, picURIs = [ options.post.photos.length ],
-          picCaptions = [ options.post.photos.length ], len;
+      var width = options.width || 250, defaultSizeIndex = -1, 
+          picURIs = [ options.post.photos.length ],
+          picCaptions = [ options.post.photos.length ];
 
       // Finds the correct photo based on specified size, saves URI and Caption]
       for ( var i = 0, len = options.post.photos.length; i < len; i++ ) {
@@ -64,8 +65,8 @@
         }
 
       // Current means of handling if alt_sizes doesn't have our default image size
-      defaultSizeIndex === -1 && Popcorn.error( "Clearly your blog has a picture that is so tiny it isn't even 250px wide. Consider using a bigger"
-        + " picture or try a smaller size." );
+      defaultSizeIndex === -1 && Popcorn.error( "Clearly your blog has a picture that is so tiny it isn't even 250px wide. Consider " + 
+        " using a bigger picture or try a smaller size." );
 
       // If a matching photo is never found, use the default size.
       if ( k === photo.alt_sizes.length ) {
@@ -74,7 +75,7 @@
     }
 
     // Finally, all the potential setup is done. Below is the actual code putting everything in our div element
-    for ( var m = 0, len = picURIs.length; m < len; m++ ) {
+    for ( var m = 0, len3 = picURIs.length; m < len3; m++ ) {
       options.htmlString += picCaptions[ m ] + "<br/> <img src='" + picURIs[ m ] + "' alt='Pic" + i + "' /><br/>";
     }
 
@@ -89,9 +90,9 @@
       if ( !options.post.artist ) {
         options.htmlString += "<a href='" + options.post.source_url + "' target='_blank'>" + options.post.source_title + "</a><br/>";
       } else {
-        options.htmlString += "Artist: " + options.post.artist + "<br/> <a href='" + options.post.source_url
-          + "' target='_blank' style='float:left;margin:0 10px 0 0;'><img src='" + options.post.album_art 
-          + "' alt='" + options.post.album + "'></a><hr/>";
+        options.htmlString += "Artist: " + options.post.artist + "<br/> <a href='" + options.post.source_url + 
+          "' target='_blank' style='float:left;margin:0 10px 0 0;'><img src='" + options.post.album_art + 
+          "' alt='" + options.post.album + "'></a><hr/>";
         options.htmlString += options.post.track_number + " - " + options.post.track_name + "<br/>";
       }
 
@@ -100,7 +101,9 @@
       options.htmlString += options.post.caption;
     },
     video: function( options ) {
-      var width = options.width || 400, defaultSizeIndex = -1, videoCode;
+      var width = options.width || 400,
+          defaultSizeIndex = -1, 
+          videoCode;
 
       for ( var i = 0, len = options.post.player.length; i < len; i++ ) {
       // First try to see if the current index matches the specified width
@@ -155,7 +158,7 @@
       options.htmlString += "Question: " + options.post.question + "<br/>";
       options.htmlString += "Answer: " + options.post.answer;
     }
-  }
+  };
 
   Popcorn.plugin( "tumblr" , {
     manifest: {
@@ -215,7 +218,13 @@
       }
     },
     _setup: function( options ) {
-      var target = document.getElementById( options.target ), htmlString = "", requestString, type;
+      var target = document.getElementById( options.target ), 
+          htmlString = "", 
+          requestString,
+          uri,
+          blogHTTPHeader,
+          type;
+          
       options.htmlString = htmlString;
 
       // Valid types of retrieval requests
@@ -239,10 +248,11 @@
 
       // Check if target container exists
       ( !target && Popcorn.plugin.debug ) && Popcorn.error( "Target Tumblr container doesn't exist." );
-
-      // Check if base_hostname contains http://
-      var uri = options.base_hostname.slice( ( options.base_hostname.indexOf( "/" ) + 2 ), options.base_hostname.length );
-      options.base_hostname = options.base_hostname.slice( 0, ( options.base_hostname.indexOf( "/" ) + 2 ) ) === "http://" ? uri : options.base_hostname;
+      
+      // Checks if user included any http header in the url and removes it if that's the case as request don't work with it
+      uri = options.base_hostname.slice( ( options.base_hostname.indexOf( "/" ) + 2 ), options.base_hostname.length );
+      blogHTTPHeader = options.base_hostname.slice( 0, ( options.base_hostname.indexOf( "/" ) + 2 ) );
+      options.base_hostname = blogHTTPHeader === "http://" || blogHTTPHeader === "https://" ? uri : options.base_hostname;
       
       // Create seperate container for plugin
       options._container = document.createElement( "div" );
@@ -259,13 +269,14 @@
         } else {
           type = "info";
         }
-        requestString = "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/" + type + "?api_key=" + options.api_key + "&id=" + options.blogId
-          + "&jsonp=tumblrCallBack";
+        requestString = "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/" + type + "?api_key=" + options.api_key + "&id=" + options.blogId + 
+          "&jsonp=tumblrCallBack";
 
         Popcorn.getJSONP( requestString, function( data ) {
           if ( data.meta.msg === "OK" ) {
             if ( options.requestType === "blogpost" ) {
-              options.post = data.response.posts[ 0 ], options.data = data;
+              options.post = data.response.posts[ 0 ]; 
+              options.data = data;
               var blogType = options.post.type;
 
               // date is a response type common to all blogposts so it's in here to prevent duplicated code
