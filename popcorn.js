@@ -1042,10 +1042,18 @@
         end = tracks.endIndex,
         start = tracks.startIndex,
         animIndex = 0,
-
         registryByName = Popcorn.registryByName,
+        trackstart = "trackstart",
+        trackend = "trackend",
 
-        byEnd, byStart, byAnimate, natives, type;
+        custom, byEnd, byStart, byAnimate, natives, type;
+
+    // Define simple custom event object
+    custom = {
+      plugin: "",
+      type: ""
+    };
+
 
     //  Playbar advancing
     if ( previousTime <= currentTime ) {
@@ -1064,6 +1072,10 @@
           if ( byEnd._running === true ) {
             byEnd._running = false;
             natives.end.call( obj, event, byEnd );
+
+            custom.plugin = type;
+            custom.type = trackend;
+            obj.trigger( trackend, Popcorn.extend( {}, byEnd, custom ) );
           }
 
           end++;
@@ -1090,7 +1102,12 @@
                   obj.data.disabled.indexOf( type ) === -1 ) {
 
             byStart._running = true;
+
             natives.start.call( obj, event, byStart );
+
+            custom.plugin = type;
+            custom.type = trackstart;
+            obj.trigger( trackstart, Popcorn.extend( {}, byStart, custom ) );
 
             // If the `frameAnimation` option is used,
             // push the current byStart object into the `animating` cue
@@ -1141,6 +1158,10 @@
           if ( byStart._running === true ) {
             byStart._running = false;
             natives.end.call( obj, event, byStart );
+
+            custom.plugin = type;
+            custom.type = trackend;
+            obj.trigger( trackend, Popcorn.extend( {}, byEnd, custom ) );
           }
           start--;
         } else {
@@ -1167,6 +1188,10 @@
 
             byEnd._running = true;
             natives.start.call( obj, event, byEnd );
+
+            custom.plugin = type;
+            custom.type = trackstart;
+            obj.trigger( trackstart, Popcorn.extend( {}, byStart, custom ) );
 
             // If the `frameAnimation` option is used,
             // push the current byEnd object into the `animating` cue

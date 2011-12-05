@@ -1778,10 +1778,10 @@ test( "Start Zero Immediately", function() {
   });
 });
 
-test( "Custom track event listeners: trackstart, trackend", function() {
+test( "Special track event listeners: trackstart, trackend", function() {
 
   var $pop = Popcorn( "#video" ),
-      expects = 2,
+      expects = 4,
       count = 0;
 
   expect( expects );
@@ -1804,16 +1804,26 @@ test( "Custom track event listeners: trackstart, trackend", function() {
   });
 
   $pop.emitter({
-    start: 0,
-    end: 2
+    start: 1,
+    end: 3
   }).listen( "trackstart", function( event ) {
 
-    console.log( "trackstart", event );
+    equal( event.type, "trackstart", "Special trackstart event object includes correct type" );
+    plus();
+
+
+    equal( event.plugin, "emitter", "Special trackstart event object includes correct plugin name" );
+    plus();
 
   }).listen( "trackend", function( event ) {
 
-    console.log( "trackend", event );
-  });
+    equal( event.type, "trackend", "Special trackend event object includes correct type" );
+    plus();
+
+    equal( event.plugin, "emitter", "Special trackend event object includes correct plugin name" );
+    plus();
+
+  }).play();
 });
 
 test( "frame function (frameAnimation)", function() {
