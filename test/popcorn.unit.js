@@ -129,15 +129,15 @@ test( "Popcorn.getTrackEvents", function() {
 
   equal( typeof Popcorn.getTrackEvents.ref, "function", "Popcorn.getTrackEvents.ref() is a private use  static function" );
 
-  equal( typeof Popcorn.getTrackEvents( popcorn ), "object", "Popcorn.getTrackEvents() returns an object" ); 
+  equal( typeof Popcorn.getTrackEvents( popcorn ), "object", "Popcorn.getTrackEvents() returns an object" );
 
-  equal( Popcorn.getTrackEvents( popcorn ).length, 0, "Popcorn.getTrackEvents() currently has no trackEvents" ); 
+  equal( Popcorn.getTrackEvents( popcorn ).length, 0, "Popcorn.getTrackEvents() currently has no trackEvents" );
 
   popcorn.exec( 1, function(){ });
 
   equal( Popcorn.getTrackEvents( popcorn ).length, 1, "Currently only one track event" );
 
-  equal( typeof Popcorn.getTrackEvents( popcorn ), "object", "Popcorn.getTrackEvents() returns an object" ); 
+  equal( typeof Popcorn.getTrackEvents( popcorn ), "object", "Popcorn.getTrackEvents() returns an object" );
 
   Popcorn.removeTrackEvent( popcorn, Popcorn.getTrackEvents( popcorn )[ 0 ]._id );
 
@@ -178,7 +178,7 @@ test( "Popcorn.getTrackEvent", function() {
     end: 2,
   });
 
-  equal( typeof Popcorn.getTrackEvent( popcorn, "asdf" ), "object", "Popcorn.getTrackEvent() returns an object" ); 
+  equal( typeof Popcorn.getTrackEvent( popcorn, "asdf" ), "object", "Popcorn.getTrackEvent() returns an object" );
   plus();
 
 });
@@ -1775,6 +1775,44 @@ test( "Start Zero Immediately", function() {
   $pop.zero({
     start: 0,
     end: 2
+  });
+});
+
+test( "Custom track event listeners: trackstart, trackend", function() {
+
+  var $pop = Popcorn( "#video" ),
+      expects = 2,
+      count = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      // clean up added events after tests
+      Popcorn.removePlugin( "emitter" );
+      start();
+    }
+  }
+
+  stop();
+
+  $pop.pause().currentTime( 0 );
+
+  Popcorn.plugin( "emitter", {
+    start: function() {},
+    end: function() {}
+  });
+
+  $pop.emitter({
+    start: 0,
+    end: 2
+  }).listen( "trackstart", function( event ) {
+
+    console.log( "trackstart", event );
+
+  }).listen( "trackend", function( event ) {
+
+    console.log( "trackend", event );
   });
 });
 
