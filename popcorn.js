@@ -1102,7 +1102,6 @@
                   obj.data.disabled.indexOf( type ) === -1 ) {
 
             byStart._running = true;
-
             natives.start.call( obj, event, byStart );
 
             custom.plugin = type;
