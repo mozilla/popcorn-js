@@ -47,7 +47,7 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
 
    // track registered plugins by document
    var documentRegistry = {};
-var called = 0;
+
   Popcorn.plugin( "documentcloud", {
 
     manifest: {
@@ -103,7 +103,7 @@ var called = 0;
         DV.loaded = false;
 
         // Request the viewer JavaScript.
-        Popcorn.getScript( "//s3.documentcloud.org/viewer/viewer.js", function() {
+        Popcorn.getScript( "http://s3.documentcloud.org/viewer/viewer.js", function() {
           DV.loading = false;
           load();
         });
@@ -118,10 +118,9 @@ var called = 0;
         // swap .html URL to .js for API call
         var url = options.url.replace( /\.html$/, ".js" ),
           target = options.target,
-          // need #id for document cloud call
-          container = "#" + target,
-          containerDiv = document.getElementById( target ),
-          containerDivSize = Popcorn.position( containerDiv ),
+          targetDiv = document.getElementById( target ),
+          containerDiv = document.createElement( "div" ),
+          containerDivSize = Popcorn.position( targetDiv ),
           // need to use size of div if not given
           width = options.width || containerDivSize.width,
           height = options.height || containerDivSize.height,
@@ -131,7 +130,10 @@ var called = 0;
           showAnnotations = options.showAnnotations || true,
           zoom = options.zoom || 700,
           search = options.search || true,
-          page = options.page;
+          page = options.page,
+          container;
+
+        //targetDiv.appendChild( containerDiv );
 
         function setOptions( viewer ) {
           options._key = viewer.api.getId();
@@ -149,30 +151,45 @@ var called = 0;
           var found = false;
           Popcorn.forEach( DV.viewers, function( viewer, idx ) {
             if( viewer.api.getSchema().canonicalURL === url ) {
+              var targetDoc;
               setOptions( viewer );
-              //options._changeView( viewer );
-              documentRegistry[ options._key ] += 1;
+              targetDoc = documentRegistry[ options._key ];
+              options._containerId = targetDoc.id;
+              targetDoc.num += 1;
               found = true;
               DV.loaded = true;
             }
           });
           return found;
         }
+
+        function createRegistryEntry() {
+          var entry = {
+            num: 1,
+            id: options._containerId
+          };
+          documentRegistry[ options._key ] = entry;
+          DV.loaded = true;
+        }
+
         if ( !documentIsLoaded( options.url ) ) {
+
+          containerDiv.id = options._containerId = Popcorn.guid( target );
+          container = "#" + containerDiv.id;
+          targetDiv.appendChild( containerDiv );
+
           // Figure out if we need a callback to change the page #
           var afterLoad = options.page || options.aid ?
             function( viewer ) {
               setOptions( viewer );
               options._changeView( viewer );
-              documentRegistry[ options._key ] = 1;
               containerDiv.style.visibility = "hidden";
               viewer.elements.pages.hide();
-              DV.loaded = true;
+              createRegistryEntry();
             } :
             function( viewer ) {
               setOptions( viewer );
-              documentRegistry[ options._key ] = 1;
-              DV.loaded = true;
+              createRegistryEntry();
             };
           DV.load( url, {
             width: width,
@@ -192,7 +209,7 @@ var called = 0;
     },
 
     start: function( event, options ) {
-      var elem = document.getElementById( options.target ),
+      var elem = document.getElementById( options._containerId ),
           viewer = DV.viewers[ options._key ];
       ( options.page || options.aid ) && viewer &&
         options._changeView( viewer );
@@ -204,7 +221,7 @@ var called = 0;
     },
 
     end: function( event, options ) {
-      var elem = document.getElementById( options.target );
+      var elem = document.getElementById( options._containerId );
 
       if ( elem && DV.viewers[ options._key ] ) {
         elem.style.visibility = "hidden";
@@ -213,7 +230,7 @@ var called = 0;
     },
 
     _teardown: function( options ) {
-      var elem = document.getElementById( options.target ),
+      var elem = document.getElementById( options._containerId ),
           key = options._key;
       if ( key && DV.viewers[ key ] && --documentRegistry[ key ] === 0 ) {
         DV.viewers[ key ].api.unload();
@@ -221,6 +238,7 @@ var called = 0;
         while ( elem.hasChildNodes() ) {
           elem.removeChild( elem.lastChild );
         }
+        elem.parentNode.removeChild( elem );
       }
     }
   });
