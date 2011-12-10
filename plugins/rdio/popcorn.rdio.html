@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Rdio Plug-in Demo</title>
+
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.rdio.js"></script>
+  <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
+  <script>
+    document.addEventListener( "DOMContentLoaded", function() {
+      var p = Popcorn( "#video" )
+      .volume( 0 )
+      .play()
+	  /*
+      .rdio({
+        start: 2,
+        end: 20,
+        target: "rdiodiv",
+        artist: "Radiohead",
+        album: "In Rainbows"
+      })
+	  */
+      .rdio ({
+        start: 20,
+        end: 40,
+        target: "rdiodiv",
+        artist: "Radiohead",
+        album: "The Bends"
+      })
+      .rdio({
+        start: 2,
+        end: 20,
+        target: "rdiodiv",
+        person: "diggywiggy",
+        id: 413517,
+        playlist: "sunday"
+      })
+    }, false);
+
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Rdio Plug-in Demo</h1>
+  <p>Album tracks from Radiohead's <span style='font-style:italic'>In Rainbows</span> will appear at 2 seconds and disappear at 20 seconds<br />
+     Album tracks from Radiohead's <span style='font-style:italic'>The Bends</span> will appear at 8 seconds and disappear at 15 seconds</p>
+  <div>
+    <video id="video"
+      controls preload="none"
+      width="250px"
+      poster="../../test/poster.png">
+
+      <source id="mp4"
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'>
+
+      <source id="ogv"
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'>
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+
+    </video>
+  </div>
+  <div id="rdiodiv" width="50%" height="50%">
+  </div>
+</body>
+</html>
