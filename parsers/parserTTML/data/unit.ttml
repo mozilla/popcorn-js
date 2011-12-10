@@ -16,7 +16,7 @@
       <!-- alternative using yellow text but otherwise the same as style s1 -->
       <style xml:id="s2" style="s1" tts:color="yellow"/>
       <!-- a style based on s1 but justified to the right -->
-      <style xml:id="s1Right" style="s1" tts:textAlign="end" />     
+      <style xml:id="s1Right" style="s1" tts:textAlign="end" />
       <!-- a style based on s2 but justified to the left -->
       <style xml:id="s2Left" style="s2" tts:textAlign="start" />
     </styling>
@@ -28,7 +28,7 @@
         tts:backgroundColor="black"
         tts:displayAlign="after"
       />
-    </layout> 
+    </layout>
   </head>
   <body region="subtitleArea">
     <div>
@@ -43,7 +43,7 @@
         It is puzzling, why is it<br/>
         we do not see things upside-down?
       </p>
-      <p xml:id="subtitle4" begin="17.2s" end="23.0s">
+      <p xml:id="subtitle4" begin="17.2s" end="23.0s" region="customRegion">
         You have never heard the Theory,<br/>
         then, that the Brain also is inverted?
       </p>
@@ -51,7 +51,7 @@
         No indeed! What a beautiful fact!
       </p>
     </div>
-    <div begin="00:00:27">
+    <div begin="00:00:27" region="">
       <p xml:id="subtitle6" begin="0.76s" end="3.45s">
         It seems a paradox, does it not,
       </p>
@@ -70,6 +70,6 @@
       <p xml:id="subtitle10" begin="23.0s" end="27.0s" style="s2">
         No indeed! What a beautiful fact!
       </p>
-    </div>  
+    </div>
   </body>
 </tt>
