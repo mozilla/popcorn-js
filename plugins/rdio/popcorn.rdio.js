@@ -46,11 +46,11 @@
   var p = Popcorn( "#video" )
   .rdio({
     start: 10,
-	end: 20,
-	target: "rdiodiv",
-	person: "diggywiggy",
-	id: 413517,
-	playlist: "sunday"
+    end: 20,
+    target: "rdiodiv",
+    person: "diggywiggy",
+    id: 413517,
+    playlist: "sunday"
   })
   */
     
@@ -77,7 +77,7 @@
 		   
             Popcorn.getJSONP( "http://www.rdio.com/api/oembed/?format=json&url=http://www.rdio.com/%23/people/" + options.person + "/playlists/" + options.id + "/" + options.playlist + "/&callback=loadResult", loadResult, false );
           }
-	      _albums[ options.playlist ].count++;
+          _albums[ options.playlist ].count++;
 		   
         } else if ( options.artist ) {
           if ( !_albums[ options.album ] ) {
@@ -86,7 +86,7 @@
               htmlString: "Unknown Artist"
             };
 		  
-		    Popcorn.getJSONP( "http://www.rdio.com/api/oembed/?format=json&url=http://www.rdio.com/%23/artist/" + options.artist + "/album/" + options.album + "/&callback=loadResult", loadResult, false );
+            Popcorn.getJSONP( "http://www.rdio.com/api/oembed/?format=json&url=http://www.rdio.com/%23/artist/" + options.artist + "/album/" + options.album + "/&callback=loadResult", loadResult, false );
           }
           _albums[ options.album ].count++;
         }
@@ -142,12 +142,12 @@
       type: "text",
       label: "Album"
     },
-	person: {
+    person: {
       elem: "input",
       type: "text",
       label: "Person"
     },
-	id: {
+    id: {
       elem: "input",
       type: "text",
       label: "Id"
