@@ -1046,14 +1046,7 @@
         trackstart = "trackstart",
         trackend = "trackend",
 
-        custom, byEnd, byStart, byAnimate, natives, type;
-
-    // Define simple custom event object
-    custom = {
-      plugin: "",
-      type: ""
-    };
-
+        byEnd, byStart, byAnimate, natives, type;
 
     //  Playbar advancing
     if ( previousTime <= currentTime ) {
@@ -1073,9 +1066,12 @@
             byEnd._running = false;
             natives.end.call( obj, event, byEnd );
 
-            custom.plugin = type;
-            custom.type = trackend;
-            obj.trigger( trackend, Popcorn.extend( {}, byEnd, custom ) );
+            obj.trigger( trackend,
+              Popcorn.extend({}, byEnd, {
+                plugin: type,
+                type: trackend
+              })
+            );
           }
 
           end++;
@@ -1104,9 +1100,12 @@
             byStart._running = true;
             natives.start.call( obj, event, byStart );
 
-            custom.plugin = type;
-            custom.type = trackstart;
-            obj.trigger( trackstart, Popcorn.extend( {}, byStart, custom ) );
+            obj.trigger( trackstart,
+              Popcorn.extend({}, byStart, {
+                plugin: type,
+                type: trackstart
+              })
+            );
 
             // If the `frameAnimation` option is used,
             // push the current byStart object into the `animating` cue
@@ -1158,9 +1157,12 @@
             byStart._running = false;
             natives.end.call( obj, event, byStart );
 
-            custom.plugin = type;
-            custom.type = trackend;
-            obj.trigger( trackend, Popcorn.extend( {}, byEnd, custom ) );
+            obj.trigger( trackend,
+              Popcorn.extend({}, byEnd, {
+                plugin: type,
+                type: trackend
+              })
+            );
           }
           start--;
         } else {
@@ -1188,10 +1190,12 @@
             byEnd._running = true;
             natives.start.call( obj, event, byEnd );
 
-            custom.plugin = type;
-            custom.type = trackstart;
-            obj.trigger( trackstart, Popcorn.extend( {}, byStart, custom ) );
-
+            obj.trigger( trackstart,
+              Popcorn.extend({}, byStart, {
+                plugin: type,
+                type: trackstart
+              })
+            );
             // If the `frameAnimation` option is used,
             // push the current byEnd object into the `animating` cue
             if ( obj.options.frameAnimation &&
