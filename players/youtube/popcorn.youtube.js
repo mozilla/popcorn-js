@@ -186,20 +186,6 @@ Popcorn.player( "youtube", {
           }
         });
 
-        Popcorn.player.defineProperty( media, "offsetHeight", {
-          get: function() {
-
-            return +youtubeObject.height.split( "px" )[ 0 ];
-          }
-        });
-
-        Popcorn.player.defineProperty( media, "offsetWidth", {
-          get: function() {
-
-            return +youtubeObject.width.split( "px" )[ 0 ];
-          }
-        });
-
         media.readyState = 4;
         media.dispatchEvent( "canplaythrough" );
         media.dispatchEvent( "load" );
