@@ -72,7 +72,7 @@
           if ( !_albums[ options.playlist ] ) {
             _albums[ options.playlist ] = {
               count: 0,
-              htmlString: "Unknown Artist"
+              htmlString: "Unknown Playlist"
             };
 		   
             Popcorn.getJSONP( "http://www.rdio.com/api/oembed/?format=json&url=http://www.rdio.com/%23/people/" + options.person + "/playlists/" + options.id + "/" + options.playlist + "/&callback=loadResult", loadResult, false );
