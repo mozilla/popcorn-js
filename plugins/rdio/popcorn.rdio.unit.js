@@ -27,30 +27,30 @@ test( "Popcorn Rdio Plugin", function() {
     end: 4,
     target: "rdiodiv",
     artist: "Erykah Badu",
-	album: "Baduizm"
+    album: "Baduizm"
   })
   .rdio({
     start: 2,
     end: 7,
     target: "rdiodiv",
-	person: "scottyhons",
-	id: 236475,
-	playlist: "Toronto Music"	
+    person: "scottyhons",
+    id: 236475,
+    playlist: "Toronto Music"	
   })
   .rdio({
     start: 4,
     end: 7,
-	target: "rdiodiv",
-	artist: "Radiohead",
-	album: "some album"
+    target: "rdiodiv",
+    artist: "Radiohead",
+    album: "some album"
   })
   .rdio({
     start: 5,
     end: 8,
     target: "rdiodiv",
-	person: "some person",
-	id: "236475",
-	playlist: "some playlist"	
+    person: "some person",
+    id: "236475",
+    playlist: "some playlist"	
   });
   
 
@@ -70,15 +70,15 @@ test( "Popcorn Rdio Plugin", function() {
     plus();
     equals( rdiodiv.children[ 2 ].style.display , "none", "null div is not visible on the page" );
     plus();
-	equals( rdiodiv.children[ 3 ].style.display , "none", "null div is not visible on the page" );
-	plus();
+    equals( rdiodiv.children[ 3 ].style.display , "none", "null div is not visible on the page" );
+    plus();
   });
 
   popped.exec( 5, function() {
     equals( rdiodiv.children[ 2 ].innerHTML , "Unknown Artist", "Artist information could not be found" );
     plus();
-	equals( rdiodiv.children[ 3 ].innerHTML , "Unknown Playlist", "Playlist information could not be found" );
-	plus();
+    equals( rdiodiv.children[ 3 ].innerHTML , "Unknown Playlist", "Playlist information could not be found" );
+    plus();
 
     popped.pause().removeTrackEvent( setupId );
     ok( !rdiodiv.children[ 3 ], "removed playlist was properly destroyed" );
