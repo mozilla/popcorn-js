@@ -74,7 +74,8 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
 
 
     _setup: function( options ) {
-      var DV = window.DV = window.DV || {};
+      var DV = window.DV = window.DV || {},
+          that = this;
 
       function readyCheck() {
         if( window.DV.loaded ) {
@@ -177,6 +178,7 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
           containerDiv.id = options._containerId = Popcorn.guid( target );
           container = "#" + containerDiv.id;
           targetDiv.appendChild( containerDiv );
+          that.trigger( "documentready" );
 
           // Figure out if we need a callback to change the page #
           var afterLoad = options.page || options.aid ?
@@ -190,6 +192,8 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
             function( viewer ) {
               setOptions( viewer );
               createRegistryEntry();
+              containerDiv.style.visibility = "hidden";
+              viewer.elements.pages.hide();
             };
           DV.load( url, {
             width: width,
@@ -232,7 +236,7 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
     _teardown: function( options ) {
       var elem = document.getElementById( options._containerId ),
           key = options._key;
-      if ( key && DV.viewers[ key ] && --documentRegistry[ key ] === 0 ) {
+      if ( key && DV.viewers[ key ] && --documentRegistry[ key ].num === 0 ) {
         DV.viewers[ key ].api.unload();
 
         while ( elem.hasChildNodes() ) {
