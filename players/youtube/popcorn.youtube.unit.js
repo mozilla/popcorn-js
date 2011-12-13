@@ -435,3 +435,15 @@ test( "Player height and width", function() {
   readyStatePoll();
 });
 
+test( "Player Errors", function() {
+  QUnit.reset();
+  expect( 1 );
+  stop();
+  var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk" );
+
+  pop.listen( "error", function() {
+    ok( true, "error trigger by invalid URL" );
+    start();
+  });
+});
+

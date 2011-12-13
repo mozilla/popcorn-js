@@ -74,7 +74,7 @@
       }
 
       if ( !window.Processing ) {
-        Popcorn.getScript( "//processingjs.org/content/download/processing-js-1.3.0/processing-1.3.0.js", function() {
+        Popcorn.getScript( "//wac.1237.edgecastcdn.net/801237/cdn.processingjs.org/content/download/processing-js-1.3.6/processing-1.3.6.min.js", function() {
           scriptReady( options );
         });
       } else {

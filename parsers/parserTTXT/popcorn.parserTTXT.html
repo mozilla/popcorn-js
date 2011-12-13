@@ -1,46 +1,47 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Popcorn 0.3 TTXT parser Plug-in Demo</title>
-  
-  <script src="../../popcorn.js"></script>
-  <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
-  <script src="popcorn.parserTTXT.js"></script>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var p = Popcorn('#video')
-      .volume(0)
-      .play()
-    }, false);
-  </script>
-</head>
-<body>
-  <h1 id="qunit-header">Popcorn 0.3 TTXT parser Plug-in Demo</h1>
-  <p>Subtitles are processed from <a href="data/data.TTXT">here</a></p>
-  
-  <p>From 2.4 to 5.2 seconds, "[Background Music Playing]" is shown
-  <br />From 15.712 to 17.399 seconds, "Heay!!" is shown
-  <br />From 25.712 to 30.399 seconds, "[Bird noises]" is shown</p>
-  <div>
-    <video id='video'
-      data-timeline-sources="data/data.TTXT"
-      controls
-      width= '250px'
-      poster="../../test/poster.png"> 
+  <head>
+    <title>Popcorn 1.0 TTXT parser Plug-in Demo</title>
 
-      <source id='mp4'
-        src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+    <script src="../../popcorn.js"></script>
+    <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
+    <script src="popcorn.parserTTXT.js"></script>
 
-      <source id='ogv'
-        src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var p = Popcorn("#video")
+        .parseTTXT( "data/data.TTXT" )
+        .volume(0)
+        .play()
+      }, false);
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn 1.0 TTXT parser Plug-in Demo</h1>
+    <p>Subtitles are processed from <a href="data/data.TTXT">here</a></p>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+    <p>From 2.4 to 5.2 seconds, "[Background Music Playing]" is shown
+    <br />From 15.712 to 17.399 seconds, "Heay!!" is shown
+    <br />From 25.712 to 30.399 seconds, "[Bird noises]" is shown</p>
 
-    </video> 
-  </div>
+    <div>
+      <video id="video"
+        controls
+        width= "250px"
+        poster="../../test/poster.png">
 
-</body>
+        <source id="mp4"
+          src="../../test/trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../test/trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+
+  </body>
 </html>

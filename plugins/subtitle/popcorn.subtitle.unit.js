@@ -172,3 +172,43 @@ test( "subtitle data tests", function() {
   equals( container.children[ 0 ].innerHTML, "", "subtitle with no text defaults to an empty string" );
   plus();
 });
+
+test( "subtitle container creation tests", function() {
+
+  var popped = Popcorn( "#video" ),
+      expects = 3,
+      containerAtLoad = document.getElementById("divThatDoesntExist"),
+      containerAfterParse,
+      count = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
+  stop( 12000 );
+
+  popped.subtitle({
+    start: 0,
+    end: 10,
+    text: "My Text",
+    target: "divThatDoesntExist"
+  });
+
+  popped.pause( 0 );
+
+  containerAfterParse = document.getElementById("divThatDoesntExist");
+
+  equals( !!containerAtLoad, false, "Container doesn't exist initially" );
+  plus();
+  equals( !!containerAfterParse, true, "Container exists now" );
+  plus();
+  equals( containerAfterParse.children[ 0 ].innerHTML, "My Text", "Subtitle displayed in created container" );
+  plus();
+
+  // Cleanup
+  containerAfterParse.parentNode.removeChild( containerAfterParse );
+});
