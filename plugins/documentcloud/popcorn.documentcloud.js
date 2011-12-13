@@ -20,27 +20,6 @@
    *       container: ...
    *     });
 
-sidebar: true
-text: true, // don't display text tab
-pdf: true, // no pdf link
-showAnnotations: true, //
-zoom: 700, // int (500, 700, 800, 900, 100))
-search: true // search bar on/off
-
-afterLoad: function() {} // callback...
-
-<div id="DV-viewer-70050-urbina-day-1-in-progress" class="DV-container"></div>
-<script src="http://s3.documentcloud.org/viewer/loader.js"></script>
-
-
-  DV.onload = function(){  }
-  DV.load("http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.js", {
-    width: 970,
-    height: 800,
-    container: "#DV-viewer-70050-urbina-day-1-in-progress"
-  });
-
-
 api - https://github.com/documentcloud/document-viewer/blob/master/public/javascripts/DV/controllers/api.js
 
    */
@@ -58,60 +37,53 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
         website: "http://vocamus.net/dave"
       },
       options: {
-        start      : { elem:"input", type:"text", label:"In" },
-        end        : { elem:"input", type:"text", label:"Out" },
-        target     : "pdf-container",
-        width      : { elem: "input", type: "text", label: "Width" },
-        height     : { elem: "input", type: "text", label: "Height" },
-        src        : { elem: "input", type: "text", label: "PDF URL" },
-        // TODO: Not sure how to deal with pdfDoc, which can only be done with script
-        // pdfDoc     : ???
-        preload    : { elem: "input", type: "boolean", label: "Preload" },
-        page       : { elem: "input", type: "number", label: "Page Number" },
-        aid        : { elem: "input", type: "number", label: "Annotation Id" }
+        start: {
+          elem: "input",
+          type: "text",
+          label: "In"
+        },
+        end: {
+          elem: "input",
+          type: "text",
+          label: "Out"
+        },
+        target: "documentcloud-container",
+        width: {
+          elem: "input",
+          type: "text",
+          label: "Width"
+        },
+        height: {
+          elem: "input",
+          type: "text",
+          label: "Height"
+        },
+        src: {
+          elem: "input",
+          type: "text",
+          label: "PDF URL"
+        },
+        preload: {
+          elem: "input",
+          type: "boolean",
+          label: "Preload"
+        },
+        page: {
+          elem: "input",
+          type: "number",
+          label: "Page Number"
+        },
+        aid: {
+          elem: "input",
+          type: "number",
+          label: "Annotation Id"
+        }
       }
     },
-
 
     _setup: function( options ) {
       var DV = window.DV = window.DV || {},
           that = this;
-
-      function readyCheck() {
-        if( window.DV.loaded ) {
-          load();
-        } else {
-          setTimeout( readyCheck, 25 );
-        }
-      }
-
-      // If the viewer is already loaded, don't repeat the process.
-      if ( !DV.loading ) {
-        DV.loading = true;
-        DV.recordHit = "//www.documentcloud.org/pixel.gif";
-
-        var link = document.createElement( "link" ),
-            head = document.getElementsByTagName( "head" )[ 0 ];
-
-        link.rel = "stylesheet";
-        link.type = "text/css";
-        link.media = "screen";
-        link.href = "//s3.documentcloud.org/viewer/viewer-datauri.css";
-
-        head.appendChild( link );
-
-        // Record the fact that the viewer is loaded.
-        DV.loaded = false;
-
-        // Request the viewer JavaScript.
-        Popcorn.getScript( "http://s3.documentcloud.org/viewer/viewer.js", function() {
-          DV.loading = false;
-          load();
-        });
-      } else {
-
-        readyCheck();
-      }
 
       //setup elem...
       function load() {
@@ -133,8 +105,6 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
           search = options.search || true,
           page = options.page,
           container;
-
-        //targetDiv.appendChild( containerDiv );
 
         function setOptions( viewer ) {
           options._key = viewer.api.getId();
@@ -209,6 +179,43 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
           });
         }
       }
+      function readyCheck() {
+        if( window.DV.loaded ) {
+          load();
+        } else {
+          setTimeout( readyCheck, 25 );
+        }
+      }
+
+      // If the viewer is already loaded, don't repeat the process.
+      if ( !DV.loading ) {
+        DV.loading = true;
+        DV.recordHit = "//www.documentcloud.org/pixel.gif";
+
+        var link = document.createElement( "link" ),
+            head = document.getElementsByTagName( "head" )[ 0 ];
+
+        link.rel = "stylesheet";
+        link.type = "text/css";
+        link.media = "screen";
+        link.href = "//s3.documentcloud.org/viewer/viewer-datauri.css";
+
+        head.appendChild( link );
+
+        // Record the fact that the viewer is loaded.
+        DV.loaded = false;
+
+        // Request the viewer JavaScript.
+        Popcorn.getScript( "http://s3.documentcloud.org/viewer/viewer.js", function() {
+          DV.loading = false;
+          load();
+        });
+      } else {
+
+        readyCheck();
+      }
+
+
 
     },
 
