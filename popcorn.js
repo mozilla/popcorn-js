@@ -1799,25 +1799,21 @@
         set: function( val ) {
 
           // make sure val is a number
-          muted = +val;
+          muted = !!val;
           basePlayer.dispatchEvent( "volumechange" );
           return muted;
         },
         configurable: true
       });
 
-      Popcorn.player.defineProperty( basePlayer, "offsetWidth", {
-        get: function() {
+      Popcorn.forEach( [ "offsetWidth", "offsetHeight" ], function( prop ) {
+        Popcorn.player.defineProperty( basePlayer, prop, {
 
-          return +container.offsetWidth;
-        }
-      });
+          get: function() {
+            return +container[ prop ];
+          }
 
-      Popcorn.player.defineProperty( basePlayer, "offsetHeight", {
-        get: function() {
-
-          return +container.offsetHeight;
-        }
+        });
       });
 
       // Adds an event listener to the object
