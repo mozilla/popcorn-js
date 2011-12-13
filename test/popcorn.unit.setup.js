@@ -1,7 +1,3 @@
-if ( !window[ "console" ] ) {
-  jQuery.getScript( "https://getfirebug.com/firebug-lite-debug.js" );
-}
-
 // .noConflict() setup
 var Popcorn = this.Popcorn || "Popcorn",
   pop = this.pop || "pop",

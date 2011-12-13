@@ -4,6 +4,7 @@ var onYouTubePlayerReady = function( containerId ) {
   onYouTubePlayerReady[ containerId ] && onYouTubePlayerReady[ containerId ]();
 };
 onYouTubePlayerReady.stateChangeEventHandler = {};
+onYouTubePlayerReady.onErrorEventHandler = {};
 
 Popcorn.player( "youtube", {
   _setup: function( options ) {
@@ -67,8 +68,16 @@ Popcorn.player( "youtube", {
           }
         };
 
+        onYouTubePlayerReady.onErrorEventHandler[ container.id ] = function( errorCode ) {
+          if ( [ 2, 100, 101, 150 ].indexOf( errorCode ) !== -1 ) {
+            media.dispatchEvent( "error" );
+          }
+        };
+
         // youtube requires callbacks to be a string to a function path from the global scope
         youtubeObject.addEventListener( "onStateChange", "onYouTubePlayerReady.stateChangeEventHandler." + container.id );
+
+        youtubeObject.addEventListener( "onError", "onYouTubePlayerReady.onErrorEventHandler." + container.id );
 
         var timeupdate = function() {
 
