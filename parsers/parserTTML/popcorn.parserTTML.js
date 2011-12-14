@@ -58,7 +58,7 @@
 
     return returnData;
   });
-  
+
   // Parse the children of the given node
   function parseChildren( node, timeOffset, region ) {
     var currNode = node.firstChild,
@@ -85,7 +85,7 @@
 
       currNode = currNode.nextSibling;
     }
-    
+
     return retVal;
   }
 
