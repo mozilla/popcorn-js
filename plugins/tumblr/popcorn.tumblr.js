@@ -31,24 +31,35 @@
 
   var processBlogPost = {
     text: function( options ) {
-      // Make a title that provides a link to the Blog URL
-      options.htmlString += "<a href='" + options.post.post_url + "' target='_blank'>" + options.post.title + "</a><br/><br/>";
-      // Add whatever html that is inside the blog's body
-      options.htmlString += options.post.body;
+      var post = options.post,
+          link = document.createElement( "a" ),
+          linkText = document.createTextNode( post.title ),
+          linkDiv = document.createElement( "div" );
+
+      link.setAttribute( "href", post.post_url );
+      link.appendChild( linkText );
+      linkDiv.appendChild( link );
+      linkDiv.innerHTML += post.body;
+      options._container.appendChild( linkDiv );
+
     },
     photo: function( options ) {
-      var width = options.width || 250, defaultSizeIndex = -1, 
+      var width = options.width || 250, defaultSizeIndex = -1,
+          picCaptions = [ options.post.photos.length ],
           picURIs = [ options.post.photos.length ],
-          picCaptions = [ options.post.photos.length ];
+          picDiv = document.createElement( "div" ),
+          pic = document.createElement( "img" ),
+          post = options.post;
 
       // Finds the correct photo based on specified size, saves URI and Caption]
-      for ( var i = 0, len = options.post.photos.length; i < len; i++ ) {
+      for ( var i = 0, len = post.photos.length; i < len; i++ ) {
         // Store the current photo object being accessed
-        var photo = options.post.photos[ i ];
-        
-        for ( var k = 0, len2 = photo.alt_sizes.length; k < len2; k++ ) {
+        var photo = post.photos[ i ],
+            photoSizes = photo.alt_sizes;
+
+        for ( var k = 0, len2 = photoSizes.length; k < len2; k++ ) {
           // Store the current alt_sizes object being accessed
-          var size = photo.alt_sizes[ k ];
+          var size = photoSizes[ k ];
 
           // See If users desired photo size is in returned JSON
           if ( size.width === width ) {
@@ -64,54 +75,77 @@
           }
         }
 
-      // Current means of handling if alt_sizes doesn't have our default image size
-      defaultSizeIndex === -1 && Popcorn.error( "Clearly your blog has a picture that is so tiny it isn't even 250px wide. Consider " + 
-        " using a bigger picture or try a smaller size." );
+        // Current means of handling if alt_sizes doesn't have our default image size
+        defaultSizeIndex === -1 && Popcorn.error( "Clearly your blog has a picture that is so tiny it isn't even 250px wide. Consider " + 
+          " using a bigger picture or try a smaller size." );
 
-      // If a matching photo is never found, use the default size.
-      if ( k === photo.alt_sizes.length ) {
-        picURIs[ i ] = photo.alt_sizes[ defaultSizeIndex ].url;
+        // If a matching photo is never found, use the default size.
+        if ( k === photoSizes.length ) {
+          picURIs[ i ] = photoSizes[ defaultSizeIndex ].url;
+        }
       }
-    }
 
-    // Finally, all the potential setup is done. Below is the actual code putting everything in our div element
-    for ( var m = 0, len3 = picURIs.length; m < len3; m++ ) {
-      options.htmlString += picCaptions[ m ] + "<br/> <img src='" + picURIs[ m ] + "' alt='Pic" + i + "' /><br/>";
-    }
-
-    options.htmlString += "<br/>" + options.post.caption;
-
+      // Finally, all the potential setup is done. Below is the actual code putting everything in our div element
+      for ( var m = 0, len3 = picURIs.length; m < len3; m++ ) {
+        picDiv.innerHTML += picCaptions[ m ] + "<br/>";
+        pic.setAttribute( "src", picURIs[ m ] );
+        pic.setAttribute( "alt", "Pic" + m );
+        picDiv.appendChild( pic );
+        picDiv.innerHTML += "<br/>";
+      }
+      picDiv.innerHTML += "<br/>" + post.caption;
+      options._container.appendChild( picDiv );
     },
     audio: function( options ) {
+      var artistDiv = document.createElement( "div" ),
+          artistLink = document.createElement( "a" ),
+          post = options.post;
       // Artist/Track info is not always returned so checking first.
       // Truth be told I have no idea if this will ever be returned. Their API specified it as responses but no
       // matter how much I tried myself to replicate it in a test I couldn't ever get a response that included
       // this info.
-      if ( !options.post.artist ) {
-        options.htmlString += "<a href='" + options.post.source_url + "' target='_blank'>" + options.post.source_title + "</a><br/>";
-      } else {
-        options.htmlString += "Artist: " + options.post.artist + "<br/> <a href='" + options.post.source_url + 
-          "' target='_blank' style='float:left;margin:0 10px 0 0;'><img src='" + options.post.album_art + 
-          "' alt='" + options.post.album + "'></a><hr/>";
-        options.htmlString += options.post.track_number + " - " + options.post.track_name + "<br/>";
-      }
+      if ( !post.artist ) {
+        var artistText = document.createTextNode( post.source_title );
 
+        artistLink.setAttribute( "href", post.source_url );
+        artistLink.appendChild( artistText );
+        artistDiv.appendChild( artistLink );
+        artistDiv.innerHTML += "<br/>";
+      } else {
+        var artistImage = document.createElement( "img" );
+
+        artistDiv.innerHTML += "Artist: " + post.artist + "<br/>";
+        artistLink.setAttribute( "href", post.source_url );
+
+        // Construct Image
+        artistImage.setAttribute( "src", post.album_art );
+        artistImage.setAttribute( "alt", post.album );
+
+        // Set Image for link, append to div
+        artistLink.appendChild( artistImage );
+        artistDiv.appendChild( artistLink );
+
+        // Construct rest of plain old text
+        artistDiv.innerHTML += "<hr/>" + post.track_number + " - " + post.track_name + "<br/>";
+      }
       // Obviously the player itself is something that will be displayed either way so it is included outside the check
-      options.htmlString += options.post.player + "   " + options.post.plays  + " plays<br/>";
-      options.htmlString += options.post.caption;
+      artistDiv.innerHTML += post.player + "   " + post.plays + "plays<br/>" + post.caption;
+      options._container.appendChild( artistDiv );
     },
     video: function( options ) {
       var width = options.width || 400,
-          defaultSizeIndex = -1, 
+          defaultSizeIndex = -1,
+          post = options.post,
+          videoDiv = document.createElement( "div" ),
           videoCode;
 
-      for ( var i = 0, len = options.post.player.length; i < len; i++ ) {
+      for ( var i = 0, len = post.player.length; i < len; i++ ) {
       // First try to see if the current index matches the specified width
       // If it doesn't, check if it equals our default width incase user didn't
       // ever specify a width or if their width is never found.
 
         // Store current player object being accessed
-        var video = options.post.player[ i ];
+        var video = post.player[ i ];
 
         if ( video.width === width ) {
           videoCode = video.embed_code;
@@ -126,37 +160,78 @@
 
       // If specified width never found, use default
       if ( i === options.post.player.length ) {
-        videoCode = options.post.player[ defaultSizeIndex ].embed_code;
+        videoCode = post.player[ defaultSizeIndex ].embed_code;
       }
 
       // Will run if user's size is never found and our default is never found
       defaultSizeIndex === -1 && Popcorn.error( "Specified video size was not found and default was never found. Please try another width." );
 
       // Finally build the html for the div element
-      options.htmlString += videoCode + "<br/>" + options.post.caption;
+      videoDiv.innerHTML += videoCode + "<br/>" + post.caption;
+      options._container.appendChild( videoDiv );
     },
     chat: function( options ) {
-      // Brainstorm up ideas how to make each dialogue object to appear up "better" rather than just all be there at once
-      options.htmlString += "<strong><u>" + options.post.title + "</u></strong><br/><br/>";
+      var post = options.post,
+          dialogue,
+          chatDiv = document.createElement( "div" );
 
-      for ( var i = 0, len = options.post.dialogue.length; i < len; i++ ) {
-        options.htmlString += options.post.dialogue[ i ].label + " " + options.post.dialogue[ i ].phrase + "<br/>";
+      // Brainstorm up ideas how to make each dialogue object to appear up "better" rather than just all be there at once
+      chatDiv.innerHTML += "<strong><u>" + post.title + "</u></strong><br/><br/>";
+
+      for ( var i = 0, len = post.dialogue.length; i < len; i++ ) {
+        dialogue = post.dialogue[ i ];
+        chatDiv.innerHTML += dialogue.label + " " + dialogue.phrase + "<br/>";
       }
+
+      // Append it to the parent container
+      options._container.appendChild( chatDiv );
     },
     quote: function( options ) {
+      var quoteDiv = document.createElement( "div" ),
+          quoteLink = document.createElement( "a" ),
+          post = options.post,
+          quoteLinkText = document.createTextNode( post.text );
+
       // Quotes don't come with a title, so for a link to the post I'm going to use the blogname
-      options.htmlString += "<a href'" + options.post.post_url + "' target='_blank'>" + options.post.text + "</a><br/><br/>";
-      options.htmlString += "<br/>Source: <b>" + options.post.source + "</b>";
+      quoteLink.setAttribute( "href", post.post_url );
+      quoteLink.appendChild( quoteLinkText );
+
+      // Append link, finish adding in plain text
+      quoteDiv.appendChild( quoteLink );
+      quoteDiv.innerHTML += "<br/><br/>Source: <b>" + post.source + "</b>";
+
+      // Append div to parent container
+      options._container.appendChild( quoteDiv );
     },
     link: function( options ) {
+      var linkDiv = document.createElement( "div" ),
+          link = document.createElement( "a" ),
+          post = options.post,
+          linkText = document.createTextNode( post.title );
+
       // Using the blog title as a link to it
-      options.htmlString += "<a href='" + options.post.post_url + "' target='_blank'>" + options.post.title + "</a><br/>";
-      options.htmlString += options.post.description;
+      link.setAttribute( "href", post.post_url );
+      link.appendChild( linkText );
+      linkDiv.appendChild( link );
+      linkDiv.innerHTML += "<br/>" + post.description;
+
+      // Append to parent container
+      options._container.appendChild( linkDiv );
     },
     answer: function( options ) {
-      options.htmlString += "Inquirer: <a href='" + options.post.asking_url + "' target='_blank'>" + options.post.asking_name + "</a><br/><br/>";
-      options.htmlString += "Question: " + options.post.question + "<br/>";
-      options.htmlString += "Answer: " + options.post.answer;
+      var answerDiv = document.createElement( "div" ),
+          link = document.createElement( "a" ),
+          post = options.post,
+          linkText = document.createTextNode( post.asking_name );
+
+      answerDiv.innerHTML = "Inquirer: ";
+      link.setAttribute( "href", post.asking_url );
+      link.appendChild( linkText );
+      answerDiv.appendChild( link );
+      answerDiv.innerHTML += "<br/><br/>Question: " + post.question + "<br/>Answer: " + post.answer;
+
+      // Append to parent container
+      options._container.appendChild( answerDiv );
     }
   };
 
@@ -218,14 +293,13 @@
       }
     },
     _setup: function( options ) {
-      var target = document.getElementById( options.target ), 
-          htmlString = "", 
+      var target = document.getElementById( options.target ),
           requestString,
           uri,
           blogHTTPHeader,
+          uriNoHeader,
+          uriFinal,
           type;
-          
-      options.htmlString = htmlString;
 
       // Valid types of retrieval requests
       var validType = function( type ) {
@@ -234,7 +308,6 @@
 
       // Lowercase the types incase user enters it in another way
       options.requestType = options.requestType.toLowerCase();
-      options.blogType = ( options.blogType || "" ).toLowerCase();
 
       // Check if blog url ( base_hostname ) is blank and api_key is included on info and blogpost requestType
       ( !options.base_hostname || ( !options.api_key && ( options.requestType === "info" || options.requestType === "blogpost" ) ) ) &&
@@ -244,28 +317,30 @@
       !validType( options.requestType ) && Popcorn.error( "Invalid tumblr plugin type." );
 
       // Check if a blogID is supplied
-      ( options.requestType === "blogpost" && !options.blogId ) && Popcorn.error( "Error. BlogId required for blogpost requests" );
+      ( options.requestType === "blogpost" && options.blogId == undefined ) && Popcorn.error( "Error. BlogId required for blogpost requests" );
 
       // Check if target container exists
       ( !target && Popcorn.plugin.debug ) && Popcorn.error( "Target Tumblr container doesn't exist." );
-      
+
       // Checks if user included any http header in the url and removes it if that's the case as request don't work with it
       uri = options.base_hostname.slice( ( options.base_hostname.indexOf( "/" ) + 2 ), options.base_hostname.length );
       blogHTTPHeader = options.base_hostname.slice( 0, ( options.base_hostname.indexOf( "/" ) + 2 ) );
-      options.base_hostname = blogHTTPHeader === "http://" || blogHTTPHeader === "https://" ? uri : options.base_hostname;
-      
+      uriNoHeader = blogHTTPHeader === "http://" || blogHTTPHeader === "https://" ? uri : options.base_hostname;
+      if ( uriNoHeader.indexOf( "/" ) > -1 ){
+        uriNoHeader = uriNoHeader.slice( 0, uriNoHeader.indexOf( "/" ) );
+      }
+      options.base_hostname = uriNoHeader;
+
       // Create seperate container for plugin
       options._container = document.createElement( "div" );
       options._container.id = "tumblrdiv-" + Popcorn.guid();
-      options._tumblrdiv = document.createElement( "tumblr:" + options.requestType );
-      options._container.appendChild( options._tumblrdiv );
 
       if ( options.requestType === "avatar" ) {
-        options._tumblrdiv.innerHTML = "<img src=" + 'http://api.tumblr.com/v2/blog/' + options.base_hostname + '/avatar/' + options.size + " alt='BlogAvatar' />";
+        options._container.innerHTML = "<img src=" + 'http://api.tumblr.com/v2/blog/' + options.base_hostname + '/avatar/' + options.size + " alt='BlogAvatar' />";
       } else {
         // Construct type based if it's a blogpost or blog info as request string differs
         if ( options.requestType === "blogpost" ) {
-          type = "posts/" + options.blogType;
+          type = "posts";
         } else {
           type = "info";
         }
@@ -274,42 +349,48 @@
 
         Popcorn.getJSONP( requestString, function( data ) {
           if ( data.meta.msg === "OK" ) {
+            var commonDiv = document.createElement( "div" );
             if ( options.requestType === "blogpost" ) {
-              options.post = data.response.posts[ 0 ]; 
-              options.data = data;
-              var blogType = options.post.type;
+              options.post = data.response.posts[ 0 ];
+              var blogType = options.post.type,
+                  post = options.post;
 
               // date is a response type common to all blogposts so it's in here to prevent duplicated code
-              options.htmlString = "Date Published: " + options.post.date.slice( 0, options.post.date.indexOf( " " ) ) + "<br/><br/>";
-
-              // Processes information and forms an htmlString based on what the blog type is
-              processBlogPost[ blogType ]( options );
-
-              // Check if tags were used for the post, append them to current htmlString
-              if ( options.post.tags.length !== 0 ) {
-                options.htmlString += "<br/><br/>Tags: " + data.response.posts[ 0 ].tags[ 0 ];
-                for ( var i = 1, len = options.post.tags.length; i < len; i++ ) {
-                  options.htmlString += ", " + options.post.tags[ i ];
+              commonDiv.innerHTML = "Date Published: " + options.post.date.slice( 0, options.post.date.indexOf( " " ) ) + "<br/>";
+              // Check if tags were used for the post, append them to commonDiv
+              if ( post.tags.length !== 0 ) {
+                commonDiv.innerHTML += "Tags: " + post.tags[ 0 ];
+                for ( var i = 1, len = post.tags.length; i < len; i++ ) {
+                  commonDiv.innerHTML += ", " + post.tags[ i ];
                 }
               } else {
-                options.htmlString += "<br/><br/>Tags: No Tags Used";
+                commonDiv.innerHTML += "Tags: No Tags Used";
               }
+              // commonDiv is appended at two points because of the difference in how the information
+              // is constructed between blogposts and bloginfo
+              options._container.appendChild( commonDiv );
+
+              // Processes information and forms an information div based on what the blog type is
+              processBlogPost[ blogType ]( options );
             } else {
               // Blog Info Requests
-              options.htmlString += "<a href='" + data.response.blog.url + "' target='_blank'>" + data.response.blog.title + "</a><br/>";
-              options.htmlString += data.response.blog.description;
+              var link = document.createElement( "a" ),
+                  blogInfo = data.response.blog,
+                  linkText = document.createTextNode( blogInfo.title );
+
+              link.setAttribute( "href", blogInfo.url );
+              link.appendChild( linkText );
+              commonDiv.appendChild( link );
+              commonDiv.innerHTML += blogInfo.description;
+              options._container.appendChild( commonDiv );
             }
           } else {
             // There was an error somewhere down the line that caused the request to fail.
             Popcorn.error( "Error. Request failed. Status code: " + data.meta.status + " - Message: " + data.meta.msg );
           }
-
-          options._tumblrdiv.innerHTML = options.htmlString;
         }, false );
       }
-
       options._container.style.display = "none";
-
       target && target.appendChild( options._container );
     },
     start: function( event, options ){
