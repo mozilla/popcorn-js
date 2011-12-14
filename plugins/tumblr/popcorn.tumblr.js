@@ -317,7 +317,7 @@
       !validType( options.requestType ) && Popcorn.error( "Invalid tumblr plugin type." );
 
       // Check if a blogID is supplied
-      ( options.requestType === "blogpost" && options.blogId == undefined ) && Popcorn.error( "Error. BlogId required for blogpost requests" );
+      ( options.requestType === "blogpost" && options.blogId === undefined ) && Popcorn.error( "Error. BlogId required for blogpost requests" );
 
       // Check if target container exists
       ( !target && Popcorn.plugin.debug ) && Popcorn.error( "Target Tumblr container doesn't exist." );
@@ -353,15 +353,16 @@
             if ( options.requestType === "blogpost" ) {
               options.post = data.response.posts[ 0 ];
               var blogType = options.post.type,
-                  post = options.post;
+                  post = options.post,
+                  tags = post.tags;
 
               // date is a response type common to all blogposts so it's in here to prevent duplicated code
               commonDiv.innerHTML = "Date Published: " + options.post.date.slice( 0, options.post.date.indexOf( " " ) ) + "<br/>";
               // Check if tags were used for the post, append them to commonDiv
-              if ( post.tags.length !== 0 ) {
-                commonDiv.innerHTML += "Tags: " + post.tags[ 0 ];
-                for ( var i = 1, len = post.tags.length; i < len; i++ ) {
-                  commonDiv.innerHTML += ", " + post.tags[ i ];
+              if ( tags.length !== 0 ) {
+                commonDiv.innerHTML += "Tags: " + tags[ 0 ];
+                for ( var i = 1, len = tags.length; i < len; i++ ) {
+                  commonDiv.innerHTML += ", " + tags[ i ];
                 }
               } else {
                 commonDiv.innerHTML += "Tags: No Tags Used";
