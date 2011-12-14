@@ -4,7 +4,9 @@ test( "Popcorn Rdio Plugin", function() {
       expects = 12,
       count = 0,
       setupId,
-      rdiodiv = document.getElementById( "rdiodiv" );
+      rdiodiv = document.getElementById( "rdiodiv" ),
+	  rdiodiv2 = document.getElementById( "rdiodiv2" ),
+	  rdiodiv3 = document.getElementById( "rdiodiv3" );
 
   expect( expects );
 
@@ -27,37 +29,41 @@ test( "Popcorn Rdio Plugin", function() {
     end: 4,
     target: "rdiodiv",
     artist: "Erykah Badu",
-    album: "Baduizm"
+    album: "Baduizm",
+	type: "album"
   })
   .rdio({
-    start: 2,
+    start: 3,
     end: 7,
     target: "rdiodiv",
     person: "scottyhons",
     id: 236475,
-    playlist: "Toronto Music"	
+    playlist: "Toronto Music",
+	type: "playlist"
   })
   .rdio({
     start: 4,
     end: 7,
-    target: "rdiodiv",
+    target: "rdiodiv2",
     artist: "Radiohead",
-    album: "some album"
+    album: "some album",
+	type: "album"
   })
   .rdio({
     start: 5,
     end: 8,
-    target: "rdiodiv",
+    target: "rdiodiv3",
     person: "some person",
     id: "236475",
-    playlist: "some playlist"	
+    playlist: "some playlist",
+	type: "playlist"
   });
   
 
   setupId = popped.getLastTrackEventId();
 
   popped.exec( 2, function() {
-    equals( rdiodiv.childElementCount, 4, "rdiodiv now has three inner elements" );
+    equals( rdiodiv.childElementCount, 2, "rdiodiv now has two inner elements" );
     plus();
     equals( rdiodiv.children[ 0 ].style.display , "inline", "Erykah Badu div is visible on the page" );
     plus();
@@ -68,20 +74,20 @@ test( "Popcorn Rdio Plugin", function() {
     plus();
     equals( rdiodiv.children[ 1 ].style.display , "inline", "Scottyhons div is visible on the page" );
     plus();
-    equals( rdiodiv.children[ 2 ].style.display , "none", "null div is not visible on the page" );
+    equals( rdiodiv2.children[ 0 ].style.display , "none", "null div is not visible on the page" );
     plus();
-    equals( rdiodiv.children[ 3 ].style.display , "none", "null div is not visible on the page" );
+    equals( rdiodiv3.children[ 0 ].style.display , "none", "null div is not visible on the page" );
     plus();
   });
 
   popped.exec( 5, function() {
-    equals( rdiodiv.children[ 2 ].innerHTML , "Unknown Artist", "Artist information could not be found" );
+    equals( rdiodiv2.children[ 0 ].innerHTML , "Unknown Source", "Artist information could not be found" );
     plus();
-    equals( rdiodiv.children[ 3 ].innerHTML , "Unknown Playlist", "Playlist information could not be found" );
+    equals( rdiodiv3.children[ 0 ].innerHTML , "Unknown Source", "Playlist information could not be found" );
     plus();
 
     popped.pause().removeTrackEvent( setupId );
-    ok( !rdiodiv.children[ 3 ], "removed playlist was properly destroyed" );
+    ok( !rdiodiv3.children[ 0 ], "removed playlist was properly destroyed" );
     plus();
   });
 
