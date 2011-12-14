@@ -53,38 +53,41 @@
     }
 
     if ( node ) {
-      parseChildren( node, 0 );
+      returnData.data = parseChildren( node, 0 );
     }
 
     return returnData;
-
-    // Parse the children of the given node
-    function parseChildren( node, timeOffset, region ) {
-      var currNode = node.firstChild,
-          currRegion = getNodeRegion( node, region ),
-          newOffset;
-
-      while ( currNode ) {
-        if ( currNode.nodeType === 1 ) {
-          if ( currNode.nodeName === "p" ) {
-            // p is a textual node, process contents as subtitle
-            returnData.data.push( parseNode( currNode, timeOffset, currRegion ) );
-          } else if ( currNode.nodeName === "div" ) {
-            // div is container for subtitles, recurse
-            newOffset = toSeconds( currNode.getAttribute( "begin" ) );
-
-            if (newOffset < 0 ) {
-              newOffset = timeOffset;
-            }
-
-            parseChildren( currNode, newOffset, currRegion );
-          }
-        }
-
-        currNode = currNode.nextSibling;
-      }
-    }
   });
+  
+  // Parse the children of the given node
+  function parseChildren( node, timeOffset, region ) {
+    var currNode = node.firstChild,
+        currRegion = getNodeRegion( node, region ),
+        retVal = [],
+        newOffset;
+
+    while ( currNode ) {
+      if ( currNode.nodeType === 1 ) {
+        if ( currNode.nodeName === "p" ) {
+          // p is a textual node, process contents as subtitle
+          retVal.push( parseNode( currNode, timeOffset, currRegion ) );
+        } else if ( currNode.nodeName === "div" ) {
+          // div is container for subtitles, recurse
+          newOffset = toSeconds( currNode.getAttribute( "begin" ) );
+
+          if (newOffset < 0 ) {
+            newOffset = timeOffset;
+          }
+
+          retVal.push.apply( retVal, parseChildren( currNode, newOffset, currRegion ) );
+        }
+      }
+
+      currNode = currNode.nextSibling;
+    }
+    
+    return retVal;
+  }
 
   // Get the "region" attribute of a node, to know where to put the subtitles
   function getNodeRegion( node, defaultTo ) {
@@ -140,7 +143,7 @@
       return Popcorn.util.toSeconds( t_in );
     } catch ( e ) {
       i = getMetricIndex( t_in );
-      return parseFloat( t_in.substr( 0, i ) ) * getMultipler( t_in.substr( i ) ) + ( offset || 0 );
+      return parseFloat( t_in.substring( 0, i ) ) * getMultipler( t_in.substring( i ) ) + ( offset || 0 );
     }
   }
 
