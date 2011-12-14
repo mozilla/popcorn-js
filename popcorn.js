@@ -1042,6 +1042,8 @@
         end = tracks.endIndex,
         start = tracks.startIndex,
         animIndex = 0,
+        byStartLen = tracks.byStart.length,
+        byEndLen = tracks.byEnd.length,
         registryByName = Popcorn.registryByName,
         trackstart = "trackstart",
         trackend = "trackend",
@@ -1233,6 +1235,11 @@
     tracks.endIndex = end;
     tracks.startIndex = start;
     tracks.previousUpdateTime = currentTime;
+
+    //enforce index integrity if trackRemoved
+    tracks.byStart.length < byStartLen && tracks.startIndex--;
+    tracks.byEnd.length < byEndLen && tracks.endIndex--;
+
   };
 
   //  Map and Extend TrackEvent functions to all Popcorn instances
