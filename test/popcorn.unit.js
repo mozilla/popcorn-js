@@ -3230,6 +3230,59 @@ test( "getTrackEvent", function() {
   equal( popped.getTrackEvent( oldId ), undefined,  "returned undefined when id is not found" );
 });
 
+test( "Index Integrity ( removing tracks )", function() {
+
+  var $pop = Popcorn( "#video" ),
+      count = 0,
+      expects = 3,
+      fired = {
+        one: false,
+        two: false,
+        three: false
+      },
+      tId;
+
+  expect( expects );
+
+  stop();
+
+  Popcorn.plugin( "test", {} );
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+      Popcorn.removePlugin( "test" );
+      $pop.destroy();
+    }
+  }
+
+  $pop.test({});
+
+  tId = $pop.getLastTrackEventId();
+
+  $pop.exec( 1, function() {
+    equal( fired.one === false && fired.two === false && fired.three === false, true, "nothing fired yet" );
+    plus();
+    fired.one = true;
+    $pop.removeTrackEvent( tId );
+  });
+
+  $pop.exec( 2, function() {
+    equal( fired.one === true && fired.two === false && fired.three === false, true, "One fired, Three has not fired" );
+    plus();
+    fired.two = true;
+  });
+
+  $pop.exec( 3, function() {
+    equal( fired.one === true && fired.two === true && fired.three === false, true, "One and Two fired, three not fired");
+    plus();
+  });
+
+  $pop.listen( "canplayall", function() {
+    this.volume( 0 ).play( 0 );
+  });
+});
+
 test( "Index Integrity ( timeUpdate )", function() {
 
   var $pop = Popcorn( "#video" );
