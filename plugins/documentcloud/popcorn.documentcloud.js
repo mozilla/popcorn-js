@@ -215,8 +215,6 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
         readyCheck();
       }
 
-
-
     },
 
     start: function( event, options ) {
