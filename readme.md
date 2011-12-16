@@ -51,7 +51,7 @@ Acknowledgements
 Popcorn.js is built and maintained by a growing community, with the support of:
 
 * [Mozilla](https://www.mozilla.org/)
-* [Web Made Movies](http://webmademovies.org/)
+* [Mozilla Popcorn](http://mozillapopcorn.org/)
 * [Seneca College's Centre for Development of Open Technology](http://zenit.senecac.on.ca/wiki/index.php/Main_Page)
 * [Bocoup](http://bocoup.com/)
 

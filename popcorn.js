@@ -1042,8 +1042,11 @@
         end = tracks.endIndex,
         start = tracks.startIndex,
         animIndex = 0,
-
+        byStartLen = tracks.byStart.length,
+        byEndLen = tracks.byEnd.length,
         registryByName = Popcorn.registryByName,
+        trackstart = "trackstart",
+        trackend = "trackend",
 
         byEnd, byStart, byAnimate, natives, type;
 
@@ -1064,6 +1067,13 @@
           if ( byEnd._running === true ) {
             byEnd._running = false;
             natives.end.call( obj, event, byEnd );
+
+            obj.trigger( trackend,
+              Popcorn.extend({}, byEnd, {
+                plugin: type,
+                type: trackend
+              })
+            );
           }
 
           end++;
@@ -1091,6 +1101,13 @@
 
             byStart._running = true;
             natives.start.call( obj, event, byStart );
+
+            obj.trigger( trackstart,
+              Popcorn.extend({}, byStart, {
+                plugin: type,
+                type: trackstart
+              })
+            );
 
             // If the `frameAnimation` option is used,
             // push the current byStart object into the `animating` cue
@@ -1141,6 +1158,13 @@
           if ( byStart._running === true ) {
             byStart._running = false;
             natives.end.call( obj, event, byStart );
+
+            obj.trigger( trackend,
+              Popcorn.extend({}, byEnd, {
+                plugin: type,
+                type: trackend
+              })
+            );
           }
           start--;
         } else {
@@ -1168,6 +1192,12 @@
             byEnd._running = true;
             natives.start.call( obj, event, byEnd );
 
+            obj.trigger( trackstart,
+              Popcorn.extend({}, byStart, {
+                plugin: type,
+                type: trackstart
+              })
+            );
             // If the `frameAnimation` option is used,
             // push the current byEnd object into the `animating` cue
             if ( obj.options.frameAnimation &&
@@ -1205,6 +1235,11 @@
     tracks.endIndex = end;
     tracks.startIndex = start;
     tracks.previousUpdateTime = currentTime;
+
+    //enforce index integrity if trackRemoved
+    tracks.byStart.length < byStartLen && tracks.startIndex--;
+    tracks.byEnd.length < byEndLen && tracks.endIndex--;
+
   };
 
   //  Map and Extend TrackEvent functions to all Popcorn instances
