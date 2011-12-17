@@ -120,7 +120,10 @@
        * options variable
        */
       end: function( event, options ) {
-        options.container.innerHTML = "";
+        // Empty child nodes
+        while ( options.container.firstChild ) {
+          options.container.removeChild( options.container.firstChild );
+        }
       }
 
   });
