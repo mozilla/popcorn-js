@@ -2,58 +2,7 @@
 (function ( Popcorn ) {
 
   var i = 1,
-      scriptLoaded  = false,
-
-  dynamicFeedLoad = function() {
-    var dontLoad = false,
-        k = 0,
-        links = document.getElementsByTagName( "link" ),
-        len = links.length,
-        head = document.head || document.getElementsByTagName( "head" )[ 0 ],
-        css = document.createElement( "link" ),
-        resource = "//www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.";
-
-    if ( !window.GFdynamicFeedControl ) {
-
-      Popcorn.getScript( resource + "js", function() {
-        scriptLoaded = true;
-      }); 
-
-    } else {
-      scriptLoaded = true;
-    }
-
-    //  Checking if the css file is already included
-    for ( ; k < len; k++ ){
-      if ( links[ k ].href === resource + "css" ) {
-        dontLoad = true;
-      }
-    }
-
-    if ( !dontLoad ) {
-      css.type = "text/css";
-      css.rel = "stylesheet";
-      css.href =  resource + "css";
-      head.insertBefore( css, head.firstChild );
-    }
-  };
-
-  if ( !window.google ) {
-
-    Popcorn.getScript( "//www.google.com/jsapi", function() {
-
-      google.load( "feeds", "1", {
-
-        callback: function () {
-
-          dynamicFeedLoad();
-        }
-      });
-    });
-
-  } else {
-    dynamicFeedLoad();
-  }
+      scriptLoaded  = false;
 
   /**
    * googlefeed popcorn plug-in
@@ -80,6 +29,57 @@
   */
 
   Popcorn.plugin( "googlefeed", function( options ) {
+
+    var dynamicFeedLoad = function() {
+      var dontLoad = false,
+          k = 0,
+          links = document.getElementsByTagName( "link" ),
+          len = links.length,
+          head = document.head || document.getElementsByTagName( "head" )[ 0 ],
+          css = document.createElement( "link" ),
+          resource = "//www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.";
+
+      if ( !window.GFdynamicFeedControl ) {
+
+        Popcorn.getScript( resource + "js", function() {
+          scriptLoaded = true;
+        });
+
+      } else {
+        scriptLoaded = true;
+      }
+
+      //  Checking if the css file is already included
+      for ( ; k < len; k++ ){
+        if ( links[ k ].href === resource + "css" ) {
+          dontLoad = true;
+        }
+      }
+
+      if ( !dontLoad ) {
+        css.type = "text/css";
+        css.rel = "stylesheet";
+        css.href =  resource + "css";
+        head.insertBefore( css, head.firstChild );
+      }
+    };
+
+    if ( !window.google ) {
+
+      Popcorn.getScript( "//www.google.com/jsapi", function() {
+
+        google.load( "feeds", "1", {
+
+          callback: function () {
+
+            dynamicFeedLoad();
+          }
+        });
+      });
+
+    } else {
+      dynamicFeedLoad();
+    }
 
     // create a new div and append it to the parent div so nothing
     // that already exists in the parent div gets overwritten
