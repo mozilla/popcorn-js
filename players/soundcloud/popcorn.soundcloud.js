@@ -228,102 +228,104 @@
     swfobject.embedSWF( "http://player.soundcloud.com/player.swf", self._playerId, self.offsetWidth, self.height, "9.0.0", "expressInstall.swf", flashvars, params, attributes );
   }
 
-  Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" );
-
-  // Source file originally from 'https://github.com/soundcloud/Widget-JS-API/raw/master/soundcloud.player.api.js'
-  Popcorn.getScript( "http://popcornjs.org/code/players/soundcloud/lib/soundcloud.player.api.js", function() {
-    // Play event is fired twice when player is first started. Ignore second one
-    var ignorePlayEvt = 1;
-
-    // Register the wrapper's load event with the player
-    soundcloud.addEventListener( 'onPlayerReady', function( object, data ) {
-      var wrapper = registry[object.api_getFlashId()];
-
-      wrapper.swfObj = object;
-      wrapper.duration = object.api_getTrackDuration();
-      wrapper.currentTime = object.api_getTrackPosition();
-      // This eliminates volumechangee event from firing on load
-      wrapper.volume = wrapper.previousVolume =  object.api_getVolume()/100;
-
-      // The numeric id of the track for use with Soundcloud API
-      wrapper._mediaId = data.mediaId;
-
-      wrapper.dispatchEvent( 'load' );
-      wrapper.dispatchEvent( 'canplay' );
-      wrapper.dispatchEvent( 'durationchange' );
-
-      wrapper.timeupdate();
-    });
-
-    // Register events for when the flash player plays a track for the first time
-    soundcloud.addEventListener( 'onMediaStart', function( object, data ) {
-      var wrapper = registry[object.api_getFlashId()];
-      wrapper.played = 1;
-      wrapper.dispatchEvent( 'playing' );
-    });
-
-    // Register events for when the flash player plays a track
-    soundcloud.addEventListener( 'onMediaPlay', function( object, data ) {
-      if ( ignorePlayEvt ) {
-        ignorePlayEvt = 0;
-        return;
-      }
-
-      var wrapper = registry[object.api_getFlashId()];
-      wrapper.dispatchEvent( 'play' );
-    });
-
-    // Register events for when the flash player pauses a track
-    soundcloud.addEventListener( 'onMediaPause', function( object, data ) {
-      var wrapper = registry[object.api_getFlashId()];
-      wrapper.dispatchEvent( 'pause' );
-    });
-
-    // Register events for when the flash player is buffering
-    soundcloud.addEventListener( 'onMediaBuffering', function( object, data ) {
-      var wrapper = registry[object.api_getFlashId()];
-
-      wrapper.dispatchEvent( 'progress' );
-
-      if ( wrapper.readyState === 0 ) {
-        wrapper.readyState = 3;
-        wrapper.dispatchEvent( "readystatechange" );
-      }
-    });
-
-    // Register events for when the flash player is done buffering
-    soundcloud.addEventListener( 'onMediaDoneBuffering', function( object, data ) {
-      var wrapper = registry[object.api_getFlashId()];
-      wrapper.dispatchEvent( 'canplaythrough' );
-    });
-
-    // Register events for when the flash player has finished playing
-    soundcloud.addEventListener( 'onMediaEnd', function( object, data ) {
-      var wrapper = registry[object.api_getFlashId()];
-      wrapper.paused = 1;
-      //wrapper.pause();
-      wrapper.dispatchEvent( 'ended' );
-    });
-
-    // Register events for when the flash player has seeked
-    soundcloud.addEventListener( 'onMediaSeek', function( object, data ) {
-      var wrapper = registry[object.api_getFlashId()];
-
-      wrapper.setCurrentTime( object.api_getTrackPosition() );
-
-      if ( wrapper.paused ) {
-        wrapper.dispatchEvent( "timeupdate" );
-      }
-    });
-
-    // Register events for when the flash player has errored
-    soundcloud.addEventListener( 'onPlayerError', function( object, data ) {
-      var wrapper = registry[object.api_getFlashId()];
-      wrapper.dispatchEvent( 'error' );
-    });
-  });
 
   Popcorn.soundcloud = function( containerId, src, options ) {
+
+    Popcorn.getScript( "http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" );
+
+    // Source file originally from 'https://github.com/soundcloud/Widget-JS-API/raw/master/soundcloud.player.api.js'
+    Popcorn.getScript( "http://popcornjs.org/code/players/soundcloud/lib/soundcloud.player.api.js", function() {
+      // Play event is fired twice when player is first started. Ignore second one
+      var ignorePlayEvt = 1;
+
+      // Register the wrapper's load event with the player
+      soundcloud.addEventListener( 'onPlayerReady', function( object, data ) {
+        var wrapper = registry[object.api_getFlashId()];
+
+        wrapper.swfObj = object;
+        wrapper.duration = object.api_getTrackDuration();
+        wrapper.currentTime = object.api_getTrackPosition();
+        // This eliminates volumechangee event from firing on load
+        wrapper.volume = wrapper.previousVolume =  object.api_getVolume()/100;
+
+        // The numeric id of the track for use with Soundcloud API
+        wrapper._mediaId = data.mediaId;
+
+        wrapper.dispatchEvent( 'load' );
+        wrapper.dispatchEvent( 'canplay' );
+        wrapper.dispatchEvent( 'durationchange' );
+
+        wrapper.timeupdate();
+      });
+
+      // Register events for when the flash player plays a track for the first time
+      soundcloud.addEventListener( 'onMediaStart', function( object, data ) {
+        var wrapper = registry[object.api_getFlashId()];
+        wrapper.played = 1;
+        wrapper.dispatchEvent( 'playing' );
+      });
+
+      // Register events for when the flash player plays a track
+      soundcloud.addEventListener( 'onMediaPlay', function( object, data ) {
+        if ( ignorePlayEvt ) {
+          ignorePlayEvt = 0;
+          return;
+        }
+
+        var wrapper = registry[object.api_getFlashId()];
+        wrapper.dispatchEvent( 'play' );
+      });
+
+      // Register events for when the flash player pauses a track
+      soundcloud.addEventListener( 'onMediaPause', function( object, data ) {
+        var wrapper = registry[object.api_getFlashId()];
+        wrapper.dispatchEvent( 'pause' );
+      });
+
+      // Register events for when the flash player is buffering
+      soundcloud.addEventListener( 'onMediaBuffering', function( object, data ) {
+        var wrapper = registry[object.api_getFlashId()];
+
+        wrapper.dispatchEvent( 'progress' );
+
+        if ( wrapper.readyState === 0 ) {
+          wrapper.readyState = 3;
+          wrapper.dispatchEvent( "readystatechange" );
+        }
+      });
+
+      // Register events for when the flash player is done buffering
+      soundcloud.addEventListener( 'onMediaDoneBuffering', function( object, data ) {
+        var wrapper = registry[object.api_getFlashId()];
+        wrapper.dispatchEvent( 'canplaythrough' );
+      });
+
+      // Register events for when the flash player has finished playing
+      soundcloud.addEventListener( 'onMediaEnd', function( object, data ) {
+        var wrapper = registry[object.api_getFlashId()];
+        wrapper.paused = 1;
+        //wrapper.pause();
+        wrapper.dispatchEvent( 'ended' );
+      });
+
+      // Register events for when the flash player has seeked
+      soundcloud.addEventListener( 'onMediaSeek', function( object, data ) {
+        var wrapper = registry[object.api_getFlashId()];
+
+        wrapper.setCurrentTime( object.api_getTrackPosition() );
+
+        if ( wrapper.paused ) {
+          wrapper.dispatchEvent( "timeupdate" );
+        }
+      });
+
+      // Register events for when the flash player has errored
+      soundcloud.addEventListener( 'onPlayerError', function( object, data ) {
+        var wrapper = registry[object.api_getFlashId()];
+        wrapper.dispatchEvent( 'error' );
+      });
+    });
+
     return new Popcorn.soundcloud.init( containerId, src, options );
   };
 
