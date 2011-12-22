@@ -26,14 +26,7 @@
     *
   */
 
-  var i = 1,
-      head = document.getElementsByTagName( "head" )[ 0 ],
-      css = document.createElement( "link" );
-
-  css.type = "text/css";
-  css.rel = "stylesheet";
-  css.href = "//popcornjs.org/code/plugins/timeline/popcorn.timeline.css";
-  head.insertBefore( css, head.firstChild );
+  var i = 1;
 
   Popcorn.plugin( "timeline" , function( options ) {
 
@@ -81,8 +74,8 @@
     //  Default to empty if not used
     //options.innerHTML = options.innerHTML || "";
 
-    contentDiv.innerHTML = "<p><span id='big'>" + options.title + "</span><br />" +
-    "<span id='mid'>" + options.text + "</span><br />" + options.innerHTML;
+    contentDiv.innerHTML = "<p><span id='big' style='font-size:24px; line-height: 130%;' >" + options.title + "</span><br />" +
+    "<span id='mid' style='font-size: 16px;'>" + options.text + "</span><br />" + options.innerHTML;
 
     return {
 
