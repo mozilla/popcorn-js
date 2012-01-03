@@ -40,7 +40,7 @@
     person: "diggywiggy",
     id: 413517,
     playlist: "sunday",
-	type: "playlist"
+    type: "playlist"
   })
 **/
 
@@ -63,10 +63,10 @@
   // Handle AJAX Request
   _getResults = function( options ) {
     var urlBuilder = {
-      playlist : (function() {
+      playlist : ( function() {
         return _rdioURL + "/people/" + ( options.person ) + "/playlists/" + options.id + "/" + options.playlist + "/&callback=_loadResults";
       }()),
-      album : (function() {
+      album : ( function() {
         return _rdioURL + "/artist/" + ( options.artist ) + "/album/" + options.album + "/&callback=_loadResults";
       }())
     },
@@ -75,7 +75,7 @@
   };
 
   // Arguments for Plugin
-  var _args 	= {
+  var _args = {
     options: {
       start: {
         elem: "input",
