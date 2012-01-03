@@ -1,5 +1,4 @@
 test( "Popcorn Rdio Plugin", function() {
-  
   var popped = Popcorn( "#video" ),
       expects = 12,
       count = 0,
@@ -21,11 +20,11 @@ test( "Popcorn Rdio Plugin", function() {
   ok( "rdio" in popped, "rdio is a method of the popped instance" );
   plus();
 
-  equals( rdiodiv.innerHTML, "", "initially, there is nothing inside the rdiodiv" );
+  equals( rdiodiv2.innerHTML, "", "initially, there is nothing inside the rdiodiv" );
   plus();
 
   popped.rdio({
-    start: 1,
+    start: 2,
     end: 4,
     target: "rdiodiv",
     artist: "Erykah Badu",
@@ -33,7 +32,7 @@ test( "Popcorn Rdio Plugin", function() {
 	type: "album"
   })
   .rdio({
-    start: 3,
+    start: 2,
     end: 7,
     target: "rdiodiv",
     person: "scottyhons",
@@ -53,15 +52,14 @@ test( "Popcorn Rdio Plugin", function() {
     start: 5,
     end: 8,
     target: "rdiodiv3",
-    person: "some person",
-    id: "236475",
-    playlist: "some playlist",
+    person: "",
+    id: "",
+    playlist: "",
 	type: "playlist"
-  });
-  
+  });  
 
   setupId = popped.getLastTrackEventId();
-
+  
   popped.exec( 2, function() {
     equals( rdiodiv.childElementCount, 2, "rdiodiv now has two inner elements" );
     plus();
@@ -87,10 +85,10 @@ test( "Popcorn Rdio Plugin", function() {
     plus();
 
     popped.pause().removeTrackEvent( setupId );
-    ok( !rdiodiv3.children[ 0 ], "removed playlist was properly destroyed" );
+    ok( !rdiodiv3.children[ 0 ], "removed rdio was properly destroyed" );
     plus();
   });
-
+  
   // empty track events should be safe
   popped.rdio({});
 
