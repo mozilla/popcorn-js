@@ -1,4 +1,49 @@
 // Rdio Plug-in
+/**
+  * Rdio popcorn plug-in
+  * Appends Rdio album track listings to an element on the page.
+  * Can also append a user's playlist to an element on the page.
+  * Option paramter can be in two forms:
+  * Options parameter will take a start, end, target, artist, album, and type or
+  * Options parameter will take a start, end, target, person, id, playlist, and type
+  * Start is the time that you want this plug-in to execute
+  * End is the time that you want this plug-in to stop executing
+  * Target is the id of the document element that the images are appended to
+  * Artist is the name of who's album image will display
+  * Album is the album that will display of the specified Artist
+  * Person is the Rdio member who's playlist will display
+  * ID is the playlist's unqiue Rdio playlist identifier
+  * Playlist is the name of the playlist
+  * Type specifies if the element is an album or playlist
+  *
+
+  *
+  * @param {Object} options
+  *
+  * Example 1:
+  var p = Popcorn( "#video" )
+  .rdio({
+    start: 2,
+    end: 10,
+    target: "rdiodiv",
+    artist: "Jamiroquai",
+    album: "Synkronized",
+    type: "album"
+  })
+  *
+  * Example 2:
+  var p = Popcorn( "#video" )
+  .rdio({
+    start: 10,
+    end: 20,
+    target: "rdiodiv",
+    person: "diggywiggy",
+    id: 413517,
+    playlist: "sunday",
+	type: "playlist"
+  })
+**/
+
 (function( Popcorn ) {
   var _album = {},
   _container = {},
