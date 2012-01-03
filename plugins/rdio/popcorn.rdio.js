@@ -130,16 +130,16 @@
         _container[ key ].innerHTML = "";
         _target[ key ] && _target[ key ].appendChild( _container[ key ] );
         _album[ key ] = {
-          htmlString: ( options.playlist || "Unknown Source") || ( options.album || "Unknown Source" )
+          htmlString: ( options.playlist || "Unknown Source" ) || ( options.album || "Unknown Source" )
         };
         _getResults( options );
       },
-      start: function( event, options) {
+      start: function( event, options ) {
         var key = ( options.album || options.playlist );
         _container[ key ].innerHTML = _album[ key ].htmlString;
         _container[ key ].style.display = "inline";
       },
-      end: function( event, options) {
+      end: function( event, options ) {
         var key = ( options.album || options.playlist );
         _container[ key ].style.display = "none";
         _container[ key ].innerHTML = "";
@@ -152,5 +152,5 @@
       }
 	
     };
-  }()), _args);
+  }()), _args );
 }( Popcorn ));
