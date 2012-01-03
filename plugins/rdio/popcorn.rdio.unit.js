@@ -4,8 +4,8 @@ test( "Popcorn Rdio Plugin", function() {
       count = 0,
       setupId,
       rdiodiv = document.getElementById( "rdiodiv" ),
-	  rdiodiv2 = document.getElementById( "rdiodiv2" ),
-	  rdiodiv3 = document.getElementById( "rdiodiv3" );
+      rdiodiv2 = document.getElementById( "rdiodiv2" ),
+      rdiodiv3 = document.getElementById( "rdiodiv3" );
 
   expect( expects );
 
@@ -29,7 +29,7 @@ test( "Popcorn Rdio Plugin", function() {
     target: "rdiodiv",
     artist: "Erykah Badu",
     album: "Baduizm",
-	type: "album"
+    type: "album"
   })
   .rdio({
     start: 2,
@@ -38,7 +38,7 @@ test( "Popcorn Rdio Plugin", function() {
     person: "scottyhons",
     id: 236475,
     playlist: "Toronto Music",
-	type: "playlist"
+    type: "playlist"
   })
   .rdio({
     start: 4,
@@ -46,7 +46,7 @@ test( "Popcorn Rdio Plugin", function() {
     target: "rdiodiv2",
     artist: "Radiohead",
     album: "some album",
-	type: "album"
+    type: "album"
   })
   .rdio({
     start: 5,
@@ -55,7 +55,7 @@ test( "Popcorn Rdio Plugin", function() {
     person: "",
     id: "",
     playlist: "",
-	type: "playlist"
+    type: "playlist"
   });  
 
   setupId = popped.getLastTrackEventId();
