@@ -56,10 +56,8 @@ test( "Popcorn Rdio Plugin", function() {
     id: "",
     playlist: "",
     type: "playlist"
-  });  
-
+  });
   setupId = popped.getLastTrackEventId();
-  
   popped.exec( 2, function() {
     equals( rdiodiv.childElementCount, 2, "rdiodiv now has two inner elements" );
     plus();
@@ -91,7 +89,6 @@ test( "Popcorn Rdio Plugin", function() {
   
   // empty track events should be safe
   popped.rdio({});
-
   // debug should log errors on empty track events
   Popcorn.plugin.debug = true;
   try {
