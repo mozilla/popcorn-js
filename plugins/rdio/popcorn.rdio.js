@@ -52,8 +52,8 @@
 
   Popcorn.plugin( "rdio", ( function( options ) {
     var _loadResults = function( data ) {
-	  var title = data.title,
-	  html = data.html;
+      var title = data.title,
+      html = data.html;
       if( data && title && html ) {
         _album[ title ].htmlString = "<div>" + html + "</div>";
       } else {
@@ -117,8 +117,8 @@
     manifest: {
       about: {
         name: "Popcorn Rdio Plugin",
-		version: "0.1",
-		author: "Denise Rigato"
+        version: "0.1",
+        author: "Denise Rigato"
       },
       options: {
         start: {
