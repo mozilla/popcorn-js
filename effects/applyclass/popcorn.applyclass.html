@@ -1,65 +1,64 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Popcorn flash effect Demo</title>
-  
-  <script src="../../popcorn.js"></script>
-  <script src="../../plugins/footnote/popcorn.footnote.js"></script>
-  <script src="popcorn.applyclass.js"></script>
-  <link href="style.css" rel="stylesheet" type="text/css" />
-  <script>
-    document.addEventListener( "DOMContentLoaded", function () {
+  <head>
+    <title>Popcorn flash effect Demo</title>
 
-      var p = Popcorn( "#video" )
-      .play() 
-      .footnote({
-        start: 5, // seconds
-        end: 15, // seconds
-        target: "footnotediv",
-        text: "This video made exclusively for drumbeat.org",
-        effect: "applyclass",
-        applyclass: "test1, test2"
-      })
-      .footnote({
-        start: 20, // seconds
-        end: 45, // seconds
-        target: "footnotediv",
-        text: "Visit webmademovies.org for more details",
-        effect: "applyclass",
-        applyclass: "applyoverlay: .overlay, hover: parent"
-      });
-    }, false);
+    <script src="../../popcorn.js"></script>
+    <script src="../../plugins/footnote/popcorn.footnote.js"></script>
+    <script src="popcorn.applyclass.js"></script>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <script>
+      document.addEventListener( "DOMContentLoaded", function () {
 
-  </script>
-</head>
-<body>
-  <h1 id="qunit-header">Popcorn flash effect Demo</h1>
-  <p> A footnote with a css class displaying This video made exclusively for drumbeat.org' will appear at 5 seconds and disappear at 15 seconds.</p>
-  <p> A footnote with a css class displaying 'Visit webmademovies.org for more details' will appear at 20 seconds and disappear at 45 seconds.</p>
-  <div>
-    <video id='video' 
-      controls preload='none' 
-      width='250px'
-      poster="../../test/poster.png"> 
+        var p = Popcorn( "#video" )
+        .play()
+        .footnote({
+          start: 5,
+          end: 15,
+          target: "footnotediv",
+          text: "This video made exclusively for drumbeat.org",
+          effect: "applyclass",
+          applyclass: "test1, test2"
+        })
+        .footnote({
+          start: 20,
+          end: 45,
+          target: "footnotediv",
+          text: "Visit webmademovies.org for more details",
+          effect: "applyclass",
+          applyclass: "applyoverlay: .overlay, hover: parent"
+        });
+      }, false);
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn flash effect Demo</h1>
+    <p> A footnote with a css class displaying This video made exclusively for drumbeat.org' will appear at 5 seconds and disappear at 15 seconds.</p>
+    <p> A footnote with a css class displaying 'Visit webmademovies.org for more details' will appear at 20 seconds and disappear at 45 seconds.</p>
+    <div>
+      <video id="video"
+        controls
+        width="250px"
+        poster="../../test/poster.png">
 
-      <source id='mp4'
-        src="../../test/trailer.mp4"
-        type='video/mp4; codecs="avc1, mp4a"'> 
+        <source id="mp4"
+          src="../../test/trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
 
-      <source id='ogv'
-        src="../../test/trailer.ogv"
-        type='video/ogg; codecs="theora, vorbis"'> 
-        
-      <source id='webm'
-        src="../../test/trailer.webm"
-        type='video/webm; codecs="vp8, vorbis"'>
+        <source id="ogv"
+          src="../../test/trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
 
-      <p>Your user agent does not support the HTML5 Video element.</p> 
+        <source id="webm"
+          src="../../test/trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
 
-    </video> 
-  </div>
-    <section>
-      <div id="footnotediv"><div class="overlay"></div></div>
-    </section>
-</body>
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+      <section>
+        <div id="footnotediv"><div class="overlay"></div></div>
+      </section>
+  </body>
 </html>
