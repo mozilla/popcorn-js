@@ -440,18 +440,6 @@ test( "Player height and width", function() {
   readyStatePoll();
 });
 
-test( "Player Errors", function() {
-  QUnit.reset();
-  expect( 1 );
-  stop();
-  var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk" );
-
-  pop.listen( "error", function() {
-    ok( true, "error trigger by invalid URL" );
-    start();
-  });
-});
-
 test( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
 
   QUnit.reset();
@@ -469,13 +457,32 @@ test( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
   }
   popped = Popcorn.youtube( "#video6", "http://www.youtube.com/watch?v=9oar9glUCL0" );
 
-  popped.listen( "loadeddata", function() {
+  var runner = function() {
+    popped.volume( 0 );
     elem = document.querySelector( "div#video6 object" );
     equals( elem.height, popped.media.offsetHeight, "The media object is reporting the correct offsetHeight" );
     plus();
     equals( elem.width, popped.media.offsetWidth, "The media object is reporting the correct offsetWidth" );
     plus();
-  }).volume ( 0 );
+  };
+
+  if ( popped.readyState === 4 ) {
+    runner();
+  } else {
+    popped.listen( "loadeddata", runner);
+  }
 
   stop();
+});
+
+test( "Player Errors", function() {
+  QUnit.reset();
+  expect( 1 );
+  stop();
+  var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk" );
+
+  pop.listen( "error", function() {
+    ok( true, "error trigger by invalid URL" );
+    start();
+  });
 });
