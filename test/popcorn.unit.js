@@ -2976,8 +2976,8 @@ test( "Protected Names", function() {
 
     try {
       Popcorn.plugin( name, {} );
-	  ok( false, "Attempting to overwrite '" + name + "' did not throw an exception " );
-	  plus();
+      ok( false, "Attempting to overwrite '" + name + "' did not throw an exception " );
+      plus();
     } catch ( e ) {
       ok( true, "Attempting to overwrite '" + name + "' threw an exception " );
       plus();
