@@ -466,7 +466,7 @@ test( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
     plus();
   };
 
-  if ( popped.readyState === 4 ) {
+  if ( popped.readyState >= 2 ) {
     runner();
   } else {
     popped.listen( "loadeddata", runner);
