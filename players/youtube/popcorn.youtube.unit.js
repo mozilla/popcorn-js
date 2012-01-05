@@ -472,7 +472,7 @@ test( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
     popped.listen( "loadeddata", runner);
   }
 
-  stop();
+  stop( 10000 );
 });
 
 test( "Player Errors", function() {
