@@ -135,7 +135,8 @@
 
     init: function( entity, options ) {
 
-      var matches;
+      var matches,
+          self = this;
 
       //  Supports Popcorn(function () { /../ })
       //  Originally proposed by Daniel Brooks
@@ -243,58 +244,60 @@
         }
       };
 
-      //  Wrap true ready check
-      var isReady = function( that ) {
+      //  function to fire when video is ready
+      var isReady = function() {
+
+        self.media.removeEventListener( "loadeddata", isReady, false );
 
         var duration, videoDurationPlus;
 
-        if ( that.media.readyState >= 2 ) {
-          //  Adding padding to the front and end of the arrays
-          //  this is so we do not fall off either end
+        //  Adding padding to the front and end of the arrays
+        //  this is so we do not fall off either end
+        duration = self.media.duration;
 
-          duration = that.media.duration;
-          //  Check for no duration info (NaN)
-          videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
+        //  Check for no duration info (NaN)
+        videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
 
-          Popcorn.addTrackEvent( that, {
-            start: videoDurationPlus,
-            end: videoDurationPlus
-          });
+        Popcorn.addTrackEvent( self, {
+          start: videoDurationPlus,
+          end: videoDurationPlus
+        });
 
-          if ( that.options.frameAnimation ) {
-            //  if Popcorn is created with frameAnimation option set to true,
-            //  requestAnimFrame is used instead of "timeupdate" media event.
-            //  This is for greater frame time accuracy, theoretically up to
-            //  60 frames per second as opposed to ~4 ( ~every 15-250ms)
-            that.data.timeUpdate = function () {
+        if ( self.options.frameAnimation ) {
+          //  if Popcorn is created with frameAnimation option set to true,
+          //  requestAnimFrame is used instead of "timeupdate" media event.
+          //  This is for greater frame time accuracy, theoretically up to
+          //  60 frames per second as opposed to ~4 ( ~every 15-250ms)
+          self.data.timeUpdate = function () {
 
-              Popcorn.timeUpdate( that, {} );
+            Popcorn.timeUpdate( self, {} );
 
-              that.trigger( "timeupdate" );
+            self.trigger( "timeupdate" );
 
-              !that.isDestroyed && requestAnimFrame( that.data.timeUpdate );
-            };
+            !self.isDestroyed && requestAnimFrame( self.data.timeUpdate );
+          };
 
-            !that.isDestroyed && requestAnimFrame( that.data.timeUpdate );
+          !self.isDestroyed && requestAnimFrame( self.data.timeUpdate );
 
-          } else {
-
-            that.data.timeUpdate = function( event ) {
-              Popcorn.timeUpdate( that, event );
-            };
-
-            if ( !that.isDestroyed ) {
-              that.media.addEventListener( "timeupdate", that.data.timeUpdate, false );
-            }
-          }
         } else {
-          global.setTimeout(function() {
-            isReady( that );
-          }, 1 );
+
+          self.data.timeUpdate = function( event ) {
+            Popcorn.timeUpdate( self, event );
+          };
+
+          if ( !self.isDestroyed ) {
+            self.media.addEventListener( "timeupdate", self.data.timeUpdate, false );
+          }
         }
       };
 
-      isReady( this );
+      if ( self.media.readyState >= 2 ) {
+
+        isReady();
+      } else {
+
+        self.media.addEventListener( "loadeddata", isReady, false );
+      }
 
       return this;
     }
