@@ -135,7 +135,8 @@
 
     init: function( entity, options ) {
 
-      var matches;
+      var matches,
+          self = this;
 
       //  Supports Popcorn(function () { /../ })
       //  Originally proposed by Daniel Brooks
@@ -244,66 +245,58 @@
       };
 
       //  function to fire when video is ready
-      var isReady = function( that ) {
+      var isReady = function() {
+
+        self.media.removeEventListener( "loadeddata", isReady, false );
 
         var duration, videoDurationPlus;
 
         //  Adding padding to the front and end of the arrays
         //  this is so we do not fall off either end
-        duration = that.media.duration;
+        duration = self.media.duration;
 
         //  Check for no duration info (NaN)
         videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
 
-        Popcorn.addTrackEvent( that, {
+        Popcorn.addTrackEvent( self, {
           start: videoDurationPlus,
           end: videoDurationPlus
         });
 
-        if ( that.options.frameAnimation ) {
+        if ( self.options.frameAnimation ) {
           //  if Popcorn is created with frameAnimation option set to true,
           //  requestAnimFrame is used instead of "timeupdate" media event.
           //  This is for greater frame time accuracy, theoretically up to
           //  60 frames per second as opposed to ~4 ( ~every 15-250ms)
-          that.data.timeUpdate = function () {
+          self.data.timeUpdate = function () {
 
-            Popcorn.timeUpdate( that, {} );
+            Popcorn.timeUpdate( self, {} );
 
-            that.trigger( "timeupdate" );
+            self.trigger( "timeupdate" );
 
-            !that.isDestroyed && requestAnimFrame( that.data.timeUpdate );
+            !self.isDestroyed && requestAnimFrame( self.data.timeUpdate );
           };
 
-          !that.isDestroyed && requestAnimFrame( that.data.timeUpdate );
+          !self.isDestroyed && requestAnimFrame( self.data.timeUpdate );
 
         } else {
 
-          that.data.timeUpdate = function( event ) {
-            Popcorn.timeUpdate( that, event );
+          self.data.timeUpdate = function( event ) {
+            Popcorn.timeUpdate( self, event );
           };
 
-          if ( !that.isDestroyed ) {
-            that.media.addEventListener( "timeupdate", that.data.timeUpdate, false );
+          if ( !self.isDestroyed ) {
+            self.media.addEventListener( "timeupdate", self.data.timeUpdate, false );
           }
         }
       };
 
-      if ( this.media.readyState >= 2 ) {
+      if ( self.media.readyState >= 2 ) {
 
-        isReady( this );
+        isReady();
       } else {
 
-        this.media.addEventListener( "loadeddata", (function( instance ) {
-
-          var listener = function() {
-          
-            instance.media.removeEventListener( "loadeddata", listener, false );
-
-            isReady( instance );
-          };
-          
-          return listener;
-        }( this )), false );
+        self.media.addEventListener( "loadeddata", isReady, false );
       }
 
       return this;
