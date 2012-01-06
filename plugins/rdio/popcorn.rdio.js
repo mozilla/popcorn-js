@@ -90,7 +90,7 @@
         }
         container.style.display = "none";
         container.innerHTML = "";
-        target && target.appendChild( container );
+        target.appendChild( container );
         _album[ key ] = {
           htmlString: ( options.playlist || "Unknown Source" ) || ( options.album || "Unknown Source" )
         };
@@ -103,16 +103,16 @@
         container.style.display = "inline";
       },
       end: function( event, options ) {
-        var key = options.containerid,
-        container = _container[ key ];
+        container = _container[ options.containerid ];
         container.style.display = "none";
         container.innerHTML = "";
       },
       _teardown: function( options ) {
         var key = options.containerid,
-        album = _album[ key ],
-        target = _target[ key ] = document.getElementById( options.target );
-        album.count && delete album;
+        target = _target[ key ];
+        if ( _album[ key ] ) {
+          delete _album [ key ];
+        }
         target && target.removeChild( _container[ key ] );
       }
     };
