@@ -51,11 +51,12 @@
   _rdioURL = "http://www.rdio.com/api/oembed/?format=json&url=http://www.rdio.com/%23";
 
   Popcorn.plugin( "rdio", ( function( options ) {
-    var _loadResults = function( data ) {
+
+    var _loadResults = function( data, options ) {
       var title = data.title,
       html = data.html;
       if( data && title && html ) {
-        _album[ title ].htmlString = "<div>" + html + "</div>";
+        _album[ options.containerid ].htmlString = "<div>" + html + "</div>";
       } else {
         if( Popcorn.plugin.debug ) {
           throw new Error( "Did not receive data from server." );
@@ -74,42 +75,46 @@
         }())
       },
       url = urlBuilder[ options.type ];
-      Popcorn.getJSONP( url, _loadResults, false );
+      Popcorn.getJSONP( url, function( data ) {
+        _loadResults( data, options );
+      }, false );
     };
 	
     return {
       _setup: function( options ) {
-        var album = options.album,
-        playlist = options.playlist,
-        key = ( album || playlist );
-        _target[ key ] = document.getElementById( options.target );
-        if( !_target[ key ] && Popcorn.plugin.debug ) {
+        options.containerid = Popcorn.guid();
+        var key = options.containerid,
+        container = _container[ key ] = document.createElement( "div" ),
+        target = _target[ key ] = document.getElementById( options.target );
+        if( !target && Popcorn.plugin.debug ) {
           throw new Error( "Target container could not be found." );
         }
-        _container[ key ] = document.createElement( "div" );
-        _container[ key ].style.display = "none";
-        _container[ key ].innerHTML = "";
-        _target[ key ] && _target[ key ].appendChild( _container[ key ] );
+        container.style.display = "none";
+        container.innerHTML = "";
+        target && target.appendChild( container );
         _album[ key ] = {
-          htmlString: ( playlist || "Unknown Source" ) || ( album || "Unknown Source" )
+          htmlString: ( options.playlist || "Unknown Source" ) || ( options.album || "Unknown Source" )
         };
         _getResults( options );
       },
       start: function( event, options ) {
-        var key = ( options.album || options.playlist );
-        _container[ key ].innerHTML = _album[ key ].htmlString;
-        _container[ key ].style.display = "inline";
+        var key = options.containerid,
+        container = _container[ key ];
+        container.innerHTML = _album[ key ].htmlString;
+        container.style.display = "inline";
       },
       end: function( event, options ) {
-        var key = ( options.album || options.playlist );
-        _container[ key ].style.display = "none";
-        _container[ key ].innerHTML = "";
+        var key = options.containerid,
+        container = _container[ key ];
+        container.style.display = "none";
+        container.innerHTML = "";
       },
       _teardown: function( options ) {
-        var key = ( options.album || options.playlist );
-        _target[ key ] = document.getElementById( options.target );
-        _album[ key ].count && delete album[ key ];
-        _target[ key ] && _target[ key ].removeChild( _container[ key ] );
+        var key = options.containerid,
+		album = _album[ key ],
+        target = _target[ key ] = document.getElementById( options.target );
+        album.count && delete album;
+        target && target.removeChild( _container[ key ] );
       }
     };
   })(),
