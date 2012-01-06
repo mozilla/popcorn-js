@@ -51,7 +51,6 @@
   _rdioURL = "http://www.rdio.com/api/oembed/?format=json&url=http://www.rdio.com/%23";
 
   Popcorn.plugin( "rdio", ( function( options ) {
-
     var _loadResults = function( data, options ) {
       var title = data.title,
       html = data.html;
@@ -111,7 +110,7 @@
       },
       _teardown: function( options ) {
         var key = options.containerid,
-		album = _album[ key ],
+        album = _album[ key ],
         target = _target[ key ] = document.getElementById( options.target );
         album.count && delete album;
         target && target.removeChild( _container[ key ] );
