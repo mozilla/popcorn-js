@@ -66,10 +66,10 @@
     // Handle AJAX Request
     _getResults = function( options ) {
       var urlBuilder = {
-        playlist : ( function() {
+        playlist: ( function() {
           return _rdioURL + "/people/" + ( options.person ) + "/playlists/" + options.id + "/" + options.playlist + "/&callback=_loadResults";
         }()),
-        album : ( function() {
+        album: ( function() {
           return _rdioURL + "/artist/" + ( options.artist ) + "/album/" + options.album + "/&callback=_loadResults";
         }())
       },
@@ -81,8 +81,7 @@
 	
     return {
       _setup: function( options ) {
-        options.containerid = Popcorn.guid();
-        var key = options.containerid,
+        var key = options.containerid = Popcorn.guid(),
         container = _container[ key ] = document.createElement( "div" ),
         target = _target[ key ] = document.getElementById( options.target );
         if( !target && Popcorn.plugin.debug ) {
@@ -111,9 +110,10 @@
         var key = options.containerid,
         target = _target[ key ];
         if ( _album[ key ] ) {
-          delete _album [ key ];
+          delete _album[ key ];
         }
         target && target.removeChild( _container[ key ] );
+        delete _target[ key ], _container[ key ];
       }
     };
   })(),
