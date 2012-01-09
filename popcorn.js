@@ -6,9 +6,10 @@
       isSupported: false
     };
 
-    var methods = ( "forEach extend effects error guid sizeOf isArray nop position disable enable destroy " +
+    var methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
+          "forEach extend effects error guid sizeOf isArray nop position disable enable destroy" +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
-          "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
+          "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript player" ).split(/\s+/);
 
     while ( methods.length ) {
       global.Popcorn[ methods.shift() ] = function() {};
