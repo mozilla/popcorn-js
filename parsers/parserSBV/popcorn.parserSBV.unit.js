@@ -21,7 +21,7 @@ test( "Popcorn 0.3 SBV Parser Plugin", function () {
           end: 18.042
         }
       ],
-      expects = subs.length*3 + 1;
+      expects = subs.length * 3 + 1;
       
   function plus() {
     if ( ++count === expects ) {
@@ -37,9 +37,9 @@ test( "Popcorn 0.3 SBV Parser Plugin", function () {
   
   // Allow load time
   setTimeout(function () {
-    Popcorn.forEach( poppercorn.getTrackEvents(), function(evt) {
+    Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
       if( evt._natives.type === "subtitle" ) {
-        sub = subs[numSubs++];
+        sub = subs[ numSubs++ ];
         
         equals( evt.start, sub.start, "Correctly parsed start of " + evt.start );
         plus();
