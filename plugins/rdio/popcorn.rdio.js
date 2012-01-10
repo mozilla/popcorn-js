@@ -113,7 +113,8 @@
           delete _album[ key ];
         }
         target && target.removeChild( _container[ key ] );
-        delete _target[ key ], _container[ key ];
+        delete _target[ key ];
+        delete _container[ key ];
       }
     };
   })(),
