@@ -54,10 +54,10 @@
     var _loadResults = function( data, options ) {
       var title = data.title,
       html = data.html;
-      if( data && title && html ) {
+      if ( data && title && html ) {
         _album[ options.containerid ].htmlString = "<div>" + html + "</div>";
       } else {
-        if( Popcorn.plugin.debug ) {
+        if ( Popcorn.plugin.debug ) {
           throw new Error( "Did not receive data from server." );
         }
       }
@@ -84,7 +84,7 @@
         var key = options.containerid = Popcorn.guid(),
         container = _container[ key ] = document.createElement( "div" ),
         target = _target[ key ] = document.getElementById( options.target );
-        if( !target && Popcorn.plugin.debug ) {
+        if ( !target && Popcorn.plugin.debug ) {
           throw new Error( "Target container could not be found." );
         }
         container.style.display = "none";
