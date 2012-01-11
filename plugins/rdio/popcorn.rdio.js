@@ -50,7 +50,7 @@
   _target = {},
   _rdioURL = "http://www.rdio.com/api/oembed/?format=json&url=http://www.rdio.com/%23";
 
-  Popcorn.plugin( "rdio", ( function( options ) {
+  Popcorn.plugin( "rdio", (function( options ) {
     var _loadResults = function( data, options ) {
       var title = data.title,
       html = data.html;
@@ -66,10 +66,10 @@
     // Handle AJAX Request
     _getResults = function( options ) {
       var urlBuilder = {
-        playlist: ( function() {
+        playlist: (function() {
           return _rdioURL + "/people/" + ( options.person ) + "/playlists/" + options.id + "/" + options.playlist + "/&callback=_loadResults";
         }()),
-        album: ( function() {
+        album: (function() {
           return _rdioURL + "/artist/" + ( options.artist ) + "/album/" + options.album + "/&callback=_loadResults";
         }())
       },
