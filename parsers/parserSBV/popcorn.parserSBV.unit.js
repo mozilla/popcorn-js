@@ -29,14 +29,9 @@ test( "Popcorn 0.3 SBV Parser Plugin", function () {
     }
   }
   
-  poppercorn.parseSBV( "data/data.sbv" );
+  poppercorn.parseSBV( "data/data.sbv", function (){
+    expect(expects);
   
-  expect(expects);
-  
-  stop( 5000 );
-  
-  // Allow load time
-  setTimeout(function () {
     Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
       if( evt._natives.type === "subtitle" ) {
         sub = subs[ numSubs++ ];
@@ -52,7 +47,5 @@ test( "Popcorn 0.3 SBV Parser Plugin", function () {
     
     equals( subs.length, numSubs, "Parsed all subtitles" );
     plus();
-
-  }, 500);
-  
+  });
 });
