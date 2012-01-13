@@ -65,15 +65,19 @@
 
     // Handle AJAX Request
     _getResults = function( options ) {
-      var urlBuilder = {
-        playlist: (function() {
-          return _rdioURL + "/people/" + ( options.person ) + "/playlists/" + options.id + "/" + options.playlist + "/&callback=_loadResults";
-        }()),
-        album: (function() {
-          return _rdioURL + "/artist/" + ( options.artist ) + "/album/" + options.album + "/&callback=_loadResults";
-        }())
+      var urlBuilder = function( type ) {
+        var path = {
+          playlist: function() {
+            return "/people/" + ( options.person ) + "/playlists/" + options.id + "/";
+          },
+          album: function() {
+            return "/artist/" + ( options.artist ) + "/album/";
+          }
+        }[ type ]();
+		
+        return _rdioURL + path + options[ type ] + "/&callback=_loadResults";
       },
-      url = urlBuilder[ options.type ];
+      url = urlBuilder( options.type );
       Popcorn.getJSONP( url, function( data ) {
         _loadResults( data, options );
       }, false );
