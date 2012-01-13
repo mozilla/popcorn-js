@@ -704,11 +704,11 @@ test( "Instance", function() {
   ok( a.data.trackEvents.animating, "instance a has data.trackEvents.animating property" );
   ok( b.data.trackEvents.animating, "instance b has data.trackEvents.animating property" );
 
-  ok( a.data.trackEvents.startIndex, "instance a has data.trackEvents.startIndex property" );
-  ok( b.data.trackEvents.startIndex, "instance b has data.trackEvents.startIndex property" );
+  equal( typeof a.data.trackEvents.startIndex, "number", "instance a has data.trackEvents.startIndex property and it is a number" );
+  equal( typeof b.data.trackEvents.startIndex, "number", "instance b has data.trackEvents.startIndex property and it is a number" );
 
-  ok( a.data.trackEvents.endIndex, "instance a has data.trackEvents.endIndex property" );
-  ok( b.data.trackEvents.endIndex, "instance b has data.trackEvents.endIndex property" );
+  equal( typeof a.data.trackEvents.endIndex, "number", "instance a has data.trackEvents.endIndex property and it is a number" );
+  equal( typeof b.data.trackEvents.endIndex, "number", "instance b has data.trackEvents.endIndex property and it is a number" );
 
   ok( a.data.trackEvents.previousUpdateTime >= -1, "instance a has data.trackEvents.previousUpdateTime property" );
   ok( b.data.trackEvents.previousUpdateTime >= -1, "instance b has data.trackEvents.previousUpdateTime property" );
@@ -744,11 +744,17 @@ test( "roundTime", function() {
 
   QUnit.reset();
 
+  stop( 5000 );
+
   var popped = Popcorn( "#video" );
 
-  popped.play().pause().currentTime( 0.98 );
+  popped.listen( "canplayall", function() {
+    popped.unlisten( "canplayall" );
+    popped.play().pause().currentTime( 0.98 );
 
-  equal( 1, popped.roundTime(), ".roundTime() returns 1 when currentTime is 0.98s" );
+    equal( 1, popped.roundTime(), ".roundTime() returns 1 when currentTime is 0.98s" );
+    start();
+  });
 });
 
 
@@ -868,15 +874,19 @@ test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function
     if ( $pop.media.readyState >= 2 ) {
       // this should trigger immediately
 
+      // IE9 has weird seek behaviour... this works around it
+      $pop.listen( "seeked", function() {
+        $pop.unlisten( "seeked" );
+        equal( Math.round( $pop.currentTime() ), 10, "play(n) sets currentTime to 10" );
+        plus();
+
+        $pop.pause( 5 );
+
+        equal( Math.round( $pop.currentTime() ), 5, "pause(n) sets currentTime to 5" );
+        plus();
+      });
+
       $pop.play( 10 ).pause();
-
-      equal( Math.round( $pop.currentTime() ), 10, "play(n) sets currentTime to 10" );
-      plus();
-
-      $pop.pause( 5 );
-
-      equal( Math.round( $pop.currentTime() ), 5, "pause(n) sets currentTime to 5" );
-      plus();
 
     } else {
       setTimeout( poll, 10 );
@@ -913,6 +923,8 @@ test( "play(n)/pause(n) custom stop()", function() {
     if ( ++count === expects ) {
       // Remove custom stop() method
       delete Popcorn.p.stop;
+      $pop.unlisten( "canplayall" );
+      $pop.destroy();
       start();
     }
   }
@@ -1030,12 +1042,16 @@ test( "Popcorn.events.hooks: canplayall", function() {
   //qunit-fixture
   var expects = 1,
       count = 0,
-      fired = 0;
+      fired = 0,
+      $pop;
 
   expect( expects );
 
   function plus(){
     if ( ++count == expects ) {
+      $pop.unlisten( "canplayall");
+      $pop.unlisten( "canplaythrough" );
+      $pop.destroy();
       start();
     }
   }
@@ -1063,7 +1079,7 @@ test( "Popcorn.events.hooks: canplayall", function() {
 
   document.getElementById( "qunit-fixture" ).appendChild( video );
 
-  var $pop = Popcorn( "#event-fixture" );
+  $pop = Popcorn( "#event-fixture" );
 
   $pop.listen( "canplayall", function( event ) {
     equal( ++fired, 1, "canplayall is fired only once" );
@@ -1088,6 +1104,7 @@ test( "Popcorn.events.hooks: canplayall fires immediately if ready", function() 
 
   function plus(){
     if ( ++count == expects ) {
+      $pop.destroy();
       start();
     }
   }
@@ -1098,6 +1115,7 @@ test( "Popcorn.events.hooks: canplayall fires immediately if ready", function() 
     if ( $pop.media.readyState >= 2 ) {
       // this should trigger immediately
       $pop.listen( "canplayall", function( event ) {
+        this.unlisten( "canplayall" );
         equal( ++fired, 1, "canplayall is fired immediately if readyState permits" );
         plus();
       });
@@ -1242,9 +1260,10 @@ test( "position called from plugin", function() {
 
   function plus(){
     if ( ++count == expects ) {
-      start();
       Popcorn.removePlugin( "positionPlugin" );
       delete Popcorn.manifest.positionPlugin;
+      $pop.destroy();
+      start();
     }
   }
 
@@ -1321,6 +1340,8 @@ test( "Stored By Type", function() {
 
       ok( !p.data.events[ "play" ], "play handlers removed" );
 
+      p.destroy();
+
       start();
     }
   }
@@ -1378,7 +1399,10 @@ test( "Simulated", function() {
   expect( expects );
 
   function plus(){
-    if ( ++count == expects ) start();
+    if ( ++count == expects ) {
+      p.destroy();
+      start();
+    }
   }
 
   stop( 10000 );
@@ -1389,8 +1413,8 @@ test( "Simulated", function() {
       if ( completed.indexOf( name ) === -1 ) {
         ok( true, name + " fired" );
         plus();
-
         completed.push( name );
+        this.unlisten( name );
       }
     });
   });
@@ -1412,6 +1436,7 @@ test( "Real", function() {
 
   function plus(){
     if ( ++count == expects ) {
+      p.destroy();
       start();
     }
   }
@@ -1426,32 +1451,38 @@ test( "Real", function() {
         ok( true, name + " fired" );
         plus();
         completed.push( name );
+        p.unlisten( name );
       }
     });
   });
-
-  p.pause();
-  p.play();
-  p.volume( 0.9 );
-  p.currentTime( 49 );
+  p.listen( "canplayall", function() {
+    this.unlisten( "canplayall" );
+    this.pause();
+    this.play();
+    this.volume( 0.9 );
+    this.currentTime( 49 );
+  });
 });
 
 test( "Custom", function() {
 
   var expects = 1,
-      count = 0;
+      count = 0,
+      p;
 
   expect( expects );
 
   function plus(){
     if ( ++count == expects ) {
+      p.unlisten( "eventz0rz" );
+      p.destroy()
       start();
     }
   }
 
   stop( 10000 );
 
-  var p = Popcorn( "#video" );
+  p = Popcorn( "#video" );
 
 
   p.listen( "eventz0rz", function( event ) {
@@ -1474,6 +1505,8 @@ test( "UI/Mouse", function() {
 
   function plus(){
     if ( ++count == expects ) {
+      p.unlisten( "click" );
+      p.destroy();
       start();
     }
   }
@@ -1504,6 +1537,7 @@ test( "Manifest", function() {
       start();
       // clean up added events after tests
       Popcorn.removePlugin( "footnote" );
+      p.destroy();
     }
   }
 
@@ -1590,21 +1624,24 @@ test( "Manifest removal", function() {
   Popcorn.removePlugin( "tester" );
 
   equal( Popcorn.sizeOf( Popcorn.manifest ), 0, "After deleting plugin" );
+
+  popcorn.destroy();
 });
 
 test( "Configurable Defaults", function() {
 
   var expects = 13,
-      count = 0;
+      count = 0,
+      p;
 
   function plus() {
     if ( ++count === expects ) {
-      start();
-
       [ "configurable", "multiconfig", "overridden" ].forEach(function( val ) {
         Popcorn.removePlugin( val );
         delete Popcorn.manifest[ val ];
       });
+      p.destroy();
+      start();
     }
   }
 
@@ -1686,7 +1723,7 @@ test( "Configurable Defaults", function() {
     };
   });
 
-  var p = Popcorn( "#video", {
+  p = Popcorn( "#video", {
             defaults: {
               overridden: {
                 target: "default"
@@ -1800,6 +1837,7 @@ test( "Start Zero Immediately", function() {
     if ( ++count === expects ) {
       // clean up added events after tests
       Popcorn.removePlugin( "zero" );
+      $pop.destroy();
       start();
     }
   }
@@ -1834,6 +1872,7 @@ test( "Special track event listeners: trackstart, trackend", function() {
     if ( ++count === expects ) {
       // clean up added events after tests
       Popcorn.removePlugin( "emitter" );
+      $pop.destroy();
       start();
     }
   }
@@ -1938,6 +1977,7 @@ test( "Update Timer (timeupdate)", function() {
       Popcorn.removePlugin( "forwards" );
       Popcorn.removePlugin( "backwards" );
       Popcorn.removePlugin( "wrapper" );
+      p2.destroy();
       start();
     }
   }
@@ -2265,6 +2305,7 @@ test( "timeUpdate add track event while paused", function() {
   function plus() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "timeUpdateTester" );
+      $pop.destroy();
       start();
     }
   }
@@ -2304,6 +2345,7 @@ test( "Plugin Factory", function () {
     if ( ++count == expects ) {
       Popcorn.removePlugin( "executor" );
       Popcorn.removePlugin( "complicator" );
+      popped.destroy();
       start();
     }
   }
@@ -2424,8 +2466,15 @@ test( "Popcorn Compose", function() {
         }
       };
 
+  popped.listen( "seeked", function() {
+   this.unlisten( "seeked" );
+   this.play( 0 );
+  });
+
+  popped.pause( popped.duration() );
+
   function plus() {
-    if ( ++count == expects ) {
+    if ( ++count === expects ) {
       Popcorn.removePlugin( "testPlugin" );
       Popcorn.removePlugin( "pluginOptions1" );
       Popcorn.removePlugin( "pluginOptions2" );
@@ -2478,8 +2527,6 @@ test( "Popcorn Compose", function() {
       test.two.setup--;
     }
   });
-
-  popped.pause( popped.duration() );
 
   popped.testPlugin({
     start: 0,
@@ -2653,7 +2700,6 @@ test( "Popcorn Compose", function() {
 
   composeOptionsTwo = popped.getLastTrackEventId();
 
-  popped.currentTime( 0 ).play();
 });
 
 test( "Teardown end tester", function() {
@@ -2881,116 +2927,122 @@ test( "Remove Plugin", function() {
 
   expect( expects );
   stop( 10000 );
+
+  p.listen( "seeked", function() {
+    this.unlisten( "seeked" );
+
+    equal( rlen, 0, "Popcorn.registry.length is empty" );
+    plus();
+
+    equal( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is initialized and has 2 entries" );
+    plus();
+    equal( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is initialized and has 2 entries" );
+    plus();
+
+    Popcorn.plugin( "removeme", {
+
+      start: function() {
+
+      },
+      end: function() {
+
+      },
+      _teardown: function( options ) {
+        ok( true, "teardown called on " + options.order + " plugin via removePlugin()" );
+        plus();
+      }
+    });
+
+    p.removeme({
+      start: 2,
+      end: 3,
+      order: "first"
+    });
+
+    p2.removeme({
+      start: 2,
+      end: 3,
+      order: "second"
+    });
+
+    equal( Popcorn.registry.length, 1, "Popcorn.registry.length is 1" );
+    plus();
+    equal( p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart is updated and has 3 entries" );
+    plus();
+    equal( p.data.trackEvents.byEnd.length, 3, "p.data.trackEvents.byEnd is updated and has 3 entries" );
+    plus();
+
+    p.removePlugin( "removeme" );
+
+    // p.removeme still exists on the prototype, even though we said to remove it
+    // the tracks of that type though, are removed.
+    // think of it as removing all tracks of plugin type attached to an instance
+    ok( typeof p.removeme === "function", "removeme plugin is still defined to p instance" );
+    plus();
+    ok( ( "removeme" in Popcorn.prototype ), "removeme plugin is still available to Popcorn.prototype" );
+    plus();
+    equal( Popcorn.registry.length, 1, "Popcorn.registry.length has not changed" );
+    plus();
+
+    ok( ( typeof p2.removeme === "function" ), "removeme plugin is defined to p2 instance" );
+    plus();
+
+    equal( p2.data.trackEvents.byStart.length, 3, "p2.data.trackEvents.byStart is updated and has 3 entries" );
+    plus();
+    equal( p2.data.trackEvents.byEnd.length, 3, "p2.data.trackEvents.byEnd is updated and has 3 entries" );
+    plus();
+
+    equal( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is updated and has 2 entries" );
+    plus();
+    equal( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is updated and has 2 entries" );
+    plus();
+    Popcorn.removePlugin( "removeme" );
+
+    ok( !( "removeme" in p2 ), "removeme plugin is no longer available to p2 instance" );
+    plus();
+    ok( !( "removeme" in Popcorn.prototype ), "removeme plugin is no longer available to Popcorn.prototype" );
+    plus();
+    equal( Popcorn.registry.length, 0, "Popcorn.registry.length is empty again" );
+    plus();
+
+    interval = setInterval(function() {
+      if( p2.currentTime() > 3 ) {
+
+        equal( p2.data.trackEvents.byStart.length, 2, "p2.data.trackEvents.byStart is updated and has 2 entries" );
+        plus();
+        equal( p2.data.trackEvents.byEnd.length, 2, "p2.data.trackEvents.byEnd is updated and has 2 entries" );
+        plus();
+        clearInterval( interval );
+      }
+    }, 1 );
+
+    Popcorn.plugin( "cleanup", {
+
+      _setup: function( options ) {
+
+        options.exist = true;
+      },
+      _teardown: function( options ) {
+
+        ok( true, "cleanup function is called during removal" );
+        plus();
+
+        ok( options.exist, "options object exists at time of cleanup" );
+        plus();
+      }
+    });
+
+    p2.cleanup({
+      start: 2,
+      end: 3
+    });
+    p2.removeTrackEvent( p2.getLastTrackEventId() );
+
+    p2.currentTime( 2 ).play();
+  });
+
   p.currentTime( 0 ).pause();
 
-  equal( rlen, 0, "Popcorn.registry.length is empty" );
-  plus();
-
-  equal( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is initialized and has 2 entries" );
-  plus();
-  equal( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is initialized and has 2 entries" );
-  plus();
-
-  Popcorn.plugin( "removeme", {
-
-    start: function() {
-
-    },
-    end: function() {
-
-    },
-    _teardown: function( options ) {
-      ok( true, "teardown called on " + options.order + " plugin via removePlugin()" );
-      plus();
-    }
-  });
-
-  p.removeme({
-    start: 2,
-    end: 3,
-    order: "first"
-  });
-
-  p2.removeme({
-    start: 2,
-    end: 3,
-    order: "second"
-  });
-
-  equal( Popcorn.registry.length, 1, "Popcorn.registry.length is 1" );
-  plus();
-  equal( p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart is updated and has 3 entries" );
-  plus();
-  equal( p.data.trackEvents.byEnd.length, 3, "p.data.trackEvents.byEnd is updated and has 3 entries" );
-  plus();
-
-  p.removePlugin( "removeme" );
-
-  // p.removeme still exists on the prototype, even though we said to remove it
-  // the tracks of that type though, are removed.
-  // think of it as removing all tracks of plugin type attached to an instance
-  ok( typeof p.removeme === "function", "removeme plugin is still defined to p instance" );
-  plus();
-  ok( ( "removeme" in Popcorn.prototype ), "removeme plugin is still available to Popcorn.prototype" );
-  plus();
-  equal( Popcorn.registry.length, 1, "Popcorn.registry.length has not changed" );
-  plus();
-
-  ok( ( typeof p2.removeme === "function" ), "removeme plugin is defined to p2 instance" );
-  plus();
-
-  equal( p2.data.trackEvents.byStart.length, 3, "p2.data.trackEvents.byStart is updated and has 3 entries" );
-  plus();
-  equal( p2.data.trackEvents.byEnd.length, 3, "p2.data.trackEvents.byEnd is updated and has 3 entries" );
-  plus();
-
-  equal( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is updated and has 2 entries" );
-  plus();
-  equal( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is updated and has 2 entries" );
-  plus();
-  Popcorn.removePlugin( "removeme" );
-
-  ok( !( "removeme" in p2 ), "removeme plugin is no longer available to p2 instance" );
-  plus();
-  ok( !( "removeme" in Popcorn.prototype ), "removeme plugin is no longer available to Popcorn.prototype" );
-  plus();
-  equal( Popcorn.registry.length, 0, "Popcorn.registry.length is empty again" );
-  plus();
-
-  interval = setInterval(function() {
-    if( p2.currentTime() > 3 ) {
-
-      equal( p2.data.trackEvents.byStart.length, 2, "p2.data.trackEvents.byStart is updated and has 2 entries" );
-      plus();
-      equal( p2.data.trackEvents.byEnd.length, 2, "p2.data.trackEvents.byEnd is updated and has 2 entries" );
-      plus();
-      clearInterval( interval );
-    }
-  }, 1 );
-
-  Popcorn.plugin( "cleanup", {
-
-    _setup: function( options ) {
-
-      options.exist = true;
-    },
-    _teardown: function( options ) {
-
-      ok( true, "cleanup function is called during removal" );
-      plus();
-
-      ok( options.exist, "options object exists at time of cleanup" );
-      plus();
-    }
-  });
-
-  p2.cleanup({
-    start: 2,
-    end: 3
-  });
-  p2.removeTrackEvent( p2.getLastTrackEventId() );
-
-  p2.currentTime( 2 ).play();
 });
 
 test( "Protected Names", function() {
@@ -3000,7 +3052,7 @@ test( "Protected Names", function() {
       count = 0,
       popped = Popcorn( "#video" );
 
-  for ( item in Popcorn.p ) {
+  for ( var item in Popcorn.p ) {
     if ( Popcorn.p.hasOwnProperty( item ) ) {
       keys.push( item );
     }
@@ -3635,9 +3687,10 @@ test( "XML Conversion", function() {
         plus();
 
         var parser = new DOMParser(),
-        xml = parser.parseFromString( '<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml" );
+        xml = parser.parseFromString('<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml"),
+        xml2 = parser.parseFromString( data.text, "text/xml" );
 
-        equal( data.xml.toString(), xml.toString(), "data.xml returns a document of xml for " + fileName );
+        equal( xml.toString(), xml2.toString(), "data.xml returns a document of xml for " + fileName );
         plus();
       }
     });
@@ -3871,15 +3924,15 @@ test( "Popcorn.getScript()", function() {
 
   Popcorn.getScript(
 
-    "https://github.com/rwldrn/has.js/raw/master/has.js",
+    "http://cadecairos.github.com/popcorn-js/testfunction.js",
     function() {
 
       ok( true, "getScript C returned" );
       plus();
-      ok( ( "has" in window ) , "Popcorn.getScript https://github.com/rwldrn/has.js/raw/master/has.js loaded: `has` is available" );
+      ok( ( "testFunction2" in window ), "Popcorn.getScript http://cadecairos.github.com/popcorn-js/testfunction.js loaded: `testFunction2` is available" );
       plus();
 
-      delete window[ "has" ];
+      delete window[ "testFunction2" ];
     }
   );
 
@@ -3920,10 +3973,10 @@ test( "XML Response", function() {
       plus();
 
       var parser = new DOMParser(),
-      xml = parser.parseFromString( '<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml" );
+      xml = parser.parseFromString('<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml"),
+      xml2 = parser.parseFromString( data.text, "text/xml" );
 
-
-      equal( data.xml.toString(), xml.toString(), "data.xml returns a document of xml" );
+      equal( xml.toString(), xml2.toString(), "data.xml returns a document of xml" );
       plus();
     }
   });
@@ -3954,8 +4007,14 @@ test( "dataType: XML Response", function() {
       var parser = new DOMParser(),
       xml = parser.parseFromString( '<?xml version="1.0" encoding="UTF-8"?><dashboard><locations class="foo"><location for="bar"><infowindowtab> <tab title="Location"><![CDATA[blabla]]></tab> <tab title="Users"><![CDATA[blublu]]></tab> </infowindowtab> </location> </locations> </dashboard>',"text/xml" );
 
-      equal( data.toString(), xml.toString(), "dataType: 'xml', data.xml returns a document of xml" );
-      plus();
+      if ( data.toString ) {
+        equals( data.toString(), xml.toString(), "data.xml returns a document of xml");
+        plus();
+      } else {
+        var xml2 = parser.parseFromString( data.xml, "text/xml" );
+        equals( xml2.toString(), xml.toString(), "data.xml returns a document of xml");
+        plus();
+      }
     }
   });
 });
