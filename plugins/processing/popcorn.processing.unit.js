@@ -132,9 +132,6 @@ test( "Processing plugin tests", function() {
     plus();
   });
 
-  // empty track events should be safe
-  popped.processing({});
-
   // debug should log errors on empty track events
   Popcorn.plugin.debug = true;
   try {
@@ -143,6 +140,10 @@ test( "Processing plugin tests", function() {
     ok( true, "empty event was caught by debug" );
     plus();
   }
+
+  // set debug back to false, empty track events should be safe
+  Popcorn.plugin.debug = false;
+  popped.processing({});
 
   popped.play();
 });
