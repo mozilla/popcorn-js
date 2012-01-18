@@ -3924,12 +3924,12 @@ test( "Popcorn.getScript()", function() {
 
   Popcorn.getScript(
 
-    "http://cadecairos.github.com/popcorn-js/testfunction.js",
+    "http://popcornjs.org/code/test/data/testfunction2.js",
     function() {
 
       ok( true, "getScript C returned" );
       plus();
-      ok( ( "testFunction2" in window ), "Popcorn.getScript http://cadecairos.github.com/popcorn-js/testfunction.js loaded: `testFunction2` is available" );
+      ok( ( "testFunction" in window ), "Popcorn.getScript data/testfunction.js loaded: `testFunction2` is available" );
       plus();
 
       delete window[ "testFunction2" ];
