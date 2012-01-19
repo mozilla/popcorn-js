@@ -1818,11 +1818,21 @@
         set: function( val ) {
 
           // make sure val is a number
-          muted = +val;
+          muted = !!val;
           basePlayer.dispatchEvent( "volumechange" );
           return muted;
         },
         configurable: true
+      });
+
+      Popcorn.forEach( [ "offsetWidth", "offsetHeight" ], function( prop ) {
+        Popcorn.player.defineProperty( basePlayer, prop, {
+
+          get: function() {
+            return +container[ prop ];
+          }
+
+        });
       });
 
       // Adds an event listener to the object
