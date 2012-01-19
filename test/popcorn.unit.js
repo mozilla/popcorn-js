@@ -3929,7 +3929,7 @@ test( "Popcorn.getScript()", function() {
 
       ok( true, "getScript C returned" );
       plus();
-      ok( ( "testFunction" in window ), "Popcorn.getScript data/testfunction.js loaded: `testFunction2` is available" );
+      ok( ( "testFunction2" in window ), "Popcorn.getScript data/testfunction.js loaded: `testFunction2` is available" );
       plus();
 
       delete window[ "testFunction2" ];
