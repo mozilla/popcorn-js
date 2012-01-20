@@ -2976,13 +2976,15 @@ test( "Protected Names", function() {
 
     try {
       Popcorn.plugin( name, {} );
+      ok( false, "Attempting to overwrite '" + name + "' did not throw an exception " );
+      plus();
     } catch ( e ) {
-      ok( name, "Attempting to overwrite '" + name + "' threw an exception " );
+      ok( true, "Attempting to overwrite '" + name + "' threw an exception " );
       plus();
     };
   });
 
-  stop();
+  stop( 10000 );
 });
 
 test( "Defaulting Empty End Values", function() {

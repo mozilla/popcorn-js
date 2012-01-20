@@ -1,3 +1,8 @@
+var methodsString = "removeInstance addInstance getInstanceById removeInstanceById " +
+          "forEach extend effects error guid sizeOf isArray nop position disable enable destroy" +
+          "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
+          "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript player";
+		  
 module("Core");
 test("Dummy", function () {
 
@@ -19,10 +24,7 @@ module("Static Methods");
 (function() {
 
   var method,
-      methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
-          "forEach extend effects error guid sizeOf isArray nop position disable enable " +
-          "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
-          "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
+      methods = methodsString.split( /\s+/ );
 
   while( methods.length ) {
 
@@ -43,10 +45,7 @@ module("Attempt");
 (function() {
 
   var method,
-      methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
-          "forEach extend effects error guid sizeOf isArray nop position disable enable " +
-          "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
-          "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript" ).split(/\s+/);
+      methods = methodsString.split( /\s+/ );
 
   while( methods.length ) {
 
