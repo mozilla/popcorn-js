@@ -210,7 +210,7 @@
       options._container.id = "facebookdiv-" + Popcorn.guid();
       options._facebookdiv = document.createElement( "fb:" + _type );
       options._container.appendChild( options._facebookdiv );
-      options._container._container.style.display = "none";
+      options._container.style.display = "none";
 
       // All the the "types" for facebook share largely identical attributes, for loop suffices.
       // ** Credit to Rick Waldron, it's essentially all his code in this function.
