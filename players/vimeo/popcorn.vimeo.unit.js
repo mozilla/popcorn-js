@@ -45,7 +45,7 @@ test( "Update Timer", function() {
       forwardEnd    = false,
       backwardStart = false,
       backwardEnd   = false,
-      wrapperRunning = { one: false, two: false, };
+      wrapperRunning = { one: false, two: false };
 
   function plus() {
     if ( ++count === expects ) {
@@ -268,17 +268,17 @@ test( "Plugin Factory", function() {
 
         ok( "media" in this, "executor instance has `media` property" );
         plus();
-        ok( Object.prototype.toString.call( popped.media ) === "[object Object]", "video property is a HTML DIV element" );
+        ok( typeof popped.media === "object", "video property is a HTML DIV element" );
         plus();
 
         ok( "data" in this, "executor instance has `data` property" );
         plus();
-        ok( Object.prototype.toString.call( popped.data ) === "[object Object]", "data property is an object" );
+        ok( typeof popped.data === "object", "data property is an object" );
         plus();
 
         ok( "trackEvents" in this.data, "executor instance has `trackEvents` property" );
         plus();
-        ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "executor trackEvents property is an object" )
+        ok( typeof popped.data.trackEvents === "object", "executor trackEvents property is an object" );
         plus();
       },
       end: function() {
@@ -314,17 +314,17 @@ test( "Plugin Factory", function() {
 
       ok( "media" in this, "complicator instance has `media` property" );
       plus();
-      ok( Object.prototype.toString.call( popped.media ) === "[object Object]", "video property is a HTMLVideoElement" );
+      ok( typeof popped.media === "object", "video property is a HTMLVideoElement" );
       plus();
 
       ok( "data" in this, "complicator instance has `data` property" );
       plus();
-      ok( Object.prototype.toString.call( popped.data ) === "[object Object]", "complicator data property is an object" );
+      ok( typeof popped.data === "object", "complicator data property is an object" );
       plus();
 
       ok( "trackEvents" in this.data, " complicatorinstance has `trackEvents` property" );
       plus();
-      ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "complicator trackEvents property is an object" )
+      ok( typeof popped.data.trackEvents === "object", "complicator trackEvents property is an object" );
       plus();
     },
     end: function() {
@@ -389,11 +389,11 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
   var urlTests = [
     { name: "standard",
       url: "http://player.vimeo.com/video/6960892",
-      expected: "http://player.vimeo.com/video/6960892",
+      expected: "http://player.vimeo.com/video/6960892"
     },
     { name: "short url",
       url: "http://vimeo.com/6960892",
-      expected: "http://vimeo.com/6960892",
+      expected: "http://vimeo.com/6960892"
     }
   ];
 
@@ -421,4 +421,32 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
       }
     });
   });
+});
+
+test( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
+
+  QUnit.reset();
+  var popped,
+      elem,
+      expects = 2,
+      count = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  popped = Popcorn.vimeo( "#player_3", "http://player.vimeo.com/video/6960892" );
+
+  popped.listen( "loadeddata", function() {
+    elem = document.querySelector( "div#player_3 object" );
+    equals( elem.height, popped.media.offsetHeight, "The media object is reporting the correct offsetHeight" );
+    plus();
+    equals( elem.width, popped.media.offsetWidth, "The media object is reporting the correct offsetWidth" );
+    plus();
+  });
+
+  stop();
 });

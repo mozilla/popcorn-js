@@ -59,6 +59,21 @@
       };
   }()),
 
+  //  Non-public `getKeys`, return an object's keys as an array
+  getKeys = function( obj ) {
+    return Object.keys ? Object.keys( obj ) : (function( obj ) {
+      var item,
+          list = [];
+
+      for ( item in obj ) {
+        if ( hasOwn.call( obj, item ) ) {
+          list.push( item );
+        }
+      }
+      return list;
+    })( obj );
+  },
+
   refresh = function( obj ) {
     var currentTime = obj.media.currentTime,
       animation = obj.options.frameAnimation,
@@ -1803,11 +1818,21 @@
         set: function( val ) {
 
           // make sure val is a number
-          muted = +val;
+          muted = !!val;
           basePlayer.dispatchEvent( "volumechange" );
           return muted;
         },
         configurable: true
+      });
+
+      Popcorn.forEach( [ "offsetWidth", "offsetHeight" ], function( prop ) {
+        Popcorn.player.defineProperty( basePlayer, prop, {
+
+          get: function() {
+            return +container[ prop ];
+          }
+
+        });
       });
 
       // Adds an event listener to the object
@@ -2200,28 +2225,11 @@
   // alias for exec function
   Popcorn.p.cue = Popcorn.p.exec;
 
-  function getItems() {
-
-    var item,
-        list = [];
-
-    if ( Object.keys ) {
-      list = Object.keys( Popcorn.p );
-    } else {
-
-      for ( item in Popcorn.p ) {
-        if ( hasOwn.call( Popcorn.p, item ) ) {
-          list.push( item );
-        }
-      }
-    }
-
-    return list.join( "," ).toLowerCase().split( ",");
-  }
-
   //  Protected API methods
   Popcorn.protect = {
-    natives: getItems()
+    natives: getKeys( Popcorn.p ).map(function( val ) {
+      return val.toLowerCase();
+    })
   };
 
   //  Exposes Popcorn to global context
