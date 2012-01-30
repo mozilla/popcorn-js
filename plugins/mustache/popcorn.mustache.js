@@ -88,7 +88,7 @@
 
     var getData, data, getTemplate, template;
 
-    Popcorn.getScript( "https://github.com/janl/mustache.js/raw/master/mustache.js" );
+    Popcorn.getScript( "http://mustache.github.com/extras/mustache.js" );
 
     var shouldReload = !!options.dynamic,
         typeOfTemplate = typeof options.template,

@@ -29,10 +29,8 @@ test( "Popcorn Mustache Plugin", function() {
     data: '{"heading": "mustache - test 1/3"}',
     target: "mustache-div",
     dynamic: false
-  });
-
-  // Dynamic functions
-  popped.mustache({
+  })
+  .mustache({
     start: 2,
     end: 4,
     template: function( plugin, options ) {
@@ -42,10 +40,8 @@ test( "Popcorn Mustache Plugin", function() {
       return JSON.parse( '{"heading": "mustache - test 2/3"}' );
     },
     target: "mustache-div"
-  });
-
-  // Template + Object literal
-  popped.mustache({
+  })
+  .mustache({
     start: 4,
     end: 5,
     template: function( plugin, options ) {
@@ -56,35 +52,20 @@ test( "Popcorn Mustache Plugin", function() {
     dynamic: false
   });
 
-  var video = document.getElementById( "video" );
-  var two, six, ten;
-      two = six = ten = false;
+  function runTest( a, b ) {
+    equals( mustacheDiv.innerHTML, "<h1>mustache - test " + a + "/3<\/h1>", "Mustache template rendered" );
+    plus();
+  }
 
-  video.addEventListener( "timeupdate", function() {
-
-    function pass( a, b ) {
-      equals( mustacheDiv.innerHTML, "<h1>mustache - test " + a + "/" + b + "<\/h1>","Mustache template rendered" );
-      plus();
-    }
-
-    var t = Math.floor( video.currentTime );
-
-    if ( t === 1 && !two ) {
-      pass( 1, 3 );
-      two = true;
-    } else if ( t === 3 && !six ) {
-      pass( 2, 3 );
-      six = true;
-    } else if ( t === 4 && !ten ) {
-      pass( 3, 3 );
-      ten = true;
-    }
-
-    if ( t === 6 ) {
-      video.pause();
-    }
-
-  }, false);
+  popped.exec( 1, function() {
+    runTest( 1 );
+  })
+  .exec( 3, function() {
+    runTest( 2 );
+  })
+  .exec( 4.5, function() {
+    runTest( 3 );
+  });
 
   // empty track events should be safe
   popped.mustache({});
