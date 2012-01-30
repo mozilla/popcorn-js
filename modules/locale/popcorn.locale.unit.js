@@ -9,7 +9,7 @@
           set: "function",
           broadcast: "function"
         },
-        locale = navigator.language,
+        locale = navigator.userLanguage || navigator.language,
         parts = locale.split( "-" ),
 
         stub = {
