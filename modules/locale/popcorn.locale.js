@@ -1,6 +1,6 @@
 (function( global, Popcorn ) {
 
-	var navigator = global.navigator;
+  var navigator = global.navigator;
 
   // Initialize locale data
   // Based on http://en.wikipedia.org/wiki/Language_localisation#Language_tags_and_codes
