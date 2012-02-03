@@ -478,7 +478,7 @@ test( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
 test( "Player Errors", function() {
   QUnit.reset();
   expect( 1 );
-  stop();
+  stop( 10000 );
   var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk" );
 
   pop.listen( "error", function() {
