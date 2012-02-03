@@ -2,9 +2,9 @@
 
   Popcorn.player = function( name, player ) {
 
-  //  ID string matching
-  var rIdExp  = /^(#([\w\-\_\.]+))$/
-  
+    //  ID string matching
+    var rIdExp  = /^(#([\w\-\_\.]+))$/;
+
     player = player || {};
 
     var playerFn = function( target, src, options ) {
