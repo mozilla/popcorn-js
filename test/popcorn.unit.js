@@ -989,8 +989,8 @@ test( "Popcorn.events.hooks: canplayall fires immediately if ready", function() 
 <source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.ogv"></source>
 <source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.webm"></source>
 </video>
-*/
 
+*/
 
 module( "Popcorn Position" );
 test( "position", function() {
@@ -2586,7 +2586,7 @@ test( "Teardown end noise", function() {
   QUnit.reset();
 
   var popped = Popcorn( "#video" ),
-      expects = 4,
+      expects = 5,
       count = 0;
 
   function plus() {
@@ -2635,6 +2635,9 @@ test( "Teardown end noise", function() {
 
   popped.currentTime( 0 ).play();
   popped.removePlugin( "teardownEndTester" );
+
+  equal( popped.data.trackEvents.byEnd[ 1 ]._natives.type, "noise", "proper end was removed"  );
+  plus();
 });
 
 test( "Plugin Breaker", function() {
