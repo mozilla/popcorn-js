@@ -1562,12 +1562,12 @@
         }
       }
 
-	  // clean any remaining references in the end index
-	  // we do this seperate from the above check because they might not be in the same order
-	  if ( byEnd[ idx ] && byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) {
+      // clean any remaining references in the end index
+      // we do this seperate from the above check because they might not be in the same order
+      if ( byEnd[ idx ] && byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) {
 
         byEnd.splice( idx, 1 );
-	  }
+      }
     }
 
     //remove all animating events
