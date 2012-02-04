@@ -1548,21 +1548,6 @@
     // remove all trackEvents
     for ( idx = 0, sl = byStart.length; idx < sl; idx++ ) {
 
-      if ( ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) ) {
-
-        byStart[ idx ]._natives._teardown && byStart[ idx ]._natives._teardown.call( obj, byStart[ idx ] );
-
-        byStart.splice( idx, 1 );
-        byEnd.splice( idx, 1 );
-
-        // update for loop if something removed, but keep checking
-        idx--; sl--;
-        if ( obj.data.trackEvents.startIndex <= idx ) {
-          obj.data.trackEvents.startIndex--;
-          obj.data.trackEvents.endIndex--;
-        }
-      }
-
       if ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) {
 
         byStart[ idx ]._natives._teardown && byStart[ idx ]._natives._teardown.call( obj, byStart[ idx ] );
