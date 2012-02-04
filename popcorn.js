@@ -1562,6 +1562,27 @@
           obj.data.trackEvents.endIndex--;
         }
       }
+
+      if ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) {
+
+        byStart[ idx ]._natives._teardown && byStart[ idx ]._natives._teardown.call( obj, byStart[ idx ] );
+
+        byStart.splice( idx, 1 );
+
+        // update for loop if something removed, but keep checking
+        idx--; sl--;
+        if ( obj.data.trackEvents.startIndex <= idx ) {
+          obj.data.trackEvents.startIndex--;
+          obj.data.trackEvents.endIndex--;
+        }
+      }
+
+	  // clean any remaining references in the end index
+	  // we do this seperate from the above check because they might not be in the same order
+	  if ( byEnd[ idx ] && byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) {
+
+        byEnd.splice( idx, 1 );
+	  }
     }
 
     //remove all animating events
