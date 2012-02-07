@@ -35,7 +35,7 @@ test( "Popcorn 0.3 SSA/ASS Parser Plugin", function () {
   stop( 5000 );
 
   // Allow load time
-  setTimeout(function () {
+  setTimeout( function () {
     Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
       if( evt._natives.type === "subtitle" ) {
         sub = subs[ numSubs++ ];

@@ -1,4 +1,4 @@
-test("Popcorn 0.3 SRT Parser Plugin", function () {
+test( "Popcorn 0.3 SRT Parser Plugin", function () {
   
   var expects = 0,
       count = 0,
@@ -81,10 +81,10 @@ test("Popcorn 0.3 SRT Parser Plugin", function () {
   stop( 5000 );
   
   // Allow load time
-  setTimeout(function () {
+  setTimeout( function () {
     Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
       if( evt._natives.type === "subtitle" ) {
-        sub = expectedSubs[numSubs++];
+        sub = expectedSubs[ numSubs++ ];
         
         equals( sub.id, evt.id, "Correct id" );
         plus();

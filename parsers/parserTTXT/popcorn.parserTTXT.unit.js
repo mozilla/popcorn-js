@@ -1,4 +1,4 @@
-test("Popcorn 0.3 TTXT Parser Plugin", function () {
+test( "Popcorn 0.3 TTXT Parser Plugin", function () {
   
   var expects = 0,
       count = 0,
@@ -38,24 +38,22 @@ test("Popcorn 0.3 TTXT Parser Plugin", function () {
 
   // Allow load time
   setTimeout(function () {
-    Popcorn.forEach(poppercorn.getTrackEvents(), function(evt) {
-      if(evt._natives.type === "subtitle") {
-        sub = subs[numSubs++];
+    Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
+      if( evt._natives.type === "subtitle" ) {
+        sub = subs[ numSubs++ ];
         
-        equals(sub.end,  evt.end , "Correct end" );
+        equals( sub.end,  evt.end , "Correct end" );
         plus();
         
-        equals(sub.start,  evt.start , "Correct start" );
+        equals( sub.start,  evt.start , "Correct start" );
         plus();
         
-        equals(sub.text,  evt.text , "Correct text" );
+        equals( sub.text,  evt.text , "Correct text" );
         plus();
       }
     });
     
-    equals(subs.length, numSubs , "Correctly parsed all subs" );
+    equals( subs.length, numSubs , "Correctly parsed all subs" );
     plus();
-
-  }, 500);
-  
+  }, 500);  
 });

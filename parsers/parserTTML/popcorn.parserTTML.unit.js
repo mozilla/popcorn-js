@@ -65,7 +65,7 @@ test( "Popcorn 0.3 TTML Parser Plugin", function () {
           end: 54
         }
       ],
-      expects = subs.length*4 + 1;
+      expects = subs.length * 4 + 1;
       
   function plus() {
     if ( ++count === expects ) {
@@ -79,10 +79,10 @@ test( "Popcorn 0.3 TTML Parser Plugin", function () {
   stop( 5000 );
   
   // Allow load time
-  setTimeout(function () {
+  setTimeout( function () {
     Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
       if( evt._natives.type === "subtitle" ) {
-        sub = subs[numSubs++];
+        sub = subs[ numSubs++ ];
         
         strictEqual( evt.id, sub.id, "Correctly parsed id of " + evt.id );
         plus();
