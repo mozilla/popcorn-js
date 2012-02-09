@@ -3417,7 +3417,7 @@ test( "end undefined or false should never be fired", function() {
 
   var $pop = Popcorn( "#video" ),
       count = 0,
-	  endFired = false,
+      endFired = false,
       expects = 1;
 
   expect( expects );
@@ -3432,25 +3432,25 @@ test( "end undefined or false should never be fired", function() {
 
   Popcorn.plugin( "neverEndingStory", {
     end: function() {
-	  ok( false, "" );
-	  endFired = true;
+      ok( false, "" );
+      endFired = true;
 	}
   });
 
   Popcorn.plugin( "endingStory", {
     end: function() {
-	  ok( !endFired, "end should not of been fired." );
-	  plus();
-	}
+      ok( !endFired, "end should not of been fired." );
+      plus();
+    }
   });
 
   stop( 10000 );
 
   $pop.neverEndingStory({});
-  $pop.neverEndingStory({end: false});
-  $pop.neverEndingStory({end: undefined});
+  $pop.neverEndingStory({ end: false });
+  $pop.neverEndingStory({ end: undefined });
   $pop.endingStory({ end: 64.541666 });
-  $pop.currentTime( 64.541666 ).play();
+  $pop.play( 64.541666 );
 });
 
 module( "Popcorn XHR" );
