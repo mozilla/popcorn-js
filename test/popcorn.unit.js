@@ -183,6 +183,82 @@ test( "Popcorn.getTrackEvent", function() {
 
 });
 
+test( "Popcorn.removeTrackEvent", function() {
+
+  var pop = Popcorn( "#video" ),
+      count = 0,
+      aId, bId, byStart, byEnd;
+
+  // expect( 2 );
+
+  Popcorn.plugin( "a", {
+    _setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {},
+    _teardown: function( options ) {}
+  });
+
+  Popcorn.plugin( "b", {
+    _setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {},
+    _teardown: function( options ) {}
+  });
+
+  pop.a({
+    start: 1,
+    end: 2,
+  });
+
+  // Store track event id for "plugin a"
+  aId = pop.getLastTrackEventId();
+
+  pop.b({
+    start: 1,
+    end: 2,
+  });
+
+  // Store track event id for "plugin b"
+  bId = pop.getLastTrackEventId();
+
+  // Remove the first track event for "plugin a"
+  pop.removeTrackEvent( aId );
+
+  // Shorthand references
+  byStart = pop.data.trackEvents.byStart;
+  byEnd = pop.data.trackEvents.byEnd;
+
+  // Iterate all byStart track events to prove that _only_ track events
+  // created by "plugin b" have survived
+  Popcorn.forEach( byStart, function( start ) {
+    if ( start._id ) {
+      // This condition should NEVER evaluate to true
+      if ( start._id === aId ) {
+        ok( false, "No byStart track events with " + aId + " should exist" );
+      }
+      // This condition should ALWAYS evaluate to true
+      if ( start._id === bId ) {
+        ok( true, "Only byStart track events with " + bId + " should exist" );
+      }
+    }
+  });
+
+  // Iterate all byEnd track events to prove that _only_ track events
+  // created by "plugin b" have survived
+  Popcorn.forEach( byEnd, function( end ) {
+    if ( end._id ) {
+      // This condition should NEVER evaluate to true
+      if ( end._id === aId ) {
+        ok( false, "No byEnd track events with " + aId + " should exist" );
+      }
+      // This condition should ALWAYS evaluate to true
+      if ( end._id === bId ) {
+        ok( true, "Only byEnd track events with " + bId + " should exist" );
+      }
+    }
+  });
+});
+
 test( "Popcorn.forEach", function() {
 
   expect( 3 );
