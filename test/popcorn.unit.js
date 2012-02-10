@@ -189,7 +189,7 @@ test( "Popcorn.removeTrackEvent", function() {
       count = 0,
       aId, bId, byStart, byEnd;
 
-  // expect( 2 );
+  expect( 2 );
 
   Popcorn.plugin( "a", {
     _setup: function( options ) {},
@@ -207,15 +207,15 @@ test( "Popcorn.removeTrackEvent", function() {
 
   pop.a({
     start: 1,
-    end: 2,
+    end: 5
   });
 
   // Store track event id for "plugin a"
   aId = pop.getLastTrackEventId();
 
   pop.b({
-    start: 1,
-    end: 2,
+    start: 3,
+    end: 4
   });
 
   // Store track event id for "plugin b"
@@ -257,6 +257,10 @@ test( "Popcorn.removeTrackEvent", function() {
       }
     }
   });
+
+
+  Popcorn.removePlugin( "a" );
+  Popcorn.removePlugin( "b" );
 });
 
 test( "Popcorn.forEach", function() {

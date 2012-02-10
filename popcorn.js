@@ -950,8 +950,8 @@
 
         // Filter for the trackevent to remove
         if ( o._id !== trackId ) {
-          byStart.push( obj.data.trackEvents.byStart[i] );
-          byEnd.push( obj.data.trackEvents.byEnd[i] );
+          byStart.push( o );
+          byEnd.push( o );
         }
 
         //  Capture the position of the track being removed.
@@ -960,7 +960,6 @@
           o._natives._teardown && o._natives._teardown.call( obj, o );
         }
       }
-
     });
 
     if ( obj.data.trackEvents.animating.length ) {
