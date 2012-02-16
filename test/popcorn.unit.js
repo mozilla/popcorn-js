@@ -1610,6 +1610,53 @@ test( "Configurable Defaults", function() {
   }).currentTime( 2 ).play();
 });
 
+test( "Plugin toString", function() {
+
+  expect( 2 );
+
+  var $pop = Popcorn( "#video" ),
+      trackEvent, result;
+
+  Popcorn.plugin( "stringify" , function() {
+    return {
+      _setup: function( options ) {
+      },
+      start: function( event, options ){
+      },
+      end: function( event, options ){
+      },
+      _teardown: function( options ) {
+      }
+    };
+  });
+
+  $pop.stringify({
+    start: 0,
+    end: 10,
+  });
+
+  trackEvent = $pop.getTrackEvent( $pop.getLastTrackEventId() );
+  result = trackEvent.toString();
+
+  ok( /^stringify \( start\: 0\, end\: 10\, id\: stringify/.test(result), "Default toString value" );
+
+  $pop.stringify({
+    start: 3,
+    end: 4,
+    toString: function() {
+      return "BOO YA!";
+    }
+  });
+
+  trackEvent = $pop.getTrackEvent( $pop.getLastTrackEventId() );
+  result = trackEvent.toString();
+
+
+  ok( result, "BOO YA!", "Custom toString value" );
+
+  Popcorn.removePlugin( "stringify" );
+});
+
 test( "Exceptions", function() {
 
   var $pop = Popcorn( "#video" ),
