@@ -183,6 +183,132 @@ test( "Popcorn.getTrackEvent", function() {
 
 });
 
+test( "Popcorn.removeTrackEvent", function() {
+
+  var pop = Popcorn( "#video" ),
+      count = 0,
+      aId, bId, cId, dId, byStart, byEnd;
+
+  expect( 5 );
+
+  Popcorn.plugin( "a", {
+    _setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {},
+    _teardown: function( options ) {}
+  });
+
+  Popcorn.plugin( "b", {
+    _setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {},
+    _teardown: function( options ) {}
+  });
+
+  Popcorn.plugin( "c", {
+    _setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {},
+    _teardown: function( options ) {}
+  });
+
+  Popcorn.plugin( "d", {
+    _setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {},
+    _teardown: function( options ) {}
+  });
+
+  pop.a({
+    start: 1,
+    end: 5
+  });
+
+  // Store track event id for "plugin a"
+  aId = pop.getLastTrackEventId();
+
+  pop.b({
+    start: 3,
+    end: 4
+  });
+
+  // Store track event id for "plugin b"
+  bId = pop.getLastTrackEventId();
+
+  pop.c({
+    start: 0,
+    end: 3
+  });
+
+  // Store track event id for "plugin c"
+  cId = pop.getLastTrackEventId();
+
+  pop.d({
+    start: 1,
+    end: 2
+  });
+
+  // Store track event id for "plugin d"
+  dId = pop.getLastTrackEventId();
+
+  // Capture the pre-removal track event count
+  count = pop.data.trackEvents.byStart.length;
+
+  // Remove the first track event for "plugin a"
+  pop.removeTrackEvent( aId );
+
+  // Shorthand references
+  byStart = pop.data.trackEvents.byStart;
+  byEnd = pop.data.trackEvents.byEnd;
+
+  equal( byStart.length, count - 1, "One less track event" );
+
+  // Iterate all byStart track events to prove that _only_ track events
+  // created by "plugin b" have survived
+  Popcorn.forEach( byStart, function( start ) {
+    if ( start._id ) {
+      // This condition should NEVER evaluate to true
+      if ( start._id === aId ) {
+        ok( false, "No byStart track events with " + aId + " should exist" );
+      }
+      // This condition should ALWAYS evaluate to true
+      if ( start._id === bId ) {
+        ok( true, "Only byStart track events with " + bId + " should exist" );
+      }
+    }
+  });
+
+  // Iterate all byEnd track events to prove that _only_ track events
+  // created by "plugin b" have survived
+  Popcorn.forEach( byEnd, function( end ) {
+    if ( end._id ) {
+      // This condition should NEVER evaluate to true
+      if ( end._id === aId ) {
+        ok( false, "No byEnd track events with " + aId + " should exist" );
+      }
+      // This condition should ALWAYS evaluate to true
+      if ( end._id === bId ) {
+        ok( true, "Only byEnd track events with " + bId + " should exist" );
+      }
+    }
+  });
+
+  // after the removal, byStart's first element is c
+  // console.log( byStart );
+
+  // after the removal, byEnd's first element should be d (if c, then broken)
+  // console.log( byEnd );
+
+  // Test to ensure order was preserved
+  equal( byStart[1]._id, cId, "byStart[1]._id matches cId" );
+  equal( byEnd[1]._id, dId, "byEnd[1]._id matches dId" );
+
+
+  Popcorn.forEach([ "a", "b", "c", "d" ], function( name ) {
+    Popcorn.removePlugin( name );
+  });
+});
+
 test( "Popcorn.forEach", function() {
 
   expect( 3 );

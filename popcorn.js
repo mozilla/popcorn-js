@@ -929,55 +929,83 @@
     return obj;
   };
 
-  Popcorn.removeTrackEvent  = function( obj, trackId ) {
+  Popcorn.removeTrackEvent  = function( obj, removeId ) {
 
-    var historyLen = obj.data.history.length,
+    var start, end, animate,
+        historyLen = obj.data.history.length,
+        length = obj.data.trackEvents.byStart.length,
+        index = 0,
         indexWasAt = 0,
         byStart = [],
         byEnd = [],
         animating = [],
         history = [];
 
-    Popcorn.forEach( obj.data.trackEvents.byStart, function( o, i, context ) {
-      // Preserve the original start/end trackEvents
-      if ( !o._id ) {
-        byStart.push( obj.data.trackEvents.byStart[i] );
-        byEnd.push( obj.data.trackEvents.byEnd[i] );
+    while ( --length > -1 ) {
+      start = obj.data.trackEvents.byStart[ index ];
+      end = obj.data.trackEvents.byEnd[ index ];
+
+      // Padding events will not have _id properties.
+      // These should be safely pushed onto the front and back of the
+      // track event array
+      if ( !start._id ) {
+        byStart.push( start );
+        byEnd.push( end );
       }
 
       // Filter for user track events (vs system track events)
-      if ( o._id ) {
+      if ( start._id ) {
 
-        // Filter for the trackevent to remove
-        if ( o._id !== trackId ) {
-          byStart.push( obj.data.trackEvents.byStart[i] );
-          byEnd.push( obj.data.trackEvents.byEnd[i] );
+        // If not a matching start event for removal
+        if ( start._id !== removeId ) {
+          byStart.push( start );
         }
 
-        //  Capture the position of the track being removed.
-        if ( o._id === trackId ) {
-          indexWasAt = i;
-          o._natives._teardown && o._natives._teardown.call( obj, o );
-        }
-      }
-
-    });
-
-    if ( obj.data.trackEvents.animating.length ) {
-      Popcorn.forEach( obj.data.trackEvents.animating, function( o, i, context ) {
-        // Preserve the original start/end trackEvents
-        if ( !o._id ) {
-          animating.push( obj.data.trackEvents.animating[i] );
+        // If not a matching end event for removal
+        if ( end._id !== removeId ) {
+          byEnd.push( end );
         }
 
-        // Filter for user track events (vs system track events)
-        if ( o._id ) {
-          // Filter for the trackevent to remove
-          if ( o._id !== trackId ) {
-            animating.push( obj.data.trackEvents.animating[i] );
+        // If the _id is matched, capture the current index
+        if ( start._id === removeId ) {
+          indexWasAt = index;
+
+          // If a _teardown function was defined,
+          // enforce for track event removals
+          if ( start._natives._teardown ) {
+            start._natives._teardown.call( obj, start );
           }
         }
-      });
+      }
+      // Increment the track index
+      index++;
+    }
+
+    // Reset length to be used by the condition below to determine
+    // if animating track events should also be filtered for removal.
+    // Reset index below to be used by the reverse while as an
+    // incrementing counter
+    length = obj.data.trackEvents.animating.length;
+    index = 0;
+
+    if ( length ) {
+      while ( --length > -1 ) {
+        animate = obj.data.trackEvents.animating[ index ];
+
+        // Padding events will not have _id properties.
+        // These should be safely pushed onto the front and back of the
+        // track event array
+        if ( !animate._id ) {
+          animating.push( animate );
+        }
+
+        // If not a matching animate event for removal
+        if ( animate._id && animate._id !== removeId ) {
+          animating.push( animate );
+        }
+        // Increment the track index
+        index++;
+      }
     }
 
     //  Update
@@ -994,7 +1022,7 @@
     obj.data.trackEvents.animating = animating;
 
     for ( var i = 0; i < historyLen; i++ ) {
-      if ( obj.data.history[ i ] !== trackId ) {
+      if ( obj.data.history[ i ] !== removeId ) {
         history.push( obj.data.history[ i ] );
       }
     }
@@ -1003,12 +1031,12 @@
     obj.data.history = history;
 
     // Update track event references
-    Popcorn.removeTrackEvent.ref( obj, trackId );
+    Popcorn.removeTrackEvent.ref( obj, removeId );
   };
 
   // Internal Only - Removes track event references from instance object's trackRefs hash table
-  Popcorn.removeTrackEvent.ref = function( obj, trackId ) {
-    delete obj.data.trackRefs[ trackId ];
+  Popcorn.removeTrackEvent.ref = function( obj, removeId ) {
+    delete obj.data.trackRefs[ removeId ];
 
     return obj;
   };
