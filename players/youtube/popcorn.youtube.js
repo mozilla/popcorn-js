@@ -23,6 +23,8 @@ Popcorn.player( "youtube", {
         lastMuted = false,
         lastVolume = 100;
 
+    // setting paused to undefined because youtube has state for not paused or playing
+    media.paused = undefined;
     container.id = media.id + Popcorn.guid();
 
     media.appendChild( container );
@@ -259,11 +261,11 @@ Popcorn.player( "youtube", {
 
       // if pause or play is not explicitly set
       // youtube will autoplay
-      if ( autoPlay ) {
-        //!media.paused && media.play();
-      } else {
+      //if ( autoPlay ) {
+        // !media.paused && media.play();
+      //} else {
         //media.paused && media.pause();
-      }
+      //}
 
       // setting youtube player's height and width, default to 560 x 315
       width = media.style.width ? "" + media.offsetWidth : "560";
