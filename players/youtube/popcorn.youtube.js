@@ -259,14 +259,6 @@ Popcorn.player( "youtube", {
       query = ( media.src.split( "?" )[ 1 ] || "" ).replace( /v=.{11}/, "" );
       autoPlay = ( /autoplay=1/.test( query ) );
 
-      // if pause or play is not explicitly set
-      // youtube will autoplay
-      //if ( autoPlay ) {
-        // !media.paused && media.play();
-      //} else {
-        //media.paused && media.pause();
-      //}
-
       // setting youtube player's height and width, default to 560 x 315
       width = media.style.width ? "" + media.offsetWidth : "560";
       height = media.style.height ? "" + media.offsetHeight : "315";
