@@ -1,7 +1,7 @@
 var methodsString = "removeInstance addInstance getInstanceById removeInstanceById " +
           "forEach extend effects error guid sizeOf isArray nop position disable enable destroy" +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
-          "timeUpdate plugin removePlugin compose effect parser xhr getJSONP getScript player";
+          "timeUpdate plugin removePlugin compose effect xhr getJSONP getScript";
 		  
 module("Core");
 test("Dummy", function () {
