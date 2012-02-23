@@ -23,7 +23,7 @@
           var paused = true,
               popcorn;
           
-          popcorn = Popcorn.youtube( '#video', 'http://www.youtube.com/watch?v=9oar9glUCL0' );
+          popcorn = Popcorn.youtube( '#video', 'http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=0' );
           
           popcorn = popcorn
             .footnote({
@@ -104,37 +104,33 @@
             element( 'btn-play-pause' ).innerHTML = 'Play';
           });
 
-          // Setup UI after loaded
-          popcorn.listen( 'load', function() {
+          element( 'player-status' ).innerHTML = 'Ready';
+          element( 'player_vol' ).innerHTML = popcorn.volume();
+          
+          // Single play/pause button
+          element( 'btn-play-pause' ).addEventListener( 'click', function() {
+            if ( paused ) {
+              popcorn.play();
+            } else {
+              popcorn.pause();
+            }
+          }, false);
 
-            element( 'player-status' ).innerHTML = 'Ready';
-            element( 'player_vol' ).innerHTML = popcorn.volume();
-            
-            // Single play/pause button
-            element( 'btn-play-pause' ).addEventListener( 'click', function() {
-              if ( paused ) {
-                popcorn.play();
-              } else {
-                popcorn.pause();
-              }
-            }, false);
+          // Seek
+          element('btn-seek').addEventListener('click', function() {
 
-            // Seek
-            element('btn-seek').addEventListener('click', function() {
+            popcorn.currentTime( 30 );
+          }, false);
 
-              popcorn.currentTime( 30 );
-            }, false);
-
-            // Volume
-            element('btn-volume').addEventListener('click', function() {
-              var volume = (popcorn.volume() === 1) ? 0.5 : 1;
-              popcorn.volume(volume);
-            }, false);
-            
-            element('btn-mute').addEventListener('click', function() {
-              popcorn.mute( !popcorn.media.muted );
-            }, false);
-          });
+          // Volume
+          element('btn-volume').addEventListener('click', function() {
+            var volume = (popcorn.volume() === 1) ? 0.5 : 1;
+            popcorn.volume(volume);
+          }, false);
+          
+          element('btn-mute').addEventListener('click', function() {
+            popcorn.mute( !popcorn.media.muted );
+          }, false);
         }, false );
     </script>
   </head>
@@ -203,4 +199,3 @@
     </div>
   </body>
 </html>
-
