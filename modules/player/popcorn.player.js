@@ -15,6 +15,7 @@
       var date = new Date() / 1000,
           baselineTime = date,
           currentTime = 0,
+          readyState = 0,
           volume = 1,
           muted = false,
           events = {},
@@ -27,9 +28,20 @@
           timeout,
           popcorn;
 
+      if ( !container.addEventListener && container.attachEvent ) {
+
+        basePlayer = container || document.createElement( "div" );
+      }
+
       // copies a div into the media object
       for( var val in container ) {
 
+        // don't copy properties if using container as baseplayer
+        if ( val in basePlayer ) {
+
+          continue;
+        }
+      
         if ( typeof container[ val ] === "object" ) {
 
           basePlayer[ val ] = container[ val ];
@@ -144,6 +156,19 @@
         configurable: true
       });
 
+      Popcorn.player.defineProperty( basePlayer, "readyState", {
+        get: function() {
+
+          return readyState;
+        },
+        set: function( val ) {
+
+          readyState = val;
+          return readyState;
+        },
+        configurable: true
+      });
+      
       // Adds an event listener to the object
       basePlayer.addEventListener = function( evtName, fn ) {
 
@@ -153,6 +178,29 @@
         }
 
         events[ evtName ].push( fn );
+        return fn;
+      };
+
+      // Removes an event listener from the object
+      basePlayer.removeEventListener = function( evtName, fn ) {
+
+        var i,
+            listeners = events[ evtName ];
+
+        if ( ! listeners ){
+
+          return;
+        }
+
+        // walk backwards so we can safely splice
+        for ( i = events[ evtName ].length - 1; i >= 0; i-- ) {
+
+          if( fn === listeners[ i ] ) {
+
+            listeners.splice(i, 1);
+          }
+        }
+
         return fn;
       };
 
@@ -185,7 +233,6 @@
 
       // Attempt to get src from playerFn parameter
       basePlayer.src = src || "";
-      basePlayer.readyState = 0;
       basePlayer.duration = 0;
       basePlayer.paused = true;
       basePlayer.ended = 0;
