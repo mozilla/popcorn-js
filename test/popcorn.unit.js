@@ -861,23 +861,31 @@ test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function
     }
   }
 
-  stop( 1000 );
+  stop( 10000 );
 
   function poll() {
 
     if ( $pop.media.readyState >= 2 ) {
       // this should trigger immediately
 
+      var firstSeekedEvent = function() {
+
+        $pop.unlisten( "seeked", firstSeekedEvent );
+        equal( Math.round( $pop.currentTime() ), 10, "play(n) sets currentTime to 10" );
+        plus();
+      
+        $pop.listen( "seeked", secondSeekedEvent );
+        $pop.pause( 5 );
+      },
+      secondSeekedEvent = function() {
+
+        $pop.unlisten( "seeked", secondSeekedEvent );
+        equal( Math.round( $pop.currentTime() ), 5, "pause(n) sets currentTime to 5" );
+        plus();
+      };
+      
+      $pop.listen( "seeked", firstSeekedEvent );
       $pop.play( 10 ).pause();
-
-      equal( Math.round( $pop.currentTime() ), 10, "play(n) sets currentTime to 10" );
-      plus();
-
-      $pop.pause( 5 );
-
-      equal( Math.round( $pop.currentTime() ), 5, "pause(n) sets currentTime to 5" );
-      plus();
-
     } else {
       setTimeout( poll, 10 );
     }
