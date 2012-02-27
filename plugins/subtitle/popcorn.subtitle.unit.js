@@ -17,7 +17,7 @@ test( "Popcorn Subtitle Plugin", function() {
     }
   }
 
-  stop( 12000 );
+  stop( 15000 );
 
   ok( "subtitle" in popped, "subtitle is a method of the popped instance" );
   plus();

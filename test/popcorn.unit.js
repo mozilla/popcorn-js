@@ -183,6 +183,132 @@ test( "Popcorn.getTrackEvent", function() {
 
 });
 
+test( "Popcorn.removeTrackEvent", function() {
+
+  var pop = Popcorn( "#video" ),
+      count = 0,
+      aId, bId, cId, dId, byStart, byEnd;
+
+  expect( 5 );
+
+  Popcorn.plugin( "a", {
+    _setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {},
+    _teardown: function( options ) {}
+  });
+
+  Popcorn.plugin( "b", {
+    _setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {},
+    _teardown: function( options ) {}
+  });
+
+  Popcorn.plugin( "c", {
+    _setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {},
+    _teardown: function( options ) {}
+  });
+
+  Popcorn.plugin( "d", {
+    _setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {},
+    _teardown: function( options ) {}
+  });
+
+  pop.a({
+    start: 1,
+    end: 5
+  });
+
+  // Store track event id for "plugin a"
+  aId = pop.getLastTrackEventId();
+
+  pop.b({
+    start: 3,
+    end: 4
+  });
+
+  // Store track event id for "plugin b"
+  bId = pop.getLastTrackEventId();
+
+  pop.c({
+    start: 0,
+    end: 3
+  });
+
+  // Store track event id for "plugin c"
+  cId = pop.getLastTrackEventId();
+
+  pop.d({
+    start: 1,
+    end: 2
+  });
+
+  // Store track event id for "plugin d"
+  dId = pop.getLastTrackEventId();
+
+  // Capture the pre-removal track event count
+  count = pop.data.trackEvents.byStart.length;
+
+  // Remove the first track event for "plugin a"
+  pop.removeTrackEvent( aId );
+
+  // Shorthand references
+  byStart = pop.data.trackEvents.byStart;
+  byEnd = pop.data.trackEvents.byEnd;
+
+  equal( byStart.length, count - 1, "One less track event" );
+
+  // Iterate all byStart track events to prove that _only_ track events
+  // created by "plugin b" have survived
+  Popcorn.forEach( byStart, function( start ) {
+    if ( start._id ) {
+      // This condition should NEVER evaluate to true
+      if ( start._id === aId ) {
+        ok( false, "No byStart track events with " + aId + " should exist" );
+      }
+      // This condition should ALWAYS evaluate to true
+      if ( start._id === bId ) {
+        ok( true, "Only byStart track events with " + bId + " should exist" );
+      }
+    }
+  });
+
+  // Iterate all byEnd track events to prove that _only_ track events
+  // created by "plugin b" have survived
+  Popcorn.forEach( byEnd, function( end ) {
+    if ( end._id ) {
+      // This condition should NEVER evaluate to true
+      if ( end._id === aId ) {
+        ok( false, "No byEnd track events with " + aId + " should exist" );
+      }
+      // This condition should ALWAYS evaluate to true
+      if ( end._id === bId ) {
+        ok( true, "Only byEnd track events with " + bId + " should exist" );
+      }
+    }
+  });
+
+  // after the removal, byStart's first element is c
+  // console.log( byStart );
+
+  // after the removal, byEnd's first element should be d (if c, then broken)
+  // console.log( byEnd );
+
+  // Test to ensure order was preserved
+  equal( byStart[1]._id, cId, "byStart[1]._id matches cId" );
+  equal( byEnd[1]._id, dId, "byEnd[1]._id matches dId" );
+
+
+  Popcorn.forEach([ "a", "b", "c", "d" ], function( name ) {
+    Popcorn.removePlugin( name );
+  });
+});
+
 test( "Popcorn.forEach", function() {
 
   expect( 3 );
@@ -3803,7 +3929,6 @@ test( "XML Response", function() {
   });
 });
 
-
 test( "dataType: XML Response", function() {
 
   var expects = 2,
@@ -3833,317 +3958,6 @@ test( "dataType: XML Response", function() {
       plus();
     }
   });
-});
-
-module( "Popcorn Player" );
-
-test( "Base player methods", function() {
-
-  var expects = 2;
-
-  expect( expects );
-
-  stop( 10000 );
-
-  ok( Popcorn.player, "Popcorn.player function exists" );
-
-  Popcorn.player( "newplayer" );
-  ok( Popcorn.newplayer, "Popcorn.player registers new players" );
-
-  start();
-});
-
-test( "Base player functionality", function() {
-
-  Popcorn.player( "baseplayer" );
-
-  //QUnit.reset();
-
-  var p2 = Popcorn.baseplayer( "#video" ),
-      expects = 12,
-      count = 0,
-      execCount = 0,
-      // These make sure events are only fired once
-      // any second call will produce a failed test
-      forwardStart = false,
-      forwardEnd = false,
-      backwardStart = false,
-      backwardEnd = false,
-      wrapperRunning = {
-        one: false,
-        two: false
-      };
-
-  function plus() {
-    if ( ++count === expects ) {
-      // clean up added events after tests
-      Popcorn.removePlugin( "forwards" );
-      Popcorn.removePlugin( "backwards" );
-      Popcorn.removePlugin( "wrapper" );
-      p2.removePlugin( "exec" );
-      start();
-    }
-  }
-
-  // These tests come close to 10 seconds on chrome, increasing to 15
-  stop( 15000 );
-
-  Popcorn.plugin( "forwards", function() {
-    return {
-      start: function( event, options ) {
-
-        if ( !options.startFired ) {
-
-          options.startFired = true;
-          forwardStart = !forwardStart;
-          ok( forwardStart, "forward's start fired" );
-          plus();
-        }
-      },
-      end: function( event, options ) {
-
-        if ( !options.endFired ) {
-
-          options.endFired = true;
-          forwardEnd = !forwardEnd;
-          p2.currentTime( 1 ).play();
-          ok( forwardEnd, "forward's end fired" );
-          plus();
-        }
-      }
-    };
-  });
-
-  p2.forwards({
-    start: 3,
-    end: 4
-  });
-
-  Popcorn.plugin( "backwards", function() {
-    return {
-      start: function( event, options ) {
-
-        if ( !options.startFired ) {
-
-          options.startFired = true;
-          backwardStart = !backwardStart;
-          p2.currentTime( 0 ).play();
-          ok( true, "backward's start fired" );
-          plus();
-        }
-      },
-      end: function( event, options ) {
-
-        if ( !options.endFired ) {
-
-          options.endFired = true;
-          backwardEnd = !backwardEnd;
-          ok( backwardEnd, "backward's end fired" );
-          plus();
-          p2.currentTime( 5 ).play();
-        }
-      }
-    };
-  });
-
-  p2.backwards({
-    start: 1,
-    end: 2
-  });
-
-  Popcorn.plugin( "wrapper", {
-    start: function( event, options ) {
-
-      wrapperRunning[ options.wrapper ] = true;
-    },
-    end: function( event, options ) {
-
-      wrapperRunning[ options.wrapper ] = false;
-    }
-  });
-
-  // second instance of wrapper is wrapping the first
-  p2.wrapper({
-    start: 6,
-    end: 7,
-    wrapper: "one"
-  })
-  .wrapper({
-    start: 5,
-    end: 8,
-    wrapper: "two"
-  })
-  // checking wrapper 2's start
-  .exec( 5, function() {
-
-    if ( execCount === 0 ) {
-
-      execCount++;
-      ok( wrapperRunning.two, "wrapper two is running at second 5" );
-      plus();
-      ok( !wrapperRunning.one, "wrapper one is stopped at second 5" );
-      plus();
-    }
-  })
-  // checking wrapper 1's start
-  .exec( 6, function() {
-
-    if ( execCount === 1 ) {
-
-      execCount++;
-      ok( wrapperRunning.two, "wrapper two is running at second 6" );
-      plus();
-      ok( wrapperRunning.one, "wrapper one is running at second 6" );
-      plus();
-    }
-  })
-  // checking wrapper 1's end
-  .exec( 7, function() {
-
-    if ( execCount === 2 ) {
-
-      execCount++;
-      ok( wrapperRunning.two, "wrapper two is running at second 7" );
-      plus();
-      ok( !wrapperRunning.one, "wrapper one is stopped at second 7" );
-      plus();
-    }
-  })
-  // checking wrapper 2's end
-  .exec( 8, function() {
-
-    if ( execCount === 3 ) {
-
-      execCount++;
-      ok( !wrapperRunning.two, "wrapper two is stopped at second 9" );
-      plus();
-      ok( !wrapperRunning.one, "wrapper one is stopped at second 9" );
-      plus();
-    }
-  });
-
-  p2.currentTime( 3 ).play();
-});
-
-module( "Popcorn Parser" );
-
-test( "Parsing Functions", function() {
-
-  var expects = 3,
-      count = 0,
-      popperly = Popcorn( "#video" );
-
-  function plus() {
-    if ( ++count === expects ) {
-      start();
-    }
-  }
-
-  expect( expects );
-
-  stop( 10000 );
-
-  ok( typeof Popcorn.parser === "function", "Popcorn.parser is a function" );
-  plus();
-
-  Popcorn.parser( "parseJSON" , "json", function( data ){
-    return data;
-  });
-
-  ok( typeof popperly.parseJSON === "function", "Popcorn.parser created a parseJSON function" );
-  plus();
-
-  ok( typeof popperly.parseJSON().parseJSON( "data/test.js" ).parseJSON === "function" , "parseJSON function is chainable" );
-  plus();
-});
-
-test( "Parsing Integrity", function() {
-
-  var expects = 6,
-      count = 0,
-      timeOut = 0,
-      poppercore = Popcorn( "#video" );
-
-  function plus() {
-    if ( ++count === expects ) {
-      start();
-      // clean up added events after tests
-      Popcorn.removePlugin( "parserTest" );
-    }
-  }
-
-  expect( expects );
-
-  stop( 10000 );
-
-  Popcorn.parser( "parseJSON2", function( data ){
-    ok( typeof data.json === "object", "data.json exists" );
-    plus();
-    return data.json;
-  });
-
-  Popcorn.parser( "parseJSON3" , "json", function( data ){
-    ok( typeof data === "object", "data exists" );
-    plus();
-    return data;
-  });
-
-  Popcorn.plugin( "parserTest", {
-
-    start: function() {
-      ok( true, "parserTest started" );
-      plus();
-    },
-    end: function() {
-      ok( true, "parserTest ended" );
-      plus();
-    }
-  });
-
-  poppercore.parseJSON2( "data/parserData.json", function() {
-
-    poppercore.parseJSON3( "data/parserData.json", function() {
-      poppercore.currentTime( 5 ).play();
-    });
-  });
-});
-
-
-test( "Parsing Handler - References unavailable plugin", function() {
-
-  var expects = 1,
-      count = 0,
-      timeOut = 0,
-      interval,
-      poppercore = Popcorn( "#video" );
-
-  function plus() {
-    if ( ++count === expects ) {
-      start();
-      // clean up added events after tests
-      clearInterval( interval );
-      poppercore.removePlugin( "parserTest" );
-    }
-  }
-
-  expect( expects );
-
-  stop();
-
-  Popcorn.parser( "parseJson", function( data ){
-
-    return data.json;
-  });
-
-  poppercore.parseJson( "data/parseMissing.json" );
-
-  // interval used to wait for data to be parsed
-  interval = setInterval( function() {
-    poppercore.currentTime( 5 ).play().currentTime( 6 );
-
-    ok( true, "Ignored call to missing plugin " );
-    plus();
-  }, 2000 );
 });
 
 module( "Audio" );
@@ -4287,49 +4101,6 @@ test( "Basic Audio Support (frameAnimation)", function() {
 
     ok( k in popObj, "instance by reference has method: " + k );
     plus();
-  });
-});
-
-test( "Parser Support", function() {
-
-  var expects = 3,
-      count = 0,
-      timeOut = 0,
-      interval,
-      audiocorn = Popcorn( "#audio" );
-
-  function plus() {
-    if ( ++count === expects ) {
-      start();
-
-      Popcorn.removePlugin( "testAudioParser" );
-    }
-  }
-
-  expect( expects );
-  stop( 5000 );
-
-  Popcorn.plugin( "testAudioParser", {
-
-    start: function() {
-      ok( true, "testAudioParser started: " + Math.round( this.currentTime() ) );
-      plus();
-    },
-    end: function() {
-      ok( true, "testAudioParser ended: " + Math.round( this.currentTime() ) );
-      plus();
-    }
-  });
-
-  Popcorn.parser( "parseAudio", function( data ){
-    ok( typeof data.json === "object", "data.json exists");
-    plus();
-    return data.json;
-  });
-
-  audiocorn.parseAudio( "data/parserAudio.json", function() {
-
-    audiocorn.currentTime( 4 ).play();
   });
 });
 
