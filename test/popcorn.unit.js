@@ -2269,7 +2269,7 @@ test( "timeUpdate add track event while paused", function() {
     }
   }
 
-  stop();
+  stop( 10000 );
 
   Popcorn.plugin( "timeUpdateTester", function() {
     return {
@@ -2282,11 +2282,11 @@ test( "timeUpdate add track event while paused", function() {
     };
   });
 
-  $pop.currentTime( 1 ).pause()
+  $pop.currentTime( 2 ).pause();
 
   $pop.timeUpdateTester({
     start: 1,
-    end: 2
+    end: 3
   });
 });
 
