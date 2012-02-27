@@ -354,14 +354,6 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
       expects = 3,
       popcorn = Popcorn.youtube( '#video2', 'http://www.youtube.com/watch?v=nfGV32RNkhw' );
 
-
-  popcorn.listen( "durationchange", function() {
-    notEqual( popcorn.duration(), 0, "Duration has been changed from 0" );
-    plus();
-
-    popcorn.pause();
-  });
-
   expect( expects );
   stop( 10000 );
 
@@ -370,6 +362,13 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
 
   equals( popcorn.duration(), 0, 'Duration starts as 0');
   plus();
+
+  popcorn.listen( "durationchange", function() {
+    notEqual( popcorn.duration(), 0, "Duration has been changed from 0" );
+    plus();
+
+    popcorn.pause();
+  });
 
   popcorn.volume( 0 ).play();
 });
@@ -409,7 +408,7 @@ test( "Popcorn YouTube Plugin Url Regex Test", function() {
       expects = urlTests.length;
 
   expect( expects );
-  stop( 10000 );
+  stop();
 
   Popcorn.forEach( urlTests, function( valuse, key ) {
 

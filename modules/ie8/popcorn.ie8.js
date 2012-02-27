@@ -1,103 +1,106 @@
-document.addEventListener = document.addEventListener || function( event, callBack ) {
+(function() {
 
-  event = ( event === "DOMContentLoaded" ) ? "onreadystatechange" : "on" + event;
-  
-  document.attachEvent( event, callBack );
-};
+  document.addEventListener = document.addEventListener || function( event, callBack ) {
 
-document.removeEventListener = document.removeEventListener || function( event, callBack ) {
+    event = ( event === "DOMContentLoaded" ) ? "onreadystatechange" : "on" + event;
 
-  event = ( event === "DOMContentLoaded" ) ? "onreadystatechange" : "on" + event;
-  
-  document.detachEvent( event, callBack );
-};
+    document.attachEvent( event, callBack );
+  };
 
-HTMLScriptElement.prototype.addEventListener = HTMLScriptElement.prototype.addEventListener || function( event, callBack ) {
+  document.removeEventListener = document.removeEventListener || function( event, callBack ) {
 
-  event = ( event === "load" ) ? "onreadystatechange" : "on" + event;
-  
-  this.attachEvent( event, callBack );
-};
+    event = ( event === "DOMContentLoaded" ) ? "onreadystatechange" : "on" + event;
 
-HTMLScriptElement.prototype.removeEventListener = HTMLScriptElement.prototype.removeEventListener || function( event, callBack ) {
+    document.detachEvent( event, callBack );
+  };
 
-  event = ( event === "load" ) ? "onreadystatechange" : "on" + event;
-  
-  this.detachEvent( event, callBack );
-};
+  HTMLScriptElement.prototype.addEventListener = HTMLScriptElement.prototype.addEventListener || function( event, callBack ) {
 
-document.createEvent = document.createEvent || function ( type ) {
+    event = ( event === "load" ) ? "onreadystatechange" : "on" + event;
 
-  return {
-    type : null,
-    target : null,
-    currentTarget : null,
-    cancelable : false,
-    bubbles : false,
-    initEvent : function (type, bubbles, cancelable)  {
-        this.type = type;
-    },
-    stopPropagation : function () {},
-    stopImmediatePropagation : function () {}
+    this.attachEvent( event, callBack );
+  };
+
+  HTMLScriptElement.prototype.removeEventListener = HTMLScriptElement.prototype.removeEventListener || function( event, callBack ) {
+
+    event = ( event === "load" ) ? "onreadystatechange" : "on" + event;
+
+    this.detachEvent( event, callBack );
+  };
+
+  document.createEvent = document.createEvent || function ( type ) {
+
+    return {
+      type : null,
+      target : null,
+      currentTarget : null,
+      cancelable : false,
+      bubbles : false,
+      initEvent : function (type, bubbles, cancelable)  {
+          this.type = type;
+      },
+      stopPropagation : function () {},
+      stopImmediatePropagation : function () {}
+    }
+  };
+
+  var forEach = Array.prototype.forEach,
+      hasOwn = Object.prototype.hasOwnProperty;
+
+  Array.prototype.forEach = forEach || function( fn, context ) {
+
+    var obj = this;
+
+      if ( !obj || !fn ) {
+      return {};
+    }
+
+    context = context || this;
+
+    var key, len;
+
+    // Use native whenever possible
+    if ( forEach && obj.forEach === forEach ) {
+      return obj.forEach( fn, context );
+    }
+
+    for ( key in obj ) {
+      if ( hasOwn.call( obj, key ) ) {
+        fn.call( context, obj[ key ], key, obj );
+      }
+    }
+    return obj;
   }
-};
 
-var forEach = Array.prototype.forEach,
-    hasOwn = Object.prototype.hasOwnProperty;
-    
-Array.prototype.forEach = forEach || function( fn, context ) {
-
-  var obj = this;
+  Object.prototype.map = Object.prototype.map || function( obj, fn, context ) {
 
     if ( !obj || !fn ) {
-    return {};
-  }
-
-  context = context || this;
-
-  var key, len;
-
-  // Use native whenever possible
-  if ( forEach && obj.forEach === forEach ) {
-    return obj.forEach( fn, context );
-  }
-
-  for ( key in obj ) {
-    if ( hasOwn.call( obj, key ) ) {
-      fn.call( context, obj[ key ], key, obj );
+      return {};
     }
-  }
-  return obj;
-}
 
-Object.prototype.map = Object.prototype.map || function( obj, fn, context ) {
+    context = context || this;
+    var key, len, result = [];
 
-  if ( !obj || !fn ) {
-    return {};
-  }
+    Popcorn.forEach( obj, function ( val, key ) {
 
-  context = context || this;
-  var key, len, result = [];
+        result.push( fn.call( context, val, key, obj ) );
+    });
 
-  Popcorn.forEach( obj, function ( val, key ) {
+    return result;
+  };
 
-      result.push( fn.call( context, val, key, obj ) );
-  });
+  Object.prototype.indexOf = Object.prototype.indexOf || function ( searchElement, fromIndex ) {
 
-  return result;
-};
+    var arr = this;
 
-Object.prototype.indexOf = Object.prototype.indexOf || function ( searchElement, fromIndex ) {
+    for ( var i = fromIndex || 0; i < arr.length; i++ ) {
 
-  var arr = this;
- 
-  for ( var i = fromIndex || 0; i < arr.length; i++ ) {
+      if ( arr[ i ] === searchElement ) {
 
-    if ( arr[ i ] === searchElement ) {
-
-      return i;
+        return i;
+      }
     }
-  }
 
-  return -1;
-};
+    return -1;
+  };
+})();

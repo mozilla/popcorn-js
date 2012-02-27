@@ -15,6 +15,18 @@
       <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
       <script src="../../plugins/twitter/popcorn.twitter.js"></script>
       <script>
+        var attachEvent = function( element, event, callBack ) {
+
+          if ( element.addEventListener ) {
+
+            element.addEventListener( event, callBack, false );
+          } else if ( element.attachEvent ) {
+
+            event = ( event === "DOMContentLoaded" ) ? "onreadystatechange" : "on" + event;
+            element.attachEvent( event, callBack );
+          }
+        };
+
         // Helper function to get elements
         function element(id) {
 
@@ -23,13 +35,13 @@
 
         var done = false;
         
-        document.addEventListener( 'DOMContentLoaded', function( e ) {
+        attachEvent( document, 'DOMContentLoaded', function( e ) {
 
           if ( done ) {
           
             return;
           }
-          
+
           done = true;
         
           var paused = true,
@@ -121,7 +133,7 @@
 
           // Single play/pause button
 
-          element( 'btn-play-pause' ).attachEvent( 'onclick', function() {
+          attachEvent( element( 'btn-play-pause' ), 'click', function() {
 
             if ( paused ) {
               popcorn.play();
@@ -131,18 +143,18 @@
           }, false);
 
           // Seek
-          element('btn-seek').attachEvent('onclick', function() {
+          attachEvent( element('btn-seek'), 'click', function() {
 
             popcorn.currentTime( 30 );
           }, false);
 
           // Volume
-          element('btn-volume').attachEvent('onclick', function() {
+          attachEvent( element('btn-volume'), 'click', function() {
             var volume = (popcorn.volume() === 1) ? 0.5 : 1;
             popcorn.volume(volume);
           }, false);
           
-          element('btn-mute').attachEvent('onclick', function() {
+          attachEvent( element('btn-mute'), 'click', function() {
             popcorn.mute( !popcorn.media.muted );
           }, false);
         }, false );
