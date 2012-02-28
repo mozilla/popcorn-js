@@ -2086,6 +2086,12 @@ test( "Update Timer (frameAnimation)", function() {
 
   QUnit.reset();
 
+  if ( !document.hasFocus() ) {
+
+    ok( false, "frame animation tests need focus" );
+    return;
+  }
+
   var p2 = Popcorn( "#video", {
         frameAnimation: true
       }),
