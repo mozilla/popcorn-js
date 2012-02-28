@@ -187,7 +187,7 @@
         var i,
             listeners = events[ evtName ];
 
-        if ( ! listeners ){
+        if ( !listeners ){
 
           return;
         }
@@ -225,10 +225,13 @@
           }
         }
 
-        Popcorn.forEach( events[ eventName ], function( val ) {
+        if ( events[ eventName ] ) {
 
-          val.call( self, evt, self );
-        });
+          for ( var i = events[ eventName ].length - 1; i >= 0; i-- ) { // function( val ) {
+
+            events[ eventName ][ i ].call( self, evt, self );
+          }
+        }
       };
 
       // Attempt to get src from playerFn parameter

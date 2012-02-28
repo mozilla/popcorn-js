@@ -354,7 +354,6 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
       expects = 3,
       popcorn = Popcorn.youtube( '#video2', 'http://www.youtube.com/watch?v=nfGV32RNkhw' );
 
-
   popcorn.listen( "durationchange", function() {
     notEqual( popcorn.duration(), 0, "Duration has been changed from 0" );
     plus();
@@ -409,7 +408,7 @@ test( "Popcorn YouTube Plugin Url Regex Test", function() {
       expects = urlTests.length;
 
   expect( expects );
-  stop( 10000 );
+  stop( 20000 );
 
   Popcorn.forEach( urlTests, function( valuse, key ) {
 
