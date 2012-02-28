@@ -227,7 +227,7 @@
 
         if ( events[ eventName ] ) {
 
-          for ( var i = events[ eventName ].length - 1; i >= 0; i-- ) { // function( val ) {
+          for ( var i = events[ eventName ].length - 1; i >= 0; i-- ) {
 
             events[ eventName ][ i ].call( self, evt, self );
           }

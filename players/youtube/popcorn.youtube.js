@@ -105,6 +105,7 @@ Popcorn.player( "youtube", {
 
             media.dispatchEvent( "load" );
             media.duration = youtubeObject.getDuration();
+
             media.dispatchEvent( "durationchange" );
             volumeupdate();
 

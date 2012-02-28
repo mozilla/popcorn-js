@@ -342,11 +342,6 @@ test("Plugin Factory", function () {
 });
 
 test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
-  function plus(){
-    if ( ++count == expects ) {
-      start();
-    }
-  }
 
   QUnit.reset();
 
@@ -354,7 +349,15 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
       expects = 3,
       popcorn = Popcorn.youtube( '#video2', 'http://www.youtube.com/watch?v=nfGV32RNkhw' );
 
+  function plus(){
+
+    if ( ++count == expects ) {
+      start();
+    }
+  }
+
   popcorn.listen( "durationchange", function() {
+
     notEqual( popcorn.duration(), 0, "Duration has been changed from 0" );
     plus();
 
@@ -362,7 +365,7 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
   });
 
   expect( expects );
-  stop( 10000 );
+  stop( 20000 );
 
   equals( popcorn.media.id, 'video2', 'Video id set' );
   plus();
