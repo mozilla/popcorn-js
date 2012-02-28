@@ -170,7 +170,8 @@
       onFrame: {
         elem: "input",
         type: "function",
-        label: "onFrame"
+        label: "onFrame",
+        optional: true
       },
       onEnd: {
         elem: "input",

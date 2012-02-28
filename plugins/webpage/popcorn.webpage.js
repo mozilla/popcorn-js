@@ -38,7 +38,8 @@
         id: {
           elem: "input",
           type: "text",
-          label: "Id"
+          label: "Id",
+          optional: true
         },
         start: {
           elem: "input",

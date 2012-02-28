@@ -173,11 +173,13 @@
         elem: "input",
         type: "text",
         label: "title"
+        optional: true
       },
       orientation: {
         elem: "select",
         options: [ "Vertical", "Horizontal" ],
         label: "orientation"
+        optional: true
       }
     }
   });
