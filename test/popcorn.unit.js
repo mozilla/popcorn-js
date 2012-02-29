@@ -873,22 +873,6 @@ test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function
 
     if ( $pop.media.readyState >= 2 ) {
       // this should trigger immediately
-
-<<<<<<< HEAD
-      // IE9 has weird seek behaviour... this works around it
-      $pop.listen( "seeked", function() {
-        $pop.unlisten( "seeked" );
-        equal( Math.round( $pop.currentTime() ), 10, "play(n) sets currentTime to 10" );
-        plus();
-
-        $pop.pause( 5 );
-
-        equal( Math.round( $pop.currentTime() ), 5, "pause(n) sets currentTime to 5" );
-        plus();
-      });
-
-      $pop.play( 10 ).pause();
-=======
       var firstSeekedEvent = function() {
 
         $pop.unlisten( "seeked", firstSeekedEvent );
@@ -899,7 +883,6 @@ test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function
         $pop.pause( 5 );
       },
       secondSeekedEvent = function() {
->>>>>>> 5547ccb102b5aed7b7ca8cf1266ee21c172fdfa5
 
         $pop.unlisten( "seeked", secondSeekedEvent );
         equal( Math.round( $pop.currentTime() ), 5, "pause(n) sets currentTime to 5" );
