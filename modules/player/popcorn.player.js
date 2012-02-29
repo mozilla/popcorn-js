@@ -232,4 +232,20 @@
     object.__defineSetter__( description, options.set || Popcorn.nop );
   };
 
+  Popcorn.smart = function( target, src, options ) {
+
+    var playerType;
+
+    // for now we loop through and use the last valid player we find.
+    // not sure what to do when two players both find it valid yet.
+    Popcorn.forEach( Popcorn.player.registry, function( val, key ) {
+
+      if ( Popcorn.player.registry[ val ].canPlayType( src ) > 0 ) {
+      
+        playerType = val;
+      };
+    });
+    
+    return Popcorn[ playerType ] ? Popcorn[ playerType ]( target, src, options ) : Popcorn( target, src, options );
+  };
 })( Popcorn );
