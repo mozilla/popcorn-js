@@ -1,9 +1,9 @@
 (function( Popcorn ) {
 
-  Popcorn.player = function( name, player ) {
+  //  ID string matching
+  rIdExp  = /^(#([\w\-\_\.]+))$/;
 
-    //  ID string matching
-    var rIdExp  = /^(#([\w\-\_\.]+))$/;
+  Popcorn.player = function( name, player ) {
 
     player = player || {};
 
@@ -223,8 +223,12 @@
       return popcorn;
     };
 
-    Popcorn[ name ] = Popcorn[ name ] || playerFn;
+    playerFn.canPlayType = player._canPlayType || Popcorn.nop;
+
+    Popcorn[ name ] = Popcorn.player.registry[ name ] = Popcorn[ name ] || playerFn;
   };
+
+  Popcorn.player.registry = {};
 
   Popcorn.player.defineProperty = Object.defineProperty || function( object, description, options ) {
 
@@ -234,18 +238,50 @@
 
   Popcorn.smart = function( target, src, options ) {
 
-    var playerType;
+    var nodeId = rIdExp.exec( target ),
+        playerType,
+        node = nodeId && nodeId.length && nodeId[ 2 ] ?
+                 document.getElementById( nodeId[ 2 ] ) :
+                 target;
+
+    // Popcorn.smart( video, /* options */ )
+    if ( node.nodeType === "VIDEO" && !src ) {
+
+      if ( typeof src === "object" ) {
+
+        options = src;
+        src = undefined;
+      }
+
+      return Popcorn( node, options );
+    }
 
     // for now we loop through and use the last valid player we find.
-    // not sure what to do when two players both find it valid yet.
+    // not yet sure what to do when two players both find it valid.
     Popcorn.forEach( Popcorn.player.registry, function( val, key ) {
 
-      if ( Popcorn.player.registry[ val ].canPlayType( src ) > 0 ) {
-      
-        playerType = val;
-      };
+      if ( val.canPlayType( src ) === true ) {
+
+        playerType = key;
+      }
     });
-    
-    return Popcorn[ playerType ] ? Popcorn[ playerType ]( target, src, options ) : Popcorn( target, src, options );
+
+    // Popcorn.smart( div, src, /* options */ )
+    if ( !Popcorn[ playerType ] ) {
+
+      if ( node.nodeType !== "VIDEO" ) {
+
+        target = document.createElement( "video" );
+
+        target.src = src;
+
+        node.appendChild( target );
+      }
+
+      return Popcorn( target, options );
+    }
+
+    // Popcorn.smart( player, src, /* options */ )
+    return Popcorn[ playerType ]( target, src, options );
   };
 })( Popcorn );

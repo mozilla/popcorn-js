@@ -10,6 +10,10 @@
   vimeo_player_loaded.pause = {};
 
   Popcorn.player( "vimeo", {
+    _canPlayType: function( url ) {
+
+      return /(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(vimeo)/.test( url );
+    },
     _setup: function( options ) {
 
       var media = this,

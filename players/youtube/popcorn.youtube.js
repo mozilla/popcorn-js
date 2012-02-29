@@ -7,6 +7,10 @@ onYouTubePlayerReady.stateChangeEventHandler = {};
 onYouTubePlayerReady.onErrorEventHandler = {};
 
 Popcorn.player( "youtube", {
+  _canPlayType: function( url ) {
+
+    return /(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/.test( url );
+  },
   _setup: function( options ) {
 
     var media = this,
