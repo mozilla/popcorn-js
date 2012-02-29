@@ -10,9 +10,9 @@
   vimeo_player_loaded.pause = {};
 
   Popcorn.player( "vimeo", {
-    _canPlayType: function( url ) {
+    _canPlayType: function( nodeName, url ) {
 
-      return /(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(vimeo)/.test( url );
+      return /(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(vimeo)/.test( url ) && nodeName.toLower() !== "video";
     },
     _setup: function( options ) {
 

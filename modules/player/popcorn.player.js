@@ -236,6 +236,9 @@
     object.__defineSetter__( description, options.set || Popcorn.nop );
   };
 
+  // smart will attempt to find you a match, if it does not find a match,
+  // it will attempt to create a video element with the source,
+  // if that failed, it will throw.
   Popcorn.smart = function( target, src, options ) {
 
     var nodeId = rIdExp.exec( target ),
@@ -260,7 +263,7 @@
     // not yet sure what to do when two players both find it valid.
     Popcorn.forEach( Popcorn.player.registry, function( val, key ) {
 
-      if ( val.canPlayType( src ) === true ) {
+      if ( val.canPlayType( node.nodeName, src ) === true ) {
 
         playerType = key;
       }
@@ -273,15 +276,17 @@
 
         target = document.createElement( "video" );
 
-        target.src = src;
-
         node.appendChild( target );
+        node = target;
       }
 
-      return Popcorn( target, options );
+      options.onerror && node.addEventListener( "error", options.onerror, false );
+      node.src = src;
+
+      return Popcorn( node, options );
     }
 
-    // Popcorn.smart( player, src, /* options */ )
+    // Popcorn.smart( player, src, /* options */ )\
     return Popcorn[ playerType ]( target, src, options );
   };
 })( Popcorn );

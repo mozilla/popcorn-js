@@ -7,9 +7,9 @@ onYouTubePlayerReady.stateChangeEventHandler = {};
 onYouTubePlayerReady.onErrorEventHandler = {};
 
 Popcorn.player( "youtube", {
-  _canPlayType: function( url ) {
+  _canPlayType: function( nodeName, url ) {
 
-    return /(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/.test( url );
+    return /(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/.test( url ) && nodeName.toLower() !== "video";
   },
   _setup: function( options ) {
 

@@ -2,7 +2,7 @@ module( "Popcorn Player" );
 
 test( "Base player methods", function() {
 
-  var expects = 2;
+  var expects = 4;
 
   expect( expects );
 
@@ -10,8 +10,11 @@ test( "Base player methods", function() {
 
   ok( Popcorn.player, "Popcorn.player function exists" );
 
+  ok( Popcorn.smart, "Popcorn.smart function exists" );
+
   Popcorn.player( "newplayer" );
   ok( Popcorn.newplayer, "Popcorn.player registers new players" );
+  ok( Popcorn.player.registry[ "newplayer" ], "newplayers enter Popcorn.player.registry" );
 
   start();
 });
@@ -186,4 +189,41 @@ test( "Base player functionality", function() {
   });
 
   p2.currentTime( 3 ).play();
+});
+
+test( "Popcorn.smart player selector", function() {
+
+  var expects = 5;
+
+  expect( expects );
+
+  stop( 10000 );
+
+  Popcorn.player( "spartaPlayer", {
+    _canPlayType: function( nodeName, url ) {
+
+      return /this is sparta/.test( url ) && nodeName !== "unsupported element";
+    }
+  });
+
+  Popcorn.player( "neverEverLand" );
+
+  // matching url to player returns true
+  ok( Popcorn.spartaPlayer.canPlayType( "div", "this is sparta" ), "canPlayType method succeeds on valid url!" );
+  ok( Popcorn.spartaPlayer.canPlayType( "unsupported element", "this is sparta" ) === false, "canPlayType method succeeds on valid url!" );
+  equals( Popcorn.smart( "#video", "this is sparta" ).media.nodeName, "DIV", "A player was found for this URL" );
+
+  // not matching url to player returns false
+  ok( Popcorn.spartaPlayer.canPlayType( "div", "this is not sparta" ) === false, "canPlayType method fails on invalid url!" );
+  ok( Popcorn.spartaPlayer.canPlayType( "video", "this is not sparta" ) === false, "canPlayType method fails on invalid url!" );
+  
+  var thisIsNotSparta = Popcorn.smart( "#video", "this is not sparta" );
+  
+  equals( thisIsNotSparta.media.nodeName, "VIDEO", "no player was found for this URL, default to video element" );
+  equals( thisIsNotSparta.media.src, "this is not spart", "the src for a html5 player was set" );
+
+  // no existing canPlayType function returns undefined
+  ok( Popcorn.neverEverLand.canPlayType( "guessing time!", "is this sparta?" ) === undefined, "non exist canPlayType returns undefined" );
+
+  start();
 });
