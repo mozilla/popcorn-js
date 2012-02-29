@@ -3196,7 +3196,7 @@ test( "In/Out aliases", function() {
   });
 
   popcorn.listen( "seeked", function() {
-    this.unlisten( "seeked" ).play();
+    this.unlisten( "seeked" ).play( 0 );
   })
 
   popcorn.currentTime( 0 ).pause();
