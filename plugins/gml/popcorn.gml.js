@@ -163,7 +163,7 @@
       target && target.appendChild( options.container );
 
       var scriptReady = function() {
-      console.log( "ready" );
+
         Popcorn.getJSONP( "//000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
 
           options.pjsInstance = new Processing( options.container, gmlPlayer );
