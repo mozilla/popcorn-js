@@ -1435,6 +1435,25 @@
         options.end = options[ "out" ] || this.duration() || Number.MAX_VALUE;
       }
 
+      // Use hasOwn to detect non-inherited toString, since all
+      // objects will receive a toString - its otherwise undetectable
+      if ( !hasOwn.call( options, "toString" ) ) {
+        options.toString = function() {
+          var props = [
+            "start: " + options.start,
+            "end: " + options.end,
+            "id: " + (options.id || options._id)
+          ];
+
+          // Matches null and undefined, allows: false, 0, "" and truthy
+          if ( options.target != null ) {
+            props.push( "target: " + options.target );
+          }
+
+          return name + " ( " + props.join(", ") + " )";
+        };
+      }
+
       // Merge with defaults if they exist, make sure per call is prioritized
       mergedSetupOpts = defaults ? Popcorn.extend( {}, defaults, options ) :
                           options;
@@ -1472,14 +1491,12 @@
       return this;
     };
 
+    //  Extend Popcorn.p with new named definition
     //  Assign new named definition
-    plugin[ name ] = function( options ) {
+    Popcorn.p[ name ] = plugin[ name ] = function( options ) {
       return pluginFn.call( this, isfn ? definition.call( this, options ) : definition,
                                   options );
     };
-
-    //  Extend Popcorn.p with new named definition
-    Popcorn.extend( Popcorn.p, plugin );
 
     //  Push into the registry
     var entry = {
