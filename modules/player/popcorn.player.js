@@ -280,7 +280,7 @@
         node = target;
       }
 
-      options.onerror && node.addEventListener( "error", options.onerror, false );
+      options && options.onerror && node.addEventListener( "error", options.onerror, false );
       node.src = src;
 
       return Popcorn( node, options );
