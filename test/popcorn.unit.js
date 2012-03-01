@@ -1630,13 +1630,13 @@ test( "Manifest removal", function() {
 
 test( "Configurable Defaults", function() {
 
-  var expects = 13,
+  var expects = 14,
       count = 0,
       p;
 
   function plus() {
     if ( ++count === expects ) {
-      [ "configurable", "multiconfig", "overridden" ].forEach(function( val ) {
+      [ "configurable", "multiconfig", "overridden", "funtionInitDefaults" ].forEach(function( val ) {
         Popcorn.removePlugin( val );
         delete Popcorn.manifest[ val ];
       });
@@ -1723,6 +1723,17 @@ test( "Configurable Defaults", function() {
     };
   });
 
+  Popcorn.plugin( "funtionInitDefaults", function( options ) {
+
+    equal( options.defaultItem, "foo bar", "defaults work inside auto setup function" );
+    plus();
+
+    return {
+      start: Popcorn.nop,
+      end: Popcorn.nop
+    };
+  });
+
   p = Popcorn( "#video", {
             defaults: {
               overridden: {
@@ -1730,6 +1741,12 @@ test( "Configurable Defaults", function() {
               }
             }
           });
+
+  p.defaults( "funtionInitDefaults", {
+    defaultItem: "foo bar"
+  });
+          
+  p.funtionInitDefaults({});
 
   p.defaults( "configurable", {
 
