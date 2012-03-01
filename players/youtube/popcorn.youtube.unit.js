@@ -532,10 +532,14 @@ test( "Player Errors", function() {
   QUnit.reset();
   expect( 1 );
   stop( 10000 );
-  var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk" );
 
-  pop.listen( "error", function() {
-    ok( true, "error trigger by invalid URL" );
-    start();
-  });
+  var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk", {
+    events: {
+      error: function() {
+
+        ok( true, "error trigger by invalid URL" );
+        start();
+      }
+    }
+   });
 });
