@@ -1,7 +1,7 @@
 (function( Popcorn ) {
 
   //  ID string matching
-  rIdExp  = /^(#([\w\-\_\.]+))$/;
+  var rIdExp  = /^(#([\w\-\_\.]+))$/;
 
   Popcorn.player = function( name, player ) {
 
@@ -195,15 +195,23 @@
         basePlayer.addEventListener( key, val, false );
       });
 
-      if ( player._setup ) {
+      // true and undefined returns on canPlayType means we should attempt to use it,
+      // false means we cannot play this type
+      if ( player._canPlayType( container.nodeName, src ) !== false ) {
 
-        player._setup.call( basePlayer, options );
+        if ( player._setup ) {
+
+          player._setup.call( basePlayer, options );
+        } else {
+
+          // there is no setup, which means there is nothing to load
+          basePlayer.readyState = 4;
+          basePlayer.dispatchEvent( "load" );
+          basePlayer.dispatchEvent( "loadeddata" );
+        }
       } else {
 
-        // there is no setup, which means there is nothing to load
-        basePlayer.readyState = 4;
-        basePlayer.dispatchEvent( "load" );
-        basePlayer.dispatchEvent( "loadeddata" );
+        basePlayer.dispatchEvent( "error" );
       }
 
       // when a custom player is loaded, load basePlayer state into custom player
@@ -228,7 +236,7 @@
       return popcorn;
     };
 
-    playerFn.canPlayType = player._canPlayType || Popcorn.nop;
+    playerFn.canPlayType = player._canPlayType = player._canPlayType || Popcorn.nop;
 
     Popcorn[ name ] = Popcorn.player.registry[ name ] = Popcorn[ name ] || playerFn;
   };
@@ -264,34 +272,32 @@
       return Popcorn( node, options );
     }
 
-    // for now we loop through and use the last valid player we find.
-    // not yet sure what to do when two players both find it valid.
-    Popcorn.forEach( Popcorn.player.registry, function( val, key ) {
+    // for now we loop through and use the first valid player we find.
+    for ( var key in Popcorn.player.registry ) {
 
-      if ( val.canPlayType( node.nodeName, src ) === true ) {
+      if ( Popcorn.player.registry.hasOwnProperty( key ) ) {
 
-        playerType = key;
+        if ( Popcorn.player.registry[ key ].canPlayType( node.nodeName, src ) ) {
+
+          // Popcorn.smart( player, src, /* options */ )
+          return Popcorn[ key ]( target, src, options );
+        }
       }
-    });
-
-    // Popcorn.smart( div, src, /* options */ )
-    if ( !Popcorn[ playerType ] ) {
-
-      if ( node.nodeType !== "VIDEO" ) {
-
-        target = document.createElement( "video" );
-
-        node.appendChild( target );
-        node = target;
-      }
-
-      options && options.onerror && node.addEventListener( "error", options.onerror, false );
-      node.src = src;
-
-      return Popcorn( node, options );
     }
 
-    // Popcorn.smart( player, src, /* options */ )\
-    return Popcorn[ playerType ]( target, src, options );
+    // Popcorn.smart( div, src, /* options */ )
+    // attempting to create a video in a container
+    if ( node.nodeType !== "VIDEO" ) {
+
+      target = document.createElement( "video" );
+
+      node.appendChild( target );
+      node = target;
+    }
+
+    options && options.events && options.events.error && node.addEventListener( "error", options.events.error, false );
+    node.src = src;
+
+    return Popcorn( node, options );
   };
 })( Popcorn );

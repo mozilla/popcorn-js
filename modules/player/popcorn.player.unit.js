@@ -193,7 +193,7 @@ test( "Base player functionality", function() {
 
 test( "Popcorn.smart player selector", function() {
 
-  var expects = 8,
+  var expects = 10,
       count = 0;
 
   function plus() {
@@ -208,7 +208,7 @@ test( "Popcorn.smart player selector", function() {
   Popcorn.player( "spartaPlayer", {
     _canPlayType: function( nodeName, url ) {
 
-      return /this is sparta/.test( url ) && nodeName !== "unsupported element";
+      return url === "this is sparta" && nodeName !== "unsupported element";
     }
   });
 
@@ -229,10 +229,12 @@ test( "Popcorn.smart player selector", function() {
   plus();
   
   var thisIsNotSparta = Popcorn.smart( "#video", "this is not sparta", {
-    onerror: function( e ) {
+    events: {
+      error: function( e ) {
 
-      ok( true, "invalid player failed and called onerror callback" );
-      plus();
+        ok( true, "invalid player failed and called error callback" );
+        plus();
+      }
     }
   });
   
@@ -241,5 +243,38 @@ test( "Popcorn.smart player selector", function() {
 
   // no existing canPlayType function returns undefined
   ok( Popcorn.neverEverLand.canPlayType( "guessing time!", "is this sparta?" ) === undefined, "non exist canPlayType returns undefined" );
+  plus();
+
+  var loaded = false,
+      error = false;
+
+  Popcorn.player( "somePlayer", {
+    _canPlayType: function( nodeName, url ) {
+
+      return url === "canPlayType";
+    }
+  });
+
+  Popcorn.somePlayer( "#video", "canPlayType", {
+    events: {
+      load: function( e ) {
+
+        loaded = true;
+      }
+    }
+  }).destroy();
+
+  Popcorn.somePlayer( "#video", "cantPlayType", {
+    events: {
+      error: function( e ) {
+
+        error = true;
+      }
+    }
+  }).destroy();
+
+  equals( loaded, true, "canPlayType passed on a valid type" );
+  plus();
+  equals( error, true, "canPlayType failed on an invalid type" );
   plus();
 });
