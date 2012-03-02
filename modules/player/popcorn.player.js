@@ -5,6 +5,12 @@
 
   Popcorn.player = function( name, player ) {
 
+    // return early if a player already exists under this name
+    if ( Popcorn[ name ] ) {
+
+      return;
+    }
+
     player = player || {};
 
     var playerFn = function( target, src, options ) {
@@ -238,7 +244,7 @@
 
     playerFn.canPlayType = player._canPlayType = player._canPlayType || Popcorn.nop;
 
-    Popcorn[ name ] = Popcorn.player.registry[ name ] = Popcorn[ name ] || playerFn;
+    Popcorn[ name ] = Popcorn.player.registry[ name ] = playerFn;
   };
 
   Popcorn.player.registry = {};
