@@ -28,9 +28,7 @@ test( "Popcorn Image Plugin", function() {
   plus();
 
   popped.image({
-    // seconds
     start: 1,
-    // seconds
     end: 3,
     href: "http://www.drumbeat.org/",
     src: sources[ 0 ],
@@ -38,20 +36,14 @@ test( "Popcorn Image Plugin", function() {
     target: "imagediv"
   })
   .image({
-    // seconds
     start: 4,
-    // seconds
     end: 6,
-    // no href
     src: sources[ 1 ],
     target: "imagediv"
   })
   .image({
-    // seconds
     start: 5,
-    // seconds
     end: 6,
-    // no href
     src: sources[ 2 ],
     target: "imagediv"
   });
@@ -59,14 +51,14 @@ test( "Popcorn Image Plugin", function() {
   setupId = popped.getLastTrackEventId();
 
   popped.exec( 2, function() {
-    ok( /display: block;/.test( imagediv.innerHTML ), "Div contents are displayed" );
+    equals( imagediv.children[ 0 ].style.display, "block", "Div contents are displayed" );
     plus();
-    ok( /img/.test( imagediv.innerHTML ), "An image exists" );
+    equals( imagediv.children[ 0 ].children[ 1 ].nodeName, "IMG", "An image exists" );
     plus();
   });
 
   popped.exec( 3, function() {
-    ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
+    equals( imagediv.children[ 0 ].style.display, "none", "Div contents are hidden again" );
     plus();
   });
 
