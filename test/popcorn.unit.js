@@ -1494,6 +1494,24 @@ test( "Custom", function() {
   p.trigger( "eventz0rz" );
 });
 
+test( "on/off/emit", function() {
+  expect( 4 );
+
+  var $pop = Popcorn( "#video" );
+
+  $pop.on( "foo", function() {
+    deepEqual( this, $pop, "`this` is the popcorn instance" );
+    equal( typeof this.data.events.foo, "object", "events hash registered at this.data.events.foo" );
+    equal( Popcorn.sizeOf( this.data.events.foo ), 1, "Only one event is registered" );
+
+    $pop.off( "foo" );
+
+    equal( this.data.events.foo, null, "events hash is null at this.data.events.foo" );
+  });
+
+  $pop.emit( "foo" );
+});
+
 
 test( "UI/Mouse", function() {
 

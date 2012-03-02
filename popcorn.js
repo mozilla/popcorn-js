@@ -832,8 +832,9 @@
   };
 
   //  Extend Popcorn.events.fns (listen, unlisten, trigger) to all Popcorn instances
-  Popcorn.forEach( [ "trigger", "listen", "unlisten" ], function( key ) {
-    Popcorn.p[ key ] = Popcorn.events.fn[ key ];
+  //  Extend aliases (on, off, emit)
+  Popcorn.forEach( [ [ "trigger", "emit" ], [ "listen", "on" ], [ "unlisten", "off" ] ], function( key ) {
+    Popcorn.p[ key[ 0 ] ] = Popcorn.p[ key[ 1 ] ] = Popcorn.events.fn[ key[ 0 ] ];
   });
 
   // Internal Only - Adds track events to the instance object
