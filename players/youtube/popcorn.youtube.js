@@ -14,10 +14,12 @@ Popcorn.player( "youtube", {
   _setup: function( options ) {
 
     var media = this,
+        autoPlay = false,
         youtubeObject,
         container = document.createElement( "div" ),
         currentTime = 0,
         seekTime = 0,
+        firstGo = true,
         seeking = false,
 
         // state code for volume changed polling
@@ -25,6 +27,8 @@ Popcorn.player( "youtube", {
         lastMuted = false,
         lastVolume = 100;
 
+    // setting paused to undefined because youtube has state for not paused or playing
+    media.paused = undefined;
     container.id = media.id + Popcorn.guid();
 
     media.appendChild( container );
@@ -47,14 +51,9 @@ Popcorn.player( "youtube", {
         // more youtube callback nonsense
         onYouTubePlayerReady.stateChangeEventHandler[ container.id ] = function( state ) {
 
-          // playing is state 1
-          // paused is state 2
-          if ( state === 1 ) {
-
-            media.paused && media.play();
           // youtube fires paused events while seeking
           // this is the only way to get seeking events
-          } else if ( state === 2 ) {
+          if ( state === 2 ) {
 
             // silly logic forced on me by the youtube API
             // calling youtube.seekTo triggers multiple events
@@ -69,6 +68,53 @@ Popcorn.player( "youtube", {
             currentTime = youtubeObject.getCurrentTime();
             media.dispatchEvent( "timeupdate" );
             !media.paused && media.pause();
+
+            return;
+          } else
+          // playing is state 1
+          // paused is state 2
+          if ( state === 1 && !firstGo ) {
+
+            media.paused && media.play();
+            return;
+          } else
+          // this is the real player ready check
+          // -1 is for unstarted, but ready to go videos
+          // before this the player object exists, but calls to it may go unheard
+          if ( state === -1 ) {
+
+            youtubeObject.playVideo();
+            return;
+          } else
+          if ( state === 1 && firstGo ) {
+
+            firstGo = false;
+
+            if ( media.paused === true ) {
+
+              media.pause();
+            } else if ( media.paused === false ) {
+
+              media.play();
+            } else if ( autoPlay ) {
+
+              media.play();
+            } else if ( !autoPlay ) {
+
+              media.pause();
+            }
+
+            media.readyState = 4;
+            media.dispatchEvent( "canplaythrough" );
+
+            media.dispatchEvent( "load" );
+            media.duration = youtubeObject.getDuration();
+            media.dispatchEvent( "durationchange" );
+            volumeupdate();
+
+            media.dispatchEvent( "loadeddata" );
+
+            return;
           }
         };
 
@@ -112,17 +158,21 @@ Popcorn.player( "youtube", {
 
         media.play = function() {
 
-          media.paused = false;
-          media.dispatchEvent( "play" );
+          if ( media.paused !== false || youtubeObject.getPlayerState() !== 1 ) {
 
-          media.dispatchEvent( "playing" );
+            media.paused = false;
+            media.dispatchEvent( "play" );
+
+            media.dispatchEvent( "playing" );
+          }
+
           timeupdate();
           youtubeObject.playVideo();
         };
 
         media.pause = function() {
 
-          if ( !media.paused ) {
+          if ( media.paused !== true || youtubeObject.getPlayerState() !== 2 ) {
 
             media.paused = true;
             media.dispatchEvent( "pause" );
@@ -138,6 +188,7 @@ Popcorn.player( "youtube", {
             seeking = true;
             media.dispatchEvent( "seeked" );
             media.dispatchEvent( "timeupdate" );
+
             youtubeObject.seekTo( currentTime );
             return currentTime;
           },
@@ -189,14 +240,6 @@ Popcorn.player( "youtube", {
             return youtubeObject.getVolume() / 100;
           }
         });
-
-        media.readyState = 4;
-        media.dispatchEvent( "canplaythrough" );
-        media.dispatchEvent( "load" );
-        media.duration = youtubeObject.getDuration();
-        media.dispatchEvent( "durationchange" );
-        volumeupdate();
-        media.dispatchEvent( "loadeddata" );
       };
 
       options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1;
@@ -216,7 +259,9 @@ Popcorn.player( "youtube", {
       };
 
       src = /^.*(?:\/|v=)(.{11})/.exec( media.src )[ 1 ];
+
       query = ( media.src.split( "?" )[ 1 ] || "" ).replace( /v=.{11}/, "" );
+      autoPlay = ( /autoplay=1/.test( query ) );
 
       // setting youtube player's height and width, default to 560 x 315
       width = media.style.width ? "" + media.offsetWidth : "560";
@@ -235,4 +280,3 @@ Popcorn.player( "youtube", {
     }
   }
 });
-

@@ -867,27 +867,30 @@ test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function
     }
   }
 
-  stop( 1000 );
+  stop( 10000 );
 
   function poll() {
 
     if ( $pop.media.readyState >= 2 ) {
       // this should trigger immediately
+      var firstSeekedEvent = function() {
 
-      // IE9 has weird seek behaviour... this works around it
-      $pop.listen( "seeked", function() {
-        $pop.unlisten( "seeked" );
+        $pop.unlisten( "seeked", firstSeekedEvent );
         equal( Math.round( $pop.currentTime() ), 10, "play(n) sets currentTime to 10" );
         plus();
-
+      
+        $pop.listen( "seeked", secondSeekedEvent );
         $pop.pause( 5 );
+      },
+      secondSeekedEvent = function() {
 
+        $pop.unlisten( "seeked", secondSeekedEvent );
         equal( Math.round( $pop.currentTime() ), 5, "pause(n) sets currentTime to 5" );
         plus();
-      });
-
+      };
+      
+      $pop.listen( "seeked", firstSeekedEvent );
       $pop.play( 10 ).pause();
-
     } else {
       setTimeout( poll, 10 );
     }
@@ -1494,6 +1497,24 @@ test( "Custom", function() {
   p.trigger( "eventz0rz" );
 });
 
+test( "on/off/emit", function() {
+  expect( 4 );
+
+  var $pop = Popcorn( "#video" );
+
+  $pop.on( "foo", function() {
+    deepEqual( this, $pop, "`this` is the popcorn instance" );
+    equal( typeof this.data.events.foo, "object", "events hash registered at this.data.events.foo" );
+    equal( Popcorn.sizeOf( this.data.events.foo ), 1, "Only one event is registered" );
+
+    $pop.off( "foo" );
+
+    equal( this.data.events.foo, null, "events hash is null at this.data.events.foo" );
+  });
+
+  $pop.emit( "foo" );
+});
+
 
 test( "UI/Mouse", function() {
 
@@ -1771,6 +1792,53 @@ test( "Configurable Defaults", function() {
     target: "custom",
     text: "hello!"
   }).currentTime( 2 ).play();
+});
+
+test( "Plugin toString", function() {
+
+  expect( 2 );
+
+  var $pop = Popcorn( "#video" ),
+      trackEvent, result;
+
+  Popcorn.plugin( "stringify" , function() {
+    return {
+      _setup: function( options ) {
+      },
+      start: function( event, options ){
+      },
+      end: function( event, options ){
+      },
+      _teardown: function( options ) {
+      }
+    };
+  });
+
+  $pop.stringify({
+    start: 0,
+    end: 10,
+  });
+
+  trackEvent = $pop.getTrackEvent( $pop.getLastTrackEventId() );
+  result = trackEvent.toString();
+
+  ok( /^stringify \( start\: 0\, end\: 10\, id\: stringify/.test(result), "Default toString value" );
+
+  $pop.stringify({
+    start: 3,
+    end: 4,
+    toString: function() {
+      return "BOO YA!";
+    }
+  });
+
+  trackEvent = $pop.getTrackEvent( $pop.getLastTrackEventId() );
+  result = trackEvent.toString();
+
+
+  ok( result, "BOO YA!", "Custom toString value" );
+
+  Popcorn.removePlugin( "stringify" );
 });
 
 test( "Exceptions", function() {
@@ -2126,6 +2194,12 @@ test( "Update Timer (frameAnimation)", function() {
 
   QUnit.reset();
 
+  if ( !document.hasFocus() ) {
+
+    ok( false, "frame animation tests need focus" );
+    return;
+  }
+
   var p2 = Popcorn( "#video", {
         frameAnimation: true
       }),
@@ -2310,7 +2384,7 @@ test( "timeUpdate add track event while paused", function() {
     }
   }
 
-  stop();
+  stop( 10000 );
 
   Popcorn.plugin( "timeUpdateTester", function() {
     return {
@@ -2323,11 +2397,11 @@ test( "timeUpdate add track event while paused", function() {
     };
   });
 
-  $pop.currentTime( 1 ).pause()
+  $pop.currentTime( 2 ).pause();
 
   $pop.timeUpdateTester({
     start: 1,
-    end: 2
+    end: 3
   });
 });
 
@@ -3148,6 +3222,10 @@ test( "In/Out aliases", function() {
     out: 3
   });
 
+  popcorn.listen( "seeked", function() {
+    this.unlisten( "seeked" ).play( 0 );
+  })
+
   popcorn.currentTime( 0 ).pause();
 
   ok( popcorn.data.events[ "in" ], "in is a valid alias for start" );
@@ -3168,8 +3246,6 @@ test( "In/Out aliases", function() {
     equal( counter, 2, "Counter is at 2, out has been called" );
     plus();
   });
-
-  popcorn.play();
 });
 
 module( "Popcorn TrackEvents" );

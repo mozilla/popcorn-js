@@ -1,3 +1,56 @@
+test( "Player play, pause, autoplay", function() {
+  QUnit.reset();
+
+  var count = 0,
+      expects = 4,
+      orderCheck1 = 0,
+      orderCheck2 = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
+  stop( 20000 );
+
+  var pop1 = Popcorn.youtube( "#video6", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
+
+  pop1.listen( "load", function() {
+
+    pop1.play();
+
+    equal( pop1.media.paused, false, "popcorn 1 plays" );
+    plus();
+  });
+
+  var pop2 = Popcorn.youtube( "#video7", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
+
+  pop2.listen( "load", function() {
+
+    equal( pop2.media.paused, true, "popcorn 2 pauses" );
+    plus();
+  });
+
+  var pop3 = Popcorn.youtube( "#video8", "http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=0" );
+
+  pop3.listen( "load", function() {
+
+    equal( pop3.media.paused, true, "popcorn 3 autoplay off paused" );
+    plus();
+  });
+
+  var pop4 = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=1" );
+
+  pop4.listen( "load", function() {
+
+    equal( pop4.media.paused, false, "popcorn 4 is autoplaying" );
+    plus();
+  });
+});
+
 test("Update Timer", function () {
 
   QUnit.reset();
@@ -25,7 +78,6 @@ test("Update Timer", function () {
     }
   }
 
-  // These tests come close to 10 seconds on chrome, increasing to 15
   stop();
 
   Popcorn.plugin( "forwards", function () {
@@ -356,7 +408,7 @@ test( "Popcorn YouTube Plugin Url Regex Test", function() {
       expects = urlTests.length;
 
   expect( expects );
-  stop( 10000 );
+  stop();
 
   Popcorn.forEach( urlTests, function( valuse, key ) {
 
@@ -416,6 +468,7 @@ test( "Player height and width", function() {
   expect( 4 );
 
   stop( 10000 );
+
   var popcorn1 = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=nfGV32RNkhw" ),
       popcorn2 = Popcorn.youtube( "#video5", "http://www.youtube.com/watch?v=nfGV32RNkhw" ),
       readyStatePoll = function() {
@@ -472,17 +525,21 @@ test( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
     popped.listen( "loadeddata", runner);
   }
 
-  stop( 10000 );
+  stop();
 });
 
 test( "Player Errors", function() {
   QUnit.reset();
   expect( 1 );
   stop( 10000 );
-  var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk" );
 
-  pop.listen( "error", function() {
-    ok( true, "error trigger by invalid URL" );
-    start();
-  });
+  var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk", {
+    events: {
+      error: function() {
+
+        ok( true, "error trigger by invalid URL" );
+        start();
+      }
+    }
+   });
 });
