@@ -233,11 +233,13 @@
 
       popcorn = new Popcorn.p.init( basePlayer, options );
 
+      if ( player._teardown ) {
 
-      popcorn.destroy = combineFn( popcorn.destroy, function() {
-      
-        player._teardown.call( basePlayer, options );
-      });
+        popcorn.destroy = combineFn( popcorn.destroy, function() {
+        
+          player._teardown.call( basePlayer, options );
+        });
+      }
 
       return popcorn;
     };
