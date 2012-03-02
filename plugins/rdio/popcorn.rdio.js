@@ -74,7 +74,7 @@
             return "/artist/" + ( options.artist ) + "/album/";
           }
         }[ type ]();
-		
+
         return _rdioURL + path + options[ type ] + "/&callback=_loadResults";
       },
       url = urlBuilder( options.type );
@@ -82,7 +82,7 @@
         _loadResults( data, options );
       }, false );
     };
-	
+
     return {
       _setup: function( options ) {
         var key = options.containerid = Popcorn.guid(),

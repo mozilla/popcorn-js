@@ -86,7 +86,7 @@ test( "Popcorn Rdio Plugin", function() {
     ok( !rdiodiv3.children[ 0 ], "removed rdio was properly destroyed" );
     plus();
   });
-  
+
   // empty track events should be safe
   popped.rdio({});
   // debug should log errors on empty track events
