@@ -27,6 +27,8 @@ Popcorn.player( "youtube", {
     media.paused = undefined;
     container.id = media.id + Popcorn.guid();
 
+    options._container = container;
+
     media.appendChild( container );
 
     var youtubeInit = function() {
@@ -127,7 +129,7 @@ Popcorn.player( "youtube", {
 
         var timeupdate = function() {
 
-          if ( !media.paused ) {
+          if ( !media.paused && youtubeObject.getCurrentTime ) {
 
             currentTime = youtubeObject.getCurrentTime();
             media.dispatchEvent( "timeupdate" );
@@ -137,19 +139,22 @@ Popcorn.player( "youtube", {
 
         var volumeupdate = function() {
 
-          if ( lastMuted !== youtubeObject.isMuted() ) {
+          if ( youtubeObject.isMuted ) {
 
-            lastMuted = youtubeObject.isMuted();
-            media.dispatchEvent( "volumechange" );
+            if ( lastMuted !== youtubeObject.isMuted() ) {
+
+              lastMuted = youtubeObject.isMuted();
+              media.dispatchEvent( "volumechange" );
+            }
+
+            if ( lastVolume !== youtubeObject.getVolume() ) {
+
+              lastVolume = youtubeObject.getVolume();
+              media.dispatchEvent( "volumechange" );
+            }
+
+            setTimeout( volumeupdate, 250 );
           }
-
-          if ( lastVolume !== youtubeObject.getVolume() ) {
-
-            lastVolume = youtubeObject.getVolume();
-            media.dispatchEvent( "volumechange" );
-          }
-
-          setTimeout( volumeupdate, 250 );
         };
 
         media.play = function() {
@@ -274,5 +279,9 @@ Popcorn.player( "youtube", {
 
       youtubeInit();
     }
+  },
+  _teardown: function( options ) {
+
+    this.removeChild( document.getElementById( options._container.id ) );
   }
 });

@@ -1,5 +1,18 @@
 (function( Popcorn ) {
 
+  // combines calls of two function calls into one
+  var combineFn = function( first, second ) {
+
+    first = first || Popcorn.nop;
+    second = second || Popcorn.nop;
+
+    return function() {
+
+      first.apply( this, arguments );
+      second.apply( this, arguments );
+    };
+  };
+
   Popcorn.player = function( name, player ) {
 
     //  ID string matching
@@ -219,6 +232,12 @@
       });
 
       popcorn = new Popcorn.p.init( basePlayer, options );
+
+
+      popcorn.destroy = combineFn( popcorn.destroy, function() {
+      
+        player._teardown.call( basePlayer, options );
+      });
 
       return popcorn;
     };
