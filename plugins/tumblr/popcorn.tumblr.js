@@ -387,7 +387,9 @@
             }
           } else {
             // There was an error somewhere down the line that caused the request to fail.
-            Popcorn.error( "Error. Request failed. Status code: " + data.meta.status + " - Message: " + data.meta.msg );
+            commonDiv.innerHTML += "Error. Request failed. Status code: " + data.meta.status + " - Message: " + data.meta.msg +
+              "<br/>This could be due to an invalid blogId.";
+            options._container.appendChild( commonDiv );
           }
         }, false );
       }
