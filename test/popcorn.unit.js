@@ -3213,6 +3213,10 @@ test( "In/Out aliases", function() {
     out: 3
   });
 
+  popcorn.listen( "seeked", function() {
+    this.unlisten( "seeked" ).play( 0 );
+  })
+
   popcorn.currentTime( 0 ).pause();
 
   ok( popcorn.data.events[ "in" ], "in is a valid alias for start" );
@@ -3233,8 +3237,6 @@ test( "In/Out aliases", function() {
     equal( counter, 2, "Counter is at 2, out has been called" );
     plus();
   });
-
-  popcorn.play();
 });
 
 module( "Popcorn TrackEvents" );
