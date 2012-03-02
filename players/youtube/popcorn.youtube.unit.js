@@ -543,3 +543,47 @@ test( "Player Errors", function() {
     }
    });
 });
+
+test( "Youtube ready state events", function() {
+
+  QUnit.reset();
+  var popped,
+      expects = 4,
+      count = 0,
+      state = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+
+  popped = Popcorn.youtube( "#video6", "http://www.youtube.com/watch?v=nfGV32RNkhw", {
+    events: {
+      canplaythrough: function( e ) {
+
+        equal( state++, 0, "canplaythrough fired first" );
+        plus();
+      },
+      load: function( e ) {
+
+        equal( state++, 1, "load fired second" );
+        plus();
+      },
+      loadedmetadata: function( e ) {
+
+        equal( state++, 2, "loadedmetadata fired third" );
+        plus();
+      },
+      loadeddata: function( e ) {
+
+        equal( state++, 3, "loadeddata fired last" );
+        plus();
+      },
+    }
+  });
+
+  stop();
+});

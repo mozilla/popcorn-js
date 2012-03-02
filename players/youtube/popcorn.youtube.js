@@ -108,6 +108,7 @@ Popcorn.player( "youtube", {
             media.dispatchEvent( "durationchange" );
             volumeupdate();
 
+            media.dispatchEvent( "loadedmetadata" );
             media.dispatchEvent( "loadeddata" );
 
             return;
