@@ -190,6 +190,11 @@
       basePlayer.paused = true;
       basePlayer.ended = 0;
 
+      options && options.events && Popcorn.forEach( options.events, function( val, key ) {
+
+        basePlayer.addEventListener( key, val, false );
+      });
+
       if ( player._setup ) {
 
         player._setup.call( basePlayer, options );
