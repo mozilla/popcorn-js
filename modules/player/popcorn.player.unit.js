@@ -187,3 +187,25 @@ test( "Base player functionality", function() {
 
   p2.currentTime( 3 ).play();
 });
+
+test( "player gets a proper _teardown", function() {
+
+  QUnit.reset();
+
+  var teardownCalled = false;
+
+  expect( 1 );
+  stop( 10000 );
+
+  Popcorn.player( "teardownTester", {
+    _teardown: function() {
+      teardownCalled = true;
+    }
+  });
+
+  var pop = Popcorn.teardownTester( "#video" );
+  pop.destroy();
+
+  equal( teardownCalled, true, "teardown function was called." );
+  start();
+});
