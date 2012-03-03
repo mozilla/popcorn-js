@@ -543,3 +543,17 @@ test( "Player Errors", function() {
     }
    });
 });
+
+test( "YouTube ended event", function() {
+  QUnit.reset();
+  expect(1);
+  stop( 10000 );
+
+  var pop = Popcorn.youtube( "#video10", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
+
+  pop.listen( "ended", function() {
+    ok( true, "YouTube is successfully firing the ended event" );
+    start();
+  });
+  pop.play( 150 );
+});

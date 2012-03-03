@@ -111,6 +111,8 @@ Popcorn.player( "youtube", {
             media.dispatchEvent( "loadeddata" );
 
             return;
+          } else if ( state === 0 ) {
+            media.dispatchEvent( "ended" );
           }
         };
 
