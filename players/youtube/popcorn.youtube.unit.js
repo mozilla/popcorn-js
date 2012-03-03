@@ -18,7 +18,7 @@ test( "Player play, pause, autoplay", function() {
 
   var pop1 = Popcorn.youtube( "#video6", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
 
-  pop1.listen( "load", function() {
+  pop1.listen( "canplaythrough", function() {
 
     pop1.play();
 
@@ -28,7 +28,7 @@ test( "Player play, pause, autoplay", function() {
 
   var pop2 = Popcorn.youtube( "#video7", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
 
-  pop2.listen( "load", function() {
+  pop2.listen( "canplaythrough", function() {
 
     equal( pop2.media.paused, true, "popcorn 2 pauses" );
     plus();
@@ -36,7 +36,7 @@ test( "Player play, pause, autoplay", function() {
 
   var pop3 = Popcorn.youtube( "#video8", "http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=0" );
 
-  pop3.listen( "load", function() {
+  pop3.listen( "canplaythrough", function() {
 
     equal( pop3.media.paused, true, "popcorn 3 autoplay off paused" );
     plus();
@@ -44,7 +44,7 @@ test( "Player play, pause, autoplay", function() {
 
   var pop4 = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=1" );
 
-  pop4.listen( "load", function() {
+  pop4.listen( "canplaythrough", function() {
 
     equal( pop4.media.paused, false, "popcorn 4 is autoplaying" );
     plus();
@@ -548,7 +548,7 @@ test( "Youtube ready state events", function() {
 
   QUnit.reset();
   var popped,
-      expects = 4,
+      expects = 3,
       count = 0,
       state = 0;
 
@@ -564,22 +564,17 @@ test( "Youtube ready state events", function() {
     events: {
       canplaythrough: function( e ) {
 
-        equal( state++, 0, "canplaythrough fired first" );
-        plus();
-      },
-      load: function( e ) {
-
-        equal( state++, 1, "load fired second" );
+        equal( state++, 2, "canplaythrough fired first" );
         plus();
       },
       loadedmetadata: function( e ) {
 
-        equal( state++, 2, "loadedmetadata fired third" );
+        equal( state++, 0, "loadedmetadata fired third" );
         plus();
       },
       loadeddata: function( e ) {
 
-        equal( state++, 3, "loadeddata fired last" );
+        equal( state++, 1, "loadeddata fired last" );
         plus();
       },
     }

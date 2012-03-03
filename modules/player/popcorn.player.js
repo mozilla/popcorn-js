@@ -202,12 +202,13 @@
 
         // there is no setup, which means there is nothing to load
         basePlayer.readyState = 4;
-        basePlayer.dispatchEvent( "load" );
+        basePlayer.dispatchEvent( "loadedmetadata" );
         basePlayer.dispatchEvent( "loadeddata" );
+        basePlayer.dispatchEvent( "canplaythrough" );
       }
 
       // when a custom player is loaded, load basePlayer state into custom player
-      basePlayer.addEventListener( "load", function() {
+      basePlayer.addEventListener( "loadedmetadata", function() {
 
         // if a player is not ready before currentTime is called, this will set it after it is ready
         basePlayer.currentTime = currentTime;

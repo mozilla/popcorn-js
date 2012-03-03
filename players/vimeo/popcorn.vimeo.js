@@ -202,14 +202,14 @@
             }
           });
 
-          media.readyState = 4;
-          media.dispatchEvent( "canplaythrough" );
-          media.dispatchEvent( "load" );
+          media.dispatchEvent( "loadedmetadata" );
+          media.dispatchEvent( "loadeddata" );
+
           media.duration = vimeoObject.api_getDuration();
           media.dispatchEvent( "durationchange" );
           volumeUpdate();
-
-          media.dispatchEvent( "loadeddata" );
+          media.readyState = 4;
+          media.dispatchEvent( "canplaythrough" );
         };
 
         function extractId( videoUrl ) {
