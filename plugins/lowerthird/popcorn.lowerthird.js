@@ -54,7 +54,7 @@
             elem: "input",
             type: "text",
             label: "Text",
-          optional: true
+            optional: true
           },
           name: {
             elem: "input",
@@ -65,7 +65,7 @@
             elem: "input",
             type: "text",
             label: "Text",
-          optional: true
+            optional: true
           }
         }
       },
