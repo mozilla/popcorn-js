@@ -2816,8 +2816,7 @@ test( "Teardown end tester", function() {
       options.endCalled = false;
       options.teardownCalled = false;
     },
-    start: function( event, options ) {
-    },
+    start: function( event, options ) {},
     end: function( event, options ) {
       // passes if end is called before teardown, and only called once
       equal( options.endCalled, false, "ensure only teardown can call this end" );
@@ -2843,6 +2842,65 @@ test( "Teardown end tester", function() {
 
   popped.currentTime( 0 ).play();
   popped.removePlugin( "teardownEndTester" );
+});
+
+test( "Teardown end noise", function() {
+
+  QUnit.reset();
+
+  var popped = Popcorn( "#video" ),
+      expects = 5,
+      count = 0;
+
+  function plus() {
+    if ( ++count === expects ) {
+      Popcorn.removePlugin( "teardownEndTester" );
+      Popcorn.removePlugin( "noise" );
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 15000 );
+
+  Popcorn.plugin( "noise", {});
+  
+  Popcorn.plugin( "teardownEndTester", {
+    _setup: function( options ) {
+      options.endCalled = false;
+      options.teardownCalled = false;
+    },
+    start: function( event, options ) {},
+    end: function( event, options ) {
+      // passes if end is called before teardown, and only called once
+      equal( options.endCalled, false, "ensure only teardown can call this end" );
+      plus();
+      equal( options.teardownCalled, false, "ensure teardown is not yet called" );
+      plus();
+      options.endCalled = true;
+    },
+    _teardown: function( options ) {
+
+      // passes if teardown is called after end, and only called once
+      equal( options.endCalled, true, "ensure end was previously called" );
+      plus();
+      equal( options.teardownCalled, false, "ensure teardown is not yet called" );
+      plus();
+      options.teardownCalled = true;
+    }
+  });
+
+  // if plugin to check's end time and start time
+  // don't align when sorted with all other times
+  // teardown will not be called
+  popped.noise({end: 21});
+  popped.teardownEndTester({end: 20});
+
+  popped.currentTime( 0 ).play();
+  popped.removePlugin( "teardownEndTester" );
+
+  equal( popped.data.trackEvents.byEnd[ 1 ]._natives.type, "noise", "proper end was removed"  );
+  plus();
 });
 
 test( "Plugin Breaker", function() {
