@@ -202,7 +202,8 @@
       dynamic: {
         elem: "input",
         type: "text",
-        label: "Dynamic"
+        label: "Dynamic",
+        optional: true
       }
     }
   });

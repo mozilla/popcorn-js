@@ -187,7 +187,8 @@
       userid: {
         elem: "input",
         type: "text",
-        label: "UserID"
+        label: "UserID",
+        optional: true
       },
       tags: {
         elem: "input",
@@ -198,32 +199,38 @@
         elem: "input",
         type: "text",
         label: "Username"
+        optional: true
       },
       apikey: {
         elem: "input",
         type: "text",
         label: "Api_key"
+        optional: true
       },
       target: "flickr-container",
       height: {
         elem: "input",
         type: "text",
         label: "Height"
+        optional: true
       },
       width: {
         elem: "input",
         type: "text",
         label: "Width"
+        optional: true
       },
       padding: {
         elem: "input",
         type: "text",
         label: "Padding"
+        optional: true
       },
       border: {
         elem: "input",
         type: "text",
         label: "Border"
+        optional: true
       },
       numberofimages: {
         elem: "input",

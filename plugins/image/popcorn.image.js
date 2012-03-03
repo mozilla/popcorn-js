@@ -50,7 +50,8 @@
           href: {
             elem: "input",
             type: "url",
-            label: "Link URL"
+            label: "Link URL",
+            optional: true
           },
           target: "image-container",
           src: {
@@ -61,7 +62,8 @@
           text: {
             elem: "input",
             type: "text",
-            label: "TEXT"
+            label: "TEXT",
+            optional: true
           }
         }
       },

@@ -155,7 +155,8 @@
       noPause: {
         elem: "select",
         options: [ "TRUE", "FALSE" ],
-        label: "No Loop"
+        label: "No Loop",
+        optional: true
       }
     }
   });
