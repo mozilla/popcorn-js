@@ -1379,7 +1379,7 @@
       //  Storing the plugin natives
       var natives = options._natives = {},
           compose = "",
-          defaults, originalOpts, manifestOpts, mergedSetupOpts;
+          originalOpts, manifestOpts;
 
       Popcorn.extend( natives, setup );
 
@@ -1401,9 +1401,6 @@
         // only call end if event is running
         args[ 1 ]._running && natives.end.apply( this, args );
       }, natives._teardown );
-
-      // Check for previously set default options
-      defaults = this.options.defaults && this.options.defaults[ options._natives && options._natives.type ];
 
       // default to an empty string if no effect exists
       // split string into an array of effects
@@ -1455,25 +1452,21 @@
         };
       }
 
-      // Merge with defaults if they exist, make sure per call is prioritized
-      mergedSetupOpts = defaults ? Popcorn.extend( {}, defaults, options ) :
-                          options;
-
       // Resolves 239, 241, 242
-      if ( !mergedSetupOpts.target ) {
+      if ( !options.target ) {
 
         //  Sometimes the manifest may be missing entirely
         //  or it has an options object that doesn't have a `target` property
         manifestOpts = "options" in manifest && manifest.options;
 
-        mergedSetupOpts.target = manifestOpts && "target" in manifestOpts && manifestOpts.target;
+        options.target = manifestOpts && "target" in manifestOpts && manifestOpts.target;
       }
 
       // Trigger _setup method if exists
-      options._natives._setup && options._natives._setup.call( this, mergedSetupOpts );
+      options._natives._setup && options._natives._setup.call( this, options );
 
       // Create new track event for this instance
-      Popcorn.addTrackEvent( this, Popcorn.extend( mergedSetupOpts, options ) );
+      Popcorn.addTrackEvent( this, Popcorn.extend( options, options ) );
 
       //  Future support for plugin event definitions
       //  for all of the native events
@@ -1495,8 +1488,13 @@
     //  Extend Popcorn.p with new named definition
     //  Assign new named definition
     Popcorn.p[ name ] = plugin[ name ] = function( options ) {
-      return pluginFn.call( this, isfn ? definition.call( this, options ) : definition,
-                                  options );
+    
+      // Merge with defaults if they exist, make sure per call is prioritized
+      var defaults = ( this.options.defaults && this.options.defaults[ name ] ) || {},
+          mergedSetupOpts = Popcorn.extend( {}, defaults, options );
+      
+      return pluginFn.call( this, isfn ? definition.call( this, mergedSetupOpts ) : definition,
+                                  mergedSetupOpts );
     };
 
     //  Push into the registry
