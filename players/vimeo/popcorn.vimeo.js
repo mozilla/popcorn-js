@@ -10,6 +10,10 @@
   vimeo_player_loaded.pause = {};
 
   Popcorn.player( "vimeo", {
+    _canPlayType: function( nodeName, url ) {
+
+      return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(vimeo)/).test( url ) && nodeName.toLower() !== "video";
+    },
     _setup: function( options ) {
 
       var media = this,
@@ -211,24 +215,6 @@
 
           media.dispatchEvent( "loadeddata" );
         };
-
-        function extractId( videoUrl ) {
-
-          if ( !videoUrl ) {
-            return;
-          }
-
-          var rPlayerUri = /^http:\/\/player\.vimeo\.com\/video\/[\d]+/i,
-              rWebUrl = /vimeo\.com\/[\d]+/;
-
-          var matches = videoUrl.match( rPlayerUri ) ? videoUrl.match( rPlayerUri )[ 0 ].substr( 30 ) : "";
-          return matches ? matches : videoUrl.match( rWebUrl ) ? videoUrl.match( rWebUrl )[ 0 ].substr( 10 ) : "";
-        }
-
-        if ( !( src = extractId( src ) ) ) {
-
-          throw "Invalid Video Id";
-        }
 
         flashvars = {
           clip_id: src,

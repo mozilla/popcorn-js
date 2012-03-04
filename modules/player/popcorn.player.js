@@ -13,10 +13,16 @@
     };
   };
 
+  //  ID string matching
+  var rIdExp  = /^(#([\w\-\_\.]+))$/;
+
   Popcorn.player = function( name, player ) {
 
-    //  ID string matching
-    var rIdExp  = /^(#([\w\-\_\.]+))$/;
+    // return early if a player already exists under this name
+    if ( Popcorn[ name ] ) {
+
+      return;
+    }
 
     player = player || {};
 
@@ -208,15 +214,23 @@
         basePlayer.addEventListener( key, val, false );
       });
 
-      if ( player._setup ) {
+      // true and undefined returns on canPlayType means we should attempt to use it,
+      // false means we cannot play this type
+      if ( player._canPlayType( container.nodeName, src ) !== false ) {
 
-        player._setup.call( basePlayer, options );
+        if ( player._setup ) {
+
+          player._setup.call( basePlayer, options );
+        } else {
+
+          // there is no setup, which means there is nothing to load
+          basePlayer.readyState = 4;
+          basePlayer.dispatchEvent( "load" );
+          basePlayer.dispatchEvent( "loadeddata" );
+        }
       } else {
 
-        // there is no setup, which means there is nothing to load
-        basePlayer.readyState = 4;
-        basePlayer.dispatchEvent( "load" );
-        basePlayer.dispatchEvent( "loadeddata" );
+        basePlayer.dispatchEvent( "error" );
       }
 
       // when a custom player is loaded, load basePlayer state into custom player
@@ -249,13 +263,69 @@
       return popcorn;
     };
 
-    Popcorn[ name ] = Popcorn[ name ] || playerFn;
+    playerFn.canPlayType = player._canPlayType = player._canPlayType || Popcorn.nop;
+
+    Popcorn[ name ] = Popcorn.player.registry[ name ] = playerFn;
   };
+
+  Popcorn.player.registry = {};
 
   Popcorn.player.defineProperty = Object.defineProperty || function( object, description, options ) {
 
     object.__defineGetter__( description, options.get || Popcorn.nop );
     object.__defineSetter__( description, options.set || Popcorn.nop );
+  };
+
+  // smart will attempt to find you a match, if it does not find a match,
+  // it will attempt to create a video element with the source,
+  // if that failed, it will throw.
+  Popcorn.smart = function( target, src, options ) {
+
+    var nodeId = rIdExp.exec( target ),
+        playerType,
+        node = nodeId && nodeId.length && nodeId[ 2 ] ?
+                 document.getElementById( nodeId[ 2 ] ) :
+                 target;
+
+    // Popcorn.smart( video, /* options */ )
+    if ( node.nodeType === "VIDEO" && !src ) {
+
+      if ( typeof src === "object" ) {
+
+        options = src;
+        src = undefined;
+      }
+
+      return Popcorn( node, options );
+    }
+
+    // for now we loop through and use the first valid player we find.
+    for ( var key in Popcorn.player.registry ) {
+
+      if ( Popcorn.player.registry.hasOwnProperty( key ) ) {
+
+        if ( Popcorn.player.registry[ key ].canPlayType( node.nodeName, src ) ) {
+
+          // Popcorn.smart( player, src, /* options */ )
+          return Popcorn[ key ]( target, src, options );
+        }
+      }
+    }
+
+    // Popcorn.smart( div, src, /* options */ )
+    // attempting to create a video in a container
+    if ( node.nodeType !== "VIDEO" ) {
+
+      target = document.createElement( "video" );
+
+      node.appendChild( target );
+      node = target;
+    }
+
+    options && options.events && options.events.error && node.addEventListener( "error", options.events.error, false );
+    node.src = src;
+
+    return Popcorn( node, options );
   };
 
 })( Popcorn );
