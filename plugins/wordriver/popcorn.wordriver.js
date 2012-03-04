@@ -88,7 +88,8 @@
           color: {
             elem: "input",
             type: "text",
-            label: "Color"
+            label: "Color",
+            optional: true
           }
         }
       },

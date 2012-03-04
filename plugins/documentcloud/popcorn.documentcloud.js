@@ -51,12 +51,14 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
         width: {
           elem: "input",
           type: "text",
-          label: "Width"
+          label: "Width",
+          optional: true
         },
         height: {
           elem: "input",
           type: "text",
-          label: "Height"
+          label: "Height",
+          optional: true
         },
         src: {
           elem: "input",
@@ -66,17 +68,20 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
         preload: {
           elem: "input",
           type: "boolean",
-          label: "Preload"
+          label: "Preload",
+          optional: true
         },
         page: {
           elem: "input",
           type: "number",
-          label: "Page Number"
+          label: "Page Number",
+          optional: true
         },
         aid: {
           elem: "input",
           type: "number",
-          label: "Annotation Id"
+          label: "Annotation Id",
+          optional: true
         }
       }
     },

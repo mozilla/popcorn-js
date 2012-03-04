@@ -269,17 +269,20 @@
         api_key: { // Required for Blog Info and Blog Post retrievals
           elem: "input",
           type: "text",
-          label: "Application_Key"
+          label: "Application_Key",
+          optional: true
         },
         size: {
           elem: "select",
           options: [ 16, 24, 30, 40, 48, 64, 96, 128, 512 ],
-          label: "avatarSize"
+          label: "avatarSize",
+          optional: true
         },
         blogId: { // Required for BLOGPOST requests
           elem: "input",
           type: "number",
-          label: "Blog_ID"
+          label: "Blog_ID",
+          optional: true
         },
         /* Optional for Photo and Video BlogPosts, defaulted to 250 pixels for photos and 400 for videos if not provided or provided width
         * is not found in their arrays. If multiple videos or photos are in the blogpost then it will use this same size for all of them unless
@@ -288,7 +291,8 @@
         width: {
           elem: "input",
           type: "number",
-          label: "Photo_Width"
+          label: "Photo_Width",
+          optional: true
         }
       }
     },

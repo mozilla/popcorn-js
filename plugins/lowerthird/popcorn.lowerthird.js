@@ -53,7 +53,8 @@
           salutation : {
             elem: "input",
             type: "text",
-            label: "Text"
+            label: "Text",
+            optional: true
           },
           name: {
             elem: "input",
@@ -63,7 +64,8 @@
           role: {
             elem: "input",
             type: "text",
-            label: "Text"
+            label: "Text",
+            optional: true
           }
         }
       },

@@ -356,21 +356,25 @@ var googleCallback;
         elem: "select",
         options: [ "ROADMAP", "SATELLITE", "STREETVIEW", "HYBRID", "TERRAIN" ],
         label: "Type"
+        optional: true
       },
       zoom: {
         elem: "input",
         type: "text",
         label: "Zoom"
+        optional: true
       },
       lat: {
         elem: "input",
         type: "text",
         label: "Lat"
+        optional: true
       },
       lng: {
         elem: "input",
         type: "text",
         label: "Lng"
+        optional: true
       },
       location: {
         elem: "input",
@@ -381,11 +385,13 @@ var googleCallback;
         elem: "input",
         type: "text",
         label: "Heading"
+        optional: true
       },
       pitch: {
         elem: "input",
         type: "text",
         label: "Pitch"
+        optional: true
       }
     }
   });

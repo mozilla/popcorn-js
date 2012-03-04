@@ -54,7 +54,8 @@ var wikiCallback;
         lang: {
           elem: "input", 
           type: "text", 
-          label: "Language"
+          label: "Language",
+          optional: true
         },
         src: {
           elem: "input", 
@@ -64,12 +65,14 @@ var wikiCallback;
         title: {
           elem: "input", 
           type: "text", 
-          label: "Title"
+          label: "Title",
+          optional: true
         },
         numberofwords: {
           elem: "input", 
           type: "text", 
-          label: "Num Of Words"
+          label: "Num Of Words",
+          optional: true
         },
         target: "wikipedia-container"
       }

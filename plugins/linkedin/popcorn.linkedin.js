@@ -70,32 +70,38 @@
         memberid: {
           elem: "input",
           type: "text",
-          label: "Member ID"
+          label: "Member ID",
+          optional: true
         },
         format: {
           elem: "input",
           type: "text",
-          label: "Format"
+          label: "Format",
+          optional: true
         },
         companyid: {
           elem: "input",
           type: "text",
-          label: "Company ID"
+          label: "Company ID",
+          optional: true
         },
         modules: {
           elem: "input",
           type: "text",
-          label: "Modules"
+          label: "Modules",
+          optional: true
         },
         productid: {
           elem: "input",
           type: "text",
-          label: "productid"
+          label: "productid",
+          optional: true
         },
         related: {
           elem: "input",
           type: "text",
-          label: "related"
+          label: "related",
+          optional: true
         },
         start: {
           elem: "input",
