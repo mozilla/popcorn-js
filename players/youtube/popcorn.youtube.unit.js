@@ -359,8 +359,7 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
       popcorn = Popcorn.youtube( '#video2', 'http://www.youtube.com/watch?v=nfGV32RNkhw' );
 
   function plus(){
-<<<<<<< HEAD
-=======
+
     if ( ++count == expects ) {
       popcorn.destroy();
       start();
@@ -372,12 +371,6 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
 
   equals( popcorn.media.id, 'video2', 'Video id set' );
   plus();
->>>>>>> 8c5e9698d980e4056323ea3f051732b55ddbffb6
-
-    if ( ++count == expects ) {
-      start();
-    }
-  }
 
   popcorn.listen( "durationchange", function() {
 
