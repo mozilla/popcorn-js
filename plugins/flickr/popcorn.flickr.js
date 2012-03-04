@@ -198,7 +198,7 @@
       username: {
         elem: "input",
         type: "text",
-        label: "Username"
+        label: "Username",
         optional: true
       },
       apikey: {
@@ -211,25 +211,25 @@
       height: {
         elem: "input",
         type: "text",
-        label: "Height"
+        label: "Height",
         optional: true
       },
       width: {
         elem: "input",
         type: "text",
-        label: "Width"
+        label: "Width",
         optional: true
       },
       padding: {
         elem: "input",
         type: "text",
-        label: "Padding"
+        label: "Padding",
         optional: true
       },
       border: {
         elem: "input",
         type: "text",
-        label: "Border"
+        label: "Border",
         optional: true
       },
       numberofimages: {
