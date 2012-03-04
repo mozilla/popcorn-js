@@ -204,7 +204,7 @@
       apikey: {
         elem: "input",
         type: "text",
-        label: "Api_key"
+        label: "Api_key",
         optional: true
       },
       target: "flickr-container",
