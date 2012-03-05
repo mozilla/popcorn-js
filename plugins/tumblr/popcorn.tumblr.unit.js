@@ -129,6 +129,7 @@ test( "Test Initialized Tumblr Blocks throwing Errors", function () {
   var pop = Popcorn( "#video" ), expects = 6;
 
   expect( expects );
+  stop();
 
   // Tests for thrown Error on emtpy block
   try {
@@ -194,18 +195,19 @@ test( "Test Initialized Tumblr Blocks throwing Errors", function () {
   }
 
   // Checking for a failing in request from API using invalid blogId
-  try {
-    pop.tumblr({
-      requestType: "blogpost",
-      target: "testsdiv",
-      start: 1,
-      end: 5,
-      blogId: 1,
-      base_hostname: "tumblrplugin.tumblr.com",
-      api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
-    });
-  } catch( e ){
+  pop.listen( "tumblrError", function() {
     ok( true, "Caught failed request from API for blogId." );
-  }
+    start();
+  });
+
+  pop.tumblr({
+    requestType: "blogpost",
+    target: "testsdiv",
+    start: 1,
+    end: 5,
+    blogId: 1,
+    base_hostname: "tumblrplugin.tumblr.com",
+    api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+  });
 });
 
