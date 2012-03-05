@@ -1896,8 +1896,8 @@
     "unlisten": "off"
 
   }, function( recommend, api ) {
-    var _saved = Popcorn.p[ api ];
-
+    // Override the deprecated api method with a method of the same name
+    // that logs a warning and defers to the new recommended method
     Popcorn.p[ api ] = function() {
       if ( console && console.warn ) {
         console.warn( "Deprecated method '" + api + "', use '" + recommend + "' instead." );
