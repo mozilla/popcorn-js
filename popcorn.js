@@ -1429,8 +1429,8 @@
         options.start = options[ "in" ] || 0;
       }
 
-      if ( !( "end" in options ) ) {
-        options.end = options[ "out" ] || this.duration() || Number.MAX_VALUE;
+      if ( !options.end && options.end !== 0 ) {
+        options.end = options[ "out" ] || Number.MAX_VALUE;
       }
 
       // Use hasOwn to detect non-inherited toString, since all
