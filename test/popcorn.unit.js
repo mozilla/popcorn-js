@@ -3299,9 +3299,9 @@ test( "In/Out aliases", function() {
 
   popcorn.listen( "seeked", function() {
     this.unlisten( "seeked" ).play( 0 );
-  })
+  });
 
-  popcorn.currentTime( 0 ).pause();
+  popcorn.currentTime( 0 );
 
   ok( popcorn.data.events[ "in" ], "in is a valid alias for start" );
   plus();
