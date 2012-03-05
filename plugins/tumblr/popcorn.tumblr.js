@@ -346,7 +346,8 @@
         }
         requestString = "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/" + type + "?api_key=" + options.api_key + "&id=" + options.blogId + 
           "&jsonp=tumblrCallBack";
-
+        
+        try {
         Popcorn.getJSONP( requestString, function( data ) {
           if ( data.meta.msg === "OK" ) {
             var commonDiv = document.createElement( "div" );
@@ -387,11 +388,15 @@
             }
           } else {
             // There was an error somewhere down the line that caused the request to fail.
-            commonDiv.innerHTML += "Error. Request failed. Status code: " + data.meta.status + " - Message: " + data.meta.msg +
-              "<br/>This could be due to an invalid blogId.";
-            options._container.appendChild( commonDiv );
+            //commonDiv.innerHTML += "Error. Request failed. Status code: " + data.meta.status + " - Message: " + data.meta.msg +
+              //"<br/>This could be due to an invalid blogId.";
+            //options._container.appendChild( commonDiv );
+            Popcorn.error( "Error. Request failed. Status code: " + data.meta.status + " - Message: " + data.meta.msg );
           }
         }, false );
+        catch ( e ){
+          Popcorn.error( e.message );
+        }
       }
       options._container.style.display = "none";
       target && target.appendChild( options._container );
