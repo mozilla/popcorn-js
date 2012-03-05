@@ -133,7 +133,7 @@ test( "Popcorn.getTrackEvents", function() {
 
   equal( Popcorn.getTrackEvents( popcorn ).length, 0, "Popcorn.getTrackEvents() currently has no trackEvents" );
 
-  popcorn.exec( 1, function(){ });
+  popcorn.cue( 1, function(){ });
 
   equal( Popcorn.getTrackEvents( popcorn ).length, 1, "Currently only one track event" );
 
@@ -725,9 +725,9 @@ test( "Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
 
   // Calling exec() will create tracks and added them to the
   // trackreference internally
-  popped.exec( 1, function() { /* ... */ });
-  popped.exec( 3, function() { /* ... */ });
-  popped.exec( 5, function() { /* ... */ });
+  popped.cue( 1, function() { /* ... */ });
+  popped.cue( 3, function() { /* ... */ });
+  popped.cue( 5, function() { /* ... */ });
 
   equal( Popcorn.sizeOf( popped.data.trackRefs ), 3, "There are 3 trackRefs in popped.data.trackRefs" );
 
@@ -741,16 +741,21 @@ test( "Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
 module( "Popcorn Prototype Methods" );
 
 test( "deprecated method warning", function() {
-  expect( 2 );
+  expect( 3 );
 
   var $pop = Popcorn( "#video" ),
       handler = function() {},
-      oldwarn = console.warn;
+      oldwarn = console.warn,
+      count = 0;
 
   // Intercept console.warn messages
   console.warn = function() {
-    ok( true, "warning logged: " + arguments[0] );
-    return oldwarn.apply( console, [].slice.call(arguments) );
+    if ( ++count <= 3 ) {
+      ok( true, "warning logged: " + arguments[0] );
+      return oldwarn.apply( console, [].slice.call(arguments) );
+    } else {
+      console.warn = oldwarn;
+    }
   };
 
   $pop.listen( "foo", handler).trigger( "foo" ).unlisten( "foo", handler );
@@ -791,8 +796,8 @@ test( "exec", function() {
 
       setTimeout(function() {
 
-        equal( loop, expects, "exec callback repeat check, only called twice" );
-        Popcorn.removePlugin( popped, "exec" );
+        equal( loop, expects, "cue callback repeat check, only called twice" );
+        Popcorn.removePlugin( popped, "cue" );
         start();
 
       }, 1000 );
@@ -801,8 +806,8 @@ test( "exec", function() {
 
   stop( 10000 );
 
-  popped.exec( 4, function() {
-    ok( loop < 2, "exec callback fired " + ++loop );
+  popped.cue( 4, function() {
+    ok( loop < 2, "cue callback fired " + ++loop );
     plus();
 
     if ( !hasLooped ) {
@@ -815,10 +820,13 @@ test( "exec", function() {
 });
 
 test( "cue (alias of exec)", function() {
-  expect( 3 );
+  expect( 2 );
   ok( Popcorn.p.cue, "Popcorn.p.cue exists" );
   equal( typeof Popcorn.p.cue, "function", "Popcorn.p.cue is a function" );
-  deepEqual( Popcorn.p.cue, Popcorn.p.exec, "Popcorn.p.cue equals Popcorn.p.exec" );
+
+  // Sing exec is being overwritten with a function that inlines
+  // a deprecated warning message, this test is no longer valid
+  // deepEqual( Popcorn.p.cue, Popcorn.p.exec, "Popcorn.p.cue equals Popcorn.p.exec" );
 });
 
 test( "mute", function() {
@@ -952,9 +960,9 @@ test( "play(n)/pause(n) custom stop()", function() {
 
   $pop.on( "canplayall", function() {
 
-    this.exec( 4, function() {
+    this.cue( 4, function() {
 
-      this.exec( 0, function() {
+      this.cue( 0, function() {
 
         equal( this.currentTime(), 0, "currentTime is 0" );
         plus();
@@ -1395,7 +1403,7 @@ test( "Stored By Type", function() {
     plus();
   });
 
-  p.trigger( "play" );
+  p.emit( "play" );
 
   if ( fired < 4 ) {
     start();
@@ -1439,7 +1447,7 @@ test( "Simulated", function() {
   });
 
   Setup.events.forEach( function( name ) {
-    p.trigger( name );
+    p.emit( name );
   });
 });
 
@@ -1510,7 +1518,7 @@ test( "Custom", function() {
     plus();
   });
 
-  p.trigger( "eventz0rz" );
+  p.emit( "eventz0rz" );
 });
 
 test( "on/off/emit", function() {
@@ -1558,7 +1566,7 @@ test( "UI/Mouse", function() {
     plus();
   });
 
-  p.trigger( "click" );
+  p.emit( "click" );
 });
 
 module( "Popcorn Plugin" );
@@ -1908,7 +1916,7 @@ test( "Exceptions", function() {
     this.exceptions({
       start: 1,
       end: 2
-    }).exec( 3, function() {
+    }).cue( 3, function() {
       equal( Popcorn.plugin.errors.length, 1, "Popcorn.plugin.errors has one item" );
       plus();
     }).currentTime( 0 ).play();
@@ -2172,7 +2180,7 @@ test( "Update Timer (timeupdate)", function() {
     wrapper: "two"
   })
   // checking wrapper 2's start
-  .exec( 5, function() {
+  .cue( 5, function() {
 
     if ( execCount === 0 ) {
 
@@ -2184,7 +2192,7 @@ test( "Update Timer (timeupdate)", function() {
     }
   })
   // checking wrapper 1's start
-  .exec( 6, function() {
+  .cue( 6, function() {
 
     if ( execCount === 1 ) {
 
@@ -2196,7 +2204,7 @@ test( "Update Timer (timeupdate)", function() {
     }
   })
   // checking wrapper 1's end
-  .exec( 7, function() {
+  .cue( 7, function() {
 
     if ( execCount === 2 ) {
 
@@ -2208,7 +2216,7 @@ test( "Update Timer (timeupdate)", function() {
     }
   })
   // checking wrapper 2's end
-  .exec( 8, function() {
+  .cue( 8, function() {
 
     if ( execCount === 3 ) {
 
@@ -2350,7 +2358,7 @@ test( "Update Timer (frameAnimation)", function() {
     wrapper: "two"
   })
   // checking wrapper 2's start
-  .exec( 5, function() {
+  .cue( 5, function() {
 
     if ( execCount === 0 ) {
 
@@ -2362,7 +2370,7 @@ test( "Update Timer (frameAnimation)", function() {
     }
   })
   // checking wrapper 1's start
-  .exec( 6, function() {
+  .cue( 6, function() {
 
     if ( execCount === 1 ) {
 
@@ -2374,7 +2382,7 @@ test( "Update Timer (frameAnimation)", function() {
     }
   })
   // checking wrapper 1's end
-  .exec( 7, function() {
+  .cue( 7, function() {
 
     if ( execCount === 2 ) {
 
@@ -2386,7 +2394,7 @@ test( "Update Timer (frameAnimation)", function() {
     }
   })
   // checking wrapper 2's end
-  .exec( 8, function() {
+  .cue( 8, function() {
 
     if ( execCount === 3 ) {
 
@@ -2683,49 +2691,49 @@ test( "Popcorn Compose", function() {
   equal( test.two.setup, 3, "three compose two setup" );
   plus();
 
-  popped.exec( 0, function() {
+  popped.cue( 0, function() {
     equal( test.one.running, 1, "one compose running" );
     plus();
     equal( test.two.running, 1, "one effect running" );
     plus();
   })
-  .exec( 1, function() {
+  .cue( 1, function() {
     equal( test.one.running, 0, "no compose running" );
     plus();
     equal( test.two.running, 0, "no effect running" );
     plus();
   })
-  .exec( 2, function() {
+  .cue( 2, function() {
     equal( test.one.running, 1, "one compose running" );
     plus();
     equal( test.two.running, 0, "no effect running" );
     plus();
   })
-  .exec( 3, function() {
+  .cue( 3, function() {
     equal( test.one.running, 2, "two compose one running" );
     plus();
     equal( test.two.running, 1, "one compose two running" );
     plus();
   })
-  .exec( 4, function() {
+  .cue( 4, function() {
     equal( test.one.running, 0, "no compose one running" );
     plus();
     equal( test.two.running, 0, "no compose two running" );
     plus();
   })
-  .exec( 5, function() {
+  .cue( 5, function() {
     equal( test.one.running, 1, "one effect running" );
     plus();
     equal( test.two.running, 0, "no compose running" );
     plus();
   })
-  .exec( 6, function() {
+  .cue( 6, function() {
     equal( test.one.running, 1, "one effect one running" );
     plus();
     equal( test.two.running, 1, "one effect two running" );
     plus();
   })
-  .exec( 7, function() {
+  .cue( 7, function() {
     popped.removeTrackEvent( effectTrackOne );
     popped.removeTrackEvent( effectTrackTwo );
     popped.removeTrackEvent( effectTrackThree );
@@ -3328,12 +3336,12 @@ test( "In/Out aliases", function() {
   equal( counter, 0, "Counter is at 0, neither in or out have been called" );
   plus();
 
-  popcorn.exec( 2, function() {
+  popcorn.cue( 2, function() {
     equal( counter, 1, "Counter is at 1, in has been called" );
     plus();
   });
 
-  popcorn.exec( 4, function() {
+  popcorn.cue( 4, function() {
     equal( counter, 2, "Counter is at 2, out has been called" );
     plus();
   });
@@ -3525,20 +3533,20 @@ test( "Index Integrity ( removing tracks )", function() {
 
   tId = $pop.getLastTrackEventId();
 
-  $pop.exec( 1, function() {
+  $pop.cue( 1, function() {
     equal( fired.one === false && fired.two === false && fired.three === false, true, "nothing fired yet" );
     plus();
     fired.one = true;
     $pop.removeTrackEvent( tId );
   });
 
-  $pop.exec( 2, function() {
+  $pop.cue( 2, function() {
     equal( fired.one === true && fired.two === false && fired.three === false, true, "One fired, Three has not fired" );
     plus();
     fired.two = true;
   });
 
-  $pop.exec( 3, function() {
+  $pop.cue( 3, function() {
     equal( fired.one === true && fired.two === true && fired.three === false, true, "One and Two fired, three not fired");
     plus();
   });
@@ -3595,7 +3603,7 @@ test( "Index Integrity ( timeUpdate )", function() {
       end: 41
     });
 
-    $pop.exec( 42, function() {
+    $pop.cue( 42, function() {
       // 4 track events: startpad, endpad, ff and exec
       equal( $pop.data.trackEvents.byStart.length, 4, "$pop.data.trackEvents.byStart.length is 4 - after play, before removeTrackEvent" );
       plus();
@@ -3666,7 +3674,7 @@ test( "Index Integrity (frameAnimation)", function() {
       end: 41
     });
 
-    $pop.exec( 42, function() {
+    $pop.cue( 42, function() {
       // 4 track events: startpad, endpad, ff and exec
       equal( $pop.data.trackEvents.byStart.length, 4, "$pop.data.trackEvents.byStart.length is 4 - after play, before removeTrackEvent" );
       plus();
@@ -3720,7 +3728,7 @@ test( "Popcorn.disable/enable/toggle (timeupdate)", function() {
     };
   });
 
-  $pop.exec( 40, function() {
+  $pop.cue( 40, function() {
 
     //  make sure toggler never happened
     // look for: "toggler-test"

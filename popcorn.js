@@ -545,7 +545,7 @@
         _natives: {
           start: fn || Popcorn.nop,
           end: Popcorn.nop,
-          type: "exec"
+          type: "cue"
         }
       });
 
@@ -1893,14 +1893,19 @@
   Popcorn.forEach({
     // Deprecated: Recommended
     "listen": "on",
-    "unlisten": "off"
+    "unlisten": "off",
+    "trigger": "emit",
+    "exec": "cue"
 
   }, function( recommend, api ) {
     // Override the deprecated api method with a method of the same name
     // that logs a warning and defers to the new recommended method
     Popcorn.p[ api ] = function() {
       if ( console && console.warn ) {
-        console.warn( "Deprecated method '" + api + "', use '" + recommend + "' instead." );
+        console.warn(
+          "Deprecated method '" + api + "', " +
+          (recommend == null ? "do not use." : "use '" + recommend + "' instead." )
+        );
       }
       return Popcorn.p[ recommend ].apply( this, [].slice.call( arguments ) );
     };
