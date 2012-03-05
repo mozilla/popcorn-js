@@ -258,10 +258,6 @@ Popcorn.player( "youtube", {
         allowScriptAccess: "always"
       };
 
-      attributes = {
-        id: container.id
-      };
-
       src = /^.*(?:\/|v=)(.{11})/.exec( media.src )[ 1 ];
 
       query = ( media.src.split( "?" )[ 1 ] || "" ).replace( /v=.{11}/, "" );
@@ -271,8 +267,12 @@ Popcorn.player( "youtube", {
       width = media.style.width ? "" + media.offsetWidth : "560";
       height = media.style.height ? "" + media.offsetHeight : "315";
 
-      swfobject.embedSWF( "//www.youtube.com/e/" + src + "?" + query + "&enablejsapi=1&playerapiid=" + container.id + "&version=3",
-                          container.id, width, height, "8", null, flashvars, params, attributes );
+      attributes = {
+        id: container.id,
+        "data-youtube-player": "//www.youtube.com/e/" + src + "?" + query + "&enablejsapi=1&playerapiid=" + container.id + "&version=3"
+      };
+
+      swfobject.embedSWF( attributes[ "data-youtube-player" ], container.id, width, height, "8", null, flashvars, params, attributes );
     };
 
     if ( !window.swfobject ) {

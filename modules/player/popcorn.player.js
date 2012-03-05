@@ -41,7 +41,7 @@
           timeout,
           popcorn;
 
-      if ( !container.addEventListener && container.attachEvent ) {
+      if ( !Object.prototype.__defineGetter__ ) {
 
         basePlayer = container || document.createElement( "div" );
       }
@@ -54,7 +54,7 @@
 
           continue;
         }
-      
+
         if ( typeof container[ val ] === "object" ) {
 
           basePlayer[ val ] = container[ val ];

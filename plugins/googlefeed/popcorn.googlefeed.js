@@ -172,13 +172,13 @@
       title: {
         elem: "input",
         type: "text",
-        label: "title"
+        label: "title",
         optional: true
       },
       orientation: {
         elem: "select",
         options: [ "Vertical", "Horizontal" ],
-        label: "orientation"
+        label: "orientation",
         optional: true
       }
     }
