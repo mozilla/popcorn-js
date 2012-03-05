@@ -878,7 +878,7 @@ test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function
         $pop.unlisten( "seeked", firstSeekedEvent );
         equal( Math.round( $pop.currentTime() ), 10, "play(n) sets currentTime to 10" );
         plus();
-      
+
         $pop.listen( "seeked", secondSeekedEvent );
         $pop.pause( 5 );
       },
@@ -888,7 +888,7 @@ test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function
         equal( Math.round( $pop.currentTime() ), 5, "pause(n) sets currentTime to 5" );
         plus();
       };
-      
+
       $pop.listen( "seeked", firstSeekedEvent );
       $pop.play( 10 ).pause();
     } else {
@@ -1766,7 +1766,7 @@ test( "Configurable Defaults", function() {
   p.defaults( "funtionInitDefaults", {
     defaultItem: "foo bar"
   });
-          
+
   p.funtionInitDefaults({});
 
   p.defaults( "configurable", {
@@ -2211,7 +2211,7 @@ test( "Update Timer (frameAnimation)", function() {
 
   QUnit.reset();
 
-  if ( !document.hasFocus() ) {
+  if ( document.hasFocus && !document.hasFocus() ) {
 
     ok( false, "frame animation tests need focus" );
     return;
@@ -2864,7 +2864,7 @@ test( "Teardown end noise", function() {
   stop( 15000 );
 
   Popcorn.plugin( "noise", {});
-  
+
   Popcorn.plugin( "teardownEndTester", {
     _setup: function( options ) {
       options.endCalled = false;
