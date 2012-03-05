@@ -394,7 +394,7 @@
             Popcorn.error( "Error. Request failed. Status code: " + data.meta.status + " - Message: " + data.meta.msg );
           }
         }, false );
-        catch ( e ){
+        } catch ( e ){
           Popcorn.error( e.message );
         }
       }
