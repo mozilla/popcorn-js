@@ -288,7 +288,7 @@
 
             Popcorn.timeUpdate( self, {} );
 
-            self.trigger( "timeupdate" );
+            self.emit( "timeupdate" );
 
             !self.isDestroyed && requestAnimFrame( self.data.timeUpdate );
           };
@@ -572,7 +572,7 @@
       }
 
       // Trigger either muted|unmuted event
-      this.trigger( event );
+      this.emit( event );
 
       return this;
     },
@@ -1116,7 +1116,7 @@
             byEnd._running = false;
             natives.end.call( obj, event, byEnd );
 
-            obj.trigger( trackend,
+            obj.emit( trackend,
               Popcorn.extend({}, byEnd, {
                 plugin: type,
                 type: trackend
@@ -1150,7 +1150,7 @@
             byStart._running = true;
             natives.start.call( obj, event, byStart );
 
-            obj.trigger( trackstart,
+            obj.emit( trackstart,
               Popcorn.extend({}, byStart, {
                 plugin: type,
                 type: trackstart
@@ -1207,7 +1207,7 @@
             byStart._running = false;
             natives.end.call( obj, event, byStart );
 
-            obj.trigger( trackend,
+            obj.emit( trackend,
               Popcorn.extend({}, byEnd, {
                 plugin: type,
                 type: trackend
@@ -1240,7 +1240,7 @@
             byEnd._running = true;
             natives.start.call( obj, event, byEnd );
 
-            obj.trigger( trackstart,
+            obj.emit( trackstart,
               Popcorn.extend({}, byStart, {
                 plugin: type,
                 type: trackstart
@@ -1540,7 +1540,7 @@
 
         // Trigger an error that the instance can listen for
         // and react to
-        this.trigger( "error", Popcorn.plugin.errors );
+        this.emit( "error", Popcorn.plugin.errors );
       }
     };
   }
@@ -1898,6 +1898,7 @@
     "exec": "cue"
 
   }, function( recommend, api ) {
+    var original = Popcorn.p[ api ];
     // Override the deprecated api method with a method of the same name
     // that logs a warning and defers to the new recommended method
     Popcorn.p[ api ] = function() {
@@ -1906,6 +1907,9 @@
           "Deprecated method '" + api + "', " +
           (recommend == null ? "do not use." : "use '" + recommend + "' instead." )
         );
+
+        // Restore api after first warning
+        Popcorn.p[ api ] = original;
       }
       return Popcorn.p[ recommend ].apply( this, [].slice.call( arguments ) );
     };
