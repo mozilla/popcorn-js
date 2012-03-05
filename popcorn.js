@@ -1476,7 +1476,7 @@
 
           if ( reserved.indexOf( type ) === -1 ) {
 
-            this.listen( type, callback );
+            this.on( type, callback );
           }
         }
 
@@ -1488,11 +1488,11 @@
     //  Extend Popcorn.p with new named definition
     //  Assign new named definition
     Popcorn.p[ name ] = plugin[ name ] = function( options ) {
-    
+
       // Merge with defaults if they exist, make sure per call is prioritized
       var defaults = ( this.options.defaults && this.options.defaults[ name ] ) || {},
           mergedSetupOpts = Popcorn.extend( {}, defaults, options );
-      
+
       return pluginFn.call( this, isfn ? definition.call( this, mergedSetupOpts ) : definition,
                                   mergedSetupOpts );
     };
@@ -1888,6 +1888,24 @@
       return val.toLowerCase();
     })
   };
+
+  // Setup logging for deprecated methods
+  Popcorn.forEach({
+    // Deprecated: Recommended
+    "listen": "on",
+    "unlisten": "off"
+
+  }, function( recommend, api ) {
+    var _saved = Popcorn.p[ api ];
+
+    Popcorn.p[ api ] = function() {
+      if ( console && console.warn ) {
+        console.warn( "Deprecated method '" + api + "', use '" + recommend + "' instead." );
+      }
+      return Popcorn.p[ recommend ].apply( this, [].slice.call( arguments ) );
+    };
+  });
+
 
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;

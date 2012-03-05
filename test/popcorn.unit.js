@@ -740,6 +740,22 @@ test( "Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
 
 module( "Popcorn Prototype Methods" );
 
+test( "deprecated method warning", function() {
+  expect( 2 );
+
+  var $pop = Popcorn( "#video" ),
+      handler = function() {},
+      oldwarn = console.warn;
+
+  // Intercept console.warn messages
+  console.warn = function() {
+    ok( true, "warning logged: " + arguments[0] );
+    return oldwarn.apply( console, [].slice.call(arguments) );
+  };
+
+  $pop.listen( "foo", handler).trigger( "foo" ).unlisten( "foo", handler );
+});
+
 test( "roundTime", function() {
 
   QUnit.reset();
@@ -748,8 +764,8 @@ test( "roundTime", function() {
 
   var popped = Popcorn( "#video" );
 
-  popped.listen( "canplayall", function() {
-    popped.unlisten( "canplayall" );
+  popped.on( "canplayall", function() {
+    popped.off( "canplayall" );
     popped.play().pause().currentTime( 0.98 );
 
     equal( 1, popped.roundTime(), ".roundTime() returns 1 when currentTime is 0.98s" );
@@ -822,27 +838,27 @@ test( "mute", function() {
 
   stop();
 
-  video.listen( "muted", function() {
+  video.on( "muted", function() {
 
     equal( this.media.muted, true, "Video `muted` attribute is true when muted" );
     plus();
 
     this.unmute();
 
-  }).listen( "unmuted", function() {
+  }).on( "unmuted", function() {
 
     equal( this.media.muted, false, "Video `muted` attribute is false when unmuted" );
     plus();
   });
 
-  audio.listen( "muted", function() {
+  audio.on( "muted", function() {
 
     equal( this.media.muted, true, "Audio `muted` attribute is true when muted" );
     plus();
 
     this.unmute();
 
-  }).listen( "unmuted", function() {
+  }).on( "unmuted", function() {
 
     equal( this.media.muted, false, "Audio `muted` attribute is false when unmuted" );
     plus();
@@ -875,21 +891,21 @@ test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function
       // this should trigger immediately
       var firstSeekedEvent = function() {
 
-        $pop.unlisten( "seeked", firstSeekedEvent );
+        $pop.off( "seeked", firstSeekedEvent );
         equal( Math.round( $pop.currentTime() ), 10, "play(n) sets currentTime to 10" );
         plus();
-      
-        $pop.listen( "seeked", secondSeekedEvent );
+
+        $pop.on( "seeked", secondSeekedEvent );
         $pop.pause( 5 );
       },
       secondSeekedEvent = function() {
 
-        $pop.unlisten( "seeked", secondSeekedEvent );
+        $pop.off( "seeked", secondSeekedEvent );
         equal( Math.round( $pop.currentTime() ), 5, "pause(n) sets currentTime to 5" );
         plus();
       };
-      
-      $pop.listen( "seeked", firstSeekedEvent );
+
+      $pop.on( "seeked", firstSeekedEvent );
       $pop.play( 10 ).pause();
     } else {
       setTimeout( poll, 10 );
@@ -926,7 +942,7 @@ test( "play(n)/pause(n) custom stop()", function() {
     if ( ++count === expects ) {
       // Remove custom stop() method
       delete Popcorn.p.stop;
-      $pop.unlisten( "canplayall" );
+      $pop.off( "canplayall" );
       $pop.destroy();
       start();
     }
@@ -934,7 +950,7 @@ test( "play(n)/pause(n) custom stop()", function() {
 
   stop( 8000 );
 
-  $pop.listen( "canplayall", function() {
+  $pop.on( "canplayall", function() {
 
     this.exec( 4, function() {
 
@@ -1052,8 +1068,8 @@ test( "Popcorn.events.hooks: canplayall", function() {
 
   function plus(){
     if ( ++count == expects ) {
-      $pop.unlisten( "canplayall");
-      $pop.unlisten( "canplaythrough" );
+      $pop.off( "canplayall");
+      $pop.off( "canplaythrough" );
       $pop.destroy();
       start();
     }
@@ -1084,12 +1100,12 @@ test( "Popcorn.events.hooks: canplayall", function() {
 
   $pop = Popcorn( "#event-fixture" );
 
-  $pop.listen( "canplayall", function( event ) {
+  $pop.on( "canplayall", function( event ) {
     equal( ++fired, 1, "canplayall is fired only once" );
     plus();
   });
 
-  $pop.listen( "canplaythrough", function( event ) {
+  $pop.on( "canplaythrough", function( event ) {
     // this should trigger re-fires of the original event
     this.currentTime( 0 );
   });
@@ -1117,8 +1133,8 @@ test( "Popcorn.events.hooks: canplayall fires immediately if ready", function() 
   function poll() {
     if ( $pop.media.readyState >= 2 ) {
       // this should trigger immediately
-      $pop.listen( "canplayall", function( event ) {
-        this.unlisten( "canplayall" );
+      $pop.on( "canplayall", function( event ) {
+        this.off( "canplayall" );
         equal( ++fired, 1, "canplayall is fired immediately if readyState permits" );
         plus();
       });
@@ -1339,7 +1355,7 @@ test( "Stored By Type", function() {
 
       equal( fired, wants, "Number of callbacks fired from 1 handler" );
 
-      p.unlisten( "play" );
+      p.off( "play" );
 
       ok( !p.data.events[ "play" ], "play handlers removed" );
 
@@ -1351,28 +1367,28 @@ test( "Stored By Type", function() {
 
   stop( 10000 );
 
-  p.listen( "play", function() {
+  p.on( "play", function() {
     fired++;
 
     ok( true, "Play fired " + fired );
     plus();
   });
 
-  p.listen( "play", function() {
+  p.on( "play", function() {
     fired++;
 
     ok( true, "Play fired " + fired );
     plus();
   });
 
-  p.listen( "play", function() {
+  p.on( "play", function() {
     fired++;
 
     ok( true, "Play fired " + fired );
     plus();
   });
 
-  p.listen( "play", function() {
+  p.on( "play", function() {
     fired++;
 
     ok( true, "Play fired " + fired );
@@ -1385,7 +1401,7 @@ test( "Stored By Type", function() {
     start();
   }
 
-  p.unlisten( "play" );
+  p.off( "play" );
 });
 
 
@@ -1411,13 +1427,13 @@ test( "Simulated", function() {
   stop( 10000 );
 
   Setup.events.forEach(function( name ) {
-    p.listen( name, function( event ) {
+    p.on( name, function( event ) {
 
       if ( completed.indexOf( name ) === -1 ) {
         ok( true, name + " fired" );
         plus();
         completed.push( name );
-        this.unlisten( name );
+        this.off( name );
       }
     });
   });
@@ -1448,18 +1464,18 @@ test( "Real", function() {
 
   [ "play", "pause", "volumechange", "seeking", "seeked" ].forEach(function( name ) {
 
-    p.listen( name, function( event ) {
+    p.on( name, function( event ) {
 
       if ( completed.indexOf( name ) === -1 ) {
         ok( true, name + " fired" );
         plus();
         completed.push( name );
-        p.unlisten( name );
+        p.off( name );
       }
     });
   });
-  p.listen( "canplayall", function() {
-    this.unlisten( "canplayall" );
+  p.on( "canplayall", function() {
+    this.off( "canplayall" );
     this.pause();
     this.play();
     this.volume( 0.9 );
@@ -1477,7 +1493,7 @@ test( "Custom", function() {
 
   function plus(){
     if ( ++count == expects ) {
-      p.unlisten( "eventz0rz" );
+      p.off( "eventz0rz" );
       p.destroy()
       start();
     }
@@ -1488,7 +1504,7 @@ test( "Custom", function() {
   p = Popcorn( "#video" );
 
 
-  p.listen( "eventz0rz", function( event ) {
+  p.on( "eventz0rz", function( event ) {
 
     ok( true, "Custom event fired" );
     plus();
@@ -1526,7 +1542,7 @@ test( "UI/Mouse", function() {
 
   function plus(){
     if ( ++count == expects ) {
-      p.unlisten( "click" );
+      p.off( "click" );
       p.destroy();
       start();
     }
@@ -1536,7 +1552,7 @@ test( "UI/Mouse", function() {
 
   p = Popcorn( "#video" );
 
-  p.listen( "click", function( event ) {
+  p.on( "click", function( event ) {
 
     ok( true, "click event fired" );
     plus();
@@ -1766,7 +1782,7 @@ test( "Configurable Defaults", function() {
   p.defaults( "funtionInitDefaults", {
     defaultItem: "foo bar"
   });
-          
+
   p.funtionInitDefaults({});
 
   p.defaults( "configurable", {
@@ -1888,7 +1904,7 @@ test( "Exceptions", function() {
     }
   });
 
-  $pop.listen( "canplayall", function() {
+  $pop.on( "canplayall", function() {
     this.exceptions({
       start: 1,
       end: 2
@@ -1897,7 +1913,7 @@ test( "Exceptions", function() {
       plus();
     }).currentTime( 0 ).play();
 
-    this.listen( "error", function( errors ) {
+    this.on( "error", function( errors ) {
       ok( errors.length, "`errors` array has error objects" );
       plus();
       ok( errors[ 0 ].thrown, "`errors[ 0 ].thrown` property exists" );
@@ -1974,7 +1990,7 @@ test( "Special track event listeners: trackstart, trackend", function() {
   $pop.emitter({
     start: 1,
     end: 3
-  }).listen( "trackstart", function( event ) {
+  }).on( "trackstart", function( event ) {
 
     equal( event.type, "trackstart", "Special trackstart event object includes correct type" );
     plus();
@@ -1983,7 +1999,7 @@ test( "Special track event listeners: trackstart, trackend", function() {
     equal( event.plugin, "emitter", "Special trackstart event object includes correct plugin name" );
     plus();
 
-  }).listen( "trackend", function( event ) {
+  }).on( "trackend", function( event ) {
 
     equal( event.type, "trackend", "Special trackend event object includes correct type" );
     plus();
@@ -2557,8 +2573,8 @@ test( "Popcorn Compose", function() {
         }
       };
 
-  popped.listen( "seeked", function() {
-   this.unlisten( "seeked" );
+  popped.on( "seeked", function() {
+   this.off( "seeked" );
    this.play( 0 );
   });
 
@@ -2864,7 +2880,7 @@ test( "Teardown end noise", function() {
   stop( 15000 );
 
   Popcorn.plugin( "noise", {});
-  
+
   Popcorn.plugin( "teardownEndTester", {
     _setup: function( options ) {
       options.endCalled = false;
@@ -3077,8 +3093,8 @@ test( "Remove Plugin", function() {
   expect( expects );
   stop( 10000 );
 
-  p.listen( "seeked", function() {
-    this.unlisten( "seeked" );
+  p.on( "seeked", function() {
+    this.off( "seeked" );
 
     equal( rlen, 0, "Popcorn.registry.length is empty" );
     plus();
@@ -3297,8 +3313,8 @@ test( "In/Out aliases", function() {
     out: 3
   });
 
-  popcorn.listen( "seeked", function() {
-    this.unlisten( "seeked" ).play( 0 );
+  popcorn.on( "seeked", function() {
+    this.off( "seeked" ).play( 0 );
   })
 
   popcorn.currentTime( 0 ).pause();
@@ -3527,7 +3543,7 @@ test( "Index Integrity ( removing tracks )", function() {
     plus();
   });
 
-  $pop.listen( "canplayall", function() {
+  $pop.on( "canplayall", function() {
     this.volume( 0 ).play( 0 );
   });
 });
@@ -3571,7 +3587,7 @@ test( "Index Integrity ( timeUpdate )", function() {
   equal( $pop.data.trackEvents.startIndex, 1, "$pop.data.trackEvents.startIndex is 1" );
   plus();
 
-  $pop.listen( "canplayall", function() {
+  $pop.on( "canplayall", function() {
 
     $pop.ff({
       id: "removeable-track-event",
@@ -3642,7 +3658,7 @@ test( "Index Integrity (frameAnimation)", function() {
   equal( $pop.data.trackEvents.startIndex, 1, "$pop.data.trackEvents.startIndex is 1" );
   plus();
 
-  $pop.listen( "canplayall", function() {
+  $pop.on( "canplayall", function() {
 
     $pop.ff({
       id: "removeable-track-event",
