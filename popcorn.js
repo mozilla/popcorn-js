@@ -1790,7 +1790,7 @@
       url = url.replace( parts.join( "=" ), parts[ 0 ] + "=" + callback );
     }
 
-    script.onload = function() {
+    script.addEventListener( "load",  function() {
 
       //  Handling remote script loading callbacks
       if ( isScript ) {
@@ -1805,7 +1805,7 @@
       }
       //  Garbage collect the script resource
       head.removeChild( script );
-    };
+    }, false );
 
     script.src = url;
 

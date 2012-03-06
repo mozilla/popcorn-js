@@ -107,7 +107,7 @@
 
       Popcorn.xhr.getJSONP( _uri, function( data ) {
 
-        var fragment = document.createElement( "p" );
+        var fragment = document.createElement( "div" );
 
         fragment.innerHTML = "<p style='padding:" + _padding + ";'>" + data.title + "<p/>";
 
