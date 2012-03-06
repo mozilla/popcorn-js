@@ -44,11 +44,10 @@
     }
   };
 
-  var hasOwn = Object.prototype.hasOwnProperty;
-
   Array.prototype.forEach = Array.prototype.forEach || function( fn, context ) {
 
-    var obj = this;
+    var obj = this,
+        hasOwn = Object.prototype.hasOwnProperty;
 
     if ( !obj || !fn ) {
       return {};
