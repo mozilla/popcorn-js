@@ -50,7 +50,7 @@
 
     var obj = this;
 
-      if ( !obj || !fn ) {
+    if ( !obj || !fn ) {
       return {};
     }
 
@@ -75,7 +75,7 @@
       var T, A, k;
 
       if ( this == null ) {
-        throw new TypeError( " this is null or not defined" );
+        throw new TypeError( "this is null or not defined" );
       }
 
       // 1. Let O be the result of calling ToObject passing the |this| value as the argument.
