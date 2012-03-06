@@ -7,6 +7,7 @@ PARSERS_DIR = ${PREFIX}/parsers
 PLAYERS_DIR = ${PREFIX}/players
 EFFECTS_DIR = $(PREFIX)/effects
 MODULES_DIR = $(PREFIX)/modules
+IE8_DIR = $(PREFIX)/ie8
 
 # Version number used in naming release files. Defaults to git commit sha.
 VERSION ?= $(shell git show -s --pretty=format:%h)
@@ -88,6 +89,16 @@ POPCORN_COMPLETE_LIST := --js ${POPCORN_SRC} \
 POPCORN_COMPLETE_DIST = ${DIST_DIR}/popcorn-complete.js
 POPCORN_COMPLETE_MIN = ${DIST_DIR}/popcorn-complete.min.js
 
+# For IE8 compat we include a subset of all files, known to work with IE8.
+POPCORN_IE8_FILES := \
+  $(IE8_DIR)/popcorn.ie8.js \
+  $(POPCORN_SRC) \
+  $(MODULES_DIR)/player/popcorn.player.js \
+  $(PLAYERS_DIR)/youtube/popcorn.youtube.js
+
+POPCORN_IE8_DIST = $(DIST_DIR)/popcorn-ie8.js
+POPCORN_IE8_MIN = $(DIST_DIR)/popcorn-ie8.min.js
+
 # Create a versioned license header for js files we ship
 add_license = cat $(PREFIX)/LICENSE_HEADER | sed -e 's/@VERSION/${VERSION}/' > $(1).__hdr__ ; \
 	                    cat $(1).__hdr__ $(1) >> $(1).__tmp__ ; rm -f $(1).__hdr__ ; \
@@ -100,7 +111,7 @@ add_version = cat $(1) | sed -e 's/@VERSION/${VERSION}/' > $(1).__tmp__ ; \
 # Run the file through jslint
 run_lint = @@$(RHINO) build/jslint-check.js $(1)
 
-all: setup popcorn plugins parsers players effects complete min
+all: setup popcorn plugins parsers players effects complete min ie8
 	@@echo "Popcorn build complete.  To create a testing mirror, run: make testing."
 
 check: lint lint-plugins lint-parsers lint-players lint-effects
@@ -185,6 +196,20 @@ complete: setup ${POPCORN_SRC} ${MODULES_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PL
 	@@cat ${POPCORN_SRC} ${MODULES_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) > $(POPCORN_COMPLETE_DIST)
 	@@$(call add_license, $(POPCORN_COMPLETE_DIST))
 	@@$(call add_version, $(POPCORN_COMPLETE_DIST))
+
+ie8: $(POPCORN_IE8_MIN)
+
+$(POPCORN_IE8_MIN): $(POPCORN_IE8_DIST)
+	@@echo "Building" $(POPCORN_IE8_MIN)
+	@@$(call compile, --js $(POPCORN_IE8_DIST), $(POPCORN_IE8_MIN))
+	@@$(call add_license, $(POPCORN_IE8_MIN))
+	@@$(call add_version, $(POPCORN_IE8_MIN))
+
+$(POPCORN_IE8_DIST): $(POPCORN_IE8_FILES) $(DIST_DIR)
+	@@echo "Building $(POPCORN_IE8_DIST)"
+	@@cat $(POPCORN_IE8_FILES) > $(POPCORN_IE8_DIST)
+	@@$(call add_license, $(POPCORN_IE8_DIST))
+	@@$(call add_version, $(POPCORN_IE8_DIST))
 
 lint:
 	@@echo "Checking Popcorn against JSLint..."
