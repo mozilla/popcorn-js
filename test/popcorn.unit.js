@@ -3321,11 +3321,11 @@ test( "In/Out aliases", function() {
     out: 3
   });
 
-  popcorn.on( "seeked", function() {
+  popcorn.listen( "seeked", function() {
     this.off( "seeked" ).play( 0 );
-  })
+  });
 
-  popcorn.currentTime( 0 ).pause();
+  popcorn.currentTime( 0 );
 
   ok( popcorn.data.events[ "in" ], "in is a valid alias for start" );
   plus();
