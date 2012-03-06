@@ -744,12 +744,19 @@ test( "deprecated method warning", function() {
   // If there is no console, then this feature won't work anyway
   // so there is no point in testing it
   if ( typeof console !== "undefined" ) {
-    expect( 3 );
-
     var $pop = Popcorn( "#video" ),
         handler = function() {},
         oldwarn = console.warn,
         count = 0;
+
+    console.warn = null;
+
+    // Known IE9 issue
+    if ( console.warn != null ) {
+      return;
+    }
+
+    expect( 3 );
 
     // Intercept console.warn messages
     console.warn = function() {
