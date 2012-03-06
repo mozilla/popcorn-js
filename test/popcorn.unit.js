@@ -755,7 +755,7 @@ test( "deprecated method warning", function() {
     console.warn = function() {
       if ( ++count <= 3 ) {
         ok( true, "warning logged: " + arguments[0] );
-        return oldwarn.apply( console, [].slice.call(arguments) );
+        // return oldwarn.apply( console, [].slice.call(arguments) );
       } else {
         console.warn = oldwarn;
       }
