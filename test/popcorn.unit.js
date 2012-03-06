@@ -3802,8 +3802,8 @@ test( "end undefined or false should never be fired", function() {
   $pop.neverEndingStory({});
   $pop.neverEndingStory({ end: false });
   $pop.neverEndingStory({ end: undefined });
-  $pop.endingStory({ end: 64.541666 });
-  $pop.play( 64.541666 );
+  $pop.endingStory({ end: $pop.duration() });
+  $pop.currentTime( $pop.duration() );
 });
 
 module( "Popcorn XHR" );
