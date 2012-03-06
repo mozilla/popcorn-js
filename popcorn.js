@@ -160,7 +160,7 @@
       if ( typeof entity === "function" ) {
 
         //  If document ready has already fired
-        if ( document.readyState === "interactive" || document.readyState === "complete" ) {
+        if ( document.readyState === "complete" ) {
 
           entity( document, Popcorn );
 
