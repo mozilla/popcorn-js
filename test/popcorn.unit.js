@@ -741,24 +741,35 @@ test( "Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
 module( "Popcorn Prototype Methods" );
 
 test( "deprecated method warning", function() {
-  expect( 3 );
+  // If there is no console, then this feature won't work anyway
+  // so there is no point in testing it
+  if ( typeof console !== "undefined" ) {
+    var $pop = Popcorn( "#video" ),
+        handler = function() {},
+        oldwarn = console.warn,
+        count = 0;
 
-  var $pop = Popcorn( "#video" ),
-      handler = function() {},
-      oldwarn = console.warn,
-      count = 0;
+    console.warn = null;
 
-  // Intercept console.warn messages
-  console.warn = function() {
-    if ( ++count <= 3 ) {
-      ok( true, "warning logged: " + arguments[0] );
-      return oldwarn.apply( console, [].slice.call(arguments) );
-    } else {
-      console.warn = oldwarn;
+    // Known IE9 issue
+    if ( console.warn != null ) {
+      return;
     }
-  };
 
-  $pop.listen( "foo", handler).trigger( "foo" ).unlisten( "foo", handler );
+    expect( 3 );
+
+    // Intercept console.warn messages
+    console.warn = function() {
+      if ( ++count <= 3 ) {
+        ok( true, "warning logged: " + arguments[0] );
+        // return oldwarn.apply( console, [].slice.call(arguments) );
+      } else {
+        console.warn = oldwarn;
+      }
+    };
+
+    $pop.listen( "foo", handler).trigger( "foo" ).unlisten( "foo", handler );
+  }
 });
 
 test( "roundTime", function() {

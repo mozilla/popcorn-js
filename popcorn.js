@@ -1902,7 +1902,7 @@
     // Override the deprecated api method with a method of the same name
     // that logs a warning and defers to the new recommended method
     Popcorn.p[ api ] = function() {
-      if ( console && console.warn ) {
+      if ( typeof console !== "undefined" && console.warn ) {
         console.warn(
           "Deprecated method '" + api + "', " +
           (recommend == null ? "do not use." : "use '" + recommend + "' instead." )
