@@ -743,7 +743,7 @@ module( "Popcorn Prototype Methods" );
 test( "deprecated method warning", function() {
   // If there is no console, then this feature won't work anyway
   // so there is no point in testing it
-  if ( !console ) {
+  if ( typeof console !== "undefined" ) {
     expect( 3 );
 
     var $pop = Popcorn( "#video" ),
