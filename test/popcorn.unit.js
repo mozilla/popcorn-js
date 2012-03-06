@@ -2448,8 +2448,6 @@ test( "timeUpdate add track event while paused", function() {
 
 test( "Plugin Factory", function () {
 
-  QUnit.reset();
-
   var popped = Popcorn( "#video" ),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
       // 15*2+2+2. executor/complicator each do 15
@@ -2507,8 +2505,8 @@ test( "Plugin Factory", function () {
   plus();
 
   popped.executor({
-    start: 1,
-    end: 2
+    start: 2,
+    end: 3
   });
 
   Popcorn.plugin( "complicator", {
