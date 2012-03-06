@@ -648,7 +648,7 @@ test( "Youtube ready state events", function() {
 
   QUnit.reset();
   var popped,
-      expects = 3,
+      expects = 4,
       count = 0,
       state = 0;
 
