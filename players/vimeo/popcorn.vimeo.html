@@ -155,13 +155,13 @@
           src: "https://www.drumbeat.org/media//images/drumbeat-logo-splash.png",
           target: "imagediv"
         });
-        player.listen( "load", function() {
-          VimeoEmbedLoaded( player );
+        player.listen( "loadedmetadata", function() {
         })
-       .listen( "loadstart", function() {
+       .listen( "loadedmetadata", function() {
           document.getElementById( "player_load" ).innerHTML = "Started";
         })
         .listen( "canplaythrough", function() {
+          VimeoEmbedLoaded( player );
           document.getElementById( "player_load" ).innerHTML = "Finished";
         })
         .play();

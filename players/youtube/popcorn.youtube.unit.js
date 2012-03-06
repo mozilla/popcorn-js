@@ -25,7 +25,7 @@ test( "Player play, pause, autoplay", function() {
 
   pop1 = Popcorn.youtube( "#video6", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
 
-  pop1.listen( "load", function() {
+  pop1.listen( "canplaythrough", function() {
 
     pop1.play();
 
@@ -35,7 +35,7 @@ test( "Player play, pause, autoplay", function() {
 
   pop2 = Popcorn.youtube( "#video7", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
 
-  pop2.listen( "load", function() {
+  pop2.listen( "canplaythrough", function() {
 
     equal( pop2.media.paused, true, "popcorn 2 pauses" );
     plus();
@@ -43,7 +43,7 @@ test( "Player play, pause, autoplay", function() {
 
   pop3 = Popcorn.youtube( "#video8", "http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=0" );
 
-  pop3.listen( "load", function() {
+  pop3.listen( "canplaythrough", function() {
 
     equal( pop3.media.paused, true, "popcorn 3 autoplay off paused" );
     plus();
@@ -51,7 +51,7 @@ test( "Player play, pause, autoplay", function() {
 
   pop4 = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=1" );
 
-  pop4.listen( "load", function() {
+  pop4.listen( "canplaythrough", function() {
 
     equal( pop4.media.paused, false, "popcorn 4 is autoplaying" );
     plus();
@@ -650,4 +650,56 @@ test( "youtube player gets a proper _teardown", function() {
     equal( popcorn.media.children.length, 0, "" );
     plus();
   });
+});
+
+
+test( "Youtube ready state events", function() {
+
+  QUnit.reset();
+  var popped,
+      expects = 3,
+      count = 0,
+      state = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+
+      start();
+    }
+  }
+
+  expect( expects );
+  stop( 10000 );
+
+  var popcorn = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
+  popcorn.listen( "loadeddata", function() {
+
+    popcorn.destroy();
+    equal( popcorn.media.children.length, 0, "" );
+    plus();
+  });
+
+  popped = Popcorn.youtube( "#video6", "http://www.youtube.com/watch?v=nfGV32RNkhw", {
+    events: {
+      canplaythrough: function( e ) {
+
+        equal( state++, 2, "canplaythrough fired first" );
+        plus();
+      },
+      loadedmetadata: function( e ) {
+
+        equal( state++, 0, "loadedmetadata fired third" );
+        plus();
+      },
+      loadeddata: function( e ) {
+
+        equal( state++, 1, "loadeddata fired last" );
+        plus();
+      },
+    }
+  });
+
+  stop();
 });

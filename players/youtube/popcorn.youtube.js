@@ -9,7 +9,7 @@ onYouTubePlayerReady.onErrorEventHandler = {};
 Popcorn.player( "youtube", {
   _canPlayType: function( nodeName, url ) {
 
-    return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/).test( url ) && nodeName.toLower() !== "video";
+    return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/).test( url ) && nodeName.toLowerCase() !== "video";
   },
   _setup: function( options ) {
 
@@ -106,15 +106,15 @@ Popcorn.player( "youtube", {
               media.pause();
             }
 
-            media.readyState = 4;
-            media.dispatchEvent( "canplaythrough" );
-
-            media.dispatchEvent( "load" );
             media.duration = youtubeObject.getDuration();
             media.dispatchEvent( "durationchange" );
             volumeupdate();
 
+            media.dispatchEvent( "loadedmetadata" );
             media.dispatchEvent( "loadeddata" );
+
+            media.readyState = 4;
+            media.dispatchEvent( "canplaythrough" );
 
             return;
           } else if ( state === 0 ) {

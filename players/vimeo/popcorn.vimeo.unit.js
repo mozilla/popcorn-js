@@ -60,7 +60,7 @@ test( "Update Timer", function() {
   }
 
   // These tests come close to 10 seconds on chrome, increasing to 15
-  stop();
+  stop( 15000 );
 
   p2.listen( "canplaythrough", function() {
     p2.unlisten( "canplaythrough" );
@@ -68,9 +68,9 @@ test( "Update Timer", function() {
     plus();
   });
 
-  p2.listen( "load", function() {
-    p2.unlisten( "load" );
-    ok( true, "'load' fired" );
+  p2.listen( "loadedmetadata", function() {
+    p2.unlisten( "loadedmetadata" );
+    ok( true, "'loadedmetadata' fired" );
     plus();
   });
 

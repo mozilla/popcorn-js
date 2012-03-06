@@ -12,7 +12,7 @@
   Popcorn.player( "vimeo", {
     _canPlayType: function( nodeName, url ) {
 
-      return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(vimeo)/).test( url ) && nodeName.toLower() !== "video";
+      return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(vimeo)/).test( url ) && nodeName.toLowerCase() !== "video";
     },
     _setup: function( options ) {
 
@@ -206,14 +206,14 @@
             }
           });
 
-          media.readyState = 4;
-          media.dispatchEvent( "canplaythrough" );
-          media.dispatchEvent( "load" );
+          media.dispatchEvent( "loadedmetadata" );
+          media.dispatchEvent( "loadeddata" );
+
           media.duration = vimeoObject.api_getDuration();
           media.dispatchEvent( "durationchange" );
           volumeUpdate();
-
-          media.dispatchEvent( "loadeddata" );
+          media.readyState = 4;
+          media.dispatchEvent( "canplaythrough" );
         };
 
         flashvars = {

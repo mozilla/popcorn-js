@@ -288,7 +288,7 @@
 
             Popcorn.timeUpdate( self, {} );
 
-            self.trigger( "timeupdate" );
+            self.emit( "timeupdate" );
 
             !self.isDestroyed && requestAnimFrame( self.data.timeUpdate );
           };
@@ -545,7 +545,7 @@
         _natives: {
           start: fn || Popcorn.nop,
           end: Popcorn.nop,
-          type: "exec"
+          type: "cue"
         }
       });
 
@@ -572,7 +572,7 @@
       }
 
       // Trigger either muted|unmuted event
-      this.trigger( event );
+      this.emit( event );
 
       return this;
     },
@@ -1116,7 +1116,7 @@
             byEnd._running = false;
             natives.end.call( obj, event, byEnd );
 
-            obj.trigger( trackend,
+            obj.emit( trackend,
               Popcorn.extend({}, byEnd, {
                 plugin: type,
                 type: trackend
@@ -1150,7 +1150,7 @@
             byStart._running = true;
             natives.start.call( obj, event, byStart );
 
-            obj.trigger( trackstart,
+            obj.emit( trackstart,
               Popcorn.extend({}, byStart, {
                 plugin: type,
                 type: trackstart
@@ -1207,7 +1207,7 @@
             byStart._running = false;
             natives.end.call( obj, event, byStart );
 
-            obj.trigger( trackend,
+            obj.emit( trackend,
               Popcorn.extend({}, byEnd, {
                 plugin: type,
                 type: trackend
@@ -1240,7 +1240,7 @@
             byEnd._running = true;
             natives.start.call( obj, event, byEnd );
 
-            obj.trigger( trackstart,
+            obj.emit( trackstart,
               Popcorn.extend({}, byStart, {
                 plugin: type,
                 type: trackstart
@@ -1429,8 +1429,8 @@
         options.start = options[ "in" ] || 0;
       }
 
-      if ( !( "end" in options ) ) {
-        options.end = options[ "out" ] || this.duration() || Number.MAX_VALUE;
+      if ( !options.end && options.end !== 0 ) {
+        options.end = options[ "out" ] || Number.MAX_VALUE;
       }
 
       // Use hasOwn to detect non-inherited toString, since all
@@ -1476,7 +1476,7 @@
 
           if ( reserved.indexOf( type ) === -1 ) {
 
-            this.listen( type, callback );
+            this.on( type, callback );
           }
         }
 
@@ -1488,11 +1488,11 @@
     //  Extend Popcorn.p with new named definition
     //  Assign new named definition
     Popcorn.p[ name ] = plugin[ name ] = function( options ) {
-    
+
       // Merge with defaults if they exist, make sure per call is prioritized
       var defaults = ( this.options.defaults && this.options.defaults[ name ] ) || {},
           mergedSetupOpts = Popcorn.extend( {}, defaults, options );
-      
+
       return pluginFn.call( this, isfn ? definition.call( this, mergedSetupOpts ) : definition,
                                   mergedSetupOpts );
     };
@@ -1540,7 +1540,7 @@
 
         // Trigger an error that the instance can listen for
         // and react to
-        this.trigger( "error", Popcorn.plugin.errors );
+        this.emit( "error", Popcorn.plugin.errors );
       }
     };
   }
@@ -1888,6 +1888,33 @@
       return val.toLowerCase();
     })
   };
+
+  // Setup logging for deprecated methods
+  Popcorn.forEach({
+    // Deprecated: Recommended
+    "listen": "on",
+    "unlisten": "off",
+    "trigger": "emit",
+    "exec": "cue"
+
+  }, function( recommend, api ) {
+    var original = Popcorn.p[ api ];
+    // Override the deprecated api method with a method of the same name
+    // that logs a warning and defers to the new recommended method
+    Popcorn.p[ api ] = function() {
+      if ( console && console.warn ) {
+        console.warn(
+          "Deprecated method '" + api + "', " +
+          (recommend == null ? "do not use." : "use '" + recommend + "' instead." )
+        );
+
+        // Restore api after first warning
+        Popcorn.p[ api ] = original;
+      }
+      return Popcorn.p[ recommend ].apply( this, [].slice.call( arguments ) );
+    };
+  });
+
 
   //  Exposes Popcorn to global context
   global.Popcorn = Popcorn;
