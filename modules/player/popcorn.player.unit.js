@@ -279,7 +279,7 @@ test( "Popcorn.smart player selector", function() {
 
   Popcorn.somePlayer( "#video", "canPlayType", {
     events: {
-      load: function( e ) {
+      canplaythrough: function( e ) {
 
         loaded = true;
       }
