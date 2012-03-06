@@ -2235,7 +2235,7 @@ test( "Update Timer (frameAnimation)", function() {
 
   QUnit.reset();
 
-  if ( !document.hasFocus() ) {
+  if ( document.hasFocus && !document.hasFocus() ) {
 
     ok( false, "frame animation tests need focus" );
     return;
