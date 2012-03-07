@@ -1,4 +1,4 @@
-test( "Popcorn 0.3 SSA/ASS Parser Plugin", function () {
+asyncTest( "Popcorn 0.3 SSA/ASS Parser Plugin", function () {
 
   var count = 0,
       numSubs = 0,
@@ -29,13 +29,8 @@ test( "Popcorn 0.3 SSA/ASS Parser Plugin", function () {
     }
   }
 
-  poppercorn.parseSSA( "data/data.ssa" );
+  poppercorn.parseSSA( "data/data.ssa", function() {
 
-  expect( expects );
-  stop( 5000 );
-
-  // Allow load time
-  setTimeout( function () {
     Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
       if( evt._natives.type === "subtitle" ) {
         sub = subs[ numSubs++ ];
@@ -52,5 +47,8 @@ test( "Popcorn 0.3 SSA/ASS Parser Plugin", function () {
     equal( subs.length, numSubs, "Parsed all subtitles" );
     plus();
 
-  }, 500);
+  });
+
+  expect( expects );
+
 });
