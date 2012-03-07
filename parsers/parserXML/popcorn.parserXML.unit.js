@@ -1,23 +1,17 @@
-test( "Popcorn 0.1 XML Parser Plugin", function () {
+asyncTest( "Popcorn 0.1 XML Parser Plugin", function () {
   
   var expects = 7,
       count = 0,
-      timeOut = 0,
       interval,
       poppercorn = Popcorn( "#video" );
       
   function plus() {
     if ( ++count === expects ) {
       start();
-      // clean up added events after tests
-      clearInterval( interval );
-      poppercorn.pause();
     }
   }
   
   expect(expects);
-  
-  stop( 10000 );
 
   Popcorn.plugin( "parserTest1", {
     
@@ -58,4 +52,3 @@ test( "Popcorn 0.1 XML Parser Plugin", function () {
     poppercorn.currentTime(5).play();
   });  
 });
-
