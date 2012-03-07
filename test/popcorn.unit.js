@@ -2589,9 +2589,6 @@ asyncTest( "Popcorn Compose", function() {
     }
   }
 
-
-
-
   ok( Popcorn.compose, "Popcorn.compose method exists" );
   plus();
 
@@ -2602,10 +2599,10 @@ asyncTest( "Popcorn Compose", function() {
   plus();
 
 
-
   popped.on( "canplayall", function() {
+    popped.pause( popped.duration() );
 
-    Popcorn.plugin( "testPlugin", {} );
+    Popcorn.plugin( "testPlugin", {});
 
     Popcorn.compose( "testCompose1", {
       start: function() {
@@ -2642,7 +2639,6 @@ asyncTest( "Popcorn Compose", function() {
      this.play( 0 );
     });
 
-    popped.pause( popped.duration() );
 
     popped.testPlugin({
       start: 0,
@@ -3591,7 +3587,6 @@ asyncTest( "Index Integrity ( timeUpdate )", function() {
 
     $pop.cue( 42, function() {
 
-      console.log( "message" );
       // 4 track events: startpad, endpad, ff and exec
       equal( $pop.data.trackEvents.byStart.length, 4, "$pop.data.trackEvents.byStart.length is 4 - after play, before removeTrackEvent" );
       plus();
@@ -3608,8 +3603,6 @@ asyncTest( "Index Integrity ( timeUpdate )", function() {
       plus();
       equal( $pop.data.trackEvents.endIndex, 1, "$pop.data.trackEvents.endIndex is 1 - after removeTrackEvent" );
       plus();
-
-      console.log( count );
 
     }).play( 40 );
   });
