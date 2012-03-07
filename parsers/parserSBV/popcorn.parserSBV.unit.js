@@ -1,4 +1,4 @@
-test( "Popcorn 0.3 SBV Parser Plugin", function () {
+asyncTest( "Popcorn 0.3 SBV Parser Plugin", function () {
   
   var count = 0,
       numSubs = 0,
