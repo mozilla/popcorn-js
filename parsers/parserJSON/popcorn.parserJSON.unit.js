@@ -1,4 +1,4 @@
-test( "Popcorn 0.3 JSON Parser Plugin", function () {
+asyncTest( "Popcorn 0.3 JSON Parser Plugin", function () {
 
   var expects = 9,
       count = 0,
@@ -19,8 +19,6 @@ test( "Popcorn 0.3 JSON Parser Plugin", function () {
   poppercorn.pause();
 
   expect(expects);
-
-  stop( 10000 );
 
   trackData = poppercorn.data;
   trackEvents = trackData.trackEvents;
@@ -63,7 +61,7 @@ test( "Popcorn 0.3 JSON Parser Plugin", function () {
   });
 });
 
-test( "Popcorn 0.3 JSON Parser Plugin - AUDIO", function () {
+asyncTest( "Popcorn 0.3 JSON Parser Plugin - AUDIO", function () {
 
   var expects = 5,
       count = 0,
@@ -98,8 +96,6 @@ test( "Popcorn 0.3 JSON Parser Plugin - AUDIO", function () {
   }
 
   expect(expects);
-
-  stop();
 
   trackData = audiocorn.data;
   trackEvents = trackData.trackEvents;
