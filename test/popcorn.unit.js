@@ -3675,7 +3675,7 @@ asyncTest( "Index Integrity (frameAnimation)", function() {
   });
 });
 
-test( "Popcorn.disable/enable/toggle (timeupdate)", function() {
+asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
   var $pop = Popcorn( "#video" ),
       count = 0,
@@ -3683,12 +3683,11 @@ test( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
   expect( expects );
 
-  $pop.currentTime( 39 ).play();
-
   function plus() {
     if ( ++count === expects ) {
       start();
       Popcorn.removePlugin( "toggler" );
+      $pop.destroy();
     }
   }
 
@@ -3740,9 +3739,8 @@ test( "Popcorn.disable/enable/toggle (timeupdate)", function() {
   ok( $pop.data.disabled.indexOf( "toggler" ) > -1, "toggle() plugin: toggler is disabled" );
   plus();
 
-  stop();
 
-  $pop.currentTime( 39 ).play();
+  $pop.play( 39 );
 });
 
 test( "end undefined or false should never be fired", function() {
