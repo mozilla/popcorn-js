@@ -20,7 +20,7 @@ test( "Popcorn Rdio Plugin", function() {
   ok( "rdio" in popped, "rdio is a method of the popped instance" );
   plus();
 
-  equals( rdiodiv2.innerHTML, "", "initially, there is nothing inside the rdiodiv" );
+  equal( rdiodiv2.innerHTML, "", "initially, there is nothing inside the rdiodiv" );
   plus();
 
   popped.rdio({
@@ -59,27 +59,27 @@ test( "Popcorn Rdio Plugin", function() {
   });
   setupId = popped.getLastTrackEventId();
   popped.exec( 2, function() {
-    equals( rdiodiv.childElementCount, 2, "rdiodiv now has two inner elements" );
+    equal( rdiodiv.childElementCount, 2, "rdiodiv now has two inner elements" );
     plus();
-    equals( rdiodiv.children[ 0 ].style.display , "inline", "Erykah Badu div is visible on the page" );
+    equal( rdiodiv.children[ 0 ].style.display , "inline", "Erykah Badu div is visible on the page" );
     plus();
   });
 
   popped.exec( 3, function() {
-    equals( rdiodiv.children[ 0 ].style.display , "inline", "Erykah Badu div is still visible on the page" );
+    equal( rdiodiv.children[ 0 ].style.display , "inline", "Erykah Badu div is still visible on the page" );
     plus();
-    equals( rdiodiv.children[ 1 ].style.display , "inline", "Scottyhons div is visible on the page" );
+    equal( rdiodiv.children[ 1 ].style.display , "inline", "Scottyhons div is visible on the page" );
     plus();
-    equals( rdiodiv2.children[ 0 ].style.display , "none", "null div is not visible on the page" );
+    equal( rdiodiv2.children[ 0 ].style.display , "none", "null div is not visible on the page" );
     plus();
-    equals( rdiodiv3.children[ 0 ].style.display , "none", "null div is not visible on the page" );
+    equal( rdiodiv3.children[ 0 ].style.display , "none", "null div is not visible on the page" );
     plus();
   });
 
   popped.exec( 5, function() {
-    equals( rdiodiv2.children[ 0 ].innerHTML , "Unknown Source", "Artist information could not be found" );
+    equal( rdiodiv2.children[ 0 ].innerHTML , "Unknown Source", "Artist information could not be found" );
     plus();
-    equals( rdiodiv3.children[ 0 ].innerHTML , "Unknown Source", "Playlist information could not be found" );
+    equal( rdiodiv3.children[ 0 ].innerHTML , "Unknown Source", "Playlist information could not be found" );
     plus();
 
     popped.pause().removeTrackEvent( setupId );

@@ -39,8 +39,8 @@ var tests = [
     test: function() {
       expect(2);
       var results = Popcorn.getTrackEvents(popcorn);
-      equals(results[0].start, 1, 'start is 1');
-      equals(results[0].end, 2, 'end is 2');
+      equal(results[0].start, 1, 'start is 1');
+      equal(results[0].end, 2, 'end is 2');
     }
   },
   {
@@ -64,7 +64,7 @@ var tests = [
   {
     title: 'p[validPluginName] is expected plugin',
     test: function() {
-      equals(popcorn['test'],plugin['test'], 'popcorn[\'test\'] == plugin[\'test\']');
+      equal(popcorn['test'],plugin['test'], 'popcorn[\'test\'] == plugin[\'test\']');
     }
   },
   {
@@ -72,13 +72,13 @@ var tests = [
     test: function() {
       expect(2);
       ok(Popcorn.registry, 'registry exists');
-      equals(typeof(Popcorn.registry), 'object', 'Popcorn.registry is an object');
+      equal(typeof(Popcorn.registry), 'object', 'Popcorn.registry is an object');
     }
   },
   {
     title: 'Popcorn.registry must contain plugins',
     test: function() {
-      equals(Popcorn.registry[0], plugin, 'Popcorn.registry contains test plugin');
+      equal(Popcorn.registry[0], plugin, 'Popcorn.registry contains test plugin');
     }
   },
   {
@@ -104,13 +104,13 @@ var tests = [
     test: function() {
       expect(2);
       ok(Popcorn.manifest, 'Popcorn.manifest exists');
-      equals(typeof(Popcorn.manifest), 'object', 'Popcorn.manifest is an object');
+      equal(typeof(Popcorn.manifest), 'object', 'Popcorn.manifest is an object');
     }
   },
   {
     title: 'Popcorn.manifest must contain plugin manifests',
     test: function() {
-      equals(Popcorn.manifest['test'], manifest);
+      equal(Popcorn.manifest['test'], manifest);
     }
   },
   {
@@ -184,7 +184,7 @@ var tests = [
     test: function() {
       expect(2);
       ok(popcorn.data.history, 'history exists');
-      equals(typeof(popcorn.data.history), 'object', 'history in an object');
+      equal(typeof(popcorn.data.history), 'object', 'history in an object');
     }
   },
   {
@@ -209,8 +209,8 @@ var tests = [
       expect(2);
       var tracks1 = popcorn.getTrackEvents();
       var tracks2 = Popcorn.getTrackEvents(popcorn);
-      equals(tracks1.length, tracks2.length, 'lengths are equal');
-      equals(tracks1[0], tracks2[0], 'objects are equal');
+      equal(tracks1.length, tracks2.length, 'lengths are equal');
+      equal(tracks1[0], tracks2[0], 'objects are equal');
     }
   },
   {
@@ -231,7 +231,7 @@ var tests = [
       expect(2);
       ok(popcorn.removeTrackEvent, 'exists');
       popcorn.removeTrackEvent(popcorn.getLastTrackEventId());
-      equals(popcorn.getTrackEvents().length, 0, 'works');
+      equal(popcorn.getTrackEvents().length, 0, 'works');
     }
   },
 ];

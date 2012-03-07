@@ -42,18 +42,18 @@ test( "Popcorn 0.3 TTXT Parser Plugin", function () {
       if( evt._natives.type === "subtitle" ) {
         sub = subs[ numSubs++ ];
         
-        equals( sub.end,  evt.end , "Correct end" );
+        equal( sub.end,  evt.end , "Correct end" );
         plus();
         
-        equals( sub.start,  evt.start , "Correct start" );
+        equal( sub.start,  evt.start , "Correct start" );
         plus();
         
-        equals( sub.text,  evt.text , "Correct text" );
+        equal( sub.text,  evt.text , "Correct text" );
         plus();
       }
     });
     
-    equals( subs.length, numSubs , "Correctly parsed all subs" );
+    equal( subs.length, numSubs , "Correctly parsed all subs" );
     plus();
   }, 500);  
 });

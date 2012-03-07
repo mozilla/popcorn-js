@@ -88,17 +88,17 @@ test( "Popcorn Facebook Plugin", function () {
   plus();
 
   popped.exec( 1, function() {
-    equals( commentdiv.children[ 0 ].style.display, "none", "comment div is not visible on page with \"none\" display style" );
+    equal( commentdiv.children[ 0 ].style.display, "none", "comment div is not visible on page with \"none\" display style" );
     plus();
   });
   // I inspected the html genterated by facebook, and found that there are no uniquely identifying attributes between plug-in types
   // so right now, we just check ot make sure that facebook is returning a plugin and displaying it at the correct time.
   popped.exec( 3, function() {
     // Counts number of children elements in likediv
-    equals( likediv.childElementCount, 2, "likediv has 2 inner elements" );
+    equal( likediv.childElementCount, 2, "likediv has 2 inner elements" );
     plus();
     // Checks display style is set correctly on startup
-    equals( likediv.children[ 0 ].style.display , "", "likediv is visible on the page with \"\" display style" );
+    equal( likediv.children[ 0 ].style.display , "", "likediv is visible on the page with \"\" display style" );
     plus();
     // Checks if likediv is empty at specific time
     ok( document.getElementById( "likediv" ).innerHTML, "likediv is not empty at 0:03 (expected)" );

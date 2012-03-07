@@ -91,7 +91,7 @@ test( "Popcorn Tumblr Plugin", function () {
 
   popped.exec( 3, function() {
     // Checks display style is set correctly on startup
-    equals( textblogdiv.style.display , "", "textblogdiv is visible on the page with '' display style" );
+    equal( textblogdiv.style.display , "", "textblogdiv is visible on the page with '' display style" );
     plus();
   });
 

@@ -290,7 +290,7 @@ test( "Plugin Factory", function() {
 
   ok( "executor" in popped, "executor plugin is now available to instance" );
   plus();
-  equals( Popcorn.registry.length, 1, "One item in the registry");
+  equal( Popcorn.registry.length, 1, "One item in the registry");
   plus();
 
   popped.executor({
@@ -337,7 +337,7 @@ test( "Plugin Factory", function() {
 
   ok( "complicator" in popped, "complicator plugin is now available to instance" );
   plus();
-  equals( Popcorn.registry.length, 2, "Two items in the registry");
+  equal( Popcorn.registry.length, 2, "Two items in the registry");
   plus();
 
   popped.complicator({
@@ -366,10 +366,10 @@ test( "Popcorn vimeo Plugin Url and Duration Tests", function() {
   expect( expects );
   stop( 10000 );
 
-  equals( popcorn.media.id, "player_1", "Video id set" );
+  equal( popcorn.media.id, "player_1", "Video id set" );
   plus();
 
-  equals( popcorn.duration(), 0, "Duration starts as 0");
+  equal( popcorn.duration(), 0, "Duration starts as 0");
   plus();
 
   popcorn.listen( "durationchange", function() {
@@ -410,7 +410,7 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
 
     popcorn.listen( "loadeddata", function() {
 
-      equals( popcorn.media.src, urlTest.expected, "Video id is correct for " + urlTest.name + ": " + urlTest.url );
+      equal( popcorn.media.src, urlTest.expected, "Video id is correct for " + urlTest.name + ": " + urlTest.url );
       popcorn.pause();
 
       count++;
@@ -442,9 +442,9 @@ test( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
 
   popped.listen( "loadeddata", function() {
     elem = document.querySelector( "div#player_3 object" );
-    equals( elem.height, popped.media.offsetHeight, "The media object is reporting the correct offsetHeight" );
+    equal( elem.height, popped.media.offsetHeight, "The media object is reporting the correct offsetHeight" );
     plus();
-    equals( elem.width, popped.media.offsetWidth, "The media object is reporting the correct offsetWidth" );
+    equal( elem.width, popped.media.offsetWidth, "The media object is reporting the correct offsetWidth" );
     plus();
   });
 

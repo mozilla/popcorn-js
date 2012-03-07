@@ -36,16 +36,16 @@ test( "Popcorn 0.3 SBV Parser Plugin", function () {
       if( evt._natives.type === "subtitle" ) {
         sub = subs[ numSubs++ ];
         
-        equals( evt.start, sub.start, "Correctly parsed start of " + evt.start );
+        equal( evt.start, sub.start, "Correctly parsed start of " + evt.start );
         plus();
-        equals( evt.text, sub.text, "Correctly parsed text of " + evt.start );
+        equal( evt.text, sub.text, "Correctly parsed text of " + evt.start );
         plus();
-        equals( evt.end, sub.end, "Correctly parsed end at " + evt.start );
+        equal( evt.end, sub.end, "Correctly parsed end at " + evt.start );
         plus();
       }
     });
     
-    equals( subs.length, numSubs, "Parsed all subtitles" );
+    equal( subs.length, numSubs, "Parsed all subtitles" );
     plus();
   });
 });

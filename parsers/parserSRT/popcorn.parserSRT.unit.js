@@ -86,21 +86,21 @@ test( "Popcorn 0.3 SRT Parser Plugin", function () {
       if( evt._natives.type === "subtitle" ) {
         sub = expectedSubs[ numSubs++ ];
         
-        equals( sub.id, evt.id, "Correct id" );
+        equal( sub.id, evt.id, "Correct id" );
         plus();
         
-        equals( sub.start, evt.start, "Correct start" );
+        equal( sub.start, evt.start, "Correct start" );
         plus();
         
-        equals( sub.end, evt.end, "Correct end" );
+        equal( sub.end, evt.end, "Correct end" );
         plus();
         
-        equals( sub.text, evt.text, "Correct text" );
+        equal( sub.text, evt.text, "Correct text" );
         plus();
       }
     });
     
-    equals( expectedSubs.length, numSubs, "Correctly parsed all subtitles" );
+    equal( expectedSubs.length, numSubs, "Correctly parsed all subtitles" );
     plus();
 
   }, 500);

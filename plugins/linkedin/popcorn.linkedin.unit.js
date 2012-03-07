@@ -28,7 +28,7 @@ test( "Popcorn LinkedIn Plugin", function() {
     plus();
 
     // Testing the share plugin
-    equals( sharediv.innerHTML, "", "initially, there is nothing inside the sharediv" );
+    equal( sharediv.innerHTML, "", "initially, there is nothing inside the sharediv" );
     plus();
 
     popped.linkedin({
@@ -56,7 +56,7 @@ test( "Popcorn LinkedIn Plugin", function() {
     });
 
     // Testing the recommendproduct plugin
-    equals( recommenddiv.innerHTML, "", "initially, there is nothing inside the recommenddiv" );
+    equal( recommenddiv.innerHTML, "", "initially, there is nothing inside the recommenddiv" );
     plus();
 
     popped.linkedin({
@@ -85,7 +85,7 @@ test( "Popcorn LinkedIn Plugin", function() {
     });
 
     // Testing memberprofile plugin
-    equals( memberprofilediv.innerHTML, "", "initially, there is nothing inside the memberprofilediv" );
+    equal( memberprofilediv.innerHTML, "", "initially, there is nothing inside the memberprofilediv" );
     plus();
 
     popped.linkedin({
@@ -113,7 +113,7 @@ test( "Popcorn LinkedIn Plugin", function() {
     });
 
     // Testing the company insider plugin
-    equals( companyinsiderdiv.innerHTML, "", "initially, there is nothing inside the companyinsiderdiv" );
+    equal( companyinsiderdiv.innerHTML, "", "initially, there is nothing inside the companyinsiderdiv" );
     plus();
 
     popped.linkedin({
@@ -140,7 +140,7 @@ test( "Popcorn LinkedIn Plugin", function() {
     });
 
     // Testing company profile plugin
-    equals( companyprofilediv.innerHTML, "", "initially, there is nothing inside the companyprofilediv" );
+    equal( companyprofilediv.innerHTML, "", "initially, there is nothing inside the companyprofilediv" );
     plus();
 
     popped.linkedin({

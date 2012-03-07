@@ -241,7 +241,7 @@ test( "Popcorn.smart player selector", function() {
   plus();
   ok( Popcorn.spartaPlayer.canPlayType( "unsupported element", "this is sparta" ) === false, "canPlayType method fails on invalid container!" );
   plus();
-  equals( Popcorn.smart( "#video", "this is sparta" ).media.nodeName, "DIV", "A player was found for this URL" );
+  equal( Popcorn.smart( "#video", "this is sparta" ).media.nodeName, "DIV", "A player was found for this URL" );
   plus();
 
   // not matching url to player returns false
@@ -260,7 +260,7 @@ test( "Popcorn.smart player selector", function() {
     }
   });
   
-  equals( thisIsNotSparta.media.nodeName, "VIDEO", "no player was found for this URL, default to video element" );
+  equal( thisIsNotSparta.media.nodeName, "VIDEO", "no player was found for this URL, default to video element" );
   plus();
 
   // no existing canPlayType function returns undefined
@@ -295,9 +295,9 @@ test( "Popcorn.smart player selector", function() {
     }
   }).destroy();
 
-  equals( loaded, true, "canPlayType passed on a valid type" );
+  equal( loaded, true, "canPlayType passed on a valid type" );
   plus();
-  equals( error, true, "canPlayType failed on an invalid type" );
+  equal( error, true, "canPlayType failed on an invalid type" );
   plus();
 
 });

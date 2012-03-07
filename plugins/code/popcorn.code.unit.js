@@ -19,7 +19,7 @@ test( "Popcorn Code Plugin", function() {
   ok( "code" in popped, "code is a method of the popped instance" );
   plus();
 
-  equals( codeDiv.innerHTML, "", "initially, there is nothing inside the code-div" );
+  equal( codeDiv.innerHTML, "", "initially, there is nothing inside the code-div" );
   plus();
 
   popped.code({

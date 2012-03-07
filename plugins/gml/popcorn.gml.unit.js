@@ -19,7 +19,7 @@ test( "Popcorn GML Plugin", function() {
   ok( "gml" in popped, "gml is a method of the popped instance" );
   plus();
 
-  equals( gmldiv.childElementCount, 0, "initially, there is nothing inside the gmldiv" );
+  equal( gmldiv.childElementCount, 0, "initially, there is nothing inside the gmldiv" );
   plus();
 
   popped.gml({
@@ -38,19 +38,19 @@ test( "Popcorn GML Plugin", function() {
   setupId = popped.getLastTrackEventId();
 
   popped.exec( 0, function() {
-    equals( gmldiv.children[ 0 ].style.display , "block", "first GML is visible on the page" );
+    equal( gmldiv.children[ 0 ].style.display , "block", "first GML is visible on the page" );
     plus();
   });
 
   popped.exec( 3, function() {
-    equals( gmldiv.children[ 1 ].style.display, "block", "second GML is visible on the page" );
+    equal( gmldiv.children[ 1 ].style.display, "block", "second GML is visible on the page" );
     plus();
   });
 
   popped.exec( 4, function() {
-    equals( gmldiv.children[ 1 ].style.display, "none", "second GML is no longer visible on the page" );
+    equal( gmldiv.children[ 1 ].style.display, "none", "second GML is no longer visible on the page" );
     plus();
-    equals( gmldiv.children[ 0 ].style.display, "none", "first GML is no longer visible on the page" );
+    equal( gmldiv.children[ 0 ].style.display, "none", "first GML is no longer visible on the page" );
     plus();
 
     popped.pause().removeTrackEvent( setupId );

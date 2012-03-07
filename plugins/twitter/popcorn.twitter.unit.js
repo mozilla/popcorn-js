@@ -21,7 +21,7 @@ test( "Popcorn Twitter Plugin", function() {
   ok( "twitter" in popped, "twitter is a method of the popped instance" );
   plus();
 
-  equals ( twitterdiv.innerHTML, "", "initially, there is nothing inside the twitterdiv" );
+  equal( twitterdiv.innerHTML, "", "initially, there is nothing inside the twitterdiv" );
   plus();
 
   try {

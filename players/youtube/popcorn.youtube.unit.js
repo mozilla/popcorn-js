@@ -290,7 +290,7 @@ test("Plugin Factory", function () {
 
   ok( "executor" in popped, "executor plugin is now available to instance" );
   plus();
-  equals( Popcorn.registry.length, 1, "One item in the registry");
+  equal( Popcorn.registry.length, 1, "One item in the registry");
   plus();
 
   popped.executor({
@@ -338,7 +338,7 @@ test("Plugin Factory", function () {
 
   ok( "complicator" in popped, "complicator plugin is now available to instance" );
   plus();
-  equals( Popcorn.registry.length, 2, "Two items in the registry");
+  equal( Popcorn.registry.length, 2, "Two items in the registry");
   plus();
 
   popped.complicator({
@@ -369,7 +369,7 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
   expect( expects );
   stop( 10000 );
 
-  equals( popcorn.media.id, 'video2', 'Video id set' );
+  equal( popcorn.media.id, 'video2', 'Video id set' );
   plus();
 
   popcorn.listen( "durationchange", function() {
@@ -380,7 +380,7 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
     popcorn.pause();
   });
 
-  equals( popcorn.media.id, 'video2', 'Video id set' );
+  equal( popcorn.media.id, 'video2', 'Video id set' );
   plus();
 
   popcorn.volume( 0 ).play();
@@ -431,7 +431,7 @@ test( "Popcorn YouTube Plugin Url Regex Test", function() {
 
     popcorn.listen( "loadeddata", function() {
 
-      equals( popcorn.media.src, urlTest.expected, "Video id is correct for " + urlTest.name + ": " + urlTest.url );
+      equal( popcorn.media.src, urlTest.expected, "Video id is correct for " + urlTest.name + ": " + urlTest.url );
       popcorn.pause();
 
       popcorn.destroy();
@@ -571,9 +571,9 @@ test( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
   var runner = function() {
     popped.volume( 0 );
     elem = document.querySelector( "div#video6 object" );
-    equals( elem.height, popped.media.offsetHeight, "The media object is reporting the correct offsetHeight" );
+    equal( elem.height, popped.media.offsetHeight, "The media object is reporting the correct offsetHeight" );
     plus();
-    equals( elem.width, popped.media.offsetWidth, "The media object is reporting the correct offsetWidth" );
+    equal( elem.width, popped.media.offsetWidth, "The media object is reporting the correct offsetWidth" );
     plus();
   };
 

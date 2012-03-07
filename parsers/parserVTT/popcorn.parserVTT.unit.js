@@ -59,7 +59,7 @@ test( "Popcorn 1.0 WebSRT/VTT Parser Plugin", function () {
       }
     });
 
-    equals( expectedSubs.length, numSubs, "Parsed all subtitles" );
+    equal( expectedSubs.length, numSubs, "Parsed all subtitles" );
     plus();
 
   }, 500);

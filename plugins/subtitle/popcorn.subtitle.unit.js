@@ -61,7 +61,7 @@ test( "Popcorn Subtitle Plugin", function() {
   popped.exec( 1, function() {
 
     popped.media.pause();
-    equals( subtitlediv.children[ 0 ].innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
+    equal( subtitlediv.children[ 0 ].innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
     plus();
 
     // capturing location now, to check against later,
@@ -93,12 +93,12 @@ test( "Popcorn Subtitle Plugin", function() {
     // check values against the video's values
     // we need four checks because if we just check against video's position,
     // and video's position hasn't updated either, we'll pass when we should fail
-    equals( subtitlediv.style.left, popped.position().left + "px", "subtitle left position moved" );
+    equal( subtitlediv.style.left, popped.position().left + "px", "subtitle left position moved" );
     plus();
     ok( Popcorn.position( subtitlediv ).top > popped.position().top, "subtitle top position moved" );
     plus();
 
-    equals( subtitlediv.children[ 1 ].innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
+    equal( subtitlediv.children[ 1 ].innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
     plus();
 
     popped.media.play();
@@ -108,7 +108,7 @@ test( "Popcorn Subtitle Plugin", function() {
   popped.exec( 4, function() {
 
     popped.media.pause();
-    equals( subtitlediv.children[ 1 ].innerHTML, "", "subtitle is clear" );
+    equal( subtitlediv.children[ 1 ].innerHTML, "", "subtitle is clear" );
     plus();
 
     popped.media.play();
@@ -123,9 +123,9 @@ test( "Popcorn Subtitle Plugin", function() {
   popped2.exec( 8, function() {
     popped2.media.pause();
 
-    equals( subtitlediv.children[ 3 ].innerHTML, "instance one test", "subtitle displaying correct information" );
+    equal( subtitlediv.children[ 3 ].innerHTML, "instance one test", "subtitle displaying correct information" );
     plus();
-    equals( subtitle2div.children[ 0 ].innerHTML, "instance two test", "subtitle displaying correct information" );
+    equal( subtitle2div.children[ 0 ].innerHTML, "instance two test", "subtitle displaying correct information" );
     plus();
 
     popped.media.play();
@@ -169,7 +169,7 @@ test( "subtitle data tests", function() {
 
   popped.pause( 0 );
 
-  equals( container.children[ 0 ].innerHTML, "", "subtitle with no text defaults to an empty string" );
+  equal( container.children[ 0 ].innerHTML, "", "subtitle with no text defaults to an empty string" );
   plus();
 });
 
@@ -202,11 +202,11 @@ test( "subtitle container creation tests", function() {
 
   containerAfterParse = document.getElementById("divThatDoesntExist");
 
-  equals( !!containerAtLoad, false, "Container doesn't exist initially" );
+  equal( !!containerAtLoad, false, "Container doesn't exist initially" );
   plus();
-  equals( !!containerAfterParse, true, "Container exists now" );
+  equal( !!containerAfterParse, true, "Container exists now" );
   plus();
-  equals( containerAfterParse.children[ 0 ].innerHTML, "My Text", "Subtitle displayed in created container" );
+  equal( containerAfterParse.children[ 0 ].innerHTML, "My Text", "Subtitle displayed in created container" );
   plus();
 
   // Cleanup

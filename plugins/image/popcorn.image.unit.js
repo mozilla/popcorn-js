@@ -24,7 +24,7 @@ test( "Popcorn Image Plugin", function() {
   ok( "image" in popped, "image is a method of the popped instance" );
   plus();
 
-  equals( imagediv.innerHTML, "", "initially, there is nothing inside the imagediv" );
+  equal( imagediv.innerHTML, "", "initially, there is nothing inside the imagediv" );
   plus();
 
   popped.image({
@@ -51,14 +51,14 @@ test( "Popcorn Image Plugin", function() {
   setupId = popped.getLastTrackEventId();
 
   popped.exec( 2, function() {
-    equals( imagediv.children[ 0 ].style.display, "block", "Div contents are displayed" );
+    equal( imagediv.children[ 0 ].style.display, "block", "Div contents are displayed" );
     plus();
-    equals( imagediv.children[ 0 ].children[ 1 ].nodeName, "IMG", "An image exists" );
+    equal( imagediv.children[ 0 ].children[ 1 ].nodeName, "IMG", "An image exists" );
     plus();
   });
 
   popped.exec( 3, function() {
-    equals( imagediv.children[ 0 ].style.display, "none", "Div contents are hidden again" );
+    equal( imagediv.children[ 0 ].style.display, "none", "Div contents are hidden again" );
     plus();
   });
 
