@@ -1,4 +1,4 @@
-equal$(document).ready(function(){
+$(document).ready(function(){
 var video = document.getElementById('video');
 var popcorn = new Popcorn('#video');
 
