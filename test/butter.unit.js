@@ -1,4 +1,4 @@
-$(document).ready(function(){
+equal$(document).ready(function(){
 var video = document.getElementById('video');
 var popcorn = new Popcorn('#video');
 
@@ -14,8 +14,8 @@ var manifest = {
 };
 var plugin = (Popcorn.plugin('test',{
   manifest: manifest,
-  _setup:function(options){pluginOptions = options; pluginResults='_setup';}, 
-  start:function(options){pluginResults='start'}, 
+  _setup:function(options){pluginOptions = options; pluginResults='_setup';},
+  start:function(options){pluginResults='start'},
   end:function(options){pluginResults='end'}
 }));
 var pluginInstance = popcorn['test']({start: 1, end: 2});
