@@ -1,12 +1,6 @@
 module( "Popcorn Player" );
 
-test( "Base player methods", function() {
-
-  var expects = 4;
-
-  expect( expects );
-
-  stop( 10000 );
+test( "Base player methods", 4, function() {
 
   ok( Popcorn.player, "Popcorn.player function exists" );
 
@@ -16,14 +10,11 @@ test( "Base player methods", function() {
   ok( Popcorn.newplayer, "Popcorn.player registers new players" );
   ok( Popcorn.player.registry[ "newplayer" ], "newplayers enter Popcorn.player.registry" );
 
-  start();
 });
 
-test( "Base player functionality", function() {
+asyncTest( "Base player functionality", function() {
 
   Popcorn.player( "baseplayer" );
-
-  //QUnit.reset();
 
   var p2 = Popcorn.baseplayer( "#video" ),
       expects = 12,
@@ -50,9 +41,6 @@ test( "Base player functionality", function() {
       start();
     }
   }
-
-  // These tests come close to 10 seconds on chrome, increasing to 15
-  stop( 15000 );
 
   Popcorn.plugin( "forwards", function() {
     return {
@@ -191,14 +179,9 @@ test( "Base player functionality", function() {
   p2.currentTime( 3 ).play();
 });
 
-test( "player gets a proper _teardown", function() {
-
-  QUnit.reset();
+test( "player gets a proper _teardown", 1, function() {
 
   var teardownCalled = false;
-
-  expect( 1 );
-  stop( 10000 );
 
   Popcorn.player( "teardownTester", {
     _teardown: function() {
@@ -210,10 +193,9 @@ test( "player gets a proper _teardown", function() {
   pop.destroy();
 
   equal( teardownCalled, true, "teardown function was called." );
-  start();
 });
 
-test( "Popcorn.smart player selector", function() {
+asyncTest( "Popcorn.smart player selector", function() {
 
   var expects = 10,
       count = 0;
@@ -224,8 +206,6 @@ test( "Popcorn.smart player selector", function() {
     }
   }
   expect( expects );
-
-  stop( 10000 );
 
   Popcorn.player( "spartaPlayer", {
     _canPlayType: function( nodeName, url ) {
