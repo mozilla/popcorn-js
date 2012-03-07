@@ -1,4 +1,4 @@
-test( "Popcorn Subtitle Plugin", function() {
+asyncTest( "Popcorn Subtitle Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       popped2 = Popcorn( "#video2" ),
@@ -16,8 +16,6 @@ test( "Popcorn Subtitle Plugin", function() {
       start();
     }
   }
-
-  stop( 15000 );
 
   ok( "subtitle" in popped, "subtitle is a method of the popped instance" );
   plus();
@@ -144,7 +142,7 @@ test( "Popcorn Subtitle Plugin", function() {
   });
 });
 
-test( "subtitle data tests", function() {
+asyncTest( "subtitle data tests", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 1,
@@ -159,8 +157,6 @@ test( "subtitle data tests", function() {
     }
   }
 
-  stop( 12000 );
-
   popped.subtitle({
     start: 0,
     end: 10,
@@ -173,7 +169,7 @@ test( "subtitle data tests", function() {
   plus();
 });
 
-test( "subtitle container creation tests", function() {
+asyncTest( "subtitle container creation tests", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 3,
@@ -188,8 +184,6 @@ test( "subtitle container creation tests", function() {
       start();
     }
   }
-
-  stop( 12000 );
 
   popped.subtitle({
     start: 0,
