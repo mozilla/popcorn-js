@@ -2,7 +2,7 @@
 
   module( "Popcorn Locale" );
 
-  test( "Popcorn.locale object", function() {
+  asyncTest( "Popcorn.locale object", function() {
 
     var api = {
           get: "function",
@@ -28,8 +28,6 @@
         start();
       }
     }
-
-    stop( 10000 );
 
     ok( Popcorn.locale, "Popcorn.locale exists");
     plus();
