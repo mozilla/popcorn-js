@@ -61,7 +61,7 @@ asyncTest( "API", function () {
 });
 
 asyncTest( "Default Attribute Functionality", function () {
-  var expects = 5,
+  var expects = 4,
       count = 0,
       playerDefault,
       playerOverride,
@@ -122,9 +122,6 @@ asyncTest( "Default Attribute Functionality", function () {
     equal( actual, val, "player." + prop + " should have default value: '" + val + "'" );
     plus();
   });
-  
-  equal( playerDefault.width, playerDefault.offsetWidth+"px", "Width is stringified version of offsetWidth" );
-  plus();
   
   equal( playerOverride.width, "90%", "Width has been overridden" );
   plus();
