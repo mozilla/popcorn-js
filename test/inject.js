@@ -20,7 +20,7 @@
 	var submitTimeout = 5;
 
 	var curHeartbeat;
-	var beatRate = 20;
+	var beatRate = 40;
 
 	// Expose the TestSwarm API
 	window.TestSwarm = {
