@@ -18,7 +18,7 @@ test( "Popcorn Mustache Plugin", function() {
   ok( "mustache" in popped, "mustache is a method of the popped instance" );
   plus();
 
-  equals ( mustacheDiv.innerHTML, "", "initially, there is nothing inside the mustache-div" );
+  equal( mustacheDiv.innerHTML, "", "initially, there is nothing inside the mustache-div" );
   plus();
 
   // Static strings
@@ -53,7 +53,7 @@ test( "Popcorn Mustache Plugin", function() {
   });
 
   function runTest( a, b ) {
-    equals( mustacheDiv.innerHTML, "<h1>mustache - test " + a + "/3<\/h1>", "Mustache template rendered" );
+    equal( mustacheDiv.innerHTML, "<h1>mustache - test " + a + "/3<\/h1>", "Mustache template rendered" );
     plus();
   }
 

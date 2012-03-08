@@ -22,16 +22,16 @@ test( "Processing plugin tests", function() {
   ok( "processing" in popped, "processing is a method of the popped instance" );
   plus();
 
-  equals( processingDiv.innerHTML, "", "'processing-div-1' is empty" );
+  equal( processingDiv.innerHTML, "", "'processing-div-1' is empty" );
   plus();
 
-  equals( processingDiv2.innerHTML, "", "'processing-div-2' is empty" );
+  equal( processingDiv2.innerHTML, "", "'processing-div-2' is empty" );
   plus();
 
-  equals( processingDiv3.innerHTML, "", "'processing-div-3' is empty" );
+  equal( processingDiv3.innerHTML, "", "'processing-div-3' is empty" );
   plus();
 
-  equals( processingDiv4.innerHTML, "", "'processing-div-4' is empty" );
+  equal( processingDiv4.innerHTML, "", "'processing-div-4' is empty" );
   plus();
 
   popped.processing({
@@ -67,35 +67,35 @@ test( "Processing plugin tests", function() {
   trackids.push( popped.getLastTrackEventId() );
 
   popped.exec( 0.5, function() {
-    equals( processingDiv.children[ 0 ].style.display, "inline", "canvas '" + processingDiv.children[ 0 ].id + "' is displayed" );
+    equal( processingDiv.children[ 0 ].style.display, "inline", "canvas '" + processingDiv.children[ 0 ].id + "' is displayed" );
     plus();
-    equals( processingDiv2.children[ 0 ].style.display, "none", "canvas '" + processingDiv2.children[ 0 ].id + "' is hidden" );
+    equal( processingDiv2.children[ 0 ].style.display, "none", "canvas '" + processingDiv2.children[ 0 ].id + "' is hidden" );
     plus();
-    equals( processingDiv3.children[ 0 ].style.display, "none", "canvas '" + processingDiv3.children[ 0 ].id + "' is hidden" );
+    equal( processingDiv3.children[ 0 ].style.display, "none", "canvas '" + processingDiv3.children[ 0 ].id + "' is hidden" );
     plus();
-    equals( processingDiv4.children[ 0 ].style.display, "none", "canvas '" + processingDiv4.children[ 0 ].id + "' is hidden" );
+    equal( processingDiv4.children[ 0 ].style.display, "none", "canvas '" + processingDiv4.children[ 0 ].id + "' is hidden" );
     plus();
     //TODO: David Humphrey has written code that allows for listening to events on Processing instances. when
     // it lands In the next processing release we'll be able to detect if a processing instance is looping or not.
     // this is required in order to test the noPause functionality (automatically)
   })
   .exec( 1.5, function() {
-    equals( processingDiv.children[ 0 ].style.display, "none", "canvas '" + processingDiv.children[ 0 ].id + "' is hidden" );
+    equal( processingDiv.children[ 0 ].style.display, "none", "canvas '" + processingDiv.children[ 0 ].id + "' is hidden" );
     plus();
-    equals( processingDiv2.children[ 0 ].style.display, "inline", "canvas '" + processingDiv2.children[ 0 ].id + "' is displayed" );
+    equal( processingDiv2.children[ 0 ].style.display, "inline", "canvas '" + processingDiv2.children[ 0 ].id + "' is displayed" );
     plus();
-    equals( processingDiv3.children[ 0 ].style.display, "none", "canvas '" + processingDiv3.children[ 0 ].id + "' is hidden" );
+    equal( processingDiv3.children[ 0 ].style.display, "none", "canvas '" + processingDiv3.children[ 0 ].id + "' is hidden" );
     plus();
-    equals( processingDiv4.children[ 0 ].style.display, "none", "canvas '" + processingDiv4.children[ 0 ].id + "' is hidden" );
+    equal( processingDiv4.children[ 0 ].style.display, "none", "canvas '" + processingDiv4.children[ 0 ].id + "' is hidden" );
     plus();
   }).exec( 3.5, function() {
-    equals( processingDiv.children[ 0 ].style.display, "none", "canvas '" + processingDiv.children[ 0 ].id + "' is hidden" );
+    equal( processingDiv.children[ 0 ].style.display, "none", "canvas '" + processingDiv.children[ 0 ].id + "' is hidden" );
     plus();
-    equals( processingDiv2.children[ 0 ].style.display, "none", "canvas '" + processingDiv2.children[ 0 ].id + "' is hidden" );
+    equal( processingDiv2.children[ 0 ].style.display, "none", "canvas '" + processingDiv2.children[ 0 ].id + "' is hidden" );
     plus();
-    equals( processingDiv3.children[ 0 ].style.display, "inline", "canvas '" + processingDiv3.children[ 0 ].id + "' is displayed" );
+    equal( processingDiv3.children[ 0 ].style.display, "inline", "canvas '" + processingDiv3.children[ 0 ].id + "' is displayed" );
     plus();
-    equals( processingDiv4.children[ 0 ].style.display, "inline", "canvas '" + processingDiv4.children[ 0 ].id + "' is displayed" );
+    equal( processingDiv4.children[ 0 ].style.display, "inline", "canvas '" + processingDiv4.children[ 0 ].id + "' is displayed" );
     plus();
   }).exec( 4.5, function() {
     var idx = 5;
@@ -111,7 +111,7 @@ test( "Processing plugin tests", function() {
 
   //check that four canvases were created
   canvases = document.querySelectorAll( "canvas" );
-  equals( canvases.length, 4, "four canvases are present" );
+  equal( canvases.length, 4, "four canvases are present" );
   plus();
 
   //enable this when ticket #583 lands
@@ -125,10 +125,10 @@ test( "Processing plugin tests", function() {
       }
     }
 
-    equals( idCount, 1, ctx.id + " is a unique canvas id" );
+    equal( idCount, 1, ctx.id + " is a unique canvas id" );
     plus();
 
-    equals( ctx.style.display, "none", ctx.id + " is hidden initially" );
+    equal( ctx.style.display, "none", ctx.id + " is hidden initially" );
     plus();
   });
 

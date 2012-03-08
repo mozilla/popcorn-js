@@ -1,6 +1,6 @@
 module( "Popcorn Parser" );
 
-test( "Parsing Functions", function() {
+asyncTest( "Parsing Functions", function() {
 
   var expects = 3,
       count = 0,
@@ -14,13 +14,11 @@ test( "Parsing Functions", function() {
 
   expect( expects );
 
-  stop( 10000 );
-
   ok( typeof Popcorn.parser === "function", "Popcorn.parser is a function" );
   plus();
 
   Popcorn.parser( "parseJSON" , "json", function( data ){
-    return data;
+    return this;
   });
 
   ok( typeof popperly.parseJSON === "function", "Popcorn.parser created a parseJSON function" );
@@ -30,7 +28,7 @@ test( "Parsing Functions", function() {
   plus();
 });
 
-test( "Parsing Integrity", function() {
+asyncTest( "Parsing Integrity", function() {
 
   var expects = 6,
       count = 0,
@@ -46,8 +44,6 @@ test( "Parsing Integrity", function() {
   }
 
   expect( expects );
-
-  stop( 10000 );
 
   Popcorn.parser( "parseJSON2", function( data ){
     ok( typeof data.json === "object", "data.json exists" );
@@ -81,7 +77,7 @@ test( "Parsing Integrity", function() {
   });
 });
 
-test( "Parsing Handler - References unavailable plugin", function() {
+asyncTest( "Parsing Handler - References unavailable plugin", function() {
 
   var expects = 1,
       count = 0,
@@ -100,8 +96,6 @@ test( "Parsing Handler - References unavailable plugin", function() {
 
   expect( expects );
 
-  stop();
-
   Popcorn.parser( "parseJson", function( data ){
 
     return data.json;
@@ -118,7 +112,7 @@ test( "Parsing Handler - References unavailable plugin", function() {
   }, 2000 );
 });
 
-test( "Parser Support - audio", function() {
+asyncTest( "Parser Support - audio", function() {
 
   var expects = 3,
       count = 0,
@@ -135,7 +129,6 @@ test( "Parser Support - audio", function() {
   }
 
   expect( expects );
-  stop( 5000 );
 
   Popcorn.plugin( "testAudioParser", {
 

@@ -20,7 +20,7 @@
     stop();
     ok( "documentcloud" in popped, "documentcloud is a method of the popped instance" );
     plus();
-    equals( cloudDiv1.childElementCount, 0, " #cloud-div-1 is initially empty" );
+    equal( cloudDiv1.childElementCount, 0, " #cloud-div-1 is initially empty" );
     plus();
 
     popped.documentcloud({
@@ -63,32 +63,32 @@
       if ( ++docCount === 2 ) {
         wrapper1 = cloudDiv1.querySelector( "div" );
         wrapper2 = cloudDiv2.querySelector( "div" );
-        equals( cloudDiv1.childElementCount > 0, true, "wrapper div is present in cloud-div-1" );
+        equal( cloudDiv1.childElementCount > 0, true, "wrapper div is present in cloud-div-1" );
         plus();
       }
     })
     .cue( 3, function() {
-      equals( wrapper1.style.visibility, "visible", "Document in cloud-div-1 div is visible" );
+      equal( wrapper1.style.visibility, "visible", "Document in cloud-div-1 div is visible" );
       plus();
-      equals( wrapper2.style.visibility, "hidden", "Document in cloud-div-2 div is visible" );
+      equal( wrapper2.style.visibility, "hidden", "Document in cloud-div-2 div is visible" );
       plus();
     })
     .cue( 4.5, function() {
-      equals( wrapper1.style.visibility, "hidden", "Document in cloud-div-1 div is not visible" );
+      equal( wrapper1.style.visibility, "hidden", "Document in cloud-div-1 div is not visible" );
       plus();
     })
     .cue( 7, function() {
-      equals( wrapper1.style.visibility, "visible", "Document in cloud-div-1 div is visible" );
+      equal( wrapper1.style.visibility, "visible", "Document in cloud-div-1 div is visible" );
       plus();
-      equals( wrapper2.style.visibility, "visible", "Document in cloud-div-2 is visible" );
+      equal( wrapper2.style.visibility, "visible", "Document in cloud-div-2 is visible" );
       plus();
     })
     .cue( 8, function() {
       popped.removeTrackEvent( setupIds.pop() );
-      equals( cloudDiv1.childElementCount > 0, true, "wrapper div is still present in cloud-div-1" );
+      equal( cloudDiv1.childElementCount > 0, true, "wrapper div is still present in cloud-div-1" );
       plus();
       popped.removeTrackEvent( setupIds.pop() );
-      equals( cloudDiv1.childElementCount === 0, true, "wrapper div is no longer present in cloud-div-1" );
+      equal( cloudDiv1.childElementCount === 0, true, "wrapper div is no longer present in cloud-div-1" );
       plus();
     })
     .listen( "canplayall", function() {

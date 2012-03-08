@@ -18,7 +18,7 @@ test( "Popcorn lower third Plugin", function() {
   ok( "lowerthird" in popped, "lowerthird is a method of the popped instance" );
   plus();
 
-  equals ( lowerthirddiv.innerHTML, "", "initially, there is nothing inside the lowerthirddiv" );
+  equal( lowerthirddiv.innerHTML, "", "initially, there is nothing inside the lowerthirddiv" );
   plus();
 
   ok( !popped.container, "initially, there is no default div" );
@@ -56,19 +56,19 @@ test( "Popcorn lower third Plugin", function() {
     .volume( 0 );
 
   popped.exec( 1, function() {
-    equals( popped.container.innerHTML, "Mr Hyde<br>Monster", "first lowerthird is visible" );
+    equal( popped.container.innerHTML, "Mr Hyde<br>Monster", "first lowerthird is visible" );
     plus();
   });
 
   popped.exec( 3, function() {
-    equals( lowerthirddiv.innerHTML, "<div>Dr Jekyll<br>Person</div>", "second lowerthird is visible" );
+    equal( lowerthirddiv.innerHTML, "<div>Dr Jekyll<br>Person</div>", "second lowerthird is visible" );
     plus();
   });
 
   popped.exec( 5, function() {
-    equals( popped.container.innerHTML, "", "first lowerthird is empty" );
+    equal( popped.container.innerHTML, "", "first lowerthird is empty" );
     plus();
-    equals( lowerthirddiv.innerHTML, "<div></div>", "second lowerthird is empty" );
+    equal( lowerthirddiv.innerHTML, "<div></div>", "second lowerthird is empty" );
     plus();
   });
 

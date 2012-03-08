@@ -61,17 +61,17 @@
     stop();
 
     p.exec( 3, function() {
-      equals( startCalled, 5, "start was called 5 times from the parsed data" );
+      equal( startCalled, 5, "start was called 5 times from the parsed data" );
       plus();
       p.currentTime( 9 );
     });
 
     p.exec( 10.5, function() {
-      equals( endCalled, 5, "end was called 5 times from the parsed data" );
+      equal( endCalled, 5, "end was called 5 times from the parsed data" );
       plus()
     });
 
-    equals( setupCalled, 5, "setup was called 5 times from the parsed data" );
+    equal( setupCalled, 5, "setup was called 5 times from the parsed data" );
     plus();
 
   });

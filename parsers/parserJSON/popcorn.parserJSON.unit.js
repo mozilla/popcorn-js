@@ -1,4 +1,4 @@
-test( "Popcorn 0.3 JSON Parser Plugin", function () {
+asyncTest( "Popcorn 0.3 JSON Parser Plugin", function () {
 
   var expects = 9,
       count = 0,
@@ -20,8 +20,6 @@ test( "Popcorn 0.3 JSON Parser Plugin", function () {
 
   expect(expects);
 
-  stop( 10000 );
-
   trackData = poppercorn.data;
   trackEvents = trackData.trackEvents;
 
@@ -33,7 +31,7 @@ test( "Popcorn 0.3 JSON Parser Plugin", function () {
 
       Popcorn.forEach( data.json.data, function ( dataObj ) {
         Popcorn.forEach( dataObj, function ( obj, key ) {
-          equals( trackData.history[ idx ].indexOf( key ), 0, "history item '" + trackData.history[ idx ] + "' matches data key '"+ key + "' at correct index" );
+          equal( trackData.history[ idx ].indexOf( key ), 0, "history item '" + trackData.history[ idx ] + "' matches data key '"+ key + "' at correct index" );
           plus();
           idx++;
         });
@@ -45,13 +43,13 @@ test( "Popcorn 0.3 JSON Parser Plugin", function () {
     if ( !finished ) {
       finished = true;
 
-      equals( trackEvents.byStart.length,  numLoadingEvents + 3 , "trackEvents.byStart.length === (5 loaded, 2 padding) " );
+      equal( trackEvents.byStart.length,  numLoadingEvents + 3 , "trackEvents.byStart.length === (5 loaded, 2 padding) " );
       plus();
-      equals( $("#video-iframe-container").children().length, 2, '$("#video-iframe-container").children().length' );
+      equal( $("#video-iframe-container").children().length, 2, '$("#video-iframe-container").children().length' );
       plus();
-      equals( $("#video-map-container").children().length, 1, '$("#video-map-container").children().length'  );
+      equal( $("#video-map-container").children().length, 1, '$("#video-map-container").children().length'  );
       plus();
-      equals( $("#video-footnote-container").children().length, 2, '$("#video-footnote-container").children().length'  );
+      equal( $("#video-footnote-container").children().length, 2, '$("#video-footnote-container").children().length'  );
       plus();
 
       this.pause();
@@ -63,7 +61,7 @@ test( "Popcorn 0.3 JSON Parser Plugin", function () {
   });
 });
 
-test( "Popcorn 0.3 JSON Parser Plugin - AUDIO", function () {
+asyncTest( "Popcorn 0.3 JSON Parser Plugin - AUDIO", function () {
 
   var expects = 5,
       count = 0,
@@ -98,8 +96,6 @@ test( "Popcorn 0.3 JSON Parser Plugin - AUDIO", function () {
   }
 
   expect(expects);
-
-  stop();
 
   trackData = audiocorn.data;
   trackEvents = trackData.trackEvents;

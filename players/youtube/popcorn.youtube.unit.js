@@ -1,5 +1,4 @@
-test( "Player play, pause, autoplay", function() {
-  QUnit.reset();
+asyncTest( "Player play, pause, autoplay", function() {
 
   var count = 0,
       expects = 4,
@@ -20,8 +19,6 @@ test( "Player play, pause, autoplay", function() {
       start();
     }
   }
-
-  stop( 30000 );
 
   pop1 = Popcorn.youtube( "#video6", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
 
@@ -58,9 +55,7 @@ test( "Player play, pause, autoplay", function() {
   });
 });
 
-test("Update Timer", function () {
-
-  QUnit.reset();
+asyncTest("Update Timer", function () {
 
   var p2 = Popcorn.youtube( '#video2', 'http://www.youtube.com/watch?v=nfGV32RNkhw' ),
       expects = 12,
@@ -85,8 +80,6 @@ test("Update Timer", function () {
       start();
     }
   }
-
-  stop();
 
   Popcorn.plugin( "forwards", function () {
     return {
@@ -230,9 +223,7 @@ test("Update Timer", function () {
 
 });
 
-test("Plugin Factory", function () {
-
-  QUnit.reset();
+asyncTest("Plugin Factory", function () {
 
   var popped = Popcorn.youtube( '#video2', 'http://www.youtube.com/watch?v=nfGV32RNkhw' ),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
@@ -249,7 +240,6 @@ test("Plugin Factory", function () {
   }
 
   expect( expects );
-  stop( 15000 );
 
   Popcorn.plugin("executor", function () {
 
@@ -290,7 +280,7 @@ test("Plugin Factory", function () {
 
   ok( "executor" in popped, "executor plugin is now available to instance" );
   plus();
-  equals( Popcorn.registry.length, 1, "One item in the registry");
+  equal( Popcorn.registry.length, 1, "One item in the registry");
   plus();
 
   popped.executor({
@@ -338,7 +328,7 @@ test("Plugin Factory", function () {
 
   ok( "complicator" in popped, "complicator plugin is now available to instance" );
   plus();
-  equals( Popcorn.registry.length, 2, "Two items in the registry");
+  equal( Popcorn.registry.length, 2, "Two items in the registry");
   plus();
 
   popped.complicator({
@@ -350,9 +340,7 @@ test("Plugin Factory", function () {
 
 });
 
-test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
-
-  QUnit.reset();
+asyncTest( "Popcorn YouTube Plugin Url and Duration Tests", function() {
 
   var count = 0,
       expects = 3,
@@ -367,9 +355,8 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
   }
 
   expect( expects );
-  stop( 10000 );
 
-  equals( popcorn.media.id, 'video2', 'Video id set' );
+  equal( popcorn.media.id, 'video2', 'Video id set' );
   plus();
 
   popcorn.listen( "durationchange", function() {
@@ -380,15 +367,13 @@ test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
     popcorn.pause();
   });
 
-  equals( popcorn.media.id, 'video2', 'Video id set' );
+  equal( popcorn.media.id, 'video2', 'Video id set' );
   plus();
 
   popcorn.volume( 0 ).play();
 });
 
-test( "Popcorn YouTube Plugin Url Regex Test", function() {
-
-  QUnit.reset();
+asyncTest( "Popcorn YouTube Plugin Url Regex Test", function() {
 
   var urlTests = [
     { name: 'standard',
@@ -422,7 +407,6 @@ test( "Popcorn YouTube Plugin Url Regex Test", function() {
       expects = urlTests.length;
 
   expect( expects );
-  stop();
 
   Popcorn.forEach( urlTests, function( value, key ) {
 
@@ -431,7 +415,7 @@ test( "Popcorn YouTube Plugin Url Regex Test", function() {
 
     popcorn.listen( "loadeddata", function() {
 
-      equals( popcorn.media.src, urlTest.expected, "Video id is correct for " + urlTest.name + ": " + urlTest.url );
+      equal( popcorn.media.src, urlTest.expected, "Video id is correct for " + urlTest.name + ": " + urlTest.url );
       popcorn.pause();
 
       popcorn.destroy();
@@ -444,9 +428,7 @@ test( "Popcorn YouTube Plugin Url Regex Test", function() {
   });
 });
 
-test( "Controls and Annotations toggling", function() {
-
-  QUnit.reset();
+asyncTest( "Controls and Annotations toggling", function() {
 
   var count = 0,
       expects = 6,
@@ -460,8 +442,6 @@ test( "Controls and Annotations toggling", function() {
   }
 
   expect( expects );
-
-  stop();
 
   var popcorn1 = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
 
@@ -513,13 +493,9 @@ test( "Controls and Annotations toggling", function() {
   });
 });
 
-test( "Player height and width", function() {
-
-  QUnit.reset();
+asyncTest( "Player height and width", function() {
 
   expect( 4 );
-
-  stop( 10000 );
 
   var popcorn1 = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=nfGV32RNkhw" ),
       popcorn2 = Popcorn.youtube( "#video5", "http://www.youtube.com/watch?v=nfGV32RNkhw" ),
@@ -548,9 +524,8 @@ test( "Player height and width", function() {
   readyStatePoll();
 });
 
-test( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
+asyncTest( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
 
-  QUnit.reset();
   var popped,
       elem,
       expects = 2,
@@ -571,9 +546,9 @@ test( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
   var runner = function() {
     popped.volume( 0 );
     elem = document.querySelector( "div#video6 object" );
-    equals( elem.height, popped.media.offsetHeight, "The media object is reporting the correct offsetHeight" );
+    equal( elem.height, popped.media.offsetHeight, "The media object is reporting the correct offsetHeight" );
     plus();
-    equals( elem.width, popped.media.offsetWidth, "The media object is reporting the correct offsetWidth" );
+    equal( elem.width, popped.media.offsetWidth, "The media object is reporting the correct offsetWidth" );
     plus();
   };
 
@@ -582,14 +557,11 @@ test( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
   } else {
     popped.listen( "loadeddata", runner);
   }
-
-  stop( 30000 );
 });
 
-test( "Player Errors", function() {
-  QUnit.reset();
+asyncTest( "Player Errors", function() {
+
   expect( 1 );
-  stop( 30000 );
 
   var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk", {
     events: {
@@ -603,10 +575,9 @@ test( "Player Errors", function() {
    });
 });
 
-test( "YouTube ended event", function() {
-  QUnit.reset();
+asyncTest( "YouTube ended event", function() {
+
   expect( 1 );
-  stop( 60000 );
 
   var pop = Popcorn.youtube( "#video10", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
 
@@ -617,9 +588,7 @@ test( "YouTube ended event", function() {
   pop.play( 150 );
 });
 
-test( "youtube player gets a proper _teardown", function() {
-
-  QUnit.reset();
+asyncTest( "youtube player gets a proper _teardown", function() {
   
   var count = 0,
       expects = 1;
@@ -632,7 +601,6 @@ test( "youtube player gets a proper _teardown", function() {
   }
 
   expect( expects );
-  stop( 30000 );
 
   var popcorn = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
   popcorn.listen( "loadeddata", function() {
@@ -644,9 +612,8 @@ test( "youtube player gets a proper _teardown", function() {
 });
 
 
-test( "Youtube ready state events", function() {
+asyncTest( "Youtube ready state events", function() {
 
-  QUnit.reset();
   var popped,
       expects = 4,
       count = 0,
@@ -662,7 +629,6 @@ test( "Youtube ready state events", function() {
   }
 
   expect( expects );
-  stop( 10000 );
 
   var popcorn = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
   popcorn.listen( "loadeddata", function() {
@@ -692,5 +658,4 @@ test( "Youtube ready state events", function() {
     }
   });
 
-  stop();
 });
