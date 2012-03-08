@@ -1,5 +1,5 @@
-test( "Options Check", function() {
-  QUnit.reset();
+asyncTest( "Options Check", function() {
+
   expect( 7 );
   var varz = {
       title: 0,
@@ -10,9 +10,7 @@ test( "Options Check", function() {
       color: "FFAADD",
       fullscreen: 0
     },
-    p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892", varz );
-
-  stop();
+    p2 = Popcorn.vimeo( "#player_1", "http://vimeo.com/11336811", varz );
 
   p2.listen( "loadeddata", function() {
     var flashvars = $( 'param[name="flashvars"]' ).attr( "value" );
@@ -31,11 +29,9 @@ test( "Options Check", function() {
 
 });
 
-test( "Update Timer", function() {
+asyncTest( "Update Timer", function() {
 
-  QUnit.reset();
-
-  var p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892" ),
+  var p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" ),
       expects = 16,
       count = 0,
       execCount = 0,
@@ -58,9 +54,6 @@ test( "Update Timer", function() {
       start();
     }
   }
-
-  // These tests come close to 10 seconds on chrome, increasing to 15
-  stop( 15000 );
 
   p2.listen( "canplaythrough", function() {
     p2.unlisten( "canplaythrough" );
@@ -228,11 +221,9 @@ test( "Update Timer", function() {
 
 });
 
-test( "Plugin Factory", function() {
+asyncTest( "Plugin Factory", function() {
 
-  QUnit.reset();
-
-  var popped = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892" ),
+  var popped = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" ),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
 
       // 15*2+2+2. executor/complicator each do 15
@@ -249,7 +240,6 @@ test( "Plugin Factory", function() {
   }
 
   expect( expects );
-  stop( 20000 );
 
   Popcorn.plugin( "executor", function() {
 
@@ -349,7 +339,7 @@ test( "Plugin Factory", function() {
 
 });
 
-test( "Popcorn vimeo Plugin Url and Duration Tests", function() {
+asyncTest( "Popcorn vimeo Plugin Url and Duration Tests", function() {
   function plus() {
     if ( ++count == expects ) {
       popcorn.pause();
@@ -357,14 +347,11 @@ test( "Popcorn vimeo Plugin Url and Duration Tests", function() {
     }
   }
 
-  QUnit.reset();
-
   var count = 0,
       expects = 3,
-      popcorn = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892" );
+      popcorn = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" );
 
   expect( expects );
-  stop( 10000 );
 
   equal( popcorn.media.id, "player_1", "Video id set" );
   plus();
@@ -382,18 +369,16 @@ test( "Popcorn vimeo Plugin Url and Duration Tests", function() {
   popcorn.play();
 });
 
-test( "Popcorn vimeo Plugin Url Regex Test", function() {
-
-  QUnit.reset();
+asyncTest( "Popcorn vimeo Plugin Url Regex Test", function() {
 
   var urlTests = [
     { name: "standard",
-      url: "http://player.vimeo.com/video/6960892",
-      expected: "http://player.vimeo.com/video/6960892"
+      url: "http://player.vimeo.com/video/11336811",
+      expected: "http://player.vimeo.com/video/11336811"
     },
     { name: "short url",
-      url: "http://vimeo.com/6960892",
-      expected: "http://vimeo.com/6960892"
+      url: "http://vimeo.com/11336811",
+      expected: "http://vimeo.com/11336811"
     }
   ];
 
@@ -401,7 +386,6 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
       expects = urlTests.length;
 
   expect( expects );
-  stop( 10000 );
 
   Popcorn.forEach( urlTests, function( values, key ) {
 
@@ -423,9 +407,8 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
   });
 });
 
-test( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
+asyncTest( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
 
-  QUnit.reset();
   var popped,
       elem,
       expects = 2,
@@ -438,7 +421,7 @@ test( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
       start();
     }
   }
-  popped = Popcorn.vimeo( "#player_3", "http://player.vimeo.com/video/6960892" );
+  popped = Popcorn.vimeo( "#player_3", "http://player.vimeo.com/video/11336811" );
 
   popped.listen( "loadeddata", function() {
     elem = document.querySelector( "div#player_3 object" );
@@ -448,5 +431,4 @@ test( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
     plus();
   });
 
-  stop();
 });
