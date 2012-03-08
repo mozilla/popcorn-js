@@ -106,6 +106,10 @@ asyncTest( "Default Attribute Functionality", function () {
   playerDefault.addEventListener( "load", function() {
     equal( playerDefault.duration, 213.89, "Duration updated" );
     plus();
+
+    equal( document.getElementById( "player_2" ).children.length, 2, "The container has 2 players" );
+    plus();
+
   });
   
   Popcorn.forEach( members, function ( val, prop ) {
@@ -118,9 +122,6 @@ asyncTest( "Default Attribute Functionality", function () {
     equal( actual, val, "player." + prop + " should have default value: '" + val + "'" );
     plus();
   });
-  
-  equal( document.getElementById( "player_2" ).children.length, 2, "The container has 2 players" );
-  plus();
   
   equal( playerDefault.width, playerDefault.offsetWidth+"px", "Width is stringified version of offsetWidth" );
   plus();
