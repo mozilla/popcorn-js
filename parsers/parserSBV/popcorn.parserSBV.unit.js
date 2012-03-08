@@ -1,4 +1,4 @@
-test( "Popcorn 0.3 SBV Parser Plugin", function () {
+asyncTest( "Popcorn 0.3 SBV Parser Plugin", function () {
   
   var count = 0,
       numSubs = 0,
@@ -21,7 +21,7 @@ test( "Popcorn 0.3 SBV Parser Plugin", function () {
           end: 18.042
         }
       ],
-      expects = subs.length*3 + 1;
+      expects = subs.length * 3 + 1;
       
   function plus() {
     if ( ++count === expects ) {
@@ -29,30 +29,23 @@ test( "Popcorn 0.3 SBV Parser Plugin", function () {
     }
   }
   
-  poppercorn.parseSBV( "data/data.sbv" );
+  poppercorn.parseSBV( "data/data.sbv", function (){
+    expect(expects);
   
-  expect(expects);
-  
-  stop( 5000 );
-  
-  // Allow load time
-  setTimeout(function () {
-    Popcorn.forEach( poppercorn.getTrackEvents(), function(evt) {
+    Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
       if( evt._natives.type === "subtitle" ) {
-        sub = subs[numSubs++];
+        sub = subs[ numSubs++ ];
         
-        equals( evt.start, sub.start, "Correctly parsed start of " + evt.start );
+        equal( evt.start, sub.start, "Correctly parsed start of " + evt.start );
         plus();
-        equals( evt.text, sub.text, "Correctly parsed text of " + evt.start );
+        equal( evt.text, sub.text, "Correctly parsed text of " + evt.start );
         plus();
-        equals( evt.end, sub.end, "Correctly parsed end at " + evt.start );
+        equal( evt.end, sub.end, "Correctly parsed end at " + evt.start );
         plus();
       }
     });
     
-    equals( subs.length, numSubs, "Parsed all subtitles" );
+    equal( subs.length, numSubs, "Parsed all subtitles" );
     plus();
-
-  }, 500);
-  
+  });
 });

@@ -305,22 +305,26 @@
       type: {
         elem: "select",
         options: [ "ROADMAP", "SATELLITE", "TERRAIN" ],
-        label: "Type"
+        label: "Type",
+        optional: true
       },
       zoom: {
         elem: "input",
         type: "text",
-        label: "Zoom"
+        label: "Zoom",
+        optional: true
       },
       lat: {
         elem: "input",
         type: "text",
-        label: "Lat"
+        label: "Lat",
+        optional: true
       },
       lng: {
         elem: "input",
         type: "text",
-        label: "Lng"
+        label: "Lng",
+        optional: true
       },
       location: {
         elem: "input",
@@ -330,7 +334,8 @@
       markers: {
         elem: "input",
         type: "text",
-        label: "List Markers"
+        label: "List Markers",
+        optional: true
       }
     }
   });

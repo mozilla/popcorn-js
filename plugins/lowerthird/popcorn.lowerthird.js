@@ -53,7 +53,8 @@
           salutation : {
             elem: "input",
             type: "text",
-            label: "Text"
+            label: "Text",
+            optional: true
           },
           name: {
             elem: "input",
@@ -63,7 +64,8 @@
           role: {
             elem: "input",
             type: "text",
-            label: "Text"
+            label: "Text",
+            optional: true
           }
         }
       },
@@ -120,7 +122,10 @@
        * options variable
        */
       end: function( event, options ) {
-        options.container.innerHTML = "";
+        // Empty child nodes
+        while ( options.container.firstChild ) {
+          options.container.removeChild( options.container.firstChild );
+        }
       }
 
   });

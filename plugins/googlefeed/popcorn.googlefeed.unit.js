@@ -48,15 +48,15 @@ test( "Popcorn Google Feed Plugin", function() {
     plus();
     ok( document.getElementById( "_feed1" ), "First feed is on the page" );
     plus();
-    equals ( document.getElementById( "_feed1" ).offsetParent.id, "feed", "First feed is inside the 'feed' div" );
+    equal( document.getElementById( "_feed1" ).offsetParent.id, "feed", "First feed is inside the 'feed' div" );
     plus();
-    equals( popped.data.trackEvents.byStart[ 1 ].orientation, "vertical", "Defaulting to vertical orientation" );
+    equal( popped.data.trackEvents.byStart[ 1 ].orientation, "vertical", "Defaulting to vertical orientation" );
     plus();
   });
   popped.exec( 2, function() {
     ok( document.getElementById( "_feed2" ), "Second feed is on the page" );
     plus();
-    equals( document.getElementById( "_feed2" ).offsetParent.id, "feed1", "Second feed is inside the 'feed2' div" );
+    equal( document.getElementById( "_feed2" ).offsetParent.id, "feed1", "Second feed is inside the 'feed2' div" );
     plus();
   });
   popped.exec( 3, function() {

@@ -1,5 +1,5 @@
-test( "Options Check", function() {
-  QUnit.reset();
+asyncTest( "Options Check", function() {
+
   expect( 7 );
   var varz = {
       title: 0,
@@ -10,9 +10,7 @@ test( "Options Check", function() {
       color: "FFAADD",
       fullscreen: 0
     },
-    p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892", varz );
-
-  stop();
+    p2 = Popcorn.vimeo( "#player_1", "http://vimeo.com/11336811", varz );
 
   p2.listen( "loadeddata", function() {
     var flashvars = $( 'param[name="flashvars"]' ).attr( "value" );
@@ -31,11 +29,9 @@ test( "Options Check", function() {
 
 });
 
-test( "Update Timer", function() {
+asyncTest( "Update Timer", function() {
 
-  QUnit.reset();
-
-  var p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892" ),
+  var p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" ),
       expects = 16,
       count = 0,
       execCount = 0,
@@ -45,7 +41,7 @@ test( "Update Timer", function() {
       forwardEnd    = false,
       backwardStart = false,
       backwardEnd   = false,
-      wrapperRunning = { one: false, two: false, };
+      wrapperRunning = { one: false, two: false };
 
   function plus() {
     if ( ++count === expects ) {
@@ -59,18 +55,15 @@ test( "Update Timer", function() {
     }
   }
 
-  // These tests come close to 10 seconds on chrome, increasing to 15
-  stop();
-
   p2.listen( "canplaythrough", function() {
     p2.unlisten( "canplaythrough" );
     ok( true, "'canplaythrough' fired" );
     plus();
   });
 
-  p2.listen( "load", function() {
-    p2.unlisten( "load" );
-    ok( true, "'load' fired" );
+  p2.listen( "loadedmetadata", function() {
+    p2.unlisten( "loadedmetadata" );
+    ok( true, "'loadedmetadata' fired" );
     plus();
   });
 
@@ -228,11 +221,9 @@ test( "Update Timer", function() {
 
 });
 
-test( "Plugin Factory", function() {
+asyncTest( "Plugin Factory", function() {
 
-  QUnit.reset();
-
-  var popped = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892" ),
+  var popped = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" ),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
 
       // 15*2+2+2. executor/complicator each do 15
@@ -249,7 +240,6 @@ test( "Plugin Factory", function() {
   }
 
   expect( expects );
-  stop( 20000 );
 
   Popcorn.plugin( "executor", function() {
 
@@ -268,17 +258,17 @@ test( "Plugin Factory", function() {
 
         ok( "media" in this, "executor instance has `media` property" );
         plus();
-        ok( Object.prototype.toString.call( popped.media ) === "[object Object]", "video property is a HTML DIV element" );
+        ok( typeof popped.media === "object", "video property is a HTML DIV element" );
         plus();
 
         ok( "data" in this, "executor instance has `data` property" );
         plus();
-        ok( Object.prototype.toString.call( popped.data ) === "[object Object]", "data property is an object" );
+        ok( typeof popped.data === "object", "data property is an object" );
         plus();
 
         ok( "trackEvents" in this.data, "executor instance has `trackEvents` property" );
         plus();
-        ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "executor trackEvents property is an object" )
+        ok( typeof popped.data.trackEvents === "object", "executor trackEvents property is an object" );
         plus();
       },
       end: function() {
@@ -290,7 +280,7 @@ test( "Plugin Factory", function() {
 
   ok( "executor" in popped, "executor plugin is now available to instance" );
   plus();
-  equals( Popcorn.registry.length, 1, "One item in the registry");
+  equal( Popcorn.registry.length, 1, "One item in the registry");
   plus();
 
   popped.executor({
@@ -314,17 +304,17 @@ test( "Plugin Factory", function() {
 
       ok( "media" in this, "complicator instance has `media` property" );
       plus();
-      ok( Object.prototype.toString.call( popped.media ) === "[object Object]", "video property is a HTMLVideoElement" );
+      ok( typeof popped.media === "object", "video property is a HTMLVideoElement" );
       plus();
 
       ok( "data" in this, "complicator instance has `data` property" );
       plus();
-      ok( Object.prototype.toString.call( popped.data ) === "[object Object]", "complicator data property is an object" );
+      ok( typeof popped.data === "object", "complicator data property is an object" );
       plus();
 
       ok( "trackEvents" in this.data, " complicatorinstance has `trackEvents` property" );
       plus();
-      ok( Object.prototype.toString.call( popped.data.trackEvents ) === "[object Object]", "complicator trackEvents property is an object" )
+      ok( typeof popped.data.trackEvents === "object", "complicator trackEvents property is an object" );
       plus();
     },
     end: function() {
@@ -337,7 +327,7 @@ test( "Plugin Factory", function() {
 
   ok( "complicator" in popped, "complicator plugin is now available to instance" );
   plus();
-  equals( Popcorn.registry.length, 2, "Two items in the registry");
+  equal( Popcorn.registry.length, 2, "Two items in the registry");
   plus();
 
   popped.complicator({
@@ -349,7 +339,7 @@ test( "Plugin Factory", function() {
 
 });
 
-test( "Popcorn vimeo Plugin Url and Duration Tests", function() {
+asyncTest( "Popcorn vimeo Plugin Url and Duration Tests", function() {
   function plus() {
     if ( ++count == expects ) {
       popcorn.pause();
@@ -357,19 +347,16 @@ test( "Popcorn vimeo Plugin Url and Duration Tests", function() {
     }
   }
 
-  QUnit.reset();
-
   var count = 0,
       expects = 3,
-      popcorn = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/6960892" );
+      popcorn = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" );
 
   expect( expects );
-  stop( 10000 );
 
-  equals( popcorn.media.id, "player_1", "Video id set" );
+  equal( popcorn.media.id, "player_1", "Video id set" );
   plus();
 
-  equals( popcorn.duration(), 0, "Duration starts as 0");
+  equal( popcorn.duration(), 0, "Duration starts as 0");
   plus();
 
   popcorn.listen( "durationchange", function() {
@@ -382,18 +369,16 @@ test( "Popcorn vimeo Plugin Url and Duration Tests", function() {
   popcorn.play();
 });
 
-test( "Popcorn vimeo Plugin Url Regex Test", function() {
-
-  QUnit.reset();
+asyncTest( "Popcorn vimeo Plugin Url Regex Test", function() {
 
   var urlTests = [
     { name: "standard",
-      url: "http://player.vimeo.com/video/6960892",
-      expected: "http://player.vimeo.com/video/6960892",
+      url: "http://player.vimeo.com/video/11336811",
+      expected: "http://player.vimeo.com/video/11336811"
     },
     { name: "short url",
-      url: "http://vimeo.com/6960892",
-      expected: "http://vimeo.com/6960892",
+      url: "http://vimeo.com/11336811",
+      expected: "http://vimeo.com/11336811"
     }
   ];
 
@@ -401,7 +386,6 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
       expects = urlTests.length;
 
   expect( expects );
-  stop( 10000 );
 
   Popcorn.forEach( urlTests, function( values, key ) {
 
@@ -410,7 +394,7 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
 
     popcorn.listen( "loadeddata", function() {
 
-      equals( popcorn.media.src, urlTest.expected, "Video id is correct for " + urlTest.name + ": " + urlTest.url );
+      equal( popcorn.media.src, urlTest.expected, "Video id is correct for " + urlTest.name + ": " + urlTest.url );
       popcorn.pause();
 
       count++;
@@ -421,4 +405,30 @@ test( "Popcorn vimeo Plugin Url Regex Test", function() {
       }
     });
   });
+});
+
+asyncTest( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
+
+  var popped,
+      elem,
+      expects = 2,
+      count = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+    }
+  }
+  popped = Popcorn.vimeo( "#player_3", "http://player.vimeo.com/video/11336811" );
+
+  popped.listen( "loadeddata", function() {
+    elem = document.querySelector( "div#player_3 object" );
+    equal( elem.height, popped.media.childNodes[0].offsetHeight, "The media object is reporting the correct offsetHeight" );
+    plus();
+    equal( elem.width, popped.media.childNodes[0].offsetWidth, "The media object is reporting the correct offsetWidth" );
+    plus();
+  });
+
 });

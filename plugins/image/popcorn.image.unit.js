@@ -1,4 +1,4 @@
-test( "Popcorn Image Plugin", function() {
+asyncTest( "Popcorn Image Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 9,
@@ -15,22 +15,19 @@ test( "Popcorn Image Plugin", function() {
 
   function plus() {
     if ( ++count === expects ) {
+      popped.destroy();
       start();
     }
   }
 
-  stop();
-
   ok( "image" in popped, "image is a method of the popped instance" );
   plus();
 
-  equals( imagediv.innerHTML, "", "initially, there is nothing inside the imagediv" );
+  equal( imagediv.innerHTML, "", "initially, there is nothing inside the imagediv" );
   plus();
 
   popped.image({
-    // seconds
     start: 1,
-    // seconds
     end: 3,
     href: "http://www.drumbeat.org/",
     src: sources[ 0 ],
@@ -38,50 +35,68 @@ test( "Popcorn Image Plugin", function() {
     target: "imagediv"
   })
   .image({
-    // seconds
     start: 4,
-    // seconds
     end: 6,
-    // no href
     src: sources[ 1 ],
     target: "imagediv"
   })
   .image({
-    // seconds
     start: 5,
-    // seconds
     end: 6,
-    // no href
     src: sources[ 2 ],
     target: "imagediv"
   });
 
   setupId = popped.getLastTrackEventId();
 
-  popped.exec( 2, function() {
-    ok( /display: block;/.test( imagediv.innerHTML ), "Div contents are displayed" );
+  popped.cue( 2, function() {
+    ok( imagediv.children[ 0 ].style.display !== "none", "inline", "Div contents are displayed" );
     plus();
-    ok( /img/.test( imagediv.innerHTML ), "An image exists" );
-    plus();
-  });
-
-  popped.exec( 3, function() {
-    ok( /display: none;/.test( imagediv.innerHTML ), "Div contents are hidden again" );
+    equal( imagediv.querySelector("img").nodeName, "IMG", "An image exists" );
     plus();
   });
 
-  popped.exec( 5, function() {
+  popped.cue( 3, function() {
+    equal( imagediv.children[ 0 ].style.display, "none", "Div contents are hidden again" );
+    plus();
+  });
+
+  popped.cue( 5, function() {
     [].forEach.call( document.querySelectorAll( "#imagediv a img" ), function( img, idx ) {
       ok( img.src === sources[ idx ], "Image " + idx + " is in the right order" );
       plus();
     });
   });
 
-  popped.exec( 7, function() {
+  popped.cue( 7, function() {
     popped.pause().removeTrackEvent( setupId );
     ok( !imagediv.children[ 2 ], "removed image was properly destroyed" );
     plus();
   });
 
   popped.volume( 0 ).play();
+});
+
+
+asyncTest( "Zerostart doesn't rehide", 1, function() {
+  var popped = Popcorn( "#video" ),
+      zerostart = document.getElementById( "zerostart" );
+
+  popped.on( "canplayall", function() {
+    popped.currentTime(0);
+
+    popped.image({
+      start: 0,
+      end: 3,
+      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      target: "zerostart"
+    });
+
+    popped.cue( 1, function() {
+      ok( zerostart.children[ 0 ].style.display !== "none", "display area displayed at start: 0 without re-hiding" );
+      start();
+    });
+
+    popped.play();
+  });
 });

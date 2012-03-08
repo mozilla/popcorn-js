@@ -19,7 +19,7 @@ test( "Popcorn tagthisperson Plugin", function() {
   ok( "tagthisperson" in popped, "tagthisperson is a method of the popped instance" );
   plus();
 
-  equals( tagdiv.innerHTML, "", "initially, there is nothing inside the tagdiv" );
+  equal( tagdiv.innerHTML, "", "initially, there is nothing inside the tagdiv" );
   plus();
 
   popped.tagthisperson({
@@ -52,23 +52,23 @@ test( "Popcorn tagthisperson Plugin", function() {
   .volume( 0 );
 
   popped.exec( 0, function() {
-    equals( tagdiv.childElementCount, 2, "tagdiv now contains two child elements" );
+    equal( tagdiv.childElementCount, 2, "tagdiv now contains two child elements" );
     plus();
-    equals( tagdiv.textContent.trim() , "Anna Sob" ,"tagdiv shows the first tag" );
+    equal( tagdiv.textContent.trim() , "Anna Sob" ,"tagdiv shows the first tag" );
     plus();
   });
 
   popped.exec( 1, function() {
-    equals( tagdiv.innerHTML.search( "<a href" ) , 1 ,"second tag in tagdiv has a url" );
+    equal( tagdiv.innerHTML.search( "<a href" ) , 1 ,"second tag in tagdiv has a url" );
     plus();
-    equals( tagdiv2.textContent.trim(), "Mike, Daniel" ,"tagdiv2 shows the first & second tag" );
+    equal( tagdiv2.textContent.trim(), "Mike, Daniel" ,"tagdiv2 shows the first & second tag" );
     plus();
   });
 
   popped.exec( 2, function() {
-    equals( tagdiv.innerHTML , "" ,"tagdiv is now cleared" );
+    equal( tagdiv.innerHTML , "" ,"tagdiv is now cleared" );
     plus();
-    equals( tagdiv2.innerHTML , "" ,"tagdiv2 is now cleared" );
+    equal( tagdiv2.innerHTML , "" ,"tagdiv2 is now cleared" );
     plus();
   });
 

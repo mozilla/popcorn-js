@@ -91,7 +91,7 @@ test( "Popcorn Tumblr Plugin", function () {
 
   popped.exec( 3, function() {
     // Checks display style is set correctly on startup
-    equals( textblogdiv.style.display , "", "textblogdiv is visible on the page with '' display style" );
+    equal( textblogdiv.style.display , "", "textblogdiv is visible on the page with '' display style" );
     plus();
   });
 
@@ -124,9 +124,12 @@ test( "Popcorn Tumblr Plugin", function () {
 
 test( "Test Initialized Tumblr Blocks throwing Errors", function () {
 
+  Popcorn.plugin.debug = true;
+
   var pop = Popcorn( "#video" ), expects = 6;
 
-  expect( 6 );
+  expect( expects );
+  stop();
 
   // Tests for thrown Error on emtpy block
   try {
@@ -137,7 +140,7 @@ test( "Test Initialized Tumblr Blocks throwing Errors", function () {
 
   // Tests for thrown Error on invalid plugin type
   try {
-    pop.facebook({
+    pop.tumblr({
       requestType: "asdadsadasad",
       target: "testsdiv",
       start: 1,
@@ -151,7 +154,7 @@ test( "Test Initialized Tumblr Blocks throwing Errors", function () {
 
   // No blogId supplied for blogpost request
   try {
-    pop.facebook({
+    pop.tumblr({
       requestType: "blogpost",
       target: "testsdiv",
       start: 1,
@@ -165,7 +168,7 @@ test( "Test Initialized Tumblr Blocks throwing Errors", function () {
 
   // Checking no API KEY
   try {
-    pop.facebook({
+    pop.tumblr({
       requestType: "blogpost",
       target: "testsdiv",
       start: 1,
@@ -179,7 +182,7 @@ test( "Test Initialized Tumblr Blocks throwing Errors", function () {
 
   // Checking no base_hostname provided
   try {
-    pop.facebook({
+    pop.tumblr({
       requestType: "blogpost",
       target: "testsdiv",
       start: 1,
@@ -191,19 +194,20 @@ test( "Test Initialized Tumblr Blocks throwing Errors", function () {
     ok( true, "Caught no base_hostname for blogpost type." );
   }
 
-  // Checking for a failure in request from API using an invalid blogId
-  try {
-    pop.facebook({
-      requestType: "blogpost",
-      target: "testsdiv",
-      start: 1,
-      end: 5,
-      blogId: 1,
-      base_hostname: "tumblrplugin.tumblr.com",
-      api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
-    });
-  } catch( e ) {
-    ok( true, "Caught failed request from API for blogpost type." );
-  }
+  // Checking for a failing in request from API using invalid blogId
+  pop.listen( "tumblrError", function() {
+    ok( true, "Caught failed request from API for blogId." );
+    start();
+  });
+
+  pop.tumblr({
+    requestType: "blogpost",
+    target: "testsdiv",
+    start: 1,
+    end: 5,
+    blogId: 1,
+    base_hostname: "tumblrplugin.tumblr.com",
+    api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+  });
 });
 

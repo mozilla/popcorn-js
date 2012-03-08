@@ -20,9 +20,9 @@ test( "Popcorn Timeline Plugin", function() {
 
     ok( "timeline" in popped, "timeline is a method of the popped instance" );
     plus();
-    equals( document.getElementById( "timeline-up" ).firstChild, undefined, "initially, there is nothing inside the 'timeline-up' feed" );
+    equal( document.getElementById( "timeline-up" ).firstChild, undefined, "initially, there is nothing inside the 'timeline-up' feed" );
     plus();
-    equals( document.getElementById( "timeline-down" ).firstChild, undefined, "initially, there is nothing inside the 'timeline-down' feed" );
+    equal( document.getElementById( "timeline-down" ).firstChild, undefined, "initially, there is nothing inside the 'timeline-down' feed" );
     plus();
 
     popped.timeline({
@@ -69,13 +69,13 @@ test( "Popcorn Timeline Plugin", function() {
     //up
     ok( document.getElementById( "timelineDiv1" ), "First timeline is on the page" );
     plus();
-    equals( document.getElementById("timelineDiv1" ).parentNode.parentNode.id, "timeline-up", "First timeline is inside the 'timeline-up' div" );
+    equal( document.getElementById("timelineDiv1" ).parentNode.parentNode.id, "timeline-up", "First timeline is inside the 'timeline-up' div" );
     plus();
 
     //down
     ok( document.getElementById( "timelineDiv3" ), "First timeline is on the page" );
     plus();
-    equals( document.getElementById("timelineDiv3" ).parentNode.parentNode.id, "timeline-down", "First Timeline is inside the 'timeline-down' div" );
+    equal( document.getElementById("timelineDiv3" ).parentNode.parentNode.id, "timeline-down", "First Timeline is inside the 'timeline-down' div" );
     plus();
 
   });
@@ -85,18 +85,18 @@ test( "Popcorn Timeline Plugin", function() {
         timelinediv4 = document.getElementById( "timelineDiv4" );
     ok( timelinediv2, "Second timeline is on the page" );
     plus();
-    equals( timelinediv2 && timelinediv2.parentNode.parentNode.id, "timeline-up", "Second timelineDiv2 is inside the 'timeline-up' div" );
+    equal( timelinediv2 && timelinediv2.parentNode.parentNode.id, "timeline-up", "Second timelineDiv2 is inside the 'timeline-up' div" );
     plus();
-    equals( timelineUp.firstChild.firstChild.id,  "timelineDiv2", "'timelineDiv2' is the first child in 'timeline-up'" );
+    equal( timelineUp.firstChild.firstChild.id,  "timelineDiv2", "'timelineDiv2' is the first child in 'timeline-up'" );
     plus();
 
     //down
 
     ok( timelinediv4, "Second down timeline is on the page" );
     plus();
-    equals( timelinediv4.parentNode.parentNode.id, "timeline-down", "timelineDiv4 is inside the 'timeline-down' div" );
+    equal( timelinediv4.parentNode.parentNode.id, "timeline-down", "timelineDiv4 is inside the 'timeline-down' div" );
     plus();
-    equals( timelineDown.firstChild.firstChild.id, "timelineDiv3", "'timelineDiv3' is the first child in 'timeline-down'" );
+    equal( timelineDown.firstChild.firstChild.id, "timelineDiv3", "'timelineDiv3' is the first child in 'timeline-down'" );
     plus();
   });
   popped.exec( 4, function() {
@@ -122,9 +122,9 @@ test( "Popcorn Timeline Plugin", function() {
     }
 
     popped.pause();
-    equals( document.getElementById( "timeline-up" ).firstChild, null, "removed timeline was properly destroyed"  );
+    equal( document.getElementById( "timeline-up" ).firstChild, null, "removed timeline was properly destroyed"  );
     plus();
-    equals( document.getElementById( "timeline-down" ).firstChild, null, "removed timeline was properly destroyed"  );
+    equal( document.getElementById( "timeline-down" ).firstChild, null, "removed timeline was properly destroyed"  );
     plus();
   });
 

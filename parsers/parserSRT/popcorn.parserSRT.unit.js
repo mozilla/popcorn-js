@@ -1,4 +1,4 @@
-test("Popcorn 0.3 SRT Parser Plugin", function () {
+asyncTest( "Popcorn 0.3 SRT Parser Plugin", function () {
   
   var expects = 0,
       count = 0,
@@ -74,35 +74,32 @@ test("Popcorn 0.3 SRT Parser Plugin", function () {
     }
   }
   
-  poppercorn.parseSRT( "data/unit.srt" );
-  
-  expects = expectedSubs.length*4+1;
-  expect( expects );
-  stop( 5000 );
-  
-  // Allow load time
-  setTimeout(function () {
+  poppercorn.parseSRT( "data/unit.srt", function() {
+
     Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
       if( evt._natives.type === "subtitle" ) {
-        sub = expectedSubs[numSubs++];
+        sub = expectedSubs[ numSubs++ ];
         
-        equals( sub.id, evt.id, "Correct id" );
+        equal( sub.id, evt.id, "Correct id" );
         plus();
         
-        equals( sub.start, evt.start, "Correct start" );
+        equal( sub.start, evt.start, "Correct start" );
         plus();
         
-        equals( sub.end, evt.end, "Correct end" );
+        equal( sub.end, evt.end, "Correct end" );
         plus();
         
-        equals( sub.text, evt.text, "Correct text" );
+        equal( sub.text, evt.text, "Correct text" );
         plus();
       }
     });
     
-    equals( expectedSubs.length, numSubs, "Correctly parsed all subtitles" );
+    equal( expectedSubs.length, numSubs, "Correctly parsed all subtitles" );
     plus();
 
-  }, 500);
+  });
   
+  expects = expectedSubs.length*4+1;
+  expect( expects );
+
 });

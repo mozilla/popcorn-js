@@ -131,12 +131,14 @@
       innerHTML: {
         elem: "input",
         type: "text",
-        label: "innerHTML"
+        label: "innerHTML",
+        optional: true
       },
       direction: {
         elem: "input",
         type: "text",
-        label: "direction"
+        label: "direction",
+        optional: true
       }
     }
   });
