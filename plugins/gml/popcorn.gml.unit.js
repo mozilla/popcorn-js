@@ -1,4 +1,4 @@
-test( "Popcorn GML Plugin", function() {
+asyncTest( "Popcorn GML Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 8,
@@ -13,8 +13,6 @@ test( "Popcorn GML Plugin", function() {
       start();
     }
   }
-
-  stop( 10000 );
 
   ok( "gml" in popped, "gml is a method of the popped instance" );
   plus();
