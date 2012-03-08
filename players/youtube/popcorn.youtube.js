@@ -179,7 +179,7 @@ Popcorn.player( "youtube", {
 
           if ( options.destroyed ) {
 
-            return;          
+            return;
           }
 
           if ( media.paused !== false || options.youtubeObject.getPlayerState() !== 1 ) {
@@ -337,8 +337,6 @@ Popcorn.player( "youtube", {
   },
   _teardown: function( options ) {
 
-    //options.youtubeObject.stopVideo();
-    //console.log( options.youtubeObject );
     options.destroyed = true;
     options.youtubeObject.stopVideo();
     options.youtubeObject.clearVideo();
