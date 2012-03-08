@@ -425,9 +425,9 @@ asyncTest( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
 
   popped.listen( "loadeddata", function() {
     elem = document.querySelector( "div#player_3 object" );
-    equal( elem.height, popped.media.offsetHeight, "The media object is reporting the correct offsetHeight" );
+    equal( elem.height, popped.media.childNodes[0].offsetHeight, "The media object is reporting the correct offsetHeight" );
     plus();
-    equal( elem.width, popped.media.offsetWidth, "The media object is reporting the correct offsetWidth" );
+    equal( elem.width, popped.media.childNodes[0].offsetWidth, "The media object is reporting the correct offsetWidth" );
     plus();
   });
 
