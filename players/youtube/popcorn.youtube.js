@@ -15,7 +15,6 @@ Popcorn.player( "youtube", {
 
     var media = this,
         autoPlay = false,
-        youtubeObject,
         container = document.createElement( "div" ),
         currentTime = 0,
         seekTime = 0,
@@ -48,10 +47,15 @@ Popcorn.player( "youtube", {
       // expose a callback to this scope, that is called from the global callback youtube calls
       onYouTubePlayerReady[ container.id ] = function() {
 
-        youtubeObject = document.getElementById( container.id );
+        options.youtubeObject = document.getElementById( container.id );
 
         // more youtube callback nonsense
         onYouTubePlayerReady.stateChangeEventHandler[ container.id ] = function( state ) {
+
+          if ( options.destroyed ) {
+
+            return;
+          }
 
           // youtube fires paused events while seeking
           // this is the only way to get seeking events
@@ -60,14 +64,14 @@ Popcorn.player( "youtube", {
             // silly logic forced on me by the youtube API
             // calling youtube.seekTo triggers multiple events
             // with the second events getCurrentTime being the old time
-            if ( seeking && seekTime === currentTime && seekTime !== youtubeObject.getCurrentTime() ) {
+            if ( seeking && seekTime === currentTime && seekTime !== options.youtubeObject.getCurrentTime() ) {
 
               seeking = false;
-              youtubeObject.seekTo( currentTime );
+              options.youtubeObject.seekTo( currentTime );
               return;
             }
 
-            currentTime = youtubeObject.getCurrentTime();
+            currentTime = options.youtubeObject.getCurrentTime();
             media.dispatchEvent( "timeupdate" );
             !media.paused && media.pause();
 
@@ -85,7 +89,7 @@ Popcorn.player( "youtube", {
           // before this the player object exists, but calls to it may go unheard
           if ( state === -1 ) {
 
-            youtubeObject.playVideo();
+            options.youtubeObject.playVideo();
             return;
           } else
           if ( state === 1 && firstGo ) {
@@ -106,7 +110,7 @@ Popcorn.player( "youtube", {
               media.pause();
             }
 
-            media.duration = youtubeObject.getDuration();
+            media.duration = options.youtubeObject.getDuration();
 
             media.dispatchEvent( "durationchange" );
             volumeupdate();
@@ -130,15 +134,20 @@ Popcorn.player( "youtube", {
         };
 
         // youtube requires callbacks to be a string to a function path from the global scope
-        youtubeObject.addEventListener( "onStateChange", "onYouTubePlayerReady.stateChangeEventHandler." + container.id );
+        options.youtubeObject.addEventListener( "onStateChange", "onYouTubePlayerReady.stateChangeEventHandler." + container.id );
 
-        youtubeObject.addEventListener( "onError", "onYouTubePlayerReady.onErrorEventHandler." + container.id );
+        options.youtubeObject.addEventListener( "onError", "onYouTubePlayerReady.onErrorEventHandler." + container.id );
 
         var timeupdate = function() {
 
-          if ( !media.paused && youtubeObject.getCurrentTime ) {
+          if ( options.destroyed ) {
 
-            currentTime = youtubeObject.getCurrentTime();
+            return;
+          }
+
+          if ( !media.paused ) {
+
+            currentTime = options.youtubeObject.getCurrentTime();
             media.dispatchEvent( "timeupdate" );
             setTimeout( timeupdate, 10 );
           }
@@ -146,27 +155,34 @@ Popcorn.player( "youtube", {
 
         var volumeupdate = function() {
 
-          if ( youtubeObject.isMuted ) {
+          if ( options.destroyed ) {
 
-            if ( lastMuted !== youtubeObject.isMuted() ) {
-
-              lastMuted = youtubeObject.isMuted();
-              media.dispatchEvent( "volumechange" );
-            }
-
-            if ( lastVolume !== youtubeObject.getVolume() ) {
-
-              lastVolume = youtubeObject.getVolume();
-              media.dispatchEvent( "volumechange" );
-            }
-
-            setTimeout( volumeupdate, 250 );
+            return;
           }
+
+          if ( lastMuted !== options.youtubeObject.isMuted() ) {
+
+            lastMuted = options.youtubeObject.isMuted();
+            media.dispatchEvent( "volumechange" );
+          }
+
+          if ( lastVolume !== options.youtubeObject.getVolume() ) {
+
+            lastVolume = options.youtubeObject.getVolume();
+            media.dispatchEvent( "volumechange" );
+          }
+
+          setTimeout( volumeupdate, 250 );
         };
 
         media.play = function() {
 
-          if ( media.paused !== false || youtubeObject.getPlayerState() !== 1 ) {
+          if ( options.destroyed ) {
+
+            return;
+          }
+
+          if ( media.paused !== false || options.youtubeObject.getPlayerState() !== 1 ) {
 
             media.paused = false;
             media.dispatchEvent( "play" );
@@ -175,16 +191,21 @@ Popcorn.player( "youtube", {
           }
 
           timeupdate();
-          youtubeObject.playVideo();
+          options.youtubeObject.playVideo();
         };
 
         media.pause = function() {
 
-          if ( media.paused !== true || youtubeObject.getPlayerState() !== 2 ) {
+          if ( options.destroyed ) {
+
+            return;          
+          }
+
+          if ( media.paused !== true || options.youtubeObject.getPlayerState() !== 2 ) {
 
             media.paused = true;
             media.dispatchEvent( "pause" );
-            youtubeObject.pauseVideo();
+            options.youtubeObject.pauseVideo();
           }
         };
 
@@ -194,10 +215,17 @@ Popcorn.player( "youtube", {
             // make sure val is a number
             currentTime = seekTime = +val;
             seeking = true;
+
+            if ( options.destroyed ) {
+
+              return currentTime;
+            }
+
             media.dispatchEvent( "seeked" );
             media.dispatchEvent( "timeupdate" );
 
-            youtubeObject.seekTo( currentTime );
+            options.youtubeObject.seekTo( currentTime );
+
             return currentTime;
           },
           get: function() {
@@ -209,43 +237,63 @@ Popcorn.player( "youtube", {
         Popcorn.player.defineProperty( media, "muted", {
           set: function( val ) {
 
-            if ( youtubeObject.isMuted() !== val ) {
+            if ( options.destroyed ) {
+
+              return val;
+            }
+
+            if ( options.youtubeObject.isMuted() !== val ) {
 
               if ( val ) {
 
-                youtubeObject.mute();
+                options.youtubeObject.mute();
               } else {
 
-                youtubeObject.unMute();
+                options.youtubeObject.unMute();
               }
 
-              lastMuted = youtubeObject.isMuted();
+              lastMuted = options.youtubeObject.isMuted();
               media.dispatchEvent( "volumechange" );
             }
 
-            return youtubeObject.isMuted();
+            return options.youtubeObject.isMuted();
           },
           get: function() {
 
-            return youtubeObject.isMuted();
+            if ( options.destroyed ) {
+
+              return 0;
+            }
+
+            return options.youtubeObject.isMuted();
           }
         });
 
         Popcorn.player.defineProperty( media, "volume", {
           set: function( val ) {
 
-            if ( youtubeObject.getVolume() / 100 !== val ) {
+            if ( options.destroyed ) {
 
-              youtubeObject.setVolume( val * 100 );
-              lastVolume = youtubeObject.getVolume();
+              return val;
+            }
+
+            if ( options.youtubeObject.getVolume() / 100 !== val ) {
+
+              options.youtubeObject.setVolume( val * 100 );
+              lastVolume = options.youtubeObject.getVolume();
               media.dispatchEvent( "volumechange" );
             }
 
-            return youtubeObject.getVolume() / 100;
+            return options.youtubeObject.getVolume() / 100;
           },
           get: function() {
 
-            return youtubeObject.getVolume() / 100;
+            if ( options.destroyed ) {
+
+              return 0;
+            }
+
+            return options.youtubeObject.getVolume() / 100;
           }
         });
       };
@@ -276,7 +324,7 @@ Popcorn.player( "youtube", {
         "data-youtube-player": "//www.youtube.com/e/" + src + "?" + query + "&enablejsapi=1&playerapiid=" + container.id + "&version=3"
       };
 
-      swfobject.embedSWF( attributes[ "data-youtube-player" ], container.id, width, height, "8", null, flashvars, params, attributes );
+      swfobject.embedSWF( attributes[ "data-youtube-player" ], container.id, width, height, "8", undefined, flashvars, params, attributes );
     };
 
     if ( !window.swfobject ) {
@@ -289,6 +337,9 @@ Popcorn.player( "youtube", {
   },
   _teardown: function( options ) {
 
+    options.destroyed = true;
+    options.youtubeObject.stopVideo();
+    options.youtubeObject.clearVideo();
     this.removeChild( document.getElementById( options._container.id ) );
   }
 });
