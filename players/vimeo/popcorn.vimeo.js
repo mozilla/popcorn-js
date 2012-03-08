@@ -216,11 +216,11 @@
           media.dispatchEvent( "canplaythrough" );
         };
 
-        var clip_id = (/\d+$/).exec(src);
+        var clip_id = ( /\d+$/ ).exec( src );
 
         flashvars = {
           // Load a video not found poster if the url does not contain a valid id
-          clip_id: clip_id ? clip_id[0] : 0,
+          clip_id: clip_id ? clip_id[ 0 ] : 0,
           api: 1,
           js_swf_id: vimeoContainer.id
         };
