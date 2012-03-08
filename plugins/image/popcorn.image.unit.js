@@ -50,30 +50,55 @@ test( "Popcorn Image Plugin", function() {
 
   setupId = popped.getLastTrackEventId();
 
-  popped.exec( 2, function() {
-    equals( imagediv.children[ 0 ].style.display, "block", "Div contents are displayed" );
+  popped.cue( 2, function() {
+    ok( imagediv.children[ 0 ].style.display !== "none", "inline", "Div contents are displayed" );
     plus();
-    equals( imagediv.children[ 0 ].children[ 1 ].nodeName, "IMG", "An image exists" );
+    equals( imagediv.querySelector("img").nodeName, "IMG", "An image exists" );
     plus();
   });
 
-  popped.exec( 3, function() {
+  popped.cue( 3, function() {
     equals( imagediv.children[ 0 ].style.display, "none", "Div contents are hidden again" );
     plus();
   });
 
-  popped.exec( 5, function() {
+  popped.cue( 5, function() {
     [].forEach.call( document.querySelectorAll( "#imagediv a img" ), function( img, idx ) {
       ok( img.src === sources[ idx ], "Image " + idx + " is in the right order" );
       plus();
     });
   });
 
-  popped.exec( 7, function() {
+  popped.cue( 7, function() {
     popped.pause().removeTrackEvent( setupId );
     ok( !imagediv.children[ 2 ], "removed image was properly destroyed" );
     plus();
   });
 
   popped.volume( 0 ).play();
+});
+
+
+asyncTest( "Zerostart doesn't rehide", 0, function() {
+  var popped = Popcorn( "#video" ),
+      zerostart = document.getElementById( "zerostart" ),
+      expects = 9;
+
+  popped.on( "canplayall", function() {
+    popped.currentTime(0);
+
+    popped.image({
+      start: 0,
+      end: 3,
+      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      target: "zerostart"
+    });
+
+    popped.cue( 1, function() {
+      ok( zerostart.children[ 0 ].style.display !== "none", "display area displayed at start: 0 without re-hiding" );
+      start();
+    });
+
+    popped.play();
+  });
 });
