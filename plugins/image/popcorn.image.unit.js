@@ -79,10 +79,9 @@ test( "Popcorn Image Plugin", function() {
 });
 
 
-asyncTest( "Zerostart doesn't rehide", 0, function() {
+asyncTest( "Zerostart doesn't rehide", 1, function() {
   var popped = Popcorn( "#video" ),
-      zerostart = document.getElementById( "zerostart" ),
-      expects = 9;
+      zerostart = document.getElementById( "zerostart" );
 
   popped.on( "canplayall", function() {
     popped.currentTime(0);
