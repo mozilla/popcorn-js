@@ -202,6 +202,12 @@
       //  Check if entity is a valid string id
       matches = rIdExp.exec( entity );
 
+      try {
+        document.querySelector( entity );
+      } catch(e) {
+        throw new Error( "Popcorn.js Error: Invalid media element selector: " + entity );
+      }
+
       //  Get media element by id or object reference
       this.media = matches && matches.length && matches[ 2 ] ?
                      document.getElementById( matches[ 2 ] ) :
