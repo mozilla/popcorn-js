@@ -703,6 +703,16 @@ test( "Instance", function() {
 
 });
 
+test( "Bogus Selector", 1, function() {
+  try {
+    Popcorn( "#[object HTMLDivElement]" );
+
+    ok(false, "Should not fail silently" );
+  } catch(e) {
+    ok( true, "Exception raised on bogus selector: " + e.message );
+  }
+});
+
 module( "Popcorn Static" );
 
 test( "Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
