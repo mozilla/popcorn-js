@@ -3681,7 +3681,7 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
       count = 0,
       startCalls = 0,
       endCalls = 0,
-      expects = 7;
+      expects = 13;
 
   expect( expects );
 
@@ -3740,6 +3740,33 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
     equal( endCalls, 2, "end is called once again, this time via toggle" );
     plus();
+
+    $pop.pause( 41 );
+
+    $pop.enable( "toggler" );
+
+    ok( !$pop.data.disabled[ "toggler" ], "toggle() plugin: toggler is enabled while paused" );
+    plus();
+
+    equal( startCalls, 3, "start is called once again, this time via enable while paused" );
+    plus();
+
+    $pop.disable( "toggler" );
+
+    ok( $pop.data.disabled[ "toggler" ], "toggle() plugin: toggler is disabled while paused" );
+    plus();
+
+    equal( endCalls, 3, "end is called once again, this time via disable while paused" );
+    plus();
+
+    $pop.toggle( "toggler" );
+
+    ok( !$pop.data.disabled[ "toggler" ], "toggle() plugin: toggler is enabled while paused" );
+    plus();
+
+    equal( startCalls, 4, "start is called once again, this time via toggle while paused" );
+    plus();
+    
   });
 
   // ensure toggler does not fire until we are ready
