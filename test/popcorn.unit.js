@@ -3679,7 +3679,9 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
   var $pop = Popcorn( "#video" ),
       count = 0,
-      expects = 4;
+      startCalls = 0,
+      endCalls = 0,
+      expects = 7;
 
   expect( expects );
 
@@ -3694,51 +3696,59 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
   Popcorn.plugin( "toggler", function() {
     return {
       start: function() {
-        var div = document.createElement( "div" );
-        div.id = "toggler-test";
-        div.innerHTML = "foo";
-
-        document.body.appendChild( div );
+      // TODO: check options
+        startCalls++;
       },
       end: function() {
-        document.getElementById( "toggler-test" ).parentNode.removeChild( document.getElementById( "toggler-test" ) );
+      // TODO: check options
+        endCalls++;
       }
     };
   });
 
-  $pop.cue( 40, function() {
+  $pop.cue( 41, function() {
 
-    //  make sure toggler never happened
-    // look for: "toggler-test"
-    ok( !document.getElementById( "toggler-test" ), "No toggler container, disabled toggler plugin correctly never ran" );
+    // pause to ensure end is never called outside of disable and toggle
+    $pop.pause();
+    
+    equal( startCalls, 1, "start is called once, to initiate state" );
+    plus();
+
+    // Test per-instance function call
+    $pop.disable( "toggler" );
+
+    ok( $pop.data.disabled[ "toggler" ], "disable() plugin: toggler is disabled" );
+    plus();
+
+    equal( endCalls, 1, "end is called once during disable, for a running plugin" );
+    plus();
+
+    // Test per-instance function call
+    $pop.enable( "toggler" );
+
+    ok( !$pop.data.disabled[ "toggler" ], "enable() plugin: toggler is enabled" );
+    plus();
+    
+    equal( startCalls, 2, "start is called once again, this time via enable" );
+    plus();
+
+    // Test per-instance toggle off
+    $pop.toggle( "toggler" );
+
+    ok( $pop.data.disabled[ "toggler" ], "toggle() plugin: toggler is disabled" );
+    plus();
+
+    equal( endCalls, 2, "end is called once again, this time via toggle" );
     plus();
   });
+
+  // ensure toggler does not fire until we are ready
+  $pop.currentTime( 0 );
 
   $pop.toggler({
     start: 40,
     end: 50
   });
-
-  // rw/ff
-
-  // Test per-instance function call
-  $pop.disable( "toggler" );
-
-  ok( $pop.data.disabled.indexOf( "toggler" ) > -1, "disable() plugin: toggler is disabled" );
-  plus();
-
-  // Test per-instance function call
-  $pop.enable( "toggler" );
-
-  ok( $pop.data.disabled.indexOf( "toggler" ) === -1, "enable() plugin: toggler is enabled" );
-  plus();
-
-  // Test per-instance toggle off
-  $pop.toggle( "toggler" );
-
-  ok( $pop.data.disabled.indexOf( "toggler" ) > -1, "toggle() plugin: toggler is disabled" );
-  plus();
-
 
   $pop.play( 39 );
 });
