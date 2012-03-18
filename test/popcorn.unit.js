@@ -3681,8 +3681,10 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
       count = 0,
       startCalls = 0,
       endCalls = 0,
-      expects = 13;
+      expects = 17;
 
+  Popcorn.plugin.debug = true;
+      
   expect( expects );
 
   function plus() {
@@ -3741,32 +3743,77 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
     equal( endCalls, 2, "end is called once again, this time via toggle" );
     plus();
 
-    $pop.pause( 41 );
+    $pop.pause();
 
-    $pop.enable( "toggler" );
+    $pop.listen( "seeked", function() {
 
-    ok( !$pop.data.disabled[ "toggler" ], "toggle() plugin: toggler is enabled while paused" );
-    plus();
+      $pop.unlisten( "seeked" );
 
-    equal( startCalls, 3, "start is called once again, this time via enable while paused" );
-    plus();
+      $pop.enable( "toggler" );
 
-    $pop.disable( "toggler" );
+      ok( !$pop.data.disabled[ "toggler" ], "toggle() plugin: toggler is enabled while paused" );
+      plus();
 
-    ok( $pop.data.disabled[ "toggler" ], "toggle() plugin: toggler is disabled while paused" );
-    plus();
+      equal( startCalls, 3, "start is called once again, this time via enable while paused" );
+      plus();
 
-    equal( endCalls, 3, "end is called once again, this time via disable while paused" );
-    plus();
+      $pop.disable( "toggler" );
 
-    $pop.toggle( "toggler" );
+      ok( $pop.data.disabled[ "toggler" ], "toggle() plugin: toggler is disabled while paused" );
+      plus();
 
-    ok( !$pop.data.disabled[ "toggler" ], "toggle() plugin: toggler is enabled while paused" );
-    plus();
+      equal( endCalls, 3, "end is called once again, this time via disable while paused" );
+      plus();
 
-    equal( startCalls, 4, "start is called once again, this time via toggle while paused" );
-    plus();
-    
+      $pop.toggle( "toggler" );
+
+      ok( !$pop.data.disabled[ "toggler" ], "toggle() plugin: toggler is enabled while paused" );
+      plus();
+
+      equal( startCalls, 4, "start is called once again, this time via toggle while paused" );
+      plus();
+
+      $pop.listen( "seeked", function() {
+
+        $pop.unlisten( "seeked" );
+
+        equal( endCalls, 4, "end is called once again, this time via seek while paused and enabled" );
+        plus();
+
+        $pop.disable( "toggler" );
+
+        $pop.listen( "seeked", function() {
+
+          $pop.unlisten( "seeked" );
+
+          equal( startCalls, 4, "when seeking into events frame and disabled, start should not be called" );
+          plus();
+
+          $pop.listen( "seeked", function() {
+
+            $pop.unlisten( "seeked" );
+
+            $pop.enable( "toggler" );
+
+            equal( startCalls, 4, "when seeking outside events frame and enabled, start should not be called" );
+            plus();
+
+            $pop.disable( "toggler" );
+
+            equal( endCalls, 4, "when diable is called outside event time, end should not be called" );
+            plus();
+          });
+
+          $pop.currentTime( 39 );
+        });
+
+        $pop.currentTime( 41 );
+      });
+
+      $pop.currentTime( 39 );
+    });
+
+    $pop.currentTime( 41 );
   });
 
   // ensure toggler does not fire until we are ready
