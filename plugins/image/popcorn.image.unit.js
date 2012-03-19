@@ -77,7 +77,6 @@ asyncTest( "Popcorn Image Plugin", function() {
   popped.volume( 0 ).play();
 });
 
-
 asyncTest( "Zerostart doesn't rehide", 1, function() {
   var popped = Popcorn( "#video" ),
       zerostart = document.getElementById( "zerostart" );
@@ -94,6 +93,60 @@ asyncTest( "Zerostart doesn't rehide", 1, function() {
 
     popped.cue( 1, function() {
       ok( zerostart.children[ 0 ].style.display !== "none", "display area displayed at start: 0 without re-hiding" );
+      popped.destroy();
+      start();
+    });
+
+    popped.play();
+  });
+});
+
+asyncTest( "size test", 4, function() {
+
+  var popped = Popcorn( "#video" ),
+      withsize = document.getElementById( "withsize" ),
+      withoutsizeinsize = document.getElementById( "withoutsizeinsize" );
+
+  popped.on( "canplayall", function() {
+    popped.currentTime(0);
+
+    // images take on the size of the parent, if the parent has a size
+    popped.image({
+      start: 0,
+      end: 3,
+      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      target: "withsize"
+    });
+
+    // multiple images take on the size of the original parent,
+    // and not the size of the parent with an image. Testing 3 images total.
+    popped.image({
+      start: 0,
+      end: 3,
+      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      target: "withsize"
+    }).image({
+      start: 0,
+      end: 3,
+      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      target: "withsize"
+    });
+
+    // should only take on the size if it is explicitly defined in the parent,
+    // so not the parent's parent
+    popped.image({
+      start: 0,
+      end: 3,
+      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      target: "withoutsizeinsize"
+    });
+
+    popped.cue( 1, function() {
+
+      equal( withsize.children[ 0 ].children[ 0 ].style.width, "400px", "display area displayed at start: 0 without re-hiding" );
+      equal( withsize.children[ 1 ].children[ 0 ].style.width, "400px", "display area displayed at start: 0 without re-hiding" );
+      equal( withsize.children[ 2 ].children[ 0 ].style.width, "400px", "display area displayed at start: 0 without re-hiding" );
+      equal( withoutsizeinsize.children[ 0 ].children[ 0 ].offsetWidth, 300, "display area displayed at start: 0 without re-hiding" );
       start();
     });
 
