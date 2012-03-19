@@ -30,9 +30,6 @@
   // Copy global Popcorn (may not exist)
   _Popcorn = global.Popcorn,
 
-  //  ID string matching
-  rIdExp  = /^(#([\w\-\_\.]+))$/,
-
   //  Ready fn cache
   readyStack = [],
   readyBound = false,
@@ -199,19 +196,16 @@
         return;
       }
 
-      //  Check if entity is a valid string id
-      matches = rIdExp.exec( entity );
-
-      try {
-        document.querySelector( entity );
-      } catch(e) {
-        throw new Error( "Popcorn.js Error: Invalid media element selector: " + entity );
+      if( typeof entity === "string" ) {
+        try {
+          matches = document.querySelector( entity );
+        } catch(e) {
+          throw new Error( "Popcorn.js Error: Invalid media element selector: " + entity );
+        }
       }
 
       //  Get media element by id or object reference
-      this.media = matches && matches.length && matches[ 2 ] ?
-                     document.getElementById( matches[ 2 ] ) :
-                     entity;
+      this.media = matches || entity;
 
       //  Create an audio or video element property reference
       this[ ( this.media.nodeName && this.media.nodeName.toLowerCase() ) || "video" ] = this.media;

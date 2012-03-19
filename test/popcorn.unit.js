@@ -703,13 +703,21 @@ test( "Instance", function() {
 
 });
 
-test( "Bogus Selector", 1, function() {
+test( "Bogus Selector", 2, function() {
   try {
     Popcorn( "#[object HTMLDivElement]" );
 
     ok(false, "Should not fail silently" );
   } catch(e) {
     ok( true, "Exception raised on bogus selector: " + e.message );
+  }
+
+  try {
+    Popcorn( document.getElementById( "video" ) );
+
+    ok( true, "No error is raised for using the media element itself" );
+  } catch( e ) {
+    ok( false, "Exception thrown for using a valid media element" );
   }
 });
 
