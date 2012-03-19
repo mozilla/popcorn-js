@@ -3697,13 +3697,17 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
   Popcorn.plugin( "toggler", function() {
     return {
-      start: function() {
-      // TODO: check options
-        startCalls++;
+      _setup: function( options ) {
+
+        options.startCalls = options.endCalls = 0;
       },
-      end: function() {
-      // TODO: check options
-        endCalls++;
+      start: function( event, options ) {
+
+        startCalls = ++options.startCalls;
+      },
+      end: function( event, options ) {
+
+        endCalls = ++options.endCalls;
       }
     };
   });

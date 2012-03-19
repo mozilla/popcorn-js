@@ -1119,7 +1119,6 @@
             byStart._running = true;
             obj.data.running[ type ].push( byStart );
 
-            // TODO: test this
             if ( !obj.data.disabled[ type ] ) {
 
               natives.start.call( obj, event, byStart );
