@@ -229,7 +229,7 @@ asyncTest( "Popcorn.smart player selector", function() {
   plus();
   ok( Popcorn.spartaPlayer.canPlayType( "video", "this is not sparta" ) === false, "canPlayType method fails on invalid url and invalid container!" );
   plus();
-  
+
   var thisIsNotSparta = Popcorn.smart( "#video", "this is not sparta", {
     events: {
       error: function( e ) {
@@ -239,7 +239,7 @@ asyncTest( "Popcorn.smart player selector", function() {
       }
     }
   });
-  
+
   equal( thisIsNotSparta.media.nodeName, "VIDEO", "no player was found for this URL, default to video element" );
   plus();
 
@@ -280,4 +280,52 @@ asyncTest( "Popcorn.smart player selector", function() {
   equal( error, true, "canPlayType failed on an invalid type" );
   plus();
 
+});
+
+test( "Popcorn.smart - audio and video elements", function() {
+
+  var expects = 8,
+      count = 0,
+      instanceDiv = document.getElementById( "video" ),
+      p;
+
+  function plus() {
+    if ( ++count == expects ) {
+      start();
+    }
+  }
+
+  p = Popcorn.smart( "#video",  "../../test/italia.ogg" );
+  equals( instanceDiv.children[ 0 ].nodeName, "AUDIO", "Smart player correctly creates audio elements" );
+  p.destroy();
+  plus();
+
+  p = Popcorn.smart( "#video", "../../test/trailer.ogv" );
+  equals( instanceDiv.children[ 0 ].nodeName, "VIDEO", "Smart player correctly creates video elements" );
+  p.destroy();
+  plus();
+
+  p = Popcorn.smart( "#audioElement" );
+  equals( p.data.media.nodeName, "AUDIO", "Using the audio element itself works" );
+  plus();
+  equals( p.data.media.src, "../../test/italia.ogg", "Using original audio src" );
+  p.destroy();
+  plus();
+
+  p = Popcorn.smart( "#videoElement" );
+  equals( p.data.media.nodeName, "VIDEO", "Using the video element itself works" );
+  plus();
+  equals( p.data.media.src, "../../test/trailer.ogv", "Using original video src" );
+  p.destroy();
+  plus();
+
+  p = Popcorn.smart( "#audioElement", "http://upload.wikimedia.org/wikipedia/commons/1/1d/Demo_chorus.ogg" );
+  equals( p.data.media.src, "http://upload.wikimedia.org/wikipedia/commons/1/1d/Demo_chorus.ogg", "Overwrote original source on audio element, using specified source" );
+  p.destroy();
+  plus();
+
+  p = Popcorn.smart( "#videoElement", "http://videos.mozilla.org/serv/webmademovies/atultroll.webm" );
+  equals( p.data.media.src, "http://videos.mozilla.org/serv/webmademovies/atultroll.webm", "Overwrote original source on video element, using specified source" );
+  p.destroy();
+  plus();
 });
