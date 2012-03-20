@@ -289,6 +289,8 @@
         wrapper.dispatchEvent( 'progress' );
 
         if ( wrapper.readyState === 0 ) {
+          wrapper.dispatchEvent( 'loadedmetadata' );
+          wrapper.dispatchEvent( 'loadeddata' );
           wrapper.readyState = 3;
           wrapper.dispatchEvent( "readystatechange" );
         }
@@ -297,6 +299,7 @@
       // Register events for when the flash player is done buffering
       soundcloud.addEventListener( 'onMediaDoneBuffering', function( object, data ) {
         var wrapper = registry[object.api_getFlashId()];
+        wrapper.readyState = 4;
         wrapper.dispatchEvent( 'canplaythrough' );
       });
 
@@ -543,6 +546,22 @@
       }
 
       this._listeners[evt].push( fn );
+      return fn;
+    },
+    removeEventListener: function( evt, fn ) {
+
+      var index = -1;
+
+      if ( this._listeners[evt] ) {
+
+        index = this._listeners[evt].indexOf( fn );
+
+        if ( index > -1 ) {
+
+          this._listeners[evt].splice( index, 1 );
+        }
+      }
+
       return fn;
     },
     dispatchEvent: function( evt ) {
