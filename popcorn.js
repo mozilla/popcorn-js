@@ -216,7 +216,8 @@
 
         self.media.removeEventListener( "loadeddata", isReady, false );
 
-        var duration, videoDurationPlus, runningPlugins;
+        var duration, videoDurationPlus,
+            runningPlugins, runningPlugin, rpLength, rpNatives;
 
         //  Adding padding to the front and end of the arrays
         //  this is so we do not fall off either end
@@ -239,7 +240,7 @@
           self.data.timeUpdate = function () {
 
             Popcorn.timeUpdate( self, {} );
-
+            
             // fire frame for each enabled active plugin of every type
             Popcorn.forEach( Popcorn.manifest, function( key, val ) {
 
@@ -248,11 +249,13 @@
               // ensure there are running plugins on this type on this instance
               if ( runningPlugins ) {
 
-                for ( var i = 0; i < runningPlugins.length; i++ ) {
+                rpLength = runningPlugins.length;
+                for ( var i = 0; i < rpLength; i++ ) {
 
-                  runningPlugins[ i ]._natives &&
-                    runningPlugins[ i ]._natives.frame &&
-                    runningPlugins[ i ]._natives.frame.call( self, {}, runningPlugins[ i ], self.currentTime() );
+                  runningPlugin = runningPlugins[ i ];
+                  rpNatives = runningPlugin._natives;
+                  rpNatives && rpNatives.frame &&
+                    rpNatives.frame.call( self, {}, runningPlugin, self.currentTime() );
                 }
               }
             });
