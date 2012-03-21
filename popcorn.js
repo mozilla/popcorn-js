@@ -166,8 +166,7 @@
 
         // data structure of all 
         running: {
-          cue: [],
-          exec: [] // depricated, should we remove this?
+          cue: []
         },
 
         // Executed by either timeupdate event or in rAF loop
