@@ -196,7 +196,7 @@
         return;
       }
 
-      if( typeof entity === "string" ) {
+      if ( typeof entity === "string" ) {
         try {
           matches = document.querySelector( entity );
         } catch(e) {
