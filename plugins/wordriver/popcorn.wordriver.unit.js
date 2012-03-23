@@ -24,31 +24,31 @@ test( "Popcorn wordriver Plugin", function() {
   plus();
 
   popped.wordriver({
-		start: 0,
-		end: 2,
-		text: "hello",
-		target: "wordriverdiv",
-		color: "red"
+    start: 0,
+    end: 2,
+    text: "hello",
+    target: "wordriverdiv",
+    color: "red"
   });
 
   firstTrack = popped.getLastTrackEventId();
 
   popped.wordriver({
-		start: 2,
-		end: 4,
-		text: "world",
-		target: "wordriverdiv",
-		color: "blue"
+    start: 2,
+    end: 4,
+    text: "world",
+    target: "wordriverdiv",
+    color: "blue"
   });
 
   secondTrack = popped.getLastTrackEventId();
 
   popped.wordriver({
-		start: 20,
-		end: 24,
-		text: "nothing here",
-		target: "wordriverdiv",
-		color: "green"
+    start: 20,
+    end: 24,
+    text: "nothing here",
+    target: "wordriverdiv",
+    color: "green"
   })
   .volume( 0 );
 
@@ -105,6 +105,7 @@ test( "Popcorn wordriver Plugin", function() {
     plus();
   }
 
-  popped.play();
-
+  popped.listen( "canplaythrough", function() {
+    popped.play();
+  });
 });
