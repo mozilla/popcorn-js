@@ -213,6 +213,16 @@
       //  function to fire when video is ready
       var isReady = function() {
 
+        // chrome bug: http://code.google.com/p/chromium/issues/detail?id=119598
+        // it is possible the video's time is less than 0
+        // this has the potential to call track events more than once, when they should not
+        // start: 0, end: 1 will start, end, start again, when it should just start
+        // just setting it to 0 if it is below 0 fixes this issue
+        if ( self.media.currentTime < 0 ) {
+        
+          self.media.currentTime = 0;
+        }
+
         self.media.removeEventListener( "loadeddata", isReady, false );
 
         var duration, videoDurationPlus,
