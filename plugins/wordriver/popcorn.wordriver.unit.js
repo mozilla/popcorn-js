@@ -5,6 +5,9 @@ test( "Popcorn wordriver Plugin", function() {
       count = 0,
       firstTrack,
       secondTrack,
+      firstCue,
+      secondCue,
+      thirdCue
       wordriverdiv = document.getElementById( "wordriverdiv" );
 
   expect( expects );
@@ -52,46 +55,65 @@ test( "Popcorn wordriver Plugin", function() {
   })
   .volume( 0 );
 
-  popped.exec( 0, function() {
-    equal( wordriverdiv.children[ 0 ].childElementCount, 1, "wordriverdiv now has one inner element" );
+  popped.cue( 0, function() {
+    var child = wordriverdiv.children[ 0 ],
+        subChildren = child.children;
+
+    // need to do this here because we fire the event
+    // as soon as we can, as it starts at 0
+    firstCue = popped.getLastTrackEventId();
+    equal( child.childElementCount, 1, "wordriverdiv now has one inner element" );
     plus();
-    equal( wordriverdiv.children[ 0 ].children[ 0 ].style.opacity, 1, "first word is visible on the page" );
+    equal( subChildren[ 0 ].style.opacity, 1, "first word is visible on the page" );
     plus();
-    equal( wordriverdiv.children[ 0 ].children[ 0 ].innerHTML, "hello", "first word content is correct" );
+    equal( subChildren[ 0 ].innerHTML, "hello", "first word content is correct" );
     plus();
-    ok( !wordriverdiv.children[ 0 ].children[ 1 ], "second word does not exist yet" );
+    ok( !subChildren[ 1 ], "second word does not exist yet" );
     plus();
+    popped.removeTrackEvent( firstCue );
   });
 
-  popped.exec( 2, function() {
-    equal( wordriverdiv.children[ 0 ].childElementCount, 2, "wordriverdiv now has two inner elements" );
+  popped.cue( 2, function() {
+    var child = wordriverdiv.children[ 0 ],
+        subChildren = child.children;
+
+    equal( child.childElementCount, 2, "wordriverdiv now has two inner elements" );
     plus();
-    equal( wordriverdiv.children[ 0 ].children[ 0 ].style.opacity, 0, "first word is not visible on the page" );
+    equal( subChildren[ 0 ].style.opacity, 0, "first word is not visible on the page" );
     plus();
-    equal( wordriverdiv.children[ 0 ].children[ 0 ].innerHTML, "hello", "first word content is correct" );
+    equal( subChildren[ 0 ].innerHTML, "hello", "first word content is correct" );
     plus();
-    equal( wordriverdiv.children[ 0 ].children[ 1 ].style.opacity, 1, "second word is visible on the page" );
+    equal( subChildren[ 1 ].style.opacity, 1, "second word is visible on the page" );
     plus();
-    equal( wordriverdiv.children[ 0 ].children[ 1 ].innerHTML, "world", "second word content is correct" );
+    equal( subChildren[ 1 ].innerHTML, "world", "second word content is correct" );
     plus();
+    popped.removeTrackEvent( secondCue );
   });
 
-  popped.exec( 4, function() {
-    equal( wordriverdiv.children[ 0 ].children[ 0 ].style.opacity, 0, "first word is not visible on the page" );
+  secondCue = popped.getLastTrackEventId();
+
+  popped.cue( 4, function() {
+    var child = wordriverdiv.children[ 0 ],
+        subChildren = child.children;
+
+    equal( subChildren[ 0 ].style.opacity, 0, "first word is not visible on the page" );
     plus();
-    equal( wordriverdiv.children[ 0 ].children[ 1 ].style.opacity, 0, "second word is not visible on the page" );
+    equal( subChildren[ 1 ].style.opacity, 0, "second word is not visible on the page" );
     plus();
 
     popped.pause().removeTrackEvent( firstTrack );
-    equal( wordriverdiv.children[ 0 ].childElementCount, 1, "wordriverdiv now has one inner element" );
+    equal( child.childElementCount, 1, "wordriverdiv now has one inner element" );
     plus();
-    equal( wordriverdiv.children[ 0 ].children[ 0 ].innerHTML, "world", "first word content is changed" );
+    equal( subChildren[ 0 ].innerHTML, "world", "first word content is changed" );
     plus();
 
     popped.pause().removeTrackEvent( secondTrack );
     equal( wordriverdiv.childElementCount, 0, "wordriverdiv now has no inner element, even though one still exists, but was never called" );
     plus();
+    popped.removeTrackEvent( thirdCue );
   });
+
+  thirdCue = popped.getLastTrackEventId();
 
   // empty track events should be safe
   popped.wordriver({});
@@ -100,12 +122,11 @@ test( "Popcorn wordriver Plugin", function() {
   Popcorn.plugin.debug = true;
   try {
     popped.wordriver({});
+    ok( false, "empty event was not caught by debug" );
   } catch( e ) {
     ok( true, "empty event was caught by debug" );
     plus();
   }
 
-  popped.listen( "canplaythrough", function() {
-    popped.play();
-  });
+  popped.play();
 });
