@@ -143,9 +143,9 @@ asyncTest( "size test", 4, function() {
 
     popped.cue( 1, function() {
 
-      equal( withsize.children[ 0 ].children[ 0 ].style.width, "400px", "display area displayed at start: 0 without re-hiding" );
-      equal( withsize.children[ 1 ].children[ 0 ].style.width, "400px", "display area displayed at start: 0 without re-hiding" );
-      equal( withsize.children[ 2 ].children[ 0 ].style.width, "400px", "display area displayed at start: 0 without re-hiding" );
+      equal( withsize.children[ 0 ].children[ 0 ].offsetWidth, 400, "display area displayed at start: 0 without re-hiding" );
+      equal( withsize.children[ 1 ].children[ 0 ].offsetWidth, 400, "display area displayed at start: 0 without re-hiding" );
+      equal( withsize.children[ 2 ].children[ 0 ].offsetWidth, 400, "display area displayed at start: 0 without re-hiding" );
       equal( withoutsizeinsize.children[ 0 ].children[ 0 ].offsetWidth, 300, "display area displayed at start: 0 without re-hiding" );
       start();
     });
