@@ -87,7 +87,7 @@ asyncTest( "Default Attribute Functionality", function () {
   function plus() {
     if ( ++count === expects ) {
       start();
-      cleanup();
+      //cleanup();
     }
   }
   
@@ -284,7 +284,7 @@ asyncTest( "Popcorn Integration", function () {
 });
 
 asyncTest( "Events and Player Control", function () {
-  var expects = 14,
+  var expects = 18,
       count = 0,
       player = Popcorn.soundcloud( "player_1", "http://soundcloud.com/forss/flickermood" ),
       targetVolume;
@@ -296,6 +296,26 @@ asyncTest( "Events and Player Control", function () {
   }
   
   expect(expects);
+  
+  player.addEventListener( "loadedmetadata", function() {
+  console.log( "loadedmetadata" );
+    ok( true, "loadedmetadata was fired" );
+    plus();
+  });
+  
+  player.addEventListener( "loadeddata", function() {
+  console.log( "loadedmetadata" );
+    ok( true, "dataloaded was fired" );
+    plus();
+  });
+  
+  player.addEventListener( "canplaythrough", function() {
+  console.log( "loadedmetadata" );
+    ok( true, "canplaythrough was fired" );
+    plus();
+    ok( player.readyState >= 4, "readystate is 4 or greater" );
+    plus();
+  });
   
   player.addEventListener( "load", function() {
     ok( true, "Load was fired" );
