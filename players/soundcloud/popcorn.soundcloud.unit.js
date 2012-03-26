@@ -298,19 +298,16 @@ asyncTest( "Events and Player Control", function () {
   expect(expects);
   
   player.addEventListener( "loadedmetadata", function() {
-  console.log( "loadedmetadata" );
     ok( true, "loadedmetadata was fired" );
     plus();
   });
   
   player.addEventListener( "loadeddata", function() {
-  console.log( "loadedmetadata" );
     ok( true, "dataloaded was fired" );
     plus();
   });
   
   player.addEventListener( "canplaythrough", function() {
-  console.log( "loadedmetadata" );
     ok( true, "canplaythrough was fired" );
     plus();
     ok( player.readyState >= 4, "readystate is 4 or greater" );
