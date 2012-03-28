@@ -334,7 +334,7 @@
 
     var nodeId = rIdExp.exec( target ),
         playerType,
-        elementTypes = [ "AUDIO", "VIDEO" ],
+        elementTypes = [ "audio", "video" ],
         node = nodeId && nodeId.length && nodeId[ 2 ] ?
                  document.getElementById( nodeId[ 2 ] ) :
                  target;
@@ -366,7 +366,7 @@
     // attempting to create a video in a container
     if ( elementTypes.indexOf( node.nodeName ) === -1 ) {
 
-      target = document.createElement( !!/^.*\.(ogg|aac|mp3|wav)$/.exec( src ) ? "AUDIO" : "VIDEO" );
+      target = document.createElement( !!/^.*\.(ogg|aac|mp3|wav)$/.exec( src ) ? elementTypes[ 0 ] : elementTypes[ 1 ] );
 
       node.appendChild( target );
       node = target;
