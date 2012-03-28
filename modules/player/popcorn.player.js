@@ -334,7 +334,7 @@
 
     var nodeId = rIdExp.exec( target ),
         playerType,
-        elementTypes = [ "audio", "video" ],
+        elementTypes = [ "AUDIO", "VIDEO" ],
         node = nodeId && nodeId.length && nodeId[ 2 ] ?
                  document.getElementById( nodeId[ 2 ] ) :
                  target;
@@ -349,6 +349,7 @@
 
       return Popcorn( node, options );
     }
+
     // for now we loop through and use the first valid player we find.
     for ( var key in Popcorn.player.registry ) {
 
