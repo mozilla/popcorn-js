@@ -334,12 +334,12 @@
 
     var nodeId = rIdExp.exec( target ),
         playerType,
+        elementTypes = [ "AUDIO", "VIDEO" ],
         node = nodeId && nodeId.length && nodeId[ 2 ] ?
                  document.getElementById( nodeId[ 2 ] ) :
                  target;
 
-    // Popcorn.smart( video, /* options */ )
-    if ( node.nodeType === "VIDEO" && !src ) {
+    if ( elementTypes.indexOf( node.nodeName ) > -1 && !src ) {
 
       if ( typeof src === "object" ) {
 
@@ -365,9 +365,9 @@
 
     // Popcorn.smart( div, src, /* options */ )
     // attempting to create a video in a container
-    if ( node.nodeType !== "VIDEO" ) {
+    if ( elementTypes.indexOf( node.nodeName ) === -1 ) {
 
-      target = document.createElement( "video" );
+      target = document.createElement( !!/^.*\.(ogg|aac|mp3|wav)$/.exec( src ) ? elementTypes[ 0 ] : elementTypes[ 1 ] );
 
       node.appendChild( target );
       node = target;
@@ -378,5 +378,4 @@
 
     return Popcorn( node, options );
   };
-
 })( Popcorn );
