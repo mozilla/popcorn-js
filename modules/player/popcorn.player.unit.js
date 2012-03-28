@@ -282,7 +282,7 @@ asyncTest( "Popcorn.smart player selector", function() {
 
 });
 
-asynctest( "Popcorn.smart - audio and video elements", function() {
+asyncTest( "Popcorn.smart - audio and video elements", function() {
 
   var expects = 8,
       count = 0,
