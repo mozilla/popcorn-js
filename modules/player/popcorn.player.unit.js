@@ -19,7 +19,7 @@ asyncTest( "Base player functionality", function() {
   var p2 = Popcorn.baseplayer( "#video" ),
       expects = 12,
       count = 0,
-      execCount = 0,
+      cueCount = 0,
       // These make sure events are only fired once
       // any second call will produce a failed test
       forwardStart = false,
@@ -37,7 +37,7 @@ asyncTest( "Base player functionality", function() {
       Popcorn.removePlugin( "forwards" );
       Popcorn.removePlugin( "backwards" );
       Popcorn.removePlugin( "wrapper" );
-      p2.removePlugin( "exec" );
+      p2.removePlugin( "cue" );
       start();
     }
   }
@@ -128,11 +128,11 @@ asyncTest( "Base player functionality", function() {
     wrapper: "two"
   })
   // checking wrapper 2's start
-  .exec( 5, function() {
+  .cue( 5, function() {
 
-    if ( execCount === 0 ) {
+    if ( cueCount === 0 ) {
 
-      execCount++;
+      cueCount++;
       ok( wrapperRunning.two, "wrapper two is running at second 5" );
       plus();
       ok( !wrapperRunning.one, "wrapper one is stopped at second 5" );
@@ -140,11 +140,11 @@ asyncTest( "Base player functionality", function() {
     }
   })
   // checking wrapper 1's start
-  .exec( 6, function() {
+  .cue( 6, function() {
 
-    if ( execCount === 1 ) {
+    if ( cueCount === 1 ) {
 
-      execCount++;
+      cueCount++;
       ok( wrapperRunning.two, "wrapper two is running at second 6" );
       plus();
       ok( wrapperRunning.one, "wrapper one is running at second 6" );
@@ -152,11 +152,11 @@ asyncTest( "Base player functionality", function() {
     }
   })
   // checking wrapper 1's end
-  .exec( 7, function() {
+  .cue( 7, function() {
 
-    if ( execCount === 2 ) {
+    if ( cueCount === 2 ) {
 
-      execCount++;
+      cueCount++;
       ok( wrapperRunning.two, "wrapper two is running at second 7" );
       plus();
       ok( !wrapperRunning.one, "wrapper one is stopped at second 7" );
@@ -164,11 +164,11 @@ asyncTest( "Base player functionality", function() {
     }
   })
   // checking wrapper 2's end
-  .exec( 8, function() {
+  .cue( 8, function() {
 
-    if ( execCount === 3 ) {
+    if ( cueCount === 3 ) {
 
-      execCount++;
+      cueCount++;
       ok( !wrapperRunning.two, "wrapper two is stopped at second 9" );
       plus();
       ok( !wrapperRunning.one, "wrapper one is stopped at second 9" );
@@ -229,7 +229,7 @@ asyncTest( "Popcorn.smart player selector", function() {
   plus();
   ok( Popcorn.spartaPlayer.canPlayType( "video", "this is not sparta" ) === false, "canPlayType method fails on invalid url and invalid container!" );
   plus();
-  
+
   var thisIsNotSparta = Popcorn.smart( "#video", "this is not sparta", {
     events: {
       error: function( e ) {
@@ -239,7 +239,7 @@ asyncTest( "Popcorn.smart player selector", function() {
       }
     }
   });
-  
+
   equal( thisIsNotSparta.media.nodeName, "VIDEO", "no player was found for this URL, default to video element" );
   plus();
 
@@ -280,4 +280,53 @@ asyncTest( "Popcorn.smart player selector", function() {
   equal( error, true, "canPlayType failed on an invalid type" );
   plus();
 
+});
+
+asyncTest( "Popcorn.smart - audio and video elements", function() {
+
+  var expects = 8,
+      count = 0,
+      instanceDiv = document.getElementById( "video" ),
+      p;
+
+  function plus() {
+    if ( ++count == expects ) {
+      start();
+    }
+  }
+
+  p = Popcorn.smart( "#video",  "../../test/italia.ogg" );
+  equal( instanceDiv.children[ 0 ].nodeName, "AUDIO", "Smart player correctly creates audio elements" );
+  instanceDiv.innerHTML = "";
+  p.destroy();
+  plus();
+
+  p = Popcorn.smart( "#video", "../../test/trailer.ogv" );
+  equal( instanceDiv.children[ 0 ].nodeName, "VIDEO", "Smart player correctly creates video elements" );
+  p.destroy();
+  plus();
+
+  p = Popcorn.smart( "#audioElement" );
+  equal( p.media.nodeName, "AUDIO", "Using the audio element itself works" );
+  plus();
+  equal( p.media.getAttribute( "src" ), "../../test/italia.ogg", "Using original audio src" );
+  p.destroy();
+  plus();
+
+  p = Popcorn.smart( "#videoElement" );
+  equal( p.media.nodeName, "VIDEO", "Using the video element itself works" );
+  plus();
+  equal( p.media.getAttribute( "src" ), "../../test/trailer.ogv", "Using original video src" );
+  p.destroy();
+  plus();
+
+  p = Popcorn.smart( "#audioElement", "http://upload.wikimedia.org/wikipedia/commons/1/1d/Demo_chorus.ogg" );
+  equal( p.media.src, "http://upload.wikimedia.org/wikipedia/commons/1/1d/Demo_chorus.ogg", "Overwrote original source on audio element, using specified source" );
+  p.destroy();
+  plus();
+
+  p = Popcorn.smart( "#videoElement", "http://videos.mozilla.org/serv/webmademovies/atultroll.webm" );
+  equal( p.media.src, "http://videos.mozilla.org/serv/webmademovies/atultroll.webm", "Overwrote original source on video element, using specified source" );
+  p.destroy();
+  plus();
 });
