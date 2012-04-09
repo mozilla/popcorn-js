@@ -5,6 +5,7 @@
     <style>      
       #media_1{
         width: 80%;
+        height: 160px;
       }
     </style>
     
@@ -53,42 +54,24 @@
           popcorn.mute();
         }, false);
         
-        popcorn = Popcorn( Popcorn.soundcloud( "media_1", "http://soundcloud.com/forss/flickermood", {
-          width: "50%",
-          /*
-            This demo contains an api key used for retrieving comments from Soundcloud's API
-            It is to be used for demonstration purposes only, and for only this demo
-          */
-          api: {
-            key: "PRaNFlda6Bhf5utPjUsptg",
-            commentdiv: "commentDisplay"/*,
-            commentformat: (function() {
-              var count = 0;
-              
-              return function( comment ) {
-                return "<div>Comment # " + ( count++ ) + "<br />"
-                        + "<em>" + comment.user.name + "</em>: " + comment.text +"</div>";
-              }
-            })()*/
-          }
-        }) );
+        popcorn = Popcorn.soundcloud( "media_1", "http://api.soundcloud.com/tracks/18913746" );
         
-        popcorn.listen( "load", function() {
+        popcorn.on( "load", function() {
           
           document.getElementById( "media_duration" ).innerHTML = popcorn.duration();
           document.getElementById( "media_volume" ).innerHTML = popcorn.volume();
           document.getElementById( "media_currentTime" ).innerHTML = popcorn.currentTime();
-          document.getElementById( "media_readyState" ).innerHTML = popcorn.video.readyState;
+          document.getElementById( "media_readyState" ).innerHTML = popcorn.media.readyState;
           
-          popcorn.listen( "timeupdate", function() {
+          popcorn.on( "timeupdate", function() {
             document.getElementById( "media_currentTime" ).innerHTML = popcorn.currentTime();
           });
           
-          popcorn.video.addEventListener( "readystatechange", function() {
+          popcorn.media.addEventListener( "readystatechange", function() {
             document.getElementById( "media_readyState" ).innerHTML = popcorn.video.readyState;
           });
           
-          popcorn.listen( "volumechange", function() {
+          popcorn.on( "volumechange", function() {
             document.getElementById( "media_volume" ).innerHTML = popcorn.volume();
           });
           
@@ -96,7 +79,7 @@
         });
         
         // Empty for the purposes of allowing popcorn.trigger("play");
-        popcorn.listen( "play", function() {
+        popcorn.on( "play", function() {
         
         });
         
@@ -136,13 +119,6 @@
           copyrightholder:"Eric Wahlforss",
           target: 'attribdiv'
         })
-        .webpage({
-          id: "webpages-a",
-          start: 0, // seconds
-          end: 15, // seconds
-          src: 'http://webmademovies.org/',
-          target: 'webpagediv'
-        })
         .googlefeed({
             start: 0, // seconds
             end: 15, // seconds
@@ -157,8 +133,7 @@
           href: 'http://www.drumbeat.org/',
           src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
           target: 'imagediv'
-        })
-        .video.registerPopcornWithPlayer( popcorn );
+        });
       }, false);
     </script>
   </head>
