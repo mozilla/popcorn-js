@@ -144,6 +144,31 @@
    */
   Popcorn.plugin( "gml" , {
 
+    manifest: {
+      about: {
+        name: "Popcorn GML Plugin",
+        author: "Scott Downe, @ScottDowne",
+        website: "scottdowne.wordpress.com"
+      },
+      options: {
+        start: {
+          elem: "input",
+          type: "text",
+          label: "In"
+        },
+        end: {
+          elem: "input",
+          type: "text",
+          label: "Out"
+        },
+        gmltag: {
+          elem: "input",
+          type: "text",
+          label: "GMLTag"
+        },
+        target: "gml-container"
+      }
+    },
     _setup: function( options ) {
 
       var self = this,
