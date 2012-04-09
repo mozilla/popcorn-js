@@ -53,7 +53,7 @@
         }
 
         //  Only play the media if it was specified to do so
-        if ( !!popcornMedia.autoplay ) {
+        if ( !!popcornMedia.autoplay() ) {
           popcornMedia.play();
         }
 
