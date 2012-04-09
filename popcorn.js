@@ -450,6 +450,11 @@
         events[ item ] = null;
       }
 
+      // remove all plugins off the given instance
+      for ( plugin in Popcorn.registryByName ) {
+        Popcorn.removePlugin( instance, plugin );
+      }
+
       if ( !instance.isDestroyed ) {
         instance.data.timeUpdate && instance.media.removeEventListener( "timeupdate", instance.data.timeUpdate, false );
         instance.isDestroyed = true;
