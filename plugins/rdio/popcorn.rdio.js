@@ -123,49 +123,47 @@
     };
   })(),
   {
-    manifest: {
-      about: {
-        name: "Popcorn Rdio Plugin",
-        version: "0.1",
-        author: "Denise Rigato"
+    about: {
+      name: "Popcorn Rdio Plugin",
+      version: "0.1",
+      author: "Denise Rigato"
+    },
+    options: {
+      start: {
+        elem: "input",
+        type: "text",
+        label: "In"
       },
-      options: {
-        start: {
-          elem: "input",
-          type: "text",
-          label: "In"
-        },
-        end: {
-          elem: "input",
-          type: "text",
-          label: "Out"
-        },
-        target: "rdio",
-        artist: {
-          elem: "input",
-          type: "text",
-          label: "Artist"
-        },
-        album: {
-          elem: "input",
-          type: "text",
-          label: "Album"
-        },
-        person: {
-          elem: "input",
-          type: "text",
-          label: "Person"
-        },
-        id: {
-          elem: "input",
-          type: "text",
-          label: "Id"
-        },
-        playlist: {
-          elem: "input",
-          type: "text",
-          label: "Playlist"
-        }
+      end: {
+        elem: "input",
+        type: "text",
+        label: "Out"
+      },
+      target: "rdio",
+      artist: {
+        elem: "input",
+        type: "text",
+        label: "Artist"
+      },
+      album: {
+        elem: "input",
+        type: "text",
+        label: "Album"
+      },
+      person: {
+        elem: "input",
+        type: "text",
+        label: "Person"
+      },
+      id: {
+        elem: "input",
+        type: "text",
+        label: "Id"
+      },
+      playlist: {
+        elem: "input",
+        type: "text",
+        label: "Playlist"
       }
     }
   });
