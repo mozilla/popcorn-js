@@ -1451,6 +1451,14 @@
                                   mergedSetupOpts );
     };
 
+    // if the manifest parameter exists we should extend it onto the definition object
+    // so that it shows up when calling Popcorn.registry and Popcorn.registryByName
+    if ( manifest ) {
+      Popcorn.extend( definition, {
+        manifest: manifest
+      });
+    }
+
     //  Push into the registry
     var entry = {
       fn: plugin[ name ],
