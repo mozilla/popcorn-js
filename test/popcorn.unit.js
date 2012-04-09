@@ -502,8 +502,8 @@ test( "Popcorn.destroy", function() {
   plus();
 
   //  add some event listeners for testing
-  popcorn.on( "timeupdate", function( event ) { timeUpdateCounter++; }, false );
-  popcorn.on( "play", function( event ) { playCounter++; }, false );
+  popcorn.on( "timeupdate", function( event ) { timeUpdateCounter++; } );
+  popcorn.on( "play", function( event ) { playCounter++; } );
 
   popcorn.play( 0 );
 
