@@ -472,7 +472,7 @@ test( "Popcorn.util.toSeconds" , function() {
   }
 });
 
-test( "Popcorn.destroy", function() {
+asyncTest( "Popcorn.destroy", function() {
   var popcorn = Popcorn( "#video" ),
       pcorn,
       expects = 7,
@@ -488,8 +488,6 @@ test( "Popcorn.destroy", function() {
       start();
     }
   }
-
-  stop();
 
   //  initially no listeners
   equal( Popcorn.sizeOf( popcorn.data.events ), 0, "Initially no events have been added" );
