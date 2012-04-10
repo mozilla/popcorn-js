@@ -1,7 +1,8 @@
 (function() {
 
+  var scriptLoaded = false,
+      loading = false;
   Popcorn.player( "soundcloud", {
-    scriptLoaded: false,
     _canPlayType: function( nodeName, url ) {
 
       return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(api\.soundcloud)/).test( url ) && nodeName.toLowerCase() !== "video";
@@ -10,22 +11,26 @@
 
       var media = this,
           container = document.createElement( "iframe" ),
-          widget,
-          lastVolume = 0,
+          lastVolume = 1,
           currentTime = 0,
+          widget,
           duration = 0,
+          playing = false,
           muted = false;
 
+      options._container = container;
+
       this.play = function() {
-        widget.play();
+        widget && widget.play();
+        playing = true;
+        media.dispatchEvent( "playing" );
+        media.dispatchEvent( "play" );
       };
 
       this.pause = function() {
-        widget.pause();
-      };
-
-      this.mute = function() {
-        widget.toggle();
+        widget && widget.pause();
+        playing = false;
+        media.dispatchEvent( "pause" );
       };
 
       // getter and setter for muted property, multiply volume by 100 as that is the scale soundcloud works on
@@ -33,13 +38,13 @@
         muted: {
           set: function( val ) {
             if ( val ) {
-              widget.getVolume(function( data ) {
+              widget && widget.getVolume(function( data ) {
                 lastVolume = data / 100;
-                widget.setVolume( 0 );
-                muted = true;
               });
+              widget && widget.setVolume( 0 );
+              muted = true;
             } else {
-              widget.setVolume( lastVolume * 100 );
+              widget && widget.setVolume( lastVolume * 100 );
               muted = false;
             }
             media.dispatchEvent( "volumechange" );
@@ -50,17 +55,17 @@
         },
         volume: {
           set: function( val ) {
-            widget.setVolume( val * 100 );
+            widget && widget.setVolume( val * 100 );
             lastVolume = val ;
             media.dispatchEvent( "volumechange" );
           },
           get: function() {
-            return lastVolume;
+            return muted ? 0 : lastVolume;
           }
         },
         currentTime: {
           set: function( val ) {
-            widget.seekTo( val * 1000 );
+            widget && widget.seekTo( val * 1000 );
             media.dispatchEvent( "seeked" );
             media.dispatchEvent( "timeupdate" );
           },
@@ -72,16 +77,28 @@
           get: function() {
             return duration;
           }
+        },
+        playing: {
+          get: function() {
+            return playing;
+          }
+        },
+        paused: {
+          get: function() {
+            return !playing;
+          }
         }
       });
       // called when the SoundCloud api script has loaded
       function scriptReady() {
-        media.scriptLoaded = true;
+        scriptLoaded = true;
 
         media.width = media.style.width ? "" + media.offsetWidth : "560";
         media.height = media.style.height ? "" + media.offsetHeight : "315";
+        // TODO: There are quite a few options here that we should pass on to the user
         container.scrolling = "no";
         container.frameborder = "no";
+        container.id = "soundcloud-" + Popcorn.guid();
         container.src = "http://w.soundcloud.com/player/?url=" + media.src + 
         "&show_artwork=false" +
         "&buying=false" +
@@ -92,25 +109,8 @@
         container.height = "100%";
 
         container.addEventListener( "load", function( e ) {
-          widget = SC.Widget( container );
+          options.widget = widget = SC.Widget( container.id );
           // setup all of our listeners
-          widget.bind(SC.Widget.Events.READY, function() {
-            widget.getDuration(function( data ) {
-              duration = data / 1000;
-              media.dispatchEvent( "durationchange" );
-              // update the readyState after we have the duration
-              media.dispatchEvent( "loadedmetadata" );
-              media.dispatchEvent( "loadeddata" );
-              media.dispatchEvent( "canplaythrough" );
-              media.readyState = 4;
-              media.dispatchEvent( "readystatechange" );
-              media.dispatchEvent( "load" );
-            });
-            widget.getVolume(function( data ) {
-              lastVolume = data / 100;
-            });
-          });
-
           widget.bind(SC.Widget.Events.FINISH, function() {
             media.dispatchEvent( "ended" );
           });
@@ -119,22 +119,56 @@
             currentTime = data.currentPosition / 1000;
             media.dispatchEvent( "timeupdate" );
           });
+          widget.bind(SC.Widget.Events.READY, function( data ) {
+            widget.getDuration(function( data ) {
+              duration = data / 1000;
+              media.dispatchEvent( "durationchange" );
+              // update the readyState after we have the duration
+              media.readyState = 4;
+              media.dispatchEvent( "readystatechange" );
+              media.dispatchEvent( "loadedmetadata" );
+              media.dispatchEvent( "loadeddata" );
+              media.dispatchEvent( "canplaythrough" );
+              media.dispatchEvent( "load" );
+              playing && media.play();
+            });
+            widget.getVolume(function( data ) {
+              lastVolume = data / 100;
+            });
+          });
         }, false);
         media.appendChild( container );
       }
 
       // load the SoundCloud API script if it doesn't exist
       function loadScript() {
-        Popcorn.getScript( "http://w.soundcloud.com/player/api.js", function() {
-          scriptReady();
-        });
+        if ( !loading ) {
+          loading = true;
+          Popcorn.getScript( "http://w.soundcloud.com/player/api.js", function() {
+            scriptReady();
+          });
+        } else {
+          (function isReady() {
+            setTimeout(function() {
+              if ( !scriptLoaded ) {
+                isReady();
+              } else {
+                scriptReady();
+              }
+            }, 100 );
+          })();
+        }
       }
 
-      if ( !this.scriptLoaded ) {
+      if ( !scriptLoaded ) {
         loadScript();
       } else {
         scriptReady();
       }
+    },
+    _teardown: function( options ) {
+      //options.destroyed = true;
+      //this.removeChild( options._container );
     }
   });
 })();

@@ -1,434 +1,251 @@
-asyncTest( "Options Check", function() {
-
-  expect( 7 );
-  var varz = {
-      title: 0,
-      byline: 0,
-      portrait:0,
-      autoplay:1,
-      loop:1,
-      color: "FFAADD",
-      fullscreen: 0
-    },
-    p2 = Popcorn.vimeo( "#player_1", "http://vimeo.com/11336811", varz );
-
-  p2.listen( "loadeddata", function() {
-    var flashvars = $( 'param[name="flashvars"]' ).attr( "value" );
-
-    var splitvars = flashvars.split( "&" );
-
-    for ( var i = 0, len = splitvars.length; i < len; i++ ) {
-      var item = splitvars[ i ].split( "=" );
-      if ( varz.hasOwnProperty( item[ 0 ] ) ) {
-        equal( varz[ item[ 0 ] ], item[ 1 ], item[ 0 ] + " is the expected value" );
-      }
-    }
-
-    start();
-  });
-
-});
-
-asyncTest( "Update Timer", function() {
-
-  var p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" ),
-      expects = 16,
+module( "Popcorn Soundcloud Player" );
+asyncTest( "Default Attribute Functionality", function () {
+  var expects = 4,
       count = 0,
-      execCount = 0,
-      // These make sure events are only fired once
-      // any second call will produce a failed test
-      forwardStart  = false,
-      forwardEnd    = false,
-      backwardStart = false,
-      backwardEnd   = false,
-      wrapperRunning = { one: false, two: false };
+      playerDefault,
+      playerOverride,
+      target = document.getElementById( "player_2" ),
+      members = {
+        // HTMLMediaElement members
+        "currentTime": 0,
+        "readyState": 0,
+        "duration": 0,
+        "volume": 1,
+        "paused": 1,
+        "ended": 0,
+        "muted": false
+      };
 
   function plus() {
     if ( ++count === expects ) {
-      // clean up added events after tests
-      Popcorn.removePlugin( "forwards" );
-      Popcorn.removePlugin( "backwards" );
-      Popcorn.removePlugin( "wrapper" );
-      p2.removePlugin( "exec" );
-      p2.pause();
       start();
+      playerDefault.destroy();
+      playerOverride.destroy();
     }
   }
 
-  p2.listen( "canplaythrough", function() {
-    p2.unlisten( "canplaythrough" );
-    ok( true, "'canplaythrough' fired" );
+  Popcorn.forEach( members, function () {
+    expects++;
+  });
+
+  expect( expects );
+
+  playerDefault = Popcorn.soundcloud( target.id, "http://api.soundcloud.com/tracks/12426185" );
+  playerOverride = Popcorn.soundcloud( target.id,  "http://api.soundcloud.com/tracks/25857135" );
+
+  playerDefault.on( "load", function() {
+    equal( playerDefault.duration(), 315.7159118652344, "Duration updated" );
+    plus();
+
+    equal( target.children.length, 2, "The container has 2 players" );
     plus();
   });
 
-  p2.listen( "loadedmetadata", function() {
-    p2.unlisten( "loadedmetadata" );
-    ok( true, "'loadedmetadata' fired" );
+  Popcorn.forEach( members, function( val, prop ) {
+    var actual = playerDefault[prop];
+
+    if ( typeof playerDefault[prop] === "function" ) {
+      actual = playerDefault[prop]();
+    }
+
+    equal( actual, val, "player." + prop + " should have default value: '" + val + "'" );
+      plus();
+    });
+
+    equal( playerOverride.position().width, target.offsetWidth, "Width is correct" );
     plus();
-  });
-
-  p2.listen( "durationchange", function() {
-    p2.unlisten( "durationchange" );
-    ok( true, "'durationchange' fired" );
+    equal( playerOverride.position().height, target.offsetHeight, "Height is correct" );
     plus();
-  });
-
-  p2.listen( "loadeddata", function() {
-    p2.unlisten( "loadeddata" );
-    ok( true, "'loadeddata' fired" );
-    plus();
-  });
-
-  Popcorn.plugin( "forwards", function() {
-    return {
-      start: function( event, options ) {
-
-        if ( !options.startFired ) {
-
-          options.startFired = true;
-          forwardStart = !forwardStart;
-          ok( forwardStart, "forward's start fired" );
-          plus();
-        }
-      },
-      end: function( event, options ) {
-
-        if ( !options.endFired ) {
-
-          options.endFired = true;
-          forwardEnd = !forwardEnd;
-          p2.currentTime( 1 ).play();
-          ok( forwardEnd, "forward's end fired" );
-          plus();
-        }
-      }
-    };
-  });
-
-  p2.forwards({
-    start: 3,
-    end: 4
-  });
-
-  Popcorn.plugin( "backwards", function() {
-    return {
-      start: function( event, options ) {
-
-        if ( !options.startFired ) {
-
-          options.startFired = true;
-          backwardStart = !backwardStart;
-          ok( true, "backward's start fired" );
-          plus();
-        }
-      },
-      end: function( event, options ) {
-
-        if ( !options.endFired ) {
-
-          options.endFired = true;
-          backwardEnd = !backwardEnd;
-          ok( backwardEnd, "backward's end fired" );
-          plus();
-          p2.currentTime( 0 ).play();
-        }
-      }
-    };
-  });
-
-  p2.backwards({
-    start: 1,
-    end: 2
-  });
-
-  Popcorn.plugin( "wrapper", {
-    start: function( event, options ) {
-
-      wrapperRunning[ options.wrapper ] = true;
-    },
-    end: function( event, options ) {
-
-      wrapperRunning[ options.wrapper ] = false;
-    }
-  });
-
-  // second instance of wrapper is wrapping the first
-  p2.wrapper({
-    start: 6,
-    end: 7,
-    wrapper: "one"
-  })
-  .wrapper({
-    start: 5,
-    end: 8,
-    wrapper: "two"
-  })
-  // checking wrapper 2's start
-  .exec( 5, function() {
-
-    if ( execCount === 0 ) {
-
-      execCount++;
-      ok( wrapperRunning.two, "wrapper two is running at second 5" );
-      plus();
-      ok( !wrapperRunning.one, "wrapper one is stopped at second 5" );
-      plus();
-    }
-  })
-  // checking wrapper 1's start
-  .exec( 6, function() {
-
-    if ( execCount === 1 ) {
-
-      execCount++;
-      ok( wrapperRunning.two, "wrapper two is running at second 6" );
-      plus();
-      ok( wrapperRunning.one, "wrapper one is running at second 6" );
-      plus();
-    }
-  })
-  // checking wrapper 1's end
-  .exec( 7, function() {
-
-    if ( execCount === 2 ) {
-
-      execCount++;
-      ok( wrapperRunning.two, "wrapper two is running at second 7" );
-      plus();
-      ok( !wrapperRunning.one, "wrapper one is stopped at second 7" );
-      plus();
-    }
-  })
-  // checking wrapper 2's end
-  .exec( 8, function() {
-
-    if ( execCount === 3 ) {
-
-      execCount++;
-      ok( !wrapperRunning.two, "wrapper two is stopped at second 9" );
-      plus();
-      ok( !wrapperRunning.one, "wrapper one is stopped at second 9" );
-      plus();
-    }
-  });
-
-  p2.exec( 3, function() {
-
-    p2.play();
-  });
-
-  p2.currentTime( 3 );
-
 });
 
-asyncTest( "Plugin Factory", function() {
-
-  var popped = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" ),
-      methods = "load play pause currentTime mute volume roundTime exec removePlugin",
-
-      // 15*2+2+2. executor/complicator each do 15
-      expects = 34,
-      count = 0;
+asyncTest( "Player Volume Control", function () {
+  var expects = 3,
+      count = 0,
+      player = Popcorn.soundcloud( "player_1", "http://api.soundcloud.com/tracks/8115502" ),
+      targetVolume,
+      startVolume;
 
   function plus() {
-    if ( ++count == expects ) {
-      Popcorn.removePlugin( "executor" );
-      Popcorn.removePlugin( "complicator" );
-      popped.pause();
+    if ( ++count === expects ) {
       start();
+      player.destroy();
     }
   }
 
-  expect( expects );
+  expect(expects);
 
-  Popcorn.plugin( "executor", function() {
-
-    return {
-
-      start: function() {
-        var self = this;
-
-        // These ensure that a popcorn instance is the value of `this` inside a plugin definition
-
-        methods.split( /\s+/g ).forEach( function( k, v ) {
-          ok( k in self, "executor instance has method: " + k );
-
-          plus();
-        });
-
-        ok( "media" in this, "executor instance has `media` property" );
-        plus();
-        ok( typeof popped.media === "object", "video property is a HTML DIV element" );
-        plus();
-
-        ok( "data" in this, "executor instance has `data` property" );
-        plus();
-        ok( typeof popped.data === "object", "data property is an object" );
-        plus();
-
-        ok( "trackEvents" in this.data, "executor instance has `trackEvents` property" );
-        plus();
-        ok( typeof popped.data.trackEvents === "object", "executor trackEvents property is an object" );
-        plus();
-      },
-      end: function() {
-
+  player.on( "load", function() {
+    // VolumeChange is fired shortly after load when the volume is retrieved from the player
+    // Defer volume tests until after that has run
+    player.on( "volumechange", function() {
+      if ( count >= expects ) {
+        return;
       }
-    };
 
-  });
-
-  ok( "executor" in popped, "executor plugin is now available to instance" );
-  plus();
-  equal( Popcorn.registry.length, 1, "One item in the registry");
-  plus();
-
-  popped.executor({
-    start: 1,
-    end: 2
-  });
-
-  Popcorn.plugin( "complicator", {
-
-    start: function( event ) {
-
-      var self = this;
-
-      // These ensure that a popcorn instance is the value of `this` inside a plugin definition
-
-      methods.split( /\s+/g ).forEach( function( k, v ) {
-        ok( k in self, "complicator instance has method: " + k );
-
-        plus();
-      });
-
-      ok( "media" in this, "complicator instance has `media` property" );
-      plus();
-      ok( typeof popped.media === "object", "video property is a HTMLVideoElement" );
+      equal( player.volume(), targetVolume, "Volume change set correctly" );
       plus();
 
-      ok( "data" in this, "complicator instance has `data` property" );
-      plus();
-      ok( typeof popped.data === "object", "complicator data property is an object" );
-      plus();
-
-      ok( "trackEvents" in this.data, " complicatorinstance has `trackEvents` property" );
-      plus();
-      ok( typeof popped.data.trackEvents === "object", "complicator trackEvents property is an object" );
-      plus();
-    },
-    end: function() {
-
-    },
-    timeupdate: function() {
-
-    }
-  });
-
-  ok( "complicator" in popped, "complicator plugin is now available to instance" );
-  plus();
-  equal( Popcorn.registry.length, 2, "Two items in the registry");
-  plus();
-
-  popped.complicator({
-    start: 4,
-    end: 5
-  });
-
-  popped.currentTime( 0 ).play();
-
-});
-
-asyncTest( "Popcorn vimeo Plugin Url and Duration Tests", function() {
-  function plus() {
-    if ( ++count == expects ) {
-      popcorn.pause();
-      start();
-    }
-  }
-
-  var count = 0,
-      expects = 3,
-      popcorn = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" );
-
-  expect( expects );
-
-  equal( popcorn.media.id, "player_1", "Video id set" );
-  plus();
-
-  equal( popcorn.duration(), 0, "Duration starts as 0");
-  plus();
-
-  popcorn.listen( "durationchange", function() {
-    notEqual( popcorn.duration(), 0, "Duration has been changed from 0" );
-    plus();
-
-    popcorn.pause();
-  });
-
-  popcorn.play();
-});
-
-asyncTest( "Popcorn vimeo Plugin Url Regex Test", function() {
-
-  var urlTests = [
-    { name: "standard",
-      url: "http://player.vimeo.com/video/11336811",
-      expected: "http://player.vimeo.com/video/11336811"
-    },
-    { name: "short url",
-      url: "http://vimeo.com/11336811",
-      expected: "http://vimeo.com/11336811"
-    }
-  ];
-
-  var count = 0,
-      expects = urlTests.length;
-
-  expect( expects );
-
-  Popcorn.forEach( urlTests, function( values, key ) {
-
-    var urlTest = urlTests[ key ],
-        popcorn = Popcorn.vimeo( "#player_2", urlTest.url );
-
-    popcorn.listen( "loadeddata", function() {
-
-      equal( popcorn.media.src, urlTest.expected, "Video id is correct for " + urlTest.name + ": " + urlTest.url );
-      popcorn.pause();
-
-      count++;
-      if ( count === expects ) {
-
-        start();
-        popcorn.pause();
+      if ( targetVolume !== 0 ) {
+        targetVolume = 0;
+        player.mute( true );
+      } else {
+        targetVolume = startVolume;
+        // Unmute
+        player.mute( false );
       }
     });
+
+    player.volume( targetVolume = startVolume = ( player.volume === 1 ? 0.5 : 1 ) );
   });
 });
 
-asyncTest( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
-
-  var popped,
-      elem,
-      expects = 2,
-      count = 0;
-
-  expect( expects );
+asyncTest( "Popcorn Integration", function () {
+  var expects = 4,
+      count = 0,
+      player = Popcorn.soundcloud( "player_1", "http://api.soundcloud.com/tracks/12643174" );
 
   function plus() {
     if ( ++count === expects ) {
       start();
+      player.destroy();
     }
   }
-  popped = Popcorn.vimeo( "#player_3", "http://player.vimeo.com/video/11336811" );
 
-  popped.listen( "loadeddata", function() {
-    elem = document.querySelector( "div#player_3 object" );
-    equal( elem.height, popped.media.childNodes[0].offsetHeight, "The media object is reporting the correct offsetHeight" );
+  expect(expects);
+
+  player.on( "load", function() {
+    ok( true, "Listen works (load event)" );
     plus();
-    equal( elem.width, popped.media.childNodes[0].offsetWidth, "The media object is reporting the correct offsetWidth" );
+
+    player.on( "play", function() {
+      ok( true, "Play triggered by popcorn.trigger" );
+      plus();
+
+      player.pause();
+    });
+
+    player.on( "pause", function() {
+      ok( true, "Pause explicitly called" );
+      plus();
+
+      player.volume( ( player.volume() === 1 ? 0.5 : 1 ) );
+    });
+
+    player.on( "volumechange", function() {
+      ok( true, "Volume changed explicitly called" );
+      plus();
+    });
+
+    player.play();
+  });
+});
+
+asyncTest( "Events and Player Control", function () {
+  var expects = 14,
+      count = 0,
+      player = Popcorn.soundcloud( "player_1", "http://api.soundcloud.com/tracks/12426185" ),
+      targetVolume;
+
+  function plus() {
+    if ( ++count === expects ) {
+      start();
+      player.destroy();
+    }
+  }
+
+  expect( expects );
+
+  player.on( "load", function() {
+    ok( true, "Load was fired" );
     plus();
   });
 
+  player.on( "playing", function() {
+    ok( true, "Playing was fired" );
+    plus();
+
+    equal( player.paused(), 0, "Paused is unset" );
+    plus();
+  });
+
+  player.on( "play", (function() {
+    var hasFired = 0;
+
+    return function() {
+      if ( hasFired ) {
+        return;
+      }
+
+      hasFired = 1;
+      ok( true, "Play was fired" );
+      plus();
+    }
+  })());
+
+  player.on( "durationchange", function() {
+    ok( true, "DurationChange was fired" );
+    plus();
+  });
+
+  player.media.addEventListener( "readystatechange", function() {
+    ok( true, "ReadyStateChange was fired" );
+    plus();
+
+    equal( player.readyState(), 4, "Ready State is now 4" );
+    plus();
+
+    player.pause();
+  }, false);
+
+  player.on( "pause", function() {
+    ok( true, "Pause was fired by dispatch" );
+    plus();
+
+    equal( player.paused(), 1, "Paused is set" );
+    plus();
+  });
+
+  player.on( "timeupdate", ( function() {
+    var hasFired = 0;
+
+    return function() {
+      if ( hasFired ) {
+        return;
+      }
+      hasFired = 1;
+
+      ok( true, "Timeupdate was fired by dispatch" );
+      plus();
+    }
+  })());
+
+  player.on( "volumechange", function() {
+    ok( true, "volumechange was fired by dispatch" );
+    plus();
+  });
+
+  player.on( "canplaythrough", function() {
+    ok( true, "Can play through" );
+    plus();
+
+    // Will trigger a "seeked" event to near end
+    player.currentTime( player.duration() - 1 );
+  });
+
+  player.on( "seeked", function() {
+    ok( true, "Seeked was fired" );
+    plus();
+
+    player.emit( "play" );
+  });
+
+  player.on( "ended", function() {
+    ok( true, "Media is done playing" );
+    plus();
+
+    equal( player.paused, 1, "Paused is set on end" );
+    plus();
+  });
+
+  player.play();
 });
