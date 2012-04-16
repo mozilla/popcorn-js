@@ -475,47 +475,32 @@ test( "Popcorn.util.toSeconds" , function() {
 asyncTest( "Popcorn.destroy", function() {
   var popcorn = Popcorn( "#video" ),
       pcorn,
-      expects = 7,
+      expects = 9,
       count = 0,
       playCounter = 0,
       timeUpdateCounter = 0;
 
   expect( expects );
 
-  function plus() {
-    if ( ++count === expects ) {
-      pcorn.destroy();
-      start();
-    }
-  }
-
   //  initially no listeners
   equal( Popcorn.sizeOf( popcorn.data.events ), 0, "Initially no events have been added" );
-  plus();
 
   equal( playCounter, 0, "playCounter is intially 0" );
-  plus();
 
   equal( timeUpdateCounter, 0, "timeUpdateCounter is intially 0" );
-  plus();
 
   //  add some event listeners for testing
   popcorn.on( "timeupdate", function( event ) { timeUpdateCounter++; } );
   popcorn.on( "play", function( event ) { playCounter++; } );
 
-  popcorn.play( 0 );
-
   popcorn.cue( 1, function() {
     popcorn.pause();
 
     equal( Popcorn.sizeOf( popcorn.data.events ), 2, "popcorn.data.events has correct number of events - before Popcorn.destroy" );
-    plus();
 
-    equal( playCounter, 1, "playCounter triggered exactly 1 time" );
-    plus();
+    ok( playCounter > 0, "playCounter is greater than 0, events are being triggered" );
 
-    equal( timeUpdateCounter, 5, "timeUpdateCounter triggered exactly 4 times" );
-    plus();
+    ok( timeUpdateCounter > 0, "timeUpdateCounter is greater than 0, events are being triggered" );
 
     playCounter = timeUpdateCounter = 0;
 
@@ -528,8 +513,11 @@ asyncTest( "Popcorn.destroy", function() {
     pcorn.cue( 3, function() {
       pcorn.pause();
 
+      ok( timeUpdateCounter === 0, "The timeUpdateCounter should be 0" );
+      ok( playCounter === 0, "The playCounter should be 0" );
       ok( true, "Second popcorn instance's event was fired instead of first popcorn instance" );
-      plus();
+      pcorn.destroy();
+      start();
     });
 
     popcorn.play( 0 );
@@ -540,8 +528,9 @@ asyncTest( "Popcorn.destroy", function() {
     popcorn.pause();
 
     ok( false, "This cue should never have been run, destroy not working" );
-    plus();
   });
+
+  popcorn.play( 0 );
 });
 
 test( "guid", function() {
