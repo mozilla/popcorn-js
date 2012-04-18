@@ -164,7 +164,7 @@
 
       this.data = {
 
-        // data structure of all 
+        // data structure of all
         running: {
           cue: []
         },
@@ -219,7 +219,7 @@
         // start: 0, end: 1 will start, end, start again, when it should just start
         // just setting it to 0 if it is below 0 fixes this issue
         if ( self.media.currentTime < 0 ) {
-        
+
           self.media.currentTime = 0;
         }
 
@@ -249,7 +249,7 @@
           self.data.timeUpdate = function () {
 
             Popcorn.timeUpdate( self, {} );
-            
+
             // fire frame for each enabled active plugin of every type
             Popcorn.forEach( Popcorn.manifest, function( key, val ) {
 
@@ -268,7 +268,7 @@
                 }
               }
             });
-            
+
             self.emit( "timeupdate" );
 
             !self.isDestroyed && requestAnimFrame( self.data.timeUpdate );
@@ -423,7 +423,7 @@
       return instance;
     },
     enable: function( instance, plugin ) {
-      
+
       if ( instance.data.disabled[ plugin ] ) {
 
         instance.data.disabled[ plugin ] = false;
@@ -1322,6 +1322,28 @@
     var pluginFn = function( setup, options ) {
 
       if ( !options ) {
+        return this;
+      }
+
+      // When the "ranges" property is set and its value is an array, short-circuit
+      // the pluginFn definition to recall itself with an options object generated from
+      // each range object in the ranges array. (eg. { start: 15, end: 16 } )
+      if ( options.ranges && Popcorn.isArray(options.ranges) ) {
+        Popcorn.forEach( options.ranges, function( range ) {
+          // Create a fresh object, extend with current options
+          // and start/end range object's properties
+          // Works with in/out as well.
+          var opts = Popcorn.extend( {}, options, range );
+
+          // Remove the ranges property to prevent infinitely
+          // entering this condition
+          delete opts.ranges;
+
+          // Call the plugin with the newly created opts object
+          this[ name ]( opts );
+        }, this);
+
+        // Return the Popcorn instance to avoid creating an empty track event
         return this;
       }
 
