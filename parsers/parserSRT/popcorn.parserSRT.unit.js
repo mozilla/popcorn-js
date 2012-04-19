@@ -67,38 +67,38 @@ asyncTest( "Popcorn 0.3 SRT Parser Plugin", function () {
           text: "Greater than (&lt;) and less than (&gt;) are shown"
         }
       ];
-      
+
   function plus() {
     if ( ++count === expects ) {
       start();
     }
   }
-  
+
   poppercorn.parseSRT( "data/unit.srt", function() {
 
     Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
       if( evt._natives.type === "subtitle" ) {
         sub = expectedSubs[ numSubs++ ];
-        
+
         equal( sub.id, evt.id, "Correct id" );
         plus();
-        
+
         equal( sub.start, evt.start, "Correct start" );
         plus();
-        
+
         equal( sub.end, evt.end, "Correct end" );
         plus();
-        
+
         equal( sub.text, evt.text, "Correct text" );
         plus();
       }
     });
-    
+
     equal( expectedSubs.length, numSubs, "Correctly parsed all subtitles" );
     plus();
 
   });
-  
+
   expects = expectedSubs.length*4+1;
   expect( expects );
 
