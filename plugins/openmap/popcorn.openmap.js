@@ -42,7 +42,6 @@
 
   function toggle( container, display ) {
     if ( container.map ) {
-
       container.map.div.style.display = display;
       return;
     }
@@ -137,11 +136,22 @@
           case "STAMEN-TERRAIN":
             var layerName = options.type.replace("STAMEN-", "").toLowerCase();
             var sLayer = new OpenLayers.Layer.Stamen( layerName );
-            options.map = new OpenLayers.Map( { div: newdiv } );
+            displayProjection = new OpenLayers.Projection( "EPSG:4326" );
+            projection = new OpenLayers.Projection( 'EPSG:900913' );
+            centerlonlat = centerlonlat.transform( displayProjection, projection );
+            options.map = new OpenLayers.Map( {
+              div: newdiv,
+              projection: projection,
+              displayProjection: displayProjection,
+              controls: [
+                new OpenLayers.Control.Navigation(),
+                new OpenLayers.Control.PanPanel(),
+                new OpenLayers.Control.ZoomPanel()
+              ]
+            } );
             options.map.addLayer( sLayer );
             break;
-          case "ROADMAP":
-          default:
+          default: /* case "ROADMAP": */
             // add OpenStreetMap layer
             projection = new OpenLayers.Projection( 'EPSG:900913' );
             displayProjection = new OpenLayers.Projection( 'EPSG:4326' );
