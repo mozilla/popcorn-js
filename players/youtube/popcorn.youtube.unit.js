@@ -501,7 +501,7 @@ asyncTest( "Player height and width", function() {
       popcorn2 = Popcorn.youtube( "#video5", "http://www.youtube.com/watch?v=nfGV32RNkhw" ),
       readyStatePoll = function() {
 
-        if ( popcorn1.media.readyState !== 4 && popcorn2.media.readyState !== 4 ) {
+        if ( popcorn1.media.readyState !== 4 || popcorn2.media.readyState !== 4 ) {
 
           setTimeout( readyStatePoll, 10 );
         } else {
@@ -509,8 +509,8 @@ asyncTest( "Player height and width", function() {
           equal( popcorn1.media.children[ 0 ].width, 560, "Youtube player default width is 560" );
           equal( popcorn1.media.children[ 0 ].height, 315, "Youtube player default height is 315" );
 
-          equal( popcorn2.media.children[ 0 ].getAttribute( "width" ), 0, "Youtube player explicit width is 0" );
-          equal( popcorn2.media.children[ 0 ].getAttribute( "height" ), 0, "Youtube player explicit height is 0" );
+          equal( popcorn2.media.children[ 0 ].getAttribute( "width" ), 1, "Youtube player explicit width is 1" );
+          equal( popcorn2.media.children[ 0 ].getAttribute( "height" ), 1, "Youtube player explicit height is 1" );
 
           popcorn1.destroy();
           popcorn2.destroy();
