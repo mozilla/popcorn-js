@@ -3,13 +3,14 @@ test( "Popcorn Facebook Plugin", function () {
   Popcorn.plugin.debug = true;
 
   var popped = Popcorn( "#video" ),
-      expects = 15,
+      expects = 16,
       count = 0,
       interval,
       interval2,
       interval3,
       interval4,
-      likediv = document.getElementById( "likediv" );
+      likediv = document.getElementById( "likediv" ),
+      commentdiv = document.getElementById( "commentdiv" );
 
   expect( expects );
 
@@ -65,7 +66,7 @@ test( "Popcorn Facebook Plugin", function () {
     href: "example.com",
     type: "COMMENTS",
     target: "commentdiv",
-    start: 1,
+    start: 2,
     end: 6,
     num_posts: 5
   })
@@ -86,14 +87,18 @@ test( "Popcorn Facebook Plugin", function () {
   ok( document.getElementById( "commentdiv" ), "commentdiv exists on the page" );
   plus();
 
+  popped.exec( 1, function() {
+    equal( commentdiv.children[ 0 ].style.display, "none", "comment div is not visible on page with \"none\" display style" );
+    plus();
+  });
   // I inspected the html genterated by facebook, and found that there are no uniquely identifying attributes between plug-in types
   // so right now, we just check ot make sure that facebook is returning a plugin and displaying it at the correct time.
   popped.exec( 3, function() {
     // Counts number of children elements in likediv
-    equals( likediv.childElementCount, 2, "likediv has 2 inner elements" );
+    equal( likediv.childElementCount, 2, "likediv has 2 inner elements" );
     plus();
     // Checks display style is set correctly on startup
-    equals( likediv.children[ 0 ].style.display , "", "likediv is visible on the page with '' display style" );
+    equal( likediv.children[ 0 ].style.display , "", "likediv is visible on the page with \"\" display style" );
     plus();
     // Checks if likediv is empty at specific time
     ok( document.getElementById( "likediv" ).innerHTML, "likediv is not empty at 0:03 (expected)" );

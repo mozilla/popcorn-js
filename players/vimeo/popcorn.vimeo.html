@@ -22,6 +22,7 @@
     </style>
 
     <script src="../../popcorn.js"></script>
+    <script src="../../modules/player/popcorn.player.js"></script>
     <script type="text/javascript" src="popcorn.vimeo.js"></script>
     <script src="../../plugins/footnote/popcorn.footnote.js"></script>
     <script src="../../plugins/flickr/popcorn.flickr.js"></script>
@@ -94,7 +95,7 @@
 
       //On document ready
       document.addEventListener( "DOMContentLoaded", function() {
-        var player = Popcorn.vimeo( "player_1", "http://player.vimeo.com/video/6960892" )
+        var player = Popcorn.vimeo( "player_1", "http://player.vimeo.com/video/11336811" )
         .footnote({
           start: 5,
           end: 40,
@@ -154,13 +155,13 @@
           src: "https://www.drumbeat.org/media//images/drumbeat-logo-splash.png",
           target: "imagediv"
         });
-        player.listen( "load", function() {
-          VimeoEmbedLoaded( player );
+        player.listen( "loadedmetadata", function() {
         })
-       .listen( "loadstart", function() {
+       .listen( "loadedmetadata", function() {
           document.getElementById( "player_load" ).innerHTML = "Started";
         })
         .listen( "canplaythrough", function() {
+          VimeoEmbedLoaded( player );
           document.getElementById( "player_load" ).innerHTML = "Finished";
         })
         .play();

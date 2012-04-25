@@ -8,7 +8,7 @@
  * Options parameter will need a start, end, href, target and src.
  * Start is the time that you want this plug-in to execute
  * End is the time that you want this plug-in to stop executing
- * href is the url of the destination of a link - optional
+ * href is the url of the destination of a anchor - optional
  * Target is the id of the document element that the iframe needs to be attached to,
  * this target element must exist on the DOM
  * Src is the url of the image that you want to display
@@ -50,7 +50,8 @@
           href: {
             elem: "input",
             type: "url",
-            label: "Link URL"
+            label: "anchor URL",
+            optional: true
           },
           target: "image-container",
           src: {
@@ -61,7 +62,8 @@
           text: {
             elem: "input",
             type: "text",
-            label: "TEXT"
+            label: "TEXT",
+            optional: true
           }
         }
       },
@@ -69,47 +71,50 @@
         var img = document.createElement( "img" ),
             target = document.getElementById( options.target );
 
-        options.link = document.createElement( "a" );
-        options.link.style.position = "relative";
-        options.link.style.textDecoration = "none";
+        options.anchor = document.createElement( "a" );
+        options.anchor.style.position = "relative";
+        options.anchor.style.textDecoration = "none";
+        options.anchor.style.display = "none";
 
 
         if ( !target && Popcorn.plugin.debug ) {
           throw new Error( "target container doesn't exist" );
         }
         // add the widget's div to the target div
-        target && target.appendChild( options.link );
+        target && target.appendChild( options.anchor );
 
         img.addEventListener( "load", function() {
 
           // borders look really bad, if someone wants it they can put it on their div target
           img.style.borderStyle = "none";
 
-          if ( options.href ) {
-            options.link.href = options.href;
+          options.anchor.href = options.href || options.src || "#";
+          options.anchor.target = "_blank";
+
+          var fontHeight, divText;
+
+
+          // If display text was provided, display it:
+          if ( options.text ) {
+            fontHeight = ( img.height / 12 ) + "px";
+            divText = document.createElement( "div" );
+
+            Popcorn.extend( divText.style, {
+              color: "black",
+              fontSize: fontHeight,
+              fontWeight: "bold",
+              position: "relative",
+              textAlign: "center",
+              width: img.width + "px",
+              zIndex: "10"
+            });
+
+            divText.innerHTML = options.text || "";
+            divText.style.top = ( img.height / 2 ) - ( divText.offsetHeight / 2 ) + "px";
+            options.anchor.appendChild( divText );
           }
 
-          options.link.target = "_blank";
-
-          var fontHeight = ( img.height / 12 ) + "px",
-              divText = document.createElement( "div" );
-
-          Popcorn.extend( divText.style, {
-
-            color: "black",
-            fontSize: fontHeight,
-            fontWeight: "bold",
-            position: "relative",
-            textAlign: "center",
-            width: img.width + "px",
-            zIndex: "10"
-          });
-
-          divText.innerHTML = options.text || "";
-          options.link.appendChild( divText );
-          options.link.appendChild( img );
-          divText.style.top = ( img.height / 2 ) - ( divText.offsetHeight / 2 ) + "px";
-          options.link.style.display = "none";
+          options.anchor.appendChild( img );
         }, false );
 
         img.src = options.src;
@@ -122,7 +127,7 @@
        * options variable
        */
       start: function( event, options ) {
-        options.link.style.display = "block";
+        options.anchor.style.display = "inline";
       },
       /**
        * @member image
@@ -131,10 +136,10 @@
        * options variable
        */
       end: function( event, options ) {
-        options.link.style.display = "none";
+        options.anchor.style.display = "none";
       },
       _teardown: function( options ) {
-        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options.link );
+        document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options.anchor );
       }
   });
 })( Popcorn );

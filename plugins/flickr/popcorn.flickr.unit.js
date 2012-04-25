@@ -19,7 +19,7 @@ test( "Popcorn Flickr Plugin", function() {
   ok( "flickr" in popped, "flickr is a method of the popped instance" );
   plus();
 
-  equals( flickrdiv.innerHTML, "", "initially, there is nothing inside the flickrdiv" );
+  equal( flickrdiv.innerHTML, "", "initially, there is nothing inside the flickrdiv" );
   plus();
 
   popped.flickr({

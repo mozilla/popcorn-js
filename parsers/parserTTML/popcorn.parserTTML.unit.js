@@ -1,4 +1,4 @@
-test( "Popcorn 1.0 TTML Parser Plugin", function () {
+asyncTest( "Popcorn 1.0 TTML Parser Plugin", function () {
   var count = 0,
       numSubs = 0,
       sub,
@@ -83,16 +83,10 @@ test( "Popcorn 1.0 TTML Parser Plugin", function () {
     }
   }
 
-  poppercorn.parseTTML( "data/unit.ttml" );
-
-  expect( expects );
-  stop( 5000 );
-
-  // Allow load time
-  setTimeout(function () {
+  poppercorn.parseTTML( "data/unit.ttml", function(){
     Popcorn.forEach( poppercorn.getTrackEvents(), function( evt ) {
       if( evt._natives.type === "subtitle" ) {
-        sub = subs[numSubs++];
+        sub = subs[ numSubs++ ];
 
         strictEqual( evt.id, sub.id, "Correctly parsed id of " + evt.id );
         plus();
@@ -109,6 +103,7 @@ test( "Popcorn 1.0 TTML Parser Plugin", function () {
 
     strictEqual( subs.length, numSubs, "Parsed all subtitles" );
     plus();
+  });
 
-  }, 500 );
+  expect( expects );
 });

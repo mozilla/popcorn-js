@@ -60,12 +60,14 @@
           height: {
             elem: "input",
             type: "number",
-            label: "Height"
+            label: "Height",
+            optional: true
           },
           width: {
             elem: "input",
             type: "number",
-            label: "Width"
+            label: "Width",
+            optional: true
           }
         }
       },

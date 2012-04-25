@@ -1,4 +1,4 @@
-test( "Popcorn Twitter Plugin", function() {
+asyncTest( "Popcorn Twitter Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 7,
@@ -16,12 +16,10 @@ test( "Popcorn Twitter Plugin", function() {
     }
   }
 
-  stop( 20000 );
-
   ok( "twitter" in popped, "twitter is a method of the popped instance" );
   plus();
 
-  equals ( twitterdiv.innerHTML, "", "initially, there is nothing inside the twitterdiv" );
+  equal( twitterdiv.innerHTML, "", "initially, there is nothing inside the twitterdiv" );
   plus();
 
   try {
@@ -62,7 +60,7 @@ test( "Popcorn Twitter Plugin", function() {
   popped.play();
 });
 
-test( "Popcorn Twitter Plugin", function() {
+asyncTest( "Popcorn Twitter Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       expects = 4,
@@ -78,8 +76,6 @@ test( "Popcorn Twitter Plugin", function() {
       start();
     }
   }
-
-  stop( 20000 );
 
   popped.twitter({
     start: 4,

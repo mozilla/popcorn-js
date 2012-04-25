@@ -24,7 +24,7 @@ test( "Popcorn LastFM Plugin", function() {
   ok( "lastfm" in popped, "lastfm is a method of the popped instance" );
   plus();
 
-  equals( lastfmdiv.innerHTML, "", "initially, there is nothing inside the lastfmdiv" );
+  equal( lastfmdiv.innerHTML, "", "initially, there is nothing inside the lastfmdiv" );
   plus();
 
   popped.lastfm({
@@ -51,23 +51,23 @@ test( "Popcorn LastFM Plugin", function() {
   setupId = popped.getLastTrackEventId();
 
   popped.exec( 2, function() {
-    equals( lastfmdiv.childElementCount, 3, "lastfmdiv now has three inner elements" );
+    equal( lastfmdiv.childElementCount, 3, "lastfmdiv now has three inner elements" );
     plus();
-    equals( lastfmdiv.children[ 0 ].style.display , "inline", "yachtdiv is visible on the page" );
+    equal( lastfmdiv.children[ 0 ].style.display , "inline", "yachtdiv is visible on the page" );
     plus();
   });
 
   popped.exec( 3, function() {
-    equals( lastfmdiv.children[ 0 ].style.display , "inline", "yachtdiv is still visible on the page" );
+    equal( lastfmdiv.children[ 0 ].style.display , "inline", "yachtdiv is still visible on the page" );
     plus();
-    equals( lastfmdiv.children[ 1 ].style.display , "inline", "beatlesdiv is visible on the page" );
+    equal( lastfmdiv.children[ 1 ].style.display , "inline", "beatlesdiv is visible on the page" );
     plus();
-    equals( lastfmdiv.children[ 2 ].style.display , "none", "nulldiv is not visible on the page" );
+    equal( lastfmdiv.children[ 2 ].style.display , "none", "nulldiv is not visible on the page" );
     plus();
   });
 
   popped.exec( 5, function() {
-    equals( lastfmdiv.children[ 2 ].innerHTML , "Unknown Artist", "Artist information could not be found" );
+    equal( lastfmdiv.children[ 2 ].innerHTML , "Unknown Artist", "Artist information could not be found" );
     plus();
 
     popped.pause().removeTrackEvent( setupId );

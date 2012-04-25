@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Rdio Plug-in Demo</title>
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.rdio.js"></script>
+  <script>
+    document.addEventListener( "DOMContentLoaded", function() {
+      var p = Popcorn( "#video" )
+      .volume( 0 )
+      .play()
+      .rdio({
+        start: 2,
+        end: 10,
+        target: "rdiodiv",
+        artist: "Erykah Badu",
+        album: "Baduizm",
+        type: "album"
+      })
+      .rdio ({
+        start: 3,
+        end: 10,
+        target: "rdiodiv",
+        artist: "Radiohead",
+        album: "The Bends",
+        type: "album"
+      })
+      .rdio ({
+        start: 10,
+        end: 20,
+        target: "rdiodiv2",
+        artist: "Jamiroquai",
+        album: "Synkronized",
+        type: "album"
+      })
+      .rdio({
+        start: 20,
+        end: 40,
+        target: "rdiodiv3",
+        person: "scottyhons",
+        id: "236475",
+        playlist: "Toronto Music",
+        type: "playlist"
+      })
+    }, false);
+
+  </script>
+</head>
+<body>
+  <h1>Popcorn Rdio Plug-in Demo</h1>
+  <p>Album tracks from Erykah Badu's <span style='font-style:italic'>Baduizm</span> will appear at 2 seconds and disappear at 10 seconds<br />
+     Album tracks from Radiohead's <span style='font-style:italic'>The Bends</span> will appear at 3 seconds and disappear at 10 seconds<br />
+     Album tracks from Jamiroquai's <span style='font-style:italic'>Synkronized</span> will appear at 10 seconds and disappear at 20 seconds<br />
+     Tracks from Scottyhons's playlist <span style='font-style:italic'>Toronto Music</span> will appear at 20 seconds and disappear at 40 seconds </p>
+  <div>
+    <video id="video"
+      controls
+      width="250px"
+      poster="../../test/poster.png">
+
+      <source id="mp4"
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'>
+
+      <source id="ogv"
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'>
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+
+    </video>
+  </div>
+  <div id="rdiodiv" width="50%" height="50%"></div>
+  <div id="rdiodiv2" width="50%" height="50%" style="position: absolute; right: 100px; top: 50px"></div>
+  <div id="rdiodiv3" width="50%" height="50%" style="position: absolute; left: 100px; top: 50px"></div>
+</body>
+</html>

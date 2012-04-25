@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Module: Timeline-Sources</title>
+  <link rel="stylesheet" href="../../test/qunit/qunit.css" type="text/css" media="screen">
+  <script src="../../test/qunit/qunit.js"></script>
+
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.parser.js"></script>
+  <script src="popcorn.parser.unit.js"></script>
+  <script src="../../test/inject.js"></script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn Module: player</h1>
+  <h2 id="qunit-banner"></h2>
+  <div id="qunit-testrunner-toolbar"></div>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+  <div id="qunit-fixture">  </div>
+
+  <video id="video"
+    style="display:;width:300px"
+    controls
+    preload="auto">
+
+    <source id="mp4"
+      src="../../test/trailer.mp4"
+      type='video/mp4; codecs="avc1, mp4a"'>
+
+    <source id="ogv"
+      src="../../test/trailer.ogv"
+      type='video/ogg; codecs="theora, vorbis"'>
+
+    <source id="webm"
+      src="../../test/trailer.webm"
+      type='video/webm; codecs="vp8, vorbis"'>
+
+    <p>Your user agent does not support the HTML5 Video element.</p>
+
+  </video>
+
+  <audio id="audio" data-timeline-sources="data/parserData.json" controls>
+    <source src="../../test/italia.mp4" type='audio/mp4; codecs="mp4a.40.2"'>
+    <source src="../../test/italia.ogg" type='audio/ogg; codecs="vorbis"'>
+  </audio>
+</body>
+</html>

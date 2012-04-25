@@ -144,6 +144,31 @@
    */
   Popcorn.plugin( "gml" , {
 
+    manifest: {
+      about: {
+        name: "Popcorn GML Plugin",
+        author: "Scott Downe, @ScottDowne",
+        website: "scottdowne.wordpress.com"
+      },
+      options: {
+        start: {
+          elem: "input",
+          type: "text",
+          label: "In"
+        },
+        end: {
+          elem: "input",
+          type: "text",
+          label: "Out"
+        },
+        gmltag: {
+          elem: "input",
+          type: "text",
+          label: "GMLTag"
+        },
+        target: "gml-container"
+      }
+    },
     _setup: function( options ) {
 
       var self = this,
@@ -163,6 +188,7 @@
       target && target.appendChild( options.container );
 
       var scriptReady = function() {
+
         Popcorn.getJSONP( "//000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
 
           options.pjsInstance = new Processing( options.container, gmlPlayer );
@@ -173,7 +199,7 @@
 
       if ( !window.Processing ) {
 
-        Popcorn.getScript( "//processingjs.org/content/download/processing-js-1.3.0/processing-1.3.0.min.js", scriptReady );
+        Popcorn.getScript( "//cloud.github.com/downloads/processing-js/processing-js/processing-1.3.6.min.js", scriptReady );
       } else {
 
         scriptReady();

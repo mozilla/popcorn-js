@@ -10,6 +10,10 @@
   vimeo_player_loaded.pause = {};
 
   Popcorn.player( "vimeo", {
+    _canPlayType: function( nodeName, url ) {
+
+      return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(vimeo)/).test( url ) && nodeName.toLowerCase() !== "video";
+    },
     _setup: function( options ) {
 
       var media = this,
@@ -29,8 +33,8 @@
       media.appendChild( vimeoContainer );
 
       // setting vimeo player's height and width, default to 560 x 315
-      width = media.style.width ? ""+media.offsetWidth : "560";
-      height = media.style.height ? ""+media.offsetHeight : "315";
+      width = media.style.width ? "" + media.offsetWidth : "560";
+      height = media.style.height ? "" + media.offsetHeight : "315";
 
       var vimeoInit = function() {
 
@@ -202,37 +206,22 @@
             }
           });
 
-          media.readyState = 4;
-          media.dispatchEvent( "canplaythrough" );
-          media.dispatchEvent( "load" );
+          media.dispatchEvent( "loadedmetadata" );
+          media.dispatchEvent( "loadeddata" );
+
           media.duration = vimeoObject.api_getDuration();
           media.dispatchEvent( "durationchange" );
           volumeUpdate();
-
-          media.dispatchEvent( "loadeddata" );
+          media.readyState = 4;
+          media.dispatchEvent( "canplaythrough" );
         };
 
-        function extractId( videoUrl ) {
-
-          if ( !videoUrl ) {
-            return;
-          }
-
-          var rPlayerUri = /^http:\/\/player\.vimeo\.com\/video\/[\d]+/i,
-              rWebUrl = /vimeo\.com\/[\d]+/;
-
-          var matches = videoUrl.match( rPlayerUri ) ? videoUrl.match( rPlayerUri )[ 0 ].substr( 30 ) : "";
-          return matches ? matches : videoUrl.match( rWebUrl ) ? videoUrl.match( rWebUrl )[ 0 ].substr( 10 ) : "";
-        }
-
-        if ( !( src = extractId( src ) ) ) {
-
-          throw "Invalid Video Id";
-        }
+        var clip_id = ( /\d+$/ ).exec( src );
 
         flashvars = {
-          clip_id: src,
-          js_api: 1,
+          // Load a video not found poster if the url does not contain a valid id
+          clip_id: clip_id ? clip_id[ 0 ] : 0,
+          api: 1,
           js_swf_id: vimeoContainer.id
         };
 

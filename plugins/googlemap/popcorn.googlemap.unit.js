@@ -66,21 +66,21 @@ test( "Popcorn Google Map Plugin", function() {
     plus();
     ok( document.getElementById( "actualmap1" ), "First map is on the page" );
     plus();
-    equals( document.getElementById( "actualmap1" ).offsetParent.id, "map", "First map is inside the 'map' div" );
+    equal( document.getElementById( "actualmap1" ).offsetParent.id, "map", "First map is inside the 'map' div" );
     plus();
-    equals( popped.data.trackEvents.byStart[ 1 ].zoom, 8, "Defaulting to zoom of 8" );
+    equal( popped.data.trackEvents.byStart[ 1 ].zoom, 8, "Defaulting to zoom of 8" );
     plus();
   });
 
   popped.exec( 1, function() {
     ok( document.getElementById( "actualmap2" ), "Second map is on the page" );
     plus();
-    equals( document.getElementById( "actualmap2" ).offsetParent.id, "map2", "Second map is inside the 'map2' div" );
+    equal( document.getElementById( "actualmap2" ).offsetParent.id, "map2", "Second map is inside the 'map2' div" );
     plus();
   });
 
   popped.exec( 3, function() {
-    equals( document.getElementById( "actualmap3" ).offsetParent.id, "map3", "Tweening map is inside the 'map3' div" );
+    equal( document.getElementById( "actualmap3" ).offsetParent.id, "map3", "Tweening map is inside the 'map3' div" );
     plus();
   });
 

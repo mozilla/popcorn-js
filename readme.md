@@ -36,7 +36,7 @@ For Plugin Authors
 -------------
 Popcorn.js offers a powerful plugin architecture. Plugins are a way for developers to wrap web functionality and allow it to be placed on a timeline, responding to a point in a video or other media resource.
 
-Take a look at our growing [gallery of officially supported plugins](http://popcornjs.org/plugins).
+Take a look at our growing [gallery of officially supported plugins](http://popcornjs.org/popcorn-docs/plugins/).
 
 Have you built a cool plugin, or have an idea for one? Let us know!
 
@@ -51,7 +51,7 @@ Acknowledgements
 Popcorn.js is built and maintained by a growing community, with the support of:
 
 * [Mozilla](https://www.mozilla.org/)
-* [Web Made Movies](http://webmademovies.org/)
+* [Mozilla Popcorn](http://mozillapopcorn.org/)
 * [Seneca College's Centre for Development of Open Technology](http://zenit.senecac.on.ca/wiki/index.php/Main_Page)
 * [Bocoup](http://bocoup.com/)
 

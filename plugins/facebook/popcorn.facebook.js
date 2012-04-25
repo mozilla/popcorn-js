@@ -77,92 +77,110 @@
         font: {
           elem: "input",
           type: "text",
-          label: "font"
+          label: "font",
+          optional: true
         },
         xid: {
           elem: "input",
           type: "text",
-          label: "Xid"
+          label: "Xid",
+          optional: true
         },
         href: {
           elem: "input",
           type: "url",
-          label: "Href"
+          label: "Href",
+          optional: true
         },
         site: {
           elem: "input",
           type: "url",
-          label:"Site"
+          label:"Site",
+          optional: true
         },
         height: {
           elem: "input",
           type: "text",
-          label: "Height"
+          label: "Height",
+          optional: true
         },
         width: {
           elem: "input",
           type: "text",
-          label: "Width"
+          label: "Width",
+          optional: true
         },
         action: {
           elem: "select",
           options: [ "like", "recommend" ],
-          label: "Action"
+          label: "Action",
+          optional: true
         },
         stream: {
           elem: "select",
           options: [ "false", "true" ],
-          label: "Stream"
+          label: "Stream",
+          optional: true
         },
         header: {
           elem: "select",
           options: [ "false", "true" ],
-          label: "Header"
+          label: "Header",
+          optional: true
         },
         layout: {
           elem: "select",
           options: [ "standard", "button_count", "box_count" ],
-          label: "Layout"
+          label: "Layout",
+          optional: true
         },
         max_rows: {
           elem: "input",
           type: "text",
-          label: "Max_rows"
+          label: "Max_rows",
+          optional: true
         },
         border_color: {
           elem: "input",
           type: "text",
-          label: "Border_color"
+          label: "Border_color",
+          optional: true
         },
         event_app_id: {
           elem: "input",
           type: "text",
-          label: "Event_app_id"
+          label: "Event_app_id",
+          optional: true
         },
         colorscheme: {
            elem: "select",
            options: [ "light", "dark" ],
-           label: "Colorscheme"
+           label: "Colorscheme",
+          optional: true
         },
         show_faces: {
            elem: "select",
            options: [ "false", "true" ],
-           label: "Showfaces"
+           label: "Showfaces",
+          optional: true
         },
         recommendations: {
            elem: "select",
            options: [ "false", "true" ],
-           label: "Recommendations"
+           label: "Recommendations",
+          optional: true
         },
         always_post_to_friends: {
           elem: "input",
           options: [ "false", "true" ],
-          label: "Always_post_to_friends"
+          label: "Always_post_to_friends",
+          optional: true
         },
         num_posts: {
           elem: "input",
           type: "text",
-          label: "Number_of_Comments"
+          label: "Number_of_Comments",
+          optional: true
         }
       }
     },
@@ -210,6 +228,7 @@
       options._container.id = "facebookdiv-" + Popcorn.guid();
       options._facebookdiv = document.createElement( "fb:" + _type );
       options._container.appendChild( options._facebookdiv );
+      options._container.style.display = "none";
 
       // All the the "types" for facebook share largely identical attributes, for loop suffices.
       // ** Credit to Rick Waldron, it's essentially all his code in this function.

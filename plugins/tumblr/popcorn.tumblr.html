@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Tumblr Plug-in Demo</title>
+    <!--
+    ATTENTION
+
+    This demo uses an API key obtained for testing the Tumblr Popcorn.js
+    plugin. Please do not use it for other purposes.
+
+    -->
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.tumblr.js"></script>
+  <script>
+    document.addEventListener( "DOMContentLoaded", function () {
+      var p = Popcorn( "#video" )
+      .volume(0)
+      .play()
+      .tumblr( {
+        requestType: "avatar",
+        target: "tumblrdiv",
+        start: 6,
+        end: 10,
+        base_hostname: "https://citriccomics.tumblr.com",
+        size: 512
+      } )
+      // Text Type
+      .tumblr( {
+        requestType: "blogpost",
+        target: "tumblrdiv",
+        start: 1,
+        end: 5,
+        base_hostname: "http://citriccomics.tumblr.com",
+        blogId: 7173134572,
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+      } )
+      // Photo Type
+      .tumblr( {
+        requestType: "blogpost",
+        target: "tumblrdiv",
+        start: 16,
+        end: 20,
+        base_hostname: "tumblrplugin.tumblr.com",
+        blogId: 12836106846,
+        width: 500,
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+      } )
+      // Audio Type
+      .tumblr( {
+        requestType: "blogpost",
+        target: "tumblrdiv",
+        start: 21,
+        end: 25,
+        base_hostname: "http://derekg.org",
+        blogId: 5578378101,
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+      } )
+      // Link Type
+      .tumblr( {
+        requestType: "blogpost",
+        target: "tumblrdiv",
+        start: 26,
+        end: 30,
+        base_hostname: "travellingcameraclub.com",
+        blogId: 9861374993,
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+      } )
+      // Video Type
+      .tumblr( {
+        requestType: "blogpost",
+        target: "tumblrdiv",
+        start: 36,
+        end: 40,
+        base_hostname: "john.io/",
+        blogId: 10596794348,
+        width: 500,
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+      } )
+      // Answer Type
+      .tumblr( {
+        requestType: "blogpost",
+        target: "tumblrdiv",
+        start: 31,
+        end: 35,
+        base_hostname: "http://www.davidslog.com",
+        blogId: 7504154594,
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+      } )
+      // Chat Post
+      .tumblr( {
+        requestType: "blogpost",
+        target: "tumblrdiv",
+        start: 41,
+        end: 45,
+        base_hostname: "www.davidslog.com",
+        blogId: 9298487313,
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+      } )
+      .tumblr( {
+        // Blog Info
+        requestType: "info",
+        target: "tumblrdiv",
+        start: 11,
+        end: 15,
+        base_hostname: "www.davidslog.com",
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+      } )
+      .tumblr( {
+        // Quote Blog
+        requestType: "blogpost",
+        target: "tumblrdiv",
+        start: 46,
+        end: 50,
+        base_hostname: "http://museumsandstuff.tumblr.com",
+        blogId: 11317544326,
+        api_key: "7lQpV9mMr2PiYjd20FavZcmReq8cWU0oHTS6d3YIB8rLUQvvcg"
+      } );
+    }, false);
+
+  </script>
+</head>
+<body>
+<h1 id="qunit-header">Popcorn Tumblr Plug-in Demo</h1>
+  <p>All types of tumblr plugins are shown below the video. This includes a Blog Info example, an Avatar example and an example of each type of Blog Post ( chat, link, quote, video, audio, text, photo and answer ).</p>
+
+  <div>
+    <video id="video"
+      controls 
+      width= "350px"
+      poster="../../test/poster.png">
+
+      <source id="mp4"
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'>
+
+      <source id="ogv"
+        src="../../test/trailer.ogv"
+        type="video/ogg;" codecs="theora, vorbis">
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+
+    </video>
+  </div>
+  <div>
+    <div id="tumblrdiv"></div>
+  </div>
+</body>
+</html>
+

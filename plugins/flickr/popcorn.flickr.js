@@ -107,7 +107,7 @@
 
       Popcorn.xhr.getJSONP( _uri, function( data ) {
 
-        var fragment = document.createElement( "p" );
+        var fragment = document.createElement( "div" );
 
         fragment.innerHTML = "<p style='padding:" + _padding + ";'>" + data.title + "<p/>";
 
@@ -187,7 +187,8 @@
       userid: {
         elem: "input",
         type: "text",
-        label: "UserID"
+        label: "UserID",
+        optional: true
       },
       tags: {
         elem: "input",
@@ -197,33 +198,39 @@
       username: {
         elem: "input",
         type: "text",
-        label: "Username"
+        label: "Username",
+        optional: true
       },
       apikey: {
         elem: "input",
         type: "text",
-        label: "Api_key"
+        label: "Api_key",
+        optional: true
       },
       target: "flickr-container",
       height: {
         elem: "input",
         type: "text",
-        label: "Height"
+        label: "Height",
+        optional: true
       },
       width: {
         elem: "input",
         type: "text",
-        label: "Width"
+        label: "Width",
+        optional: true
       },
       padding: {
         elem: "input",
         type: "text",
-        label: "Padding"
+        label: "Padding",
+        optional: true
       },
       border: {
         elem: "input",
         type: "text",
-        label: "Border"
+        label: "Border",
+        optional: true
       },
       numberofimages: {
         elem: "input",

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<head>
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.documentcloud.js"></script>
+  <script>
+    Popcorn(function() {
+      var popcorn = Popcorn( "#video" )
+      .documentcloud({
+        start: 3,
+        end: 6,
+        url: "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html",
+        width: 900,
+        height: 500,
+        showAnnotations: true,
+        page: 5,
+        target: "documentcloud-div"
+      })
+      .documentcloud({
+        start: 7,
+        end: 10,
+        url: "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html",
+        page: 25,
+        target: "documentcloud-div"
+      })
+      .documentcloud({
+        start: 11,
+        end: 20,
+        url: "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html",
+        aid: 9899,
+        target: "documentcloud-div"
+      })
+      .volume( 0 )
+      .play();
+    });
+  </script>
+</head>
+<body>
+  <video id="video"
+    controls 
+    width="250px"
+    poster="../../test/poster.png">
+
+    <source id="mp4"
+      src="../../test/trailer.mp4"
+      type='video/mp4; codecs="avc1, mp4a"'>
+
+    <source id="ogv"
+      src="../../test/trailer.ogv"
+      type='video/ogg; codecs="theora, vorbis"'>
+
+    <p>Your user agent does not support the HTML5 Video element.</p>
+
+  </video>
+	<div id="documentcloud-div"></div>
+</body>
+</html>

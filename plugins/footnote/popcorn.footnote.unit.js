@@ -19,7 +19,7 @@ test( "Popcorn Footnote Plugin", function() {
   ok( "footnote" in popped, "footnote is a mehtod of the popped instance" );
   plus();
 
-  equals( footnotediv.childElementCount, 0, "initially, there is nothing inside the footnotediv" );
+  equal( footnotediv.childElementCount, 0, "initially, there is nothing inside the footnotediv" );
   plus();
 
   popped.footnote({
@@ -38,16 +38,16 @@ test( "Popcorn Footnote Plugin", function() {
   setupId = popped.getLastTrackEventId();
 
   popped.exec( 0, function() {
-    equals( footnotediv.childElementCount, 2, "footnotediv now has two inner elements" );
+    equal( footnotediv.childElementCount, 2, "footnotediv now has two inner elements" );
     plus();
-    equals( footnotediv.children[ 0 ].innerHTML, "This video made exclusively for drumbeat.org", "footnote displaing correct information" );
+    equal( footnotediv.children[ 0 ].innerHTML, "This video made exclusively for drumbeat.org", "footnote displaing correct information" );
     plus();
-    equals( footnotediv.children[ 0 ].style.display, "inline", "footnote is visible on the page" );
+    equal( footnotediv.children[ 0 ].style.display, "inline", "footnote is visible on the page" );
     plus();
   });
 
   popped.exec( 3, function() {
-    equals( footnotediv.children[ 1 ].style.display, "inline", "second footnote is visible on the page" );
+    equal( footnotediv.children[ 1 ].style.display, "inline", "second footnote is visible on the page" );
     plus();
   });
 
