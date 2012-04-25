@@ -1690,6 +1690,32 @@ test( "Manifest removal", function() {
   popcorn.destroy();
 });
 
+test( "Manifest updates registry and registryByName", 4, function() {
+
+  var count = 0,
+      manifest = {
+        obj: {
+          test: 1
+        },
+        val: 2
+      };
+
+  Popcorn.plugin( "test", function() {
+
+    return {
+      start: function() {},
+      end: function() {}
+    };
+  }, manifest );
+
+  var p = Popcorn( "#video" );
+  p.test({});
+  ok( Popcorn.manifest[ "test" ], "The test plugin exists in Popcorn.manifest" );
+  ok( Popcorn.registry[ 0 ].base[ "manifest" ], "A manifest exists in the registry for the test plugin" );
+  ok( Popcorn.registryByName[ "test" ].base[ "manifest" ], "Popcorn.registryByName contains the test plugins manifest" );
+  deepEqual( Popcorn.registry[ 0 ].base.manifest, manifest, "The created manifest is equal to the one in the registry" );
+});
+
 test( "Configurable Defaults", function() {
 
   var expects = 14,
