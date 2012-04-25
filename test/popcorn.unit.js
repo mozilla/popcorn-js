@@ -130,6 +130,8 @@ test( "Popcorn.getTrackEvents", function() {
   Popcorn.removeTrackEvent( popcorn, Popcorn.getTrackEvents( popcorn )[ 0 ]._id );
 
   equal( Popcorn.getTrackEvents( popcorn ).length, 0, "Popcorn.getTrackEvents() has no items after removal" );
+
+  popcorn.destroy();
 });
 
 test( "Popcorn.getTrackEvent", function() {
@@ -145,6 +147,7 @@ test( "Popcorn.getTrackEvent", function() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "temp" );
       Popcorn.removeTrackEvent( popcorn, Popcorn.getTrackEvents( popcorn )[ 0 ]._id );
+      popcorn.destroy();
     }
   }
 
@@ -295,6 +298,8 @@ test( "Popcorn.removeTrackEvent", function() {
   Popcorn.forEach([ "a", "b", "c", "d" ], function( name ) {
     Popcorn.removePlugin( name );
   });
+
+  pop.destroy();
 });
 
 test( "Popcorn.forEach", function() {
@@ -585,6 +590,8 @@ test( "Object", function() {
 
     if ( ++count === expects ) {
 
+      popObj.destroy();
+      popped.destroy();
       start();
     }
   }
@@ -701,22 +708,29 @@ test( "Instance", function() {
   ok( a.data.trackEvents.previousUpdateTime >= -1, "instance a has data.trackEvents.previousUpdateTime property" );
   ok( b.data.trackEvents.previousUpdateTime >= -1, "instance b has data.trackEvents.previousUpdateTime property" );
 
+  a.destroy();
+  b.destroy();
 });
 
 test( "Bogus Selector", 2, function() {
+  var p;
   try {
-    Popcorn( "#[object HTMLDivElement]" );
+    p = Popcorn( "#[object HTMLDivElement]" );
 
+    p.destroy();
     ok(false, "Should not fail silently" );
   } catch(e) {
+    // no need to call destroy here, as the constructor failed, and no instance exists
     ok( true, "Exception raised on bogus selector: " + e.message );
   }
 
   try {
-    Popcorn( document.getElementById( "video" ) );
+    p = Popcorn( document.getElementById( "video" ) );
 
+    p.destroy();
     ok( true, "No error is raised for using the media element itself" );
   } catch( e ) {
+    // no need to call destroy here, as the constructor failed, and no instance exists
     ok( false, "Exception thrown for using a valid media element" );
   }
 });
@@ -742,6 +756,8 @@ test( "Popcorn.[addTrackEvent | removeTrackEvent].ref()", function() {
   });
 
   equal( Popcorn.sizeOf( popped.data.trackRefs ), 0, "There are 0 trackRefs in popped.data.trackRefs" );
+
+  popped.destroy();
 });
 
 module( "Popcorn Prototype Methods" );
@@ -775,6 +791,8 @@ test( "deprecated method warning", function() {
     };
 
     $pop.listen( "foo", handler).trigger( "foo" ).unlisten( "foo", handler );
+
+    $pop.destroy();
   }
 });
 
@@ -791,6 +809,7 @@ test( "roundTime", function() {
     popped.play().pause().currentTime( 0.98 );
 
     equal( 1, popped.roundTime(), ".roundTime() returns 1 when currentTime is 0.98s" );
+    popped.destroy();
     start();
   });
 });
@@ -815,8 +834,8 @@ test( "exec", function() {
 
         equal( loop, expects, "cue callback repeat check, only called twice" );
         Popcorn.removePlugin( popped, "cue" );
+        popped.destroy();
         start();
-
       }, 1000 );
     }
   }
@@ -857,6 +876,8 @@ test( "mute", function() {
 
   function plus(){
     if ( ++count == expects ) {
+      video.destroy();
+      audio.destroy();
       start();
     }
   }
@@ -904,6 +925,7 @@ test( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function
 
   function plus() {
     if ( ++count == expects ) {
+      $pop.destroy();
       start();
     }
   }
@@ -1189,7 +1211,8 @@ test( "position", function() {
       $relative = $( ".relative" ),
       $fixed = $( ".fixed" ),
       $static = $( ".static" ),
-      tests;
+      tests,
+      p;
 
   $( "#position-tests" ).show();
 
@@ -1217,8 +1240,10 @@ test( "position", function() {
   ];
 
   Popcorn.forEach( tests, function( test ) {
-    equal( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn( '#vid-" + test.id + "' ).position().top" );
-    equal( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn( '#vid-" + test.id + "' ).position().left" );
+    p = Popcorn( "#vid-" + test.id );
+    equal( p.position().top,  test.top,  "Popcorn( '#vid-" + test.id + "' ).position().top" );
+    equal( p.position().left, test.left, "Popcorn( '#vid-" + test.id + "' ).position().left" );
+    p.destroy();
   });
 
   tests = [
@@ -1235,8 +1260,10 @@ test( "position", function() {
   ];
 
   Popcorn.forEach( tests, function( test ) {
-    equal( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn( '#vid-" + test.id + "' ).position().top" );
-    equal( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn( '#vid-" + test.id + "' ).position().left" );
+    p = Popcorn( "#vid-" + test.id );
+    equal( p.position().top,  test.top,  "Popcorn( '#vid-" + test.id + "' ).position().top" );
+    equal( p.position().left, test.left, "Popcorn( '#vid-" + test.id + "' ).position().left" );
+    p.destroy();
   });
 
   tests = [
@@ -1253,8 +1280,10 @@ test( "position", function() {
   ];
 
   Popcorn.forEach( tests, function( test ) {
-    equal( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn('#vid-" + test.id + "').position().top" );
-    equal( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
+    p = Popcorn( "#vid-" + test.id );
+    equal( p.position().top,  test.top,  "Popcorn('#vid-" + test.id + "').position().top" );
+    equal( p.position().left, test.left, "Popcorn('#vid-" + test.id + "').position().left" );
+    p.destroy();
   });
 
   tests = [
@@ -1281,16 +1310,20 @@ test( "position", function() {
   ];
 
   Popcorn.forEach( tests, function( test ) {
-    equal( Popcorn( "#vid-" + test.id ).position().top,  test.top,  "Popcorn( '#vid-" + test.id + "' ).position().top" );
-    equal( Popcorn( "#vid-" + test.id ).position().left, test.left, "Popcorn( '#vid-" + test.id + "' ).position().left" );
+    p = Popcorn( "#vid-" + test.id );
+    equal( p.position().top,  test.top,  "Popcorn( '#vid-" + test.id + "' ).position().top" );
+    equal( p.position().left, test.left, "Popcorn( '#vid-" + test.id + "' ).position().left" );
+    p.destroy();
   });
 
   try {
-    ok( Popcorn( "#audio" ).position(), "position called from audio" );
+    p = Popcorn( "#audio" );
+    ok( p.position(), "position called from audio" );
   } catch( e ) {
     ok( false, e );
   }
 
+  p.destroy();
   $( "#position-tests" ).hide();
 });
 
@@ -1554,6 +1587,8 @@ test( "on/off/emit", function() {
   });
 
   $pop.emit( "foo" );
+
+  $pop.destroy();
 });
 
 
@@ -1893,10 +1928,11 @@ test( "Plugin toString", function() {
   trackEvent = $pop.getTrackEvent( $pop.getLastTrackEventId() );
   result = trackEvent.toString();
 
-
   ok( result, "BOO YA!", "Custom toString value" );
 
   Popcorn.removePlugin( "stringify" );
+
+  $pop.destroy();
 });
 
 test( "Exceptions", function() {
@@ -1913,8 +1949,8 @@ test( "Exceptions", function() {
       Popcorn.removePlugin( "exceptions" );
       Popcorn.plugin.debug = true;
       Popcorn.plugin.errors = [];
-      start();
       $pop.destroy();
+      start();
     }
   }
 
@@ -2601,7 +2637,6 @@ asyncTest( "Popcorn Compose", function() {
       Popcorn.removePlugin( "testPlugin" );
       Popcorn.removePlugin( "pluginOptions1" );
       Popcorn.removePlugin( "pluginOptions2" );
-
       popped.destroy();
       start();
     }
@@ -2843,6 +2878,7 @@ test( "Teardown end tester", function() {
   function plus() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "teardownEndTester" );
+      popped.destroy();
       start();
     }
   }
@@ -2895,6 +2931,7 @@ test( "Teardown end noise", function() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "teardownEndTester" );
       Popcorn.removePlugin( "noise" );
+      popped.destroy();
       start();
     }
   }
@@ -2953,6 +2990,7 @@ test( "Plugin Breaker", function() {
   function plus() {
     if ( ++count == expects ) {
       Popcorn.removePlugin( "breaker" );
+      popped.destroy();
       start();
     }
   }
@@ -3013,6 +3051,7 @@ test( "Plugin Empty", function() {
   function plus() {
     if ( ++count == expects ) {
       Popcorn.removePlugin( "empty" );
+      popped.destroy();
       start();
     }
   }
@@ -3048,6 +3087,7 @@ test( "Plugin Closure", function() {
   function plus() {
     if ( ++count == expects ) {
       Popcorn.removePlugin( "closure" );
+      popped.destroy();
       start();
     }
   }
@@ -3108,8 +3148,10 @@ test( "Remove Plugin", function() {
 
   function plus() {
     if ( ++count === expects ) {
-      start();
       Popcorn.removePlugin( "cleanup" );
+      p.destroy();
+      p2.destroy();
+      start();
     }
   }
 
@@ -3258,6 +3300,8 @@ test( "Protected Names", function() {
       ok( true, "Attempting to overwrite '" + name + "' threw an exception " );
     };
   });
+
+  popped.destroy();
 });
 
 test( "Defaulting Empty End Values", function() {
@@ -3289,6 +3333,9 @@ test( "Defaulting Empty End Values", function() {
     apikey: "CHAyhB5IisvLqqzGYNYbmA",
     mediaid: "13607892"
   });
+
+  popped.destroy();
+  popped2.destroy();
 });
 
 test( "In/Out aliases", function() {
@@ -3303,7 +3350,7 @@ test( "In/Out aliases", function() {
   function plus() {
     if ( ++count === expects ) {
       Popcorn.removePlugin( "aliasTester" );
-      Popcorn.destroy( popcorn );
+      popcorn.destroy();
       start();
     }
   }
@@ -3358,7 +3405,6 @@ test( "Functions", function() {
   expect( 19 );
 
   var popped = Popcorn( "#video" ), ffTrackId, rwTrackId, rw2TrackId, rw3TrackId, historyRef, trackEvents;
-
 
   Popcorn.plugin( "ff", function() {
     return {
@@ -3446,6 +3492,8 @@ test( "Functions", function() {
   trackEvents = popped.getTrackEvents();
 
   equal( trackEvents.length, 3, "3 user created trackEvents returned by popped.getTrackEvents()" );
+
+  popped.destroy();
 });
 
 test( "getTrackEvent", function() {
@@ -3454,7 +3502,7 @@ test( "getTrackEvent", function() {
   expect( 5 );
 
   var popped = Popcorn( "#video" ),
-    trackIds = [], obj, oldId;
+      trackIds = [], obj, oldId;
 
   Popcorn.plugin( "ff", function() {
     return {
@@ -3505,6 +3553,8 @@ test( "getTrackEvent", function() {
   popped.removeTrackEvent( oldId );
 
   equal( popped.getTrackEvent( oldId ), undefined,  "returned undefined when id is not found" );
+
+  popped.destroy();
 });
 
 test( "Index Integrity ( removing tracks )", function() {
@@ -3707,9 +3757,9 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
   function plus() {
     if ( ++count === expects ) {
-      start();
       Popcorn.removePlugin( "toggler" );
       $pop.destroy();
+      start();
     }
   }
 
@@ -3860,9 +3910,10 @@ test( "end undefined or false should never be fired", function() {
 
   function plus() {
     if ( ++count === expects ) {
-      start();
       Popcorn.removePlugin( "neverEndingStory" );
       Popcorn.removePlugin( "endingStory" );
+      $pop.destroy();
+      start();
     }
   }
 
@@ -4314,6 +4365,8 @@ test( "Basic Audio Support (timeupdate)", function() {
 
     if ( ++count === expects ) {
 
+      popped.destroy();
+      popObj.destroy();
       start();
     }
   }
