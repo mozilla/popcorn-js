@@ -1690,25 +1690,15 @@ test( "Manifest removal", function() {
   popcorn.destroy();
 });
 
-test( "Manifest updates registry and registryByName", function() {
+test( "Manifest updates registry and registryByName", 4, function() {
 
   var count = 0,
-      expected = 4,
       manifest = {
         obj: {
           test: 1
         },
         val: 2
       };
-
-  expect( expected );
-  stop();
-
-  function plus() {
-    if ( ++count === expected ) {
-      start();
-    }
-  }
 
   Popcorn.plugin( "test", function() {
 
@@ -1721,13 +1711,9 @@ test( "Manifest updates registry and registryByName", function() {
   var p = Popcorn( "#video" );
   p.test({});
   ok( Popcorn.manifest[ "test" ], "The test plugin exists in Popcorn.manifest" );
-  plus();
   ok( Popcorn.registry[ 0 ].base[ "manifest" ], "A manifest exists in the registry for the test plugin" );
-  plus();
   ok( Popcorn.registryByName[ "test" ].base[ "manifest" ], "Popcorn.registryByName contains the test plugins manifest" );
-  plus();
-  deepEqual( Popcorn.registry[ 0 ].base.manifest, manifest, "The specified that we defined equals the one in the registry" );
-  plus();
+  deepEqual( Popcorn.registry[ 0 ].base.manifest, manifest, "The created manifest is equal to the one in the registry" );
 });
 
 test( "Configurable Defaults", function() {
