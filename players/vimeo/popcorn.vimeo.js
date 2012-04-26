@@ -8,6 +8,7 @@
   vimeo_player_loaded.loadProgress = {};
   vimeo_player_loaded.play = {};
   vimeo_player_loaded.pause = {};
+  vimeo_player_loaded.finish = {};
 
   Popcorn.player( "vimeo", {
     _canPlayType: function( nodeName, url ) {
@@ -73,6 +74,10 @@
             }
           };
 
+          vimeo_player_loaded.finish[ vimeoContainer.id ] = function() {
+            media.dispatchEvent( "ended" );
+          };
+
           vimeo_player_loaded.loadProgress[ vimeoContainer.id ] = function( progress ) {
 
             if ( !loadStarted ) {
@@ -89,6 +94,7 @@
           vimeoObject.api_addEventListener( "loadProgress", "vimeo_player_loaded.loadProgress." + vimeoContainer.id );
           vimeoObject.api_addEventListener( "play", "vimeo_player_loaded.play." + vimeoContainer.id );
           vimeoObject.api_addEventListener( "pause", "vimeo_player_loaded.pause." + vimeoContainer.id );
+          vimeoObject.api_addEventListener( "finish", "vimeo_player_loaded.finish." + vimeoContainer.id );
 
           var timeUpdate = function() {
             if ( !media.paused ) {

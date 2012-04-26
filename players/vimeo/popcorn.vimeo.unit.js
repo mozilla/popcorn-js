@@ -12,7 +12,7 @@ asyncTest( "Options Check", function() {
     },
     p2 = Popcorn.vimeo( "#player_1", "http://vimeo.com/11336811", varz );
 
-  p2.listen( "loadeddata", function() {
+  p2.on( "loadeddata", function() {
     var flashvars = $( 'param[name="flashvars"]' ).attr( "value" );
 
     var splitvars = flashvars.split( "&" );
@@ -32,7 +32,7 @@ asyncTest( "Options Check", function() {
 asyncTest( "Update Timer", function() {
 
   var p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" ),
-      expects = 16,
+      expects = 17,
       count = 0,
       execCount = 0,
       // These make sure events are only fired once
@@ -55,26 +55,32 @@ asyncTest( "Update Timer", function() {
     }
   }
 
-  p2.listen( "canplaythrough", function() {
-    p2.unlisten( "canplaythrough" );
+  p2.on( "canplaythrough", function() {
+    p2.off( "canplaythrough" );
     ok( true, "'canplaythrough' fired" );
     plus();
   });
 
-  p2.listen( "loadedmetadata", function() {
-    p2.unlisten( "loadedmetadata" );
+  p2.on( "loadedmetadata", function() {
+    p2.off( "loadedmetadata" );
     ok( true, "'loadedmetadata' fired" );
     plus();
   });
 
-  p2.listen( "durationchange", function() {
-    p2.unlisten( "durationchange" );
+  p2.on( "ended", function() {
+    p2.off( "ended" );
+    ok( true, "'ended' fired" );
+    plus();
+  });
+
+  p2.on( "durationchange", function() {
+    p2.off( "durationchange" );
     ok( true, "'durationchange' fired" );
     plus();
   });
 
-  p2.listen( "loadeddata", function() {
-    p2.unlisten( "loadeddata" );
+  p2.on( "loadeddata", function() {
+    p2.off( "loadeddata" );
     ok( true, "'loadeddata' fired" );
     plus();
   });
@@ -359,7 +365,7 @@ asyncTest( "Popcorn vimeo Plugin Url and Duration Tests", function() {
   equal( popcorn.duration(), 0, "Duration starts as 0");
   plus();
 
-  popcorn.listen( "durationchange", function() {
+  popcorn.on( "durationchange", function() {
     notEqual( popcorn.duration(), 0, "Duration has been changed from 0" );
     plus();
 
@@ -392,7 +398,7 @@ asyncTest( "Popcorn vimeo Plugin Url Regex Test", function() {
     var urlTest = urlTests[ key ],
         popcorn = Popcorn.vimeo( "#player_2", urlTest.url );
 
-    popcorn.listen( "loadeddata", function() {
+    popcorn.on( "loadeddata", function() {
 
       equal( popcorn.media.src, urlTest.expected, "Video id is correct for " + urlTest.name + ": " + urlTest.url );
       popcorn.pause();
@@ -423,7 +429,7 @@ asyncTest( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
   }
   popped = Popcorn.vimeo( "#player_3", "http://player.vimeo.com/video/11336811" );
 
-  popped.listen( "loadeddata", function() {
+  popped.on( "loadeddata", function() {
     elem = document.querySelector( "div#player_3 object" );
     equal( elem.height, popped.media.childNodes[0].offsetHeight, "The media object is reporting the correct offsetHeight" );
     plus();

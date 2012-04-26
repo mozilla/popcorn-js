@@ -68,22 +68,22 @@
 
         // Hook into player events
         // Timeupdate, as the video plays
-        player.listen( "timeupdate", function() {
+        player.on( "timeupdate", function() {
           document.getElementById( "player_time" ).innerHTML = player.currentTime();
         });
 
         // When the volume changes
-        player.listen( "volumechange", function() {
+        player.on( "volumechange", function() {
           document.getElementById( "player_vol" ).innerHTML = player.volume();
         });
 
         // When the video duration changes
-        player.listen( "durationchange", function() {
+        player.on( "durationchange", function() {
           document.getElementById( "player_duration" ).innerHTML = player.duration();
         });
 
         // When the meddia ready state changes
-        player.listen( "readystatechange", function() {
+        player.on( "readystatechange", function() {
           document.getElementById( "player_state" ).innerHTML = player.readyState();
         });
 
@@ -154,13 +154,11 @@
           href: "http://www.drumbeat.org/",
           src: "https://www.drumbeat.org/media//images/drumbeat-logo-splash.png",
           target: "imagediv"
-        });
-        player.listen( "loadedmetadata", function() {
         })
-       .listen( "loadedmetadata", function() {
+        .on( "loadedmetadata", function() {
           document.getElementById( "player_load" ).innerHTML = "Started";
         })
-        .listen( "canplaythrough", function() {
+        .on( "canplaythrough", function() {
           VimeoEmbedLoaded( player );
           document.getElementById( "player_load" ).innerHTML = "Finished";
         })
