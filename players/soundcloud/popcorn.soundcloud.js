@@ -118,7 +118,7 @@
           container.width = "100%";
           container.height = "100%";
 
-          container.addEventListener( "DOMContentLoaded", function( e ) {
+          container.addEventListener( "load", function( e ) {
             options.widget = widget = SC.Widget( container.id );
             // setup all of our listeners
             widget.bind(SC.Widget.Events.FINISH, function() {
@@ -180,14 +180,17 @@
       }
     },
     _teardown: function( options ) {
-      var widget = options.widget;
+      var widget = options.widget,
+          events = SC.Widget.Events,
+          container = options._container,
+          parentContainer = container.parentNode;
+
       options.destroyed = true;
 
       // remove all bound soundcloud listeners
-      for ( var prop in widget.Events ) {
-        widget.unbind( widget.Events[ prop ] );
+      for ( var prop in events ) {
+        widget.unbind( events[ prop ] );
       }
-      //this.removeChild( options._container );
     }
   });
 })();

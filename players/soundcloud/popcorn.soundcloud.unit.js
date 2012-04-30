@@ -34,7 +34,7 @@ asyncTest( "Default Attribute Functionality", function () {
   playerOverride = Popcorn.soundcloud( target.id,  "http://api.soundcloud.com/tracks/25857135" );
 
   playerDefault.on( "load", function() {
-    equal( playerDefault.duration(), 315.7159118652344, "Duration updated" );
+    equal( playerDefault.duration(), 315.861, "Duration updated" );
     plus();
 
     equal( target.children.length, 2, "The container has 2 players" );
