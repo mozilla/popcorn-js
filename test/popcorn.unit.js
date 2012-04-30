@@ -477,6 +477,67 @@ test( "Popcorn.util.toSeconds" , function() {
   }
 });
 
+asyncTest( "Popcorn.destroy", function() {
+  var popcorn = Popcorn( "#video" ),
+      pcorn,
+      expects = 9,
+      count = 0,
+      playCounter = 0,
+      timeUpdateCounter = 0;
+
+  expect( expects );
+
+  //  initially no listeners
+  equal( Popcorn.sizeOf( popcorn.data.events ), 0, "Initially no events have been added" );
+
+  equal( playCounter, 0, "playCounter is intially 0" );
+
+  equal( timeUpdateCounter, 0, "timeUpdateCounter is intially 0" );
+
+  //  add some event listeners for testing
+  popcorn.on( "timeupdate", function( event ) { timeUpdateCounter++; } );
+  popcorn.on( "play", function( event ) { playCounter++; } );
+
+  popcorn.cue( 1, function() {
+    popcorn.pause();
+
+    equal( Popcorn.sizeOf( popcorn.data.events ), 2, "popcorn.data.events has correct number of events - before Popcorn.destroy" );
+
+    ok( playCounter > 0, "playCounter is greater than 0, events are being triggered" );
+
+    ok( timeUpdateCounter > 0, "timeUpdateCounter is greater than 0, events are being triggered" );
+
+    playCounter = timeUpdateCounter = 0;
+
+    popcorn.destroy();
+
+    //  Doing this to ensure we are working, a fail will run before this if the old popcorn instances events were
+    //  not properly destroyed
+    pcorn = Popcorn( "#video" );
+
+    pcorn.cue( 3, function() {
+      pcorn.pause();
+
+      ok( timeUpdateCounter === 0, "The timeUpdateCounter should be 0" );
+      ok( playCounter === 0, "The playCounter should be 0" );
+      ok( true, "Second popcorn instance's event was fired instead of first popcorn instance" );
+      pcorn.destroy();
+      start();
+    });
+
+    popcorn.play( 0 );
+    pcorn.play( 0 );
+  });
+
+  popcorn.cue( 2, function() {
+    popcorn.pause();
+
+    ok( false, "This cue should never have been run, destroy not working" );
+  });
+
+  popcorn.play( 0 );
+});
+
 test( "guid", function() {
 
   expect( 6 );
