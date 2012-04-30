@@ -5,7 +5,7 @@
   Popcorn.player( "soundcloud", {
     _canPlayType: function( nodeName, url ) {
 
-      return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(api\.soundcloud)/).test( url ) && nodeName.toLowerCase() !== "video";
+      return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(soundcloud)/).test( url ) && nodeName.toLowerCase() !== "video";
     },
     _setup: function( options ) {
 
@@ -96,51 +96,59 @@
       function scriptReady() {
         scriptLoaded = true;
 
-        media.width = media.style.width ? "" + media.offsetWidth : "560";
-        media.height = media.style.height ? "" + media.offsetHeight : "315";
-        // TODO: There are quite a few options here that we should pass on to the user
-        container.scrolling = "no";
-        container.frameborder = "no";
-        container.id = "soundcloud-" + Popcorn.guid();
-        container.src = "http://w.soundcloud.com/player/?url=" + media.src + 
-        "&show_artwork=false" +
-        "&buying=false" +
-        "&liking=false" +
-        "&sharing=false";
+        SC.initialize({
+          client_id: "PRaNFlda6Bhf5utPjUsptg"
+        });
 
-        container.width = "100%";
-        container.height = "100%";
+        SC.get( "/resolve", {
+          url: media.src
+        }, function( data ) {
+          media.width = media.style.width ? "" + media.offsetWidth : "560";
+          media.height = media.style.height ? "" + media.offsetHeight : "315";
+          // TODO: There are quite a few options here that we should pass on to the user
+          container.scrolling = "no";
+          container.frameborder = "no";
+          container.id = "soundcloud-" + Popcorn.guid();
+          container.src = "http://w.soundcloud.com/player/?url=" + data.uri +
+          "&show_artwork=false" +
+          "&buying=false" +
+          "&liking=false" +
+          "&sharing=false";
 
-        container.addEventListener( "load", function( e ) {
-          options.widget = widget = SC.Widget( container.id );
-          // setup all of our listeners
-          widget.bind(SC.Widget.Events.FINISH, function() {
-            media.dispatchEvent( "ended" );
-          });
+          container.width = "100%";
+          container.height = "100%";
 
-          widget.bind(SC.Widget.Events.PLAY_PROGRESS, function( data ) {
-            currentTime = data.currentPosition / 1000;
-            media.dispatchEvent( "timeupdate" );
-          });
-          widget.bind(SC.Widget.Events.READY, function( data ) {
-            widget.getDuration(function( data ) {
-              duration = data / 1000;
-              media.dispatchEvent( "durationchange" );
-              // update the readyState after we have the duration
-              media.readyState = 4;
-              media.dispatchEvent( "readystatechange" );
-              media.dispatchEvent( "loadedmetadata" );
-              media.dispatchEvent( "loadeddata" );
-              media.dispatchEvent( "canplaythrough" );
-              media.dispatchEvent( "load" );
-              playing && media.play();
+          container.addEventListener( "DOMContentLoaded", function( e ) {
+            options.widget = widget = SC.Widget( container.id );
+            // setup all of our listeners
+            widget.bind(SC.Widget.Events.FINISH, function() {
+              media.dispatchEvent( "ended" );
             });
-            widget.getVolume(function( data ) {
-              lastVolume = data / 100;
+
+            widget.bind(SC.Widget.Events.PLAY_PROGRESS, function( data ) {
+              currentTime = data.currentPosition / 1000;
+              media.dispatchEvent( "timeupdate" );
             });
-          });
-        }, false);
-        media.appendChild( container );
+            widget.bind(SC.Widget.Events.READY, function( data ) {
+              widget.getDuration(function( data ) {
+                duration = data / 1000;
+                media.dispatchEvent( "durationchange" );
+                // update the readyState after we have the duration
+                media.readyState = 4;
+                media.dispatchEvent( "readystatechange" );
+                media.dispatchEvent( "loadedmetadata" );
+                media.dispatchEvent( "loadeddata" );
+                media.dispatchEvent( "canplaythrough" );
+                media.dispatchEvent( "load" );
+                playing && media.play();
+              });
+              widget.getVolume(function( data ) {
+                lastVolume = data / 100;
+              });
+            });
+          }, false);
+          media.appendChild( container );
+        });
       }
 
       // load the SoundCloud API script if it doesn't exist
@@ -148,7 +156,9 @@
         if ( !loading ) {
           loading = true;
           Popcorn.getScript( "http://w.soundcloud.com/player/api.js", function() {
-            scriptReady();
+            Popcorn.getScript( "http://connect.soundcloud.com/sdk.js", function() {
+              scriptReady();
+            });
           });
         } else {
           (function isReady() {
@@ -170,7 +180,13 @@
       }
     },
     _teardown: function( options ) {
-      //options.destroyed = true;
+      var widget = options.widget;
+      options.destroyed = true;
+
+      // remove all bound soundcloud listeners
+      for ( var prop in widget.Events ) {
+        widget.unbind( widget.Events[ prop ] );
+      }
       //this.removeChild( options._container );
     }
   });
