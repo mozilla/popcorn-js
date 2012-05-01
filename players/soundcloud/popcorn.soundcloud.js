@@ -19,10 +19,13 @@
           muted = false;
 
       options._container = container;
+      media.style.visibility = "hidden";
 
       this.play = function() {
-        widget && widget.play();
-        playing = true;
+        if ( !playing ) {
+          widget && widget.play();
+          playing = true;
+        }
         media.dispatchEvent( "playing" );
         media.dispatchEvent( "play" );
       };
@@ -67,9 +70,6 @@
           set: function( val ) {
             currentTime = val;
             widget && widget.seekTo( val * 1000 );
-            // TODO: this is a hack so setting the currentTime while 'paused' works
-            media.play();
-            media.pause();
             media.dispatchEvent( "seeked" );
             media.dispatchEvent( "timeupdate" );
           },
@@ -132,16 +132,29 @@
             });
             widget.bind(SC.Widget.Events.READY, function( data ) {
               widget.getDuration(function( data ) {
-                duration = data / 1000;
-                media.dispatchEvent( "durationchange" );
-                // update the readyState after we have the duration
-                media.readyState = 4;
-                media.dispatchEvent( "readystatechange" );
-                media.dispatchEvent( "loadedmetadata" );
-                media.dispatchEvent( "loadeddata" );
-                media.dispatchEvent( "canplaythrough" );
-                media.dispatchEvent( "load" );
-                playing && media.play();
+                widget.bind( SC.Widget.Events.PLAY, function( data ) {
+                
+                  widget.unbind( SC.Widget.Events.PLAY );
+                  widget.pause();
+                });
+                widget.bind( SC.Widget.Events.PAUSE, function( data ) {
+                
+                  widget.unbind( SC.Widget.Events.PAUSE );                
+                  duration = data / 1000;
+
+                  media.style.visibility = "visible";
+                  console.log( media.style.display );
+                  media.dispatchEvent( "durationchange" );
+                  // update the readyState after we have the duration
+                  media.readyState = 4;
+                  media.dispatchEvent( "readystatechange" );
+                  media.dispatchEvent( "loadedmetadata" );
+                  media.dispatchEvent( "loadeddata" );
+                  media.dispatchEvent( "canplaythrough" );
+                  media.dispatchEvent( "load" );
+                  playing && media.play();
+                });
+                widget.play();
               });
               widget.getVolume(function( data ) {
                 lastVolume = data / 100;
