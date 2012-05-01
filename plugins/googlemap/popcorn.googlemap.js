@@ -110,6 +110,12 @@ var googleCallback;
     var newdiv, map, location,
         target = document.getElementById( options.target );
 
+    options.type = options.type || "ROADMAP";
+    options.zoom = options.zoom || 1;
+    options.lat = options.lat || 0;
+    options.lng = options.lng || 0;
+
+
     // if this is the firest time running the plugins
     // call the function that gets the sctipt
     if ( !_mapFired ) {
@@ -182,8 +188,6 @@ var googleCallback;
             if ( options.zoom && typeof options.zoom !== "number" ) {
               options.zoom = +options.zoom;
             }
-
-            options.zoom = options.zoom || 8; // default to 8
 
             map.setZoom( options.zoom );
 
