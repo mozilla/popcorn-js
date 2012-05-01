@@ -65,6 +65,7 @@
         },
         currentTime: {
           set: function( val ) {
+            currentTime = val;
             widget && widget.seekTo( val * 1000 );
             // TODO: this is a hack so setting the currentTime while 'paused' works
             media.play();
