@@ -126,7 +126,7 @@ var googleCallback;
     newdiv = document.createElement( "div" );
     newdiv.id = "actualmap" + i;
     newdiv.style.width = "100%";
-    newdiv.style.height = ( target && target.offsetHeight || 0 ) + "px";
+    newdiv.style.height = ( target && target.clientHeight || 0 ) + "px";
     i++;
 
     // ensure the target container the user chose exists
