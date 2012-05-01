@@ -1,7 +1,7 @@
 test( "Popcorn Google Map Plugin", function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 15,
+      expects = 19,
       count = 0,
       setupId;
 
@@ -43,6 +43,7 @@ test( "Popcorn Google Map Plugin", function() {
       location: "toronto",
       zoom: 15
   });
+
   var mapz = popped.googlemap({
     start: 2,
     end: 4,
@@ -68,7 +69,7 @@ test( "Popcorn Google Map Plugin", function() {
     plus();
     equal( document.getElementById( "actualmap1" ).offsetParent.id, "map", "First map is inside the 'map' div" );
     plus();
-    equal( popped.data.trackEvents.byStart[ 1 ].zoom, 8, "Defaulting to zoom of 8" );
+    equal( popped.data.trackEvents.byStart[ 1 ].zoom, 1, "Defaulting to zoom of 1 from start." );
     plus();
   });
 
@@ -107,6 +108,14 @@ test( "Popcorn Google Map Plugin", function() {
     plus();
   }
 
-  popped.play();
+  equal( 1, popped.getTrackEvent( popped.getLastTrackEventId() ).zoom, "zoom is defaulted to 1 from setup" );
+  plus();
+  equal( 0, popped.getTrackEvent( popped.getLastTrackEventId() ).lng, "lng is defaulted to 0" );
+  plus();
+  equal( 0, popped.getTrackEvent( popped.getLastTrackEventId() ).lat, "lat is defaulted to 0" );
+  plus();
+  equal( "ROADMAP", popped.getTrackEvent( popped.getLastTrackEventId() ).type, "type is defaulted to ROADMAP" );
+  plus();
 
+  popped.play();
 });
