@@ -115,7 +115,6 @@ var googleCallback;
     options.lat = options.lat || 0;
     options.lng = options.lng || 0;
 
-
     // if this is the firest time running the plugins
     // call the function that gets the sctipt
     if ( !_mapFired ) {
