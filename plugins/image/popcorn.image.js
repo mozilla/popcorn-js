@@ -93,6 +93,10 @@
 
           var fontHeight, divText;
 
+          img.style.height = target.style.height;
+          img.style.width = target.style.width;
+
+          options.anchor.appendChild( img );
 
           // If display text was provided, display it:
           if ( options.text ) {
@@ -105,16 +109,15 @@
               fontWeight: "bold",
               position: "relative",
               textAlign: "center",
-              width: img.width + "px",
+              width: img.style.width || img.width + "px",
               zIndex: "10"
             });
 
             divText.innerHTML = options.text || "";
-            divText.style.top = ( img.height / 2 ) - ( divText.offsetHeight / 2 ) + "px";
-            options.anchor.appendChild( divText );
-          }
 
-          options.anchor.appendChild( img );
+            divText.style.top = ( ( img.style.height.replace( "px", "" ) || img.height ) / 2 ) - ( divText.offsetHeight / 2 ) + "px";
+            options.anchor.insertBefore( divText, img );
+          }
         }, false );
 
         img.src = options.src;
