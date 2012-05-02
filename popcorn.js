@@ -164,7 +164,7 @@
 
       this.data = {
 
-        // data structure of all 
+        // data structure of all
         running: {
           cue: []
         },
@@ -219,7 +219,7 @@
         // start: 0, end: 1 will start, end, start again, when it should just start
         // just setting it to 0 if it is below 0 fixes this issue
         if ( self.media.currentTime < 0 ) {
-        
+
           self.media.currentTime = 0;
         }
 
@@ -249,7 +249,7 @@
           self.data.timeUpdate = function () {
 
             Popcorn.timeUpdate( self, {} );
-            
+
             // fire frame for each enabled active plugin of every type
             Popcorn.forEach( Popcorn.manifest, function( key, val ) {
 
@@ -268,7 +268,7 @@
                 }
               }
             });
-            
+
             self.emit( "timeupdate" );
 
             !self.isDestroyed && requestAnimFrame( self.data.timeUpdate );
@@ -423,7 +423,7 @@
       return instance;
     },
     enable: function( instance, plugin ) {
-      
+
       if ( instance.data.disabled[ plugin ] ) {
 
         instance.data.disabled[ plugin ] = false;
@@ -439,7 +439,7 @@
     },
     destroy: function( instance ) {
       var events = instance.data.events,
-          singleEvent, item, fn;
+          singleEvent, item, fn, plugin;
 
       //  Iterate through all events and remove them
       for ( item in events ) {
