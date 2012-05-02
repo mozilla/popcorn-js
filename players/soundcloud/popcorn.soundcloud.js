@@ -143,7 +143,6 @@
                   duration = data / 1000;
 
                   media.style.visibility = "visible";
-                  console.log( media.style.display );
                   media.dispatchEvent( "durationchange" );
                   // update the readyState after we have the duration
                   media.readyState = 4;
