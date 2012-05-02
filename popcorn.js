@@ -1610,6 +1610,61 @@
 
   Popcorn.plugin.effect = Popcorn.effect = Popcorn.compose;
 
+  var rnaiveExpr = /^(?:\.|#|\[)/;
+
+  //  Basic DOM utilities and helpers API. See #1037
+  Popcorn.dom = {
+
+    //  Popcorn.dom.find( selector, context )
+    //
+    //  Returns the first element that matches the specified selector
+    //  Optionally provide a context element, defaults to `document`
+    //
+    //  eg.
+    //  Popcorn.dom.find("video") returns the first video element
+    //  Popcorn.dom.find("#foo") returns the first element with `id="foo"`
+    //  Popcorn.dom.find("foo") returns the first element with `id="foo"`
+    //     Note: Popcorn.dom.find("foo") is the only allowed deviation
+    //           from valid querySelector selector syntax
+    //
+    //  Popcorn.dom.find(".baz") returns the first element with `class="baz"`
+    //  Popcorn.dom.find("[preload]") returns the first element with `preload="..."`
+    //  ...
+    //  See https://developer.mozilla.org/En/DOM/Document.querySelector
+    //
+    //
+    find: function( selector, context ) {
+      var node = null;
+
+      //  Trim leading/trailing whitespace to avoid false negatives
+      selector = selector.trim();
+
+      //  Default context is the `document`
+      context = context || document;
+
+      if ( selector ) {
+        //  If the selector does not begin with "#", "." or "[",
+        //  it could be either a nodeName or ID w/o "#"
+        if ( !rnaiveExpr.test( selector ) ) {
+
+          //  Try finding an element that matches by ID first
+          node = document.getElementById( selector );
+
+          //  If a match was found by ID, return the element
+          if ( node !== null ) {
+            return node;
+          }
+        }
+        //  Assume no elements have been found yet
+        //  Catch any invalid selector syntax errors and bury them.
+        try {
+          node = context.querySelector( selector );
+        } catch ( e ) {}
+      }
+      return node;
+    }
+  };
+
   //  Cache references to reused RegExps
   var rparams = /\?/,
   //  XHR Setup object
