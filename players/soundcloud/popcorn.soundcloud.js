@@ -15,25 +15,30 @@
           currentTime = 0,
           widget,
           duration = 0,
-          playing = false,
           muted = false;
 
       options._container = container;
       media.style.visibility = "hidden";
 
-      this.play = function() {
-        if ( !playing ) {
+      media.play = function() {
+
+        if ( media.paused ) {
+
+          media.paused = false;
+          media.dispatchEvent( "playing" );
+          media.dispatchEvent( "play" );
           widget && widget.play();
-          playing = true;
         }
-        media.dispatchEvent( "playing" );
-        media.dispatchEvent( "play" );
       };
 
-      this.pause = function() {
-        widget && widget.pause();
-        playing = false;
-        media.dispatchEvent( "pause" );
+      media.pause = function() {
+
+        if ( !media.paused ) {
+
+          media.paused = true;
+          media.dispatchEvent( "pause" );
+          widget && widget.pause();
+        }
       };
 
       // getter and setter for muted property, multiply volume by 100 as that is the scale soundcloud works on
@@ -81,16 +86,6 @@
           get: function() {
             return duration;
           }
-        },
-        playing: {
-          get: function() {
-            return playing;
-          }
-        },
-        paused: {
-          get: function() {
-            return !playing;
-          }
         }
       });
       // called when the SoundCloud api script has loaded
@@ -130,30 +125,34 @@
               currentTime = data.currentPosition / 1000;
               media.dispatchEvent( "timeupdate" );
             });
+
+            widget.bind(SC.Widget.Events.PLAY, function( data ) {
+
+              if ( media.paused ) {
+                media.currentTime = currentTime;
+                media.paused && media.play();
+              }
+            });
+
+            widget.bind(SC.Widget.Events.PAUSE, function( data ) {
+
+              !media.paused && media.pause();
+            });
             widget.bind(SC.Widget.Events.READY, function( data ) {
               widget.getDuration(function( data ) {
-                widget.bind( SC.Widget.Events.PLAY, function( data ) {
-                
-                  widget.unbind( SC.Widget.Events.PLAY );
-                  widget.pause();
-                });
-                widget.bind( SC.Widget.Events.PAUSE, function( data ) {
-                
-                  widget.unbind( SC.Widget.Events.PAUSE );                
-                  duration = data / 1000;
 
-                  media.style.visibility = "visible";
-                  media.dispatchEvent( "durationchange" );
-                  // update the readyState after we have the duration
-                  media.readyState = 4;
-                  media.dispatchEvent( "readystatechange" );
-                  media.dispatchEvent( "loadedmetadata" );
-                  media.dispatchEvent( "loadeddata" );
-                  media.dispatchEvent( "canplaythrough" );
-                  media.dispatchEvent( "load" );
-                  playing && media.play();
-                });
-                widget.play();
+                duration = data / 1000;
+
+                media.style.visibility = "visible";
+                media.dispatchEvent( "durationchange" );
+                // update the readyState after we have the duration
+                media.readyState = 4;
+                media.dispatchEvent( "readystatechange" );
+                media.dispatchEvent( "loadedmetadata" );
+                media.dispatchEvent( "loadeddata" );
+                media.dispatchEvent( "canplaythrough" );
+                media.dispatchEvent( "load" );
+                !media.paused && media.play();
               });
               widget.getVolume(function( data ) {
                 lastVolume = data / 100;
