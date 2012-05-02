@@ -1263,6 +1263,98 @@ test( "Popcorn.events.hooks: canplayall fires immediately if ready", function() 
 
 */
 
+module( "Popcorn.dom" );
+
+test( "Popcorn.dom API", 2, function() {
+
+  ok( Popcorn.dom, "Popcorn.dom exists" );
+  ok( Popcorn.dom.find, "Popcorn.dom.find exists" );
+
+});
+
+test( "Popcorn.dom.find( selector ) Returns single node matching selector", function() {
+
+  var fixture = document.getElementById("video"),
+      allowed = [
+        { desc: "nodeName",       selector: "video" },
+        { desc: "id, w/ #",       selector: "#video" },
+        { desc: "id, w/o #",      selector: "video" },
+        { desc: "class",          selector: ".dom-tests" },
+        { desc: "attr, data",     selector: "[data-custom]" },
+        { desc: "attr, controls", selector: "[controls]" },
+        { desc: "attr, preload",  selector: "[preload]" }
+      ];
+
+  expect( allowed.length * 3 );
+
+  allowed.forEach(function( set ) {
+
+    // selector as is
+    deepEqual( Popcorn.dom.find( set.selector ), fixture, set.desc + ", selector as-is" );
+
+    // selector with leading whitespace
+    deepEqual( Popcorn.dom.find( "  " + set.selector ), fixture, set.desc + ", selector w/ leading whitespace" );
+
+    // selector with trailing whitespace
+    deepEqual( Popcorn.dom.find( set.selector + "  " ), fixture, set.desc + ", selector w/ trailing whitespace" );
+
+  });
+});
+
+test( "Popcorn.dom.find( selector, context ) Returns single node matching selector within context", function() {
+
+  var context = document.getElementById("popcorn-dom-find-context"),
+      fixture = document.getElementById("inside-context"),
+      allowed = [
+        { desc: "nodeName",       selector: "div" },
+        { desc: "class",          selector: ".contextual" },
+        { desc: "attr, data",     selector: "[data-contextual]" }
+      ];
+
+  expect( allowed.length );
+
+  allowed.forEach(function( set ) {
+
+    // selector as is
+    deepEqual( Popcorn.dom.find( set.selector, context ), fixture, set.desc );
+  });
+});
+
+test( "Popcorn.dom.find() Returns null for unmatched selector", function() {
+
+  var fixture = document.getElementById("video"),
+      allowed = [
+        { desc: "nodeName",       selector: "object" },
+        { desc: "id, w/ #",       selector: "#wontfind" },
+        { desc: "id, w/o #",      selector: "wontfind" },
+        { desc: "class",          selector: ".missing" },
+        { desc: "attr, data",     selector: "[data-nope]" }
+      ];
+
+  expect( allowed.length );
+
+  allowed.forEach(function( set ) {
+    // selector as is
+    deepEqual( Popcorn.dom.find( set.selector ), null, set.desc );
+  });
+});
+
+test( "Popcorn.dom.find() Returns null for invalid selectors", function() {
+
+  var fixture = document.getElementById("video"),
+      allowed = [
+        { desc: "closing bracket",       selector: "]" },
+        { desc: "escapes \\",       selector: "\/" }
+      ];
+
+  expect( allowed.length );
+
+  allowed.forEach(function( set ) {
+    // selector as is
+    deepEqual( Popcorn.dom.find( set.selector ), null, set.desc );
+  });
+});
+
 module( "Popcorn Position" );
 test( "position", function() {
 
@@ -3839,7 +3931,7 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
       expects = 17;
 
   Popcorn.plugin.debug = true;
-      
+
   expect( expects );
 
   function plus() {
@@ -3871,7 +3963,7 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
     // pause to ensure end is never called outside of disable and toggle
     $pop.pause();
-    
+
     equal( startCalls, 1, "start is called once, to initiate state" );
     plus();
 
@@ -3889,7 +3981,7 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
     ok( !$pop.data.disabled[ "toggler" ], "enable() plugin: toggler is enabled" );
     plus();
-    
+
     equal( startCalls, 2, "start is called once again, this time via enable" );
     plus();
 
