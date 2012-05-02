@@ -1810,6 +1810,7 @@ test( "Manifest updates registry and registryByName", 4, function() {
   ok( Popcorn.registry[ 0 ].base[ "manifest" ], "A manifest exists in the registry for the test plugin" );
   ok( Popcorn.registryByName[ "test" ].base[ "manifest" ], "Popcorn.registryByName contains the test plugins manifest" );
   deepEqual( Popcorn.registry[ 0 ].base.manifest, manifest, "The created manifest is equal to the one in the registry" );
+  Popcorn.removePlugin( "test" );
 });
 
 test( "Configurable Defaults", function() {
@@ -3839,7 +3840,7 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
       expects = 17;
 
   Popcorn.plugin.debug = true;
-      
+
   expect( expects );
 
   function plus() {
@@ -3871,7 +3872,7 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
     // pause to ensure end is never called outside of disable and toggle
     $pop.pause();
-    
+
     equal( startCalls, 1, "start is called once, to initiate state" );
     plus();
 
@@ -3889,7 +3890,7 @@ asyncTest( "Popcorn.disable/enable/toggle (timeupdate)", function() {
 
     ok( !$pop.data.disabled[ "toggler" ], "enable() plugin: toggler is enabled" );
     plus();
-    
+
     equal( startCalls, 2, "start is called once again, this time via enable" );
     plus();
 
