@@ -496,12 +496,15 @@ asyncTest( "Popcorn.destroy", function() {
 
   //  add some event listeners for testing
   popcorn.on( "timeupdate", function( event ) { timeUpdateCounter++; } );
-  popcorn.on( "play", function( event ) { playCounter++; } );
+  popcorn.on( "play", function( event ) {
+    playCounter++;
 
-  popcorn.cue( 1, function() {
-    popcorn.pause();
+    this.pause();
+  });
 
-    equal( Popcorn.sizeOf( popcorn.data.events ), 2, "popcorn.data.events has correct number of events - before Popcorn.destroy" );
+  popcorn.on( "pause", function() {
+
+    equal( Popcorn.sizeOf( popcorn.data.events ), 3, "popcorn.data.events has correct number of events - before Popcorn.destroy" );
 
     ok( playCounter > 0, "playCounter is greater than 0, events are being triggered" );
 
@@ -529,9 +532,7 @@ asyncTest( "Popcorn.destroy", function() {
     pcorn.play( 0 );
   });
 
-  popcorn.cue( 2, function() {
-    popcorn.pause();
-
+  popcorn.cue( 1, function() {
     ok( false, "This cue should never have been run, destroy not working" );
   });
 
