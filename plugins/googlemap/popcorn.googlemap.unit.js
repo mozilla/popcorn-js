@@ -1,7 +1,7 @@
 test( "Popcorn Google Map Plugin", function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 19,
+      expects = 25,
       count = 0,
       setupId;
 
@@ -115,6 +115,40 @@ test( "Popcorn Google Map Plugin", function() {
   equal( 0, popped.getTrackEvent( popped.getLastTrackEventId() ).lat, "lat is defaulted to 0" );
   plus();
   equal( "ROADMAP", popped.getTrackEvent( popped.getLastTrackEventId() ).type, "type is defaulted to ROADMAP" );
+  plus();
+
+  popped.googlemap({
+    target: "height1",
+    location: "Toronto"
+  });
+
+  equal( 400, document.getElementById( "height1" ).children[ 0 ].offsetHeight, "target's css height is used." );
+  plus();
+  equal( 300, document.getElementById( "height1" ).children[ 0 ].offsetWidth, "target's css width is used." );
+  plus();
+
+  popped.googlemap({
+    target: "height2",
+    location: "Toronto",
+    height: "100px",
+    width: "120px",
+  });
+
+  equal( 100, document.getElementById( "height2" ).children[ 0 ].offsetHeight, "target's plugin options height is used." );
+  plus();
+  equal( 120, document.getElementById( "height2" ).children[ 0 ].offsetWidth, "target's plugin options width is used." );
+  plus();
+
+  popped.googlemap({
+    target: "height3",
+    location: "Toronto",
+    height: "100px",
+    width: "120px",
+  });
+
+  equal( 100, document.getElementById( "height3" ).children[ 0 ].offsetHeight, "target's plugin options height is used over css." );
+  plus();
+  equal( 120, document.getElementById( "height3" ).children[ 0 ].offsetWidth, "target's plugin options width is used over css." );
   plus();
 
   popped.play();
