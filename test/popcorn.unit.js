@@ -4173,6 +4173,48 @@ test( "end undefined or false should never be fired", function() {
   $pop.currentTime( $pop.duration() );
 });
 
+test( "Plugins with a oneTime attribute should be removed after 'end' is fired.", function() {
+
+ var $pop = Popcorn( "#video" ),
+      startFired = 0;
+      endFired = 0;
+  stop();
+  expect( 3 );
+
+  Popcorn.plugin( "onetimeplugin", {
+    start: function() {
+      if ( !startFired ) {
+        ok( true, "start called once" );
+        startFired++;
+      } else {
+        ok( false, "Start should oly execute once!" )
+        startFired++;
+      }
+    },
+    end: function() {
+      if ( !endFired ) {
+        ok( true, "end called once" );
+        this.currentTime( 0 );
+        endFired++;
+      } else {
+        ok( false, "End should only execute once!" );
+        endFired++;
+      }
+    }
+  });
+
+  $pop.onetimeplugin({ start: 2, end: 3, oneTime: true });
+
+  $pop.cue( 4, function() {
+    ok( startFired === 1 && endFired === 1, "start and end called one each" );
+    $pop.removePlugin( "onetimeplugin" );
+    $pop.destroy();
+    start();
+  });
+
+  $pop.play( 0 );
+});
+
 module( "Popcorn XHR" );
 test( "Basic", function() {
 

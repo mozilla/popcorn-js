@@ -1365,6 +1365,12 @@
       natives.start = natives.start || natives[ "in" ];
       natives.end = natives.end || natives[ "out" ];
 
+      if ( options.oneTime ) {
+        natives.end = combineFn( natives.end, function() {
+          this.removeTrackEvent( options._id );
+        });
+      }
+
       // extend teardown to always call end if running
       natives._teardown = combineFn(function() {
 
