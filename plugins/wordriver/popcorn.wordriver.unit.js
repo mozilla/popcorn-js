@@ -7,7 +7,7 @@ test( "Popcorn wordriver Plugin", function() {
       secondTrack,
       firstCue,
       secondCue,
-      thirdCue
+      thirdCue,
       wordriverdiv = document.getElementById( "wordriverdiv" );
 
   expect( expects );
