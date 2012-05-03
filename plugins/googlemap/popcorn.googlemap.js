@@ -131,13 +131,10 @@ var googleCallback;
 
     // height is a little more complicated than width.
     if ( options.height ) {
-
       newdiv.style.height = options.height;
     } else if ( target && target.clientHeight ) {
-
       newdiv.style.height = target.clientHeight + "px";
     } else {
-
       newdiv.style.height = "100%";
     }
 
