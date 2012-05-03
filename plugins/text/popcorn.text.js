@@ -20,39 +20,39 @@
    *  var p = Popcorn('#video')
    *
    *    // Simple text
-   *    .text( {
+   *    .text({
    *      start: 5, // seconds
    *      end: 15, // seconds
    *      text: 'This video made exclusively for drumbeat.org',
    *      target: 'textdiv'
-   *     } )
+   *     })
    *
    *    // HTML text, rendered as HTML
-   *    .text( {
+   *    .text({
    *      start: 15, // seconds
    *      end: 20, // seconds
    *      text: '<p>This video made <em>exclusively</em> for drumbeat.org</p>',
    *      target: 'textdiv'
-   *    } )
+   *    })
    *
    *    // HTML text, escaped and rendered as plain text
-   *    .text( {
+   *    .text({
    *      start: 20, // seconds
    *      end: 25, // seconds
    *      text: 'This is an HTML p element: <p>paragraph</p>',
    *      escape: true,
    *      target: 'textdiv'
-   *    } );
+   *    });
    *
    *    // Multi-Line HTML text, escaped and rendered as plain text
-   *    .text( {
+   *    .text({
    *      start: 25, // seconds
    *      end: 30, // seconds
    *      text: 'This is an HTML p element: <p>paragraph</p>\nThis is an HTML b element: <b>bold</b>',
    *      escape: true,
    *      multiline: true,
    *      target: 'textdiv'
-   *    } );
+   *    });
    **/
 
   /**
@@ -108,7 +108,12 @@
           type: "checkbox",
           label: "Escape"
         },
-        target: name + "-container"
+        multiline: {
+          elem: "input",
+          type: "checkbox",
+          label: "Multiline"
+        },
+        target: "text-container"
       }
     },
 
@@ -126,13 +131,11 @@
       text = !!options.multiline ? newlineToBreak ( text ) : text;
       container.innerHTML = text;
 
-      if ( target ) {
-        target.appendChild( container );
-      } else {
-        if ( Popcorn.plugin.debug ) {
-          throw new Error( "target container doesn't exist" );
-        }
+      if ( !target ) {
+        throw new Error( "target container doesn't exist" );
       }
+
+      target.appendChild( container );
     },
 
     /**
