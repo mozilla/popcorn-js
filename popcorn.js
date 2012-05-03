@@ -1614,7 +1614,7 @@
 
   //  Basic DOM utilities and helpers API. See #1037
   Popcorn.dom = {
-
+    debug: false,
     //  Popcorn.dom.find( selector, context )
     //
     //  Returns the first element that matches the specified selector
@@ -1659,7 +1659,11 @@
         //  Catch any invalid selector syntax errors and bury them.
         try {
           node = context.querySelector( selector );
-        } catch ( e ) {}
+        } catch ( e ) {
+          if ( Popcorn.dom.debug ) {
+            throw new Error(e);
+          }
+        }
       }
       return node;
     }

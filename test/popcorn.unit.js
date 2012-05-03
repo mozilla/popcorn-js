@@ -1306,9 +1306,9 @@ test( "Popcorn.dom.find( selector, context ) Returns single node matching select
   var context = document.getElementById("popcorn-dom-find-context"),
       fixture = document.getElementById("inside-context"),
       allowed = [
-        { desc: "nodeName",       selector: "div" },
-        { desc: "class",          selector: ".contextual" },
-        { desc: "attr, data",     selector: "[data-contextual]" }
+        { desc: "nodeName",   selector: "div" },
+        { desc: "class",      selector: ".contextual" },
+        { desc: "attr, data", selector: "[data-contextual]" }
       ];
 
   expect( allowed.length );
@@ -1324,11 +1324,11 @@ test( "Popcorn.dom.find() Returns null for unmatched selector", function() {
 
   var fixture = document.getElementById("video"),
       allowed = [
-        { desc: "nodeName",       selector: "object" },
-        { desc: "id, w/ #",       selector: "#wontfind" },
-        { desc: "id, w/o #",      selector: "wontfind" },
-        { desc: "class",          selector: ".missing" },
-        { desc: "attr, data",     selector: "[data-nope]" }
+        { desc: "nodeName",   selector: "object" },
+        { desc: "id, w/ #",   selector: "#wontfind" },
+        { desc: "id, w/o #",  selector: "wontfind" },
+        { desc: "class",      selector: ".missing" },
+        { desc: "attr, data", selector: "[data-nope]" }
       ];
 
   expect( allowed.length );
@@ -1343,8 +1343,8 @@ test( "Popcorn.dom.find() Returns null for invalid selectors", function() {
 
   var fixture = document.getElementById("video"),
       allowed = [
-        { desc: "closing bracket",       selector: "]" },
-        { desc: "escapes \\",       selector: "\/" }
+        { desc: "closing bracket", selector: "]" },
+        { desc: "escapes \\",      selector: "\/" }
       ];
 
   expect( allowed.length );
@@ -1354,6 +1354,32 @@ test( "Popcorn.dom.find() Returns null for invalid selectors", function() {
     deepEqual( Popcorn.dom.find( set.selector ), null, set.desc );
   });
 });
+
+test( "Popcorn.dom.find() throws for invalid selectors in debug mode", function() {
+
+  var fixture = document.getElementById("video"),
+      allowed = [
+        { desc: "closing bracket", selector: "]" },
+        { desc: "escapes \\",      selector: "\/" }
+      ];
+
+  Popcorn.dom.debug = true;
+
+  expect( allowed.length );
+
+  allowed.forEach(function( set ) {
+    var node;
+    try {
+      node = Popcorn.dom.find( set.selector );
+    } catch ( e ) {
+      // deepEqual( Popcorn.dom.find( set.selector ), null, set.desc );
+      ok( e instanceof Error, "Exception thrown on: ", set.desc );
+    }
+  });
+
+  Popcorn.dom.debug = false;
+});
+
 
 module( "Popcorn Position" );
 test( "position", function() {
