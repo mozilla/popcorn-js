@@ -654,7 +654,7 @@ asyncTest( "Youtube ready state events", function() {
 
         equal( state++, 1, "loadeddata fired last" );
         plus();
-      },
+      }
     }
   });
 
