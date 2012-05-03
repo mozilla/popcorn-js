@@ -131,7 +131,7 @@ test( "Popcorn Google Map Plugin", function() {
     target: "height2",
     location: "Toronto",
     height: "100px",
-    width: "120px",
+    width: "120px"
   });
 
   equal( 100, document.getElementById( "height2" ).children[ 0 ].offsetHeight, "target's plugin options height is used." );
@@ -143,7 +143,7 @@ test( "Popcorn Google Map Plugin", function() {
     target: "height3",
     location: "Toronto",
     height: "100px",
-    width: "120px",
+    width: "120px"
   });
 
   equal( 100, document.getElementById( "height3" ).children[ 0 ].offsetHeight, "target's plugin options height is used over css." );
