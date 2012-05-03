@@ -2277,6 +2277,33 @@ test( "Special track event listeners: trackstart, trackend", function() {
   }).play();
 });
 
+test( "Range of track events #1015", function() {
+
+  var $pop = Popcorn( "#video" );
+
+  expect( 2 );
+
+  Popcorn.plugin( "ranger", {
+    start: function() {},
+    end: function() {}
+  });
+
+  $pop.ranger({
+    text: "I will appear at 3 different times",
+    ranges: [
+      { start: 15, end: 16 },
+      { start: 18, end: 19 },
+      { start: 21, end: 22 }
+    ]
+  });
+
+  equal( $pop.data.trackEvents.byStart.length, 5, "There are 5 start track events (2 padding events, 3 custom event)" );
+  equal( $pop.data.trackEvents.byEnd.length, 5, "There are 5 end track events (2 padding events, 3 custom event)" );
+
+  Popcorn.removePlugin( "ranger" );
+  $pop.destroy();
+});
+
 test( "frame function (frameAnimation)", function() {
 
   var $pop = Popcorn( "#video", {
