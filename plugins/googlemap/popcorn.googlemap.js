@@ -76,6 +76,8 @@ var googleCallback;
    * -Heading [optional] STREETVIEW orientation of camera in degrees relative to true north (0 north, 90 true east, ect)
    * -Pitch [optional] STREETVIEW vertical orientation of the camera (between 1 and 3 is recommended)
    * -Lat and Lng: the coordinates of the map must be present if location is not specified.
+   * -Height [optional] the height of the map, in "px" or "%". Defaults to "100%".
+   * -Width [optional] the width of the map, in "px" or "%". Defaults to "100%".
    * -Location: the adress you want the map to display, must be present if lat and lng are not specified.
    * Note: using location requires extra loading time, also not specifying both lat/lng and location will
    * cause and error.
@@ -125,8 +127,17 @@ var googleCallback;
     // this is later passed on to the maps api
     newdiv = document.createElement( "div" );
     newdiv.id = "actualmap" + i;
-    newdiv.style.width = "100%";
-    newdiv.style.height = ( target && target.clientHeight || 0 ) + "px";
+    newdiv.style.width = options.width || "100%";
+
+    // height is a little more complicated than width.
+    if ( options.height ) {
+      newdiv.style.height = options.height;
+    } else if ( target && target.clientHeight ) {
+      newdiv.style.height = target.clientHeight + "px";
+    } else {
+      newdiv.style.height = "100%";
+    }
+
     i++;
 
     // ensure the target container the user chose exists
