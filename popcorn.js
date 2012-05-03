@@ -1330,6 +1330,28 @@
         return this;
       }
 
+      // When the "ranges" property is set and its value is an array, short-circuit
+      // the pluginFn definition to recall itself with an options object generated from
+      // each range object in the ranges array. (eg. { start: 15, end: 16 } )
+      if ( options.ranges && Popcorn.isArray(options.ranges) ) {
+        Popcorn.forEach( options.ranges, function( range ) {
+          // Create a fresh object, extend with current options
+          // and start/end range object's properties
+          // Works with in/out as well.
+          var opts = Popcorn.extend( {}, options, range );
+
+          // Remove the ranges property to prevent infinitely
+          // entering this condition
+          delete opts.ranges;
+
+          // Call the plugin with the newly created opts object
+          this[ name ]( opts );
+        }, this);
+
+        // Return the Popcorn instance to avoid creating an empty track event
+        return this;
+      }
+
       //  Storing the plugin natives
       var natives = options._natives = {},
           compose = "",
