@@ -18,6 +18,8 @@
     QUnit.testDone = combineFn( QUnit.testDone, function() {
       global.parent.postMessage( JSON.stringify( arguments ),  "*" );
     });
+    // Fail tests that don't complete in 60s
+    QUnit.config.testTimeout = 60000;
   }
 
 })( window );

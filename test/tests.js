@@ -107,12 +107,11 @@ var tests = [{
   path: "../plugins/openmap/popcorn.openmap.unit.html",
   type: "Plugin"
 },
-//disabled until fixed
-//{
-  //name: "Youtube",
-  //path: "../players/youtube/popcorn.youtube.unit.html",
-  //type: "Player"
-//},
+{
+  name: "Youtube",
+  path: "../players/youtube/popcorn.youtube.unit.html",
+  type: "Player"
+},
 {
   name: "Vimeo Player",
   path: "../players/vimeo/popcorn.vimeo.unit.html",

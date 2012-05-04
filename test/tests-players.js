@@ -1,10 +1,9 @@
 var tests = [
-//disabled until fixed
-//{
-  //name: "Youtube",
-  //path: "./youtube/popcorn.youtube.unit.html",
-  //type: "Player"
-//},
+{
+  name: "Youtube",
+  path: "./youtube/popcorn.youtube.unit.html",
+  type: "Player"
+},
 {
   name: "Vimeo Player",
   path: "./vimeo/popcorn.vimeo.unit.html",
