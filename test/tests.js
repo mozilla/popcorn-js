@@ -1,6 +1,6 @@
 var tests = [{
   name: "Core",
-  path: "./popcorn.unit.html",
+  path: "./index.html",
   type: "Core"
 }, {
   name: "Attribution",

@@ -16,7 +16,12 @@ $(function() {
       main_li = create( "li" ),
       main_b = create( "b" ),
       currentTest = tests[ index ],
-      results_arr = [];
+      results_arr = [],
+      userAgent = id( "qunit-userAgent" );
+
+	if ( userAgent ) {
+		userAgent.innerHTML = navigator.userAgent;
+	};
 
   window.addEventListener( "message", function( e ) {
     var message = JSON.parse( e.data )[0],
@@ -101,6 +106,8 @@ $(function() {
       } else {
         // Finish test suite; display totals
         $( testFrame ).remove();
+
+        id( "qunit-banner" ).className = totalFail ? "qunit-fail" : "qunit-pass";
 
         var banner = create( "p" ),
             html = [
