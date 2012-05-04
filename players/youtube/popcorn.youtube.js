@@ -127,8 +127,8 @@ Popcorn.player( "youtube", {
 
     var youtubeInit = function() {
 
-      var flashvars, params, attributes,
-          src, width, height, query;
+      var flashvars, params, attributes, src, width, height, query,
+          playerQueue = Popcorn.player.playerQueue();
 
       // expose a callback to this scope, that is called from the global callback youtube calls
       onYouTubePlayerReady[ container.id ] = function() {
@@ -159,7 +159,12 @@ Popcorn.player( "youtube", {
 
             currentTime = options.youtubeObject.getCurrentTime();
             media.dispatchEvent( "timeupdate" );
-            !media.paused && media.pause();
+
+            if ( !media.paused ) {
+
+              media.pause();
+              playerQueue.next();
+            }
 
             return;
           } else
@@ -167,7 +172,11 @@ Popcorn.player( "youtube", {
           // paused is state 2
           if ( state === 1 && !firstGo ) {
 
-            media.paused && media.play();
+            if ( media.paused ) {
+
+              media.play();
+              playerQueue.next();
+            }
             return;
           } else
           // this is the real player ready check
@@ -273,31 +282,37 @@ Popcorn.player( "youtube", {
             return;
           }
 
-          if ( media.paused !== false || options.youtubeObject.getPlayerState() !== 1 ) {
+          playerQueue.add( function() {
 
-            media.paused = false;
-            media.dispatchEvent( "play" );
+            if ( media.paused !== false || options.youtubeObject.getPlayerState() !== 1 ) {
 
-            media.dispatchEvent( "playing" );
-          }
+              media.paused = false;
+              media.dispatchEvent( "play" );
 
-          timeupdate();
-          options.youtubeObject.playVideo();
+              media.dispatchEvent( "playing" );
+            }
+
+            timeupdate();
+            options.youtubeObject.playVideo();
+          });
         };
 
         media.pause = function() {
 
           if ( options.destroyed ) {
 
-            return;          
+            return;
           }
 
-          if ( media.paused !== true || options.youtubeObject.getPlayerState() !== 2 ) {
+          playerQueue.add( function() {
 
-            media.paused = true;
-            media.dispatchEvent( "pause" );
-            options.youtubeObject.pauseVideo();
-          }
+            if ( media.paused !== true || options.youtubeObject.getPlayerState() !== 2 ) {
+
+              media.paused = true;
+              media.dispatchEvent( "pause" );
+              options.youtubeObject.pauseVideo();
+            }
+          });
         };
       };
 

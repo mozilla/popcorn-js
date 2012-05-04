@@ -25,8 +25,8 @@
           volumeChanged = false,
           lastMuted = false,
           lastVolume = 0,
-          height,
-          width;
+          height, width,
+          playerQueue = Popcorn.player.playerQueue();
 
       vimeoContainer.id = media.id + Popcorn.guid();
 
@@ -63,6 +63,7 @@
 
               media.dispatchEvent( "playing" );
               timeUpdate();
+              playerQueue.next();
             }
           };
 
@@ -70,6 +71,7 @@
             if ( !media.paused ) {
               media.paused = true;
               media.dispatchEvent( "pause" );
+              playerQueue.next();
             }
           };
 
@@ -121,22 +123,31 @@
           };
 
           media.play = function() {
-            media.paused = false;
-            media.dispatchEvent( "play" );
 
-            media.dispatchEvent( "playing" );
-            timeUpdate();
-            vimeoObject.api_play();
+            playerQueue.add( function() {
+
+              if ( media.paused ) {
+
+                media.paused = false;
+                media.dispatchEvent( "play" );
+                media.dispatchEvent( "playing" );
+                timeUpdate();
+                vimeoObject.api_play();
+              }
+            });
           };
 
           media.pause = function() {
 
-            if ( !media.paused ) {
+            playerQueue.add( function() {
 
-              media.paused = true;
-              media.dispatchEvent( "pause" );
-              vimeoObject.api_pause();
-            }
+              if ( !media.paused ) {
+
+                media.paused = true;
+                media.dispatchEvent( "pause" );
+                vimeoObject.api_pause();
+              }
+            });
           };
 
           Popcorn.player.defineProperty( media, "currentTime", {

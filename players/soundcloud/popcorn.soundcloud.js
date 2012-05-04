@@ -15,30 +15,35 @@
           currentTime = 0,
           widget,
           duration = 0,
-          muted = false;
+          muted = false,
+          playerQueue = Popcorn.player.playerQueue();
 
       options._container = container;
       media.style.visibility = "hidden";
 
       media.play = function() {
 
-        if ( media.paused ) {
+        playerQueue.add( function() {
+          if ( media.paused ) {
 
-          media.paused = false;
-          media.dispatchEvent( "playing" );
-          media.dispatchEvent( "play" );
-          widget && widget.play();
-        }
+            media.paused = false;
+            media.dispatchEvent( "playing" );
+            media.dispatchEvent( "play" );
+            widget && widget.play();
+          }
+        });
       };
 
       media.pause = function() {
 
-        if ( !media.paused ) {
+        playerQueue.add( function() {
+          if ( !media.paused ) {
 
-          media.paused = true;
-          media.dispatchEvent( "pause" );
-          widget && widget.pause();
-        }
+            media.paused = true;
+            media.dispatchEvent( "pause" );
+            widget && widget.pause();
+          }
+        });
       };
 
       // getter and setter for muted property, multiply volume by 100 as that is the scale soundcloud works on
@@ -130,13 +135,17 @@
 
               if ( media.paused ) {
                 media.currentTime = currentTime;
-                media.paused && media.play();
+                media.play();
+                playerQueue.next();
               }
             });
 
             widget.bind(SC.Widget.Events.PAUSE, function( data ) {
 
-              !media.paused && media.pause();
+              if ( !media.paused ) {
+                media.pause();
+                playerQueue.next();
+              }
             });
             widget.bind(SC.Widget.Events.READY, function( data ) {
               widget.getDuration(function( data ) {

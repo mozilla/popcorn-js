@@ -1,5 +1,7 @@
 (function( Popcorn ) {
 
+  var DEFAULT_LIMIT= 500;
+
   // combines calls of two function calls into one
   var combineFn = function( first, second ) {
 
@@ -342,6 +344,41 @@
 
     object.__defineGetter__( description, options.get || Popcorn.nop );
     object.__defineSetter__( description, options.set || Popcorn.nop );
+  };
+
+  // player queue is to help players queue things like play and pause
+  // HTML5 video's play and pause are asynch, but do fire in sequence
+  // play() should really mean "requestPlay()" or "queuePlay()" and
+  // stash a callback that will play the media resource when it's ready to be played
+  Popcorn.player.playerQueue = function( limit ) {
+
+    var _queue = [],
+        _running = false,
+        // we enforce a limit in case items are pushed faster than they are shifted
+        _limit = limit || DEFAULT_LIMIT;
+
+    return {
+      next: function() {
+
+        _running = false;
+        _queue.shift();
+        _queue[ 0 ] && _queue[ 0 ]();
+      },
+      add: function( callback ) {
+
+        if ( _queue.length < _limit ) {
+
+          _queue.push( function() {
+
+            _running = true;
+            callback && callback();
+          });
+
+          // if there is only one item on the queue, start it
+          !_running && _queue[ 0 ]();
+        }
+      }
+    };
   };
 
   // smart will attempt to find you a match, if it does not find a match,
