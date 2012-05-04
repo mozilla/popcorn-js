@@ -1,7 +1,7 @@
 $(function() {
 
   var id = function( name ) {
-          return document.getElementById( name );
+        return document.getElementById( name );
       },
       create = function( type ) {
         return document.createElement( type );
