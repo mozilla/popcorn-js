@@ -4173,13 +4173,11 @@ test( "end undefined or false should never be fired", function() {
   $pop.currentTime( $pop.duration() );
 });
 
-test( "Plugins with a `once` attribute should be removed after 'end' is fired.", function() {
+asyncTest( "Plug-ins with a `once` attribute should be removed after `end` is fired.", 3, function() {
 
- var $pop = Popcorn( "#video" ),
+  var $pop = Popcorn( "#video" ),
       startFired = 0;
       endFired = 0;
-  stop();
-  expect( 3 );
 
   Popcorn.plugin( "onceplugin", {
     start: function() {
