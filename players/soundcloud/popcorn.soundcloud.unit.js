@@ -179,7 +179,7 @@ asyncTest( "Events and Player Control", function () {
       hasFired = 1;
       ok( true, "Play was fired" );
       plus();
-    }
+    };
   })());
 
   player.on( "durationchange", function() {
@@ -216,7 +216,7 @@ asyncTest( "Events and Player Control", function () {
 
       ok( true, "Timeupdate was fired by dispatch" );
       plus();
-    }
+    };
   })());
 
   player.on( "volumechange", function() {
