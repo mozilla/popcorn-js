@@ -1,58 +1,135 @@
 $(function() {
 
-  var index = 0,
-      id = function( name ) {
+  var id = function( name ) {
           return document.getElementById( name );
       },
       create = function( type ) {
         return document.createElement( type );
       },
+      index = 0,
       testFrame = id( "test-frame" )
       results = id( "qunit-tests" ),
       totalPass = 0,
       totalFail = 0,
-      totalRun = 0;
+      totalRun = 0,
+      totalTime = 0,
+      main_li = create( "li" ),
+      main_b = create( "b" ),
+      currentTest = tests[ index ],
+      results_arr = [];
 
   window.addEventListener( "message", function( e ) {
-    var testResults = JSON.parse( e.data )[0],
-        li = create( "li" ),
-        b = create( "strong" ),
-        title = tests[index].split( '/' )[2],
-        fail = testResults.failed,
-        pass = testResults.passed,
-        total = testResults.total;
+    var message = JSON.parse( e.data )[0],
+        li,
+        b,
+        ol,
+        a,
+        oneTest,
+        time,
+        name,
+        fail = 0,
+        pass = 0,
+        total = 0;
 
-    totalRun += total;
-    totalFail += fail;
-    totalPass += pass;
-
-    title = title || "Core";
-
-    li.className = fail ? "fail" : "pass";
-
-    b.innerHTML = title + " <b class='counts'>(<b class='failed'>" + fail + "</b>, <b class='passed'>" + pass + "</b>, " + total + ")</b>";
-
-    li.appendChild( b );
-    results.appendChild( li );
-
-
-    if ( ++index < tests.length ) {
-      testFrame.src = tests[ index ];
-      testFrame.contentWindow.focus();
+    // If name is present, we know this is a testDone post, so push results into array.
+    if ( message.name ) {
+      results_arr.push( message )
     } else {
-      $( testFrame ).remove();
 
-      li = create( "li" );
-      b = create( "strong" );
+      // this message is a Done post, so tally up everything and build the list item
+      ol = create( "ol" );
+      ol.style.display = "none";
 
-      li.className = totalFail ? "fail" : "pass";
+      // build inner list of results
+      while( oneTest = results_arr.pop() ) {
+        li = create( "li" );
+        li.className = oneTest.failed ? "fail" : "pass";
+        li.innerHTML = oneTest.name + " <b class='counts'>(<b class='failed'>" + oneTest.failed + "</b>, <b class='passed'>" + oneTest.passed + "</b>, " + oneTest.total + ")</b>"
+        ol.appendChild( li );
+        // set to displayed if tests failed
+        if ( oneTest.failed ) {
+          ol.style.display = "block";
+        }
+      }
 
-      b.innerHTML = "Final Result: " + " <b class='counts'>(<b class='failed'>" + totalFail + "</b>, <b class='passed'>" + totalPass + "</b>, " + totalRun + ")</b>";
+      var a = create( "a" );
+      a.innerHTML = "Run test in new window";
+      a.href = currentTest.path;
+      a.target = "_blank";
 
-      li.appendChild( b );
-      results.appendChild( li );
+      fail = message.failed;
+      pass = message.passed;
+      total = message.total;
+      time = message.runtime
+
+      title = currentTest.name;
+
+      main_b = create( "b" );
+      main_b.innerHTML = title + ": Tests completed in " + time + " milliseconds " + " <b class='counts'>(<b class='failed'>" + fail + "</b>, <b class='passed'>" + pass + "</b>, " + total + ")</b>";
+
+      // set up click listener for expanding inner test list
+      main_b.addEventListener( "click", function( e ) {
+        var next = e.originalTarget.nextSibling.nextSibling,
+            display = next.style.display;
+        next.style.display = display === "none" ? "block" : "none";
+      }, false );
+
+      // build main_li, append all children and then append to result list
+      main_li.className = fail ? "fail" : "pass";
+      main_li.removeChild( main_li.firstChild );
+      main_li.appendChild( main_b);
+      main_li.appendChild( a );
+      main_li.appendChild( ol );
+
+      // update running totals
+      totalRun += total;
+      totalFail += fail;
+      totalPass += pass;
+      totalTime += time;
+
+      // are there more tests?
+      if ( ++index < tests.length ) {
+        currentTest = tests[ index ];
+        main_li = create( "li" );
+        main_b = create ( "b" );
+        main_b.innerHTML = "Running " + currentTest.name;
+        main_li.appendChild( main_b );
+        main_li.className = "running";
+        results.appendChild( main_li );
+        testFrame.src = currentTest.path;
+        testFrame.contentWindow.focus();
+      } else {
+        // Finish test suite; display totals
+        $( testFrame ).remove();
+
+        var banner = create( "p" ),
+            html = [
+              'Tests completed in ',
+              totalTime,
+              ' milliseconds.<br/>',
+              '<span class="passed">',
+              totalPass,
+              '</span> tests of <span class="total">',
+              totalRun,
+              '</span> passed, <span class="failed">',
+              totalFail,
+              '</span> failed.'
+            ].join('');
+
+        banner.id = "qunit-testresult";
+        banner.className = "result";
+        banner.innerHTML = html;
+        results.parentNode.insertBefore( banner, results );
+      }
     }
   });
 
-  testFrame.src = tests[ index ];
+  // Kickstart the tests
+  main_b.innerHTML = "Running " + currentTest.name;
+  main_li.appendChild( main_b );
+  main_li.className = "running";
+  results.appendChild( main_li );
+
+  testFrame.src = currentTest.path;
+
 });

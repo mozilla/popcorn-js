@@ -12,8 +12,11 @@
   };
 
   if ( QUnit && global.parent ) {
-    QUnit.done = combineFn ( QUnit.done, function() {
-      global.parent.postMessage( JSON.stringify(arguments), "*" );
+    QUnit.done = combineFn( QUnit.done, function() {
+      global.parent.postMessage( JSON.stringify( arguments ), "*" );
+    });
+    QUnit.testDone = combineFn( QUnit.testDone, function() {
+      global.parent.postMessage( JSON.stringify( arguments ),  "*" );
     });
   }
 
