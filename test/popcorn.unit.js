@@ -4173,7 +4173,7 @@ test( "end undefined or false should never be fired", function() {
   $pop.currentTime( $pop.duration() );
 });
 
-test( "Plugins with a oneTime attribute should be removed after 'end' is fired.", function() {
+test( "Plugins with a `once` attribute should be removed after 'end' is fired.", function() {
 
  var $pop = Popcorn( "#video" ),
       startFired = 0;
@@ -4181,7 +4181,7 @@ test( "Plugins with a oneTime attribute should be removed after 'end' is fired."
   stop();
   expect( 3 );
 
-  Popcorn.plugin( "onetimeplugin", {
+  Popcorn.plugin( "onceplugin", {
     start: function() {
       if ( !startFired ) {
         ok( true, "start called once" );
@@ -4203,11 +4203,11 @@ test( "Plugins with a oneTime attribute should be removed after 'end' is fired."
     }
   });
 
-  $pop.onetimeplugin({ start: 2, end: 3, oneTime: true });
+  $pop.onceplugin({ start: 2, end: 3, once: true });
 
   $pop.cue( 4, function() {
     ok( startFired === 1 && endFired === 1, "start and end called one each" );
-    $pop.removePlugin( "onetimeplugin" );
+    $pop.removePlugin( "onceplugin" );
     $pop.destroy();
     start();
   });
