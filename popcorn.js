@@ -288,6 +288,18 @@
         }
       };
 
+      var error = function() {
+
+        self.media.removeEventListener( "error", error, false );
+        self.error = self.media.error;
+      };
+
+      // grab the error object if it already exists
+      this.error = this.media.error;
+
+      // listen for future errors and report on to the error object
+      this.media.addEventListener( "error", error, false );
+
       if ( self.media.readyState >= 2 ) {
 
         isReady();
@@ -457,6 +469,7 @@
 
       if ( !instance.isDestroyed ) {
         instance.data.timeUpdate && instance.media.removeEventListener( "timeupdate", instance.data.timeUpdate, false );
+        instance.media.removeEventListener( "error", instance.data.handleError, false );
         instance.isDestroyed = true;
       }
     }
@@ -617,7 +630,7 @@
   Popcorn.Events  = {
     UIEvents: "blur focus focusin focusout load resize scroll unload",
     MouseEvents: "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave click dblclick",
-    Events: "loadstart progress suspend emptied stalled play pause " +
+    Events: "loadstart progress suspend emptied stalled play pause error " +
             "loadedmetadata loadeddata waiting playing canplay canplaythrough " +
             "seeking seeked timeupdate ended ratechange durationchange volumechange"
   };
