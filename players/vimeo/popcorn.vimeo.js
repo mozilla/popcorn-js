@@ -49,8 +49,8 @@
           vimeoObject = document.getElementById( vimeoContainer.id );
 
           vimeo_player_loaded.seek[ vimeoContainer.id ] = function( time ) {
-            if( time !== currentTime ) {
-              currentTime = time;
+            if( time.seconds !== currentTime ) {
+              currentTime = time.seconds;
               media.dispatchEvent( "seeked" );
               media.dispatchEvent( "timeupdate" );
             }
@@ -206,11 +206,11 @@
             }
           });
 
-          media.dispatchEvent( "loadedmetadata" );
-          media.dispatchEvent( "loadeddata" );
 
           media.duration = vimeoObject.api_getDuration();
           media.dispatchEvent( "durationchange" );
+          media.dispatchEvent( "loadedmetadata" );
+          media.dispatchEvent( "loadeddata" );
           volumeUpdate();
           media.readyState = 4;
           media.dispatchEvent( "canplaythrough" );
