@@ -469,7 +469,6 @@
 
       if ( !instance.isDestroyed ) {
         instance.data.timeUpdate && instance.media.removeEventListener( "timeupdate", instance.data.timeUpdate, false );
-        instance.media.removeEventListener( "error", instance.data.handleError, false );
         instance.isDestroyed = true;
       }
     }
