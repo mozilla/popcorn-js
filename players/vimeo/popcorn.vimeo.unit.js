@@ -32,7 +32,7 @@ asyncTest( "Options Check", function() {
 asyncTest( "Update Timer", function() {
 
   var p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" ),
-      expects = 16,
+      expects = 17,
       count = 0,
       execCount = 0,
       // These make sure events are only fired once
@@ -64,6 +64,9 @@ asyncTest( "Update Timer", function() {
   p2.listen( "loadedmetadata", function() {
     p2.unlisten( "loadedmetadata" );
     ok( true, "'loadedmetadata' fired" );
+    plus();
+    // make sure that we always have a duration at this point
+    ok( this.duration() > 0, "Videos duration is greather than 0" );
     plus();
   });
 
