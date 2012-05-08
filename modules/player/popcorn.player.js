@@ -332,7 +332,7 @@
 
     if ( !node ) {
 
-      Popcorn.error( "Specified target " + target + " was not found.");
+      Popcorn.error( "Specified target " + target + " was not found." );
       return;
     }
 
