@@ -13,9 +13,6 @@
     };
   };
 
-  //  ID string matching
-  var rIdExp  = /^(#([\w\-\_\.]+))$/;
-
   Popcorn.player = function( name, player ) {
 
     // return early if a player already exists under this name
@@ -40,9 +37,7 @@
           events = {},
 
           // The container div of the resource
-          container = document.getElementById( rIdExp.exec( target ) && rIdExp.exec( target )[ 2 ] ) ||
-                        document.getElementById( target ) ||
-                          target,
+          container = typeof target === "string" ? Popcorn.dom.find( target ) : target,
           basePlayer = {},
           timeout,
           popcorn;
@@ -187,7 +182,7 @@
         },
         configurable: true
       });
-      
+
       // Adds an event listener to the object
       basePlayer.addEventListener = function( evtName, fn ) {
 
@@ -306,7 +301,7 @@
       if ( player._teardown ) {
 
         popcorn.destroy = combineFn( popcorn.destroy, function() {
-        
+
           player._teardown.call( basePlayer, options );
         });
       }
@@ -331,13 +326,15 @@
   // it will attempt to create a video element with the source,
   // if that failed, it will throw.
   Popcorn.smart = function( target, src, options ) {
-
-    var nodeId = rIdExp.exec( target ),
-        playerType,
+    var playerType,
         elementTypes = [ "AUDIO", "VIDEO" ],
-        node = nodeId && nodeId.length && nodeId[ 2 ] ?
-                 document.getElementById( nodeId[ 2 ] ) :
-                 target;
+        node = Popcorn.dom.find( target );
+
+    if ( !node ) {
+
+      Popcorn.error( "Specified target " + target + " was not found.");
+      return;
+    }
 
     if ( elementTypes.indexOf( node.nodeName ) > -1 && !src ) {
 
@@ -358,7 +355,7 @@
         if ( Popcorn.player.registry[ key ].canPlayType( node.nodeName, src ) ) {
 
           // Popcorn.smart( player, src, /* options */ )
-          return Popcorn[ key ]( target, src, options );
+          return Popcorn[ key ]( node, src, options );
         }
       }
     }

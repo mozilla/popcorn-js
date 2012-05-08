@@ -8,7 +8,7 @@ test( "Base player methods", 4, function() {
 
   Popcorn.player( "newplayer" );
   ok( Popcorn.newplayer, "Popcorn.player registers new players" );
-  ok( Popcorn.player.registry[ "newplayer" ], "newplayers enter Popcorn.player.registry" );
+  ok( Popcorn.player.registry.newplayer, "newplayers enter Popcorn.player.registry" );
 
 });
 
@@ -197,7 +197,7 @@ test( "player gets a proper _teardown", 1, function() {
 
 asyncTest( "Popcorn.smart player selector", function() {
 
-  var expects = 10,
+  var expects = 11,
       count = 0;
 
   function plus() {
@@ -223,6 +223,16 @@ asyncTest( "Popcorn.smart player selector", function() {
   plus();
   equal( Popcorn.smart( "#video", "this is sparta" ).media.nodeName, "DIV", "A player was found for this URL" );
   plus();
+
+  // invalid target throws meaningful error
+  try {
+
+    Popcorn.smart( "#non_existing_tag", "this is sparta");
+  } catch ( e ) {
+
+    ok( true, "Popcorn.smart throws exception when target is invalid." );
+    plus();
+  }
 
   // not matching url to player returns false
   ok( Popcorn.spartaPlayer.canPlayType( "div", "this is not sparta" ) === false, "canPlayType method fails on invalid url!" );
