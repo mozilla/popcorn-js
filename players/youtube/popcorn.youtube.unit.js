@@ -611,7 +611,6 @@ asyncTest( "youtube player gets a proper _teardown", function() {
   });
 });
 
-
 asyncTest( "Youtube ready state events", function() {
 
   var popped,
@@ -658,4 +657,52 @@ asyncTest( "Youtube ready state events", function() {
     }
   });
 
+});
+
+asyncTest( "Youtube media start time fragment", function() {
+
+  var popcorn1, popcorn2,
+      expects = 2,
+      count = 0,
+      state = 0;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+
+      popcorn1.destroy();
+      popcorn2.destroy();
+      start();
+    }
+  }
+
+  expect( expects );
+
+  var firstTest = function() {
+
+        popcorn1.off( "loadeddata", firstTest );
+        equal( Math.floor( popcorn1.currentTime() ), 130, "youtube fragment works with &start=130" );
+        plus();
+      },
+      secondTest = function() {
+
+        popcorn2.off( "loadeddata", secondTest );
+        equal( Math.floor( popcorn2.currentTime() ), 130, "youtube fragment works with &t=2m10s" );
+        plus();
+      };
+
+  popcorn1 = Popcorn.youtube( "#video8", "http://www.youtube.com/watch?v=nfGV32RNkhw&start=130" );
+  popcorn1.on( "loadeddata", firstTest);
+  if ( popcorn1.readyState >= 4 ) {
+
+    firstTest();
+  }
+
+  popcorn2 = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw&t=2m10s" );
+  popcorn2.on( "loadeddata", secondTest);
+  if ( popcorn2.readyState >= 4 ) {
+
+    secondTest();
+  }
 });

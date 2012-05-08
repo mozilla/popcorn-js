@@ -26,6 +26,97 @@ Popcorn.player( "youtube", {
         lastMuted = false,
         lastVolume = 100;
 
+    var createProperties = function() {
+
+        Popcorn.player.defineProperty( media, "currentTime", {
+          set: function( val ) {
+
+            // make sure val is a number
+            currentTime = seekTime = +val;
+            seeking = true;
+
+            if ( options.destroyed ) {
+
+              return currentTime;
+            }
+
+            media.dispatchEvent( "seeked" );
+            media.dispatchEvent( "timeupdate" );
+
+            options.youtubeObject.seekTo( currentTime );
+
+            return currentTime;
+          },
+          get: function() {
+
+            return currentTime;
+          }
+        });
+
+        Popcorn.player.defineProperty( media, "muted", {
+          set: function( val ) {
+
+            if ( options.destroyed ) {
+
+              return val;
+            }
+
+            if ( options.youtubeObject.isMuted() !== val ) {
+
+              if ( val ) {
+
+                options.youtubeObject.mute();
+              } else {
+
+                options.youtubeObject.unMute();
+              }
+
+              lastMuted = options.youtubeObject.isMuted();
+              media.dispatchEvent( "volumechange" );
+            }
+
+            return options.youtubeObject.isMuted();
+          },
+          get: function() {
+
+            if ( options.destroyed ) {
+
+              return 0;
+            }
+
+            return options.youtubeObject.isMuted();
+          }
+        });
+
+        Popcorn.player.defineProperty( media, "volume", {
+          set: function( val ) {
+
+            if ( options.destroyed ) {
+
+              return val;
+            }
+
+            if ( options.youtubeObject.getVolume() / 100 !== val ) {
+
+              options.youtubeObject.setVolume( val * 100 );
+              lastVolume = options.youtubeObject.getVolume();
+              media.dispatchEvent( "volumechange" );
+            }
+
+            return options.youtubeObject.getVolume() / 100;
+          },
+          get: function() {
+
+            if ( options.destroyed ) {
+
+              return 0;
+            }
+
+            return options.youtubeObject.getVolume() / 100;
+          }
+        });
+    };
+
     // setting paused to undefined because youtube has state for not paused or playing
     media.paused = undefined;
     container.id = media.id + Popcorn.guid();
@@ -36,13 +127,8 @@ Popcorn.player( "youtube", {
 
     var youtubeInit = function() {
 
-      var flashvars,
-          params,
-          attributes,
-          src,
-          width,
-          height,
-          query;
+      var flashvars, params, attributes,
+          src, width, height, query;
 
       // expose a callback to this scope, that is called from the global callback youtube calls
       onYouTubePlayerReady[ container.id ] = function() {
@@ -91,8 +177,7 @@ Popcorn.player( "youtube", {
 
             options.youtubeObject.playVideo();
             return;
-          } else
-          if ( state === 1 && firstGo ) {
+          } else if ( state === 1 && firstGo ) {
 
             firstGo = false;
 
@@ -115,6 +200,12 @@ Popcorn.player( "youtube", {
             media.dispatchEvent( "durationchange" );
             volumeupdate();
 
+            if ( media.currentTime === 0) {
+
+              media.currentTime = options.youtubeObject.getCurrentTime();
+            }
+
+            createProperties();
             media.dispatchEvent( "loadedmetadata" );
             media.dispatchEvent( "loadeddata" );
 
@@ -208,94 +299,6 @@ Popcorn.player( "youtube", {
             options.youtubeObject.pauseVideo();
           }
         };
-
-        Popcorn.player.defineProperty( media, "currentTime", {
-          set: function( val ) {
-
-            // make sure val is a number
-            currentTime = seekTime = +val;
-            seeking = true;
-
-            if ( options.destroyed ) {
-
-              return currentTime;
-            }
-
-            media.dispatchEvent( "seeked" );
-            media.dispatchEvent( "timeupdate" );
-
-            options.youtubeObject.seekTo( currentTime );
-
-            return currentTime;
-          },
-          get: function() {
-
-            return currentTime;
-          }
-        });
-
-        Popcorn.player.defineProperty( media, "muted", {
-          set: function( val ) {
-
-            if ( options.destroyed ) {
-
-              return val;
-            }
-
-            if ( options.youtubeObject.isMuted() !== val ) {
-
-              if ( val ) {
-
-                options.youtubeObject.mute();
-              } else {
-
-                options.youtubeObject.unMute();
-              }
-
-              lastMuted = options.youtubeObject.isMuted();
-              media.dispatchEvent( "volumechange" );
-            }
-
-            return options.youtubeObject.isMuted();
-          },
-          get: function() {
-
-            if ( options.destroyed ) {
-
-              return 0;
-            }
-
-            return options.youtubeObject.isMuted();
-          }
-        });
-
-        Popcorn.player.defineProperty( media, "volume", {
-          set: function( val ) {
-
-            if ( options.destroyed ) {
-
-              return val;
-            }
-
-            if ( options.youtubeObject.getVolume() / 100 !== val ) {
-
-              options.youtubeObject.setVolume( val * 100 );
-              lastVolume = options.youtubeObject.getVolume();
-              media.dispatchEvent( "volumechange" );
-            }
-
-            return options.youtubeObject.getVolume() / 100;
-          },
-          get: function() {
-
-            if ( options.destroyed ) {
-
-              return 0;
-            }
-
-            return options.youtubeObject.getVolume() / 100;
-          }
-        });
       };
 
       options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1;
@@ -312,7 +315,13 @@ Popcorn.player( "youtube", {
 
       src = /^.*(?:\/|v=)(.{11})/.exec( media.src )[ 1 ];
 
-      query = ( media.src.split( "?" )[ 1 ] || "" ).replace( /v=.{11}/, "" );
+      query = ( media.src.split( "?" )[ 1 ] || "" )
+                         .replace( /v=.{11}/, "" );
+      query = query.replace( /&t=(\d+)m(\d+)s/, function( all, minutes, seconds ) {
+
+        return "&start=" + ( +seconds + ( minutes * 60 ) );
+      });
+
       autoPlay = ( /autoplay=1/.test( query ) );
 
       // setting youtube player's height and width, default to 560 x 315
