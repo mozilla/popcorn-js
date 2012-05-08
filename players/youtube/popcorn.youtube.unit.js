@@ -561,13 +561,14 @@ asyncTest( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function()
 
 asyncTest( "Player Errors", function() {
 
-  expect( 1 );
+  expect( 2 );
 
   var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk", {
     events: {
       error: function() {
 
         ok( true, "error trigger by invalid URL" );
+        equal( pop.error.customCode, 100, "error.customCode is 100 for invalid URL" );
         pop.destroy();
         start();
       }
