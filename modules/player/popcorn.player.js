@@ -404,13 +404,13 @@
 
     if ( !targetType ) {
 
-      targetType = ( target.charAt( 0 ) === "#" ? document.getElementById( target.substring( 1 ) ) : document.getElementById( target ) ).nodeName;
+      targetType = Popcorn.dom.find( target ).nodeName;
 
     }
 
     // If src is an array, add <source>'s
     if ( typeof( src ) !== "string" && src.length ) {
-      
+
       for ( var i = 0; i < src.length; ++i ) {
 
         sourceNode = document.createElement( "source" );
