@@ -360,7 +360,7 @@
         node = nodeId && nodeId.length && nodeId[ 2 ] ?
                  document.getElementById( nodeId[ 2 ] ) :
                  target;
-    
+
     if ( elementTypes.indexOf( node.nodeName ) > -1 && !src ) {
 
       if ( typeof src === "object" ) {
