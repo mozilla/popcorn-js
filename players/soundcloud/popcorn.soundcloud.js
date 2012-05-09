@@ -136,16 +136,16 @@
               if ( media.paused ) {
                 media.currentTime = currentTime;
                 media.play();
-                playerQueue.next();
               }
+              playerQueue.next();
             });
 
             widget.bind(SC.Widget.Events.PAUSE, function( data ) {
 
               if ( !media.paused ) {
                 media.pause();
-                playerQueue.next();
               }
+              playerQueue.next();
             });
             widget.bind(SC.Widget.Events.READY, function( data ) {
               widget.getDuration(function( data ) {

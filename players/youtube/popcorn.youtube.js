@@ -163,9 +163,8 @@ Popcorn.player( "youtube", {
             if ( !media.paused ) {
 
               media.pause();
-              playerQueue.next();
             }
-
+            playerQueue.next();
             return;
           } else
           // playing is state 1
@@ -175,8 +174,8 @@ Popcorn.player( "youtube", {
             if ( media.paused ) {
 
               media.play();
-              playerQueue.next();
             }
+            playerQueue.next();
             return;
           } else
           // this is the real player ready check

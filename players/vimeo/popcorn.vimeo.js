@@ -63,16 +63,16 @@
 
               media.dispatchEvent( "playing" );
               timeUpdate();
-              playerQueue.next();
             }
+            playerQueue.next();
           };
 
           vimeo_player_loaded.pause[ vimeoContainer.id ] = function() {
             if ( !media.paused ) {
               media.paused = true;
               media.dispatchEvent( "pause" );
-              playerQueue.next();
             }
+            playerQueue.next();
           };
 
           vimeo_player_loaded.loadProgress[ vimeoContainer.id ] = function( progress ) {
