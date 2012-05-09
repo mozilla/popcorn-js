@@ -64,24 +64,24 @@
         source: {
           elem: "input",
           type: "text",
-          label: "Media Source:"
+          label: "Media Source"
         },
         caption: {
           elem: "input",
           type: "text",
-          label: "Media Caption:",
+          label: "Media Caption",
           optional: true
         },
         target: "mediaspawner-container",
         start: {
           elem: "input",
           type: "number",
-          label: "Start_Time"
+          label: "Start"
         },
         end: {
           elem: "input",
           type: "number",
-          label: "End_Time"
+          label: "End"
         },
         autoplay: {
           elem: "select",
@@ -95,24 +95,21 @@
       var target = document.getElementById( options.target ),
           caption = options.caption || "",
           mediaType,
-          container,
-          debug = Popcorn.plugin.debug;
+          container;
 
-      if ( debug ) {
-        // Check if mediaSource is passed and mediaType is NOT audio/video
-        if ( !options.source ) {
-          Popcorn.error( "Error. Source must be specified." );
-        }
+      // Check if mediaSource is passed and mediaType is NOT audio/video
+      if ( !options.source ) {
+        Popcorn.error( "Error. Source must be specified." );
+      }
 
-        // If it's an HTML Video/Audio check if they passed a correct type
-        if ( typeof options.source === "object" && !/audio|video/.exec( options.source.type ) ) {
-            Popcorn.error( "Error. Type must be Video or Audio" );
-        }
+      // If it's an HTML Video/Audio check if they passed a correct type
+      if ( typeof options.source === "object" && !/audio|video/.exec( options.source.type ) ) {
+          Popcorn.error( "Error. Type must be Video or Audio" );
+      }
 
-        // Check if target container exists
-        if ( !target ) {
-          Popcorn.error( "Target MediaSpawner container doesn't exist." );
-        }
+      // Check if target container exists
+      if ( !target ) {
+        Popcorn.error( "Target MediaSpawner container doesn't exist." );
       }
 
       // Create separate container for plugin

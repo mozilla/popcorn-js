@@ -1,7 +1,5 @@
 asyncTest( "Popcorn MediaSpawner Plugin", 6, function() {
 
-  Popcorn.plugin.debug = true;
-
   var popped = Popcorn( "#video" ),
       eventId,
       youtubediv = document.getElementById( "youtubediv" );
