@@ -227,7 +227,7 @@ asyncTest( "Popcorn.smart player selector", function() {
   // invalid target throws meaningful error
   try {
 
-    Popcorn.smart( "#non_existing_tag", "this is sparta");
+    Popcorn.smart( "#non_existing_tag", "this is sparta" );
   } catch ( e ) {
 
     ok( true, "Popcorn.smart throws exception when target is invalid." );
