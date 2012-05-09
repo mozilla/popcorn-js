@@ -1255,53 +1255,26 @@ test( "Popcorn.events.hooks: canplayall fires immediately if ready", function() 
   poll();
 });
 
-asyncTest( "Popcorn.events.hooks: attrchange fires when attribute setter methods are called", 6, function() {
+asyncTest( "Popcorn.events.hooks: attrchange fires when attribute setter methods are called", 1, function() {
 
   var $pop = Popcorn( "#video" ),
-      completed = 0,
-      initials = [],
-      attrfuncs = [
-        "autoplay",
-        "controls",
-        "loop"
-      ];
+      attr = "controls",
+      initialValue = $pop[ attr ](),
+      expectedData = {
+        attribute: attr,
+        previousValue: initialValue,
+        currentValue: !initialValue
+      };
 
   $pop.on( "attrchange", function( data ) {
 
-    // Test for correct previous value
-    equal( data.previousValue, initials[ attrfuncs.indexOf( data.attribute ) ], "attrchange " + data.attribute + " data object reports correct previousValue: " + data.previousValue );
-
-    // Test for correct current value
-    equal( data.currentValue, $pop[ data.attribute ](), "attrchange " + data.attribute + " data object reports correct currentValue: " + data.currentValue );
-
-    // Cleanup
-    if ( ++completed === 3 ) {
-      // Remove attrchange events
-      $pop.off( "attrchange" );
-
-      // Restore values to DOM fixture
-      attrfuncs.forEach(function( attrfn ) {
-        //  reset the original values of the fixtures
-        $pop[ attrfn ]( initials[ attrfuncs.indexOf( attrfn ) ] );
-      });
-
-      // Destroy popcorn instance
-      $pop.destroy();
-
-      // Resumte tests
-      start();
-    }
+    deepEqual( data, expectedData, "attrchange reports the correct expected data" );
+    start();
   });
 
-  attrfuncs.forEach(function( attrfn ) {
-    // Grab the current value
-    var value = $pop[ attrfn ]();
-
-    initials.push( value );
-
-    // Set it to the opposite
-    $pop[ attrfn ]( value ? false : true );
-  });
+  // The first attr call shouldn't emit attrchange, only the second one should
+  $pop[ attr ]( initialValue );
+  $pop[ attr ]( !initialValue );
 });
 
 module( "Popcorn.dom" );
