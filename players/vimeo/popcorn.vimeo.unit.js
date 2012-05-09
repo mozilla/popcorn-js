@@ -66,7 +66,7 @@ asyncTest( "Update Timer", function() {
     ok( true, "'loadedmetadata' fired" );
     plus();
     // make sure that we always have a duration at this point
-    ok( this.duration() > 0, "Videos duration is greather than 0" );
+    ok( this.duration() > 0, "Video's duration is greater than 0" );
     plus();
   });
 
