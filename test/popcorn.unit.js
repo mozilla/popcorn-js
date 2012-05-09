@@ -1304,15 +1304,6 @@ asyncTest( "Popcorn.events.hooks: attrchange fires when attribute setter methods
   });
 });
 
-/*
-<video height="180" width="300" id="video" controls>
-<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.mp4"></source>
-<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.ogv"></source>
-<source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.webm"></source>
-</video>
-
-*/
-
 module( "Popcorn.dom" );
 
 test( "Popcorn.dom API", 2, function() {
