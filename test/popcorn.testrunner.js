@@ -24,7 +24,7 @@ $(function() {
 	};
 
   window.addEventListener( "message", function( e ) {
-    var message = JSON.parse( e.data )[0],
+    var message = JSON.parse( e.data ),
         li,
         b,
         ol,
@@ -74,7 +74,7 @@ $(function() {
 
       // set up click listener for expanding inner test list
       main_b.addEventListener( "click", function( e ) {
-        var next = e.originalTarget.nextSibling.nextSibling,
+        var next = e.target.nextSibling.nextSibling,
             display = next.style.display;
         next.style.display = display === "none" ? "block" : "none";
       }, false );
