@@ -258,6 +258,11 @@
           //  60 frames per second as opposed to ~4 ( ~every 15-250ms)
           self.data.timeUpdate = function () {
 
+            // Don't fire timeupdate when paused.
+            if ( self.media.paused ) {
+              return;
+            }
+
             Popcorn.timeUpdate( self, {} );
 
             // fire frame for each enabled active plugin of every type
