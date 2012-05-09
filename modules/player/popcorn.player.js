@@ -31,9 +31,9 @@
     "avi"
   ];
 
-  var audioExtensionRegexp = new RegExp( "^.*\.(" + audioExtensions.join( "|" ) + ")$" );
+  var audioExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions.join( "|" ) + ")$" );
 
-  var allExtensionRegexp = new RegExp( "^.*\.(" + audioExtensions.join( "|" ) + "|" + videoExtensions.join( "|" ) + ")$" );
+  var allExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions.join( "|" ) + "|" + videoExtensions.join( "|" ) + ")$" );
 
   Popcorn.player = function( name, player ) {
 
