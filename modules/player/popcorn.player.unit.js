@@ -331,3 +331,28 @@ asyncTest( "Popcorn.smart - audio and video elements", function() {
   p.destroy();
   plus();
 });
+
+asyncTest( "Popcorn.smart - multiple sources for HTML5 media", function() {
+  expect( 6 );
+
+  var instanceDiv,
+    count = 0,
+    p;
+
+  p = Popcorn.smart( "#multi-div", [ "../../test/trailer.ogv", "../../test/trailer.webm", "../../test/trailer.mp4" ] );
+  p = Popcorn.smart( "#multi-video", [ "../../test/trailer.ogv", "../../test/trailer.webm", "../../test/trailer.mp4" ] );
+  p = Popcorn.smart( "#multi-audio", [ "../../test/italia.ogg", "../../test/italia.mp4" ] );
+
+  instanceDiv = document.getElementById( "multi-div" );
+  ok( instanceDiv.firstChild && instanceDiv.firstChild.childNodes.length === 3, "multi-div has 3 children" );
+  ok( instanceDiv.firstChild.childNodes[ 0 ].nodeName === "SOURCE", "multi-div has <source> children" );
+  instanceDiv = document.getElementById( "multi-video" );
+  ok( instanceDiv.childNodes.length === 3, "multi-video has 3 children" );
+  ok( instanceDiv.childNodes[ 0 ].nodeName === "SOURCE", "multi-video has <source> children" );
+  instanceDiv = document.getElementById( "multi-audio" );
+  ok( instanceDiv.childNodes.length === 2, "multi-audio has 2 children" );
+  ok( instanceDiv.childNodes[ 0 ].nodeName === "SOURCE", "multi-audio has <source> children" );
+
+  start();
+
+});
