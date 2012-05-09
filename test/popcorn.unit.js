@@ -1255,7 +1255,7 @@ test( "Popcorn.events.hooks: canplayall fires immediately if ready", function() 
   poll();
 });
 
-asyncTest( "Popcorn.events.hooks: attrchange fires when attribute setter methods are called", function() {
+asyncTest( "Popcorn.events.hooks: attrchange fires when attribute setter methods are called", 6, function() {
 
   var $pop = Popcorn( "#video" ),
       completed = 0,
@@ -1266,22 +1266,29 @@ asyncTest( "Popcorn.events.hooks: attrchange fires when attribute setter methods
         "loop"
       ];
 
-  expect( attrfuncs.length * 4 );
-
   $pop.on( "attrchange", function( data ) {
 
-    // This will test twice for each attr function
+    // Test for correct previous value
     equal( data.previousValue, initials[ attrfuncs.indexOf( data.attribute ) ], "attrchange " + data.attribute + " data object reports correct previousValue: " + data.previousValue );
+
+    // Test for correct current value
     equal( data.currentValue, $pop[ data.attribute ](), "attrchange " + data.attribute + " data object reports correct currentValue: " + data.currentValue );
 
-    // Flip each value as the test completes
-    // this prepares the results array to test
-    // the restored value test
-    if ( completed < 4 ) {
-      initials[ attrfuncs.indexOf( data.attribute ) ] = data.currentValue;
-    }
+    // Cleanup
+    if ( ++completed === 3 ) {
+      // Remove attrchange events
+      $pop.off( "attrchange" );
 
-    if ( ++completed === attrfuncs.length * 2 ) {
+      // Restore values to DOM fixture
+      attrfuncs.forEach(function( attrfn ) {
+        //  reset the original values of the fixtures
+        $pop[ attrfn ]( initials[ attrfuncs.indexOf( attrfn ) ] );
+      });
+
+      // Destroy popcorn instance
+      $pop.destroy();
+
+      // Resumte tests
       start();
     }
   });
@@ -1294,13 +1301,6 @@ asyncTest( "Popcorn.events.hooks: attrchange fires when attribute setter methods
 
     // Set it to the opposite
     $pop[ attrfn ]( value ? false : true );
-
-    // Restore it to the previous value
-    setTimeout(function() {
-
-      $pop[ attrfn ]( value );
-
-    }, 25);
   });
 });
 
