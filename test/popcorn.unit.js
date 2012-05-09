@@ -2348,52 +2348,50 @@ test( "frame function (frameAnimation)", function() {
   }).play();
 });
 
-test( "frameAnimation doesn't trigger timeupdate when media paused", function() {
+asyncTest( "frameAnimation doesn't trigger timeupdate when media paused", function() {
 
   var $pop = Popcorn( "#video", {
         frameAnimation: true
       }),
-      count = 0,
-      fired = -1,
-      expects = 1;
+      fired = -1;
 
-  expect( expects );
-
-  stop();
-
-  function plus() {
-    if ( ++count === expects ) {
-      // clean up added events after tests
-      Popcorn.removePlugin( "frameFn" );
-      $pop.destroy();
-      start();
-    }
-  }
+  expect( 2 );
 
   Popcorn.plugin( "frameFn", {
     start: function() {
-      fired = 0;
+
       this.pause();
+      fired = 0;
 
       // Spin and wait to make sure frame doesn't get called while paused
       setTimeout( function() {
         equal( fired, 0, "frame should not have fired." );
-        plus();
-      }, 1000);
+        second = true;
+
+        // Swing around for another run
+        $pop.play();
+
+      }, 500);
     },
     frame: function() {
       fired++;
+
+      ok( true, "frame fires when played" );
+
+      Popcorn.removePlugin( "frameFn" );
+      $pop.destroy();
+      start();
     }
   });
 
-  $pop.pause().on( "seeked", function didSeek() {
-    $pop.off( "seeked", didSeek);
+  $pop.frameFn({
+    start: 1,
+    end: 3
+  });
 
-    $pop.frameFn({
-      start: 1,
-      end: 3
-    }).play();
-  }).currentTime( 1 );
+  $pop.on( "seeked", function didSeek() {
+    this.off( "seeked", didSeek ).play();
+  }).pause( 1 );
 });
 
 test( "Update Timer (timeupdate)", function() {
