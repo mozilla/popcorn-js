@@ -1255,6 +1255,55 @@ test( "Popcorn.events.hooks: canplayall fires immediately if ready", function() 
   poll();
 });
 
+asyncTest( "Popcorn.events.hooks: attrchange fires when attribute setter methods are called", function() {
+
+  var $pop = Popcorn( "#video" ),
+      completed = 0,
+      initials = [],
+      attrfuncs = [
+        "autoplay",
+        "controls",
+        "loop"
+      ];
+
+  expect( attrfuncs.length * 4 );
+
+  $pop.on( "attrchange", function( data ) {
+
+    // This will test twice for each attr function
+    equal( data.previousValue, initials[ attrfuncs.indexOf( data.attribute ) ], "attrchange " + data.attribute + " data object reports correct previousValue: " + data.previousValue );
+    equal( data.currentValue, $pop[ data.attribute ](), "attrchange " + data.attribute + " data object reports correct currentValue: " + data.currentValue );
+
+    // Flip each value as the test completes
+    // this prepares the results array to test
+    // the restored value test
+    if ( completed < 4 ) {
+      initials[ attrfuncs.indexOf( data.attribute ) ] = data.currentValue;
+    }
+
+    if ( ++completed === attrfuncs.length * 2 ) {
+      start();
+    }
+  });
+
+  attrfuncs.forEach(function( attrfn ) {
+    // Grab the current value
+    var value = $pop[ attrfn ]();
+
+    initials.push( value );
+
+    // Set it to the opposite
+    $pop[ attrfn ]( value ? false : true );
+
+    // Restore it to the previous value
+    setTimeout(function() {
+
+      $pop[ attrfn ]( value );
+
+    }, 25);
+  });
+});
+
 /*
 <video height="180" width="300" id="video" controls>
 <source src="http://videos.mozilla.org/serv/webmademovies/popcornplug.mp4"></source>

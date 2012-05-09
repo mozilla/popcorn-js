@@ -479,6 +479,7 @@
       Popcorn.forEach( methods.split( /\s+/g ), function( name ) {
 
         ret[ name ] = function( arg ) {
+          var previous;
 
           if ( typeof this.media[ name ] === "function" ) {
 
@@ -495,11 +496,22 @@
             return this;
           }
 
-
           if ( arg != null ) {
+            // Capture the current value of the attribute property
+            previous = this.media[ name ];
 
+            // Set the attribute property with the new value
             this.media[ name ] = arg;
 
+            // If the new value is not the same as the old value
+            // emit an "attrchanged event"
+            if ( previous !== arg ) {
+              this.emit( "attrchange", {
+                attribute: name,
+                previousValue: previous,
+                currentValue: arg
+              });
+            }
             return this;
           }
 
