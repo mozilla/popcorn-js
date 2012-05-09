@@ -202,6 +202,7 @@ asyncTest( "Popcorn.smart player selector", function() {
 
   function plus() {
     if ( ++count == expects ) {
+      document.getElementById( "video" ).innerHTML = "";
       start();
     }
   }
