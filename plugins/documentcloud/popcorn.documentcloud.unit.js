@@ -30,7 +30,7 @@
       width: 900,
       height: 500,
       target: "cloud-div-1"
-    })
+    });
 
     setupIds.push( popped.getLastTrackEventId() );
 
@@ -41,7 +41,7 @@
       showAnnotations: true,
       aid: 9899,
       target: "cloud-div-1"
-    })
+    });
 
     setupIds.push( popped.getLastTrackEventId() );
 
