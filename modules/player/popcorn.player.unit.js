@@ -8,7 +8,7 @@ test( "Base player methods", 4, function() {
 
   Popcorn.player( "newplayer" );
   ok( Popcorn.newplayer, "Popcorn.player registers new players" );
-  ok( Popcorn.player.registry[ "newplayer" ], "newplayers enter Popcorn.player.registry" );
+  ok( Popcorn.player.registry.newplayer, "newplayers enter Popcorn.player.registry" );
 
 });
 
