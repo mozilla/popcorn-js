@@ -16,6 +16,25 @@
   //  ID string matching
   var rIdExp  = /^(#([\w\-\_\.]+))$/;
 
+  var audioExtensions = [
+    "ogg",
+    "aac",
+    "mp3",
+    "wav"
+  ];
+
+  var videoExtensions = [
+    "ogv",
+    "webm",
+    "mp4",
+    "mov",
+    "avi"
+  ];
+
+  var audioExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions.join( "|" ) + ")$" );
+
+  var allExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions.join( "|" ) + "|" + videoExtensions.join( "|" ) + ")$" );
+
   Popcorn.player = function( name, player ) {
 
     // return early if a player already exists under this name
@@ -335,6 +354,9 @@
     var nodeId = rIdExp.exec( target ),
         playerType,
         elementTypes = [ "AUDIO", "VIDEO" ],
+        sourceNode,
+        targetType,
+        firstSrc,
         node = nodeId && nodeId.length && nodeId[ 2 ] ?
                  document.getElementById( nodeId[ 2 ] ) :
                  target;
@@ -367,15 +389,53 @@
     // attempting to create a video in a container
     if ( elementTypes.indexOf( node.nodeName ) === -1 ) {
 
-      target = document.createElement( !!/^.*\.(ogg|aac|mp3|wav)$/.exec( src ) ? elementTypes[ 0 ] : elementTypes[ 1 ] );
+      firstSrc = typeof( src ) === "string" ? src : src.length ? src[ 0 ] : src;
+
+      target = document.createElement( !!audioExtensionRegexp.exec( firstSrc ) ? elementTypes[ 0 ] : elementTypes[ 1 ] );
 
       node.appendChild( target );
       node = target;
     }
 
     options && options.events && options.events.error && node.addEventListener( "error", options.events.error, false );
-    node.src = src;
+
+    // Attempt to identify the type of the resultant node
+    targetType = target.nodeName;
+
+    if ( !targetType ) {
+
+      targetType = Popcorn.dom.find( target ).nodeName;
+
+    }
+
+    // If src is an array, add <source>'s
+    if ( typeof( src ) !== "string" && src.length ) {
+
+      for ( var i = 0; i < src.length; ++i ) {
+
+        sourceNode = document.createElement( "source" );
+        sourceNode.src = src[ i ];
+
+        var extensionMatch = allExtensionRegexp.exec( src[ i ] );
+
+        // Attempt to add a type attribute to the source tag
+        if ( extensionMatch && targetType ) {
+
+          sourceNode.type = targetType.toLowerCase() + "/" + extensionMatch[1];
+
+        }
+
+        node.appendChild( sourceNode );
+      }
+
+    }
+    else {
+
+      node.src = src;
+
+    }
 
     return Popcorn( node, options );
+
   };
 })( Popcorn );
