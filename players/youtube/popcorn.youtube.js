@@ -200,10 +200,7 @@ Popcorn.player( "youtube", {
             media.dispatchEvent( "durationchange" );
             volumeupdate();
 
-            if ( media.currentTime === 0) {
-
-              media.currentTime = options.youtubeObject.getCurrentTime();
-            }
+            media.currentTime = options.youtubeObject.getCurrentTime();
 
             createProperties();
             media.dispatchEvent( "loadedmetadata" );
@@ -317,7 +314,11 @@ Popcorn.player( "youtube", {
 
       query = ( media.src.split( "?" )[ 1 ] || "" )
                          .replace( /v=.{11}/, "" );
-      query = query.replace( /&t=(\d+)m(\d+)s/, function( all, minutes, seconds ) {
+      query = query.replace( /&t=(?:(\d+)m)?(?:(\d+)s)?/, function( all, minutes, seconds ) {
+
+        // Make sure we have real zeros
+        minutes = minutes|0; // bit-wise OR
+        seconds = seconds|0; // bit-wise OR
 
         return "&start=" + ( +seconds + ( minutes * 60 ) );
       });

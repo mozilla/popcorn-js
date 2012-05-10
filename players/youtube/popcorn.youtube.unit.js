@@ -661,10 +661,8 @@ asyncTest( "Youtube ready state events", function() {
 
 asyncTest( "Youtube media start time fragment", function() {
 
-  var popcorn1, popcorn2,
-      expects = 2,
-      count = 0,
-      state = 0;
+  var popcorn1, popcorn2, popcorn3, popcorn4,
+      count = 0, expects = 4;
 
   expect( expects );
 
@@ -673,11 +671,11 @@ asyncTest( "Youtube media start time fragment", function() {
 
       popcorn1.destroy();
       popcorn2.destroy();
+      popcorn3.destroy();
+      popcorn4.destroy();
       start();
     }
   }
-
-  expect( expects );
 
   var firstTest = function() {
 
@@ -689,6 +687,18 @@ asyncTest( "Youtube media start time fragment", function() {
 
         popcorn2.off( "loadeddata", secondTest );
         equal( Math.floor( popcorn2.currentTime() ), 130, "youtube fragment works with &t=2m10s" );
+        plus();
+      },
+      thirdTest = function() {
+
+        popcorn3.off( "loadeddata", thirdTest );
+        equal( Math.floor( popcorn3.currentTime() ), 120, "youtube fragment works with &t=2m" );
+        plus();
+      },
+      fourthTest = function() {
+
+        popcorn4.off( "loadeddata", fourthTest );
+        equal( Math.floor( popcorn4.currentTime() ), 10, "youtube fragment works with &t=10s" );
         plus();
       };
 
@@ -704,5 +714,19 @@ asyncTest( "Youtube media start time fragment", function() {
   if ( popcorn2.readyState >= 4 ) {
 
     secondTest();
+  }
+
+  popcorn3 = Popcorn.youtube( "#video10", "http://www.youtube.com/watch?v=nfGV32RNkhw&t=2m" );
+  popcorn3.on( "loadeddata", thirdTest);
+  if ( popcorn3.readyState >= 4 ) {
+
+    thirdTest();
+  }
+
+  popcorn4 = Popcorn.youtube( "#video11", "http://www.youtube.com/watch?v=nfGV32RNkhw&t=10s" );
+  popcorn4.on( "loadeddata", fourthTest);
+  if ( popcorn4.readyState >= 4 ) {
+
+    fourthTest();
   }
 });
