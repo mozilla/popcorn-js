@@ -321,11 +321,8 @@
 
   Popcorn.player.registry = {};
 
-  Popcorn.player.defineProperty = Object.defineProperty || function( object, description, options ) {
-
-    object.__defineGetter__( description, options.get || Popcorn.nop );
-    object.__defineSetter__( description, options.set || Popcorn.nop );
-  };
+  // legacy support for Popcorn.player.defineProperty
+  Popcorn.player.defineProperty = Popcorn.defineProperty;
 
   // smart will attempt to find you a match, if it does not find a match,
   // it will attempt to create a video element with the source,

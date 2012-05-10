@@ -288,17 +288,12 @@
         }
       };
 
-      var error = function() {
+      Popcorn.defineProperty( this, "error", {
+        get: function() {
 
-        self.media.removeEventListener( "error", error, false );
-        self.error = self.media.error;
-      };
-
-      // grab the error object if it already exists
-      this.error = this.media.error;
-
-      // listen for future errors and report on to the error object
-      this.media.addEventListener( "error", error, false );
+          return self.media.error;
+        }
+      });
 
       if ( self.media.readyState >= 2 ) {
 
@@ -344,6 +339,12 @@
       }
     }
     return obj;
+  };
+
+  Popcorn.defineProperty = Object.defineProperty || function( object, description, options ) {
+
+    object.__defineGetter__( description, options.get || Popcorn.nop );
+    object.__defineSetter__( description, options.set || Popcorn.nop );
   };
 
   Popcorn.extend = function( obj ) {
