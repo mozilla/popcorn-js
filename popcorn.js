@@ -288,7 +288,7 @@
         }
       };
 
-      Popcorn.defineProperty( this, "error", {
+      Object.defineProperty( this, "error", {
         get: function() {
 
           return self.media.error;
@@ -339,12 +339,6 @@
       }
     }
     return obj;
-  };
-
-  Popcorn.defineProperty = Object.defineProperty || function( object, description, options ) {
-
-    object.__defineGetter__( description, options.get || Popcorn.nop );
-    object.__defineSetter__( description, options.set || Popcorn.nop );
   };
 
   Popcorn.extend = function( obj ) {
