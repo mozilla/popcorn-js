@@ -2348,14 +2348,12 @@ test( "frame function (frameAnimation)", function() {
   }).play();
 });
 
-asyncTest( "frameAnimation doesn't trigger timeupdate when media paused", function() {
+asyncTest( "frameAnimation doesn't trigger timeupdate when media paused", 2, function() {
 
   var $pop = Popcorn( "#video", {
         frameAnimation: true
       }),
       fired = -1;
-
-  expect( 2 );
 
   Popcorn.plugin( "frameFn", {
     start: function() {
