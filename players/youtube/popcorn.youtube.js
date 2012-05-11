@@ -317,8 +317,8 @@ Popcorn.player( "youtube", {
       query = query.replace( /&t=(?:(\d+)m)?(?:(\d+)s)?/, function( all, minutes, seconds ) {
 
         // Make sure we have real zeros
-        minutes = minutes|0; // bit-wise OR
-        seconds = seconds|0; // bit-wise OR
+        minutes = minutes | 0; // bit-wise OR
+        seconds = seconds | 0; // bit-wise OR
 
         return "&start=" + ( +seconds + ( minutes * 60 ) );
       });
