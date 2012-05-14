@@ -50,9 +50,11 @@
 
           vimeo_player_loaded.seek[ vimeoContainer.id ] = function( time ) {
             if( time.seconds !== currentTime ) {
+              seeking = true;
               currentTime = time.seconds;
               media.dispatchEvent( "seeked" );
               media.dispatchEvent( "timeupdate" );
+              seeking = false;
             }
           };
 
@@ -129,6 +131,12 @@
             vimeoObject.api_play();
           };
 
+          Popcorn.player.defineProperty( media, "seeking", {
+            get: function() {
+              return seeking;
+            }
+          });
+
           media.pause = function() {
 
             if ( !media.paused ) {
@@ -148,8 +156,8 @@
               }
 
               currentTime = seekTime = +val;
-              seeking = true;
 
+              seeking = true;
               media.dispatchEvent( "seeked" );
               media.dispatchEvent( "timeupdate" );
               vimeoObject.api_seekTo( currentTime );
