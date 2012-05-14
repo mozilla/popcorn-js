@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Vimeo Player Example</title>
+    <script src="../../popcorn.js"></script>
+    <script src="../../modules/player/popcorn.player.js"></script>
+    <script type="text/javascript" src="popcorn.vimeo.js"></script>
+    <script>
+      document.addEventListener( "DOMContentLoaded", function() {
+        var p = Popcorn.vimeo( "vimeo", "http://player.vimeo.com/video/11336811" );
+
+        setTimeout(function() {
+          p.play();
+        }, 5000);
+      }, false );
+    </script>
+  </head>
+  <body>
+    <div id="vimeo"></div>
+  </body>
+</html>
