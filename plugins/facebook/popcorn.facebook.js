@@ -102,12 +102,14 @@
           elem: "input",
           type: "text",
           label: "Height",
+          default: "200",
           optional: true
         },
         width: {
           elem: "input",
           type: "text",
           label: "Width",
+          default: "200",
           optional: true
         },
         action: {
@@ -117,15 +119,17 @@
           optional: true
         },
         stream: {
-          elem: "select",
-          options: [ "false", "true" ],
+          elem: "input",
+          type: "boolean",
           label: "Stream",
+          default: false,
           optional: true
         },
         header: {
-          elem: "select",
-          options: [ "false", "true" ],
+          elem: "input",
+          type: "boolean",
           label: "Header",
+          default: false,
           optional: true
         },
         layout: {
@@ -136,8 +140,9 @@
         },
         max_rows: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "Max_rows",
+          default: 1,
           optional: true
         },
         border_color: {
@@ -153,33 +158,37 @@
           optional: true
         },
         colorscheme: {
-           elem: "select",
-           options: [ "light", "dark" ],
-           label: "Colorscheme",
+          elem: "select",
+          options: [ "light", "dark" ],
+          label: "Colorscheme",
           optional: true
         },
         show_faces: {
-           elem: "select",
-           options: [ "false", "true" ],
-           label: "Showfaces",
+          elem: "input",
+          type: "boolean",
+          label: "Showfaces",
+          default: false,
           optional: true
         },
         recommendations: {
-           elem: "select",
-           options: [ "false", "true" ],
-           label: "Recommendations",
+          elem: "input",
+          type: "boolean",
+          label: "Recommendations",
+          default: false,
           optional: true
         },
         always_post_to_friends: {
           elem: "input",
-          options: [ "false", "true" ],
+          type: "boolean",
           label: "Always_post_to_friends",
+          default: false,
           optional: true
         },
         num_posts: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "Number_of_Comments",
+          default: 1,
           optional: true
         }
       }

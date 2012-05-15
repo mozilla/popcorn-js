@@ -55,23 +55,27 @@ var wikiCallback;
           elem: "input", 
           type: "text", 
           label: "Language",
+          default: "english",
           optional: true
         },
         src: {
           elem: "input", 
           type: "url", 
-          label: "Src"
+          label: "Src",
+          default: "http://en.wikipedia.org/wiki/Cat"
         },
         title: {
           elem: "input", 
           type: "text", 
           label: "Title",
+          default: "Cats",
           optional: true
         },
         numberofwords: {
           elem: "input", 
           type: "text", 
           label: "Num Of Words",
+          default: "200",
           optional: true
         },
         target: "wikipedia-container"

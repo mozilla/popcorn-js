@@ -167,18 +167,21 @@
       url: {
         elem: "input",
         type: "url",
-        label: "url"
+        label: "url",
+        default: "http://planet.mozilla.org/rss20.xml"
       },
       title: {
         elem: "input",
         type: "text",
         label: "title",
+        default: "Planet Mozilla",
         optional: true
       },
       orientation: {
         elem: "select",
         options: [ "Vertical", "Horizontal" ],
         label: "orientation",
+        default: "Vertical",
         optional: true
       }
     }

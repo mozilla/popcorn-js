@@ -143,7 +143,8 @@
       artist: {
         elem: "input",
         type: "text",
-        label: "Artist"
+        label: "Artist",
+        default: "The Beatles"
       },
       album: {
         elem: "input",
@@ -164,6 +165,11 @@
         elem: "input",
         type: "text",
         label: "Playlist"
+      },
+      type: {
+        elem: "select",
+        options: [ "album", "playlist" ],
+        label: "Type"
       }
     }
   });

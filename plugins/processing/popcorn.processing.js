@@ -153,9 +153,10 @@
         label: "Sketch"
       },
       noPause: {
-        elem: "select",
-        options: [ "TRUE", "FALSE" ],
+        elem: "input",
+        type: "boolean",
         label: "No Loop",
+        default: true,
         optional: true
       }
     }

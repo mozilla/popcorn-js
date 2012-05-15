@@ -135,8 +135,8 @@
         optional: true
       },
       direction: {
-        elem: "input",
-        type: "text",
+        elem: "select",
+        options: [ "DOWN", "UP" ],
         label: "direction",
         optional: true
       }

@@ -401,6 +401,7 @@ var googleCallback;
         elem: "input",
         type: "text",
         label: "Zoom",
+        default: 0,
         optional: true
       },
       lat: {
@@ -418,18 +419,21 @@ var googleCallback;
       location: {
         elem: "input",
         type: "text",
-        label: "Location"
+        label: "Location",
+        default: "Toronto, Ontario, Canada"
       },
       heading: {
         elem: "input",
         type: "text",
         label: "Heading",
+        default: 0,
         optional: true
       },
       pitch: {
         elem: "input",
         type: "text",
         label: "Pitch",
+        default: 1,
         optional: true
       }
     }
