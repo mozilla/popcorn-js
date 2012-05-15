@@ -11,6 +11,7 @@ Popcorn.player( "vimeo", {
         vimeoContainer = document.createElement("iframe"),
         guid = Popcorn.guid(),
         autoplay = false,
+        currentTime = 0,
         loop = false;
 
     function readyListener( event ) {
@@ -30,10 +31,13 @@ Popcorn.player( "vimeo", {
           sendMessage('addEventListener', 'pause');
           sendMessage('addEventListener', 'finish');
           sendMessage('addEventListener', 'seek');
+          sendMessage('getDuration');
+          /*setInterval( function() {
+            sendMessage('getCurrentTime');
+          }, 300);*/
         }
       } catch ( ex ) {
         console.warn(ex);
-        // XXX fail silently I guess?
       }
     }
 
@@ -53,7 +57,7 @@ Popcorn.player( "vimeo", {
       get: function() {
         return autoplay;
       },
-      set: function() {
+      set: function( value ) {
         if ( value !== undefined ) {
           autoplay = !!value;
         }
@@ -62,14 +66,29 @@ Popcorn.player( "vimeo", {
       }
     });
 
+    Object.defineProperty( media, "currentTime", {
+      get: function() {
+        return currentTime;
+      },
+      set: function( value ) {
+        if ( value !== undefined ) {
+          sendMessage( "seekTo", value );
+          media.dispatchEvent( "seeking" );
+        }
+
+        return currentTime;
+      }
+    });
+
     loop = !!this.src.match(/loop=1/);
     Object.defineProperty( media, "loop", {
       get: function() {
         return loop;
       },
-      set: function() {
+      set: function( value) {
         if ( value !== undefined ) {
           loop = !!value;
+          sendMessage( "setLoop", loop );
         }
 
         return loop;
@@ -91,7 +110,62 @@ Popcorn.player( "vimeo", {
     }
 
     function generalEventListener( event ) {
-      console.log( event.data );
+      if ( event.origin !== "http://player.vimeo.com" ) {
+        return;
+      }
+
+      var data
+      try {
+        data = JSON.parse( event.data );
+      } catch ( ex ) {
+        console.warn( ex );
+      }
+
+      if ( data.player_id != guid ) {
+        return;
+      }
+
+      // Methods
+      switch ( data.method ) {
+        case "paused":
+        case "getCurrentTime":
+          currentTime = parseFloat( data.value );
+          //media.dispatchEvent( "timeupdate" );
+          break;
+        case "getDuration":
+          media.duration = parseFloat( data.value );
+          media.dispatchEvent( "durationchange" );
+          media.dispatchEvent( "loadedmetadata" );
+          break;
+        case "getVideoEmbedCode":
+        case "getVideoHeight":
+        case "getVideoWidth":
+        case "getVideoUrl":
+        case "getColor":
+        case "getVolume":
+          break;
+      }
+
+      // Events
+      switch ( data.event ) {
+        case "loadProgress":
+          break;
+        case "playProgress":
+          currentTime = parseFloat( data.data.seconds );
+          media.dispatchEvent( "timeupdate" );
+          times.push(currentTime);
+          break;
+        case "play":
+          break;
+        case "pause":
+          break;
+        case "finish":
+          break;
+        case "seek":
+          currentTime = parseFloat(data.data.seconds);
+          media.dispatchEvent( "seeked" );
+          break;
+      }
     }
 
     media.play = function() {
