@@ -212,12 +212,14 @@
         elem: "input",
         type: "text",
         label: "Height",
+        default: "50px",
         optional: true
       },
       width: {
         elem: "input",
         type: "text",
         label: "Width",
+        default: "50px",
         optional: true
       },
       padding: {
@@ -230,11 +232,13 @@
         elem: "input",
         type: "text",
         label: "Border",
+        default: "5px",
         optional: true
       },
       numberofimages: {
         elem: "input",
-        type: "text",
+        type: "number",
+        default: 4,
         label: "Number of Images"
       }
     }

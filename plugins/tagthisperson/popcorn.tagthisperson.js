@@ -118,7 +118,8 @@
       person: {
         elem: "input",
         type: "text",
-        label: "Name"
+        label: "Name",
+        default: "Popcorn.js"
       },
       image: {
         elem: "input",

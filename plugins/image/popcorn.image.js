@@ -51,18 +51,21 @@
             elem: "input",
             type: "url",
             label: "anchor URL",
+            default: "http://mozillapopcorn.org/wp-content/themes/popcorn/images/for_developers.png",
             optional: true
           },
           target: "image-container",
           src: {
             elem: "input",
             type: "url",
-            label: "Source URL"
+            label: "Source URL",
+            default: "http://mozillapopcorn.org/wp-content/themes/popcorn/images/for_developers.png"
           },
           text: {
             elem: "input",
             type: "text",
             label: "TEXT",
+            default: "Popcorn.js",
             optional: true
           }
         }

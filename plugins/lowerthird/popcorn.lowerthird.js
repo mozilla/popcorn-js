@@ -54,17 +54,20 @@
             elem: "input",
             type: "text",
             label: "Text",
+            default: "hello",
             optional: true
           },
           name: {
             elem: "input",
             type: "text",
-            label: "Text"
+            label: "Text",
+            default: "Popcorn.js"
           },
           role: {
             elem: "input",
             type: "text",
             label: "Text",
+            default: "JavaScript library",
             optional: true
           }
         }
