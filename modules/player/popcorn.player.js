@@ -1,6 +1,6 @@
 (function( Popcorn ) {
 
-  var DEFAULT_LIMIT= 500;
+  var DEFAULT_LIMIT = 500;
 
   // combines calls of two function calls into one
   var combineFn = function( first, second ) {
