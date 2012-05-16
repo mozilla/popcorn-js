@@ -1,26 +1,26 @@
 test( "Popcorn wikipedia Plugin", function() {
-  
+
   var popped = Popcorn( "#video" ),
-      expects = 13, 
+      expects = 13,
       count = 0,
       theArticle = document.getElementById( "wikidiv" );
-       
+
   expect( expects );
-  
+
   function plus() {
     if ( ++count === expects ) {
       start();
     }
   }
-  
+
   stop();
-   
+
   ok( "wikipedia" in popped, "wikipedia is a mehtod of the popped instance" );
   plus();
-  
+
   equal( theArticle.innerHTML, "", "initially, there is nothing in the wikidiv" );
   plus();
-  
+
   popped.wikipedia({
       start: 1,
       end: 3,
@@ -38,7 +38,7 @@ test( "Popcorn wikipedia Plugin", function() {
     })
     .volume( 0 )
     .play();
-    
+
   popped.exec( 2, function() {
     notEqual( theArticle.innerHTML, "", "wikidiv now contains information" );
     plus();
@@ -52,12 +52,12 @@ test( "Popcorn wikipedia Plugin", function() {
     equal( theArticle.children[ 1 ].innerHTML.split( " " ).length -1, 22, "wikidiv contains 22 words" );
     plus();
   });
-  
+
   popped.exec( 3, function() {
     equal( theArticle.innerHTML, "", "wikidiv was cleared properly" );
     plus();
   });
-  
+
   popped.exec( 4, function() {
     notEqual( theArticle.innerHTML, "", "wikidiv now contains information" );
     plus();
