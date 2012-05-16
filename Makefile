@@ -114,7 +114,7 @@ run_lint = @@$(RHINO) build/jslint-check.js $(1)
 all: setup popcorn plugins parsers players effects complete min ie8
 	@@echo "Popcorn build complete.  To create a testing mirror, run: make testing."
 
-check: lint lint-plugins lint-parsers lint-players lint-effects
+check: lint lint-plugins lint-parsers lint-players lint-effects lint-modules
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
