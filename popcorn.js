@@ -288,6 +288,13 @@
         }
       };
 
+      Object.defineProperty( this, "error", {
+        get: function() {
+
+          return self.media.error;
+        }
+      });
+
       if ( self.media.readyState >= 2 ) {
 
         isReady();
@@ -629,7 +636,7 @@
   Popcorn.Events  = {
     UIEvents: "blur focus focusin focusout load resize scroll unload",
     MouseEvents: "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave click dblclick",
-    Events: "loadstart progress suspend emptied stalled play pause " +
+    Events: "loadstart progress suspend emptied stalled play pause error " +
             "loadedmetadata loadeddata waiting playing canplay canplaythrough " +
             "seeking seeked timeupdate ended ratechange durationchange volumechange"
   };
