@@ -56,7 +56,10 @@ $(function() {
       while( oneTest = results_arr.pop() ) {
         li = create( "li" );
         li.className = oneTest.failed ? "fail" : "pass";
-        li.innerHTML = oneTest.name + " <b class='counts'>(<b class='failed'>" + oneTest.failed + "</b>, <b class='passed'>" + oneTest.passed + "</b>, " + oneTest.total + ")</b>"
+        li.innerHTML = oneTest.name + " <b class='counts'>(<b class='failed'>" +
+          oneTest.failed + "</b>, <b class='passed'>" +
+          oneTest.passed + "</b>, " +
+          oneTest.total + ")</b>";
         ol.appendChild( li );
         // set to displayed if tests failed
         if ( oneTest.failed ) {
@@ -72,13 +75,18 @@ $(function() {
       fail = message.failed;
       pass = message.passed;
       total = message.total;
-      time = message.runtime
+      time = message.runtime;
 
       title = currentTest.name;
       type = currentTest.type;
 
       main_b = create( "b" );
-      main_b.innerHTML = '<span class="module-name">' + type + ':&nbsp;</span><span class="test-name">' + title + ":</span> Tests completed in " + time + " milliseconds " + " <b class='counts'>(<b class='failed'>" + fail + "</b>, <b class='passed'>" + pass + "</b>, " + total + ")</b>";
+      main_b.innerHTML = '<span class="module-name">' + type +
+        ':&nbsp;</span><span class="test-name">' +
+        title + ":</span> Tests completed in " +
+        time + " milliseconds " + " <b class='counts'>(<b class='failed'>" +
+        fail + "</b>, <b class='passed'>" +
+        pass + "</b>, " + total + ")</b>";
 
       // set up click listener for expanding inner test list
       main_b.addEventListener( "click", function( e ) {
