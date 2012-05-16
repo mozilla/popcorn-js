@@ -1,4 +1,4 @@
-var tests = [{
+var Popcorn_tests = [{
   name: "JSON Parser",
   path: "./parserJSON/popcorn.parserJSON.unit.html",
   type: "Parser"

@@ -1,4 +1,4 @@
-var tests = [{
+var Popcorn_tests = [{
   name: "Core",
   path: "./index.html",
   type: "Core"
@@ -35,7 +35,7 @@ var tests = [{
   path: "../plugins/tagthisperson/popcorn.tagthisperson.unit.html",
   type: "Plugin"
 }, {
-  name: "Tublr",
+  name: "Tumblr",
   path: "../plugins/tumblr/popcorn.tumblr.unit.html",
   type: "Plugin"
 }, {

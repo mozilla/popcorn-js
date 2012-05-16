@@ -1,4 +1,4 @@
-var tests = [
+var Popcorn_tests = [
 {
   name: "Youtube",
   path: "./youtube/popcorn.youtube.unit.html",

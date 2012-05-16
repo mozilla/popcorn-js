@@ -1,4 +1,4 @@
-var tests = [{
+var Popcorn_tests = [{
   name: "Locale",
   path: "./locale/popcorn.locale.unit.html",
   type: "Module"

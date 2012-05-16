@@ -1,5 +1,4 @@
 $(function() {
-
   var id = function( name ) {
         return document.getElementById( name );
       },
@@ -12,7 +11,7 @@ $(function() {
               event.target.contentWindow.postMessage( "getFocus", "*" );
       },
       index = 0,
-      testFrame = id( "test-frame" )
+      testFrame = id( "test-frame" ),
       results = id( "qunit-tests" ),
       totalPass = 0,
       totalFail = 0,
@@ -20,15 +19,15 @@ $(function() {
       totalTime = 0,
       main_li = create( "li" ),
       main_b = create( "b" ),
-      currentTest = tests[ index ],
+      currentTest = Popcorn_tests[ index ],
       results_arr = [],
       userAgent = id( "qunit-userAgent" );
 
   testFrame.addEventListener( "load", sendGetFocus, false );
 
-	if ( userAgent ) {
-		userAgent.innerHTML = navigator.userAgent;
-	};
+  if ( userAgent ) {
+    userAgent.innerHTML = navigator.userAgent;
+  };
 
   window.addEventListener( "message", function( e ) {
     var message = JSON.parse( e.data ),
@@ -38,7 +37,8 @@ $(function() {
         a,
         oneTest,
         time,
-        name,
+        title,
+        type,
         fail = 0,
         pass = 0,
         total = 0;
@@ -75,9 +75,10 @@ $(function() {
       time = message.runtime
 
       title = currentTest.name;
+      type = currentTest.type;
 
       main_b = create( "b" );
-      main_b.innerHTML = title + ": Tests completed in " + time + " milliseconds " + " <b class='counts'>(<b class='failed'>" + fail + "</b>, <b class='passed'>" + pass + "</b>, " + total + ")</b>";
+      main_b.innerHTML = '<span class="module-name">' + type + ':&nbsp;</span><span class="test-name">' + title + ":</span> Tests completed in " + time + " milliseconds " + " <b class='counts'>(<b class='failed'>" + fail + "</b>, <b class='passed'>" + pass + "</b>, " + total + ")</b>";
 
       // set up click listener for expanding inner test list
       main_b.addEventListener( "click", function( e ) {
@@ -89,7 +90,7 @@ $(function() {
       // build main_li, append all children and then append to result list
       main_li.className = fail ? "fail" : "pass";
       main_li.removeChild( main_li.firstChild );
-      main_li.appendChild( main_b);
+      main_li.appendChild( main_b );
       main_li.appendChild( a );
       main_li.appendChild( ol );
 
@@ -100,8 +101,8 @@ $(function() {
       totalTime += time;
 
       // are there more tests?
-      if ( ++index < tests.length ) {
-        currentTest = tests[ index ];
+      if ( ++index < Popcorn_tests.length ) {
+        currentTest = Popcorn_tests[ index ];
         main_li = create( "li" );
         main_b = create ( "b" );
         main_b.innerHTML = "Running " + currentTest.name;
@@ -145,5 +146,4 @@ $(function() {
   results.appendChild( main_li );
 
   testFrame.src = currentTest.path;
-
 });
