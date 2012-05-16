@@ -7,11 +7,11 @@ asyncTest( "Popcorn Pause Plugin", 2, function() {
     e.preventDefault();
   }, false );
 
-  var simulateClickOn = function ( paramElement ) {
+  var simulateClickOn = function( paramElement ) {
 
     if ( typeof paramElement.click === "Function" ) {
-      paramElement.click() ;
-      return ;
+      paramElement.click();
+      return;
     }
 
     var evt = document.createEvent( "MouseEvents" );
@@ -25,41 +25,41 @@ asyncTest( "Popcorn Pause Plugin", 2, function() {
     paramElement.dispatchEvent( evt );
   };
 
-  var otherVideo = Popcorn( "#video2" , {
-        pauseOnLinkClicked: true
+  var otherVideo = Popcorn( "#video2", {
+    pauseOnLinkClicked: true
   });
-  otherVideo.play() ;
+  otherVideo.play();
 
-  var popped = Popcorn( "#video" , {
-        pauseOnLinkClicked: true
+  var popped = Popcorn( "#video", {
+    pauseOnLinkClicked: true
   });
 
-  popped.code ({
+  popped.code({
     start: 2.000,
     end: 4,
     onStart: function ( options ) {
-      simulateClickOn( anchorA ) ;
+      simulateClickOn( anchorA );
       ok(
         this.paused,
         "Video successfully stopped with a click on an anchor at " +
         "second 2 approximately (" + this.currentTime() + ")"
       );
       //Continue playing
-      popped.play() ;
+      popped.play();
     }
   })
-  .code ({
+  .code({
     start: 5.561,
-    end : 7,
-    onStart: function ( options ) {
-      var currentTime = popped.currentTime() ;
-      simulateClickOn( anchorB ) ;
+    end: 7,
+    onStart: function( options ) {
+      var currentTime = popped.currentTime();
+      simulateClickOn( anchorB );
       ok(
         this.paused,
         "Video successfully stopped with a click on an anchor at " +
         "second 5.561 approximately (" + this.currentTime() + ")"
       );
-    start() ;
+    start();
     }
   });
 
