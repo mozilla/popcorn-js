@@ -160,6 +160,7 @@ Popcorn.player( "vimeo", {
         case "pause":
           break;
         case "finish":
+          media.dispatchEvent( "ended" );
           break;
         case "seek":
           currentTime = parseFloat(data.data.seconds);
