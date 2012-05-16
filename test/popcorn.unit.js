@@ -20,6 +20,21 @@ test( "Core", function() {
   } catch ( e ) {};
 });
 
+asyncTest( "Unsupported video error", function() {
+
+  var unsupported = document.createElement( "video" ),
+      popcorn = Popcorn( unsupported );
+
+  popcorn.on( "error", function() {
+
+    equal( popcorn.error.code, 4, "Unsupported video reports error code 4." );
+    popcorn.destroy();
+    start();
+  });
+
+  unsupported.src = "data:video/x-unsupported,0";
+});
+
 test( "noConflict", function() {
 
   expect( 6 );
@@ -1124,7 +1139,7 @@ test( "Popcorn.extend", function() {
 test( "Popcorn.events", function() {
 
   QUnit.reset()
-  expect( 43 );
+  expect( 44 );
 
   var eventTypes = [ "UIEvents", "MouseEvents", "Events" ],
       natives = "",

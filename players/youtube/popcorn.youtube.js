@@ -129,6 +129,9 @@ Popcorn.player( "youtube", {
 
         onYouTubePlayerReady.onErrorEventHandler[ container.id ] = function( errorCode ) {
           if ( [ 2, 100, 101, 150 ].indexOf( errorCode ) !== -1 ) {
+            media.error = {
+              customCode: errorCode
+            };
             media.dispatchEvent( "error" );
           }
         };
