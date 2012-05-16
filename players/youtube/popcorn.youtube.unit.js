@@ -612,7 +612,6 @@ asyncTest( "youtube player gets a proper _teardown", function() {
   });
 });
 
-
 asyncTest( "Youtube ready state events", function() {
 
   var popped,
@@ -659,4 +658,76 @@ asyncTest( "Youtube ready state events", function() {
     }
   });
 
+});
+
+asyncTest( "Youtube media start time fragment", function() {
+
+  var popcorn1, popcorn2, popcorn3, popcorn4,
+      count = 0, expects = 4;
+
+  expect( expects );
+
+  function plus() {
+    if ( ++count === expects ) {
+
+      popcorn1.destroy();
+      popcorn2.destroy();
+      popcorn3.destroy();
+      popcorn4.destroy();
+      start();
+    }
+  }
+
+  var firstTest = function() {
+
+        popcorn1.off( "loadeddata", firstTest );
+        equal( Math.floor( popcorn1.currentTime() ), 130, "youtube fragment works with &start=130" );
+        plus();
+      },
+      secondTest = function() {
+
+        popcorn2.off( "loadeddata", secondTest );
+        equal( Math.floor( popcorn2.currentTime() ), 130, "youtube fragment works with &t=2m10s" );
+        plus();
+      },
+      thirdTest = function() {
+
+        popcorn3.off( "loadeddata", thirdTest );
+        equal( Math.floor( popcorn3.currentTime() ), 120, "youtube fragment works with &t=2m" );
+        plus();
+      },
+      fourthTest = function() {
+
+        popcorn4.off( "loadeddata", fourthTest );
+        equal( Math.floor( popcorn4.currentTime() ), 10, "youtube fragment works with &t=10s" );
+        plus();
+      };
+
+  popcorn1 = Popcorn.youtube( "#video8", "http://www.youtube.com/watch?v=nfGV32RNkhw&start=130" );
+  popcorn1.on( "loadeddata", firstTest);
+  if ( popcorn1.readyState >= 4 ) {
+
+    firstTest();
+  }
+
+  popcorn2 = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw&t=2m10s" );
+  popcorn2.on( "loadeddata", secondTest);
+  if ( popcorn2.readyState >= 4 ) {
+
+    secondTest();
+  }
+
+  popcorn3 = Popcorn.youtube( "#video10", "http://www.youtube.com/watch?v=nfGV32RNkhw&t=2m" );
+  popcorn3.on( "loadeddata", thirdTest);
+  if ( popcorn3.readyState >= 4 ) {
+
+    thirdTest();
+  }
+
+  popcorn4 = Popcorn.youtube( "#video11", "http://www.youtube.com/watch?v=nfGV32RNkhw&t=10s" );
+  popcorn4.on( "loadeddata", fourthTest);
+  if ( popcorn4.readyState >= 4 ) {
+
+    fourthTest();
+  }
 });
