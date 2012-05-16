@@ -6,6 +6,11 @@ $(function() {
       create = function( type ) {
         return document.createElement( type );
       },
+      sendGetFocus = function( event ) {
+          event.target &&
+            event.target.contentWindow &&
+              event.target.contentWindow.postMessage( "getFocus", "*" );
+      },
       index = 0,
       testFrame = id( "test-frame" )
       results = id( "qunit-tests" ),
@@ -18,6 +23,8 @@ $(function() {
       currentTest = tests[ index ],
       results_arr = [],
       userAgent = id( "qunit-userAgent" );
+
+  testFrame.addEventListener( "load", sendGetFocus, false );
 
 	if ( userAgent ) {
 		userAgent.innerHTML = navigator.userAgent;
