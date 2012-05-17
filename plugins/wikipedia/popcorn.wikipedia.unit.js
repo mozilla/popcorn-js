@@ -1,7 +1,7 @@
 test( "Popcorn wikipedia Plugin", function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 13,
+      expects = 14,
       count = 0,
       theArticle = document.getElementById( "wikidiv" );
 
@@ -36,13 +36,21 @@ test( "Popcorn wikipedia Plugin", function() {
       target: "wikidiv",
       numberofwords: 43
     })
+    .wikipedia({
+      start: 2,
+      end: 4,
+      src: "http://en.wikipedia.org/wiki/Bunny",
+      title: "This is an article about bunnies",
+      target: "wikidiv",
+      numberofwords: 1000
+    })
     .volume( 0 )
     .play();
 
-  popped.exec( 2, function() {
+  popped.cue( 2, function() {
     notEqual( theArticle.innerHTML, "", "wikidiv now contains information" );
     plus();
-    equal( theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
+    equal( theArticle.childElementCount, 4, "wikidiv now contains four child elements" );
     plus();
     equal( theArticle.children[ 0 ].innerHTML, "this is an article", "wikidiv has the right title" );
     plus();
@@ -51,14 +59,16 @@ test( "Popcorn wikipedia Plugin", function() {
     // subtract 1 from length for the  '...' added in by the plugin
     equal( theArticle.children[ 1 ].innerHTML.split( " " ).length -1, 22, "wikidiv contains 22 words" );
     plus();
-  });
-
-  popped.exec( 3, function() {
-    equal( theArticle.innerHTML, "", "wikidiv was cleared properly" );
+    equal( theArticle.children[ 3 ].innerHTML.split( " " ).length - 1, 1000, "redirected article successfully retrieved 1000 words" );
     plus();
   });
 
-  popped.exec( 4, function() {
+  popped.cue( 3, function() {
+    equal( theArticle.childElementCount, 2, "first wikipedia article was cleared properly" );
+    plus();
+  });
+
+  popped.cue( 4, function() {
     notEqual( theArticle.innerHTML, "", "wikidiv now contains information" );
     plus();
     equal( theArticle.childElementCount, 2, "wikidiv now contains two child elements" );
@@ -70,7 +80,7 @@ test( "Popcorn wikipedia Plugin", function() {
     plus();
   });
 
-  popped.exec( 6, function() {
+  popped.cue( 6, function() {
     popped.pause().removeTrackEvent( popped.data.trackEvents.byStart[ 4 ]._id );
     equal( theArticle.innerHTML, "", "wikidiv is now empty" );
     plus();
