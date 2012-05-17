@@ -51,10 +51,11 @@
           vimeo_player_loaded.seek[ vimeoContainer.id ] = function( time ) {
             if( time.seconds !== currentTime ) {
               seeking = true;
+              media.dispatchEvent( "seeking" );
               currentTime = time.seconds;
-              media.dispatchEvent( "seeked" );
-              media.dispatchEvent( "timeupdate" );
               seeking = false;
+              media.dispatchEvent( "timeupdate" );
+              media.dispatchEvent( "seeked" );
             }
           };
 
@@ -155,12 +156,7 @@
                 return currentTime;
               }
 
-              currentTime = seekTime = +val;
-
-              seeking = true;
-              media.dispatchEvent( "seeked" );
-              media.dispatchEvent( "timeupdate" );
-              vimeoObject.api_seekTo( currentTime );
+              vimeoObject.api_seekTo( +val );
 
               return currentTime;
             },

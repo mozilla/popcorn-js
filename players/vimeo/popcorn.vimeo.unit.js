@@ -435,3 +435,25 @@ asyncTest( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
   });
 
 });
+
+asyncTest( "Seeked and Seeking events", 4, function() {
+  var popcorn = Popcorn.vimeo( "#player_4", "http://player.vimeo.com/video/11336811" ),
+      count = 0;
+
+  popcorn.on( "seeking", function() {
+    equal( count++, 0, "Count is initially 0, seeking was fired first" );
+  });
+
+  popcorn.on( "seeked", function() {
+    equal( count, 1, "Count is 1, seeked was fired after seeking" );
+    equal( Math.round( this.currentTime() ), 10, "instances currentTime is 10 seconds after the seek" );
+    equal( this.paused(), true, "instance is paused" );
+    start();
+  });
+
+  popcorn.play();
+  // Doing this to ensure a seek is fired
+  setTimeout(function() {
+    popcorn.pause().currentTime( 10 );
+  }, 1000);
+});
