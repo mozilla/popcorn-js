@@ -2364,7 +2364,6 @@ asyncTest( "frameAnimation doesn't trigger timeupdate when media paused", 2, fun
       // Spin and wait to make sure frame doesn't get called while paused
       setTimeout( function() {
         equal( fired, 0, "frame should not have fired." );
-        second = true;
 
         // Swing around for another run
         $pop.play();
