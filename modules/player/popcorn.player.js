@@ -1,7 +1,5 @@
 (function( Popcorn ) {
 
-  var DEFAULT_LIMIT = 500;
-
   // combines calls of two function calls into one
   var combineFn = function( first, second ) {
 
@@ -350,12 +348,10 @@
   // HTML5 video's play and pause are asynch, but do fire in sequence
   // play() should really mean "requestPlay()" or "queuePlay()" and
   // stash a callback that will play the media resource when it's ready to be played
-  Popcorn.player.playerQueue = function( limit ) {
+  Popcorn.player.playerQueue = function() {
 
     var _queue = [],
-        _running = false,
-        // we enforce a limit in case items are pushed faster than they are shifted
-        _limit = limit || DEFAULT_LIMIT;
+        _running = false;
 
     return {
       next: function() {
@@ -366,17 +362,14 @@
       },
       add: function( callback ) {
 
-        if ( _queue.length < _limit ) {
+        _queue.push( function() {
 
-          _queue.push( function() {
+          _running = true;
+          callback && callback();
+        });
 
-            _running = true;
-            callback && callback();
-          });
-
-          // if there is only one item on the queue, start it
-          !_running && _queue[ 0 ]();
-        }
+        // if there is only one item on the queue, start it
+        !_running && _queue[ 0 ]();
       }
     };
   };
