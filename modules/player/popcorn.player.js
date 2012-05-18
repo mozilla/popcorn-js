@@ -304,9 +304,6 @@
       // when a custom player is loaded, load basePlayer state into custom player
       basePlayer.addEventListener( "loadedmetadata", function() {
 
-        // if a player is not ready before currentTime is called, this will set it after it is ready
-        basePlayer.currentTime = currentTime;
-
         // same as above with volume and muted
         basePlayer.volume = volume;
         basePlayer.muted = muted;
