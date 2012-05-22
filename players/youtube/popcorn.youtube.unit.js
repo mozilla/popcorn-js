@@ -219,8 +219,16 @@ asyncTest("Update Timer", function () {
     p2.play();
   });
 
-  p2.volume( 0 ).currentTime(3);
+  var ready = function() {
+    p2.off( "canplaythrough", ready );
+    p2.volume( 0 ).currentTime(3);
+  };
 
+  if ( p2.readyState() >= 4 ) {
+    ready();
+  } else {
+    p2.on( "canplaythrough", ready );
+  }
 });
 
 asyncTest("Plugin Factory", function () {
@@ -586,7 +594,12 @@ asyncTest( "YouTube ended event", function() {
     ok( true, "YouTube is successfully firing the ended event" );
     start();
   });
-  pop.play( 150 );
+
+  pop.exec( 5, function(){
+    pop.currentTime( 150 );
+  });
+
+  pop.play();
 });
 
 asyncTest( "youtube player gets a proper _teardown", function() {
