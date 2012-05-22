@@ -10,48 +10,63 @@
       var p = Popcorn( "#video" )
 
         // Simple text
-        .text( {
+        .text({
           start: 1,
           end: 5,
           text: 'This video made exclusively for drumbeat.org',
           target: 'textdiv'
-        } )
+        })
 
         // HTML text, rendered as HTML
-        .text( {
+        .text({
           start: 5,
           end: 10,
           text: '<p>This video made <em>exclusively</em> for drumbeat.org</p>',
           target: 'textdiv'
-        } )
+        })
 
         // HTML text, escaped and rendered as plain text
-        .text( {
+        .text({
           start: 10,
           end: 15,
           text: 'This is an HTML p element: <p>paragraph</p>',
           escape: true,
           target: 'textdiv'
-        } )
+        })
 
         // Multi-Line HTML text, escaped and rendered as plain text without breaks
-        .text( {
+        .text({
           start: 15,
           end: 20,
           text: 'This is an HTML p element: <p>paragraph</p>\nThis is an HTML b element: <b>bold</b>',
           escape: true,
           target: 'textdiv'
-        } )
+        })
 
         // Multi-Line HTML text, escaped and rendered as plain text with breaks
-        .text( {
+        .text({
           start: 20,
           end: 25,
           text: 'This is an HTML p element: <p>paragraph</p>\nThis is an HTML b element: <b>bold</b>',
           escape: true,
           multiline: true,
           target: 'textdiv'
-        } )
+        })
+
+        // Subtitle text
+        .text({
+          start: 25,
+          end: 30,
+          text: 'This is a subtitle'
+        })
+
+        // Subtitle text, with HTML, multiline
+        .text({
+          start: 30,
+          end: 35,
+          text: '<p>This is a subtitle, in a p element</p>\nThis is on a new line!',
+          multiline: true
+        })
 
         .play().volume( 0 );
     } );
@@ -59,7 +74,7 @@
   </script>
 </head>
 <body>
-  <h1 id="qunit-header">Popcorn Footnote Plug-in Demo</h1>
+  <h1 id="qunit-header">Popcorn Text Plug-in Demo</h1>
   <p> Text displaying "This video made exclusively for drumbeat.org" will appear from 1 to 5.</p>
   <p> Text displaying "This video made exclusively for drumbeat.org", with <em>exclusively</em> emphasized (e.g., inline html) will appear from 5 to 10.</p>
   <p> Text displaying "This is an HTML p element: &lt;p&gt;paragraph&lt;/p&gt;" (e.g., escaped html) will appear from 10 to 15.</p>
