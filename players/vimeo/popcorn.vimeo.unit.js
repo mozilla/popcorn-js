@@ -338,8 +338,16 @@ asyncTest( "Plugin Factory", function() {
     end: 5
   });
 
-  popped.currentTime( 0 ).play();
+  var ready = function() {
+    popped.off( "canplaythrough", ready );
+    popped.volume( 0 ).currentTime( 0 ).play();
+  };
 
+  if ( popped.readyState() >= 4 ) {
+    ready();
+  } else {
+    popped.on( "canplaythrough", ready );
+  }
 });
 
 asyncTest( "Popcorn vimeo Plugin Url and Duration Tests", function() {

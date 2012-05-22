@@ -289,10 +289,12 @@ Popcorn.player( "youtube", {
               media.dispatchEvent( "play" );
 
               media.dispatchEvent( "playing" );
-            }
 
-            timeupdate();
-            options.youtubeObject.playVideo();
+              timeupdate();
+              options.youtubeObject.playVideo();
+            } else {
+              playerQueue.next();
+            }
           });
         };
 
@@ -310,6 +312,8 @@ Popcorn.player( "youtube", {
               media.paused = true;
               media.dispatchEvent( "pause" );
               options.youtubeObject.pauseVideo();
+            } else {
+              playerQueue.next();
             }
           });
         };

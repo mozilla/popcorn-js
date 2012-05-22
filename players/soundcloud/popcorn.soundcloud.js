@@ -30,6 +30,8 @@
             media.dispatchEvent( "playing" );
             media.dispatchEvent( "play" );
             widget && widget.play();
+          } else {
+            playerQueue.next();
           }
         });
       };
@@ -42,6 +44,8 @@
             media.paused = true;
             media.dispatchEvent( "pause" );
             widget && widget.pause();
+          } else {
+            playerQueue.next();
           }
         });
       };
@@ -123,6 +127,7 @@
             options.widget = widget = SC.Widget( container.id );
             // setup all of our listeners
             widget.bind(SC.Widget.Events.FINISH, function() {
+              media.pause();
               media.dispatchEvent( "ended" );
             });
 
@@ -218,7 +223,7 @@
 
       // remove all bound soundcloud listeners
       for ( var prop in events ) {
-        widget.unbind( events[ prop ] );
+        widget && widget.unbind( events[ prop ] );
       }
     }
   });

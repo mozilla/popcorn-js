@@ -133,6 +133,8 @@
                 media.dispatchEvent( "playing" );
                 timeUpdate();
                 vimeoObject.api_play();
+              } else {
+                playerQueue.next();
               }
             });
           };
@@ -146,6 +148,8 @@
                 media.paused = true;
                 media.dispatchEvent( "pause" );
                 vimeoObject.api_pause();
+              } else {
+                playerQueue.next();
               }
             });
           };

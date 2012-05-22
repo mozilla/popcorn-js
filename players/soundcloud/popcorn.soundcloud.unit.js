@@ -225,16 +225,19 @@ asyncTest( "Events and Player Control", function () {
   })());
 
   player.on( "volumechange", function() {
+    player.off( "volumechange" );
     ok( true, "volumechange was fired by dispatch" );
     plus();
+  });
+
+  player.cue( 10, function() {
+    // Will trigger a "seeked" event to near end
+    player.currentTime( player.duration() - 1 );
   });
 
   player.on( "canplaythrough", function() {
     ok( true, "Can play through" );
     plus();
-
-    // Will trigger a "seeked" event to near end
-    player.currentTime( player.duration() - 1 );
   });
 
   player.on( "seeked", function() {
@@ -248,9 +251,19 @@ asyncTest( "Events and Player Control", function () {
     ok( true, "Media is done playing" );
     plus();
 
-    equal( player.paused, 1, "Paused is set on end" );
+    equal( player.paused(), 1, "Paused is set on end" );
     plus();
   });
 
-  player.play();
+  var ready = function() {
+
+    player.off( "canplaythrough", ready );
+    player.play();
+  };
+
+  if ( player.readyState() >= 4 ) {
+    ready();
+  } else {
+    player.on( "canplaythrough", ready );
+  }
 });
