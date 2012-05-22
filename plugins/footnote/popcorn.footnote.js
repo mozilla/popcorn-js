@@ -28,7 +28,7 @@
 
     manifest: {
       about: {
-        name: "Popcorn " + name + " Plugin",
+        name: "Popcorn Footnote Plugin",
         version: "0.2",
         author: "@annasob, @rwaldron",
         website: "annasob.wordpress.com"
