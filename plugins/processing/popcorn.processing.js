@@ -154,10 +154,9 @@
       },
       noPause: {
         elem: "input",
-        type: "boolean",
+        type: "checkbox",
         label: "No Loop",
-        default: true,
-        optional: true
+        default: false
       }
     }
   });
