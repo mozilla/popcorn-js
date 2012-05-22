@@ -358,10 +358,9 @@
       },
       zoom: {
         elem: "input",
-        type: "text",
+        type: "number",
         label: "Zoom",
-        default: 2,
-        optional: true
+        default: 2
       },
       lat: {
         elem: "input",

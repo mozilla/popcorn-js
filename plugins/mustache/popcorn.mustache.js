@@ -201,7 +201,7 @@
       /* TODO: how to show a checkbox/boolean? */
       dynamic: {
         elem: "input",
-        type: "boolean",
+        type: "checkbox",
         label: "Dynamic",
         default: true,
         optional: true

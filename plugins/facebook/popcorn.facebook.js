@@ -120,14 +120,14 @@
         },
         stream: {
           elem: "input",
-          type: "boolean",
+          type: "checkbox",
           label: "Stream",
           default: false,
           optional: true
         },
         header: {
           elem: "input",
-          type: "boolean",
+          type: "checkbox",
           label: "Header",
           default: false,
           optional: true
@@ -165,21 +165,21 @@
         },
         show_faces: {
           elem: "input",
-          type: "boolean",
+          type: "checkbox",
           label: "Showfaces",
           default: false,
           optional: true
         },
         recommendations: {
           elem: "input",
-          type: "boolean",
+          type: "checkbox",
           label: "Recommendations",
           default: false,
           optional: true
         },
         always_post_to_friends: {
           elem: "input",
-          type: "boolean",
+          type: "checkbox",
           label: "Always_post_to_friends",
           default: false,
           optional: true
