@@ -1560,7 +1560,8 @@
   }
 
   // Debug-mode flag for plugin development
-  Popcorn.plugin.debug = false;
+  // True for Popcorn development versions, false for stable/tagged versions
+  Popcorn.plugin.debug = ( Popcorn.version === "@" + "VERSION" );
 
   //  removePlugin( type ) removes all tracks of that from all instances of popcorn
   //  removePlugin( obj, type ) removes all tracks of type from obj, where obj is a single instance of popcorn
