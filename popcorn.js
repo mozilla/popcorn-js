@@ -193,8 +193,7 @@
 
         // Stores ad-hoc state related data]
         state: {
-          volume: this.media.volume,
-          paused: this.media.paused
+          volume: this.media.volume
         },
 
         // Store track event object references by trackId
@@ -260,7 +259,7 @@
           self.data.timeUpdate = function () {
 
             // Don't fire timeupdate when paused.
-            if ( !self.data.state.paused ) {
+            if ( !self.media.paused ) {
               Popcorn.timeUpdate( self, {} );
 
               // fire frame for each enabled active plugin of every type
@@ -276,7 +275,7 @@
 
                     runningPlugin = runningPlugins[ i ];
                     rpNatives = runningPlugin._natives;
-                    rpNatives && rpNatives.frame && !self.data.state.paused &&
+                    rpNatives && rpNatives.frame && !self.media.paused &&
                       rpNatives.frame.call( self, {}, runningPlugin, self.currentTime() );
                   }
                 }
@@ -530,16 +529,6 @@
             if ( arg != null && /play|pause/.test( name ) ) {
               this.media.currentTime = Popcorn.util.toSeconds( arg );
             }
-
-            // Shortcut to "paused" attribute
-            if ( name === "pause" ) {
-              this.data.state.paused = true;
-            }
-
-            if ( name === "play" ) {
-              this.data.state.paused = false;
-            }
-
 
             this.media[ name ]();
 
