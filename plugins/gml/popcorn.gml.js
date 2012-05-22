@@ -153,18 +153,18 @@
       options: {
         start: {
           elem: "input",
-          type: "text",
-          label: "In"
+          type: "number",
+          label: "Start"
         },
         end: {
           elem: "input",
-          type: "text",
-          label: "Out"
+          type: "number",
+          label: "End"
         },
         gmltag: {
           elem: "input",
           type: "text",
-          label: "GMLTag"
+          label: "GML Tag"
         },
         target: "gml-container"
       }

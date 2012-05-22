@@ -39,13 +39,13 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
       options: {
         start: {
           elem: "input",
-          type: "text",
-          label: "In"
+          type: "number",
+          label: "Start"
         },
         end: {
           elem: "input",
-          type: "text",
-          label: "Out"
+          type: "number",
+          label: "End"
         },
         target: "documentcloud-container",
         width: {
@@ -62,7 +62,7 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
         },
         src: {
           elem: "input",
-          type: "text",
+          type: "url",
           label: "PDF URL",
           "default": "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html"
         },

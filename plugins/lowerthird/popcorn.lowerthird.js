@@ -41,32 +41,32 @@
         options:{
           start: {
             elem: "input",
-            type: "text",
-            label: "In"
+            type: "number",
+            label: "Start"
           },
           end: {
             elem: "input",
-            type: "text",
-            label: "Out"
+            type: "number",
+            label: "End"
           },
           target: "lowerthird-container",
           salutation : {
             elem: "input",
             type: "text",
-            label: "Text",
+            label: "Salutation",
             "default": "hello",
             optional: true
           },
           name: {
             elem: "input",
             type: "text",
-            label: "Text",
+            label: "Name",
             "default": "Popcorn.js"
           },
           role: {
             elem: "input",
             type: "text",
-            label: "Text",
+            label: "Role",
             "default": "JavaScript library",
             optional: true
           }

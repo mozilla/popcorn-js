@@ -144,13 +144,13 @@
     options:{
       start: {
        elem: "input",
-       type: "text",
-       label: "In"
+       type: "number",
+       label: "Start"
       },
       end: {
         elem: "input",
-        type: "text",
-        label: "Out"
+        type: "number",
+        label: "End"
       },
       nameofwork: {
         elem: "input",
@@ -160,7 +160,7 @@
       nameofworkurl: {
         elem: "input",
         type: "url",
-        label: "Url of Work",
+        label: "URL of Work",
         optional: true
       },
       copyrightholder: {
@@ -171,17 +171,17 @@
       copyrightholderurl: {
         elem: "input",
         type: "url",
-        label: "Copyright Holder Url",
+        label: "Copyright Holder URL",
         optional: true
       },
       license: {
         elem: "input",
         type: "text",
-        label: "License type"
+        label: "License Type"
        },
       licenseurl: {
         elem: "input",
-        type: "url",
+        type: "text",
         label: "License URL",
         optional: true
       },

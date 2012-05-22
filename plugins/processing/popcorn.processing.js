@@ -134,19 +134,15 @@
     options: {
       start: {
         elem: "input",
-        type: "text",
-        label: "In"
+        type: "Number",
+        label: "Start"
       },
       end: {
         elem: "input",
-        type: "text",
-        label: "Out"
+        type: "Number",
+        label: "End"
       },
-      target: {
-        elem: "input",
-        type: "text",
-        label: "Target"
-      },
+      target: "processing-container",
       sketch: {
         elem: "input",
         type: "url",
