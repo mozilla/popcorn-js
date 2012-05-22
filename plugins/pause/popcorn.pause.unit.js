@@ -1,15 +1,17 @@
-test( "Popcorn Pause Plugin", function() {
+asyncTest( "Popcorn Pause Plugin", 2, function() {
 
-  var expectedTests = 3 ,
-      anchorA = document.getElementById( "anchorA" ),
-      anchorB = document.getElementById( "anchorB" ),
-      tolerance = 0.250;
+  var anchorA = document.getElementById( "anchorA" ),
+      anchorB = document.getElementById( "anchorB" );
 
-  var simulateClickOn = function ( paramElement ) {
+  anchorA.addEventListener( "click", function( e ) {
+    e.preventDefault();
+  }, false );
+
+  var simulateClickOn = function( paramElement ) {
 
     if ( typeof paramElement.click === "Function" ) {
-      paramElement.click() ;
-      return ;
+      paramElement.click();
+      return;
     }
 
     var evt = document.createEvent( "MouseEvents" );
@@ -23,46 +25,44 @@ test( "Popcorn Pause Plugin", function() {
     paramElement.dispatchEvent( evt );
   };
 
-  var otherVideo = Popcorn( "#video2" , {
-        pauseOnLinkClicked: true
+  var otherVideo = Popcorn( "#video2", {
+    pauseOnLinkClicked: true
   });
-  otherVideo.play() ;
+  otherVideo.play();
 
-  var popped = Popcorn( "#video" , {
-        pauseOnLinkClicked: true
+  var popped = Popcorn( "#video", {
+    pauseOnLinkClicked: true
   });
 
-  popped.code ({
+  popped.code({
     start: 2.000,
     end: 4,
     onStart: function ( options ) {
-      var currentTime = popped.currentTime() ;
-      simulateClickOn( anchorA ) ;
+      simulateClickOn( anchorA );
       ok(
-        ( currentTime + tolerance >= 2 ) && ( currentTime - tolerance <= 2 ) ,
+        this.paused,
         "Video successfully stopped with a click on an anchor at " +
-        "second 2 approximately (" + currentTime + ")"
+        "second 2 approximately (" + this.currentTime() + ")"
       );
       //Continue playing
-      popped.play() ;
+      popped.play();
     }
   })
-  .code ({
+  .code({
     start: 5.561,
-    end : 7,
-    onStart: function ( options ) {
-      var currentTime = popped.currentTime() ;
-      simulateClickOn( anchorB ) ;
+    end: 7,
+    onStart: function( options ) {
+      var currentTime = popped.currentTime();
+      simulateClickOn( anchorB );
       ok(
-        ( currentTime + tolerance >= 5.561 ) && ( currentTime - tolerance <= 5.561 ) ,
+        this.paused,
         "Video successfully stopped with a click on an anchor at " +
-        "second 5.561 approximately (" + currentTime + ")"
+        "second 5.561 approximately (" + this.currentTime() + ")"
       );
-    start() ;
+    start();
     }
   });
 
   popped.volume(0);
   popped.play();
-  stop() ;
 });
