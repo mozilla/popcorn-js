@@ -42,7 +42,7 @@
    *      text: 'This is an HTML p element: <p>paragraph</p>',
    *      escape: true,
    *      target: 'textdiv'
-   *    });
+   *    })
    *
    *    // Multi-Line HTML text, escaped and rendered as plain text
    *    .text({
@@ -75,11 +75,10 @@
 
   function newlineToBreak( string ) {
     // Deal with both \r\n and \n
-    return string.replace( /\r\n/gm, "<br>" )
-                 .replace( /\n/gm, "<br>" );
+    return string.replace( /\r?\n/gm, "<br>" );
   }
 
-  Popcorn.plugin( "text" , {
+  Popcorn.plugin( "text", {
 
     manifest: {
       about: {
@@ -118,7 +117,7 @@
     },
 
     _setup: function( options ) {
-      var target = document.getElementById( options.target );
+      var target = Popcorn.dom.find( options.target );
       var container = options._container = document.createElement( "div" );
 
       container.style.display = "none";
@@ -127,7 +126,7 @@
       var text = !!options.escape ? escapeHTML( options.text ) :
                                     options.text;
 
-      // Swap newlint for <br> if requested
+      // Swap newline for <br> if requested
       text = !!options.multiline ? newlineToBreak ( text ) : text;
       container.innerHTML = text;
 
@@ -164,5 +163,5 @@
         target.removeChild( options._container );
       }
     }
-  } );
-} )( Popcorn );
+  });
+})( Popcorn );
