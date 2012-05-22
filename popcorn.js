@@ -186,7 +186,8 @@
 
         // Stores ad-hoc state related data]
         state: {
-          volume: this.media.volume
+          volume: this.media.volume,
+          paused: this.media.paused
         },
 
         // Store track event object references by trackId
@@ -248,28 +249,31 @@
           //  60 frames per second as opposed to ~4 ( ~every 15-250ms)
           self.data.timeUpdate = function () {
 
-            Popcorn.timeUpdate( self, {} );
+            // Don't fire timeupdate when paused.
+            if ( !self.data.state.paused ) {
+              Popcorn.timeUpdate( self, {} );
 
-            // fire frame for each enabled active plugin of every type
-            Popcorn.forEach( Popcorn.manifest, function( key, val ) {
+              // fire frame for each enabled active plugin of every type
+              Popcorn.forEach( Popcorn.manifest, function( key, val ) {
 
-              runningPlugins = self.data.running[ val ];
+                runningPlugins = self.data.running[ val ];
 
-              // ensure there are running plugins on this type on this instance
-              if ( runningPlugins ) {
+                // ensure there are running plugins on this type on this instance
+                if ( runningPlugins ) {
 
-                rpLength = runningPlugins.length;
-                for ( var i = 0; i < rpLength; i++ ) {
+                  rpLength = runningPlugins.length;
+                  for ( var i = 0; i < rpLength; i++ ) {
 
-                  runningPlugin = runningPlugins[ i ];
-                  rpNatives = runningPlugin._natives;
-                  rpNatives && rpNatives.frame &&
-                    rpNatives.frame.call( self, {}, runningPlugin, self.currentTime() );
+                    runningPlugin = runningPlugins[ i ];
+                    rpNatives = runningPlugin._natives;
+                    rpNatives && rpNatives.frame && !self.data.state.paused &&
+                      rpNatives.frame.call( self, {}, runningPlugin, self.currentTime() );
+                  }
                 }
-              }
-            });
+              });
 
-            self.emit( "timeupdate" );
+              self.emit( "timeupdate" );
+            }
 
             !self.isDestroyed && requestAnimFrame( self.data.timeUpdate );
           };
@@ -497,6 +501,16 @@
             if ( arg != null && /play|pause/.test( name ) ) {
               this.media.currentTime = Popcorn.util.toSeconds( arg );
             }
+
+            // Shortcut to "paused" attribute
+            if ( name === "pause" ) {
+              this.data.state.paused = true;
+            }
+
+            if ( name === "play" ) {
+              this.data.state.paused = false;
+            }
+
 
             this.media[ name ]();
 

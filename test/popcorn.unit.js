@@ -2376,6 +2376,49 @@ test( "frame function (frameAnimation)", function() {
   }).play();
 });
 
+asyncTest( "frameAnimation doesn't trigger timeupdate when media paused", 2, function() {
+
+  var $pop = Popcorn( "#video", {
+        frameAnimation: true
+      }),
+      fired = -1;
+
+  Popcorn.plugin( "frameFn", {
+    start: function() {
+
+      this.pause();
+      fired = 0;
+
+      // Spin and wait to make sure frame doesn't get called while paused
+      setTimeout( function() {
+        equal( fired, 0, "frame should not have fired." );
+
+        // Swing around for another run
+        $pop.play();
+
+      }, 500);
+    },
+    frame: function() {
+      fired++;
+
+      ok( true, "frame fires when played" );
+
+      Popcorn.removePlugin( "frameFn" );
+      $pop.destroy();
+      start();
+    }
+  });
+
+  $pop.frameFn({
+    start: 1,
+    end: 3
+  });
+
+  $pop.on( "seeked", function didSeek() {
+    this.off( "seeked", didSeek ).play();
+  }).pause( 1 );
+});
+
 test( "Update Timer (timeupdate)", function() {
 
   QUnit.reset();
