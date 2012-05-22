@@ -182,8 +182,7 @@ asyncTest( "Subtitle", function() {
       end: 7,
       text: "this is the third subtitle of 2011"
     } )
-    .volume( 0 )
-    .play();
+    .volume( 0 );
 
   subtitlediv = popped.container;
 
@@ -191,89 +190,100 @@ asyncTest( "Subtitle", function() {
     start: 7,
     end: 9,
     text: "instance one test"
-  });
+  }).play();
 
   popped2.text({
       start: 7,
       end: 9,
       text: "instance two test"
     })
-    .volume( 0 )
-    .play().pause();
+    .volume( 0 );
 
   subtitle2div = popped2.container;
 
   popped.cue( 1, function() {
 
+    popped.on( "pause", function onPause() {
+      this.off( "pause", onPause );
+      equal( subtitlediv.children[ 0 ].innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
+      plus();
+
+      // capturing location now, to check against later,
+      // a subtitle must be displayed to get valid data
+      // which is why we do this in cue
+      subLeft = subtitlediv.style.left;
+      subTop  = subtitlediv.style.top;
+
+      // changing position
+      this.media.style.position = "absolute";
+      this.media.style.left = "400px";
+      this.media.style.top = "600px";
+      this.media.play();
+    });
     popped.media.pause();
-    equal( subtitlediv.children[ 0 ].innerHTML, "this is the first subtitle of 2011", "subtitle displaying correct information" );
-    plus();
-
-    // capturing location now, to check against later,
-    // a subtitle must be displayed to get valid data
-    // which is why we do this in cue
-    subLeft = subtitlediv.style.left;
-    subTop  = subtitlediv.style.top;
-
-    // changing position
-    popped.media.style.position = "absolute";
-    popped.media.style.left = "400px";
-    popped.media.style.top = "600px";
-    popped.media.play();
 
   });
 
   popped.cue( 3, function() {
 
-    popped.media.pause();
+    this.on( "pause", function onPause() {
+      this.off( "pause", onPause );
+      // check position of subtitle that should have moved with video,
+      // a subtitle must be displayed to get valid data
+      ok( subtitlediv.style.left !== subLeft, "subtitle's left position has changed" );
+      plus();
+      ok( subtitlediv.style.top !== subTop, "subtitle's top position has changed" );
+      plus();
 
-    // check position of subtitle that should have moved with video,
-    // a subtitle must be displayed to get valid data
-    ok( subtitlediv.style.left !== subLeft, "subtitle's left position has changed" );
-    plus();
-    ok( subtitlediv.style.top !== subTop, "subtitle's top position has changed" );
-    plus();
+      // we know values have changed, but how accurate are they?
+      // check values against the video's values
+      // we need four checks because if we just check against video's position,
+      // and video's position hasn't updated either, we'll pass when we should fail
+      equal( subtitlediv.style.left, this.position().left + "px", "subtitle left position moved" );
+      plus();
+      ok( Popcorn.position( subtitlediv ).top > this.position().top, "subtitle top position moved" );
+      plus();
 
-    // we know values have changed, but how accurate are they?
-    // check values against the video's values
-    // we need four checks because if we just check against video's position,
-    // and video's position hasn't updated either, we'll pass when we should fail
-    equal( subtitlediv.style.left, popped.position().left + "px", "subtitle left position moved" );
-    plus();
-    ok( Popcorn.position( subtitlediv ).top > popped.position().top, "subtitle top position moved" );
-    plus();
+      equal( subtitlediv.children[ 1 ].innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
+      plus();
 
-    equal( subtitlediv.children[ 1 ].innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
-    plus();
-
-    popped.media.play();
-
+      this.media.play();
+    });
+    this.media.pause();
   });
 
   popped.cue( 4, function() {
 
-    popped.media.pause();
-    equal( subtitlediv.children[ 1 ].style.display, "none", "subtitle is hidden" );
-    plus();
+    this.on( "pause", function onPause() {
+      this.off( "pause", onPause );
+      equal( subtitlediv.children[ 1 ].style.display, "none", "subtitle is hidden" );
+      plus();
 
-    popped.media.play();
-
+      this.media.play();
+    });
+    this.media.pause();
   });
 
   popped.cue( 8, function() {
-    popped.pause();
-    popped2.currentTime( 8 ).play();
+
+    this.on( "pause", function onPause() {
+      this.off( "pause", onPause );
+      popped2.currentTime( 8 ).play();
+    });
+    this.pause();
   });
 
   popped2.cue( 8, function() {
-    popped2.media.pause();
 
-    equal( subtitlediv.children[ 3 ].innerHTML, "instance one test", "subtitle displaying correct information" );
-    plus();
-    equal( subtitle2div.children[ 0 ].innerHTML, "instance two test", "subtitle displaying correct information" );
-    plus();
-
-    popped.media.play();
+    this.on( "pause", function onPause() {
+      this.off( "pause", onPause );
+      equal( subtitlediv.children[ 3 ].innerHTML, "instance one test", "subtitle displaying correct information" );
+      plus();
+      equal( subtitle2div.children[ 0 ].innerHTML, "instance two test", "subtitle displaying correct information" );
+      plus();
+      popped.media.play();
+    });
+    this.pause()
   });
 
   popped.cue( 10, function() {
@@ -282,11 +292,16 @@ asyncTest( "Subtitle", function() {
         subtitlediv.children[ 2 ].style.display === "none", "All subtitles are no longer visible" );
     plus();
 
-    popped.pause().removeTrackEvent( popped.data.trackEvents.byStart[ 6 ]._id );
+    this.on( "pause", function onPause() {
+      this.off( "pause", onPause );
+      this.removeTrackEvent( this.data.trackEvents.byStart[ 6 ]._id );
 
-    // There were 4 subtitles, should be three now
-    ok( subtitlediv.children.length === 3 , "subtitle div was destroyed"  );
-    plus();
+      // There were 4 subtitles, should be three now
+      ok( subtitlediv.children.length === 3 , "subtitle div was destroyed"  );
+      plus();
+    });
+
+    this.pause();
   });
 });
 
@@ -310,8 +325,6 @@ asyncTest( "Subtitle data tests", function() {
     end: 10
   });
 
-  popped.pause( 0 );
-
   equal( popped.container.children[ 0 ].innerHTML, "", "text with no `text` attribute defaults to an empty string" );
   plus();
 });
@@ -328,7 +341,7 @@ asyncTest( "Subtitle container creation tests", function() {
 
   function plus() {
     if ( ++count === expects ) {
-      popped.destroy();
+      popped.pause().destroy();
       start();
     }
   }
@@ -339,8 +352,6 @@ asyncTest( "Subtitle container creation tests", function() {
     text: "My Text",
     target: "divThatDoesntExist"
   });
-
-  popped.pause( 0 );
 
   containerAfterParse = document.getElementById( "divThatDoesntExist" );
 
