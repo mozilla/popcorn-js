@@ -15,59 +15,58 @@
    * @param {Object} options
    *
    * Example:
-     var p = Popcorn('#video')
-        .footnote({
-          start: 5, // seconds
-          end: 15, // seconds
-          text: 'This video made exclusively for drumbeat.org',
-          target: 'footnotediv'
-        } )
-   *
-   */
+   *  var p = Popcorn('#video')
+   *    .footnote({
+   *      start: 5, // seconds
+   *      end: 15, // seconds
+   *      text: 'This video made exclusively for drumbeat.org',
+   *      target: 'footnotediv'
+   *    });
+   **/
 
-  Popcorn.forEach( [ "footnote", "text" ], function( name ) {
+  Popcorn.plugin( "footnote", {
 
-    Popcorn.plugin( name , {
-
-      manifest: {
-        about: {
-          name: "Popcorn " + name + " Plugin",
-          version: "0.2",
-          author: "@annasob, @rwaldron",
-          website: "annasob.wordpress.com"
-        },
-        options: {
-          start: {
-            elem: "input",
-            type: "text",
-            label: "In"
-          },
-          end: {
-            elem: "input",
-            type: "text",
-            label: "Out"
-          },
-          text: {
-            elem: "input",
-            type: "text",
-            label: "Text"
-          },
-          target: name + "-container"
-        }
+    manifest: {
+      about: {
+        name: "Popcorn Footnote Plugin",
+        version: "0.2",
+        author: "@annasob, @rwaldron",
+        website: "annasob.wordpress.com"
       },
+      options: {
+        start: {
+          elem: "input",
+          type: "text",
+          label: "In"
+        },
+        end: {
+          elem: "input",
+          type: "text",
+          label: "Out"
+        },
+        text: {
+          elem: "input",
+          type: "text",
+          label: "Text"
+        },
+        target: "footnote-container"
+      }
+    },
+
     _setup: function( options ) {
 
-      var target = document.getElementById( options.target );
+      var target = Popcorn.dom.find( options.target );
 
       options._container = document.createElement( "div" );
       options._container.style.display = "none";
       options._container.innerHTML  = options.text;
 
-      if ( !target && Popcorn.plugin.debug ) {
+      if ( !target ) {
         throw new Error( "target container doesn't exist" );
       }
-      target && target.appendChild( options._container );
+      target.appendChild( options._container );
     },
+
     /**
      * @member footnote
      * The start function will be executed when the currentTime
@@ -77,6 +76,7 @@
     start: function( event, options ){
       options._container.style.display = "inline";
     },
+
     /**
      * @member footnote
      * The end function will be executed when the currentTime
@@ -86,10 +86,13 @@
     end: function( event, options ){
       options._container.style.display = "none";
     },
-    _teardown: function( options ) {
-      document.getElementById( options.target ) && document.getElementById( options.target ).removeChild( options._container );
-    }
-  });
-});
 
+    _teardown: function( options ) {
+      var target = Popcorn.dom.find( options.target );
+      if ( target ) {
+        target.removeChild( options._container );
+      }
+    }
+
+  });
 })( Popcorn );
