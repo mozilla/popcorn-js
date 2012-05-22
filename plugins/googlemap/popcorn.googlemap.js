@@ -387,18 +387,18 @@ var googleCallback;
       start: {
         elem: "input",
         type: "text",
-        label: "In"
+        label: "Start"
       },
       end: {
         elem: "input",
         type: "text",
-        label: "Out"
+        label: "End"
       },
       target: "map-container",
       type: {
         elem: "select",
         options: [ "ROADMAP", "SATELLITE", "STREETVIEW", "HYBRID", "TERRAIN", "STAMEN-WATERCOLOR", "STAMEN-TERRAIN", "STAMEN-TONER" ],
-        label: "Type",
+        label: "Map Type",
         optional: true
       },
       zoom: {

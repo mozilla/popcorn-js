@@ -156,31 +156,31 @@
       start: {
         elem: "input",
         type: "text",
-        label: "In"
+        label: "Start"
       },
       end: {
         elem: "input",
         type: "text",
-        label: "Out"
+        label: "End"
       },
       target: "feed-container",
       url: {
         elem: "input",
-        type: "url",
-        label: "url",
+        type: "text",
+        label: "URL",
         "default": "http://planet.mozilla.org/rss20.xml"
       },
       title: {
         elem: "input",
         type: "text",
-        label: "title",
+        label: "Title",
         "default": "Planet Mozilla",
         optional: true
       },
       orientation: {
         elem: "select",
         options: [ "Vertical", "Horizontal" ],
-        label: "orientation",
+        label: "Orientation",
         "default": "Vertical",
         optional: true
       }

@@ -177,17 +177,17 @@
       start: {
         elem: "input",
         type: "text",
-        label: "In"
+        label: "Start"
       },
       end: {
         elem: "input",
         type: "text",
-        label: "Out"
+        label: "End"
       },
       userid: {
         elem: "input",
         type: "text",
-        label: "UserID",
+        label: "User ID",
         optional: true
       },
       tags: {
@@ -204,7 +204,7 @@
       apikey: {
         elem: "input",
         type: "text",
-        label: "Api_key",
+        label: "Api Key",
         optional: true
       },
       target: "flickr-container",

@@ -342,18 +342,18 @@
       start: {
         elem: "input",
         type: "text",
-        label: "In"
+        label: "Start"
       },
       end: {
         elem: "input",
         type: "text",
-        label: "Out"
+        label: "End"
       },
       target: "map-container",
       type: {
         elem: "select",
         options: [ "ROADMAP", "SATELLITE", "TERRAIN" ],
-        label: "Type",
+        label: "Map Type",
         optional: true
       },
       zoom: {

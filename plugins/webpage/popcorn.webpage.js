@@ -44,17 +44,17 @@
         start: {
           elem: "input",
           type: "text",
-          label: "In"
+          label: "Start"
         },
         end: {
           elem: "input",
           type: "text",
-          label: "Out"
+          label: "End"
         },
         src: {
           elem: "input",
-          type: "url",
-          label: "Src",
+          type: "text",
+          label: "Source Page",
           "default": "http://mozillapopcorn.org"
         },
         target: "iframe-container"

@@ -76,7 +76,7 @@
         }
 
         // Current means of handling if alt_sizes doesn't have our default image size
-        defaultSizeIndex === -1 && Popcorn.error( "Clearly your blog has a picture that is so tiny it isn't even 250px wide. Consider " + 
+        defaultSizeIndex === -1 && Popcorn.error( "Clearly your blog has a picture that is so tiny it isn't even 250px wide. Consider " +
           " using a bigger picture or try a smaller size." );
 
         // If a matching photo is never found, use the default size.
@@ -247,42 +247,42 @@
         requestType: {
           elem: "select",
           options:[ "INFO", "AVATAR", "BLOGPOST" ],
-          label: "Type_Of_Plugin"
+          label: "Request Type"
         },
         target: "tumblr-container",
         start: {
           elem: "input",
           type: "text",
-          label: "Start_Time"
+          label: "Start"
         },
         end: {
           elem: "input",
           type: "text",
-          label: "End_Time"
+          label: "End"
         },
         base_hostname: {
           elem: "input",
           type: "text",
-          label: "User_Name",
+          label: "User Name",
           "default": "https://citriccomics.tumblr.com"
         },
         // optional parameters:
         api_key: { // Required for Blog Info and Blog Post retrievals
           elem: "input",
           type: "text",
-          label: "Application_Key",
+          label: "Api Key",
           optional: true
         },
         size: {
           elem: "select",
           options: [ 16, 24, 30, 40, 48, 64, 96, 128, 512 ],
-          label: "avatarSize",
+          label: "Avatar Size",
           optional: true
         },
         blogId: { // Required for BLOGPOST requests
           elem: "input",
           type: "number",
-          label: "Blog_ID",
+          label: "Blog Id",
           optional: true
         },
         /* Optional for Photo and Video BlogPosts, defaulted to 250 pixels for photos and 400 for videos if not provided or provided width
@@ -291,8 +291,8 @@
         */
         width: {
           elem: "input",
-          type: "number",
-          label: "Photo_Width",
+          type: "text",
+          label: "Photo Width",
           optional: true
         }
       }
@@ -350,9 +350,9 @@
         } else {
           type = "info";
         }
-        requestString = "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/" + type + "?api_key=" + options.api_key + "&id=" + options.blogId + 
+        requestString = "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/" + type + "?api_key=" + options.api_key + "&id=" + options.blogId +
           "&jsonp=tumblrCallBack";
-        
+
         this.listen( "tumblrError", function( e ){
           Popcorn.error( e );
         });

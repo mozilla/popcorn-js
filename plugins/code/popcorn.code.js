@@ -156,28 +156,28 @@
       start: {
        elem: "input",
        type: "text",
-       label: "In"
+       label: "Start"
       },
       end: {
         elem: "input",
         type: "text",
-        label: "Out"
+        label: "End"
       },
       onStart: {
         elem: "input",
         type: "function",
-        label: "onStart"
+        label: "On Start"
       },
       onFrame: {
         elem: "input",
         type: "function",
-        label: "onFrame",
+        label: "On Frame",
         optional: true
       },
       onEnd: {
         elem: "input",
         type: "function",
-        label: "onEnd"
+        label: "On End"
       }
     }
   });

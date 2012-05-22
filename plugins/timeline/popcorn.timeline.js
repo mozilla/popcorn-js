@@ -110,34 +110,34 @@
       start: {
         elem: "input",
         type: "text",
-        label: "In"
+        label: "Start"
       },
       end: {
         elem: "input",
         type: "text",
-        label: "Out"
+        label: "End"
       },
       target: "feed-container",
       title: {
         elem: "input",
         type: "text",
-        label: "title"
+        label: "Title"
       },
       text: {
         elem: "input",
         type: "text",
-        label: "text"
+        label: "Text"
       },
       innerHTML: {
         elem: "input",
         type: "text",
-        label: "innerHTML",
+        label: "HTML Code",
         optional: true
       },
       direction: {
         elem: "select",
         options: [ "DOWN", "UP" ],
-        label: "direction",
+        label: "Direction",
         optional: true
       }
     }

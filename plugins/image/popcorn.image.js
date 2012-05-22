@@ -91,25 +91,25 @@
         options: {
           start: {
             elem: "input",
-            type: "number",
-            label: "In"
+            type: "text",
+            label: "Start"
           },
           end: {
             elem: "input",
-            type: "number",
-            label: "Out"
+            type: "text",
+            label: "End"
           },
           href: {
             elem: "input",
-            type: "url",
-            label: "anchor URL",
+            type: "text",
+            label: "Anchor URL",
             "default": "http://mozillapopcorn.org/wp-content/themes/popcorn/images/for_developers.png",
             optional: true
           },
           target: "image-container",
           src: {
             elem: "input",
-            type: "url",
+            type: "text",
             label: "Source URL",
             "default": "http://mozillapopcorn.org/wp-content/themes/popcorn/images/for_developers.png"
           },

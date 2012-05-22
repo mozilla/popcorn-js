@@ -60,24 +60,24 @@
         type: {
           elem: "select",
           options: [ "LIKE", "LIKE-BOX", "ACTIVITY", "FACEPILE", "LIVE-STREAM", "SEND", "COMMENTS" ],
-          label: "Type"
+          label: "Plugin Type"
         },
         target: "facebook-container",
         start: {
           elem: "input",
           type: "text",
-          label: "In"
+          label: "Start"
         },
         end: {
           elem: "input",
           type: "text",
-          label: "Out"
+          label: "End"
         },
         // optional parameters:
         font: {
           elem: "input",
           type: "text",
-          label: "font",
+          label: "Font",
           optional: true
         },
         xid: {
@@ -88,14 +88,14 @@
         },
         href: {
           elem: "input",
-          type: "url",
-          label: "Href",
+          type: "text",
+          label: "href",
           optional: true
         },
         site: {
           elem: "input",
-          type: "url",
-          label:"Site",
+          type: "text",
+          label: "Site",
           optional: true
         },
         height: {
@@ -141,32 +141,32 @@
         max_rows: {
           elem: "input",
           type: "number",
-          label: "Max_rows",
+          label: "Max Rows",
           "default": 1,
           optional: true
         },
         border_color: {
           elem: "input",
           type: "text",
-          label: "Border_color",
+          label: "Border Color",
           optional: true
         },
         event_app_id: {
           elem: "input",
           type: "text",
-          label: "Event_app_id",
+          label: "Event App Id",
           optional: true
         },
         colorscheme: {
           elem: "select",
           options: [ "light", "dark" ],
-          label: "Colorscheme",
+          label: "Color Scheme",
           optional: true
         },
         show_faces: {
           elem: "input",
           type: "checkbox",
-          label: "Showfaces",
+          label: "Show Faces",
           "default": false,
           optional: true
         },
@@ -180,14 +180,14 @@
         always_post_to_friends: {
           elem: "input",
           type: "checkbox",
-          label: "Always_post_to_friends",
+          label: "Always post to Friends",
           "default": false,
           optional: true
         },
         num_posts: {
           elem: "input",
           type: "number",
-          label: "Number_of_Comments",
+          label: "Number of Comments",
           "default": 1,
           optional: true
         }

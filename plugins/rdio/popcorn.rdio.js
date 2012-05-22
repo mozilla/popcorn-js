@@ -132,14 +132,14 @@
       start: {
         elem: "input",
         type: "text",
-        label: "In"
+        label: "Start"
       },
       end: {
         elem: "input",
         type: "text",
-        label: "Out"
+        label: "End"
       },
-      target: "rdio",
+      target: "rdio-container",
       artist: {
         elem: "input",
         type: "text",

@@ -94,24 +94,24 @@
         productid: {
           elem: "input",
           type: "text",
-          label: "productid",
+          label: "Product Id",
           optional: true
         },
         related: {
           elem: "input",
           type: "text",
-          label: "related",
+          label: "Related",
           optional: true
         },
         start: {
           elem: "input",
           type: "text",
-          label: "In"
+          label: "Start"
         },
         end: {
           elem: "input",
           type: "text",
-          label: "Out"
+          label: "End"
         },
 
         target: "linkedin-container"

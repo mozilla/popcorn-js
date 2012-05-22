@@ -72,12 +72,12 @@
           start: {
             elem: "input",
             type: "text",
-            label: "In"
+            label: "Start"
           },
           end: {
             elem: "input",
             type: "text",
-            label: "Out"
+            label: "End"
           },
           target: "wordriver-container",
           text: {

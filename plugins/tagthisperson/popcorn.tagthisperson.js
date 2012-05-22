@@ -107,30 +107,30 @@
       start: {
         elem: "input",
         type: "text",
-        label: "In"
+        label: "Start"
       },
       end: {
         elem: "input",
         type: "text",
-        label: "Out"
+        label: "End"
       },
       target : "tagthisperson-container",
       person: {
         elem: "input",
         type: "text",
-        label: "Name",
+        label: "Person's Name",
         "default": "Popcorn.js"
       },
       image: {
         elem: "input",
-        type: "url",
-        label: "Image Src",
+        type: "text",
+        label: "Image URL",
         optional: true
       },
       href: {
         elem: "input",
-        type: "url",
-        label: "URL",
+        type: "text",
+        label: "Anchor URL",
         optional: true
       }
     }

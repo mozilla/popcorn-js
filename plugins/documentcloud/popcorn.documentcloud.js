@@ -40,12 +40,12 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
         start: {
           elem: "input",
           type: "text",
-          label: "In"
+          label: "Start"
         },
         end: {
           elem: "input",
           type: "text",
-          label: "Out"
+          label: "End"
         },
         target: "documentcloud-container",
         width: {

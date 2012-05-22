@@ -44,12 +44,12 @@ var wikiCallback;
         start: {
           elem: "input",
           type: "text",
-          label: "In"
+          label: "Start"
         },
         end: {
           elem: "input",
           type: "text",
-          label: "Out"
+          label: "End"
         },
         lang: {
           elem: "input",
@@ -60,8 +60,8 @@ var wikiCallback;
         },
         src: {
           elem: "input", 
-          type: "url", 
-          label: "Src",
+          type: "text", 
+          label: "Wiki Source",
           "default": "http://en.wikipedia.org/wiki/Cat"
         },
         title: {
@@ -73,8 +73,8 @@ var wikiCallback;
         },
         numberofwords: {
           elem: "input",
-          type: "text",
-          label: "Num Of Words",
+          type: "number",
+          label: "Number of Words",
           "default": "200",
           optional: true
         },

@@ -44,30 +44,30 @@
           start: {
             elem: "input",
             type: "text",
-            label: "In"
+            label: "Start"
           },
           end: {
             elem: "input",
             type: "text",
-            label: "Out"
+            label: "End"
           },
           src: {
             elem: "input",
             type: "text",
-            label: "Source",
+            label: "User Source",
             "default": "@popcornjs"
           },
           target: "twitter-container",
           height: {
             elem: "input",
-            type: "number",
+            type: "text",
             label: "Height",
             "default": "200",
             optional: true
           },
           width: {
             elem: "input",
-            type: "number",
+            type: "text",
             label: "Width",
             "default": "250",
             optional: true
