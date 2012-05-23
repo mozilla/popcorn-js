@@ -151,7 +151,7 @@
             } );
             options.map.addLayer( sLayer );
             break;
-          default: /* case "ROADMAP": */
+          "default": /* case "ROADMAP": */
             // add OpenStreetMap layer
             projection = new OpenLayers.Projection( 'EPSG:900913' );
             displayProjection = new OpenLayers.Projection( 'EPSG:4326' );
@@ -360,7 +360,7 @@
         elem: "input",
         type: "number",
         label: "Zoom",
-        default: 2
+        "default": 2
       },
       lat: {
         elem: "input",
@@ -378,7 +378,7 @@
         elem: "input",
         type: "text",
         label: "Location",
-        default: "Toronto, Ontario, Canada"
+        "default": "Toronto, Ontario, Canada"
       },
       markers: {
         elem: "input",
