@@ -192,7 +192,7 @@ Popcorn.player( "youtube", {
           }
 
           cachedPause = false;
-          playerQueue.add( function() {
+          playerQueue.add(function() {
 
             if ( realPaused !== false || options.youtubeObject.getPlayerState() !== 1 ) {
 
@@ -217,7 +217,7 @@ Popcorn.player( "youtube", {
           }
 
           cachedPause = true;
-          playerQueue.add( function() {
+          playerQueue.add(function() {
 
             if ( realPaused !== true || options.youtubeObject.getPlayerState() !== 2 ) {
 

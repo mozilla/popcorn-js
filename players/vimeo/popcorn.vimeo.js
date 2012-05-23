@@ -25,7 +25,8 @@
           volumeChanged = false,
           lastMuted = false,
           lastVolume = 0,
-          height, width,
+          height,
+          width,
           playerQueue = Popcorn.player.playerQueue();
 
       vimeoContainer.id = media.id + Popcorn.guid();
@@ -124,7 +125,7 @@
 
           media.play = function() {
 
-            playerQueue.add( function() {
+            playerQueue.add(function() {
 
               if ( media.paused ) {
 
@@ -141,7 +142,7 @@
 
           media.pause = function() {
 
-            playerQueue.add( function() {
+            playerQueue.add(function() {
 
               if ( !media.paused ) {
 

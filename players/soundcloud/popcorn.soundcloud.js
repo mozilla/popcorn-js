@@ -23,7 +23,7 @@
 
       media.play = function() {
 
-        playerQueue.add( function() {
+        playerQueue.add(function() {
           if ( media.paused ) {
 
             media.paused = false;
@@ -38,7 +38,7 @@
 
       media.pause = function() {
 
-        playerQueue.add( function() {
+        playerQueue.add(function() {
           if ( !media.paused ) {
 
             media.paused = true;
