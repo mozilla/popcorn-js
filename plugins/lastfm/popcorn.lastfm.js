@@ -132,7 +132,7 @@
         elem: "input",
         type: "text",
         label: "Artist",
-        default: "the beatles"
+        "default": "the beatles"
       }
     }
   });

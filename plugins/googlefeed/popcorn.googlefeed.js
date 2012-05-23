@@ -168,20 +168,20 @@
         elem: "input",
         type: "url",
         label: "url",
-        default: "http://planet.mozilla.org/rss20.xml"
+        "default": "http://planet.mozilla.org/rss20.xml"
       },
       title: {
         elem: "input",
         type: "text",
         label: "title",
-        default: "Planet Mozilla",
+        "default": "Planet Mozilla",
         optional: true
       },
       orientation: {
         elem: "select",
         options: [ "Vertical", "Horizontal" ],
         label: "orientation",
-        default: "Vertical",
+        "default": "Vertical",
         optional: true
       }
     }

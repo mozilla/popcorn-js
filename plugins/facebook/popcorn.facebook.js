@@ -102,14 +102,14 @@
           elem: "input",
           type: "text",
           label: "Height",
-          default: "200",
+          "default": "200",
           optional: true
         },
         width: {
           elem: "input",
           type: "text",
           label: "Width",
-          default: "200",
+          "default": "200",
           optional: true
         },
         action: {
@@ -122,14 +122,14 @@
           elem: "input",
           type: "checkbox",
           label: "Stream",
-          default: false,
+          "default": false,
           optional: true
         },
         header: {
           elem: "input",
           type: "checkbox",
           label: "Header",
-          default: false,
+          "default": false,
           optional: true
         },
         layout: {
@@ -142,7 +142,7 @@
           elem: "input",
           type: "number",
           label: "Max_rows",
-          default: 1,
+          "default": 1,
           optional: true
         },
         border_color: {
@@ -167,28 +167,28 @@
           elem: "input",
           type: "checkbox",
           label: "Showfaces",
-          default: false,
+          "default": false,
           optional: true
         },
         recommendations: {
           elem: "input",
           type: "checkbox",
           label: "Recommendations",
-          default: false,
+          "default": false,
           optional: true
         },
         always_post_to_friends: {
           elem: "input",
           type: "checkbox",
           label: "Always_post_to_friends",
-          default: false,
+          "default": false,
           optional: true
         },
         num_posts: {
           elem: "input",
           type: "number",
           label: "Number_of_Comments",
-          default: 1,
+          "default": 1,
           optional: true
         }
       }
