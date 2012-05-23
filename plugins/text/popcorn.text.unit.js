@@ -21,9 +21,11 @@ test( "Text", function() {
 
   function plus() {
     if ( ++count===expects ) {
-      popped.pause( 0 );
-      popped.destroy();
-      start();
+      popped.on( "pause", function onPause(){
+        this.off( "pause", onPause );
+        this.destroy();
+        start();
+      }).currentTime( 0 ).pause();
     }
   }
 
@@ -171,34 +173,30 @@ asyncTest( "Subtitle", function() {
       start: 0,
       end: 2,
       text: "this is the first subtitle of 2011"
-    })
+  })
   .text({
       start: 2,
       end: 4,
       text: "this is the second subtitle of 2011"
-    })
+  })
   .text({
       start: 5,
       end: 7,
       text: "this is the third subtitle of 2011"
-    } )
-    .volume( 0 );
-
-  subtitlediv = popped.container;
-
-  popped.text({
+  })
+  .text({
     start: 7,
     end: 9,
     text: "instance one test"
-  }).play();
+  }).volume( 0 ).play();
 
   popped2.text({
       start: 7,
       end: 9,
       text: "instance two test"
-    })
-    .volume( 0 );
+    }).volume( 0 );
 
+  subtitlediv = popped.container;
   subtitle2div = popped2.container;
 
   popped.cue( 1, function() {
@@ -218,9 +216,8 @@ asyncTest( "Subtitle", function() {
       this.media.style.position = "absolute";
       this.media.style.left = "400px";
       this.media.style.top = "600px";
-      this.media.play();
-    });
-    popped.media.pause();
+      this.play();
+    }).pause();
 
   });
 
@@ -247,9 +244,8 @@ asyncTest( "Subtitle", function() {
       equal( subtitlediv.children[ 1 ].innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
       plus();
 
-      this.media.play();
-    });
-    this.media.pause();
+      this.play();
+    }).pause();
   });
 
   popped.cue( 4, function() {
@@ -259,9 +255,8 @@ asyncTest( "Subtitle", function() {
       equal( subtitlediv.children[ 1 ].style.display, "none", "subtitle is hidden" );
       plus();
 
-      this.media.play();
-    });
-    this.media.pause();
+      this.play();
+    }).pause();
   });
 
   popped.cue( 8, function() {
@@ -269,8 +264,8 @@ asyncTest( "Subtitle", function() {
     this.on( "pause", function onPause() {
       this.off( "pause", onPause );
       popped2.currentTime( 8 ).play();
-    });
-    this.pause();
+
+    }).pause();
   });
 
   popped2.cue( 8, function() {
@@ -281,9 +276,9 @@ asyncTest( "Subtitle", function() {
       plus();
       equal( subtitle2div.children[ 0 ].innerHTML, "instance two test", "subtitle displaying correct information" );
       plus();
-      popped.media.play();
-    });
-    this.pause()
+      popped.play();
+
+    }).pause()
   });
 
   popped.cue( 10, function() {
@@ -299,26 +294,14 @@ asyncTest( "Subtitle", function() {
       // There were 4 subtitles, should be three now
       ok( subtitlediv.children.length === 3 , "subtitle div was destroyed"  );
       plus();
-    });
 
-    this.pause();
+    }).pause();
   });
 });
 
-asyncTest( "Subtitle data tests", function() {
+asyncTest( "Subtitle data tests", 1, function() {
 
-  var popped = Popcorn( "#video" ),
-      expects = 1,
-      count = 0;
-
-  expect( expects );
-
-  function plus() {
-    if ( ++count === expects ) {
-      popped.destroy();
-      start();
-    }
-  }
+  var popped = Popcorn( "#video" );
 
   popped.text({
     start: 0,
@@ -326,25 +309,16 @@ asyncTest( "Subtitle data tests", function() {
   });
 
   equal( popped.container.children[ 0 ].innerHTML, "", "text with no `text` attribute defaults to an empty string" );
-  plus();
+
+  popped.destroy();
+  start();
 });
 
-asyncTest( "Subtitle container creation tests", function() {
+asyncTest( "Subtitle container creation tests", 3, function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 3,
       containerAtLoad = document.getElementById( "divThatDoesntExist" ),
-      containerAfterParse,
-      count = 0;
-
-  expect( expects );
-
-  function plus() {
-    if ( ++count === expects ) {
-      popped.pause().destroy();
-      start();
-    }
-  }
+      containerAfterParse;
 
   popped.text({
     start: 0,
@@ -356,10 +330,9 @@ asyncTest( "Subtitle container creation tests", function() {
   containerAfterParse = document.getElementById( "divThatDoesntExist" );
 
   equal( !!containerAtLoad, false, "Container doesn't exist initially" );
-  plus();
   equal( !!containerAfterParse, true, "Container exists now" );
-  plus();
   equal( containerAfterParse.children[ 0 ].innerHTML, "My Text", "Subtitle text displayed in created container" );
-  plus();
 
+  popped.destroy();
+  start();
 });
