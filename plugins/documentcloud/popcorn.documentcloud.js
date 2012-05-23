@@ -68,10 +68,9 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
         },
         preload: {
           elem: "input",
-          type: "boolean",
+          type: "checkbox",
           label: "Preload",
-          default: true,
-          optional: true
+          default: true
         },
         page: {
           elem: "input",
