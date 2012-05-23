@@ -314,8 +314,16 @@
 
       basePlayer.addEventListener( "loadeddata", function() {
 
-        // if play was called before player ready, start playing video
-        !basePlayer.paused && basePlayer.play();
+        // if play was called before player ready, synch up state
+        // and start playing video.
+        if ( !basePlayer.paused ) {
+          // synching the player states.
+          // if play is caused on a player that is playing
+          // nothing should happen.
+          // once everything is loaded, synch the states.
+          basePlayer.paused = true;
+          basePlayer.play();
+        }
       });
 
       popcorn = new Popcorn.p.init( basePlayer, options );
