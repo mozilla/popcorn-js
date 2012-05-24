@@ -301,31 +301,6 @@
         basePlayer.dispatchEvent( "error" );
       }
 
-      // when a custom player is loaded, load basePlayer state into custom player
-      basePlayer.addEventListener( "loadedmetadata", function() {
-
-        // if a player is not ready before currentTime is called, this will set it after it is ready
-        basePlayer.currentTime = currentTime;
-
-        // same as above with volume and muted
-        basePlayer.volume = volume;
-        basePlayer.muted = muted;
-      });
-
-      basePlayer.addEventListener( "loadeddata", function() {
-
-        // if play was called before player ready, synch up state
-        // and start playing video.
-        if ( !basePlayer.paused ) {
-          // synching the player states.
-          // if play is caused on a player that is playing
-          // nothing should happen.
-          // once everything is loaded, synch the states.
-          basePlayer.paused = true;
-          basePlayer.play();
-        }
-      });
-
       popcorn = new Popcorn.p.init( basePlayer, options );
 
       if ( player._teardown ) {

@@ -20,6 +20,7 @@
           vimeoObject,
           vimeoContainer = document.createElement( "div" ),
           currentTime = 0,
+          paused = true,
           seekTime = 0,
           seeking = false,
           volumeChanged = false,
@@ -47,6 +48,7 @@
             loadStarted = false;
 
         vimeo_player_loaded[ vimeoContainer.id ] = function() {
+
           vimeoObject = document.getElementById( vimeoContainer.id );
 
           vimeo_player_loaded.seek[ vimeoContainer.id ] = function( time ) {
@@ -58,21 +60,20 @@
           };
 
           vimeo_player_loaded.play[ vimeoContainer.id ] = function() {
-            if ( media.paused ) {
-              media.paused = false;
-              media.dispatchEvent( "play" );
 
-              media.dispatchEvent( "playing" );
-              timeUpdate();
-            }
+            paused = false;
+            media.dispatchEvent( "play" );
+            media.dispatchEvent( "playing" );
+            timeUpdate();
+
             playerQueue.next();
           };
 
           vimeo_player_loaded.pause[ vimeoContainer.id ] = function() {
-            if ( !media.paused ) {
-              media.paused = true;
-              media.dispatchEvent( "pause" );
-            }
+
+            paused = true;
+            media.dispatchEvent( "pause" );
+
             playerQueue.next();
           };
 
@@ -125,14 +126,12 @@
 
           media.play = function() {
 
+
+            paused = false;
             playerQueue.add(function() {
 
-              if ( media.paused ) {
+              if ( vimeoObject.api_paused() ) {
 
-                media.paused = false;
-                media.dispatchEvent( "play" );
-                media.dispatchEvent( "playing" );
-                timeUpdate();
                 vimeoObject.api_play();
               } else {
                 playerQueue.next();
@@ -142,12 +141,11 @@
 
           media.pause = function() {
 
+            paused = true;
             playerQueue.add(function() {
 
-              if ( !media.paused ) {
+              if ( !vimeoObject.api_paused() ) {
 
-                media.paused = true;
-                media.dispatchEvent( "pause" );
                 vimeoObject.api_pause();
               } else {
                 playerQueue.next();
@@ -176,6 +174,14 @@
             get: function() {
 
               return currentTime;
+            }
+          });
+
+          Popcorn.player.defineProperty( media, "paused", {
+
+            get: function() {
+
+              return paused;
             }
           });
 
@@ -221,7 +227,6 @@
               return vimeoObject.api_getVolume() / 100;
             }
           });
-
 
           media.duration = vimeoObject.api_getDuration();
           media.dispatchEvent( "durationchange" );

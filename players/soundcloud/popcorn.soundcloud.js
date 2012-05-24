@@ -13,6 +13,7 @@
           container = document.createElement( "iframe" ),
           lastVolume = 1,
           currentTime = 0,
+          paused = realPaused = true,
           widget,
           duration = 0,
           muted = false,
@@ -23,12 +24,11 @@
 
       media.play = function() {
 
+        paused = false;
         playerQueue.add(function() {
-          if ( media.paused ) {
 
-            media.paused = false;
-            media.dispatchEvent( "playing" );
-            media.dispatchEvent( "play" );
+          if ( realPaused ) {
+
             widget && widget.play();
           } else {
             playerQueue.next();
@@ -38,11 +38,12 @@
 
       media.pause = function() {
 
-        playerQueue.add(function() {
-          if ( !media.paused ) {
+        paused = true;
 
-            media.paused = true;
-            media.dispatchEvent( "pause" );
+        playerQueue.add(function() {
+console.log( "in paused queue" );
+          if ( !realPaused ) {
+console.log( widget );
             widget && widget.pause();
           } else {
             playerQueue.next();
@@ -95,6 +96,11 @@
           get: function() {
             return duration;
           }
+        },
+        paused: {
+          get: function() {
+            return paused;
+          }
         }
       });
       // called when the SoundCloud api script has loaded
@@ -128,28 +134,32 @@
             // setup all of our listeners
             widget.bind(SC.Widget.Events.FINISH, function() {
               media.pause();
+
               media.dispatchEvent( "ended" );
             });
 
             widget.bind(SC.Widget.Events.PLAY_PROGRESS, function( data ) {
+
               currentTime = data.currentPosition / 1000;
               media.dispatchEvent( "timeupdate" );
             });
 
             widget.bind(SC.Widget.Events.PLAY, function( data ) {
 
-              if ( media.paused ) {
-                media.currentTime = currentTime;
-                media.play();
-              }
+              paused = realPaused = false;
+
+              media.dispatchEvent( "play" );
+              media.dispatchEvent( "playing" );
+              media.currentTime = currentTime;
+
               playerQueue.next();
             });
 
             widget.bind(SC.Widget.Events.PAUSE, function( data ) {
 
-              if ( !media.paused ) {
-                media.pause();
-              }
+              paused = realPaused = true;
+              media.dispatchEvent( "pause" );
+
               playerQueue.next();
             });
             widget.bind(SC.Widget.Events.READY, function( data ) {

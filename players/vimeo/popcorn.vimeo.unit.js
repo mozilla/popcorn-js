@@ -216,11 +216,21 @@ asyncTest( "Update Timer", function() {
   });
 
   p2.exec( 3, function() {
-
     p2.play();
   });
 
-  p2.currentTime( 3 );
+  var ready = function() {
+
+    p2.off( "canplaythrough", ready );
+
+    p2.volume( 0 ).currentTime( 3 );
+  };
+
+  if ( p2.readyState() >= 4 ) {
+    ready();
+  } else {
+    p2.on( "canplaythrough", ready );
+  }
 
 });
 

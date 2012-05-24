@@ -17,15 +17,12 @@ Popcorn.player( "youtube", {
         autoPlay = false,
         container = document.createElement( "div" ),
         currentTime = 0,
-        // leaving paused at undefined because youtube has state for not paused or playing
-        cachedPaused,
-        realPaused,
+        paused = true,
         seekTime = 0,
         firstGo = true,
         seeking = false,
 
         // state code for volume changed polling
-        volumeChanged = false,
         lastMuted = false,
         lastVolume = 100;
 
@@ -69,22 +66,20 @@ Popcorn.player( "youtube", {
 
             currentTime = options.youtubeObject.getCurrentTime();
             media.dispatchEvent( "timeupdate" );
-
-            if ( !realPaused ) {
-
-              media.pause();
-            }
+            paused = true;
+            media.dispatchEvent( "pause" );
             playerQueue.next();
+
             return;
           } else
           // playing is state 1
           // paused is state 2
           if ( state === 1 && !firstGo ) {
 
-            if ( realPaused ) {
-
-              media.play();
-            }
+            paused = false;
+            media.dispatchEvent( "play" );
+            media.dispatchEvent( "playing" );
+            timeupdate();
             playerQueue.next();
             return;
           } else
@@ -97,19 +92,18 @@ Popcorn.player( "youtube", {
             return;
           } else if ( state === 1 && firstGo ) {
 
+            options.youtubeObject.pauseVideo();
             firstGo = false;
 
-            if ( realPaused === true ) {
+            // pulling initial volume states form baseplayer
+            lastVolume = media.volume;
+            lastMuted = media.muted;
 
-              media.pause();
-            } else if ( realPaused === false ) {
-
+            // pulling initial paused state from autoplay or the baseplayer
+            // also need to explicitly set to paused otherwise.
+            if ( autoPlay || !media.paused ) {
               media.play();
-            } else if ( autoPlay ) {
-
-              media.play();
-            } else if ( !autoPlay ) {
-
+            } else {
               media.pause();
             }
 
@@ -118,6 +112,7 @@ Popcorn.player( "youtube", {
             media.dispatchEvent( "durationchange" );
             volumeupdate();
 
+            // this syncs because of changes done to youtube via fragments
             media.currentTime = options.youtubeObject.getCurrentTime();
 
             createProperties();
@@ -154,7 +149,7 @@ Popcorn.player( "youtube", {
             return;
           }
 
-          if ( !realPaused ) {
+          if ( !paused ) {
 
             currentTime = options.youtubeObject.getCurrentTime();
             media.dispatchEvent( "timeupdate" );
@@ -191,17 +186,11 @@ Popcorn.player( "youtube", {
             return;
           }
 
-          cachedPause = false;
+          paused = false;
           playerQueue.add(function() {
 
-            if ( realPaused !== false || options.youtubeObject.getPlayerState() !== 1 ) {
+            if ( options.youtubeObject.getPlayerState() !== 1 ) {
 
-              media.paused = false;
-              media.dispatchEvent( "play" );
-
-              media.dispatchEvent( "playing" );
-
-              timeupdate();
               options.youtubeObject.playVideo();
             } else {
               playerQueue.next();
@@ -216,13 +205,11 @@ Popcorn.player( "youtube", {
             return;
           }
 
-          cachedPause = true;
+          paused = true;
           playerQueue.add(function() {
 
-            if ( realPaused !== true || options.youtubeObject.getPlayerState() !== 2 ) {
+            if ( options.youtubeObject.getPlayerState() !== 2 ) {
 
-              media.paused = true;
-              media.dispatchEvent( "pause" );
               options.youtubeObject.pauseVideo();
             } else {
               playerQueue.next();
@@ -256,13 +243,9 @@ Popcorn.player( "youtube", {
         });
 
         Popcorn.player.defineProperty( media, "paused", {
-          set: function( val ) {
-
-            realPaused = cachedPause = val;
-          },
           get: function() {
 
-            return cachedPause;
+            return paused;
           }
         });
 

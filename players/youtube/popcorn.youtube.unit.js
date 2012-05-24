@@ -215,13 +215,13 @@ asyncTest("Update Timer", function () {
   });
 
   p2.exec( 3, function() {
-
     p2.play();
   });
 
   var ready = function() {
     p2.off( "canplaythrough", ready );
-    p2.volume( 0 ).currentTime(3);
+
+    p2.volume( 0 ).currentTime( 3 );
   };
 
   if ( p2.readyState() >= 4 ) {
@@ -676,7 +676,9 @@ asyncTest( "Youtube ready state events", function() {
 asyncTest( "Youtube media start time fragment", function() {
 
   var popcorn1, popcorn2, popcorn3, popcorn4,
-      count = 0, expects = 4;
+      count = 0, expects = 4,
+      // Youtube's fragment can be off by give or take a second.
+      epsilon = 1;
 
   expect( expects );
 
@@ -694,25 +696,25 @@ asyncTest( "Youtube media start time fragment", function() {
   var firstTest = function() {
 
         popcorn1.off( "loadeddata", firstTest );
-        equal( Math.floor( popcorn1.currentTime() ), 130, "youtube fragment works with &start=130" );
+        ok( Math.ceil( popcorn1.currentTime() ) + epsilon >= 130, "youtube fragment works with &start=130" );
         plus();
       },
       secondTest = function() {
 
         popcorn2.off( "loadeddata", secondTest );
-        equal( Math.floor( popcorn2.currentTime() ), 130, "youtube fragment works with &t=2m10s" );
+        ok( Math.ceil( popcorn2.currentTime() ) + epsilon >= 130, "youtube fragment works with &t=2m10s" );
         plus();
       },
       thirdTest = function() {
 
         popcorn3.off( "loadeddata", thirdTest );
-        equal( Math.floor( popcorn3.currentTime() ), 120, "youtube fragment works with &t=2m" );
+        ok( Math.ceil( popcorn3.currentTime() ) + epsilon >= 120, "youtube fragment works with &t=2m" );
         plus();
       },
       fourthTest = function() {
 
         popcorn4.off( "loadeddata", fourthTest );
-        equal( Math.floor( popcorn4.currentTime() ), 10, "youtube fragment works with &t=10s" );
+        ok( Math.ceil( popcorn4.currentTime() )+ epsilon >= 10, "youtube fragment works with &t=10s" );
         plus();
       };
 
