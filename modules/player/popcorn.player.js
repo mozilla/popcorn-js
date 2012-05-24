@@ -345,7 +345,7 @@
       },
       add: function( callback ) {
 
-        _queue.push( function() {
+        _queue.push(function() {
 
           _running = true;
           callback && callback();
