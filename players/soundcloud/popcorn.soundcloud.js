@@ -41,9 +41,9 @@
         paused = true;
 
         playerQueue.add(function() {
-console.log( "in paused queue" );
+
           if ( !realPaused ) {
-console.log( widget );
+
             widget && widget.pause();
           } else {
             playerQueue.next();

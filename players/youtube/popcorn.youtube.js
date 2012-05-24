@@ -18,9 +18,7 @@ Popcorn.player( "youtube", {
         container = document.createElement( "div" ),
         currentTime = 0,
         paused = true,
-        seekTime = 0,
         firstGo = true,
-        seeking = false,
 
         // state code for volume changed polling
         lastMuted = false,
@@ -54,18 +52,6 @@ Popcorn.player( "youtube", {
           // this is the only way to get seeking events
           if ( state === 2 ) {
 
-            // silly logic forced on me by the youtube API
-            // calling youtube.seekTo triggers multiple events
-            // with the second events getCurrentTime being the old time
-            if ( seeking && seekTime === currentTime && seekTime !== options.youtubeObject.getCurrentTime() ) {
-
-              seeking = false;
-              options.youtubeObject.seekTo( currentTime );
-              return;
-            }
-
-            currentTime = options.youtubeObject.getCurrentTime();
-            media.dispatchEvent( "timeupdate" );
             paused = true;
             media.dispatchEvent( "pause" );
             playerQueue.next();
@@ -221,8 +207,7 @@ Popcorn.player( "youtube", {
           set: function( val ) {
 
             // make sure val is a number
-            currentTime = seekTime = +val;
-            seeking = true;
+            currentTime = +val;
 
             if ( options.destroyed ) {
 
