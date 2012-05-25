@@ -158,8 +158,9 @@
 
     _setup: function( options ) {
 
-      var target;
-      var container = options._container = document.createElement( "div" );
+      var target,
+          text,
+          container = options._container = document.createElement( "div" );
 
       container.style.display = "none";
 
@@ -184,7 +185,7 @@
       options._target = target;
 
       // Escape HTML text if requested
-      var text = !!options.escape ? escapeHTML( options.text ) :
+      text = !!options.escape ? escapeHTML( options.text ) :
                                     options.text;
 
       // Swap newline for <br> if requested

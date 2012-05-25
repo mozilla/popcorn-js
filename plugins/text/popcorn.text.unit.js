@@ -20,7 +20,7 @@ test( "Text", function() {
   expect( expects );
 
   function plus() {
-    if ( ++count===expects ) {
+    if ( ++count === expects ) {
       popped.on( "pause", function onPause(){
         this.off( "pause", onPause );
         this.destroy();
@@ -170,19 +170,19 @@ asyncTest( "Subtitle", function() {
   }
 
   popped.text({
-      start: 0,
-      end: 2,
-      text: "this is the first subtitle of 2011"
+    start: 0,
+    end: 2,
+    text: "this is the first subtitle of 2011"
   })
   .text({
-      start: 2,
-      end: 4,
-      text: "this is the second subtitle of 2011"
+    start: 2,
+    end: 4,
+    text: "this is the second subtitle of 2011"
   })
   .text({
-      start: 5,
-      end: 7,
-      text: "this is the third subtitle of 2011"
+    start: 5,
+    end: 7,
+    text: "this is the third subtitle of 2011"
   })
   .text({
     start: 7,
@@ -191,10 +191,10 @@ asyncTest( "Subtitle", function() {
   }).volume( 0 ).play();
 
   popped2.text({
-      start: 7,
-      end: 9,
-      text: "instance two test"
-    }).volume( 0 );
+    start: 7,
+    end: 9,
+    text: "instance two test"
+  }).volume( 0 );
 
   subtitlediv = popped.container;
   subtitle2div = popped2.container;
@@ -278,7 +278,7 @@ asyncTest( "Subtitle", function() {
       plus();
       popped.play();
 
-    }).pause()
+    }).pause();
   });
 
   popped.cue( 10, function() {
