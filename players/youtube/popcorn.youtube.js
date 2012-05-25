@@ -1,10 +1,15 @@
 // A global callback for youtube... that makes me angry
-var onYouTubePlayerReady = function( containerId ) {
+var onYouTubePlayerAPIReady = function() {
 
-  onYouTubePlayerReady[ containerId ] && onYouTubePlayerReady[ containerId ]();
+  onYouTubePlayerAPIReady.ready = true;
+  for ( var i = 0; i < onYouTubePlayerAPIReady.waiting.length; i++ ) {
+    onYouTubePlayerAPIReady.waiting[ i ]();
+  }
 };
-onYouTubePlayerReady.stateChangeEventHandler = {};
-onYouTubePlayerReady.onErrorEventHandler = {};
+
+onYouTubePlayerAPIReady.waiting = [];
+
+Popcorn.getScript( "http://www.youtube.com/player_api" );
 
 Popcorn.player( "youtube", {
   _canPlayType: function( nodeName, url ) {
@@ -18,297 +23,177 @@ Popcorn.player( "youtube", {
         container = document.createElement( "div" ),
         currentTime = 0,
         paused = true,
+        seekTime = 0,
         firstGo = true,
+        seeking = false,
+        fragmentStart = 0,
 
         // state code for volume changed polling
         lastMuted = false,
-        lastVolume = 100;
+        lastVolume = 100,
+        playerQueue = Popcorn.player.playerQueue();
 
-    container.id = media.id + Popcorn.guid();
+    var createProperties = function() {
 
-    options._container = container;
-
-    media.appendChild( container );
-
-    var youtubeInit = function() {
-
-      var flashvars, params, attributes, src, width, height, query,
-          playerQueue = Popcorn.player.playerQueue();
-
-      // expose a callback to this scope, that is called from the global callback youtube calls
-      onYouTubePlayerReady[ container.id ] = function() {
-
-        options.youtubeObject = document.getElementById( container.id );
-
-        // more youtube callback nonsense
-        onYouTubePlayerReady.stateChangeEventHandler[ container.id ] = function( state ) {
+      Popcorn.player.defineProperty( media, "currentTime", {
+        set: function( val ) {
 
           if ( options.destroyed ) {
-
             return;
           }
 
-          // youtube fires paused events while seeking
-          // this is the only way to get seeking events
-          if ( state === 2 ) {
+          seeking = true;
+          // make sure val is a number
+          currentTime = Math.round( +val * 100 ) / 100;
+        },
+        get: function() {
 
-            paused = true;
-            media.dispatchEvent( "pause" );
-            playerQueue.next();
+          return currentTime;
+        }
+      });
 
-            return;
-          } else
-          // playing is state 1
-          // paused is state 2
-          if ( state === 1 && !firstGo ) {
+      Popcorn.player.defineProperty( media, "paused", {
+        get: function() {
 
-            paused = false;
-            media.dispatchEvent( "play" );
-            media.dispatchEvent( "playing" );
-            timeupdate();
-            playerQueue.next();
-            return;
-          } else
-          // this is the real player ready check
-          // -1 is for unstarted, but ready to go videos
-          // before this the player object exists, but calls to it may go unheard
-          if ( state === -1 ) {
+          return paused;
+        }
+      });
 
-            options.youtubeObject.playVideo();
-            return;
-          } else if ( state === 1 && firstGo ) {
+      Popcorn.player.defineProperty( media, "muted", {
+        set: function( val ) {
 
-            options.youtubeObject.pauseVideo();
-            firstGo = false;
+          if ( options.destroyed ) {
 
-            // pulling initial volume states form baseplayer
-            lastVolume = media.volume;
-            lastMuted = media.muted;
+            return val;
+          }
 
-            // pulling initial paused state from autoplay or the baseplayer
-            // also need to explicitly set to paused otherwise.
-            if ( autoPlay || !media.paused ) {
-              media.play();
+          if ( options.youtubeObject.isMuted() !== val ) {
+
+            if ( val ) {
+
+              options.youtubeObject.mute();
             } else {
-              media.pause();
+
+              options.youtubeObject.unMute();
             }
-
-            media.duration = options.youtubeObject.getDuration();
-
-            media.dispatchEvent( "durationchange" );
-            volumeupdate();
-
-            // this syncs because of changes done to youtube via fragments
-            media.currentTime = options.youtubeObject.getCurrentTime();
-
-            createProperties();
-            media.dispatchEvent( "loadedmetadata" );
-            media.dispatchEvent( "loadeddata" );
-
-            media.readyState = 4;
-            media.dispatchEvent( "canplaythrough" );
-
-            return;
-          } else if ( state === 0 ) {
-            media.dispatchEvent( "ended" );
-          }
-        };
-
-        onYouTubePlayerReady.onErrorEventHandler[ container.id ] = function( errorCode ) {
-          if ( [ 2, 100, 101, 150 ].indexOf( errorCode ) !== -1 ) {
-            media.error = {
-              customCode: errorCode
-            };
-            media.dispatchEvent( "error" );
-          }
-        };
-
-        // youtube requires callbacks to be a string to a function path from the global scope
-        options.youtubeObject.addEventListener( "onStateChange", "onYouTubePlayerReady.stateChangeEventHandler." + container.id );
-
-        options.youtubeObject.addEventListener( "onError", "onYouTubePlayerReady.onErrorEventHandler." + container.id );
-
-        var timeupdate = function() {
-
-          if ( options.destroyed ) {
-
-            return;
-          }
-
-          if ( !paused ) {
-
-            currentTime = options.youtubeObject.getCurrentTime();
-            media.dispatchEvent( "timeupdate" );
-            setTimeout( timeupdate, 10 );
-          }
-        };
-
-        var volumeupdate = function() {
-
-          if ( options.destroyed ) {
-
-            return;
-          }
-
-          if ( lastMuted !== options.youtubeObject.isMuted() ) {
 
             lastMuted = options.youtubeObject.isMuted();
             media.dispatchEvent( "volumechange" );
           }
 
-          if ( lastVolume !== options.youtubeObject.getVolume() ) {
+          return options.youtubeObject.isMuted();
+        },
+        get: function() {
 
+          if ( options.destroyed ) {
+
+            return 0;
+          }
+
+          return options.youtubeObject.isMuted();
+        }
+      });
+
+      Popcorn.player.defineProperty( media, "volume", {
+        set: function( val ) {
+
+          if ( options.destroyed ) {
+
+            return val;
+          }
+
+          if ( options.youtubeObject.getVolume() / 100 !== val ) {
+
+            options.youtubeObject.setVolume( val * 100 );
             lastVolume = options.youtubeObject.getVolume();
             media.dispatchEvent( "volumechange" );
           }
 
-          setTimeout( volumeupdate, 250 );
-        };
-
-        media.play = function() {
-
-          if ( options.destroyed ) {
-
-            return;
-          }
-
-          paused = false;
-          playerQueue.add(function() {
-
-            if ( options.youtubeObject.getPlayerState() !== 1 ) {
-
-              options.youtubeObject.playVideo();
-            } else {
-              playerQueue.next();
-            }
-          });
-        };
-
-        media.pause = function() {
+          return options.youtubeObject.getVolume() / 100;
+        },
+        get: function() {
 
           if ( options.destroyed ) {
 
-            return;
+            return 0;
           }
 
-          paused = true;
-          playerQueue.add(function() {
+          return options.youtubeObject.getVolume() / 100;
+        }
+      });
 
-            if ( options.youtubeObject.getPlayerState() !== 2 ) {
+      media.play = function() {
 
-              options.youtubeObject.pauseVideo();
-            } else {
-              playerQueue.next();
-            }
-          });
-        };
+        if ( options.destroyed ) {
 
-        Popcorn.player.defineProperty( media, "currentTime", {
-          set: function( val ) {
+          return;
+        }
 
-            // make sure val is a number
-            currentTime = +val;
+        paused = false;
+        playerQueue.add(function() {
 
-            if ( options.destroyed ) {
+          if ( options.youtubeObject.getPlayerState() !== 1 ) {
 
-              return currentTime;
-            }
-
-            media.dispatchEvent( "seeked" );
-            media.dispatchEvent( "timeupdate" );
-
-            options.youtubeObject.seekTo( currentTime );
-
-            return currentTime;
-          },
-          get: function() {
-
-            return currentTime;
+            seeking = false;
+            options.youtubeObject.playVideo();
+          } else {
+            playerQueue.next();
           }
         });
+      };
 
-        Popcorn.player.defineProperty( media, "paused", {
-          get: function() {
+      media.pause = function() {
 
-            return paused;
+        if ( options.destroyed ) {
+
+          return;
+        }
+
+        paused = true;
+        playerQueue.add(function() {
+
+          if ( options.youtubeObject.getPlayerState() !== 2 ) {
+
+            options.youtubeObject.pauseVideo();
+          } else {
+            playerQueue.next();
           }
         });
+      };
+    };
 
-        Popcorn.player.defineProperty( media, "muted", {
-          set: function( val ) {
+    container.id = media.id + Popcorn.guid();
+    options._container = container;
+    media.appendChild( container );
 
-            if ( options.destroyed ) {
+    var youtubeInit = function() {
 
-              return val;
-            }
+      var src, height, width, query;
 
-            if ( options.youtubeObject.isMuted() !== val ) {
+      var timeUpdate = function() {
 
-              if ( val ) {
+        if ( options.destroyed ) {
+          return;
+        }
 
-                options.youtubeObject.mute();
-              } else {
+        if ( !seeking ) {
+          currentTime = options.youtubeObject.getCurrentTime();
+          media.dispatchEvent( "timeupdate" );
+        } else if ( currentTime === options.youtubeObject.getCurrentTime() ) {
 
-                options.youtubeObject.unMute();
-              }
+          seeking = false;
+          media.dispatchEvent( "seeked" );
+          media.dispatchEvent( "timeupdate" );
+        } else {
 
-              lastMuted = options.youtubeObject.isMuted();
-              media.dispatchEvent( "volumechange" );
-            }
-
-            return options.youtubeObject.isMuted();
-          },
-          get: function() {
-
-            if ( options.destroyed ) {
-
-              return 0;
-            }
-
-            return options.youtubeObject.isMuted();
-          }
-        });
-
-        Popcorn.player.defineProperty( media, "volume", {
-          set: function( val ) {
-
-            if ( options.destroyed ) {
-
-              return val;
-            }
-
-            if ( options.youtubeObject.getVolume() / 100 !== val ) {
-
-              options.youtubeObject.setVolume( val * 100 );
-              lastVolume = options.youtubeObject.getVolume();
-              media.dispatchEvent( "volumechange" );
-            }
-
-            return options.youtubeObject.getVolume() / 100;
-          },
-          get: function() {
-
-            if ( options.destroyed ) {
-
-              return 0;
-            }
-
-            return options.youtubeObject.getVolume() / 100;
-          }
-        });
+          // keep trying the seek until it is right.
+          options.youtubeObject.seekTo( currentTime );
+        }
+        setTimeout( timeUpdate, 250 );
       };
 
       options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1;
       options.annotations = +options.annotations === 1 || +options.annotations === 3 ? options.annotations : 1;
-
-      flashvars = {
-        playerapiid: container.id
-      };
-
-      params = {
-        wmode: "transparent",
-        allowScriptAccess: "always"
-      };
 
       src = /^.*(?:\/|v=)(.{11})/.exec( media.src )[ 1 ];
 
@@ -320,29 +205,126 @@ Popcorn.player( "youtube", {
         minutes = minutes | 0; // bit-wise OR
         seconds = seconds | 0; // bit-wise OR
 
-        return "&start=" + ( +seconds + ( minutes * 60 ) );
+        fragmentStart = ( +seconds + ( minutes * 60 ) );
+        return "";
+      });
+      query = query.replace( /&start=(\d+)?/, function( all, seconds ) {
+
+        // Make sure we have real zeros
+        seconds = seconds | 0; // bit-wise OR
+
+        fragmentStart = seconds;
+        return "";
       });
 
       autoPlay = ( /autoplay=1/.test( query ) );
 
-      // setting youtube player's height and width, default to 560 x 315
-      width = media.style.width ? "" + media.offsetWidth : "560";
-      height = media.style.height ? "" + media.offsetHeight : "315";
+      // setting youtube player's height and width, min 640 x 390,
+      // anything smaller, and the player reports incorrect states.
+      height = media.style.height && media.offsetHeight >= 390 ? "" + media.offsetHeight : "390";
+      width = media.style.width && media.offsetWidth >= 640 ? "" + media.offsetWidth : "640";
 
-      attributes = {
-        id: container.id,
-        "data-youtube-player": "//www.youtube.com/e/" + src + "?" + query + "&enablejsapi=1&playerapiid=" + container.id + "&version=3"
+      options.youtubeObject = new YT.Player( container.id, {
+        height: height,
+        width: width,
+        videoId: src,
+        events: {
+          "onReady": function(){
+
+            // pulling initial volume states form baseplayer
+            lastVolume = media.volume;
+            lastMuted = media.muted;
+
+            media.duration = options.youtubeObject.getDuration();
+
+            media.dispatchEvent( "durationchange" );
+            volumeupdate();
+
+            // pulling initial paused state from autoplay or the baseplayer
+            // also need to explicitly set to paused otherwise.
+            if ( autoPlay || !media.paused ) {
+              paused = false;
+            }
+
+            createProperties();
+            options.youtubeObject.playVideo();
+
+            if ( paused ) {
+              options.youtubeObject.pauseVideo();
+            }
+
+            media.currentTime = fragmentStart;
+
+            media.dispatchEvent( "loadedmetadata" );
+            media.dispatchEvent( "loadeddata" );
+            media.readyState = 4;
+
+            timeUpdate();
+            media.dispatchEvent( "canplaythrough" );
+          },
+          "onStateChange": function( state ){
+
+            if ( options.destroyed || state.data === -1 ) {
+              return;
+            }
+
+            // state.data === 2 is for pause events
+            // state.data === 1 is for play events
+            if ( state.data === 2 ) {
+
+              paused = true;
+              media.dispatchEvent( "pause" );
+              playerQueue.next();
+            } else if ( state.data === 1 ) {
+              paused = false;
+              media.dispatchEvent( "play" );
+              media.dispatchEvent( "playing" );
+              playerQueue.next();
+            } else if ( state.data === 0 ) {
+              media.dispatchEvent( "ended" );
+            }
+          },
+          "onError": function( error ) {
+
+            if ( [ 2, 100, 101, 150 ].indexOf( error.data ) !== -1 ) {
+              media.error = {
+                customCode: error.data
+              };
+              media.dispatchEvent( "error" );
+            }
+          }
+        }
+      });
+
+      var volumeupdate = function() {
+
+        if ( options.destroyed ) {
+
+          return;
+        }
+
+        if ( lastMuted !== options.youtubeObject.isMuted() ) {
+
+          lastMuted = options.youtubeObject.isMuted();
+          media.dispatchEvent( "volumechange" );
+        }
+
+        if ( lastVolume !== options.youtubeObject.getVolume() ) {
+
+          lastVolume = options.youtubeObject.getVolume();
+          media.dispatchEvent( "volumechange" );
+        }
+
+        setTimeout( volumeupdate, 250 );
       };
-
-      swfobject.embedSWF( attributes[ "data-youtube-player" ], container.id, width, height, "8", undefined, flashvars, params, attributes );
     };
 
-    if ( !window.swfobject ) {
-
-      Popcorn.getScript( "//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js", youtubeInit );
-    } else {
+    if ( onYouTubePlayerAPIReady.ready ) {
 
       youtubeInit();
+    } else {
+
+      onYouTubePlayerAPIReady.waiting.push( youtubeInit );
     }
   },
   _teardown: function( options ) {
