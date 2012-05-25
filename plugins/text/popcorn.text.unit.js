@@ -25,7 +25,7 @@ test( "Text", function() {
         this.off( "pause", onPause );
         this.destroy();
         start();
-      }).currentTime( 0 ).pause();
+      }).pause();
     }
   }
 
@@ -297,6 +297,8 @@ asyncTest( "Subtitle", function() {
 
     }).pause();
   });
+
+  popped.play( 0 );
 });
 
 asyncTest( "Subtitle data tests", 1, function() {
