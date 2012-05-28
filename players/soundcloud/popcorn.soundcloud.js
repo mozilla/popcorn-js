@@ -114,7 +114,7 @@
           container.width = "100%";
           container.height = "100%";
 
-          container.addEventListener( "load", function( e ) {
+          options.loadListener = function( e ) {
             options.widget = widget = SC.Widget( container.id );
             // setup all of our listeners
             widget.bind(SC.Widget.Events.FINISH, function() {
@@ -158,7 +158,9 @@
                 lastVolume = data / 100;
               });
             });
-          }, false);
+          };
+
+          container.addEventListener( "load", options.loadListener, false );
           media.appendChild( container );
         });
       }
@@ -198,6 +200,12 @@
           parentContainer = container.parentNode;
 
       options.destroyed = true;
+
+      // if the widget never got setup, remove the containers load listener and return
+      if ( !widget ) {
+        container.removeEventListener( "load", options.loadEventListener, false );
+        return;
+      }
 
       // remove all bound soundcloud listeners
       for ( var prop in events ) {
