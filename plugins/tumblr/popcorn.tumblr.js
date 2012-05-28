@@ -263,7 +263,8 @@
         base_hostname: {
           elem: "input",
           type: "text",
-          label: "User_Name"
+          label: "User_Name",
+          "default": "https://citriccomics.tumblr.com"
         },
         // optional parameters:
         api_key: { // Required for Blog Info and Blog Post retrievals

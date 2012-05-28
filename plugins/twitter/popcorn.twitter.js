@@ -54,19 +54,22 @@
           src: {
             elem: "input",
             type: "text",
-            label: "Source"
+            label: "Source",
+            "default": "@popcornjs"
           },
           target: "twitter-container",
           height: {
             elem: "input",
             type: "number",
             label: "Height",
+            "default": "200",
             optional: true
           },
           width: {
             elem: "input",
             type: "number",
             label: "Width",
+            "default": "250",
             optional: true
           }
         }
