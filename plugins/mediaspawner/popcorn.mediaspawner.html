@@ -3,6 +3,10 @@
 <head>
   <title>Popcorn Media Spawner Plug-in Demo</title>
   <script src="../../popcorn.js"></script>
+  <script src="../../modules/player/popcorn.player.js"></script>
+  <script src="../../players/youtube/popcorn.youtube.js"></script>
+  <script src="../../players/vimeo/popcorn.vimeo.js"></script>
+  <script src="../../players/soundcloud/popcorn.soundcloud.js"></script>
   <script src="popcorn.mediaspawner.js"></script>
   <script>
     document.addEventListener( "DOMContentLoaded", function () {
@@ -18,39 +22,24 @@
       .mediaspawner({
         source: "http://player.vimeo.com/video/6960892",
         target: "mediaspawnerdiv",
-        start: 1,
-        end: 10,
-        caption: "This is a test. We are assuming control. We are assuming control.<br/>",
-        autoplay: true
-      })
-      .mediaspawner({
-        source: "http://player.vimeo.com/video/6960892",
-        target: "mediaspawnerdiv",
         start: 41,
         end: 50,
         caption: "This is a test. We are assuming control. We are assuming control.<br/>",
         autoplay: true
       })
       .mediaspawner({
-        source: {
-          poster: "../../test/poster.png",
-          controls: "controls",
-          type: "video",
-          sources: {
-            mp4: {
-              id: "mp4",
-              src: "../../test/trailer.mp4",
-              type: "video/mp4;",
-              codecs: "avc1, mp4a"
-            },
-            ogv: {
-              id: "ogv",
-              src: "../../test/trailer.ogv",
-              type: "video/ogg;",
-              codecs: "theora, vorbis"
-            }
-          }
-        },
+        source: "http://soundcloud.com/rhymesayers/brother-ali-us",
+        target: "mediaspawnerdiv",
+        start: 1,
+        end: 10,
+        caption: "This is a test. We are assuming control. We are assuming control.<br/>",
+        autoplay: true
+      })
+      .mediaspawner({
+        source: [
+          "../../test/trailer.mp4",
+          "../../test/trailer.ogv"
+        ],
         target: "mediaspawnerdiv",
         start: 31,
         end: 40,
@@ -58,20 +47,10 @@
         autoplay: true
       })
       .mediaspawner({
-        source: {
-          controls: "controls",
-          type: "audio",
-          sources: {
-            ogg: {
-              src: "../../test/italia.ogg",
-              type: "audio/ogg"
-            },
-            mp4: {
-              src: "../../test/italia.mp4",
-              type: "audio/mpeg"
-            }
-          }
-        },
+        source: [
+          "../../test/italia.ogg",
+          "../../test/italia.mp4"
+        ],
         target: "mediaspawnerdiv",
         start: 21,
         end: 30,

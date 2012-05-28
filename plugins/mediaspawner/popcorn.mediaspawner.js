@@ -20,37 +20,7 @@
   */
 (function ( Popcorn, global ) {
   var PLAYER_URL = "http://popcornjs.org/code/modules/player/popcorn.player.js",
-      urlRegex = /(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu|vimeo|soundcloud)/,
-      loadingPlayer,
-      loadingYoutube,
-      loadingSoundcloud,
-      loadingVimeo;
-
-  loadingPlayer = loadingVimeo = loadingSoundcloud = loadingYoutube = false;
-
-  var setPlayerTypeLoading = {
-    vimeo: function() {
-      loadingVimeo = true;
-    },
-    soundcloud: function() {
-      loadingSoundcloud = true;
-    },
-    youtube: function() {
-      loadingYoutube = true;
-    }
-  };
-
-  var isPlayerTypeLoading = {
-    vimeo: function() {
-      return loadingVimeo;
-    },
-    soundcloud: function() {
-      return loadingSoundcloud;
-    },
-    youtube: function() {
-      return loadingYoutube;
-    }
-  };
+      urlRegex = /(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu|vimeo|soundcloud)/;
 
   Popcorn.plugin( "mediaspawner", {
     manifest: {
@@ -128,18 +98,13 @@
       }
 
       // Store Reference to Type for use in end
-      options.type = mediaType;
+      //options.type = mediaType;
 
+      /*
       function flashCallback( type ) {
         // our regex only handles youtu ( incase the url looks something like youtu.be )
         if ( type === "youtu" ) {
-          type = "youtube";
-
-          // Youtube has to deal with nonsense about playreadyState, however will work if I append
-          // a flag for it so, this is an easier solution
-          if ( options.autoplay ) {
-            options.source += "&autoplay=1";
-          }
+          options.source += "&autoplay=1";
         }
 
         function checkPlayerTypeLoaded() {
@@ -185,7 +150,17 @@
         container.appendChild( element );
         options.id = element.id = "mediaspawner-" + Popcorn.guid();
       }
+      */
 
+      function constructMedia(){
+        // our regex only handles youtu ( incase the url looks something like youtu.be )
+        if ( mediaType === "youtu" ) {
+          options.source += "&autoplay=1";
+        }
+
+        options.id = options._container.id;
+        options.popcorn = Popcorn.smart( "#" + options.id, options.source );
+      }
       // If Player script needed to be loaded, keep checking until it is and then fire readycallback
       function isPlayerReady() {
         if ( !window.Popcorn.player ) {
@@ -193,21 +168,14 @@
             isPlayerReady();
           }, 300 );
         } else {
-          if( mediaType !== "object" ) {
-            flashCallback( mediaType );
-          }
-          else {
-            html5CallBack();
-          }
+          constructMedia();
         }
       }
 
       // If player script isn't present, retrieve script
       if ( !window.Popcorn.player && !loadingPlayer ) {
         loadingPlayer = true;
-        Popcorn.getScript( PLAYER_URL, function() {
-          isPlayerReady();
-        });
+        Popcorn.getScript( PLAYER_URL, isPlayerReady );
       } else {
         isPlayerReady();
       }
@@ -218,12 +186,7 @@
         options._container.style.display = "";
       }
 
-      // If its an HTML Video/Audio
-      if ( options.autoplay && options.type === "object" ) {
-        document.getElementById( options.id ).play();
-      }
-      // It's a flash based player
-      else if ( options.autoplay ) {
+      if ( options.autoplay ) {
         options.popcorn.play();
       }
     },
@@ -231,12 +194,13 @@
       if ( options._container ) {
         options._container.style.display = "none";
       }
-
+      /*
       // The Flash Players automagically pause themselves on end already but because these videos we create
       // aren't tied directly to Popcorn instances we have to manually retrieve them ourselves
       if ( options.type === "object" ) {
         document.getElementById( options.id ).pause();
       }
+      */
     },
     _teardown: function( options ) {
       if ( options.popcorn && options.popcorn.destory ) {
