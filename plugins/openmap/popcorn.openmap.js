@@ -151,7 +151,7 @@
             } );
             options.map.addLayer( sLayer );
             break;
-          "default": /* case "ROADMAP": */
+          default: /* case "ROADMAP": */
             // add OpenStreetMap layer
             projection = new OpenLayers.Projection( 'EPSG:900913' );
             displayProjection = new OpenLayers.Projection( 'EPSG:4326' );
