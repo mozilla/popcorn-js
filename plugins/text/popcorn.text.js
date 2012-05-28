@@ -6,13 +6,14 @@
    * Text Popcorn plug-in
    *
    * Places text in an element on the page.  Plugin options include:
-   * Options parameter will need a start, end, target and text.
-   *   Start: is the time that you want this plug-in to execute
-   *   End: is the time that you want this plug-in to stop executing
-   *   Text: is the text that you want to appear in the target
-   *   Escape: {true|false} whether to escape the text (e.g., html strings)
-   *   Multiline: {true|false} whether newlines should be turned into <br>s
-   *   Target: is the ID of the element where the text should be placed.
+   * Options parameter will need a start, end.
+   *   Start: Is the time that you want this plug-in to execute
+   *   End: Is the time that you want this plug-in to stop executing
+   *   Text: Is the text that you want to appear in the target
+   *   Escape: {true|false} Whether to escape the text (e.g., html strings)
+   *   Multiline: {true|false} Whether newlines should be turned into <br>s
+   *   Target: Is the ID of the element where the text should be placed. An empty target
+   *           will be placed on top of the media element
    *
    * @param {Object} options
    *
@@ -53,6 +54,13 @@
    *      multiline: true,
    *      target: 'textdiv'
    *    });
+   *
+   *    // Subtitle text
+   *    .text({
+   *      start: 30, // seconds
+   *      end: 40, // seconds
+   *      text: 'This will be overlayed on the video',
+   *     })
    **/
 
   /**
@@ -78,6 +86,38 @@
     return string.replace( /\r?\n/gm, "<br>" );
   }
 
+  // Subtitle specific functionality
+  function createSubtitleContainer( context, id ) {
+
+    var ctxContainer = context.container = document.createElement( "div" ),
+        style = ctxContainer.style,
+        media = context.media;
+
+    var updatePosition = function() {
+      var position = context.position();
+      // the video element must have height and width defined
+      style.fontSize = "18px";
+      style.width = media.offsetWidth + "px";
+      style.top = position.top  + media.offsetHeight - ctxContainer.offsetHeight - 40 + "px";
+      style.left = position.left + "px";
+
+      setTimeout( updatePosition, 10 );
+    };
+
+    ctxContainer.id = id || "";
+    style.position = "absolute";
+    style.color = "white";
+    style.textShadow = "black 2px 2px 6px";
+    style.fontWeight = "bold";
+    style.textAlign = "center";
+
+    updatePosition();
+
+    context.media.parentNode.appendChild( ctxContainer );
+
+    return ctxContainer;
+  }
+
   Popcorn.plugin( "text", {
 
     manifest: {
@@ -100,7 +140,8 @@
         text: {
           elem: "input",
           type: "text",
-          label: "Text"
+          label: "Text",
+          "default": "Popcorn.js"
         },
         escape: {
           elem: "input",
@@ -111,28 +152,45 @@
           elem: "input",
           type: "checkbox",
           label: "Multiline"
-        },
-        target: "text-container"
+        }
       }
     },
 
     _setup: function( options ) {
-      var target = Popcorn.dom.find( options.target );
-      var container = options._container = document.createElement( "div" );
+
+      var target,
+          text,
+          container = options._container = document.createElement( "div" );
 
       container.style.display = "none";
 
+      if ( options.target ) {
+        // Try to use supplied target
+        target = Popcorn.dom.find( options.target );
+
+        if ( !target ) {
+          target = createSubtitleContainer( this, options.target );
+        }
+
+      } else if ( !this.container ) {
+        // Creates a div for all subtitles to use
+        target = createSubtitleContainer( this );
+
+      } else {
+        // Use subtitle container
+        target = this.container;
+      }
+
+      // cache reference to actual target container
+      options._target = target;
+
       // Escape HTML text if requested
-      var text = !!options.escape ? escapeHTML( options.text ) :
+      text = !!options.escape ? escapeHTML( options.text ) :
                                     options.text;
 
       // Swap newline for <br> if requested
       text = !!options.multiline ? newlineToBreak ( text ) : text;
-      container.innerHTML = text;
-
-      if ( !target ) {
-        throw new Error( "target container doesn't exist" );
-      }
+      container.innerHTML = text || "";
 
       target.appendChild( container );
     },
@@ -158,7 +216,7 @@
     },
 
     _teardown: function( options ) {
-      var target = document.getElementById( options.target );
+      var target = options._target;
       if ( target ) {
         target.removeChild( options._container );
       }
