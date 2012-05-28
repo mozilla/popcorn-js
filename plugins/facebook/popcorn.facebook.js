@@ -65,12 +65,12 @@
         target: "facebook-container",
         start: {
           elem: "input",
-          type: "number",
+          type: "text",
           label: "In"
         },
         end: {
           elem: "input",
-          type: "number",
+          type: "text",
           label: "Out"
         },
         // optional parameters:

@@ -252,12 +252,12 @@
         target: "tumblr-container",
         start: {
           elem: "input",
-          type: "number",
+          type: "text",
           label: "Start_Time"
         },
         end: {
           elem: "input",
-          type: "number",
+          type: "text",
           label: "End_Time"
         },
         base_hostname: {

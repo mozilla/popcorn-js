@@ -202,8 +202,7 @@
         elem: "input",
         type: "checkbox",
         label: "Dynamic",
-        "default": true,
-        optional: true
+        "default": true
       }
     }
   });
