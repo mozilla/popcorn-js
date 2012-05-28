@@ -360,7 +360,7 @@
         elem: "input",
         type: "number",
         label: "Zoom",
-        default: 2
+        "default": 2
       },
       lat: {
         elem: "input",
@@ -378,7 +378,7 @@
         elem: "input",
         type: "text",
         label: "Location",
-        default: "Toronto, Ontario, Canada"
+        "default": "Toronto, Ontario, Canada"
       },
       markers: {
         elem: "input",

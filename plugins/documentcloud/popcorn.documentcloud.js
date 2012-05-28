@@ -63,14 +63,14 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
         src: {
           elem: "input",
           type: "text",
-          label: "PDF URL"
-          default: "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html"
+          label: "PDF URL",
+          "default": "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html"
         },
         preload: {
           elem: "input",
           type: "boolean",
           label: "Preload",
-          default: true,
+          "default": true,
           optional: true
         },
         page: {

@@ -119,7 +119,7 @@
         elem: "input",
         type: "text",
         label: "Name",
-        default: "Popcorn.js"
+        "default": "Popcorn.js"
       },
       image: {
         elem: "input",

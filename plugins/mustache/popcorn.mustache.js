@@ -203,7 +203,7 @@
         elem: "input",
         type: "checkbox",
         label: "Dynamic",
-        default: true,
+        "default": true,
         optional: true
       }
     }

@@ -51,7 +51,7 @@
             elem: "input",
             type: "url",
             label: "anchor URL",
-            default: "http://mozillapopcorn.org/wp-content/themes/popcorn/images/for_developers.png",
+            "default": "http://mozillapopcorn.org/wp-content/themes/popcorn/images/for_developers.png",
             optional: true
           },
           target: "image-container",
@@ -59,13 +59,13 @@
             elem: "input",
             type: "url",
             label: "Source URL",
-            default: "http://mozillapopcorn.org/wp-content/themes/popcorn/images/for_developers.png"
+            "default": "http://mozillapopcorn.org/wp-content/themes/popcorn/images/for_developers.png"
           },
           text: {
             elem: "input",
             type: "text",
             label: "Text",
-            default: "Popcorn.js",
+            "default": "Popcorn.js",
             optional: true
           }
         }
