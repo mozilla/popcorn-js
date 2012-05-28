@@ -131,7 +131,8 @@
       artist: {
         elem: "input",
         type: "text",
-        label: "Artist"
+        label: "Artist",
+        "default": "the beatles"
       }
     }
   });

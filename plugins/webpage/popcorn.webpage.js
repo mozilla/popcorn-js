@@ -54,7 +54,8 @@
         src: {
           elem: "input",
           type: "url",
-          label: "Src"
+          label: "Src",
+          "default": "http://mozillapopcorn.org"
         },
         target: "iframe-container"
       }
