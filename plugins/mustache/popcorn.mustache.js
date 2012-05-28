@@ -198,7 +198,6 @@
         type: "text",
         label: "Data"
       },
-      /* TODO: how to show a checkbox/boolean? */
       dynamic: {
         elem: "input",
         type: "checkbox",
