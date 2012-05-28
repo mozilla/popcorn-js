@@ -455,5 +455,5 @@ asyncTest( "Seeked and Seeking events", 4, function() {
   // Doing this to ensure a seek is fired
   setTimeout(function() {
     popcorn.pause().currentTime( 10 );
-  }, 1000);
+  }, 4000);
 });
