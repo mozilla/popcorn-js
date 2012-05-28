@@ -2209,7 +2209,7 @@ test( "Exceptions", function() {
       plus();
     }).currentTime( 0 ).play();
 
-    this.on( "error", function( errors ) {
+    this.on( "pluginerror", function( errors ) {
       ok( errors.length, "`errors` array has error objects" );
       plus();
       ok( errors[ 0 ].thrown, "`errors[ 0 ].thrown` property exists" );
