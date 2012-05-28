@@ -156,7 +156,7 @@
         elem: "input",
         type: "checkbox",
         label: "No Loop",
-        default: false
+        "default": false
       }
     }
   });

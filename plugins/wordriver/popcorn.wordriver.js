@@ -84,13 +84,13 @@
             elem: "input",
             type: "text",
             label: "Text",
-            default: "Popcorn.js"
+            "default": "Popcorn.js"
           },
           color: {
             elem: "input",
             type: "text",
             label: "Color",
-            default: "Green",
+            "default": "Green",
             optional: true
           }
         }

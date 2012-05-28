@@ -144,7 +144,7 @@
         elem: "input",
         type: "text",
         label: "Artist",
-        default: "The Beatles"
+        "default": "The Beatles"
       },
       album: {
         elem: "input",
