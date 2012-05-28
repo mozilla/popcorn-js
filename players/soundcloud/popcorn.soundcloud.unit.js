@@ -1,6 +1,6 @@
 module( "Popcorn Soundcloud Player" );
 asyncTest( "Default Attribute Functionality", function () {
-  var expects = 4,
+  var expects = 5,
       count = 0,
       playerDefault,
       playerOverride,
@@ -38,6 +38,11 @@ asyncTest( "Default Attribute Functionality", function () {
     plus();
 
     equal( target.children.length, 2, "The container has 2 players" );
+    plus();
+  });
+
+  playerOverride.on( "load", function() {
+    equal( playerOverride.duration(), 217.16, "Duration updated" );
     plus();
   });
 
