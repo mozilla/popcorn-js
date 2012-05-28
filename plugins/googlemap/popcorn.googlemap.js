@@ -393,7 +393,7 @@ var googleCallback;
       target: "map-container",
       type: {
         elem: "select",
-        options: [ "ROADMAP", "SATELLITE", "STREETVIEW", "HYBRID", "TERRAIN" ],
+        options: [ "ROADMAP", "SATELLITE", "STREETVIEW", "HYBRID", "TERRAIN", "STAMEN-WATERCOLOR", "STAMEN-TERRAIN", "STAMEN-TONER" ],
         label: "Type",
         optional: true
       },
