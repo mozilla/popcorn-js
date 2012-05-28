@@ -351,8 +351,13 @@ Popcorn.player( "youtube", {
   _teardown: function( options ) {
 
     options.destroyed = true;
-    options.youtubeObject.stopVideo();
-    options.youtubeObject.clearVideo();
+
+    var youtubeObject = options.youtubeObject;
+    if( youtubeObject ){
+      youtubeObject.stopVideo();
+      youtubeObject.clearVideo();
+    }
+
     this.removeChild( document.getElementById( options._container.id ) );
   }
 });
