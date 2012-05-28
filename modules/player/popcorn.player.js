@@ -301,23 +301,6 @@
         basePlayer.dispatchEvent( "error" );
       }
 
-      // when a custom player is loaded, load basePlayer state into custom player
-      basePlayer.addEventListener( "loadedmetadata", function() {
-
-        // if a player is not ready before currentTime is called, this will set it after it is ready
-        basePlayer.currentTime = currentTime;
-
-        // same as above with volume and muted
-        basePlayer.volume = volume;
-        basePlayer.muted = muted;
-      });
-
-      basePlayer.addEventListener( "loadeddata", function() {
-
-        // if play was called before player ready, start playing video
-        !basePlayer.paused && basePlayer.play();
-      });
-
       popcorn = new Popcorn.p.init( basePlayer, options );
 
       if ( player._teardown ) {
@@ -342,6 +325,36 @@
 
     object.__defineGetter__( description, options.get || Popcorn.nop );
     object.__defineSetter__( description, options.set || Popcorn.nop );
+  };
+
+  // player queue is to help players queue things like play and pause
+  // HTML5 video's play and pause are asynch, but do fire in sequence
+  // play() should really mean "requestPlay()" or "queuePlay()" and
+  // stash a callback that will play the media resource when it's ready to be played
+  Popcorn.player.playerQueue = function() {
+
+    var _queue = [],
+        _running = false;
+
+    return {
+      next: function() {
+
+        _running = false;
+        _queue.shift();
+        _queue[ 0 ] && _queue[ 0 ]();
+      },
+      add: function( callback ) {
+
+        _queue.push(function() {
+
+          _running = true;
+          callback && callback();
+        });
+
+        // if there is only one item on the queue, start it
+        !_running && _queue[ 0 ]();
+      }
+    };
   };
 
   // smart will attempt to find you a match, if it does not find a match,

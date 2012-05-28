@@ -66,7 +66,7 @@ asyncTest( "Update Timer", function() {
     ok( true, "'loadedmetadata' fired" );
     plus();
     // make sure that we always have a duration at this point
-    ok( this.duration() > 0, "Videos duration is greather than 0" );
+    ok( this.duration() > 0, "Video's duration is greater than 0" );
     plus();
   });
 
@@ -216,11 +216,21 @@ asyncTest( "Update Timer", function() {
   });
 
   p2.exec( 3, function() {
-
     p2.play();
   });
 
-  p2.currentTime( 3 );
+  var ready = function() {
+
+    p2.off( "canplaythrough", ready );
+
+    p2.volume( 0 ).currentTime( 3 );
+  };
+
+  if ( p2.readyState() >= 4 ) {
+    ready();
+  } else {
+    p2.on( "canplaythrough", ready );
+  }
 
 });
 
@@ -338,8 +348,16 @@ asyncTest( "Plugin Factory", function() {
     end: 5
   });
 
-  popped.currentTime( 0 ).play();
+  var ready = function() {
+    popped.off( "canplaythrough", ready );
+    popped.volume( 0 ).currentTime( 0 ).play();
+  };
 
+  if ( popped.readyState() >= 4 ) {
+    ready();
+  } else {
+    popped.on( "canplaythrough", ready );
+  }
 });
 
 asyncTest( "Popcorn vimeo Plugin Url and Duration Tests", function() {
