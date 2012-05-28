@@ -215,13 +215,13 @@ asyncTest("Update Timer", function () {
   });
 
   p2.exec( 3, function() {
-
     p2.play();
   });
 
   var ready = function() {
     p2.off( "canplaythrough", ready );
-    p2.volume( 0 ).currentTime(3);
+
+    p2.volume( 0 ).currentTime( 3 );
   };
 
   if ( p2.readyState() >= 4 ) {
@@ -364,8 +364,10 @@ asyncTest( "Popcorn YouTube Plugin Url and Duration Tests", function() {
 
   expect( expects );
 
-  equal( popcorn.media.id, 'video2', 'Video id set' );
-  plus();
+  popcorn.on( "canplaythrough", function() {
+    equal( popcorn.media.id, 'video2', 'Video id set' );
+    plus();
+  });
 
   popcorn.listen( "durationchange", function() {
 
@@ -436,71 +438,6 @@ asyncTest( "Popcorn YouTube Plugin Url Regex Test", function() {
   });
 });
 
-asyncTest( "Controls and Annotations toggling", function() {
-
-  var count = 0,
-      expects = 6,
-      testTarget = "",
-      targetDiv;
-
-  function plus(){
-    if ( ++count == expects ) {
-      start();
-    }
-  }
-
-  expect( expects );
-
-  var popcorn1 = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
-
-  popcorn1.listen( "loadeddata", function() {
-    
-    targetDiv = document.getElementById( "video" );
-    testTarget = targetDiv.querySelector( "object" ).getAttribute( "data-youtube-player" );
-
-    popcorn1.volume( 0 );
-
-    ok( !/controls/.test( testTarget ), "controls are defaulted to 1 ( displayed )" );
-    plus();
-    ok( !/iv_load_policy/.test( testTarget ), "annotations ( iv_load_policy ) are defaulted to ( enabled )" );
-    plus();
-
-    popcorn1.destroy();
-
-    var popcorn2 = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=nfGV32RNkhw&controls=1&iv_load_policy=1" );
-    popcorn2.listen( "loadeddata", function() {
-      
-      targetDiv = document.getElementById( "video" );
-      testTarget = targetDiv.querySelector( "object" ).getAttribute( "data-youtube-player" );
-
-      popcorn2.volume( 0 );
-
-      ok( /controls=1/.test( testTarget ), "controls is set to 1 ( displayed )" );
-      plus();
-      ok( /iv_load_policy=1/.test( testTarget ), "annotations ( iv_load_policy ) is set to 1 ( enabled )" );
-      plus();
-
-      popcorn2.destroy();
-      
-      var popcorn3 = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=nfGV32RNkhw&controls=0&iv_load_policy=3" );
-      popcorn3.listen( "loadeddata", function() {
-        
-        targetDiv = document.getElementById( "video" );
-        testTarget = targetDiv.querySelector( "object" ).getAttribute( "data-youtube-player" );
-
-        popcorn3.volume( 0 );
-
-        ok( /controls=0/.test( testTarget ), "controls is set to 0 ( hidden )" );
-        plus();
-        ok( /iv_load_policy=3/.test( testTarget ), "annotations ( iv_load_policy ) is set to 3 ( hidden )" );
-        plus();
-
-        popcorn3.destroy();
-      });
-    });
-  });
-});
-
 asyncTest( "Player height and width", function() {
 
   expect( 4 );
@@ -514,11 +451,11 @@ asyncTest( "Player height and width", function() {
           setTimeout( readyStatePoll, 10 );
         } else {
 
-          equal( popcorn1.media.children[ 0 ].width, 560, "Youtube player default width is 560" );
-          equal( popcorn1.media.children[ 0 ].height, 315, "Youtube player default height is 315" );
+          equal( popcorn1.media.children[ 0 ].width, 640, "Youtube player default width is 560" );
+          equal( popcorn1.media.children[ 0 ].height, 390, "Youtube player default height is 315" );
 
-          equal( popcorn2.media.children[ 0 ].getAttribute( "width" ), 1, "Youtube player explicit width is 1" );
-          equal( popcorn2.media.children[ 0 ].getAttribute( "height" ), 1, "Youtube player explicit height is 1" );
+          equal( popcorn2.media.children[ 0 ].getAttribute( "width" ), 640, "Youtube player min width is 640" );
+          equal( popcorn2.media.children[ 0 ].getAttribute( "height" ), 390, "Youtube player min height is 390" );
 
           popcorn1.destroy();
           popcorn2.destroy();
@@ -530,41 +467,6 @@ asyncTest( "Player height and width", function() {
   popcorn2.volume( 0 );
 
   readyStatePoll();
-});
-
-asyncTest( "Popcorn Youtube Plugin offsetHeight && offsetWidth Test", function() {
-
-  var popped,
-      elem,
-      expects = 2,
-      count = 0;
-
-  expect( expects );
-
-  function plus() {
-    if ( ++count === expects ) {
-
-      popped.destroy();
-      start();
-    }
-  }
-
-  popped = Popcorn.youtube( "#video6", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
-
-  var runner = function() {
-    popped.volume( 0 );
-    elem = document.querySelector( "div#video6 object" );
-    equal( elem.height, popped.media.offsetHeight, "The media object is reporting the correct offsetHeight" );
-    plus();
-    equal( elem.width, popped.media.offsetWidth, "The media object is reporting the correct offsetWidth" );
-    plus();
-  };
-
-  if ( popped.readyState >= 2 ) {
-    runner();
-  } else {
-    popped.listen( "loadeddata", runner);
-  }
 });
 
 asyncTest( "Player Errors", function() {
@@ -676,7 +578,9 @@ asyncTest( "Youtube ready state events", function() {
 asyncTest( "Youtube media start time fragment", function() {
 
   var popcorn1, popcorn2, popcorn3, popcorn4,
-      count = 0, expects = 4;
+      count = 0, expects = 4,
+      // Youtube's fragment can be off by give or take a second.
+      epsilon = 1;
 
   expect( expects );
 
@@ -694,25 +598,25 @@ asyncTest( "Youtube media start time fragment", function() {
   var firstTest = function() {
 
         popcorn1.off( "loadeddata", firstTest );
-        equal( Math.floor( popcorn1.currentTime() ), 130, "youtube fragment works with &start=130" );
+        ok( Math.ceil( popcorn1.currentTime() ) + epsilon >= 130, "youtube fragment works with &start=130" );
         plus();
       },
       secondTest = function() {
 
         popcorn2.off( "loadeddata", secondTest );
-        equal( Math.floor( popcorn2.currentTime() ), 130, "youtube fragment works with &t=2m10s" );
+        ok( Math.ceil( popcorn2.currentTime() ) + epsilon >= 130, "youtube fragment works with &t=2m10s" );
         plus();
       },
       thirdTest = function() {
 
         popcorn3.off( "loadeddata", thirdTest );
-        equal( Math.floor( popcorn3.currentTime() ), 120, "youtube fragment works with &t=2m" );
+        ok( Math.ceil( popcorn3.currentTime() ) + epsilon >= 120, "youtube fragment works with &t=2m" );
         plus();
       },
       fourthTest = function() {
 
         popcorn4.off( "loadeddata", fourthTest );
-        equal( Math.floor( popcorn4.currentTime() ), 10, "youtube fragment works with &t=10s" );
+        ok( Math.ceil( popcorn4.currentTime() )+ epsilon >= 10, "youtube fragment works with &t=10s" );
         plus();
       };
 
