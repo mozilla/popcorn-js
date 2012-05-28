@@ -83,12 +83,14 @@
           text: {
             elem: "input",
             type: "text",
-            label: "Text"
+            label: "Text",
+            "default": "Popcorn.js"
           },
           color: {
             elem: "input",
             type: "text",
             label: "Color",
+            "default": "Green",
             optional: true
           }
         }

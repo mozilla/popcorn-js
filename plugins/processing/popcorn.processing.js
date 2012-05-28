@@ -153,10 +153,10 @@
         label: "Sketch"
       },
       noPause: {
-        elem: "select",
-        options: [ "TRUE", "FALSE" ],
+        elem: "input",
+        type: "checkbox",
         label: "No Loop",
-        optional: true
+        "default": false
       }
     }
   });
