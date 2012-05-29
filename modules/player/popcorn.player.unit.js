@@ -343,38 +343,41 @@ asyncTest( "Popcorn.smart - audio and video elements", function() {
 });
 
 asyncTest( "Popcorn.smart - multiple sources for HTML5 media", function() {
-  expect( 13 );
+  expect( 14 );
 
-  var instanceDiv,
+  var medias = [],
+    instanceDiv,
     count = 0,
-    p1, p2, p3, p4;
+    p1, p2, p3;
 
   p1 = Popcorn.smart( "#multi-div", [ "../../test/trailer.ogv", "../../test/trailer.webm", "../../test/trailer.mp4" ] );
   p2 = Popcorn.smart( "#multi-video", [ "../../test/trailer.ogv", "../../test/trailer.webm", "../../test/trailer.mp4" ] );
-  p3 = Popcorn.smart( "#multi-video2", [ "../../test/trailer.ogv", "../../test/trailer.ogv", "../../test/trailer.ogv" ] );
-  p4 = Popcorn.smart( "#multi-audio", [ "../../test/italia.ogg", "../../test/italia.mp4" ] );
+  p3 = Popcorn.smart( "#multi-audio", [ "../../test/italia.ogg", "../../test/italia.mp4" ] );
 
   instanceDiv = document.getElementById( "multi-div" );
   ok( instanceDiv.firstChild && instanceDiv.firstChild.childNodes.length === 3, "multi-div has 3 children" );
   ok( instanceDiv.firstChild.childNodes[ 0 ].nodeName === "SOURCE", "multi-div has <source> children [ 0 ]" );
   ok( instanceDiv.firstChild.childNodes[ 1 ].nodeName === "SOURCE", "multi-div has <source> children [ 1 ]" );
   ok( instanceDiv.firstChild.childNodes[ 2 ].nodeName === "SOURCE", "multi-div has <source> children [ 2 ]" );
+  medias.push( instanceDiv );
 
   instanceDiv = document.getElementById( "multi-video" );
   ok( instanceDiv.childNodes.length === 3, "multi-video has 3 children" );
   ok( instanceDiv.childNodes[ 0 ].nodeName === "SOURCE", "multi-video has <source> children [ 0 ]" );
   ok( instanceDiv.childNodes[ 1 ].nodeName === "SOURCE", "multi-video has <source> children [ 1 ]" );
   ok( instanceDiv.childNodes[ 2 ].nodeName === "SOURCE", "multi-video has <source> children [ 2 ]" );
+  medias.push( instanceDiv );
 
   instanceDiv = document.getElementById( "multi-audio" );
   ok( instanceDiv.childNodes.length === 2, "multi-audio has 2 children" );
   ok( instanceDiv.childNodes[ 0 ].nodeName === "SOURCE", "multi-audio has <source> children [ 0 ]" );
   ok( instanceDiv.childNodes[ 1 ].nodeName === "SOURCE", "multi-audio has <source> children [ 1 ]" );
+  medias.push( instanceDiv );
 
-  instanceDiv = document.getElementById( "multi-video" );
-  ok( instanceDiv.childNodes.length === 3, "(ogg) multi-video2 has 3 children" );
   setTimeout(function(){
-    ok( instanceDiv.currentSrc !== "", "(ogg) multi-video2 has currentSrc" );
+    ok( medias[ 0 ].currentSrc !== "", "(ogg) multi-video2 has currentSrc" );
+    ok( medias[ 1 ].currentSrc !== "", "(ogg) multi-video2 has currentSrc" );
+    ok( medias[ 2 ].currentSrc !== "", "(ogg) multi-video2 has currentSrc" );
     start();
   }, 0);
 
