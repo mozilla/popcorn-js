@@ -23,10 +23,6 @@
     "wav"
   ];
 
-  var extensionTypes = {
-    "ogv": "video/ogg",
-  };
-
   var audioExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions.join( "|" ) + ")$" );
 
   Popcorn.player = function( name, player ) {
