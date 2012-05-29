@@ -23,17 +23,7 @@
     "wav"
   ];
 
-  var videoExtensions = [
-    "ogv",
-    "webm",
-    "mp4",
-    "mov",
-    "avi"
-  ];
-
   var audioExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions.join( "|" ) + ")$" );
-
-  var allExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions.join( "|" ) + "|" + videoExtensions.join( "|" ) + ")$" );
 
   Popcorn.player = function( name, player ) {
 
@@ -428,15 +418,6 @@
 
         sourceNode = document.createElement( "source" );
         sourceNode.src = src[ i ];
-
-        var extensionMatch = allExtensionRegexp.exec( src[ i ] );
-
-        // Attempt to add a type attribute to the source tag
-        if ( extensionMatch && targetType ) {
-
-          sourceNode.type = targetType.toLowerCase() + "/" + extensionMatch[1];
-
-        }
 
         node.appendChild( sourceNode );
       }
