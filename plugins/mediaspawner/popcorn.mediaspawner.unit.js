@@ -14,45 +14,20 @@ asyncTest( "Popcorn MediaSpawner Plugin", 6, function() {
     caption: "This is a test. We are assuming control. We are assuming control."
   })
   .mediaspawner({
-    source: {
-      controls: "controls",
-      type: "audio",
-      sources: {
-        ogg: {
-          src: "../../test/italia.ogg",
-          type: "audio/ogg"
-        },
-        mp4: {
-          src: "../../test/italia.mp4",
-          type: "audio/mpeg"
-        }
-      }
-    },
+    source: [
+      "../../test/italia.ogg",
+      "../../test/italia.mp4"
+    ],
     target: "html5audio",
     start: 1,
     end: 5,
     caption: "This is a test. We are assuming control. We are assuming control.<br/>"
   })
   .mediaspawner({
-    source: {
-      poster: "../../test/poster.png",
-      controls: "controls",
-      type: "video",
-      sources: {
-        mp4: {
-          id: "mp4",
-          src: "../../test/trailer.mp4",
-          type: "video/mp4;",
-          codecs: "avc1, mp4a"
-        },
-        ogv: {
-          id: "ogv",
-          src: "../../test/trailer.ogv",
-          type: "video/ogg;",
-          codecs: "theora, vorbis"
-        }
-      }
-    },
+    source: [
+      "../../test/trailer.mp4",
+      "../../test/trailer.ogv"
+    ],
     target: "html5video",
     start: 1,
     end: 6,

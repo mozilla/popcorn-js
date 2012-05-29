@@ -20,7 +20,24 @@
   */
 (function ( Popcorn, global ) {
   var PLAYER_URL = "http://popcornjs.org/code/modules/player/popcorn.player.js",
-      urlRegex = /(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu|vimeo|soundcloud)/;
+      urlRegex = /(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu|vimeo|soundcloud|baseplayer)/,
+      forEachPlayer,
+      playerTypeLoading = {},
+      playerTypesLoaded = {
+        "vimeo": false,
+        "youtube": false,
+        "soundcloud": false,
+        "module": false
+      };
+
+  Object.defineProperty( playerTypeLoading, forEachPlayer, {
+    get: function() {
+      return playerTypesLoaded[ forEachPlayer ];
+    },
+    set: function( val ) {
+      playerTypesLoaded[ forEachPlayer ] = val;
+    }
+  });
 
   Popcorn.plugin( "mediaspawner", {
     manifest: {
@@ -65,16 +82,12 @@
       var target = document.getElementById( options.target ),
           caption = options.caption || "",
           mediaType,
-          container;
-
+          container,
+          regexResult;
+Popcorn.plugin.debug = true;
       // Check if mediaSource is passed and mediaType is NOT audio/video
       if ( !options.source ) {
         Popcorn.error( "Error. Source must be specified." );
-      }
-
-      // If it's an HTML Video/Audio check if they passed a correct type
-      if ( typeof options.source === "object" && !/audio|video/.exec( options.source.type ) ) {
-          Popcorn.error( "Error. Type must be Video or Audio" );
       }
 
       // Check if target container exists
@@ -90,77 +103,51 @@
       container.style.display = "none";
       target && target.appendChild( container );
 
-      var regexResult = urlRegex.exec( options.source );
+      regexResult = urlRegex.exec( options.source );
       if ( regexResult ) {
         mediaType = regexResult[ 1 ];
-      } else {
+        // our regex only handles youtu ( incase the url looks something like youtu.be )
+        if ( mediaType === "youtu" ) {
+          mediaType = "youtube";
+        }
+      }
+      else {
+        // if the regex didn't return anything we know it's an HTML5 source
         mediaType = "object";
       }
 
       // Store Reference to Type for use in end
-      //options.type = mediaType;
+      options.type = mediaType;
 
-      /*
-      function flashCallback( type ) {
-        // our regex only handles youtu ( incase the url looks something like youtu.be )
-        if ( type === "youtu" ) {
-          options.source += "&autoplay=1";
-        }
+      function constructMedia(){
 
         function checkPlayerTypeLoaded() {
-          if ( !window.Popcorn[ type ] ) {
+          if ( mediaType !== "object" && !window.Popcorn[ mediaType ] ) {
             setTimeout( function() {
               checkPlayerTypeLoaded();
             }, 300 );
           } else {
             options.id = options._container.id;
             options.popcorn = Popcorn.smart( "#" + options.id, options.source );
+
+            if ( mediaType === "object" ) {
+              options.popcorn.controls( true );
+            }
           }
         }
 
-        if ( !window.Popcorn[ type ] && !isPlayerTypeLoading[ type ]() ) {
-          setPlayerTypeLoading[ type ]();
-          Popcorn.getScript( "http://popcornjs.org/code/players/" + type + "/popcorn." + type + ".js", function() {
+        if ( mediaType !== "object" && !window.Popcorn[ mediaType ] && !playerTypeLoading[ mediaType ] ) {
+          playerTypeLoading[ mediaType ] = true;
+          Popcorn.getScript( "http://popcornjs.org/code/players/" + mediaType + "/popcorn." + mediaType + ".js", function() {
             checkPlayerTypeLoaded();
           });
         }
         else {
           checkPlayerTypeLoaded();
         }
+
       }
 
-      function html5CallBack() {
-        var data = options.source,
-            element = document.createElement( data.type ),
-            src;
-
-        element.poster = data.poster || "";
-        element.controls = data.controls || "";
-
-        Popcorn.forEach( data.sources, function( value, key, item ) {
-          src = document.createElement( "source" );
-          src.id = value.id || "";
-          src.src = value.src || "";
-          src.type = value.type || "";
-          src.codecs = value.codecs || "";
-
-          element.appendChild( src );
-        });
-
-        container.appendChild( element );
-        options.id = element.id = "mediaspawner-" + Popcorn.guid();
-      }
-      */
-
-      function constructMedia(){
-        // our regex only handles youtu ( incase the url looks something like youtu.be )
-        if ( mediaType === "youtu" ) {
-          options.source += "&autoplay=1";
-        }
-
-        options.id = options._container.id;
-        options.popcorn = Popcorn.smart( "#" + options.id, options.source );
-      }
       // If Player script needed to be loaded, keep checking until it is and then fire readycallback
       function isPlayerReady() {
         if ( !window.Popcorn.player ) {
@@ -173,8 +160,8 @@
       }
 
       // If player script isn't present, retrieve script
-      if ( !window.Popcorn.player && !loadingPlayer ) {
-        loadingPlayer = true;
+      if ( !window.Popcorn.player && !playerTypeLoading[ "module" ] ) {
+        playerTypeLoading[ "module" ] = true;
         Popcorn.getScript( PLAYER_URL, isPlayerReady );
       } else {
         isPlayerReady();
@@ -194,13 +181,13 @@
       if ( options._container ) {
         options._container.style.display = "none";
       }
-      /*
+
       // The Flash Players automagically pause themselves on end already but because these videos we create
       // aren't tied directly to Popcorn instances we have to manually retrieve them ourselves
       if ( options.type === "object" ) {
-        document.getElementById( options.id ).pause();
+        options.popcorn.pause();
       }
-      */
+
     },
     _teardown: function( options ) {
       if ( options.popcorn && options.popcorn.destory ) {
