@@ -1554,7 +1554,7 @@
 
         // Trigger an error that the instance can listen for
         // and react to
-        this.emit( "error", Popcorn.plugin.errors );
+        this.emit( "pluginerror", Popcorn.plugin.errors );
       }
     };
   }
