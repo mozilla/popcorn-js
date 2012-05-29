@@ -343,7 +343,7 @@ asyncTest( "Popcorn.smart - audio and video elements", function() {
 });
 
 asyncTest( "Popcorn.smart - multiple sources for HTML5 media", function() {
-  expect( 21 );
+  expect( 13 );
 
   var instanceDiv,
     count = 0,
@@ -359,25 +359,17 @@ asyncTest( "Popcorn.smart - multiple sources for HTML5 media", function() {
   ok( instanceDiv.firstChild.childNodes[ 0 ].nodeName === "SOURCE", "multi-div has <source> children [ 0 ]" );
   ok( instanceDiv.firstChild.childNodes[ 1 ].nodeName === "SOURCE", "multi-div has <source> children [ 1 ]" );
   ok( instanceDiv.firstChild.childNodes[ 2 ].nodeName === "SOURCE", "multi-div has <source> children [ 2 ]" );
-  ok( instanceDiv.firstChild.childNodes[ 0 ].getAttribute( "type" ) === "video/ogg", "source[ 0 ] is correct type" );
-  ok( instanceDiv.firstChild.childNodes[ 1 ].getAttribute( "type" ) === "video/webm", "source[ 1 ] is correct type" );
-  ok( instanceDiv.firstChild.childNodes[ 2 ].getAttribute( "type" ) === "video/mp4", "source[ 2 ] is correct type" );
 
   instanceDiv = document.getElementById( "multi-video" );
   ok( instanceDiv.childNodes.length === 3, "multi-video has 3 children" );
   ok( instanceDiv.childNodes[ 0 ].nodeName === "SOURCE", "multi-video has <source> children [ 0 ]" );
   ok( instanceDiv.childNodes[ 1 ].nodeName === "SOURCE", "multi-video has <source> children [ 1 ]" );
   ok( instanceDiv.childNodes[ 2 ].nodeName === "SOURCE", "multi-video has <source> children [ 2 ]" );
-  ok( instanceDiv.childNodes[ 0 ].getAttribute( "type" ) === "video/ogg", "source[ 0 ] is correct type" );
-  ok( instanceDiv.childNodes[ 1 ].getAttribute( "type" ) === "video/webm", "source[ 1 ] is correct type" );
-  ok( instanceDiv.childNodes[ 2 ].getAttribute( "type" ) === "video/mp4", "source[ 2 ] is correct type" );
 
   instanceDiv = document.getElementById( "multi-audio" );
   ok( instanceDiv.childNodes.length === 2, "multi-audio has 2 children" );
   ok( instanceDiv.childNodes[ 0 ].nodeName === "SOURCE", "multi-audio has <source> children [ 0 ]" );
   ok( instanceDiv.childNodes[ 1 ].nodeName === "SOURCE", "multi-audio has <source> children [ 1 ]" );
-  ok( instanceDiv.childNodes[ 0 ].getAttribute( "type" ) === "audio/ogg", "source[ 0 ] is correct type" );
-  ok( instanceDiv.childNodes[ 1 ].getAttribute( "type" ) === "audio/mp4", "source[ 1 ] is correct type" );
 
   instanceDiv = document.getElementById( "multi-video" );
   ok( instanceDiv.childNodes.length === 3, "(ogg) multi-video2 has 3 children" );
