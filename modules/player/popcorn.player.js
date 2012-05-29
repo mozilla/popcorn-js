@@ -31,6 +31,10 @@
     "avi"
   ];
 
+  var extensionTypes = {
+    "ogv": "video/ogg",
+  };
+
   var audioExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions.join( "|" ) + ")$" );
 
   var allExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions.join( "|" ) + "|" + videoExtensions.join( "|" ) + ")$" );
@@ -434,8 +438,8 @@
         // Attempt to add a type attribute to the source tag
         if ( extensionMatch && targetType ) {
 
-          sourceNode.type = targetType.toLowerCase() + "/" + extensionMatch[1];
-
+          sourceNode.type = extensionTypes[ extensionMatch[ 1 ] ] || targetType.toLowerCase() + "/" + extensionMatch[ 1 ];
+          
         }
 
         node.appendChild( sourceNode );

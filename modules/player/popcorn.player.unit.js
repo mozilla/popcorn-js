@@ -343,22 +343,23 @@ asyncTest( "Popcorn.smart - audio and video elements", function() {
 });
 
 asyncTest( "Popcorn.smart - multiple sources for HTML5 media", function() {
-  expect( 19 );
+  expect( 21 );
 
   var instanceDiv,
     count = 0,
-    p;
+    p1, p2, p3, p4;
 
-  p = Popcorn.smart( "#multi-div", [ "../../test/trailer.ogv", "../../test/trailer.webm", "../../test/trailer.mp4" ] );
-  p = Popcorn.smart( "#multi-video", [ "../../test/trailer.ogv", "../../test/trailer.webm", "../../test/trailer.mp4" ] );
-  p = Popcorn.smart( "#multi-audio", [ "../../test/italia.ogg", "../../test/italia.mp4" ] );
+  p1 = Popcorn.smart( "#multi-div", [ "../../test/trailer.ogv", "../../test/trailer.webm", "../../test/trailer.mp4" ] );
+  p2 = Popcorn.smart( "#multi-video", [ "../../test/trailer.ogv", "../../test/trailer.webm", "../../test/trailer.mp4" ] );
+  p3 = Popcorn.smart( "#multi-video2", [ "../../test/trailer.ogv", "../../test/trailer.ogv", "../../test/trailer.ogv" ] );
+  p4 = Popcorn.smart( "#multi-audio", [ "../../test/italia.ogg", "../../test/italia.mp4" ] );
 
   instanceDiv = document.getElementById( "multi-div" );
   ok( instanceDiv.firstChild && instanceDiv.firstChild.childNodes.length === 3, "multi-div has 3 children" );
   ok( instanceDiv.firstChild.childNodes[ 0 ].nodeName === "SOURCE", "multi-div has <source> children [ 0 ]" );
   ok( instanceDiv.firstChild.childNodes[ 1 ].nodeName === "SOURCE", "multi-div has <source> children [ 1 ]" );
   ok( instanceDiv.firstChild.childNodes[ 2 ].nodeName === "SOURCE", "multi-div has <source> children [ 2 ]" );
-  ok( instanceDiv.firstChild.childNodes[ 0 ].getAttribute( "type" ) === "video/ogv", "source[ 0 ] is correct type" );
+  ok( instanceDiv.firstChild.childNodes[ 0 ].getAttribute( "type" ) === "video/ogg", "source[ 0 ] is correct type" );
   ok( instanceDiv.firstChild.childNodes[ 1 ].getAttribute( "type" ) === "video/webm", "source[ 1 ] is correct type" );
   ok( instanceDiv.firstChild.childNodes[ 2 ].getAttribute( "type" ) === "video/mp4", "source[ 2 ] is correct type" );
 
@@ -367,7 +368,7 @@ asyncTest( "Popcorn.smart - multiple sources for HTML5 media", function() {
   ok( instanceDiv.childNodes[ 0 ].nodeName === "SOURCE", "multi-video has <source> children [ 0 ]" );
   ok( instanceDiv.childNodes[ 1 ].nodeName === "SOURCE", "multi-video has <source> children [ 1 ]" );
   ok( instanceDiv.childNodes[ 2 ].nodeName === "SOURCE", "multi-video has <source> children [ 2 ]" );
-  ok( instanceDiv.childNodes[ 0 ].getAttribute( "type" ) === "video/ogv", "source[ 0 ] is correct type" );
+  ok( instanceDiv.childNodes[ 0 ].getAttribute( "type" ) === "video/ogg", "source[ 0 ] is correct type" );
   ok( instanceDiv.childNodes[ 1 ].getAttribute( "type" ) === "video/webm", "source[ 1 ] is correct type" );
   ok( instanceDiv.childNodes[ 2 ].getAttribute( "type" ) === "video/mp4", "source[ 2 ] is correct type" );
 
@@ -378,6 +379,11 @@ asyncTest( "Popcorn.smart - multiple sources for HTML5 media", function() {
   ok( instanceDiv.childNodes[ 0 ].getAttribute( "type" ) === "audio/ogg", "source[ 0 ] is correct type" );
   ok( instanceDiv.childNodes[ 1 ].getAttribute( "type" ) === "audio/mp4", "source[ 1 ] is correct type" );
 
-  start();
+  instanceDiv = document.getElementById( "multi-video" );
+  ok( instanceDiv.childNodes.length === 3, "(ogg) multi-video2 has 3 children" );
+  setTimeout(function(){
+    ok( instanceDiv.currentSrc !== "", "(ogg) multi-video2 has currentSrc" );
+    start();
+  }, 0);
 
 });
