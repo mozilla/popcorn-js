@@ -62,28 +62,44 @@
         target: "mediaspawner-container",
         start: {
           elem: "input",
-          type: "number",
+          type: "text",
           label: "Start"
         },
         end: {
           elem: "input",
-          type: "number",
+          type: "text",
           label: "End"
         },
         autoplay: {
-          elem: "select",
-          options: [ "TRUE", "FALSE" ],
-          label: "Autoplay Video: ",
+          elem: "input",
+          type: "checkbox",
+          label: "Autoplay Video",
+          optional: true
+        },
+        width: {
+          elem: "input",
+          type: "text",
+          label: "Media Width",
+          optional: true
+        },
+        height: {
+          elem: "input",
+          type: "text",
+          label: "Media Height",
           optional: true
         }
       }
     },
     _setup: function( options ) {
       var target = document.getElementById( options.target ),
-          caption = options.caption || "",
           mediaType,
           container,
+          capContainer,
           regexResult;
+
+      // Default width and height of media
+      options.width = options.width || "400";
+      options.height = options.height || "200";
 
       // Check if mediaSource is passed and mediaType is NOT audio/video
       if ( !options.source ) {
@@ -99,8 +115,17 @@
       options._container = document.createElement( "div" );
       container = options._container;
       container.id = "mediaSpawnerdiv-" + Popcorn.guid();
-      container.innerHTML = caption;
-      container.style.display = "none";
+
+      // Captions now need to be in their own container, due to the problem with flash players
+      // described in start/end
+      if ( options.caption ) {
+        capContainer = document.createElement( "div" );
+        capContainer.innerHTML = options.caption;
+        capContainer.style.display = "none";
+        options._capCont = capContainer;
+        container.appendChild( capContainer );
+      }
+
       target && target.appendChild( container );
 
       regexResult = urlRegex.exec( options.source );
@@ -137,6 +162,8 @@
             if ( mediaType === "object" ) {
               options.popcorn.controls( true );
             }
+
+            options.popcorn.media.style.visibility = "hidden";
           }
         }
 
@@ -173,18 +200,34 @@
 
     },
     start: function( event, options ) {
-      if ( options._container ) {
-        options._container.style.display = "";
+      if( options._capCont ) {
+        options._capCont.style.display = "";
       }
+
+      /* Using this style for Start/End is required because of the flash players
+       * Without it on end an internal cleanup is called, causing the flash players
+       * to be out of sync with Popcorn, as they are then rebuilt.
+       */
+      options.popcorn.media.style.width = options.width + "px";
+      options.popcorn.media.style.height = options.height + "px";
+      options.popcorn.media.style.visibility = "visible";
 
       if ( options.autoplay ) {
         options.popcorn.play();
       }
     },
     end: function( event, options ) {
-      if ( options._container ) {
-        options._container.style.display = "none";
+      if( options._capCont ) {
+        options._capCont.style.display = "none";
       }
+
+      /* Using this style for Start/End is required because of the flash players
+       * Without it on end an internal cleanup is called, causing the flash players
+       * to be out of sync with Popcorn, as they are then rebuilt.
+       */
+      options.popcorn.media.style.width = "0px";
+      options.popcorn.media.style.height = "0px";
+      options.popcorn.media.style.visibility = "hidden";
 
       // The Flash Players automagically pause themselves on end already
       if ( options.type === "object" ) {

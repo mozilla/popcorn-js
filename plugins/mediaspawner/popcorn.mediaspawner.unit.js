@@ -1,4 +1,4 @@
-asyncTest( "Popcorn MediaSpawner Plugin", 6, function() {
+asyncTest( "Popcorn MediaSpawner Plugin", 7, function() {
 
   var popped = Popcorn( "#video" ),
       eventId,
@@ -10,8 +10,9 @@ asyncTest( "Popcorn MediaSpawner Plugin", 6, function() {
     source: "http://www.youtube.com/watch?v=CXDstfD9eJ0",
     target: "youtubediv",
     start: 1,
-    end: 5,
-    caption: "This is a test. We are assuming control. We are assuming control."
+    end: 7,
+    caption: "This is a test. We are assuming control. We are assuming control.",
+    autoplay: true
   })
   .mediaspawner({
     source: [
@@ -57,6 +58,12 @@ asyncTest( "Popcorn MediaSpawner Plugin", 6, function() {
     // Checks if the Text Blog Post was successfully destroyed with _teardown
     popped.pause().removeTrackEvent( eventId );
     ok( !document.getElementById( "html5video" ).innerHTML, "html5video type from mediaspawner plugin was properly destroyed" );
+    popped.play();
+  });
+
+  popped.cue( 6, function() {
+    var youtubeInstance = popped.data.running.mediaspawner[ 0 ];
+    ok( !youtubeInstance.paused, "Youtube Video is autoplaying" );
 
     start();
   });
