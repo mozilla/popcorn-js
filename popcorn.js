@@ -1200,7 +1200,7 @@
               natives.end.call( obj, event, byStart );
 
               obj.emit( trackend,
-                Popcorn.extend({}, byEnd, {
+                Popcorn.extend({}, byStart, {
                   plugin: type,
                   type: trackend
                 })
@@ -1237,7 +1237,7 @@
               natives.start.call( obj, event, byEnd );
 
               obj.emit( trackstart,
-                Popcorn.extend({}, byStart, {
+                Popcorn.extend({}, byEnd, {
                   plugin: type,
                   type: trackstart
                 })
