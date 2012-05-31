@@ -84,7 +84,7 @@
           mediaType,
           container,
           regexResult;
-Popcorn.plugin.debug = true;
+
       // Check if mediaSource is passed and mediaType is NOT audio/video
       if ( !options.source ) {
         Popcorn.error( "Error. Source must be specified." );
@@ -114,6 +114,10 @@ Popcorn.plugin.debug = true;
       else {
         // if the regex didn't return anything we know it's an HTML5 source
         mediaType = "object";
+      }
+
+      if ( mediaType === "vimeo" || mediaType === "soundcloud" ) {
+        Popcorn.error( "Vimeo and soundcloud are currently not supported by the MediaSpawner Plugin." );
       }
 
       // Store Reference to Type for use in end
@@ -182,8 +186,7 @@ Popcorn.plugin.debug = true;
         options._container.style.display = "none";
       }
 
-      // The Flash Players automagically pause themselves on end already but because these videos we create
-      // aren't tied directly to Popcorn instances we have to manually retrieve them ourselves
+      // The Flash Players automagically pause themselves on end already
       if ( options.type === "object" ) {
         options.popcorn.pause();
       }
