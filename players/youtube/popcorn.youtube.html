@@ -25,6 +25,8 @@
               popcorn;
 
           popcorn = Popcorn.youtube( '#video', 'http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=0' );
+          popcorn2 = Popcorn.youtube( '#video2', 'http://www.youtube.com/watch?v=M2Nn5hY5QzE' );
+          popcorn3 = Popcorn.youtube( '#video3', 'http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=0' );
           
           popcorn = popcorn
             .footnote({
@@ -134,6 +136,10 @@
           }, false);
         }, false );
     </script>
+    <style>
+    #video2 { width: 1100px; border: 1px solid red; }
+    #video3 { width: 100px; border: 1px solid blue; }
+    </style>
   </head>
   <body>
     <div>
@@ -198,5 +204,9 @@
         <strong>Web Page Area</strong><br />
       </div>
     </div>
+    <p>This video should be 1100px wide and resize to fit the entire container:</p>
+    <div id="video2"></div><br />
+    <p>This video should be 640px wide, expanding out of its container:</p>
+    <div id="video3"></div><br />
   </body>
 </html>

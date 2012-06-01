@@ -168,7 +168,7 @@ Popcorn.player( "youtube", {
 
     var youtubeInit = function() {
 
-      var src, height, width, query;
+      var src, width, relativeHeight, height, query;
 
       var timeUpdate = function() {
 
@@ -221,8 +221,11 @@ Popcorn.player( "youtube", {
 
       // setting youtube player's height and width, min 640 x 390,
       // anything smaller, and the player reports incorrect states.
-      height = media.style.height && media.offsetHeight >= 390 ? "" + media.offsetHeight : "390";
-      width = media.style.width && media.offsetWidth >= 640 ? "" + media.offsetWidth : "640";
+      width = media.offsetWidth && media.offsetWidth >= 640 ? "" + media.offsetWidth : "640";
+      relativeHeight = parseFloat( width/16 * 9 );
+      if( media.offsetHeight && media.style.height >= 390 ) { height = media.offsetHeight; }
+      else if ( relativeHeight && relativeHeight >= 390 ) { height = relativeHeight; } 
+      else { height = 390; }
 
       options.youtubeObject = new YT.Player( container.id, {
         height: height,
