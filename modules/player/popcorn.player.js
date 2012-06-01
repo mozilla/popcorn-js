@@ -414,7 +414,6 @@
     for ( i = 0, srcLength = src.length; i < srcLength; i++ ) {
 
       // src is a playable HTML5 video, we don't need to check custom players.
-console.log( src[ i ], canPlaySrc( src[ i ] ) );
       if ( canPlaySrc( src[ i ] ) ) {
         break;
       }
