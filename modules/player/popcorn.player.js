@@ -352,7 +352,6 @@
     var playerType,
         elementTypes = [ "AUDIO", "VIDEO" ],
         sourceNode,
-        targetType,
         firstSrc,
         node = Popcorn.dom.find( target ),
         i, srcResult,
@@ -415,6 +414,8 @@
 
       // src is a playable HTML5 video, we don't need to check custom players.
       if ( canPlaySrc( src[ i ] ) ) {
+
+        src = src[ i ];
         break;
       }
 
@@ -445,31 +446,7 @@
     }
 
     options && options.events && options.events.error && node.addEventListener( "error", options.events.error, false );
-
-    // Attempt to identify the type of the resultant node
-    targetType = target.nodeName;
-
-    if ( !targetType ) {
-
-      targetType = Popcorn.dom.find( target ).nodeName;
-
-    }
-
-    // If src is an array, add <source>'s
-    if ( typeof( src ) !== "string" && src.length ) {
-
-      for ( var i = 0; i < src.length; ++i ) {
-
-        sourceNode = document.createElement( "source" );
-        sourceNode.src = src[ i ];
-
-        node.appendChild( sourceNode );
-      }
-    }
-    else {
-
-      node.src = src;
-    }
+    node.src = src;
 
     return Popcorn( node, options );
 
