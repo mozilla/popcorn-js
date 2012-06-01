@@ -222,10 +222,14 @@ Popcorn.player( "youtube", {
       // setting youtube player's height and width, min 640 x 390,
       // anything smaller, and the player reports incorrect states.
       width = media.offsetWidth && media.offsetWidth >= 640 ? "" + media.offsetWidth : "640";
-      relativeHeight = parseFloat( width/16 * 9 );
-      if( media.offsetHeight && media.style.height >= 390 ) { height = media.offsetHeight; }
-      else if ( relativeHeight && relativeHeight >= 390 ) { height = relativeHeight; } 
-      else { height = 390; }
+      relativeHeight = +( width/16 * 9 );
+      if( 
+        media.offsetHeight && media.style.height >= 390 ) { height = media.offsetHeight; 
+      } else if ( relativeHeight && relativeHeight >= 390 ) { 
+        height = relativeHeight; 
+      } else { 
+        height = 390; 
+      }
 
       options.youtubeObject = new YT.Player( container.id, {
         height: height,
