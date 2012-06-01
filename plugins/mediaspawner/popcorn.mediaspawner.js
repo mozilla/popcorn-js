@@ -5,7 +5,7 @@
   * Start is the time that you want this plug-in to execute
   * End is the time that you want this plug-in to stop executing
   *
-  * @param {Object} options
+  * @param {HTML} options
   *
   * Example:
     var p = Popcorn('#video')
@@ -97,10 +97,6 @@
           capContainer,
           regexResult;
 
-      // Default width and height of media
-      options.width = options.width || "400";
-      options.height = options.height || "200";
-
       // Check if mediaSource is passed and mediaType is NOT audio/video
       if ( !options.source ) {
         Popcorn.error( "Error. Source must be specified." );
@@ -111,10 +107,34 @@
         Popcorn.error( "Target MediaSpawner container doesn't exist." );
       }
 
+      regexResult = urlRegex.exec( options.source );
+      if ( regexResult ) {
+        mediaType = regexResult[ 1 ];
+        // our regex only handles youtu ( incase the url looks something like youtu.be )
+        if ( mediaType === "youtu" ) {
+          mediaType = "youtube";
+        }
+      }
+      else {
+        // if the regex didn't return anything we know it's an HTML5 source
+        mediaType = "HTML";
+      }
+
+      if ( mediaType === "vimeo" || mediaType === "soundcloud" ) {
+        Popcorn.error( "Vimeo and soundcloud are currently not supported by the MediaSpawner Plugin." );
+      }
+
+      // Store Reference to Type for use in end
+      options._type = mediaType;
+
       // Create separate container for plugin
       options._container = document.createElement( "div" );
       container = options._container;
       container.id = "mediaSpawnerdiv-" + Popcorn.guid();
+
+      // Default width and height of media
+      options.width = options.width || target.offsetWidth || "400";
+      options.height = options.height || target.offsetHeight || "200";
 
       // Captions now need to be in their own container, due to the problem with flash players
       // described in start/end
@@ -128,30 +148,10 @@
 
       target && target.appendChild( container );
 
-      regexResult = urlRegex.exec( options.source );
-      if ( regexResult ) {
-        mediaType = regexResult[ 1 ];
-        // our regex only handles youtu ( incase the url looks something like youtu.be )
-        if ( mediaType === "youtu" ) {
-          mediaType = "youtube";
-        }
-      }
-      else {
-        // if the regex didn't return anything we know it's an HTML5 source
-        mediaType = "object";
-      }
-
-      if ( mediaType === "vimeo" || mediaType === "soundcloud" ) {
-        Popcorn.error( "Vimeo and soundcloud are currently not supported by the MediaSpawner Plugin." );
-      }
-
-      // Store Reference to Type for use in end
-      options.type = mediaType;
-
       function constructMedia(){
 
         function checkPlayerTypeLoaded() {
-          if ( mediaType !== "object" && !window.Popcorn[ mediaType ] ) {
+          if ( mediaType !== "HTML" && !window.Popcorn[ mediaType ] ) {
             setTimeout( function() {
               checkPlayerTypeLoaded();
             }, 300 );
@@ -159,15 +159,17 @@
             options.id = options._container.id;
             options.popcorn = Popcorn.smart( "#" + options.id, options.source );
 
-            if ( mediaType === "object" ) {
+            if ( mediaType === "HTML" ) {
               options.popcorn.controls( true );
             }
 
+            options.popcorn.media.style.width = "0px";
+            options.popcorn.media.style.height = "0px";
             options.popcorn.media.style.visibility = "hidden";
           }
         }
 
-        if ( mediaType !== "object" && !window.Popcorn[ mediaType ] && !playerTypeLoading[ mediaType ] ) {
+        if ( mediaType !== "HTML" && !window.Popcorn[ mediaType ] && !playerTypeLoading[ mediaType ] ) {
           playerTypeLoading[ mediaType ] = true;
           Popcorn.getScript( "http://popcornjs.org/code/players/" + mediaType + "/popcorn." + mediaType + ".js", function() {
             checkPlayerTypeLoaded();
@@ -230,7 +232,7 @@
       options.popcorn.media.style.visibility = "hidden";
 
       // The Flash Players automagically pause themselves on end already
-      if ( options.type === "object" ) {
+      if ( options._type === "HTML" ) {
         options.popcorn.pause();
       }
 
