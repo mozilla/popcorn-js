@@ -379,7 +379,7 @@
       }
 
       return canPlayType( srcResult[ 1 ] );
-    }
+    };
 
     if ( !node ) {
 
