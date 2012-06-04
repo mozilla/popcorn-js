@@ -159,7 +159,7 @@
       },
       nameofworkurl: {
         elem: "input",
-        type: "url",
+        type: "text",
         label: "URL of Work",
         optional: true
       },
@@ -170,18 +170,18 @@
       },
       copyrightholderurl: {
         elem: "input",
-        type: "url",
+        type: "text",
         label: "Copyright Holder URL",
         optional: true
       },
       license: {
-        elem: "select",
-        options: [ "cc-by", "cc-by-sa", "cc-by-nd", "cc-by-nc", "cc-by-nc-nd", "cc-by-nc-sa" ],
+        elem: "input",
+        type: "text",
         label: "License Type"
        },
       licenseurl: {
         elem: "input",
-        type: "url",
+        type: "text",
         label: "License URL",
         optional: true
       },

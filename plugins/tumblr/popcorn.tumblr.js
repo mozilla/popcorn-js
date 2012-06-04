@@ -270,7 +270,7 @@
         api_key: { // Required for Blog Info and Blog Post retrievals
           elem: "input",
           type: "text",
-          label: "Api Key",
+          label: "API key",
           optional: true
         },
         size: {

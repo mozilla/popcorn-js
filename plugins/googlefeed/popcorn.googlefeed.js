@@ -167,7 +167,7 @@
       url: {
         elem: "input",
         type: "text",
-        label: "URL",
+        label: "Feed URL",
         "default": "http://planet.mozilla.org/rss20.xml"
       },
       title: {

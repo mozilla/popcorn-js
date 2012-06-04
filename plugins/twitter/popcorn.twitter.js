@@ -54,20 +54,20 @@
           src: {
             elem: "input",
             type: "text",
-            label: "User Source",
+            label: "Tweet Source (# or @)",
             "default": "@popcornjs"
           },
           target: "twitter-container",
           height: {
             elem: "input",
-            type: "text",
+            type: "number",
             label: "Height",
             "default": "200",
             optional: true
           },
           width: {
             elem: "input",
-            type: "text",
+            type: "number",
             label: "Width",
             "default": "250",
             optional: true

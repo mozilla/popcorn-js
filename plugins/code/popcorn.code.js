@@ -166,18 +166,18 @@
       onStart: {
         elem: "input",
         type: "function",
-        label: "On Start"
+        label: "onStart"
       },
       onFrame: {
         elem: "input",
         type: "function",
-        label: "On Frame",
+        label: "onFrame",
         optional: true
       },
       onEnd: {
         elem: "input",
         type: "function",
-        label: "On End"
+        label: "onEnd"
       }
     }
   });

@@ -130,7 +130,7 @@
       href: {
         elem: "input",
         type: "text",
-        label: "Anchor URL",
+        label: "Link",
         optional: true
       }
     }
