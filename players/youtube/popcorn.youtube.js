@@ -168,7 +168,7 @@ Popcorn.player( "youtube", {
 
     var youtubeInit = function() {
 
-      var src, width, relativeHeight, height, query;
+      var src, width, height, query;
 
       var timeUpdate = function() {
 
