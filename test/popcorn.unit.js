@@ -4754,9 +4754,9 @@ test( "dataType: JSON Response", function() {
 
 if ( !/file/.test( location.protocol ) ) {
 
-  test( "JSONP Response", function() {
+  test( "JSONP xhr Response", function() {
 
-    var expects = 8,
+    var expects = 2,
         count = 0;
 
     function plus() {
@@ -4789,6 +4789,29 @@ if ( !/file/.test( location.protocol ) ) {
         plus();
       }
     });
+  });
+
+  test( "JSONP xhr.getJSONP Response", function() {
+
+    var expects = 2,
+        count = 0;
+
+    function plus() {
+      if ( ++count === expects ) {
+        start();
+      }
+    }
+
+    expect( expects );
+
+    stop();
+
+    var testObj = {
+          "data": {
+             "lang": "en",
+             "length": 25
+          }
+        };
 
     Popcorn.xhr.getJSONP(
 
@@ -4801,6 +4824,22 @@ if ( !/file/.test( location.protocol ) ) {
         plus();
       }
     );
+  });
+
+  test( "JSONP flickr Response", function() {
+
+    var expects = 2,
+        count = 0;
+
+    function plus() {
+      if ( ++count === expects ) {
+        start();
+      }
+    }
+
+    expect( expects );
+
+    stop();
 
     Popcorn.xhr.getJSONP( "http://api.flickr.com/services/feeds/photos_public.gne?id=35034346917@N01&lang=en-us&format=json&jsoncallback=flickr",
 
@@ -4812,6 +4851,29 @@ if ( !/file/.test( location.protocol ) ) {
         plus();
       }
     );
+  });
+
+  test( "JSONP getJSONP Response", function() {
+
+    var expects = 2,
+        count = 0;
+
+    function plus() {
+      if ( ++count === expects ) {
+        start();
+      }
+    }
+
+    expect( expects );
+
+    stop();
+
+    var testObj = {
+          "data": {
+             "lang": "en",
+             "length": 25
+          }
+        };
 
     Popcorn.getJSONP(
 
@@ -4820,7 +4882,42 @@ if ( !/file/.test( location.protocol ) ) {
 
         ok( data, "getJSONP returns data" );
         plus();
-        ok( QUnit.equiv( data, testObj ) , "Popcorn.xhr.getJSONP data.json returns an object of data" );
+        ok( QUnit.equiv( data, testObj ) , "Popcorn.getJSONP data.json returns an object of data" );
+        plus();
+      }
+    );
+  });
+
+  test( "JSONP Response", function() {
+
+    var expects = 2,
+        count = 0;
+
+    function plus() {
+      if ( ++count === expects ) {
+        start();
+      }
+    }
+
+    expect( expects );
+
+    stop();
+
+    var testObj = {
+          "data": {
+             "lang": "en",
+             "length": 25
+          }
+        };
+
+    Popcorn.getJSONP(
+
+      "data/jsonp.php?nonsense=no?sense",
+      function( data ) {
+
+        ok( data, "getJSONP returns data" );
+        plus();
+        ok( QUnit.equiv( data, testObj ) , "Popcorn.getJSONP data.json returns an object of data, with question mark in query string." );
         plus();
       }
     );
