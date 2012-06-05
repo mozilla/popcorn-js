@@ -228,7 +228,7 @@ Popcorn.player( "youtube", {
       height = media.clientHeight >= 390 ? "" + media.clientHeight : "390";
       width = media.clientWidth >= 640 ? "" + media.clientWidth : "640";
       
-      media.style.display = "block";
+      media.style.display = originalStyle;
 
       options.youtubeObject = new YT.Player( container.id, {
         height: height,
@@ -340,7 +340,7 @@ Popcorn.player( "youtube", {
     var youtubeObject = options.youtubeObject;
     if( youtubeObject ){
       youtubeObject.stopVideo();
-     // youtubeObject.clearVideo();
+      youtubeObject.clearVideo();
     }
 
     this.removeChild( document.getElementById( options._container.id ) );
