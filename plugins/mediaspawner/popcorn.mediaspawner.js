@@ -51,12 +51,14 @@
         source: {
           elem: "input",
           type: "text",
-          label: "Media Source"
+          label: "Media Source",
+          "default": "http://www.youtube.com/watch?v=CXDstfD9eJ0"
         },
         caption: {
           elem: "input",
           type: "text",
           label: "Media Caption",
+          "default": "Popcorn Popping",
           optional: true
         },
         target: "mediaspawner-container",
@@ -80,12 +82,14 @@
           elem: "input",
           type: "text",
           label: "Media Width",
+          "default": "400",
           optional: true
         },
         height: {
           elem: "input",
           type: "text",
           label: "Media Height",
+          "default": "200",
           optional: true
         }
       }
@@ -117,7 +121,7 @@
       }
       else {
         // if the regex didn't return anything we know it's an HTML5 source
-        mediaType = "HTML";
+        mediaType = "HTML5";
       }
 
       if ( mediaType === "vimeo" || mediaType === "soundcloud" ) {
@@ -151,7 +155,7 @@
       function constructMedia(){
 
         function checkPlayerTypeLoaded() {
-          if ( mediaType !== "HTML" && !window.Popcorn[ mediaType ] ) {
+          if ( mediaType !== "HTML5" && !window.Popcorn[ mediaType ] ) {
             setTimeout( function() {
               checkPlayerTypeLoaded();
             }, 300 );
@@ -159,7 +163,7 @@
             options.id = options._container.id;
             options.popcorn = Popcorn.smart( "#" + options.id, options.source );
 
-            if ( mediaType === "HTML" ) {
+            if ( mediaType === "HTML5" ) {
               options.popcorn.controls( true );
             }
 
@@ -169,7 +173,7 @@
           }
         }
 
-        if ( mediaType !== "HTML" && !window.Popcorn[ mediaType ] && !playerTypeLoading[ mediaType ] ) {
+        if ( mediaType !== "HTML5" && !window.Popcorn[ mediaType ] && !playerTypeLoading[ mediaType ] ) {
           playerTypeLoading[ mediaType ] = true;
           Popcorn.getScript( "http://popcornjs.org/code/players/" + mediaType + "/popcorn." + mediaType + ".js", function() {
             checkPlayerTypeLoaded();
