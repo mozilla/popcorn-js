@@ -4727,7 +4727,7 @@ if ( !/file/.test( location.protocol ) ) {
 
   test( "JSONP Response", function() {
 
-    var expects = 8,
+    var expects = 10,
         count = 0;
 
     function plus() {
@@ -4787,6 +4787,18 @@ if ( !/file/.test( location.protocol ) ) {
     Popcorn.getJSONP(
 
       "data/jsonp.php?callback=jsonp",
+      function( data ) {
+
+        ok( data, "getJSONP returns data" );
+        plus();
+        ok( QUnit.equiv( data, testObj ) , "Popcorn.xhr.getJSONP data.json returns an object of data" );
+        plus();
+      }
+    );
+
+    Popcorn.getJSONP(
+
+      "data/jsonp.php?nonsense=no?sense",
       function( data ) {
 
         ok( data, "getJSONP returns data" );

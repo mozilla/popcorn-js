@@ -2021,7 +2021,7 @@
         // rebuild url with callback
         url = params[ 0 ] + "?";
         if ( params[ 1 ] ) {
-          url += params[ 1 ];
+          url += params[ 1 ] + "&";
         }
         url += "callback=" + callback;
       }
