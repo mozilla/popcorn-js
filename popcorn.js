@@ -2009,9 +2009,10 @@
 
         // get the callback name
         callback = callparam[ 1 ].split( "=" )[ 1 ];
+
       } else {
 
-        callback = "jsonp";
+        callback = Popcorn.guid( "jsonp" );
 
         // split on first question mark,
         // this is to capture the query string
@@ -2020,16 +2021,9 @@
         // rebuild url with callback
         url = params[ 0 ] + "?";
         if ( params[ 1 ] ) {
-          url += params[ 1 ] + "&callback=" + callback
-        } else {
-          url += "callback=" + callback;
+          url += params[ 1 ];
         }
-      }
-
-      //  If a callback name already exists
-      if ( !!window[ callback ] ) {
-        //  Create a new unique callback name
-        callback = Popcorn.guid( callback );
+        url += "callback=" + callback;
       }
 
       //  Define the JSONP success callback globally
