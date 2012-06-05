@@ -1994,11 +1994,9 @@
 
     var head = document.head || document.getElementsByTagName( "head" )[ 0 ] || document.documentElement,
       script = document.createElement( "script" ),
-      paramStr,
       isFired = false,
       params = [],
-      callback,
-      callparam;
+      paramStr, callback, callparam;
 
     if ( !isScript ) {
 
