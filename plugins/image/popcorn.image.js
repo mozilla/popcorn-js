@@ -32,7 +32,7 @@
   var VIDEO_OVERLAY_Z = 2000,
       CHECK_INTERVAL_DURATION = 10;
 
-  function trackMediaElement ( mediaElement ) {
+  function trackMediaElement( mediaElement ) {
     var checkInterval = -1,
         container = document.createElement( "div" ),
         videoZ = getComputedStyle( mediaElement ).zIndex;
@@ -50,7 +50,7 @@
 
     document.body.appendChild( container );
 
-    function check () {
+    function check() {
       var mediaRect = mediaElement.getBoundingClientRect(),
           containerRect = container.getBoundingClientRect();
 
@@ -64,14 +64,14 @@
 
     return {
       element: container,
-      start: function () {
+      start: function() {
         checkInterval = setInterval( check, CHECK_INTERVAL_DURATION );
       },
-      stop: function () {
+      stop: function() {
         clearInterval( checkInterval );
         checkInterval = -1;
       },
-      destroy: function () {
+      destroy: function() {
         document.body.removeChild( container );
         if ( checkInterval !== -1 ) {
           clearInterval( checkInterval );
