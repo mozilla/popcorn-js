@@ -168,7 +168,7 @@ Popcorn.player( "youtube", {
 
     var youtubeInit = function() {
 
-      var src, height, width, query;
+      var src, width, height, originalStyle, query;
 
       var timeUpdate = function() {
 
@@ -219,10 +219,16 @@ Popcorn.player( "youtube", {
 
       autoPlay = ( /autoplay=1/.test( query ) );
 
+      // cache original display property so it can be reapplied
+      originalStyle = media.style.display;
+      media.style.display = "inline";
+
       // setting youtube player's height and width, min 640 x 390,
       // anything smaller, and the player reports incorrect states.
-      height = media.style.height && media.offsetHeight >= 390 ? "" + media.offsetHeight : "390";
-      width = media.style.width && media.offsetWidth >= 640 ? "" + media.offsetWidth : "640";
+      height = media.clientHeight >= 390 ? "" + media.clientHeight : "390";
+      width = media.clientWidth >= 640 ? "" + media.clientWidth : "640";
+      
+      media.style.display = originalStyle;
 
       options.youtubeObject = new YT.Player( container.id, {
         height: height,
