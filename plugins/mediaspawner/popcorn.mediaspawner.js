@@ -197,8 +197,8 @@
       }
 
       // If player script isn't present, retrieve script
-      if ( !window.Popcorn.player && !playerTypeLoading[ "module" ] ) {
-        playerTypeLoading[ "module" ] = true;
+      if ( !window.Popcorn.player && !playerTypeLoading.module ) {
+        playerTypeLoading.module = true;
         Popcorn.getScript( PLAYER_URL, isPlayerReady );
       } else {
         isPlayerReady();
