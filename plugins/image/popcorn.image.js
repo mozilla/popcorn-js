@@ -45,7 +45,7 @@
       container.style.zIndex = videoZ + 1;
     }
     else {
-      container.style.zIndex = VIDEO_OVERLAY_Z
+      container.style.zIndex = VIDEO_OVERLAY_Z;
     }
 
     document.body.appendChild( container );
@@ -78,8 +78,6 @@
         }
       }
     };
-
-    check();
   }
 
   Popcorn.plugin( "image", {
