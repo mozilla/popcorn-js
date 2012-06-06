@@ -153,3 +153,23 @@ asyncTest( "size test", 4, function() {
     popped.play();
   });
 });
+
+asyncTest( "media element target test", 2, function() {
+  var popped = Popcorn( "#video" );
+  popped.on( "canplayall", function() {
+    popped.image({
+      start: 1,
+      end: 4,
+      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      target: "video"
+    });
+    popped.pause();
+    popped.currentTime( 2 );
+    ok( document.querySelector( "div[data-popcorn-helper-container]" ), "helper element was created" );
+    popped.currentTime( 5 );
+    popped.destroy();
+    ok( !document.querySelector( "div[data-popcorn-helper-container]" ), "helper element was removed" );
+    start();
+  });
+
+});
