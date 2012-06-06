@@ -235,10 +235,8 @@
       options.popcorn.media.style.height = "0px";
       options.popcorn.media.style.visibility = "hidden";
 
-      // The Flash Players automagically pause themselves on end already
-      if ( options._type === "HTML" ) {
-        options.popcorn.pause();
-      }
+      // Pause all popcorn instances on exit
+      options.popcorn.pause();
 
     },
     _teardown: function( options ) {
