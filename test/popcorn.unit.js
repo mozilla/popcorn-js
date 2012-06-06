@@ -932,7 +932,7 @@ test( "exec", function() {
   }).currentTime( 3 ).play();
 });
 
-test( "cue (alias of exec)", function() {
+test( "cue: alias of exec", function() {
   expect( 2 );
   ok( Popcorn.p.cue, "Popcorn.p.cue exists" );
   equal( typeof Popcorn.p.cue, "function", "Popcorn.p.cue is a function" );
@@ -4296,6 +4296,101 @@ asyncTest( "Plug-ins with a `once` attribute should be removed after `end` is fi
 
   $pop.play( 0 );
 });
+
+asyncTest( "Modify cue or track event after creation", 6, function() {
+  var p = Popcorn("#video"),
+      passed = 0;
+
+  Popcorn.plugin( "modifyMe", {
+    start: function( event, options ) {
+      var floor = Math.floor( this.currentTime() );
+
+      // This test will fail the unit if it is run
+      if ( floor === 10 ) {
+        ok( false, "Plugin track start at 10 seconds should never fire because it is changed to 11 seconds" );
+      }
+
+      if ( floor === 11 ) {
+        ok( true, "Plugin track start at 11 seconds fired, it was changed from 10 to 11" );
+        passed++;
+
+        equal( options.content, "Hola!", "Plugin track content property was updated" );
+        passed++;
+      }
+
+      // This is the passing test for the unchanged plugin call
+      if ( floor === 12 ) {
+        ok( true, "Plugin track start at 12 seconds fired (unchanged)" );
+        passed++;
+      }
+    },
+    end: function() {
+      var floor = Math.floor( this.currentTime() );
+
+      // This test will fail the unit if it is run
+      if ( floor === 11 ) {
+        ok( false, "Plugin track end at 11 seconds should never fire because it is changed to 12 seconds" );
+      }
+
+      if ( floor === 12 ) {
+        ok( true, "Plugin track end at 12 seconds fired, it was changed from 11 to 12" );
+        passed++;
+      }
+
+      if ( passed === 4 ) {
+        start();
+      }
+    }
+  });
+
+  p.on( "canplayall", function() {
+
+    // traditional, unchanging cue
+    p.cue( 11, function() {
+      ok( true, "Cue at 11 seconds fired (unchanged)" );
+    });
+
+    // set a cue at 10 seconds
+    p.cue( "cue-id", 10, function() {
+      ok( false, "Cue at 10 seconds should never fire, because it is changed to 12 seconds" );
+    });
+
+    // now I want to change that cue to 12:
+    p.cue( "cue-id", 12 );
+
+    // now change the function...
+    p.cue( "cue-id", function() {
+      ok( true, "Cue at 12 seconds fired, it was changed from 10 to 12" );
+    });
+
+    // traditional, unchanging plugin call
+    p.modifyMe({
+      start: 12,
+      end: 13
+    });
+
+    // set up a new changeable trackevent
+    p.modifyMe( "plugin-id", {
+      start: 10,
+      end: 11,
+      content: "Hi!"
+    });
+
+    // change it to start at 11
+    p.modifyMe( "plugin-id", {
+      start: 11,
+      content: "Hola!"
+    });
+
+    // change it to end at 12
+    p.modifyMe( "plugin-id", {
+      end: 12
+    });
+
+    p.play(9);
+  });
+});
+
 
 module( "Popcorn XHR" );
 test( "Basic", function() {

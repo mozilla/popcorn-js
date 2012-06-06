@@ -545,10 +545,50 @@
     },
 
     //  Attach an event to a single point in time
-    exec: function( time, fn ) {
+    exec: function( id, time, fn ) {
+      var length = arguments.length,
+          trackEvent;
+
+      // Shift arguments based on use case
+      //
+      // Back compat for:
+      // p.cue( time, fn );
+      if ( typeof id === "number" && length === 2 ) {
+        fn = time;
+        time = id;
+        id = Popcorn.guid( "cue" );
+      } else {
+        // Support for new forms
+
+        // Get the trackEvent that matches the given id.
+        trackEvent = this.getTrackEvent( id );
+
+        if ( trackEvent ) {
+          // p.cue( "my-id", 12 );
+          // p.cue( "my-id", function() { ... });
+          if ( typeof id === "string" && length === 2 ) {
+
+            // p.cue( "my-id", 12 );
+            // The path will update the cue time.
+            if ( typeof time === "number" ) {
+              // Re-use existing trackEvent start callback
+              fn = trackEvent._natives.start;
+            }
+
+            // p.cue( "my-id", function() { ... });
+            // The path will update the cue function
+            if ( typeof time === "function" ) {
+              fn = time;
+              // Re-use existing trackEvent start time
+              time = trackEvent.start;
+            }
+          }
+        }
+      }
 
       //  Creating a one second track event with an empty end
       Popcorn.addTrackEvent( this, {
+        id: id,
         start: time,
         end: time + 1,
         _running: false,
@@ -849,6 +889,22 @@
 
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
+    var trackEvent;
+
+    // Do a lookup for existing trackevents with this id
+    if ( track.id ) {
+      trackEvent = obj.getTrackEvent( track.id );
+    }
+
+    // If a track event by this id currently exists, modify it
+    if ( trackEvent ) {
+      // Create a new object with the existing trackEvent
+      // Extend with new track properties
+      track = Popcorn.extend( {}, trackEvent, track );
+
+      // Remove the existing track from the instance
+      obj.removeTrackEvent( track.id );
+    }
 
     // Determine if this track has default options set for it
     // If so, apply them to the track object
@@ -1491,12 +1547,46 @@
 
     //  Extend Popcorn.p with new named definition
     //  Assign new named definition
-    Popcorn.p[ name ] = plugin[ name ] = function( options ) {
+    Popcorn.p[ name ] = plugin[ name ] = function( id, options ) {
+      var length = arguments.length,
+          trackEvent, defaults;
+
+      // Shift arguments based on use case
+      //
+      // Back compat for:
+      // p.plugin( options );
+      if ( id && !options ) {
+        options = id;
+        id = null;
+      } else {
+
+        // Get the trackEvent that matches the given id.
+        trackEvent = this.getTrackEvent( id );
+
+        // If the track event does not exist, ensure that the options
+        // object has a proper id
+        if ( !trackEvent ) {
+          options.id = id;
+
+        // If the track event does exist, merge the updated properties
+        } else {
+
+          options = Popcorn.extend( {}, trackEvent, options );
+
+          // Remove existing track event to make room for
+          // newly updated track event
+          this.removeTrackEvent( id );
+
+          Popcorn.addTrackEvent( this, options );
+
+          return this;
+        }
+      }
 
       this.data.running[ name ] = this.data.running[ name ] || [];
 
       // Merge with defaults if they exist, make sure per call is prioritized
-      var defaults = ( this.options.defaults && this.options.defaults[ name ] ) || {},
+      defaults = ( this.options.defaults && this.options.defaults[ name ] ) || {},
           mergedSetupOpts = Popcorn.extend( {}, defaults, options );
 
       return pluginFn.call( this, isfn ? definition.call( this, mergedSetupOpts ) : definition,
