@@ -16,14 +16,12 @@
   //  ID string matching
   var rIdExp  = /^(#([\w\-\_\.]+))$/;
 
-  var audioExtensions = [
-    "ogg",
-    "aac",
-    "mp3",
-    "wav"
-  ];
+  var audioExtensions = "ogg|oga|aac|mp3|wav",
+      videoExtensions = "ogg|ogv|mp4|webm",
+      mediaExtensions = audioExtensions + "|" + videoExtensions;
 
-  var audioExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions.join( "|" ) + ")$" );
+  var audioExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions + ")$" ),
+      mediaExtensionRegexp = new RegExp( "^.*\\.(" + mediaExtensions + ")$" );
 
   Popcorn.player = function( name, player ) {
 
@@ -354,9 +352,34 @@
     var playerType,
         elementTypes = [ "AUDIO", "VIDEO" ],
         sourceNode,
-        targetType,
         firstSrc,
-        node = Popcorn.dom.find( target );
+        node = Popcorn.dom.find( target ),
+        i, srcResult,
+        canPlayTypeTester = document.createElement( "video" ),
+        canPlayTypes = {
+          "ogg": "video/ogg",
+          "ogv": "video/ogg",
+          "oga": "audio/ogg",
+          "webm": "video/webm",
+          "mp4": "video/mp4",
+          "mp3": "audio/mp3"
+        };
+
+    var canPlayType = function( type ) {
+
+      return canPlayTypeTester.canPlayType( canPlayTypes[ type ] );
+    };
+
+    var canPlaySrc = function( src ) {
+
+      srcResult = mediaExtensionRegexp.exec( src );
+
+      if ( !srcResult || !srcResult[ 1 ] ) {
+        return false;
+      }
+
+      return canPlayType( srcResult[ 1 ] );
+    };
 
     if ( !node ) {
 
@@ -364,6 +387,8 @@
       return;
     }
 
+    // For when no src is defined.
+    // Usually this is a video element with a src already on it.
     if ( elementTypes.indexOf( node.nodeName ) > -1 && !src ) {
 
       if ( typeof src === "object" ) {
@@ -375,15 +400,35 @@
       return Popcorn( node, options );
     }
 
-    // for now we loop through and use the first valid player we find.
-    for ( var key in Popcorn.player.registry ) {
+    // if our src is not an array, create an array of one.	
+    if ( typeof( src ) === "string" ) {
 
-      if ( Popcorn.player.registry.hasOwnProperty( key ) ) {
+      src = [ src ];
+    }
 
-        if ( Popcorn.player.registry[ key ].canPlayType( node.nodeName, src ) ) {
+    // go through each src, and find the first playable.
+    // this only covers player sources popcorn knows of,
+    // and not things like a youtube src that is private.
+    // it will still consider a private youtube video to be playable.
+    for ( i = 0, srcLength = src.length; i < srcLength; i++ ) {
 
-          // Popcorn.smart( player, src, /* options */ )
-          return Popcorn[ key ]( node, src, options );
+      // src is a playable HTML5 video, we don't need to check custom players.
+      if ( canPlaySrc( src[ i ] ) ) {
+
+        src = src[ i ];
+        break;
+      }
+
+      // for now we loop through and use the first valid player we find.
+      for ( var key in Popcorn.player.registry ) {
+
+        if ( Popcorn.player.registry.hasOwnProperty( key ) ) {
+
+          if ( Popcorn.player.registry[ key ].canPlayType( node.nodeName, src[ i ] ) ) {
+
+            // Popcorn.smart( player, src, /* options */ )
+            return Popcorn[ key ]( node, src[ i ], options );
+          }
         }
       }
     }
@@ -401,33 +446,7 @@
     }
 
     options && options.events && options.events.error && node.addEventListener( "error", options.events.error, false );
-
-    // Attempt to identify the type of the resultant node
-    targetType = target.nodeName;
-
-    if ( !targetType ) {
-
-      targetType = Popcorn.dom.find( target ).nodeName;
-
-    }
-
-    // If src is an array, add <source>'s
-    if ( typeof( src ) !== "string" && src.length ) {
-
-      for ( var i = 0; i < src.length; ++i ) {
-
-        sourceNode = document.createElement( "source" );
-        sourceNode.src = src[ i ];
-
-        node.appendChild( sourceNode );
-      }
-
-    }
-    else {
-
-      node.src = src;
-
-    }
+    node.src = src;
 
     return Popcorn( node, options );
 
