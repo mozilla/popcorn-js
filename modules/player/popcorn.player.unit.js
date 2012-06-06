@@ -201,6 +201,7 @@ asyncTest( "Popcorn.smart player selector", function() {
       count = 0;
 
   function plus() {
+
     if ( ++count == expects ) {
       document.getElementById( "video" ).innerHTML = "";
       start();
@@ -342,43 +343,47 @@ asyncTest( "Popcorn.smart - audio and video elements", function() {
   plus();
 });
 
-asyncTest( "Popcorn.smart - multiple sources for HTML5 media", function() {
-  expect( 14 );
+asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
 
-  var medias = [],
-    instanceDiv,
-    count = 0,
-    p1, p2, p3;
+  Popcorn.player( "playerOne", {
+    _canPlayType: function( nodeName, url ) {
 
-  p1 = Popcorn.smart( "#multi-div", [ "../../test/trailer.ogv", "../../test/trailer.webm", "../../test/trailer.mp4" ] );
-  p2 = Popcorn.smart( "#multi-video", [ "../../test/trailer.ogv", "../../test/trailer.webm", "../../test/trailer.mp4" ] );
-  p3 = Popcorn.smart( "#multi-audio", [ "../../test/italia.ogg", "../../test/italia.mp4" ] );
+      return url === "playerOne";
+    }
+  });
 
-  instanceDiv = document.getElementById( "multi-div" );
-  ok( instanceDiv.firstChild && instanceDiv.firstChild.childNodes.length === 3, "multi-div has 3 children" );
-  ok( instanceDiv.firstChild.childNodes[ 0 ].nodeName === "SOURCE", "multi-div has <source> children [ 0 ]" );
-  ok( instanceDiv.firstChild.childNodes[ 1 ].nodeName === "SOURCE", "multi-div has <source> children [ 1 ]" );
-  ok( instanceDiv.firstChild.childNodes[ 2 ].nodeName === "SOURCE", "multi-div has <source> children [ 2 ]" );
-  medias.push( instanceDiv );
+  Popcorn.player( "playerTwo", {
+    _canPlayType: function( nodeName, url ) {
 
-  instanceDiv = document.getElementById( "multi-video" );
-  ok( instanceDiv.childNodes.length === 3, "multi-video has 3 children" );
-  ok( instanceDiv.childNodes[ 0 ].nodeName === "SOURCE", "multi-video has <source> children [ 0 ]" );
-  ok( instanceDiv.childNodes[ 1 ].nodeName === "SOURCE", "multi-video has <source> children [ 1 ]" );
-  ok( instanceDiv.childNodes[ 2 ].nodeName === "SOURCE", "multi-video has <source> children [ 2 ]" );
-  medias.push( instanceDiv );
+      return url === "playerTwo";
+    }
+  });
 
-  instanceDiv = document.getElementById( "multi-audio" );
-  ok( instanceDiv.childNodes.length === 2, "multi-audio has 2 children" );
-  ok( instanceDiv.childNodes[ 0 ].nodeName === "SOURCE", "multi-audio has <source> children [ 0 ]" );
-  ok( instanceDiv.childNodes[ 1 ].nodeName === "SOURCE", "multi-audio has <source> children [ 1 ]" );
-  medias.push( instanceDiv );
+  expect( 5 );
 
-  setTimeout(function(){
-    ok( medias[ 0 ].currentSrc !== "", "(ogg) multi-video2 has currentSrc" );
-    ok( medias[ 1 ].currentSrc !== "", "(ogg) multi-video2 has currentSrc" );
-    ok( medias[ 2 ].currentSrc !== "", "(ogg) multi-video2 has currentSrc" );
-    start();
-  }, 0);
+  var p1, p2, p3, p4, p5,
+      srcResult;
 
+  p1 = Popcorn.smart( "#multi-div-mixed1", [ "invalid", "../../test/trailer.ogv", "playerOne" ] );
+  p2 = Popcorn.smart( "#multi-div-mixed2", [ "playerOne", "../../test/trailer.ogv", "playerTwo" ] );
+  p3 = Popcorn.smart( "#multi-div-mixed3", "playerTwo" );
+  p4 = Popcorn.smart( "#multi-div-mixed4", [ "invalid", "playerTwo", "../../test/trailer.ogv" ] );
+  p5 = Popcorn.smart( "#multi-div-mixed5", "../../test/trailer.ogv" );
+
+  srcResult = p1.media.src.split( "/" );
+  equal( p1.media.src.split( "/" )[ srcResult.length - 1 ], "trailer.ogv", "HTML5 works as valid fallback." );
+
+  srcResult = p2.media.src.split( "/" );
+  equal( p2.media.src.split( "/" )[ srcResult.length - 1 ], "playerOne", "Custom playerOne works as first media, if valid." );
+
+  srcResult = p3.media.src.split( "/" );
+  equal( p3.media.src.split( "/" )[ srcResult.length - 1 ], "playerTwo", "Custom playerTwo works as first media, even if it is the only media." );
+
+  srcResult = p4.media.src.split( "/" );
+  equal( p4.media.src.split( "/" )[ srcResult.length - 1 ], "playerTwo", "Custom playerTwo works as valid fallback." );
+
+  srcResult = p5.media.src.split( "/" );
+  equal( p5.media.src.split( "/" )[ srcResult.length - 1 ], "trailer.ogv", "HTML5 works as first media, even if it is the only media." );
+
+  start();
 });
