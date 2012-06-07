@@ -22,6 +22,7 @@ Popcorn.player( "youtube", {
         autoPlay = false,
         container = document.createElement( "div" ),
         currentTime = 0,
+        lastDate = Date.now(),
         paused = true,
         seekTime = 0,
         firstGo = true,
@@ -48,7 +49,13 @@ Popcorn.player( "youtube", {
         },
         get: function() {
 
-          return currentTime;
+          // Youtube currentTime updates every 250ms, so we offset up to 500ms with Date.now()
+          var offset = 0;
+          if ( !seeking && !paused ) {
+            offset = Math.min((Date.now() - lastDate) / 1000, 0.5);
+          }
+
+          return currentTime + offset;
         }
       });
 
@@ -178,6 +185,7 @@ Popcorn.player( "youtube", {
 
         if ( !seeking ) {
           currentTime = options.youtubeObject.getCurrentTime();
+          lastDate = Date.now();
           media.dispatchEvent( "timeupdate" );
         } else if ( currentTime === options.youtubeObject.getCurrentTime() ) {
 
@@ -227,7 +235,7 @@ Popcorn.player( "youtube", {
       // anything smaller, and the player reports incorrect states.
       height = media.clientHeight >= 390 ? "" + media.clientHeight : "390";
       width = media.clientWidth >= 640 ? "" + media.clientWidth : "640";
-      
+
       media.style.display = originalStyle;
 
       options.youtubeObject = new YT.Player( container.id, {
@@ -260,6 +268,7 @@ Popcorn.player( "youtube", {
             }
 
             media.currentTime = fragmentStart;
+            lastDate = Date.now();
 
             media.dispatchEvent( "loadedmetadata" );
             media.dispatchEvent( "loadeddata" );
@@ -339,8 +348,12 @@ Popcorn.player( "youtube", {
 
     var youtubeObject = options.youtubeObject;
     if( youtubeObject ){
-      youtubeObject.stopVideo();
-      youtubeObject.clearVideo();
+      if ( youtubeObject.stopVideo ) {
+        youtubeObject.stopVideo();
+      }
+      if ( youtubeObject.clearVideo ) {
+        youtubeObject.clearVideo();
+      }
     }
 
     this.removeChild( document.getElementById( options._container.id ) );

@@ -505,7 +505,7 @@ asyncTest( "YouTube ended event", function() {
 });
 
 asyncTest( "youtube player gets a proper _teardown", function() {
-  
+
   var count = 0,
       expects = 1;
 
@@ -647,4 +647,19 @@ asyncTest( "Youtube media start time fragment", function() {
 
     fourthTest();
   }
+});
+
+asyncTest( "Youtube currentTime update frequency", 1, function() {
+  var lastTime;
+
+  var p = Popcorn.youtube( "#player", "http://www.youtube.com/watch?v=nfGV32RNkhw" )
+    .on( "play", function() {
+      lastTime = p.currentTime();
+      setTimeout( function() {
+        var currentTime = p.currentTime();
+        ok( currentTime - lastTime > 0.049, "Youtube currentTime can be updated atleast every 50ms (" + (currentTime - lastTime) + "ms)" );
+        start();
+      }, 50)
+    })
+    .play();
 });
