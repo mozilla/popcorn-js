@@ -65,7 +65,6 @@
             elem: "input",
             type: "text",
             label: "Text",
-            "default": "Popcorn.js",
             optional: true
           }
         }
