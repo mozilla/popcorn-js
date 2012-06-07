@@ -1549,7 +1549,7 @@
     //  Assign new named definition
     Popcorn.p[ name ] = plugin[ name ] = function( id, options ) {
       var length = arguments.length,
-          trackEvent, defaults;
+          trackEvent, defaults, mergedSetupOpts;
 
       // Shift arguments based on use case
       //
@@ -1573,10 +1573,6 @@
 
           options = Popcorn.extend( {}, trackEvent, options );
 
-          // Remove existing track event to make room for
-          // newly updated track event
-          this.removeTrackEvent( id );
-
           Popcorn.addTrackEvent( this, options );
 
           return this;
@@ -1586,8 +1582,8 @@
       this.data.running[ name ] = this.data.running[ name ] || [];
 
       // Merge with defaults if they exist, make sure per call is prioritized
-      defaults = ( this.options.defaults && this.options.defaults[ name ] ) || {},
-          mergedSetupOpts = Popcorn.extend( {}, defaults, options );
+      defaults = ( this.options.defaults && this.options.defaults[ name ] ) || {};
+      mergedSetupOpts = Popcorn.extend( {}, defaults, options );
 
       return pluginFn.call( this, isfn ? definition.call( this, mergedSetupOpts ) : definition,
                                   mergedSetupOpts );
