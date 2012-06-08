@@ -61,7 +61,7 @@ var wikiCallback;
         src: {
           elem: "input", 
           type: "text", 
-          label: "Wiki Source",
+          label: "Wikipedia URL",
           "default": "http://en.wikipedia.org/wiki/Cat"
         },
         title: {
