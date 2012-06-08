@@ -170,6 +170,7 @@
             options.popcorn.media.style.width = "0px";
             options.popcorn.media.style.height = "0px";
             options.popcorn.media.style.visibility = "hidden";
+            options.popcorn.media.style.overflow = "hidden";
           }
         }
 
@@ -217,6 +218,7 @@
       options.popcorn.media.style.width = options.width + "px";
       options.popcorn.media.style.height = options.height + "px";
       options.popcorn.media.style.visibility = "visible";
+      options.popcorn.media.style.overflow = "visible";
 
       if ( options.autoplay ) {
         options.popcorn.play();
@@ -234,6 +236,7 @@
       options.popcorn.media.style.width = "0px";
       options.popcorn.media.style.height = "0px";
       options.popcorn.media.style.visibility = "hidden";
+      options.popcorn.media.style.overflow = "hidden";
 
       // Pause all popcorn instances on exit
       options.popcorn.pause();

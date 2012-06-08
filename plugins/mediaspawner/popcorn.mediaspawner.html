@@ -14,7 +14,7 @@
       .mediaspawner({
         source: "http://www.youtube.com/watch?v=CXDstfD9eJ0",
         target: "mediaspawnerdiv",
-        start: 1,
+        start: 3,
         end: 10,
         caption: "This is a test. We are assuming control. We are assuming control.<br/>",
         autoplay: true
@@ -28,7 +28,8 @@
         start: 11,
         end: 20,
         caption: "This is a test. We are assuming control. We are assuming control.<br/>",
-        autoplay: true
+        autoplay: true,
+        width: 400
       })
       .mediaspawner({
         source: [
@@ -39,7 +40,8 @@
         start: 21,
         end: 30,
         caption: "This is a test. We are assuming control. We are assuming control.<br/>",
-        autoplay: true
+        autoplay: true,
+        width: 400
       })
       .volume( 0 )
       .play();
@@ -69,7 +71,7 @@
     </video>
   </div>
   <div>
-    <div id="mediaspawnerdiv" style="width: 25%"></div>
+    <div id="mediaspawnerdiv"></div>
   </div>
 </body>
 </html>
