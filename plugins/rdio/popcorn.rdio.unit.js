@@ -88,6 +88,7 @@ test( "Popcorn Rdio Plugin", function() {
   });
 
   // empty track events should be safe
+  Popcorn.plugin.debug = false;
   popped.rdio({});
   // debug should log errors on empty track events
   Popcorn.plugin.debug = true;

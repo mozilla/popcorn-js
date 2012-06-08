@@ -90,6 +90,7 @@ test( "Popcorn Code Plugin", function() {
   });
 
   // empty track events should be safe
+  Popcorn.plugin.debug = false;
   popped.code({});
 
   // debug should log errors on empty track events
