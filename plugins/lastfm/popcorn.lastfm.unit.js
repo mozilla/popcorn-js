@@ -76,6 +76,7 @@ test( "Popcorn LastFM Plugin", function() {
   });
 
   // empty track events should be safe
+  Popcorn.plugin.debug = false;
   popped.lastfm({});
 
   // debug should log errors on empty track events

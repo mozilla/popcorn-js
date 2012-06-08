@@ -83,6 +83,7 @@ test( "Popcorn Flickr Plugin", function() {
   });
 
   // empty track events should be safe
+  Popcorn.plugin.debug = false;
   popped.flickr({});
 
   // debug should log errors on empty track events
