@@ -175,6 +175,7 @@ test( "Popcorn LinkedIn Plugin", function() {
     });
 
     // empty track events should be safe
+    Popcorn.plugin.debug = false;
     popped.linkedin({});
 
     // debug should log errors on empty track events

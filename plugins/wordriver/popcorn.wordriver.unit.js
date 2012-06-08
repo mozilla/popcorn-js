@@ -116,6 +116,7 @@ test( "Popcorn wordriver Plugin", function() {
   thirdCue = popped.getLastTrackEventId();
 
   // empty track events should be safe
+  Popcorn.plugin.debug = false;
   popped.wordriver({});
 
   // debug should log errors on empty track events

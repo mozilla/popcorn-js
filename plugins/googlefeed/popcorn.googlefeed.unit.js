@@ -70,6 +70,7 @@ test( "Popcorn Google Feed Plugin", function() {
   });
 
   // empty track events should be safe
+  Popcorn.plugin.debug = false;
   popped.googlefeed({});
 
   // debug should log errors on empty track events

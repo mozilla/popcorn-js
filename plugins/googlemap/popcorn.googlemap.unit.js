@@ -86,7 +86,7 @@ test( "Popcorn Google Map Plugin", function() {
   });
 
   popped.exec( 5, function() {
-    ok( document.getElementById( "actualmap2" ).style.display === "none" && 
+    ok( document.getElementById( "actualmap2" ).style.display === "none" &&
         document.getElementById( "actualmap1" ).style.display === "none" &&
         document.getElementById( "actualmap3" ).style.display === "none", "All maps are no longer visible" );
     plus();
@@ -97,6 +97,7 @@ test( "Popcorn Google Map Plugin", function() {
   });
 
   // empty track events should be safe
+  Popcorn.plugin.debug = false;
   popped.googlemap({});
 
   // debug should log errors on empty track events
