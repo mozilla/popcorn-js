@@ -9,7 +9,9 @@
    * -Start is the time that you want this plug-in to execute
    * -End is the time that you want this plug-in to stop executing
    * -Target is the id of the DOM element that you want the map to appear in. This element must be in the DOM
-   * -Type [optional] either: ROADMAP (OpenStreetMap), SATELLITE (NASA WorldWind / LandSat), or TERRAIN (USGS).  ROADMAP/OpenStreetMap is the default.
+   * -Type [optional] either: ROADMAP (OpenStreetMap), SATELLITE (NASA WorldWind / LandSat), or TERRAIN (USGS).
+   *                          The Stamen custom map types can also be used (http://maps.stamen.com): STAMEN-TONER,
+   *                          STAMEN-TERRAIN, or STAMEN-WATERCOLOR.
    * -Zoom [optional] defaults to 2
    * -Lat and Lng are the coordinates of the map if location is not named
    * -Location is a name of a place to center the map, geocoded to coordinates using TinyGeocoder.com
@@ -40,7 +42,6 @@
 
   function toggle( container, display ) {
     if ( container.map ) {
-
       container.map.div.style.display = display;
       return;
     }
@@ -77,7 +78,7 @@
 
     // callback function fires when the script is run
     isGeoReady = function() {
-      if ( !window.OpenLayers ) {
+      if ( ! ( window.OpenLayers && window.OpenLayers.Layer.Stamen ) ) {
         setTimeout(function() {
           isGeoReady();
         }, 50);
@@ -90,38 +91,83 @@
             "//tinygeocoder.com/create-api.php?q=" + options.location + "&callback=jsonp",
             function( latlng ) {
               centerlonlat = new OpenLayers.LonLat( latlng[ 1 ], latlng[ 0 ] );
-              options.map.setCenter( centerlonlat );
             }
           );
         } else {
           centerlonlat = new OpenLayers.LonLat( options.lng, options.lat );
         }
+
         options.type = options.type || "ROADMAP";
-        if ( options.type === "SATELLITE" ) {
-          // add NASA WorldWind / LANDSAT map
-          options.map = new OpenLayers.Map( { div: newdiv, "maxResolution": 0.28125, tileSize: new OpenLayers.Size( 512, 512 ) } );
-          var worldwind = new OpenLayers.Layer.WorldWind( "LANDSAT", "//worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4, { T: "105" } );
-          options.map.addLayer( worldwind );
-          displayProjection = new OpenLayers.Projection( "EPSG:4326" );
-          projection = new OpenLayers.Projection( "EPSG:4326" );
+        switch( options.type ) {
+          case "SATELLITE" :
+            // add NASA WorldWind / LANDSAT map
+            options.map = new OpenLayers.Map({
+              div: newdiv,
+              maxResolution: 0.28125,
+              tileSize: new OpenLayers.Size( 512, 512 )
+            });
+            var worldwind = new OpenLayers.Layer.WorldWind(
+              "LANDSAT",
+              "//worldwind25.arc.nasa.gov/tile/tile.aspx",
+              2.25, 4,
+              { T: "105" }
+            );
+            options.map.addLayer( worldwind );
+            displayProjection = new OpenLayers.Projection( "EPSG:4326" );
+            projection = new OpenLayers.Projection( "EPSG:4326" );
+            break;
+          case "TERRAIN":
+            // add terrain map ( USGS )
+            displayProjection = new OpenLayers.Projection( "EPSG:4326" );
+            projection = new OpenLayers.Projection( "EPSG:4326" );
+            options.map = new OpenLayers.Map({
+              div: newdiv,
+              projection: projection
+            });
+            var relief = new OpenLayers.Layer.WMS(
+              "USGS Terraserver",
+              "//terraserver-usa.org/ogcmap.ashx?",
+              { layers: "DRG" }
+            );
+            options.map.addLayer( relief );
+            break;
+          case "STAMEN-TONER":
+          case "STAMEN-WATERCOLOR":
+          case "STAMEN-TERRAIN":
+            var layerName = options.type.replace("STAMEN-", "").toLowerCase();
+            var sLayer = new OpenLayers.Layer.Stamen( layerName );
+            displayProjection = new OpenLayers.Projection( "EPSG:4326" );
+            projection = new OpenLayers.Projection( 'EPSG:900913' );
+            centerlonlat = centerlonlat.transform( displayProjection, projection );
+            options.map = new OpenLayers.Map( {
+              div: newdiv,
+              projection: projection,
+              displayProjection: displayProjection,
+              controls: [
+                new OpenLayers.Control.Navigation(),
+                new OpenLayers.Control.PanPanel(),
+                new OpenLayers.Control.ZoomPanel()
+              ]
+            } );
+            options.map.addLayer( sLayer );
+            break;
+          default: /* case "ROADMAP": */
+            // add OpenStreetMap layer
+            projection = new OpenLayers.Projection( 'EPSG:900913' );
+            displayProjection = new OpenLayers.Projection( 'EPSG:4326' );
+            centerlonlat = centerlonlat.transform( displayProjection, projection );
+            options.map = new OpenLayers.Map({
+              div: newdiv,
+              projection: projection,
+              "displayProjection": displayProjection
+            });
+            var osm = new OpenLayers.Layer.OSM();
+            options.map.addLayer( osm );
+            break;
         }
-        else if ( options.type === "TERRAIN" ) {
-          // add terrain map ( USGS )
-          displayProjection = new OpenLayers.Projection( "EPSG:4326" );
-          projection = new OpenLayers.Projection( "EPSG:4326" );
-          options.map = new OpenLayers.Map( {div: newdiv, projection: projection } );
-          var relief = new OpenLayers.Layer.WMS( "USGS Terraserver", "//terraserver-usa.org/ogcmap.ashx?", { layers: "DRG" } );
-          options.map.addLayer( relief );
-        } else {
-          // add OpenStreetMap layer
-          projection = new OpenLayers.Projection( 'EPSG:900913' );
-          displayProjection = new OpenLayers.Projection( 'EPSG:4326' );
-          centerlonlat = centerlonlat.transform( displayProjection, projection );
-          options.map = new OpenLayers.Map( { div: newdiv, projection: projection, "displayProjection": displayProjection } );
-          var osm = new OpenLayers.Layer.OSM();
-          options.map.addLayer( osm );
-        }
+
         if ( options.map ) {
+          options.map.setCenter(centerlonlat, options.zoom || 10);
           options.map.div.style.display = "none";
         }
       }
@@ -139,7 +185,9 @@
 
         // insert openlayers api script once
         if ( !window.OpenLayers ) {
-          Popcorn.getScript( "//openlayers.org/api/OpenLayers.js" );
+          Popcorn.getScript( "//openlayers.org/api/OpenLayers.js", function() {
+            Popcorn.getScript( "//maps.stamen.com/js/tile.stamen.js" );
+          } );
         }
 
         var isReady = function() {
@@ -310,9 +358,9 @@
       },
       zoom: {
         elem: "input",
-        type: "text",
+        type: "number",
         label: "Zoom",
-        optional: true
+        "default": 2
       },
       lat: {
         elem: "input",
@@ -329,7 +377,8 @@
       location: {
         elem: "input",
         type: "text",
-        label: "Location"
+        label: "Location",
+        "default": "Toronto, Ontario, Canada"
       },
       markers: {
         elem: "input",

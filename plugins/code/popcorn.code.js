@@ -69,7 +69,8 @@
   */
 
   Popcorn.plugin( "code" , function( options ) {
-    var running = false;
+    var running = false,
+        instance = this;
 
     // Setup a proper frame interval function (60fps), favouring paint events.
     var step = (function() {
@@ -78,7 +79,7 @@
         return function( f, options ) {
 
           var _f = function() {
-            running && f();
+            running && f.call( instance, options );
             running && runner( _f );
           };
 
@@ -125,7 +126,7 @@
 
     return {
       start: function( event, options ) {
-        options.onStart( options );
+        options.onStart.call( instance, options );
 
         if ( options.onFrame ) {
           running = true;
@@ -139,7 +140,7 @@
         }
 
         if ( options.onEnd ) {
-          options.onEnd( options );
+          options.onEnd.call( instance, options );
         }
       }
     };

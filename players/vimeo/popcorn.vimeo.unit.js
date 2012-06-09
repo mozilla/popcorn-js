@@ -32,7 +32,7 @@ asyncTest( "Options Check", function() {
 asyncTest( "Update Timer", function() {
 
   var p2 = Popcorn.vimeo( "#player_1", "http://player.vimeo.com/video/11336811" ),
-      expects = 16,
+      expects = 17,
       count = 0,
       execCount = 0,
       // These make sure events are only fired once
@@ -64,6 +64,9 @@ asyncTest( "Update Timer", function() {
   p2.listen( "loadedmetadata", function() {
     p2.unlisten( "loadedmetadata" );
     ok( true, "'loadedmetadata' fired" );
+    plus();
+    // make sure that we always have a duration at this point
+    ok( this.duration() > 0, "Video's duration is greater than 0" );
     plus();
   });
 
@@ -213,11 +216,21 @@ asyncTest( "Update Timer", function() {
   });
 
   p2.exec( 3, function() {
-
     p2.play();
   });
 
-  p2.currentTime( 3 );
+  var ready = function() {
+
+    p2.off( "canplaythrough", ready );
+
+    p2.volume( 0 ).currentTime( 3 );
+  };
+
+  if ( p2.readyState() >= 4 ) {
+    ready();
+  } else {
+    p2.on( "canplaythrough", ready );
+  }
 
 });
 
@@ -335,8 +348,16 @@ asyncTest( "Plugin Factory", function() {
     end: 5
   });
 
-  popped.currentTime( 0 ).play();
+  var ready = function() {
+    popped.off( "canplaythrough", ready );
+    popped.volume( 0 ).currentTime( 0 ).play();
+  };
 
+  if ( popped.readyState() >= 4 ) {
+    ready();
+  } else {
+    popped.on( "canplaythrough", ready );
+  }
 });
 
 asyncTest( "Popcorn vimeo Plugin Url and Duration Tests", function() {
@@ -431,4 +452,26 @@ asyncTest( "Popcorn Vimeo Plugin offsetHeight && offsetWidth Test", function() {
     plus();
   });
 
+});
+
+asyncTest( "Seeked and Seeking events", 4, function() {
+  var popcorn = Popcorn.vimeo( "#player_4", "http://player.vimeo.com/video/11336811" ),
+      count = 0;
+
+  popcorn.on( "seeking", function() {
+    equal( count++, 0, "Count is initially 0, seeking was fired first" );
+  });
+
+  popcorn.on( "seeked", function() {
+    equal( count, 1, "Count is 1, seeked was fired after seeking" );
+    equal( Math.round( this.currentTime() ), 10, "instances currentTime is 10 seconds after the seek" );
+    equal( this.paused(), true, "instance is paused" );
+    start();
+  });
+
+  popcorn.play();
+  // Doing this to ensure a seek is fired
+  setTimeout(function() {
+    popcorn.pause().currentTime( 10 );
+  }, 4000);
 });

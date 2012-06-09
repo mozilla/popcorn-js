@@ -13,7 +13,9 @@ var googleCallback;
     // before setting _maploaded to true
     if ( typeof google !== "undefined" && google.maps && google.maps.Geocoder && google.maps.LatLng ) {
       geocoder = new google.maps.Geocoder();
-      _mapLoaded = true;
+      Popcorn.getScript( "//maps.stamen.com/js/tile.stamen.js", function() {
+        _mapLoaded = true;
+      });
     } else {
       setTimeout(function () {
         googleCallback( data );
@@ -33,6 +35,33 @@ var googleCallback;
     }
   };
 
+  function buildMap( options, location, mapDiv ) {
+    var type = options.type ? options.type.toUpperCase() : "HYBRID",
+      layer;
+
+    // See if we need to make a custom Stamen map layer
+    if ( type === "STAMEN-WATERCOLOR" ||
+         type === "STAMEN-TERRAIN"    ||
+         type === "STAMEN-TONER" ) {
+      // Stamen types are lowercase
+      layer = type.replace("STAMEN-", "").toLowerCase();
+    }
+
+    var map = new google.maps.Map( mapDiv, {
+      // If a custom layer was specified, use that, otherwise use type
+      mapTypeId: layer ? layer : google.maps.MapTypeId[ type ],
+      // Hide the layer selection UI
+      mapTypeControlOptions: { mapTypeIds: [] }
+    });
+
+    if ( layer ) {
+      map.mapTypes.set( layer, new google.maps.StamenMapType( layer ));
+    }
+    map.getDiv().style.display = "none";
+
+    return map;
+  }
+
   /**
    * googlemap popcorn plug-in
    * Adds a map to the target div centered on the location specified by the user
@@ -40,11 +69,15 @@ var googleCallback;
    * -Start is the time that you want this plug-in to execute
    * -End is the time that you want this plug-in to stop executing
    * -Target is the id of the DOM element that you want the map to appear in. This element must be in the DOM
-   * -Type [optional] either: HYBRID (default), ROADMAP, SATELLITE, TERRAIN, STREETVIEW
+   * -Type [optional] either: HYBRID (default), ROADMAP, SATELLITE, TERRAIN, STREETVIEW, or one of the
+   *                          Stamen custom map types (http://http://maps.stamen.com): STAMEN-TONER,
+   *                          STAMEN-WATERCOLOR, or STAMEN-TERRAIN.
    * -Zoom [optional] defaults to 0
    * -Heading [optional] STREETVIEW orientation of camera in degrees relative to true north (0 north, 90 true east, ect)
    * -Pitch [optional] STREETVIEW vertical orientation of the camera (between 1 and 3 is recommended)
    * -Lat and Lng: the coordinates of the map must be present if location is not specified.
+   * -Height [optional] the height of the map, in "px" or "%". Defaults to "100%".
+   * -Width [optional] the width of the map, in "px" or "%". Defaults to "100%".
    * -Location: the adress you want the map to display, must be present if lat and lng are not specified.
    * Note: using location requires extra loading time, also not specifying both lat/lng and location will
    * cause and error.
@@ -79,6 +112,11 @@ var googleCallback;
     var newdiv, map, location,
         target = document.getElementById( options.target );
 
+    options.type = options.type || "ROADMAP";
+    options.zoom = options.zoom || 1;
+    options.lat = options.lat || 0;
+    options.lng = options.lng || 0;
+
     // if this is the firest time running the plugins
     // call the function that gets the sctipt
     if ( !_mapFired ) {
@@ -89,8 +127,17 @@ var googleCallback;
     // this is later passed on to the maps api
     newdiv = document.createElement( "div" );
     newdiv.id = "actualmap" + i;
-    newdiv.style.width = "100%";
-    newdiv.style.height = "100%";
+    newdiv.style.width = options.width || "100%";
+
+    // height is a little more complicated than width.
+    if ( options.height ) {
+      newdiv.style.height = options.height;
+    } else if ( target && target.clientHeight ) {
+      newdiv.style.height = target.clientHeight + "px";
+    } else {
+      newdiv.style.height = "100%";
+    }
+
     i++;
 
     // ensure the target container the user chose exists
@@ -112,18 +159,12 @@ var googleCallback;
               options.lat = results[ 0 ].geometry.location.lat();
               options.lng = results[ 0 ].geometry.location.lng();
               location = new google.maps.LatLng( options.lat, options.lng );
-              map = new google.maps.Map( newdiv, {
-                mapTypeId: google.maps.MapTypeId[ options.type ] || google.maps.MapTypeId.HYBRID
-              });
-              map.getDiv().style.display = "none";
+              map = buildMap( options, location, newdiv );
             }
           });
         } else {
           location = new google.maps.LatLng( options.lat, options.lng );
-          map = new google.maps.Map( newdiv, {
-            mapTypeId: google.maps.MapTypeId[ options.type ] || google.maps.MapTypeId.HYBRID
-          });
-          map.getDiv().style.display = "none";
+          map = buildMap( options, location, newdiv );
         }
       } else {
           setTimeout(function () {
@@ -157,8 +198,6 @@ var googleCallback;
             if ( options.zoom && typeof options.zoom !== "number" ) {
               options.zoom = +options.zoom;
             }
-
-            options.zoom = options.zoom || 8; // default to 8
 
             map.setZoom( options.zoom );
 
@@ -354,7 +393,7 @@ var googleCallback;
       target: "map-container",
       type: {
         elem: "select",
-        options: [ "ROADMAP", "SATELLITE", "STREETVIEW", "HYBRID", "TERRAIN" ],
+        options: [ "ROADMAP", "SATELLITE", "STREETVIEW", "HYBRID", "TERRAIN", "STAMEN-WATERCOLOR", "STAMEN-TERRAIN", "STAMEN-TONER" ],
         label: "Type",
         optional: true
       },
@@ -362,6 +401,7 @@ var googleCallback;
         elem: "input",
         type: "text",
         label: "Zoom",
+        "default": 0,
         optional: true
       },
       lat: {
@@ -379,18 +419,21 @@ var googleCallback;
       location: {
         elem: "input",
         type: "text",
-        label: "Location"
+        label: "Location",
+        "default": "Toronto, Ontario, Canada"
       },
       heading: {
         elem: "input",
         type: "text",
         label: "Heading",
+        "default": 0,
         optional: true
       },
       pitch: {
         elem: "input",
         type: "text",
         label: "Pitch",
+        "default": 1,
         optional: true
       }
     }

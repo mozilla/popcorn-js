@@ -198,12 +198,11 @@
         type: "text",
         label: "Data"
       },
-      /* TODO: how to show a checkbox/boolean? */
       dynamic: {
         elem: "input",
-        type: "text",
+        type: "checkbox",
         label: "Dynamic",
-        optional: true
+        "default": true
       }
     }
   });

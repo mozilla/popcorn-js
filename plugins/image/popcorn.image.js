@@ -51,18 +51,20 @@
             elem: "input",
             type: "url",
             label: "anchor URL",
+            "default": "http://mozillapopcorn.org/wp-content/themes/popcorn/images/for_developers.png",
             optional: true
           },
           target: "image-container",
           src: {
             elem: "input",
             type: "url",
-            label: "Source URL"
+            label: "Source URL",
+            "default": "http://mozillapopcorn.org/wp-content/themes/popcorn/images/for_developers.png"
           },
           text: {
             elem: "input",
             type: "text",
-            label: "TEXT",
+            label: "Text",
             optional: true
           }
         }
@@ -93,6 +95,10 @@
 
           var fontHeight, divText;
 
+          img.style.height = target.style.height;
+          img.style.width = target.style.width;
+
+          options.anchor.appendChild( img );
 
           // If display text was provided, display it:
           if ( options.text ) {
@@ -105,16 +111,15 @@
               fontWeight: "bold",
               position: "relative",
               textAlign: "center",
-              width: img.width + "px",
+              width: img.style.width || img.width + "px",
               zIndex: "10"
             });
 
             divText.innerHTML = options.text || "";
-            divText.style.top = ( img.height / 2 ) - ( divText.offsetHeight / 2 ) + "px";
-            options.anchor.appendChild( divText );
-          }
 
-          options.anchor.appendChild( img );
+            divText.style.top = ( ( img.style.height.replace( "px", "" ) || img.height ) / 2 ) - ( divText.offsetHeight / 2 ) + "px";
+            options.anchor.insertBefore( divText, img );
+          }
         }, false );
 
         img.src = options.src;

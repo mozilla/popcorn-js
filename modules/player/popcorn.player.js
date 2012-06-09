@@ -16,6 +16,13 @@
   //  ID string matching
   var rIdExp  = /^(#([\w\-\_\.]+))$/;
 
+  var audioExtensions = "ogg|oga|aac|mp3|wav",
+      videoExtensions = "ogg|ogv|mp4|webm",
+      mediaExtensions = audioExtensions + "|" + videoExtensions;
+
+  var audioExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions + ")$" ),
+      mediaExtensionRegexp = new RegExp( "^.*\\.(" + mediaExtensions + ")$" );
+
   Popcorn.player = function( name, player ) {
 
     // return early if a player already exists under this name
@@ -40,9 +47,7 @@
           events = {},
 
           // The container div of the resource
-          container = document.getElementById( rIdExp.exec( target ) && rIdExp.exec( target )[ 2 ] ) ||
-                        document.getElementById( target ) ||
-                          target,
+          container = typeof target === "string" ? Popcorn.dom.find( target ) : target,
           basePlayer = {},
           timeout,
           popcorn;
@@ -187,7 +192,7 @@
         },
         configurable: true
       });
-      
+
       // Adds an event listener to the object
       basePlayer.addEventListener = function( evtName, fn ) {
 
@@ -284,29 +289,12 @@
         basePlayer.dispatchEvent( "error" );
       }
 
-      // when a custom player is loaded, load basePlayer state into custom player
-      basePlayer.addEventListener( "loadedmetadata", function() {
-
-        // if a player is not ready before currentTime is called, this will set it after it is ready
-        basePlayer.currentTime = currentTime;
-
-        // same as above with volume and muted
-        basePlayer.volume = volume;
-        basePlayer.muted = muted;
-      });
-
-      basePlayer.addEventListener( "loadeddata", function() {
-
-        // if play was called before player ready, start playing video
-        !basePlayer.paused && basePlayer.play();
-      });
-
       popcorn = new Popcorn.p.init( basePlayer, options );
 
       if ( player._teardown ) {
 
         popcorn.destroy = combineFn( popcorn.destroy, function() {
-        
+
           player._teardown.call( basePlayer, options );
         });
       }
@@ -327,18 +315,80 @@
     object.__defineSetter__( description, options.set || Popcorn.nop );
   };
 
+  // player queue is to help players queue things like play and pause
+  // HTML5 video's play and pause are asynch, but do fire in sequence
+  // play() should really mean "requestPlay()" or "queuePlay()" and
+  // stash a callback that will play the media resource when it's ready to be played
+  Popcorn.player.playerQueue = function() {
+
+    var _queue = [],
+        _running = false;
+
+    return {
+      next: function() {
+
+        _running = false;
+        _queue.shift();
+        _queue[ 0 ] && _queue[ 0 ]();
+      },
+      add: function( callback ) {
+
+        _queue.push(function() {
+
+          _running = true;
+          callback && callback();
+        });
+
+        // if there is only one item on the queue, start it
+        !_running && _queue[ 0 ]();
+      }
+    };
+  };
+
   // smart will attempt to find you a match, if it does not find a match,
   // it will attempt to create a video element with the source,
   // if that failed, it will throw.
   Popcorn.smart = function( target, src, options ) {
-
-    var nodeId = rIdExp.exec( target ),
-        playerType,
+    var playerType,
         elementTypes = [ "AUDIO", "VIDEO" ],
-        node = nodeId && nodeId.length && nodeId[ 2 ] ?
-                 document.getElementById( nodeId[ 2 ] ) :
-                 target;
+        sourceNode,
+        firstSrc,
+        node = Popcorn.dom.find( target ),
+        i, srcResult,
+        canPlayTypeTester = document.createElement( "video" ),
+        canPlayTypes = {
+          "ogg": "video/ogg",
+          "ogv": "video/ogg",
+          "oga": "audio/ogg",
+          "webm": "video/webm",
+          "mp4": "video/mp4",
+          "mp3": "audio/mp3"
+        };
 
+    var canPlayType = function( type ) {
+
+      return canPlayTypeTester.canPlayType( canPlayTypes[ type ] );
+    };
+
+    var canPlaySrc = function( src ) {
+
+      srcResult = mediaExtensionRegexp.exec( src );
+
+      if ( !srcResult || !srcResult[ 1 ] ) {
+        return false;
+      }
+
+      return canPlayType( srcResult[ 1 ] );
+    };
+
+    if ( !node ) {
+
+      Popcorn.error( "Specified target " + target + " was not found." );
+      return;
+    }
+
+    // For when no src is defined.
+    // Usually this is a video element with a src already on it.
     if ( elementTypes.indexOf( node.nodeName ) > -1 && !src ) {
 
       if ( typeof src === "object" ) {
@@ -350,15 +400,35 @@
       return Popcorn( node, options );
     }
 
-    // for now we loop through and use the first valid player we find.
-    for ( var key in Popcorn.player.registry ) {
+    // if our src is not an array, create an array of one.	
+    if ( typeof( src ) === "string" ) {
 
-      if ( Popcorn.player.registry.hasOwnProperty( key ) ) {
+      src = [ src ];
+    }
 
-        if ( Popcorn.player.registry[ key ].canPlayType( node.nodeName, src ) ) {
+    // go through each src, and find the first playable.
+    // this only covers player sources popcorn knows of,
+    // and not things like a youtube src that is private.
+    // it will still consider a private youtube video to be playable.
+    for ( i = 0, srcLength = src.length; i < srcLength; i++ ) {
 
-          // Popcorn.smart( player, src, /* options */ )
-          return Popcorn[ key ]( target, src, options );
+      // src is a playable HTML5 video, we don't need to check custom players.
+      if ( canPlaySrc( src[ i ] ) ) {
+
+        src = src[ i ];
+        break;
+      }
+
+      // for now we loop through and use the first valid player we find.
+      for ( var key in Popcorn.player.registry ) {
+
+        if ( Popcorn.player.registry.hasOwnProperty( key ) ) {
+
+          if ( Popcorn.player.registry[ key ].canPlayType( node.nodeName, src[ i ] ) ) {
+
+            // Popcorn.smart( player, src, /* options */ )
+            return Popcorn[ key ]( node, src[ i ], options );
+          }
         }
       }
     }
@@ -367,7 +437,9 @@
     // attempting to create a video in a container
     if ( elementTypes.indexOf( node.nodeName ) === -1 ) {
 
-      target = document.createElement( !!/^.*\.(ogg|aac|mp3|wav)$/.exec( src ) ? elementTypes[ 0 ] : elementTypes[ 1 ] );
+      firstSrc = typeof( src ) === "string" ? src : src.length ? src[ 0 ] : src;
+
+      target = document.createElement( !!audioExtensionRegexp.exec( firstSrc ) ? elementTypes[ 0 ] : elementTypes[ 1 ] );
 
       node.appendChild( target );
       node = target;
@@ -377,5 +449,6 @@
     node.src = src;
 
     return Popcorn( node, options );
+
   };
 })( Popcorn );

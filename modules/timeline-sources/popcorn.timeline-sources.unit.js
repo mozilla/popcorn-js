@@ -47,13 +47,14 @@
   });
 
   test( "Timeline-sources Module", function() {
-    expect( 3 );
 
     var count = 0,
+        expects = 4,
         p = Popcorn.instances[ 0 ].volume( 0 );
 
+    expect( expects );
     function plus() {
-      if ( ++count === 3 ) {
+      if ( ++count === expects ) {
         start();
       }
     }
@@ -68,12 +69,16 @@
 
     p.exec( 10.5, function() {
       equal( endCalled, 5, "end was called 5 times from the parsed data" );
-      plus()
+      plus();
     });
 
     equal( setupCalled, 5, "setup was called 5 times from the parsed data" );
     plus();
 
+    equal( p.paused(), true, "Only play the media if it was specified to do so" );
+    plus();
+
+    p.play();
   });
 
 })( Popcorn );

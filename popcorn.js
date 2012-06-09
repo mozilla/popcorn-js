@@ -164,7 +164,7 @@
 
       this.data = {
 
-        // data structure of all 
+        // data structure of all
         running: {
           cue: []
         },
@@ -219,7 +219,7 @@
         // start: 0, end: 1 will start, end, start again, when it should just start
         // just setting it to 0 if it is below 0 fixes this issue
         if ( self.media.currentTime < 0 ) {
-        
+
           self.media.currentTime = 0;
         }
 
@@ -249,7 +249,7 @@
           self.data.timeUpdate = function () {
 
             Popcorn.timeUpdate( self, {} );
-            
+
             // fire frame for each enabled active plugin of every type
             Popcorn.forEach( Popcorn.manifest, function( key, val ) {
 
@@ -268,7 +268,7 @@
                 }
               }
             });
-            
+
             self.emit( "timeupdate" );
 
             !self.isDestroyed && requestAnimFrame( self.data.timeUpdate );
@@ -287,6 +287,13 @@
           }
         }
       };
+
+      Object.defineProperty( this, "error", {
+        get: function() {
+
+          return self.media.error;
+        }
+      });
 
       if ( self.media.readyState >= 2 ) {
 
@@ -423,7 +430,7 @@
       return instance;
     },
     enable: function( instance, plugin ) {
-      
+
       if ( instance.data.disabled[ plugin ] ) {
 
         instance.data.disabled[ plugin ] = false;
@@ -439,7 +446,7 @@
     },
     destroy: function( instance ) {
       var events = instance.data.events,
-          singleEvent, item, fn;
+          singleEvent, item, fn, plugin;
 
       //  Iterate through all events and remove them
       for ( item in events ) {
@@ -448,6 +455,11 @@
           delete singleEvent[ fn ];
         }
         events[ item ] = null;
+      }
+
+      // remove all plugins off the given instance
+      for ( plugin in Popcorn.registryByName ) {
+        Popcorn.removePlugin( instance, plugin );
       }
 
       if ( !instance.isDestroyed ) {
@@ -474,6 +486,7 @@
       Popcorn.forEach( methods.split( /\s+/g ), function( name ) {
 
         ret[ name ] = function( arg ) {
+          var previous;
 
           if ( typeof this.media[ name ] === "function" ) {
 
@@ -490,11 +503,22 @@
             return this;
           }
 
-
           if ( arg != null ) {
+            // Capture the current value of the attribute property
+            previous = this.media[ name ];
 
+            // Set the attribute property with the new value
             this.media[ name ] = arg;
 
+            // If the new value is not the same as the old value
+            // emit an "attrchanged event"
+            if ( previous !== arg ) {
+              this.emit( "attrchange", {
+                attribute: name,
+                previousValue: previous,
+                currentValue: arg
+              });
+            }
             return this;
           }
 
@@ -612,7 +636,7 @@
   Popcorn.Events  = {
     UIEvents: "blur focus focusin focusout load resize scroll unload",
     MouseEvents: "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave click dblclick",
-    Events: "loadstart progress suspend emptied stalled play pause " +
+    Events: "loadstart progress suspend emptied stalled play pause error " +
             "loadedmetadata loadeddata waiting playing canplay canplaythrough " +
             "seeking seeked timeupdate ended ratechange durationchange volumechange"
   };
@@ -1176,7 +1200,7 @@
               natives.end.call( obj, event, byStart );
 
               obj.emit( trackend,
-                Popcorn.extend({}, byEnd, {
+                Popcorn.extend({}, byStart, {
                   plugin: type,
                   type: trackend
                 })
@@ -1213,7 +1237,7 @@
               natives.start.call( obj, event, byEnd );
 
               obj.emit( trackstart,
-                Popcorn.extend({}, byStart, {
+                Popcorn.extend({}, byEnd, {
                   plugin: type,
                   type: trackstart
                 })
@@ -1325,6 +1349,28 @@
         return this;
       }
 
+      // When the "ranges" property is set and its value is an array, short-circuit
+      // the pluginFn definition to recall itself with an options object generated from
+      // each range object in the ranges array. (eg. { start: 15, end: 16 } )
+      if ( options.ranges && Popcorn.isArray(options.ranges) ) {
+        Popcorn.forEach( options.ranges, function( range ) {
+          // Create a fresh object, extend with current options
+          // and start/end range object's properties
+          // Works with in/out as well.
+          var opts = Popcorn.extend( {}, options, range );
+
+          // Remove the ranges property to prevent infinitely
+          // entering this condition
+          delete opts.ranges;
+
+          // Call the plugin with the newly created opts object
+          this[ name ]( opts );
+        }, this);
+
+        // Return the Popcorn instance to avoid creating an empty track event
+        return this;
+      }
+
       //  Storing the plugin natives
       var natives = options._natives = {},
           compose = "",
@@ -1337,6 +1383,12 @@
 
       natives.start = natives.start || natives[ "in" ];
       natives.end = natives.end || natives[ "out" ];
+
+      if ( options.once ) {
+        natives.end = combineFn( natives.end, function() {
+          this.removeTrackEvent( options._id );
+        });
+      }
 
       // extend teardown to always call end if running
       natives._teardown = combineFn(function() {
@@ -1451,6 +1503,14 @@
                                   mergedSetupOpts );
     };
 
+    // if the manifest parameter exists we should extend it onto the definition object
+    // so that it shows up when calling Popcorn.registry and Popcorn.registryByName
+    if ( manifest ) {
+      Popcorn.extend( definition, {
+        manifest: manifest
+      });
+    }
+
     //  Push into the registry
     var entry = {
       fn: plugin[ name ],
@@ -1494,13 +1554,14 @@
 
         // Trigger an error that the instance can listen for
         // and react to
-        this.emit( "error", Popcorn.plugin.errors );
+        this.emit( "pluginerror", Popcorn.plugin.errors );
       }
     };
   }
 
   // Debug-mode flag for plugin development
-  Popcorn.plugin.debug = false;
+  // True for Popcorn development versions, false for stable/tagged versions
+  Popcorn.plugin.debug = ( Popcorn.version === "@" + "VERSION" );
 
   //  removePlugin( type ) removes all tracks of that from all instances of popcorn
   //  removePlugin( obj, type ) removes all tracks of type from obj, where obj is a single instance of popcorn
@@ -1596,6 +1657,65 @@
   };
 
   Popcorn.plugin.effect = Popcorn.effect = Popcorn.compose;
+
+  var rnaiveExpr = /^(?:\.|#|\[)/;
+
+  //  Basic DOM utilities and helpers API. See #1037
+  Popcorn.dom = {
+    debug: false,
+    //  Popcorn.dom.find( selector, context )
+    //
+    //  Returns the first element that matches the specified selector
+    //  Optionally provide a context element, defaults to `document`
+    //
+    //  eg.
+    //  Popcorn.dom.find("video") returns the first video element
+    //  Popcorn.dom.find("#foo") returns the first element with `id="foo"`
+    //  Popcorn.dom.find("foo") returns the first element with `id="foo"`
+    //     Note: Popcorn.dom.find("foo") is the only allowed deviation
+    //           from valid querySelector selector syntax
+    //
+    //  Popcorn.dom.find(".baz") returns the first element with `class="baz"`
+    //  Popcorn.dom.find("[preload]") returns the first element with `preload="..."`
+    //  ...
+    //  See https://developer.mozilla.org/En/DOM/Document.querySelector
+    //
+    //
+    find: function( selector, context ) {
+      var node = null;
+
+      //  Trim leading/trailing whitespace to avoid false negatives
+      selector = selector.trim();
+
+      //  Default context is the `document`
+      context = context || document;
+
+      if ( selector ) {
+        //  If the selector does not begin with "#", "." or "[",
+        //  it could be either a nodeName or ID w/o "#"
+        if ( !rnaiveExpr.test( selector ) ) {
+
+          //  Try finding an element that matches by ID first
+          node = document.getElementById( selector );
+
+          //  If a match was found by ID, return the element
+          if ( node !== null ) {
+            return node;
+          }
+        }
+        //  Assume no elements have been found yet
+        //  Catch any invalid selector syntax errors and bury them.
+        try {
+          node = context.querySelector( selector );
+        } catch ( e ) {
+          if ( Popcorn.dom.debug ) {
+            throw new Error(e);
+          }
+        }
+      }
+      return node;
+    }
+  };
 
   //  Cache references to reused RegExps
   var rparams = /\?/,
