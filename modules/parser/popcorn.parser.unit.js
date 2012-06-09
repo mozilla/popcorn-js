@@ -116,7 +116,7 @@ asyncTest( "Parsing Data Return and Debug", function() {
     end: function() {}
   });
 
-  function test( isDebug ) {
+  function testDebugMode( isDebug ) {
     Popcorn.parser.debug = isDebug;
 
     poppercore.parseJSONPlain( "data/parserData.json", function( data ) {
@@ -139,8 +139,8 @@ asyncTest( "Parsing Data Return and Debug", function() {
     });
   }
 
-  test( true );
-  test( false );
+  testDebugMode( true );
+  testDebugMode( false );
 });
 
 asyncTest( "Parsing Handler - References unavailable plugin", function() {
