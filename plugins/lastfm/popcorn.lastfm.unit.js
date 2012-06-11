@@ -6,7 +6,7 @@ test( "Popcorn LastFM Plugin", function() {
     plugin. Please do not use it for other purposes.
   */
   var popped = Popcorn( "#video" ),
-      expects = 10,
+      expects = 9,
       count = 0,
       setupId,
       lastfmdiv = document.getElementById( "lastfmdiv" );
@@ -76,17 +76,8 @@ test( "Popcorn LastFM Plugin", function() {
   });
 
   // empty track events should be safe
-  Popcorn.plugin.debug = false;
-  popped.lastfm({});
-
-  // debug should log errors on empty track events
   Popcorn.plugin.debug = true;
-  try {
-    popped.lastfm({});
-  } catch( e ) {
-    ok( true, "empty event was caught by debug" );
-    plus();
-  }
+  popped.lastfm({});
 
   popped.volume( 0 ).play();
 });

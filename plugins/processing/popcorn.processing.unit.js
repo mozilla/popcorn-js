@@ -1,6 +1,6 @@
 test( "Processing plugin tests", function() {
   var popped = Popcorn( "#video" ),
-      expects = 32,
+      expects = 31,
       count = 0,
       processingDiv = document.getElementById( "processing-div-1" ),
       processingDiv2 = document.getElementById( "processing-div-2" ),
@@ -132,17 +132,8 @@ test( "Processing plugin tests", function() {
     plus();
   });
 
-  // debug should log errors on empty track events
-  Popcorn.plugin.debug = true;
-  try {
-    popped.processing({});
-  } catch( e ) {
-    ok( true, "empty event was caught by debug" );
-    plus();
-  }
-
   // set debug back to false, empty track events should be safe
-  Popcorn.plugin.debug = false;
+  Popcorn.plugin.debug = true;
   popped.processing({});
 
   popped.play();

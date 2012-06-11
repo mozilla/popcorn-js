@@ -182,9 +182,6 @@
       options.container.style.display = "none";
       options.container.setAttribute( "id", "canvas" + options.gmltag );
 
-      if ( !target && Popcorn.plugin.debug ) {
-        throw new Error( "target container doesn't exist" );
-      }
       target && target.appendChild( options.container );
 
       var scriptReady = function() {

@@ -98,10 +98,6 @@
 
       _setup: function( options ) {
 
-        if ( !document.getElementById( options.target ) && Popcorn.plugin.debug ) {
-          throw new Error( "target container doesn't exist" );
-        }
-
         options._duration = options.end - options.start;
         options._container = container[ options.target ] || setupContainer( options.target );
 

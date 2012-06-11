@@ -91,9 +91,6 @@
         // display none by default
         options.container.style.display = "none";
 
-        if ( !target && Popcorn.plugin.debug ) {
-          throw new Error( "target container doesn't exist" );
-        }
          // add the widget's div to the target div
         target && target.appendChild( options.container );
 

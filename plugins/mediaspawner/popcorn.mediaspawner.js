@@ -97,21 +97,11 @@
       }
     },
     _setup: function( options ) {
-      var target = document.getElementById( options.target ),
+      var target = document.getElementById( options.target ) || {},
           mediaType,
           container,
           capContainer,
           regexResult;
-
-      // Check if mediaSource is passed and mediaType is NOT audio/video
-      if ( !options.source ) {
-        Popcorn.error( "Error. Source must be specified." );
-      }
-
-      // Check if target container exists
-      if ( !target ) {
-        Popcorn.error( "Target MediaSpawner container doesn't exist." );
-      }
 
       regexResult = urlRegex.exec( options.source );
       if ( regexResult ) {
@@ -124,10 +114,6 @@
       else {
         // if the regex didn't return anything we know it's an HTML5 source
         mediaType = "HTML5";
-      }
-
-      if ( mediaType === "vimeo" || mediaType === "soundcloud" ) {
-        Popcorn.error( "Vimeo and soundcloud are currently not supported by the MediaSpawner Plugin." );
       }
 
       // Store Reference to Type for use in end

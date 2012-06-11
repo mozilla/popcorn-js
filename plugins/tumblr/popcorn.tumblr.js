@@ -287,7 +287,7 @@
         },
         /* Optional for Photo and Video BlogPosts, defaulted to 250 pixels for photos and 400 for videos if not provided or provided width
         * is not found in their arrays. If multiple videos or photos are in the blogpost then it will use this same size for all of them unless
-        * it is not found, which it will then use the default. If default is not present an error will be thrown.
+        * it is not found, which it will then use the default.
         */
         width: {
           elem: "input",
@@ -312,21 +312,11 @@
         return ( [ "info", "avatar", "blogpost" ].indexOf( type ) > -1 );
       };
 
+      options.requestType = options.requestType || "";
       // Lowercase the types incase user enters it in another way
       options.requestType = options.requestType.toLowerCase();
 
-      // Check if blog url ( base_hostname ) is blank and api_key is included on info and blogpost requestType
-      ( !options.base_hostname || ( !options.api_key && ( options.requestType === "info" || options.requestType === "blogpost" ) ) ) &&
-        Popcorn.error( "Must provide a blog URL to the plugin and an api_key for Blog Info and Blog Post requests." );
-
-      // Check Request Type
-      !validType( options.requestType ) && Popcorn.error( "Invalid tumblr plugin type." );
-
-      // Check if a blogID is supplied
-      ( options.requestType === "blogpost" && options.blogId === undefined ) && Popcorn.error( "Error. BlogId required for blogpost requests" );
-
-      // Check if target container exists
-      ( !target && Popcorn.plugin.debug ) && Popcorn.error( "Target Tumblr container doesn't exist." );
+      options.base_hostname = options.base_hostname || "";
 
       // Checks if user included any http header in the url and removes it if that's the case as request don't work with it
       uri = options.base_hostname.slice( ( options.base_hostname.indexOf( "/" ) + 2 ), options.base_hostname.length );
@@ -353,52 +343,49 @@
         requestString = "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/" + type + "?api_key=" + options.api_key + "&id=" + options.blogId +
           "&jsonp=tumblrCallBack";
 
-        this.listen( "tumblrError", function( e ){
-          Popcorn.error( e );
-        });
+        if ( options.base_hostname && options.base_hostname !== "" && options.api_key && options.blogId ) {
 
-        Popcorn.getJSONP( requestString, function( data ) {
-          if ( data.meta.msg === "OK" ) {
-            var commonDiv = document.createElement( "div" );
-            if ( options.requestType === "blogpost" ) {
-              options.post = data.response.posts[ 0 ];
-              var blogType = options.post.type,
-                  post = options.post,
-                  tags = post.tags;
+          Popcorn.getJSONP( requestString, function( data ) {
+            if ( data.meta.msg === "OK" ) {
+              var commonDiv = document.createElement( "div" );
+              if ( options.requestType === "blogpost" ) {
+                options.post = data.response.posts[ 0 ];
+                var blogType = options.post.type,
+                    post = options.post,
+                    tags = post.tags;
 
-              // date is a response type common to all blogposts so it's in here to prevent duplicated code
-              commonDiv.innerHTML = "Date Published: " + options.post.date.slice( 0, options.post.date.indexOf( " " ) ) + "<br/>";
-              // Check if tags were used for the post, append them to commonDiv
-              if ( tags.length !== 0 ) {
-                commonDiv.innerHTML += "Tags: " + tags[ 0 ];
-                for ( var i = 1, len = tags.length; i < len; i++ ) {
-                  commonDiv.innerHTML += ", " + tags[ i ];
+                // date is a response type common to all blogposts so it's in here to prevent duplicated code
+                commonDiv.innerHTML = "Date Published: " + options.post.date.slice( 0, options.post.date.indexOf( " " ) ) + "<br/>";
+                // Check if tags were used for the post, append them to commonDiv
+                if ( tags.length !== 0 ) {
+                  commonDiv.innerHTML += "Tags: " + tags[ 0 ];
+                  for ( var i = 1, len = tags.length; i < len; i++ ) {
+                    commonDiv.innerHTML += ", " + tags[ i ];
+                  }
+                } else {
+                  commonDiv.innerHTML += "Tags: No Tags Used";
                 }
+                // commonDiv is appended at two points because of the difference in how the information
+                // is constructed between blogposts and bloginfo
+                options._container.appendChild( commonDiv );
+
+                // Processes information and forms an information div based on what the blog type is
+                processBlogPost[ blogType ]( options );
               } else {
-                commonDiv.innerHTML += "Tags: No Tags Used";
+                // Blog Info Requests
+                var link = document.createElement( "a" ),
+                    blogInfo = data.response.blog,
+                    linkText = document.createTextNode( blogInfo.title );
+
+                link.setAttribute( "href", blogInfo.url );
+                link.appendChild( linkText );
+                commonDiv.appendChild( link );
+                commonDiv.innerHTML += blogInfo.description;
+                options._container.appendChild( commonDiv );
               }
-              // commonDiv is appended at two points because of the difference in how the information
-              // is constructed between blogposts and bloginfo
-              options._container.appendChild( commonDiv );
-
-              // Processes information and forms an information div based on what the blog type is
-              processBlogPost[ blogType ]( options );
-            } else {
-              // Blog Info Requests
-              var link = document.createElement( "a" ),
-                  blogInfo = data.response.blog,
-                  linkText = document.createTextNode( blogInfo.title );
-
-              link.setAttribute( "href", blogInfo.url );
-              link.appendChild( linkText );
-              commonDiv.appendChild( link );
-              commonDiv.innerHTML += blogInfo.description;
-              options._container.appendChild( commonDiv );
             }
-          } else {
-            that.trigger( "tumblrError", "Error. Request failed. Status code: " + data.meta.status + " - Message: " + data.meta.msg );
-          }
-        }, false );
+          }, false );
+        }
       }
       options._container.style.display = "none";
       target && target.appendChild( options._container );

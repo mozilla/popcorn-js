@@ -140,10 +140,6 @@ var googleCallback;
 
     i++;
 
-    // ensure the target container the user chose exists
-    if ( !target && Popcorn.plugin.debug ) {
-      throw new Error( "target container doesn't exist" );
-    }
     target && target.appendChild( newdiv );
 
     // ensure that google maps and its functions are loaded

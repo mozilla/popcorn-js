@@ -1,7 +1,7 @@
 test( "Popcorn Google Map Plugin", function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 26,
+      expects = 25,
       count = 0,
       setupId;
 
@@ -101,17 +101,8 @@ test( "Popcorn Google Map Plugin", function() {
   });
 
   // empty track events should be safe
-  Popcorn.plugin.debug = false;
-  popped.googlemap({});
-
-  // debug should log errors on empty track events
   Popcorn.plugin.debug = true;
-  try {
-    popped.googlemap({});
-  } catch( e ) {
-    ok( true, "empty event was caught by debug" );
-    plus();
-  }
+  popped.googlemap({});
 
   equal( 1, popped.getTrackEvent( popped.getLastTrackEventId() ).zoom, "zoom is defaulted to 1 from setup" );
   plus();

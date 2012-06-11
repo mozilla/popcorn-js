@@ -113,9 +113,6 @@
     newdiv.style.height = "100%";
     i++;
 
-    if ( !target && Popcorn.plugin.debug ) {
-      throw new Error( "target container doesn't exist" );
-    }
     target && target.appendChild( newdiv );
 
     initialize();

@@ -56,10 +56,6 @@
       html = data.html;
       if ( data && title && html ) {
         _album[ options.containerid ].htmlString = "<div>" + html + "</div>";
-      } else {
-        if ( Popcorn.plugin.debug ) {
-          throw new Error( "Did not receive data from server." );
-        }
       }
     },
 
@@ -88,16 +84,13 @@
         var key = options.containerid = Popcorn.guid(),
         container = _container[ key ] = document.createElement( "div" ),
         target = _target[ key ] = document.getElementById( options.target );
-        if ( !target && Popcorn.plugin.debug ) {
-          throw new Error( "Target container could not be found." );
-        }
         container.style.display = "none";
         container.innerHTML = "";
-        target.appendChild( container );
+        target && target.appendChild( container );
         _album[ key ] = {
           htmlString: ( options.playlist || "Unknown Source" ) || ( options.album || "Unknown Source" )
         };
-        _getResults( options );
+        options.type && _getResults( options );
       },
       start: function( event, options ) {
         var key = options.containerid,
