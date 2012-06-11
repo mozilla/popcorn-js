@@ -171,6 +171,9 @@
         if ( !target ) {
           target = createSubtitleContainer( this, options.target );
         }
+        else if ( [ "VIDEO", "AUDIO" ].indexOf( target.nodeName ) > -1 ) {
+          target = createSubtitleContainer( this, options.target + "-overlay" );
+        }
 
       } else if ( !this.container ) {
         // Creates a div for all subtitles to use
