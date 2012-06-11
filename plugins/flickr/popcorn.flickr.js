@@ -51,8 +51,8 @@
         _link,
         _image,
         _count = options.numberofimages || 4,
-        _height = options.height || "50px",
-        _width = options.width || "50px",
+        _height = options.height || "200px",
+        _width = options.width || "200px",
         _padding = options.padding || "5px",
         _border = options.border || "0px";
 
@@ -63,6 +63,7 @@
     containerDiv.style.width = "100%";
     containerDiv.style.height = "100%";
     containerDiv.style.display = "none";
+    containerDiv.classList.add( "popcorn-flickr" );
     idx++;
 
     // ensure the target container the user chose exists
@@ -188,57 +189,66 @@
         elem: "input",
         type: "text",
         label: "UserID",
-        optional: true
+        optional: true,
+        hidden: true
       },
       tags: {
         elem: "input",
         type: "text",
-        label: "Tags"
+        label: "Tags",
+        "default": "ponies",
+        units: "#"
       },
       username: {
         elem: "input",
         type: "text",
         label: "Username",
-        optional: true
+        optional: true,
+        hidden: true
       },
       apikey: {
         elem: "input",
         type: "text",
         label: "Api_key",
-        optional: true
+        optional: true,
+        hidden: true
       },
       target: "flickr-container",
       height: {
         elem: "input",
         type: "text",
         label: "Height",
-        "default": "50px",
-        optional: true
+        "default": "200px",
+        optional: true,
+        hidden: true
       },
       width: {
         elem: "input",
         type: "text",
         label: "Width",
-        "default": "50px",
-        optional: true
+        "default": "200px",
+        optional: true,
+        hidden: true
       },
       padding: {
         elem: "input",
         type: "text",
         label: "Padding",
-        optional: true
+        optional: true,
+        hidden: true
       },
       border: {
         elem: "input",
         type: "text",
         label: "Border",
-        "default": "5px",
-        optional: true
+        "default": "0",
+        optional: true,
+        hidden: true
       },
       numberofimages: {
         elem: "input",
         type: "number",
-        "default": 4,
+        "default": 10,
         label: "Number of Images"
       }
     }
