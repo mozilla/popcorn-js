@@ -63,6 +63,7 @@
     containerDiv.style.width = "100%";
     containerDiv.style.height = "100%";
     containerDiv.style.display = "none";
+    containerDiv.classList.add( "popcorn-flickr" );
     idx++;
 
     // ensure the target container the user chose exists
