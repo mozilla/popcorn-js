@@ -338,3 +338,25 @@ asyncTest( "Subtitle container creation tests", 3, function() {
   popped.destroy();
   start();
 });
+
+asyncTest( "Media element as target", 2, function() {
+
+  var popped = Popcorn( "#video" ),
+      containerAfterParse;
+
+  popped.text({
+    start: 0,
+    end: 10,
+    text: "Text on video",
+    target: "video"
+  });
+
+  containerAfterParse = document.getElementById( "video-overlay" );
+
+  ok( !!containerAfterParse, "video-overlay container exists" );
+  equal( containerAfterParse.children[ 0 ].innerHTML, "Text on video", "Text displayed in created overlay container" );
+
+  popped.destroy();
+  start();
+});
+
