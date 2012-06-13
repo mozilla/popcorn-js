@@ -894,13 +894,14 @@ test( "roundTime", function() {
 
 test( "exec", function() {
 
-  QUnit.reset();
-
   var popped = Popcorn( "#video" ),
-      expects = 2,
+      expects = 3,
       count = 0,
-      hasLooped = false,
-      loop = 0;
+      loop = 0,
+      flags = {
+        looped: false,
+        smpte: false
+      };
 
   expect( expects + 1 );
 
@@ -909,7 +910,7 @@ test( "exec", function() {
 
       setTimeout(function() {
 
-        equal( loop, expects, "cue callback repeat check, only called twice" );
+        equal( loop, 2, "cue callback repeat check, only called twice" );
         Popcorn.removePlugin( popped, "cue" );
         popped.destroy();
         start();
@@ -919,17 +920,25 @@ test( "exec", function() {
 
   stop();
 
+  // Supports SMPTE
+  popped.cue( "00:00:04", function() {
+    if ( !flags.smpte ) {
+      flags.smpte = true;
+      ok( true, "cue supports SMPTE" );
+      plus();
+    }
+  });
+
+
   popped.cue( 4, function() {
     ok( loop < 2, "cue callback fired " + ++loop );
     plus();
 
-    if ( !hasLooped ) {
-
-      popped.currentTime( 3 ).play();
-
-      hasLooped = true;
+    if ( !flags.looped ) {
+      flags.looped = true;
+      popped.play( 3 );
     }
-  }).currentTime( 3 ).play();
+  }).play( 3 );
 });
 
 test( "cue: alias of exec", function() {

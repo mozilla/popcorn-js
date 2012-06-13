@@ -547,7 +547,21 @@
     //  Attach an event to a single point in time
     exec: function( id, time, fn ) {
       var length = arguments.length,
-          trackEvent;
+          trackEvent, sec;
+
+      // Check if first could possibly be a SMPTE string
+      // p.cue( "smpte string", fn );
+      // try/catch avoid awful throw in Popcorn.util.toSeconds
+      // TODO: Get rid of that, replace with NaN return?
+      try {
+        sec = Popcorn.util.toSeconds( id );
+      } catch ( e ) {}
+
+      // If it can be converted into a number then
+      // it's safe to assume that the string was SMPTE
+      if ( typeof sec === "number" ) {
+        id = sec;
+      }
 
       // Shift arguments based on use case
       //
