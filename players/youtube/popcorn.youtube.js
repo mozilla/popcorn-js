@@ -1,13 +1,49 @@
-// A global callback for youtube... that makes me angry
-var onYouTubePlayerAPIReady = function() {
+(function( global ) {
 
-  onYouTubePlayerAPIReady.ready = true;
-  for ( var i = 0; i < onYouTubePlayerAPIReady.waiting.length; i++ ) {
-    onYouTubePlayerAPIReady.waiting[ i ]();
+var oldYT,
+    oldYTReadyCallback,
+    YTAPIReady = false,
+    popcornYT;
+
+// We load our own version of the youtube player api script regardless of
+// whether or not a similar one already exists on the page so that player 
+// support is as we expect. As a result, we must swap out existing instances
+// while we initialize, and replace them when we're finished, so the user's
+// page suffers the least amount of disruption possible. This function places
+// the old YT namespace back on the global object if we needed to replace it
+// during initialization.
+var swapYT = function() {
+  if ( oldYT ) {
+    global.onYouTubePlayerAPIReady = oldYTReadyCallback;
+    global.YT = oldYT;
+    oldYT = null;
+    oldYTReadyCallback = null;
   }
 };
 
+// A global callback for youtube... that makes me angry
+global.onYouTubePlayerAPIReady = function() {
+
+  // Store the new version of the youtube script, call ready listeners,
+  // and swap in the old YT if necessary
+  popcornYT = global.YT;
+  YTAPIReady = true;
+  for ( var i = 0; i < onYouTubePlayerAPIReady.waiting.length; i++ ) {
+    onYouTubePlayerAPIReady.waiting[ i ]();
+  }
+  swapYT();
+};
+
 onYouTubePlayerAPIReady.waiting = [];
+
+// If a YT script already exists, store it and remove the reference from the window
+// so it can be safely replaced for our purposes
+if ( global.YT ) {
+  // Store a reference to the old youtubePlayerReady function if there was one
+  oldYTReadyCallback = global.onYouTubePlayerAPIReady;
+  oldYT = global.YT;
+  global.YT = null;
+}
 
 Popcorn.getScript( "http://www.youtube.com/player_api" );
 
@@ -230,7 +266,7 @@ Popcorn.player( "youtube", {
       
       media.style.display = originalStyle;
 
-      options.youtubeObject = new YT.Player( container.id, {
+      options.youtubeObject = new popcornYT.Player( container.id, {
         height: height,
         width: width,
         videoId: src,
@@ -325,9 +361,12 @@ Popcorn.player( "youtube", {
       };
     };
 
-    if ( onYouTubePlayerAPIReady.ready ) {
+    if ( YTAPIReady ) {
 
+      // store the new version of the youtube script, and swap in the old one if necessary
+      popcornYT = global.YT;
       youtubeInit();
+      swapYT();
     } else {
 
       onYouTubePlayerAPIReady.waiting.push( youtubeInit );
@@ -346,3 +385,5 @@ Popcorn.player( "youtube", {
     this.removeChild( document.getElementById( options._container.id ) );
   }
 });
+
+} ( window ) );
