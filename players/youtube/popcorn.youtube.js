@@ -21,13 +21,10 @@ var swapYT = function() {
   }
 };
 
-// Store a reference to the old youtubePlayerReady function if there was one
-oldYTReadyCallback = global.onYouTubePlayerAPIReady;
-
 // A global callback for youtube... that makes me angry
 global.onYouTubePlayerAPIReady = function() {
 
-  // store the new version of the youtube script, call ready listeners,
+  // Store the new version of the youtube script, call ready listeners,
   // and swap in the old YT if necessary
   popcornYT = global.YT;
   YTAPIReady = true;
@@ -42,6 +39,8 @@ onYouTubePlayerAPIReady.waiting = [];
 // If a YT script already exists, store it and remove the reference from the window
 // so it can be safely replaced for our purposes
 if ( global.YT ) {
+  // Store a reference to the old youtubePlayerReady function if there was one
+  oldYTReadyCallback = global.onYouTubePlayerAPIReady;
   oldYT = global.YT;
   global.YT = null;
 }
