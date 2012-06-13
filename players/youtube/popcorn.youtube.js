@@ -1,13 +1,30 @@
-// A global callback for youtube... that makes me angry
-var onYouTubePlayerAPIReady = function() {
+(function( global ) {
 
+var oldYT;
+
+var swapYT = function() {
+  if ( oldYT ) {
+    global.YT = oldYT;
+    oldYT = null;
+  }
+};
+
+// A global callback for youtube... that makes me angry
+global.onYouTubePlayerAPIReady = function() {
+  newYT = global.YT;
   onYouTubePlayerAPIReady.ready = true;
   for ( var i = 0; i < onYouTubePlayerAPIReady.waiting.length; i++ ) {
     onYouTubePlayerAPIReady.waiting[ i ]();
   }
+  swapYT();
 };
 
 onYouTubePlayerAPIReady.waiting = [];
+
+if ( global.YT ) {
+  oldYT = global.YT;
+  global.YT = null;
+}
 
 Popcorn.getScript( "http://www.youtube.com/player_api" );
 
@@ -230,7 +247,7 @@ Popcorn.player( "youtube", {
       
       media.style.display = originalStyle;
 
-      options.youtubeObject = new YT.Player( container.id, {
+      options.youtubeObject = new newYT.Player( container.id, {
         height: height,
         width: width,
         videoId: src,
@@ -327,7 +344,9 @@ Popcorn.player( "youtube", {
 
     if ( onYouTubePlayerAPIReady.ready ) {
 
+      newYT = global.YT;
       youtubeInit();
+      swapYT();
     } else {
 
       onYouTubePlayerAPIReady.waiting.push( youtubeInit );
@@ -346,3 +365,5 @@ Popcorn.player( "youtube", {
     this.removeChild( document.getElementById( options._container.id ) );
   }
 });
+
+} ( window ) );
