@@ -2,6 +2,7 @@
 
 var oldYT;
 
+// puts the old YT script back
 var swapYT = function() {
   if ( oldYT ) {
     global.YT = oldYT;
@@ -11,6 +12,9 @@ var swapYT = function() {
 
 // A global callback for youtube... that makes me angry
 global.onYouTubePlayerAPIReady = function() {
+
+  // store the new version of the youtube script, call ready listeners,
+  // and swap in the old YT if necessary
   newYT = global.YT;
   onYouTubePlayerAPIReady.ready = true;
   for ( var i = 0; i < onYouTubePlayerAPIReady.waiting.length; i++ ) {
@@ -21,6 +25,8 @@ global.onYouTubePlayerAPIReady = function() {
 
 onYouTubePlayerAPIReady.waiting = [];
 
+// if a YT script already exists, store it and remove the reference from the window
+// so it can be safely replaced for our purposes
 if ( global.YT ) {
   oldYT = global.YT;
   global.YT = null;
@@ -344,6 +350,7 @@ Popcorn.player( "youtube", {
 
     if ( onYouTubePlayerAPIReady.ready ) {
 
+      // store the new version of the youtube script, and swap in the old one if necessary
       newYT = global.YT;
       youtubeInit();
       swapYT();
