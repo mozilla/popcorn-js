@@ -4307,7 +4307,7 @@ asyncTest( "Plug-ins with a `once` attribute should be removed after `end` is fi
 });
 
 asyncTest( "Modify cue or track event after creation", 6, function() {
-  var p = Popcorn("#video"),
+  var p = Popcorn( "#video" ),
       passed = 0;
 
   Popcorn.plugin( "modifyMe", {
@@ -4396,7 +4396,7 @@ asyncTest( "Modify cue or track event after creation", 6, function() {
       end: 12
     });
 
-    p.play(9);
+    p.play( 9 );
   });
 });
 
