@@ -1,11 +1,13 @@
 // A global callback for youtube... that makes me angry
-var onYouTubePlayerAPIReady = function() {
+window.onYouTubePlayerAPIReady = function() {
 
   onYouTubePlayerAPIReady.ready = true;
   for ( var i = 0; i < onYouTubePlayerAPIReady.waiting.length; i++ ) {
     onYouTubePlayerAPIReady.waiting[ i ]();
   }
 };
+
+window.YT = null;
 
 onYouTubePlayerAPIReady.waiting = [];
 
