@@ -648,3 +648,10 @@ asyncTest( "Youtube media start time fragment", function() {
     fourthTest();
   }
 });
+
+asyncTest( "youtube player quarantine", function() {
+  
+  ok( window.quarantineYT, "quarantine of broken youtube player exists." );
+  start();
+});
+
