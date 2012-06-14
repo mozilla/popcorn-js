@@ -7,6 +7,8 @@ window.onYouTubePlayerAPIReady = function() {
   }
 };
 
+// existing youtube references can break us.
+// remove it and use the one we can trust.
 window.YT = null;
 
 onYouTubePlayerAPIReady.waiting = [];
