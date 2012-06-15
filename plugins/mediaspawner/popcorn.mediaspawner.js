@@ -80,16 +80,18 @@
         },
         width: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "Media Width",
-          "default": "400",
+          "default": 400,
+          units: "px",
           optional: true
         },
         height: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "Media Height",
-          "default": "200",
+          "default": 200,
+          units: "px",
           optional: true
         }
       }
@@ -137,8 +139,8 @@
       container.id = "mediaSpawnerdiv-" + Popcorn.guid();
 
       // Default width and height of media
-      options.width = options.width || target.offsetWidth || "400";
-      options.height = options.height || target.offsetHeight || "200";
+      options.width = options.width || 400;
+      options.height = options.height || 200;
 
       // Captions now need to be in their own container, due to the problem with flash players
       // described in start/end
@@ -161,16 +163,22 @@
             }, 300 );
           } else {
             options.id = options._container.id;
+            // Set the width/height of the container before calling Popcorn.smart
+            // Allows youtube to pickup on the specified height an create the player
+            // with specified dimensions
+            options._container.style.width = options.width + "px";
+            options._container.style.height = options.height + "px";
             options.popcorn = Popcorn.smart( "#" + options.id, options.source );
 
             if ( mediaType === "HTML5" ) {
               options.popcorn.controls( true );
             }
-
-            options.popcorn.media.style.width = "0px";
-            options.popcorn.media.style.height = "0px";
-            options.popcorn.media.style.visibility = "hidden";
-            options.popcorn.media.style.overflow = "hidden";
+            
+            // Set them to 0 now so it is hidden
+            options._container.style.width = "0px";
+            options._container.style.height = "0px";
+            options._container.style.visibility = "hidden";
+            options._container.style.overflow = "hidden";
           }
         }
 
@@ -215,10 +223,10 @@
        * Without it on end an internal cleanup is called, causing the flash players
        * to be out of sync with Popcorn, as they are then rebuilt.
        */
-      options.popcorn.media.style.width = options.width + "px";
-      options.popcorn.media.style.height = options.height + "px";
-      options.popcorn.media.style.visibility = "visible";
-      options.popcorn.media.style.overflow = "visible";
+      options._container.style.width = options.width + "px";
+      options._container.style.height = options.height + "px";
+      options._container.style.visibility = "visible";
+      options._container.style.overflow = "visible";
 
       if ( options.autoplay ) {
         options.popcorn.play();
@@ -233,10 +241,10 @@
        * Without it on end an internal cleanup is called, causing the flash players
        * to be out of sync with Popcorn, as they are then rebuilt.
        */
-      options.popcorn.media.style.width = "0px";
-      options.popcorn.media.style.height = "0px";
-      options.popcorn.media.style.visibility = "hidden";
-      options.popcorn.media.style.overflow = "hidden";
+      options._container.style.width = "0px";
+      options._container.style.height = "0px";
+      options._container.style.visibility = "hidden";
+      options._container.style.overflow = "hidden";
 
       // Pause all popcorn instances on exit
       options.popcorn.pause();
