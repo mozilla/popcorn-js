@@ -860,7 +860,7 @@
 
     if ( track._natives ) {
       //  Supports user defined track event id
-      track._id = !track.id ? Popcorn.guid( track._natives.type ) : track.id;
+      track._id = track.id || track._id || Popcorn.guid( track._natives.type );
 
       //  Push track event ids into the history
       obj.data.history.push( track._id );
@@ -1464,6 +1464,11 @@
         manifestOpts = "options" in manifest && manifest.options;
 
         options.target = manifestOpts && "target" in manifestOpts && manifestOpts.target;
+      }
+
+      if ( options._natives ) {
+        // ensure an initial id is there before setup is called
+        options._id = Popcorn.guid( options._natives.type );
       }
 
       // Trigger _setup method if exists

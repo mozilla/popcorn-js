@@ -1830,6 +1830,23 @@ test( "UI/Mouse", function() {
 });
 
 module( "Popcorn Plugin" );
+
+test( "Plugin _id applied before setup", function() {
+
+  expect( 1 );
+
+  var p = Popcorn( "#video" );
+
+  Popcorn.plugin( "idPlugin", {
+    _setup: function( options ) {
+      ok( options._id, "_id was set before setup" );
+      Popcorn.removePlugin( "idPlugin" );
+    }
+  });
+
+  p.idPlugin({});
+});
+
 test( "Manifest", function() {
 
   var p = Popcorn( "#video" ),
