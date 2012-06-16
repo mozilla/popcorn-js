@@ -93,7 +93,7 @@
 
     init: function( entity, options ) {
 
-      var matches,
+      var matches, nodeName,
           self = this;
 
       //  Supports Popcorn(function () { /../ })
@@ -149,16 +149,21 @@
         }
       }
 
-      //  Get media element by id or object reference
-      this.media = matches || entity;
-
-      //  Create an audio or video element property reference
-      this[ ( this.media.nodeName && this.media.nodeName.toLowerCase() ) || "video" ] = this.media;
-
       //  Register new instance
       Popcorn.instances.push( this );
 
+      //  Get media element by id or object reference
+      this.media = matches || entity;
+
+      //  inner reference to this media element's nodeName string value
+      nodeName = ( this.media.nodeName && this.media.nodeName.toLowerCase() ) || "video";
+
+      //  Create an audio or video element property reference
+      this[ nodeName ] = this.media;
+
       this.options = options || {};
+
+      this.id = this.options.id || this.media.id || Popcorn.guid( nodeName );
 
       this.isDestroyed = false;
 
@@ -310,6 +315,20 @@
   //  Extend constructor prototype to instance prototype
   //  Allows chaining methods to instances
   Popcorn.p.init.prototype = Popcorn.p;
+
+  Popcorn.byId = function( str ) {
+    var instances = Popcorn.instances,
+        length = instances.length,
+        i = 0;
+
+    for ( ; i < length; i++ ) {
+      if ( instances[ i ].id === str ) {
+        return instances[ i ];
+      }
+    }
+
+    return null;
+  };
 
   Popcorn.forEach = function( obj, fn, context ) {
 

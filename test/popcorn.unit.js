@@ -317,6 +317,36 @@ test( "Popcorn.removeTrackEvent", function() {
   pop.destroy();
 });
 
+asyncTest( "Popcorn.byId", 3, function() {
+  var a = Popcorn( "#video" ),
+      b = Popcorn( "#video", {
+        id: "my-custom-id"
+      }),
+      completed = 0;
+
+  function done() {
+    if ( ++completed === 2 ) {
+      a.destroy();
+      b.destroy();
+      start();
+    }
+  }
+
+  equal( Popcorn.byId( "non-existant" ), null, "Popcorn.byId('non-existant') returns `null`" );
+
+  a.on( "canplayall", function() {
+    equal( Popcorn.byId( "video" ).media, this.media, "Popcorn.byId('video') returns the correct instance" );
+
+    done();
+  });
+
+  b.on( "canplayall", function() {
+    deepEqual( Popcorn.byId( "my-custom-id" ).media, this.media, "Popcorn.byId('my-custom-id') returns the correct instance" );
+
+    done();
+  });
+});
+
 test( "Popcorn.forEach", function() {
 
   expect( 3 );
