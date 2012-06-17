@@ -387,3 +387,11 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
 
   start();
 });
+
+asyncTest( "Popcorn.smart - Controls are set to be visible for HTML5 Media", function() {
+  var p1 = Popcorn.smart( "#videoControls", "../../test/trailer.ogv", { controls: true } ),
+      vid = document.getElementById( "videoControls" ).childNodes[ 0 ];
+
+  ok( vid.controls, "Video Element has controls attribute" );
+  start();
+});
