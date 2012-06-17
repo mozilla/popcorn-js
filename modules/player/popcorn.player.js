@@ -364,7 +364,7 @@
           "mp4": "video/mp4",
           "mp3": "audio/mp3"
         },
-        options = options || {};
+        _options = options || {};
 
     var canPlayType = function( type ) {
 
@@ -442,7 +442,7 @@
 
       target = document.createElement( !!audioExtensionRegexp.exec( firstSrc ) ? elementTypes[ 0 ] : elementTypes[ 1 ] );
       
-      if ( options.controls ) {
+      if ( _options.controls ) {
         target.controls = true;
       }
       
