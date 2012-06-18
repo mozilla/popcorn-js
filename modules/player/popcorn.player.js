@@ -364,7 +364,7 @@
           "mp4": "video/mp4",
           "mp3": "audio/mp3"
         },
-        _options = options || {};
+        _options = options || { controls: true };
 
     var canPlayType = function( type ) {
 
