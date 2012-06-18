@@ -387,3 +387,14 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
 
   start();
 });
+
+asyncTest( "Popcorn.smart - Passing in a controls flag through options on HTML5 Media", function() {
+  var p1 = Popcorn.smart( "#videoControls", "../../test/trailer.ogv" ),
+      p2 = Popcorn.smart( "#videoControls", "../../test/trailer.ogv", { controls: false } ),
+      vid = document.getElementById( "videoControls" ).childNodes[ 0 ],
+      vid2 = document.getElementById( "videoControls" ).childNodes[ 1 ];
+
+  ok( vid.controls, "Video Element has controls attribute. Successfully defaulted to being set" );
+  ok( !vid2.controls, "Video Element has no controls attribute. Successfully read in user option to not set controls" );
+  start();
+});
