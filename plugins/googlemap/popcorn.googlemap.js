@@ -150,21 +150,23 @@ var googleCallback;
     // before setting up the map parameters
     var isMapReady = function () {
       if ( _mapLoaded ) {
-        if ( options.location ) {
-          // calls an anonymous google function called on separate thread
-          geocoder.geocode({
-            "address": options.location
-          }, function ( results, status ) {
-            if ( status === google.maps.GeocoderStatus.OK ) {
-              options.lat = results[ 0 ].geometry.location.lat();
-              options.lng = results[ 0 ].geometry.location.lng();
-              location = new google.maps.LatLng( options.lat, options.lng );
-              map = buildMap( options, location, newdiv );
-            }
-          });
-        } else {
-          location = new google.maps.LatLng( options.lat, options.lng );
-          map = buildMap( options, location, newdiv );
+        if ( newdiv ) {
+          if ( options.location ) {
+            // calls an anonymous google function called on separate thread
+            geocoder.geocode({
+              "address": options.location
+            }, function ( results, status ) {
+              if ( status === google.maps.GeocoderStatus.OK ) {
+                options.lat = results[ 0 ].geometry.location.lat();
+                options.lng = results[ 0 ].geometry.location.lng();
+                location = new google.maps.LatLng( options.lat, options.lng );
+                map = buildMap( options, location, newdiv );
+              }
+            });
+          } else {
+            location = new google.maps.LatLng( options.lat, options.lng );
+            map = buildMap( options, location, newdiv );
+          }
         }
       } else {
           setTimeout(function () {
