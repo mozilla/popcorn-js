@@ -6,8 +6,7 @@
       isSupported: false
     };
 
-    var methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
-          "forEach extend effects error guid sizeOf isArray nop position disable enable destroy" +
+    var methods = ( "byId forEach extend effects error guid sizeOf isArray nop position disable enable destroy" +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
           "timeUpdate plugin removePlugin compose effect xhr getJSONP getScript" ).split(/\s+/);
 
@@ -149,9 +148,6 @@
         }
       }
 
-      //  Register new instance
-      Popcorn.instances.push( this );
-
       //  Get media element by id or object reference
       this.media = matches || entity;
 
@@ -163,7 +159,13 @@
 
       this.options = options || {};
 
-      this.id = this.options.id || this.media.id || Popcorn.guid( nodeName );
+      //  Resolve custom ID or default prefixed ID
+      this.id = this.options.id || Popcorn.guid( nodeName );
+
+      //  Throw if an attempt is made to use an ID that already exists
+      if ( Popcorn.byId( this.id ) ) {
+        throw new Error( "Popcorn.js Error: Cannot use duplicate ID (" + this.id + ")" );
+      }
 
       this.isDestroyed = false;
 
@@ -214,6 +216,9 @@
           previousUpdateTime: -1
         }
       };
+
+      //  Register new instance
+      Popcorn.instances.push( this );
 
       //  function to fire when video is ready
       var isReady = function() {
