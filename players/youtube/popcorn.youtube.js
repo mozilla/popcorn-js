@@ -10,7 +10,7 @@ window.onYouTubePlayerAPIReady = function() {
 // existing youtube references can break us.
 // remove it and use the one we can trust.
 if ( window.YT ) {
-  window.quarantineYT = window.YT
+  window.quarantineYT = window.YT;
   window.YT = null;
 }
 
