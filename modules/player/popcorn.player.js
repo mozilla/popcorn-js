@@ -363,8 +363,7 @@
           "webm": "video/webm",
           "mp4": "video/mp4",
           "mp3": "audio/mp3"
-        },
-        _options = options || { controls: true };
+        };
 
     var canPlayType = function( type ) {
 
@@ -442,9 +441,8 @@
 
       target = document.createElement( !!audioExtensionRegexp.exec( firstSrc ) ? elementTypes[ 0 ] : elementTypes[ 1 ] );
       
-      if ( _options.controls ) {
-        target.controls = true;
-      }
+      // Controls are defaulted to being present
+      target.controls = true;
       
       node.appendChild( target );
       node = target;
