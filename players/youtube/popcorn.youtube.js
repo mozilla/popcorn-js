@@ -244,6 +244,8 @@ Popcorn.player( "youtube", {
       options.youtubeObject = new YT.Player( container.id, {
         height: height,
         width: width,
+        wmode: "transparent",
+        playerVars: { wmode: "transparent" },
         videoId: src,
         events: {
           "onReady": function(){
