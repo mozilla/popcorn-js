@@ -359,9 +359,9 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
     }
   });
 
-  expect( 5 );
+  expect( 6 );
 
-  var p1, p2, p3, p4, p5,
+  var p1, p2, p3, p4, p5, p6,
       srcResult;
 
   p1 = Popcorn.smart( "#multi-div-mixed1", [ "invalid", "../../test/trailer.ogv", "playerOne" ] );
@@ -369,6 +369,10 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
   p3 = Popcorn.smart( "#multi-div-mixed3", "playerTwo" );
   p4 = Popcorn.smart( "#multi-div-mixed4", [ "invalid", "playerTwo", "../../test/trailer.ogv" ] );
   p5 = Popcorn.smart( "#multi-div-mixed5", "../../test/trailer.ogv" );
+  p6 = Popcorn.smart( "#multi-div-mixed6",
+    [ "../../test/trailer.derp?smartnotsosmart=no",
+      "../../test/trailer.ogv?arewesmartyet=yes",
+      "../../test/trailer.derp?smartnotsosmart=no" ] );
 
   srcResult = p1.media.src.split( "/" );
   equal( p1.media.src.split( "/" )[ srcResult.length - 1 ], "trailer.ogv", "HTML5 works as valid fallback." );
@@ -384,6 +388,9 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
 
   srcResult = p5.media.src.split( "/" );
   equal( p5.media.src.split( "/" )[ srcResult.length - 1 ], "trailer.ogv", "HTML5 works as first media, even if it is the only media." );
+
+  srcResult = p6.media.src.split( "/" );
+  equal( p6.media.src.split( "/" )[ srcResult.length - 1 ], "trailer.ogv?arewesmartyet=yes", "HTML5 works as second valid media, even if it has a query string." );
 
   start();
 });
