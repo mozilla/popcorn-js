@@ -20,8 +20,8 @@
       videoExtensions = "ogg|ogv|mp4|webm",
       mediaExtensions = audioExtensions + "|" + videoExtensions;
 
-  var audioExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions + ")$" ),
-      mediaExtensionRegexp = new RegExp( "^.*\\.(" + mediaExtensions + ")$" );
+  var audioExtensionRegexp = new RegExp( "^.*\\.(" + audioExtensions + ")($|\\?)" ),
+      mediaExtensionRegexp = new RegExp( "^.*\\.(" + mediaExtensions + ")($|\\?)" );
 
   Popcorn.player = function( name, player ) {
 

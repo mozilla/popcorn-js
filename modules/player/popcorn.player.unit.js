@@ -359,9 +359,9 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
     }
   });
 
-  expect( 5 );
+  expect( 8 );
 
-  var p1, p2, p3, p4, p5,
+  var p1, p2, p3, p4, p5, p6, p7, p8,
       srcResult;
 
   p1 = Popcorn.smart( "#multi-div-mixed1", [ "invalid", "../../test/trailer.ogv", "playerOne" ] );
@@ -369,6 +369,18 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
   p3 = Popcorn.smart( "#multi-div-mixed3", "playerTwo" );
   p4 = Popcorn.smart( "#multi-div-mixed4", [ "invalid", "playerTwo", "../../test/trailer.ogv" ] );
   p5 = Popcorn.smart( "#multi-div-mixed5", "../../test/trailer.ogv" );
+  p6 = Popcorn.smart( "#multi-div-mixed6",
+    [ "../../test/trailer.derp?smartnotsosmart=no",
+      "../../test/trailer.ogv?arewesmartyet=yes",
+      "../../test/trailer.derp?smartnotsosmart=no" ] );
+  p7 = Popcorn.smart( "#multi-div-mixed7",
+    [ "http://usr:pwd@www.test.com:81/dir/dir.2/video.derp?q1=0&&test1&test2=value#top",
+      "http://usr:pwd@www.test.com:81/dir/dir.2/video.ogv?q1=0&&test1&test2=value#top",
+      "http://usr:pwd@www.test.com:81/dir/dir.2/video.derp?q1=0&&test1&test2=value#top" ] );
+  p8 = Popcorn.smart( "#multi-div-mixed8",
+    [ "host.com:81/direc.tory/file.derp?query=1&test=2#anchor",
+      "host.com:81/direc.tory/file.webm?query=1&test=2#anchor",
+      "host.com:81/direc.tory/file.derp?query=1&test=2#anchor" ] );
 
   srcResult = p1.media.src.split( "/" );
   equal( p1.media.src.split( "/" )[ srcResult.length - 1 ], "trailer.ogv", "HTML5 works as valid fallback." );
@@ -384,6 +396,13 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
 
   srcResult = p5.media.src.split( "/" );
   equal( p5.media.src.split( "/" )[ srcResult.length - 1 ], "trailer.ogv", "HTML5 works as first media, even if it is the only media." );
+
+  srcResult = p6.media.src.split( "/" );
+  equal( p6.media.src.split( "/" )[ srcResult.length - 1 ], "trailer.ogv?arewesmartyet=yes", "HTML5 works as second valid media, even if it has a query string." );
+
+  equal( p7.media.src, "http://usr:pwd@www.test.com:81/dir/dir.2/video.ogv?q1=0&&test1&test2=value#top", "HTML5 works as second valid media, even if it has a query string." );
+
+  equal( p8.media.src, "host.com:81/direc.tory/file.webm?query=1&test=2#anchor", "HTML5 works as second valid media, even if it has a query string." );
 
   start();
 });
