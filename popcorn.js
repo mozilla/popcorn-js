@@ -547,7 +547,6 @@
     //  Attach an event to a single point in time
     exec: function( id, time, fn ) {
       var length = arguments.length,
-          currentTime = this.media.currentTime + 1,
           trackEvent, sec;
 
       // Check if first could possibly be a SMPTE string
@@ -579,7 +578,7 @@
         if ( length === 1 ) {
           // Set a time for an empty cue. It's not important what
           // the time actually is, because the cue is a no-op
-          time = currentTime;
+          time = -1;
 
         } else {
 
@@ -628,7 +627,7 @@
               // p.cue( "c", function() {});
               if ( typeof time === "function" ) {
                 fn = time;
-                time = currentTime;
+                time = -1;
               }
             }
           }

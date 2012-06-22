@@ -4377,7 +4377,7 @@ asyncTest( "Cue API", 12, function() {
 
 
     // Modify an existing cue's time and function
-    p.cue( "c", 14, function renamed() {} );
+    p.cue( "c", 14, function renamed() {});
 
     equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's time and function, p.cue( 'c', 14, function renamed() {});" );
 
