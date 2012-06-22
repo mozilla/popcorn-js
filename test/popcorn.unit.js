@@ -4488,7 +4488,7 @@ asyncTest( "Modify cue or track event after creation", 6, function() {
 });
 
 
-asyncTest( "Create empty cue and modify later", 4, function() {
+asyncTest( "Create empty cue and modify later", 5, function() {
   var p = Popcorn( "#video" );
 
   p.on( "cuechange", function( data ) {
@@ -4501,6 +4501,8 @@ asyncTest( "Create empty cue and modify later", 4, function() {
     p.cue( "empty-cue" );
 
     equal( p.data.trackEvents.byStart[1].id, "empty-cue", "'empty-cue' was created" );
+
+    equal( p.data.trackEvents.byStart[1].start, -1, "'empty-cue' was created at -1" );
 
     // update the empty cue to do something at 10s
     p.cue( "empty-cue", 10, function() {
