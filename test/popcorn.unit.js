@@ -4365,28 +4365,25 @@ asyncTest( "Cue API", 12, function() {
 
     equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's time, p.cue( 'c', time );" );
 
-    equal( p.getTrackEvent( "c").start, 13, "Time modified, 13" );
+    equal( p.getTrackEvent( "c" ).start, 13, "Time modified, 13" );
 
 
     // Modify an existing cue's function
     p.cue( "c", function named() {});
 
-
     equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's function, p.cue( 'c', function() {} );" );
 
-    equal( p.getTrackEvent( "c")._natives.start.name, "named", "Function modified, named" );
+    equal( p.getTrackEvent( "c" )._natives.start.name, "named", "Function modified, named" );
 
 
     // Modify an existing cue's time and function
     p.cue( "c", 14, function renamed() {} );
 
-
     equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's time and function, p.cue( 'c', 14, function renamed() {});" );
 
-    equal( p.getTrackEvent( "c").start, 14, "Time modified, 14" );
+    equal( p.getTrackEvent( "c" ).start, 14, "Time modified, 14" );
 
-
-    equal( p.getTrackEvent( "c")._natives.start.name, "renamed", "Function modified, renamed" );
+    equal( p.getTrackEvent( "c" )._natives.start.name, "renamed", "Function modified, renamed" );
 
 
     start();
