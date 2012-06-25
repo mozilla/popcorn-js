@@ -1,5 +1,5 @@
 // PARSER: 1.0 TTML
-(function (Popcorn) {
+(function ( Popcorn ) {
   /**
    * TTML popcorn parser plug-in
    * Parses subtitle files in the TTML format.
