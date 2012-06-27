@@ -457,7 +457,7 @@ asyncTest( "Player height and width", function() {
 
           equal( popcorn2.media.children[ 0 ].getAttribute( "width" ), 640, "Youtube player min width is 640" );
           equal( popcorn2.media.children[ 0 ].getAttribute( "height" ), 390, "Youtube player min height is 390" );
-          
+
           equal( popcorn3.media.children[ 0 ].width, 800, "Youtube correctly gets width style of container (800)" );
           equal( popcorn3.media.children[ 0 ].height, 450, "Youtube correctly gets height style of container (450)" );
 
@@ -471,7 +471,7 @@ asyncTest( "Player height and width", function() {
   popcorn1.volume( 0 );
   popcorn2.volume( 0 );
   popcorn3.volume( 0 );
-  
+
   readyStatePoll();
 });
 
