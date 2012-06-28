@@ -661,6 +661,7 @@ asyncTest( "youtube can play type", function() {
   ok( Popcorn.youtube.canPlayType( "div", "http://www.youtube.com/v/M3r2XDceM6A&amp;fs=1" ), "youtube can play url in this format: http://www.youtube.com/v/M3r2XDceM6A&amp;fs=1" );
   ok( Popcorn.youtube.canPlayType( "div", "youtube.com/v/M3r2XDceM6A&fs=1" ), "youtube can play url in this format: youtube.com/v/M3r2XDceM6A&fs=1" );
   ok( Popcorn.youtube.canPlayType( "div", "www.youtube.com/v/M3r2XDceM6A&amp;fs=1" ), "youtube can play url in this format: www.youtube.com/v/M3r2XDceM6A&amp;fs=1" );
+  ok( !Popcorn.youtube.canPlayType( "div", [ "http://www.youtube.com/v/M3r2XDceM6A&amp;fs=1", "youtube.com/v/M3r2XDceM6A&fs=1" ] ), "Youtube can't play an array of urls" );
   start();
 });
 
