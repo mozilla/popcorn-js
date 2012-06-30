@@ -457,6 +457,10 @@
         events[ item ] = null;
       }
 
+      // Remove all data.trackEvents #1178
+      instance.data.trackEvents.byStart.length = 0;
+      instance.data.trackEvents.byEnd.length = 0;
+
       // remove all plugins off the given instance
       for ( plugin in Popcorn.registryByName ) {
         Popcorn.removePlugin( instance, plugin );
