@@ -142,10 +142,17 @@
         set: function( val ) {
 
           // make sure val is a number
-          currentTime = +val;
-          basePlayer.dispatchEvent( "timeupdate" );
+          currentTime = Math.round( +val * 100 ) / 100;
 
-          return currentTime;
+          if ( currentTime >= basePlayer.duration ) {
+            basePlayer.ended = true;
+            basePlayer.dispatchEvent( "ended" );
+            currentTime = basePlayer.duration;
+          } else if ( basePlayer.ended ) {
+            basePlayer.ended = false;
+          }
+
+          basePlayer.dispatchEvent( "timeupdate" );
         },
         configurable: true
       });
@@ -260,7 +267,13 @@
 
       // Attempt to get src from playerFn parameter
       basePlayer.src = src || "";
-      basePlayer.duration = 0;
+
+      if ( options.duration >= 0 ) {
+        basePlayer.duration = options.duration;
+      } else {
+        basePlayer.duration = Infinity;
+      }
+
       basePlayer.paused = true;
       basePlayer.ended = 0;
 
