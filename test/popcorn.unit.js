@@ -4812,13 +4812,6 @@ if ( !/file/.test( location.protocol ) ) {
 
     stop();
 
-    var testObj = {
-          "data": {
-             "lang": "en",
-             "length": 25
-          }
-        };
-
     Popcorn.xhr.getJSONP( "http://api.flickr.com/services/feeds/photos_public.gne?id=35034346917@N01&lang=en-us&format=json&jsoncallback=flickr",
 
       function( data ) {
