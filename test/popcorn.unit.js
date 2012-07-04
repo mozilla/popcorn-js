@@ -4323,6 +4323,75 @@ asyncTest( "Plug-ins with a `once` attribute should be removed after `end` is fi
   $pop.play( 0 );
 });
 
+
+module( "Popcorn Cue/Track" );
+asyncTest( "Cue API", 12, function() {
+  var p = Popcorn( "#video" );
+
+  p.on( "canplayall", function() {
+
+    // Declare a cue: schedule a function to execute at a time.
+    p.cue( 10, function() {});
+
+    equal( p.data.trackEvents.byStart.length, 3, "Declare a cue: schedule a function to execute at a time., p.cue( 10, function() {});" );
+
+
+    // Declare a cue: unscheduled, no-op -- with an addressable ID
+    p.cue( "a" );
+
+    equal( p.data.trackEvents.byStart.length, 4, "Declare a cue: unscheduled, no-op -- with an addressable ID, p.cue( 'a' );" );
+
+
+    // Declare a cue: scheduled, no-op -- with an addressable ID
+    p.cue( "b", 11 );
+
+    equal( p.data.trackEvents.byStart.length, 5, "Declare a cue: scheduled, no-op -- with an addressable ID, p.cue( 'b', time );" );
+
+
+    // Declare a cue: unscheduled -- with an addressable ID
+    p.cue( "c", function() {});
+
+    equal( p.data.trackEvents.byStart.length, 6, "Declare a cue: unscheduled -- with an addressable ID, p.cue( 'c', function );" );
+
+
+    // Declare a cue: scheduled -- with an addressable ID
+    p.cue( "d", 12, function() {});
+
+    equal( p.data.trackEvents.byStart.length, 7, "Declare a cue: scheduled -- with an addressable ID, p.cue( 'd', 12, function );" );
+
+
+    // Modify an existing cue's time
+    p.cue( "c", 13 );
+
+    equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's time, p.cue( 'c', time );" );
+
+    equal( p.getTrackEvent( "c" ).start, 13, "Time modified, 13" );
+
+
+    // Modify an existing cue's function
+    p.cue( "c", function named() {});
+
+    equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's function, p.cue( 'c', function() {} );" );
+
+    equal( p.getTrackEvent( "c" )._natives.start.name, "named", "Function modified, named" );
+
+
+    // Modify an existing cue's time and function
+    p.cue( "c", 14, function renamed() {});
+
+    equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's time and function, p.cue( 'c', 14, function renamed() {});" );
+
+    equal( p.getTrackEvent( "c" ).start, 14, "Time modified, 14" );
+
+    equal( p.getTrackEvent( "c" )._natives.start.name, "renamed", "Function modified, renamed" );
+
+
+    start();
+    p.destroy();
+  });
+
+});
+
 asyncTest( "Modify cue or track event after creation", 6, function() {
   var p = Popcorn( "#video" ),
       passed = 0;
@@ -4365,6 +4434,7 @@ asyncTest( "Modify cue or track event after creation", 6, function() {
 
       if ( passed === 4 ) {
         start();
+        p.destroy();
       }
     }
   });
@@ -4417,6 +4487,38 @@ asyncTest( "Modify cue or track event after creation", 6, function() {
   });
 });
 
+
+asyncTest( "Create empty cue and modify later", 5, function() {
+  var p = Popcorn( "#video" );
+
+  p.on( "cuechange", function( data ) {
+    ok( true, "'cuechange' event fired" );
+  });
+
+  p.on( "canplayall", function() {
+
+    // create an empty cue that does nothing
+    p.cue( "empty-cue" );
+
+    equal( p.data.trackEvents.byStart[ 1 ].id, "empty-cue", "'empty-cue' was created" );
+
+    equal( p.data.trackEvents.byStart[ 1 ].start, -1, "'empty-cue' was created at -1" );
+
+    // update the empty cue to do something at 10s
+    p.cue( "empty-cue", 10, function() {
+
+      ok( true, "'empty-cue' at 10s seconds should fire, even though it started as empty cue" );
+
+      start();
+      p.destroy();
+    });
+
+    equal( p.data.trackEvents.byStart[ 1 ].start, 10, "'empty-cue' was updated" );
+
+    p.play( 9 );
+  });
+
+});
 
 module( "Popcorn XHR" );
 test( "Basic", function() {

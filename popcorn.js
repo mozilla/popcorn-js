@@ -574,33 +574,68 @@
       } else {
         // Support for new forms
 
-        // Get the trackEvent that matches the given id.
-        trackEvent = this.getTrackEvent( id );
+        // p.cue( "empty-cue" );
+        if ( length === 1 ) {
+          // Set a time for an empty cue. It's not important what
+          // the time actually is, because the cue is a no-op
+          time = -1;
 
-        if ( trackEvent ) {
-          // p.cue( "my-id", 12 );
-          // p.cue( "my-id", function() { ... });
-          if ( typeof id === "string" && length === 2 ) {
+        } else {
+
+          // Get the trackEvent that matches the given id.
+          trackEvent = this.getTrackEvent( id );
+
+          if ( trackEvent ) {
 
             // p.cue( "my-id", 12 );
-            // The path will update the cue time.
-            if ( typeof time === "number" ) {
-              // Re-use existing trackEvent start callback
-              fn = trackEvent._natives.start;
-            }
-
             // p.cue( "my-id", function() { ... });
-            // The path will update the cue function
-            if ( typeof time === "function" ) {
-              fn = time;
-              // Re-use existing trackEvent start time
-              time = trackEvent.start;
+            if ( typeof id === "string" && length === 2 ) {
+
+              // p.cue( "my-id", 12 );
+              // The path will update the cue time.
+              if ( typeof time === "number" ) {
+                // Re-use existing trackEvent start callback
+                fn = trackEvent._natives.start;
+              }
+
+              // p.cue( "my-id", function() { ... });
+              // The path will update the cue function
+              if ( typeof time === "function" ) {
+                fn = time;
+                // Re-use existing trackEvent start time
+                time = trackEvent.start;
+              }
+            }
+          } else {
+
+            if ( length >= 2 ) {
+
+              // p.cue( "a", "00:00:00");
+              if ( typeof time === "string" ) {
+                try {
+                  sec = Popcorn.util.toSeconds( time );
+                } catch ( e ) {}
+
+                time = sec;
+              }
+
+              // p.cue( "b", 11 );
+              if ( typeof time === "number" ) {
+                fn = Popcorn.nop();
+              }
+
+              // p.cue( "c", function() {});
+              if ( typeof time === "function" ) {
+                fn = time;
+                time = -1;
+              }
             }
           }
         }
       }
 
       //  Creating a one second track event with an empty end
+      //  Or update an existing track event with new values
       Popcorn.addTrackEvent( this, {
         id: id,
         start: time,
@@ -903,7 +938,7 @@
 
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
-    var trackEvent;
+    var trackEvent, isUpdate, eventType;
 
     // Do a lookup for existing trackevents with this id
     if ( track.id ) {
@@ -912,6 +947,7 @@
 
     // If a track event by this id currently exists, modify it
     if ( trackEvent ) {
+      isUpdate = true;
       // Create a new object with the existing trackEvent
       // Extend with new track properties
       track = Popcorn.extend( {}, trackEvent, track );
@@ -991,6 +1027,33 @@
     // Store references to user added trackevents in ref table
     if ( track._id ) {
       Popcorn.addTrackEvent.ref( obj, track );
+    }
+
+    // If the call to addTrackEvent was an update/modify call, fire an event
+    if ( isUpdate ) {
+
+      // Determine appropriate event type to trigger
+      // they are identical in function, but the naming
+      // adds some level of intuition for the end developer
+      // to rely on
+      if ( track._natives.type === "cue" ) {
+        eventType = "cuechange";
+      } else {
+        eventType = "trackchange";
+      }
+
+      // Fire an event with change information
+      obj.emit( eventType, {
+        id: track.id,
+        previousValue: {
+          time: trackEvent.start,
+          fn: trackEvent._natives.start
+        },
+        currentValue: {
+          time: track.start,
+          fn: track._natives.start
+        }
+      });
     }
   };
 
