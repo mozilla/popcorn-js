@@ -2,12 +2,10 @@
 <html>
   <head>
     <title>Popcorn 1.0 TTML parser Plug-in Demo</title>
-
     <script src="../../popcorn.js"></script>
     <script src="../../modules/parser/popcorn.parser.js"></script>
     <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
     <script src="popcorn.parserTTML.js"></script>
-
     <script>
       document.addEventListener( "DOMContentLoaded", function () {
         var p = Popcorn( "#video" )
@@ -16,25 +14,43 @@
         .play();
       }, false);
     </script>
+    <style type="text/css">
+      .videoContent {
+        float:right;
+        padding: 5px;
+      }
+
+      .externalContent {
+        min-width: 300px;
+        max-width: 300px;
+        white-space: wrap;
+        min-height: 4.5em;
+        text-align: right;
+        background-color: #FFAAAA;
+        padding: 5px;
+      }
+
+      .externalContent h4 {
+        text-align: center;
+        padding-top: 0px;
+        margin-top: 0px;
+        border-top: 0px;
+      }
+
+      .externalContent div {
+        background-color: #AAAAFF;
+        padding: 3px;
+        text-align: left;
+      }
+    </style>
   </head>
   <body>
     <h1 id="qunit-header">Popcorn 1.0 TTML parser Plug-in Demo</h1>
 
-    <p>From 0.76 to 3.45 seconds, "It seems a paradox, does it not," is shown
-    <br />From 5 to 10 seconds, "that the image formed on the Retina should be inverted?" is shown
-    <br />From 10 to 16 seconds, "It is puzzling, why is it we do not see things upside-down?" is shown
-    <br />From 17.2 to 23 seconds, "You have never heard the Theory, then, that the Brain also is inverted?" is shown
-    <br />From 23 to 27 seconds, "No indeed! What a beautiful fact!" is shown
-    <br />From 27.76 to 30.45 seconds, "It seems a paradox, does it not," is shown
-    <br />From 32 to 37 seconds, "that the image formed on the Retina should be inverted?" is shown
-    <br />From 37 to 43 seconds, "It is puzzling, why is it we do not see things upside-down?" is shown
-    <br />From 44.2 to 50 seconds, "You have never heard the Theory, then, that the Brain also is inverted?" is shown
-    <br />From 50 to 54 seconds, "No indeed! What a beautiful fact!" is shown</p>
-
-    <div>
+    <div class="videoContent">
       <video id="video"
         controls
-        width= "250px"
+        width= "310px"
         poster="../../test/poster.png">
 
         <source id="mp4"
@@ -46,12 +62,31 @@
           type='video/ogg; codecs="theora, vorbis"'>
 
         <p>Your user agent does not support the HTML5 Video element.</p>
-
       </video>
+
+      <div class="externalContent" >
+        <h4>Separate area for subtitles</h4>
+        <div id="subtitleArea"></div>
+      </div>
     </div>
 
-    <h4>Subtitle Source<h4>
-    <iframe id="srcDisplay" src="data/data.ttml"></iframe>
+    <h4>Expected Output</h4>
+    <ul>
+      <li>From 1.12 to 5.45 seconds, "This is a subtitle on a separate target." is shown below the video.</li>
+      <li>From 6 to 10 seconds, "It displays in the div with id 'subtitleArea'" is shown below the video.</li>
+      <li>From 10 to 16 seconds, "Not all subtitles need to be <br/>directly overlaid on the film." is shown below the video.</li>
+      <li>From 16 to 19 seconds, "These timings are all absolute." is shown below the video.</li>
 
+      <li>From 22.76 to 25.15 seconds, "There was no target specified for this subtitle." is shown on the video.</li>
+      <li>From 25.15 to 28 seconds, "So it has been overlaid on top of the video." is shown on the video.</li>
+      <li>From 28 to 30.75 seconds, "Its timings are spceified relative to 22 seconds" is shown on the video.</li>
+
+      <li>From 37.15 to 40 seconds, "A target was specified for this subtitle which didn't exist on the page..." is shown on the video.</li>
+      <li>From 40 to 47 seconds, "so it is in the default location<br />on top of the video" is shown on the video.</li>
+      <li>From 47 to 52.5 seconds, "This subtitle overrides the 'nonExistentTarget' with an existing target." is shown below the video.</li>
+    </ul>
+
+    <h4>Subtitle Source<h4>
+    <iframe id="srcDisplay" src="data/data.ttml" style="width: 100%; height: 15em;" ></iframe>
   </body>
 </html>
