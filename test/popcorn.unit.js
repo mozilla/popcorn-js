@@ -576,7 +576,7 @@ test( "Popcorn.destroy (events & trackEvents)", 2, function() {
 
   equal( p.data.trackEvents.byEnd.length, 0, "Zero trackEvents.byEnd after destroy" );
 
-  p.removePlugin( "destroyable" );
+  Popcorn.removePlugin( "destroyable" );
 });
 
 test( "guid", function() {
