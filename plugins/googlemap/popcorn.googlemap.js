@@ -191,6 +191,8 @@ var googleCallback;
         // ensure the map has been initialized in the setup function above
         var isMapSetup = function() {
           if ( map ) {
+            options._map = map;
+
             map.getDiv().style.display = "block";
             // reset the location and zoom just in case the user plaid with the map
             google.maps.event.trigger( map, "resize" );
@@ -372,6 +374,8 @@ var googleCallback;
         // the map must be manually removed
         target && target.removeChild( newdiv );
         newdiv = map = location = null;
+
+        options._map = null;
       }
     };
   }, {
