@@ -406,3 +406,10 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
 
   start();
 });
+
+asyncTest( "Popcorn.smart - Defaults controls to true HTML5 Media when target is a div", function() {
+  var p1 = Popcorn.smart( "#videoControls", "../../test/trailer.ogv" );
+
+  ok( p1.controls(), "Video Element has controls attribute. Successfully defaulted to being set" );
+  start();
+});
