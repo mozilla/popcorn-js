@@ -441,6 +441,9 @@
 
       target = document.createElement( !!audioExtensionRegexp.exec( firstSrc ) ? elementTypes[ 0 ] : elementTypes[ 1 ] );
 
+      // Controls are defaulted to being present
+      target.controls = true;
+
       node.appendChild( target );
       node = target;
     }
