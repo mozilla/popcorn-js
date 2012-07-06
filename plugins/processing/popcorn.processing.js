@@ -134,12 +134,12 @@
     options: {
       start: {
         elem: "input",
-        type: "text",
+        type: "Number",
         label: "Start"
       },
       end: {
         elem: "input",
-        type: "text",
+        type: "Number",
         label: "End"
       },
       target: "processing-container",

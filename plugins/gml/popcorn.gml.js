@@ -153,12 +153,12 @@
       options: {
         start: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "Start"
         },
         end: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "End"
         },
         gmltag: {

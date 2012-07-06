@@ -43,12 +43,12 @@ var wikiCallback;
       options:{
         start: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "Start"
         },
         end: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "End"
         },
         lang: {
@@ -60,7 +60,7 @@ var wikiCallback;
         },
         src: {
           elem: "input", 
-          type: "text", 
+          type: "url", 
           label: "Wikipedia URL",
           "default": "http://en.wikipedia.org/wiki/Cat"
         },

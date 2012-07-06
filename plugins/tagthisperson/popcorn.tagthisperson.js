@@ -106,12 +106,12 @@
     options:{
       start: {
         elem: "input",
-        type: "text",
+        type: "number",
         label: "Start"
       },
       end: {
         elem: "input",
-        type: "text",
+        type: "number",
         label: "End"
       },
       target : "tagthisperson-container",
@@ -123,13 +123,13 @@
       },
       image: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "Image URL",
         optional: true
       },
       href: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "Link",
         optional: true
       }

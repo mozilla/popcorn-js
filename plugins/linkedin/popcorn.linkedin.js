@@ -54,7 +54,7 @@
         },
         url: {
           elem: "input",
-          type: "text",
+          type: "url",
           label: "URL"
         },
         apikey: {
@@ -105,12 +105,12 @@
         },
         start: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "Start"
         },
         end: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "End"
         },
 

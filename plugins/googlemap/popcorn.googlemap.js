@@ -386,12 +386,12 @@ var googleCallback;
     options: {
       start: {
         elem: "input",
-        type: "text",
+        type: "start",
         label: "Start"
       },
       end: {
         elem: "input",
-        type: "text",
+        type: "start",
         label: "End"
       },
       target: "map-container",

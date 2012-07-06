@@ -155,18 +155,18 @@
     options: {
       start: {
         elem: "input",
-        type: "text",
+        type: "number",
         label: "Start"
       },
       end: {
         elem: "input",
-        type: "text",
+        type: "number",
         label: "End"
       },
       target: "feed-container",
       url: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "Feed URL",
         "default": "http://planet.mozilla.org/rss20.xml"
       },

@@ -144,12 +144,12 @@
     options:{
       start: {
        elem: "input",
-       type: "text",
+       type: "number",
        label: "Start"
       },
       end: {
         elem: "input",
-        type: "text",
+        type: "number",
         label: "End"
       },
       nameofwork: {
@@ -159,7 +159,7 @@
       },
       nameofworkurl: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "URL of Work",
         optional: true
       },
@@ -170,7 +170,7 @@
       },
       copyrightholderurl: {
         elem: "input",
-        type: "text",
+        type: "url",
         label: "Copyright Holder URL",
         optional: true
       },

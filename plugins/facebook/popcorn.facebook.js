@@ -65,12 +65,12 @@
         target: "facebook-container",
         start: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "Start"
         },
         end: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "End"
         },
         // optional parameters:
@@ -88,13 +88,13 @@
         },
         href: {
           elem: "input",
-          type: "text",
+          type: "url",
           label: "href",
           optional: true
         },
         site: {
           elem: "input",
-          type: "text",
+          type: "url",
           label: "Site",
           optional: true
         },

@@ -43,17 +43,17 @@
         },
         start: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "Start"
         },
         end: {
           elem: "input",
-          type: "text",
+          type: "number",
           label: "End"
         },
         src: {
           elem: "input",
-          type: "text",
+          type: "url",
           label: "Webpage URL",
           "default": "http://mozillapopcorn.org"
         },
