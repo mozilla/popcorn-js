@@ -21,7 +21,7 @@ Popcorn.getScript( "http://www.youtube.com/player_api" );
 Popcorn.player( "youtube", {
   _canPlayType: function( nodeName, url ) {
 
-    return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/).test( url ) && nodeName.toLowerCase() !== "video";
+    return typeof url === "string" && (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/).test( url ) && nodeName.toLowerCase() !== "video";
   },
   _setup: function( options ) {
 
