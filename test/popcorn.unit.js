@@ -1299,6 +1299,10 @@ asyncTest( "Popcorn.events.hooks: attrchange fires when attribute setter methods
   // The first attr call shouldn't emit attrchange, only the second one should
   $pop[ attr ]( initialValue );
   $pop[ attr ]( !initialValue );
+  // because we change the state of controls for this test
+  // we need to make sure we set it back to its initial value before continueing
+  $pop.off( "attrchange" );
+  $pop[ attr ]( initialValue );
 });
 
 module( "Popcorn.dom" );
@@ -1332,6 +1336,7 @@ test( "Popcorn.dom.find( selector ) Returns single node matching selector", func
 
     // selector with leading whitespace
     deepEqual( Popcorn.dom.find( "  " + set.selector ), fixture, set.desc + ", selector w/ leading whitespace" );
+    console.log( set.desc, Popcorn.dom.find( "  " + set.selector ) );
 
     // selector with trailing whitespace
     deepEqual( Popcorn.dom.find( set.selector + "  " ), fixture, set.desc + ", selector w/ trailing whitespace" );
