@@ -156,7 +156,9 @@ var googleCallback;
             geocoder.geocode({
               "address": options.location
             }, function ( results, status ) {
-              if ( status === google.maps.GeocoderStatus.OK ) {
+              // second check for newdiv since it could have disappeared before
+              // this callback is actual run
+              if ( newdiv && status === google.maps.GeocoderStatus.OK ) {
                 options.lat = results[ 0 ].geometry.location.lat();
                 options.lng = results[ 0 ].geometry.location.lng();
                 location = new google.maps.LatLng( options.lat, options.lng );
