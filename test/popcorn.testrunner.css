@@ -1,0 +1,17 @@
+span#test-links {
+  float: right;
+  padding-right: 15px;
+}
+
+span#test-links > a {
+  font-size: 0.8em;
+}
+
+input[type=checkbox], input#run-selected {
+  position: relative;
+  bottom: 3px;
+}
+
+input#run-selected {
+  font-size: 16px;
+}

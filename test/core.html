@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn API</title>
+  <link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+  <script src="jquery.js"></script>
+
+  <script src="qunit/qunit.js"></script>
+
+  <script src="popcorn.unit.setup.js"></script>
+  <script src="../popcorn.js"></script>
+  <script src="popcorn.unit.js"></script>
+  <script src="inject.js"></script>
+  <script src="popcorn.inject.js"></script>
+</head>
+<body>
+  <h1 id="qunit-header">
+    Popcorn.js API
+    <iframe id="archaic-tests" data-src="archaic.html" style="width:325px;height:60px;float:right;border:0px;margin:-10px 20px 0 -10px;background:#fff" ></iframe>
+
+    <iframe id="butter-tests" data-src="butter_test.html" style="width:325px;height:60px;float:right;border:0px;margin:-10px 20px 0 -10px;background:#fff" ></iframe>
+
+    <iframe id="ready-tests" data-src="ready.html" style="width:325px;height:60px;float:right;border:0px;margin:-10px 20px 0 -10px;background:#fff" ></iframe>
+
+  </h1>
+  <h2 id="qunit-banner"></h2>
+  <div id="qunit-testrunner-toolbar"></div>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+  <div id="qunit-fixture">
+    <div class="contextual" data-contextual="true">This should break the tests</div>
+    <div id="popcorn-dom-find-context">
+      <div id="inside-context" class="contextual" data-contextual="true">This element will be found when its parent is used as a context</div>
+    </div>
+  </div>
+
+  <video id="video" class="dom-tests" data-custom="foo"
+    style="display:;width:300px"
+    controls
+    preload="auto">
+
+    <source id="mp4"
+      src="trailer.mp4"
+      type='video/mp4; codecs="avc1, mp4a"'>
+
+    <source id="ogv"
+      src="trailer.ogv"
+      type='video/ogg; codecs="theora, vorbis"'>
+
+    <source id="webm"
+      src="trailer.webm"
+      type='video/webm; codecs="vp8, vorbis"'>
+
+    <p>Your user agent does not support the HTML5 Video element.</p>
+
+  </video>
+
+
+  <audio id="audio" data-timeline-sources="data/parserData.json" controls>
+    <source src="italia.mp4" type='audio/mp4; codecs="mp4a.40.2"'>
+    <source src="italia.ogg" type='audio/ogg; codecs="vorbis"'>
+  </audio>
+
+  <!-- Position Tests Adapted From jQuery offsets/dimensions Tests -->
+  <style type="text/css" media="screen">
+    #position-tests { display:none;margin:0; position: fixed;top:0px;left:0px;  }
+
+    div.absolute { position: absolute; margin: 0px; width: 100px; height: 100px; background: #fff; }
+    #absolute-1 { top: 0; left: 0; }
+    #absolute-1-1 { top: 1px; left: 1px; }
+    #absolute-1-1-1 { top: 1px; left: 1px; }
+    #absolute-2 { top: 19px; left: 19px; }
+
+    div.relative { position: relative; top: 0; left: 0; width: 100px; height: 100px; background: #fff; overflow: hidden; }
+    #relative-2 { top: 20px; left: 20px; }
+
+    div.fixed { position: fixed; width: 100px; height: 100px; background: #fff; overflow: hidden; }
+    #fixed-1 { top: 0; left: 0; }
+    #fixed-2 { top: 20px; left: 20px; }
+
+    div.static { position: static; top: 0; left: 0; width: 100px; height: 100px; background: #fff; overflow: hidden; }
+    #static-2 { top: 20px; left: 20px; }
+
+  </style>
+
+  <div id="position-tests">
+    <div id="absolute-1" class="absolute"><video id="vid-absolute-1" src="trailer.ogv" style="visibility:hidden"></video>
+      <div id="absolute-1-1" class="absolute"><video  id="vid-absolute-1-1"" src="trailer.ogv" style="visibility:hidden"></video>
+        <div id="absolute-1-1-1" class="absolute"><video  id="vid-absolute-1-1-1" src="trailer.ogv" style="visibility:hidden"></video></div>
+      </div>
+    </div>
+    <div id="absolute-2" class="absolute"><video  id="vid-absolute-2" src="trailer.ogv" style="visibility:hidden"></video></div>
+
+    <div id="relative-1" class="relative"><video  id="vid-relative-1" src="trailer.ogv" style="visibility:hidden"></video>
+      <div id="relative-1-1" class="relative"><video  id="vid-relative-1-1" src="trailer.ogv" style="visibility:hidden"></video>
+        <div id="relative-1-1-1" class="relative"><video  id="vid-relative-1-1-1" src="trailer.ogv" style="visibility:hidden"></video></div>
+      </div>
+    </div>
+    <div id="relative-2" class="relative"><video  id="vid-relative-2" src="trailer.ogv" style="visibility:hidden"></video></div>
+
+
+    <div id="fixed-1" class="fixed"><video  id="vid-fixed-1" src="trailer.ogv" style="visibility:hidden"></video></div>
+    <div id="fixed-2" class="fixed"><video  id="vid-fixed-2" src="trailer.ogv" style="visibility:hidden"></video></div>
+
+    <div id="static-1" class="static"><video  id="vid-static-1" src="trailer.ogv" style="visibility:hidden">
+      <div id="static-1-1" class="static"><video  id="vid-static-1-1" src="trailer.ogv" style="visibility:hidden">
+        <div id="static-1-1-1" class="static"><video  id="vid-static-1-1-1" src="trailer.ogv" style="visibility:hidden"></div>
+      </div>
+    </div>
+    <div id="static-2" class="static"><video  id="vid-static-2" src="trailer.ogv" style="visibility:hidden"></div>
+
+  </div>
+
+
+</body>
+</html>
