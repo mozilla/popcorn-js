@@ -351,6 +351,11 @@ var googleCallback;
               isMapSetup();
             }, 13);
           }
+
+          if ( options.onmaploaded ) {
+            options.onmaploaded( options, map );
+          }
+
         };
         isMapSetup();
       },
