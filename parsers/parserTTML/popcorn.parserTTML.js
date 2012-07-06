@@ -1,9 +1,7 @@
-// PARSER: 0.3 TTML
-
-(function (Popcorn) {
-
+// PARSER: 1.0 TTML
+(function ( Popcorn ) {
   /**
-   * TTML popcorn parser plug-in 
+   * TTML popcorn parser plug-in
    * Parses subtitle files in the TTML format.
    * Times may be absolute to the timeline or relative
    *   Absolute times are ISO 8601 format (hh:mm:ss[.mmm])
@@ -12,9 +10,9 @@
    * Styling information is ignored
    * Data parameter is given by Popcorn, will need an xml.
    * Xml is the file contents to be processed
-   * 
+   *
    * @param {Object} data
-   * 
+   *
    * Example:
     <tt xmlns:tts="http://www.w3.org/2006/04/ttaf1#styling" xmlns="http://www.w3.org/2006/04/ttaf1">
       <body region="subtitleArea">
@@ -26,145 +24,145 @@
       </body>
     </tt>
    */
-  Popcorn.parser( "parseTTML", function( data ) {
 
-    // declare needed variables
+  var rWhitespace = /^[\s]+|[\s]+$/gm,
+      rLineBreak = /(?:\r\n|\r|\n)/gm;
+
+  Popcorn.parser( "parseTTML", function( data ) {
     var returnData = {
           title: "",
           remote: "",
           data: []
         },
-        node,
-        numTracks = 0,
-        region;
-    
-    // Convert time expression to SS.mmm
-    // Expression may be absolute to timeline (hh:mm:ss.ms)
-    //   or relative ( fraction followedd by metric ) ex: 3.4s, 5.7m
-    // Returns -1 if invalid    
-    var toSeconds = function ( t_in, offset ) {
-      if ( !t_in ) {
-        return -1;
-      }
-      
-      var t = t_in.split( ":" ),
-          l = t.length - 1,
-          metric,
-          multiplier,
-          i;
-          
-      // Try clock time
-      if ( l >= 2 ) {
-        return parseInt( t[0], 10 )*3600 + parseInt( t[l-1], 10 )*60 + parseFloat( t[l], 10 );
-      }
-      
-      // Was not clock time, assume relative time
-      // Take metric from end of string (may not be single character)
-      // First find metric
-      for( i = t_in.length - 1; i >= 0; i-- ) {
-        if ( t_in[i] <= "9" && t_in[i] >= "0" ) {
-          break;
-        }
-      }
-      
-      // Point i at metric and normalize offsete time
-      i++;
-      metric = t_in.substr( i );
-      offset = offset || 0;
-      
-      // Determine multiplier for metric relative to seconds
-      if ( metric === "h" ) {
-        multiplier = 3600;
-      } else if ( metric === "m" ) {
-        multiplier = 60;
-      } else if ( metric === "s" ) {
-        multiplier = 1;
-      } else if ( metric === "ms" ) {
-        multiplier = 0.001;
-      } else {
-        return -1;
-      }
-      
-      // Valid multiplier
-      return parseFloat( t_in.substr( 0, i ) ) * multiplier + offset;
-    };
+        node;
 
-    // creates an object of all atrributes keyd by name
-    var createTrack = function( name, attributes ) {
-      var track = {};
-      track[name] = attributes;
-      return track;
-    };
-    
-    // Parse a node for text content
-    var parseNode = function( node, timeOffset ) {
-      var sub = {};
-      
-      // Trim left and right whitespace from text and change non-explicit line breaks to spaces
-      sub.text = node.textContent.replace(/^[\s]+|[\s]+$/gm, "").replace(/(?:\r\n|\r|\n)/gm, "<br />");
-      sub.id = node.getAttribute( "xml:id" ) || node.getAttribute( "id" );
-      sub.start = toSeconds ( node.getAttribute( "begin" ), timeOffset );
-      sub.end = toSeconds( node.getAttribute( "end" ), timeOffset );
-      sub.target = region;
-      
-      if ( sub.end < 0 ) {
-        // No end given, infer duration if possible
-        // Otherwise, give end as MAX_VALUE
-        sub.end = toSeconds( node.getAttribute( "duration" ), 0 );
-        
-        if ( sub.end >= 0 ) {
-          sub.end += sub.start;
-        } else {
-          sub.end = Number.MAX_VALUE;
-        }
-      }
-      
-      return sub;
-    };
-    
-    // Parse the children of the given node
-    var parseChildren = function( node, timeOffset ) {
-      var currNode = node.firstChild,
-          sub,
-          newOffset;
-      
-      while ( currNode ) {
-        if ( currNode.nodeType === 1 ) {
-          if ( currNode.nodeName === "p" ) {
-            // p is a teextual node, process contents as subtitle
-            sub = parseNode( currNode, timeOffset );
-            returnData.data.push( createTrack( "subtitle", sub ) );
-            numTracks++;
-          } else if ( currNode.nodeName === "div" ) {
-            // div is container for subtitles, recurse
-            newOffset = toSeconds( currNode.getAttribute("begin") );
-            
-            if (newOffset < 0 ) {
-              newOffset = timeOffset;
-            }
-           
-            parseChildren( currNode, newOffset );
-          }
-        }
-        
-        currNode = currNode.nextSibling;
-      }
-    };
-    
     // Null checks
-    if ( !data.xml || !data.xml.documentElement || !( node = data.xml.documentElement.firstChild ) ) {
+    if ( !data.xml || !data.xml.documentElement ) {
       return returnData;
     }
-    
+
+    node = data.xml.documentElement.firstChild;
+
+    if ( !node ) {
+      return returnData;
+    }
+
     // Find body tag
     while ( node.nodeName !== "body" ) {
       node = node.nextSibling;
     }
-    
-    region = "";
-    parseChildren( node, 0 );
+
+    if ( node ) {
+      returnData.data = parseChildren( node, 0 );
+    }
 
     return returnData;
   });
 
+  // Parse the children of the given node
+  function parseChildren( node, timeOffset, region ) {
+    var currNode = node.firstChild,
+        currRegion = getNodeRegion( node, region ),
+        retVal = [],
+        newOffset;
+
+    while ( currNode ) {
+      if ( currNode.nodeType === 1 ) {
+        if ( currNode.nodeName === "p" ) {
+          // p is a textual node, process contents as subtitle
+          retVal.push( parseNode( currNode, timeOffset, currRegion ) );
+        } else if ( currNode.nodeName === "div" ) {
+          // div is container for subtitles, recurse
+          newOffset = toSeconds( currNode.getAttribute( "begin" ) );
+
+          if (newOffset < 0 ) {
+            newOffset = timeOffset;
+          }
+
+          retVal.push.apply( retVal, parseChildren( currNode, newOffset, currRegion ) );
+        }
+      }
+
+      currNode = currNode.nextSibling;
+    }
+
+    return retVal;
+  }
+
+  // Get the "region" attribute of a node, to know where to put the subtitles
+  function getNodeRegion( node, defaultTo ) {
+    var region = node.getAttribute( "region" );
+
+    if ( region !== null ) {
+      return region;
+    } else {
+      return defaultTo || "";
+    }
+  }
+
+  // Parse a node for text content
+  function parseNode( node, timeOffset, region ) {
+    var sub = {};
+
+    // Trim left and right whitespace from text and convert non-explicit line breaks
+    sub.text = node.textContent.replace( rWhitespace, "" ).replace( rLineBreak, "<br />" );
+    sub.id = node.getAttribute( "xml:id" ) || node.getAttribute( "id" );
+    sub.start = toSeconds ( node.getAttribute( "begin" ), timeOffset );
+    sub.end = toSeconds( node.getAttribute( "end" ), timeOffset );
+    sub.target = getNodeRegion( node, region );
+
+    if ( sub.end < 0 ) {
+      // No end given, infer duration if possible
+      // Otherwise, give end as MAX_VALUE
+      sub.end = toSeconds( node.getAttribute( "duration" ), 0 );
+
+      if ( sub.end >= 0 ) {
+        sub.end += sub.start;
+      } else {
+        sub.end = Number.MAX_VALUE;
+      }
+    }
+
+    return { subtitle : sub };
+  }
+
+  // Convert time expression to SS.mmm
+  // Expression may be absolute to timeline (hh:mm:ss.ms)
+  //   or relative ( decimal followed by metric ) ex: 3.4s, 5.7m
+  // Returns -1 if invalid
+  function toSeconds( t_in, offset ) {
+    var i;
+
+    if ( !t_in ) {
+      return -1;
+    }
+
+    try {
+      return Popcorn.util.toSeconds( t_in );
+    } catch ( e ) {
+      i = getMetricIndex( t_in );
+      return parseFloat( t_in.substring( 0, i ) ) * getMultipler( t_in.substring( i ) ) + ( offset || 0 );
+    }
+  }
+
+  // In a time string such as 3.4ms, get the index of the first character (m) of the time metric (ms)
+  function getMetricIndex( t_in ) {
+    var i = t_in.length - 1;
+
+    while ( i >= 0 && t_in[ i ] <= "9" && t_in[ i ] >= "0" ) {
+      i--;
+    }
+
+    return i;
+  }
+
+  // Determine multiplier for metric relative to seconds
+  function getMultipler( metric ) {
+    return {
+      "h" : 3600,
+      "m" : 60,
+      "s" : 1,
+      "ms" : 0.001
+    }[ metric ] || -1;
+  }
 })( Popcorn );
