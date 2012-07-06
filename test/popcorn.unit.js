@@ -1336,7 +1336,6 @@ test( "Popcorn.dom.find( selector ) Returns single node matching selector", func
 
     // selector with leading whitespace
     deepEqual( Popcorn.dom.find( "  " + set.selector ), fixture, set.desc + ", selector w/ leading whitespace" );
-    console.log( set.desc, Popcorn.dom.find( "  " + set.selector ) );
 
     // selector with trailing whitespace
     deepEqual( Popcorn.dom.find( set.selector + "  " ), fixture, set.desc + ", selector w/ trailing whitespace" );
