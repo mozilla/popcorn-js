@@ -1,7 +1,7 @@
 test( "Popcorn Google Map Plugin", function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 25,
+      expects = 26,
       count = 0,
       setupId;
 
@@ -54,7 +54,11 @@ test( "Popcorn Google Map Plugin", function() {
     heading: "180",
     pitch: "1",
 	  interval: 1000,
-	  tween: "York university"
+	  tween: "York university",
+    onmaploaded: function( options, map ) {
+      ok( map === options._map && !!map, "Map was loaded and attached to the plugin." );
+      plus();
+    }
   })
   .volume( 0 );
 
