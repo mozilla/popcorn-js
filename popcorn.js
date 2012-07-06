@@ -2008,7 +2008,7 @@
         // get the callback name
         callback = Popcorn.guid( callparam[ 1 ].split( "=" )[ 1 ] );
 
-        // replace existing callback if unique callback
+        // replace existing callback name with unique callback name
         url = url.replace( /(callback=[^&]*)/, "callback=" + callback );
       } else {
 
