@@ -4859,6 +4859,41 @@ if ( !/file/.test( location.protocol ) ) {
     );
   });
 
+  test( "JSONP Response", function() {
+
+    var expects = 2,
+        count = 0;
+
+    function plus() {
+      if ( ++count === expects ) {
+        start();
+      }
+    }
+
+    expect( expects );
+
+    stop();
+
+    var testObj = {
+          "data": {
+             "lang": "en",
+             "length": 25
+          }
+        };
+
+    Popcorn.getJSONP(
+
+      "data/jsonp.php?nonsense=no?sense",
+      function( data ) {
+
+        ok( data, "getJSONP returns data" );
+        plus();
+        ok( QUnit.equiv( data, testObj ) , "Popcorn.getJSONP data.json returns an object of data, with question mark in query string." );
+        plus();
+      }
+    );
+  });
+
 } else {
   test( "JSONP Response", function() {
 

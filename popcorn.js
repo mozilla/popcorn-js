@@ -2006,8 +2006,10 @@
       if ( callparam ) {
 
         // get the callback name
-        callback = callparam[ 1 ].split( "=" )[ 1 ];
+        callback = Popcorn.guid( callparam[ 1 ].split( "=" )[ 1 ] );
 
+        // replace existing callback if unique callback
+        url = url.replace( /(callback=[^&]*)/, "callback=" + callback );
       } else {
 
         callback = Popcorn.guid( "jsonp" );
