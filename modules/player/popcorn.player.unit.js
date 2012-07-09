@@ -197,7 +197,7 @@ test( "player gets a proper _teardown", 1, function() {
 
 asyncTest( "Popcorn.smart player selector", function() {
 
-  var expects = 11,
+  var expects = 12,
       count = 0;
 
   function plus() {
@@ -215,6 +215,9 @@ asyncTest( "Popcorn.smart player selector", function() {
       return url === "this is sparta" && nodeName !== "unsupported element";
     }
   });
+
+  equal( Popcorn.smart( document.getElementById( "video" ), "this is sparta" ).media.id, "video", "target found if node is used instead of id selector." );
+  plus();
 
   Popcorn.player( "neverEverLand" );
 
