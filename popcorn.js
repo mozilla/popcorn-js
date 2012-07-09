@@ -570,7 +570,7 @@
 
     //  Rounded currentTime
     roundTime: function() {
-      return -~this.media.currentTime;
+      return Math.round( this.media.currentTime );
     },
 
     //  Attach an event to a single point in time
