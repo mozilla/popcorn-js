@@ -175,7 +175,7 @@ Popcorn.player( "youtube", {
 
     var youtubeInit = function() {
 
-      var src, originalStyle, query;
+      var src, query;
 
       var timeUpdate = function() {
 
@@ -225,12 +225,6 @@ Popcorn.player( "youtube", {
       });
 
       autoPlay = ( /autoplay=1/.test( query ) );
-
-      // cache original display property so it can be reapplied
-      originalStyle = media.style.display;
-      media.style.display = "inline";
-      
-      media.style.display = originalStyle;
 
       options.youtubeObject = new YT.Player( container.id, {
         height: "100%",
