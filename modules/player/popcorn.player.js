@@ -351,7 +351,7 @@
   Popcorn.smart = function( target, src, options ) {
     var playerType,
         elementTypes = [ "AUDIO", "VIDEO" ],
-        sourceNode, firstSrc, node, i, srcResult,
+        firstSrc, node, i, srcResult,
         canPlayTypeTester = document.createElement( "video" ),
         canPlayTypes = {
           "ogg": "video/ogg",
