@@ -351,10 +351,7 @@
   Popcorn.smart = function( target, src, options ) {
     var playerType,
         elementTypes = [ "AUDIO", "VIDEO" ],
-        sourceNode,
-        firstSrc,
-        node = Popcorn.dom.find( target ),
-        i, srcResult,
+        sourceNode, firstSrc, node, i, srcResult,
         canPlayTypeTester = document.createElement( "video" ),
         canPlayTypes = {
           "ogg": "video/ogg",
@@ -364,6 +361,12 @@
           "mp4": "video/mp4",
           "mp3": "audio/mp3"
         };
+
+    if ( typeof target === "string" ) {
+      node = Popcorn.dom.find( target );
+    } else {
+      node = target;
+    }
 
     var canPlayType = function( type ) {
 
