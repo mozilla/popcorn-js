@@ -446,6 +446,7 @@
     },
     destroy: function( instance ) {
       var events = instance.data.events,
+          trackEvents = instance.data.trackEvents,
           singleEvent, item, fn, plugin;
 
       //  Iterate through all events and remove them
@@ -456,6 +457,10 @@
         }
         events[ item ] = null;
       }
+
+      // Remove all data.trackEvents #1178
+      trackEvents.byStart.length = 0;
+      trackEvents.byEnd.length = 0;
 
       // remove all plugins off the given instance
       for ( plugin in Popcorn.registryByName ) {
