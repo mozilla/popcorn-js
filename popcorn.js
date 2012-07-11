@@ -1999,31 +1999,36 @@
 
     var head = document.head || document.getElementsByTagName( "head" )[ 0 ] || document.documentElement,
       script = document.createElement( "script" ),
-      paramStr = url.split( "?" )[ 1 ],
       isFired = false,
       params = [],
-      callback, parts, callparam;
+      paramStr, callback, callparam;
 
-    if ( paramStr && !isScript ) {
-      params = paramStr.split( "&" );
-    }
+    if ( !isScript ) {
 
-    if ( params.length ) {
-      parts = params[ params.length - 1 ].split( "=" );
-    }
+      // is there a calback already in the url
+      callparam = url.match( /(callback=[^&]*)/ );
 
-    callback = params.length ? ( parts[ 1 ] ? parts[ 1 ] : parts[ 0 ]  ) : "jsonp";
+      if ( callparam ) {
 
-    if ( !paramStr && !isScript ) {
-      url += "?callback=" + callback;
-    }
+        // get the callback name
+        callback = Popcorn.guid( callparam[ 1 ].split( "=" )[ 1 ] );
 
-    if ( callback && !isScript ) {
+        // replace existing callback name with unique callback name
+        url = url.replace( /(callback=[^&]*)/, "callback=" + callback );
+      } else {
 
-      //  If a callback name already exists
-      if ( !!window[ callback ] ) {
-        //  Create a new unique callback name
-        callback = Popcorn.guid( callback );
+        callback = Popcorn.guid( "jsonp" );
+
+        // split on first question mark,
+        // this is to capture the query string
+        params = url.split( /\?(.+)?/ );
+
+        // rebuild url with callback
+        url = params[ 0 ] + "?";
+        if ( params[ 1 ] ) {
+          url += params[ 1 ] + "&";
+        }
+        url += "callback=" + callback;
       }
 
       //  Define the JSONP success callback globally
@@ -2032,9 +2037,6 @@
         success && success( data );
         isFired = true;
       };
-
-      //  Replace callback param and callback name
-      url = url.replace( parts.join( "=" ), parts[ 0 ] + "=" + callback );
     }
 
     script.addEventListener( "load",  function() {
