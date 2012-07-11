@@ -1,276 +1,444 @@
 (function() {
 
-  // global callback for vimeo.. yuck.
-  vimeo_player_loaded = function( playerId ) {
-    vimeo_player_loaded[ playerId ] && vimeo_player_loaded[ playerId ]();
+  // parseUri 1.2.2
+  // http://blog.stevenlevithan.com/archives/parseuri
+  // (c) Steven Levithan <stevenlevithan.com>
+  // MIT License
+
+  function parseUri (str) {
+    var	o   = parseUri.options,
+        m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+        uri = {},
+        i   = 14;
+
+    while (i--) {
+      uri[o.key[i]] = m[i] || "";
+    }
+
+    uri[o.q.name] = {};
+    uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+      if ($1) {
+        uri[o.q.name][$1] = $2;
+      }
+    });
+
+    return uri;
+  }
+
+  parseUri.options = {
+    strictMode: false,
+    key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+    q:   {
+      name:   "queryKey",
+      parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+    },
+    parser: {
+      strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+      loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+    }
   };
-  vimeo_player_loaded.seek = {};
-  vimeo_player_loaded.loadProgress = {};
-  vimeo_player_loaded.play = {};
-  vimeo_player_loaded.pause = {};
+
+  function canPlayType( nodeName, url ) {
+    return ( /player.vimeo.com\/video\/\d+/ ).test( url ) ||
+           ( /vimeo.com\/\d+/ ).test( url );
+  }
 
   Popcorn.player( "vimeo", {
-    _canPlayType: function( nodeName, url ) {
 
-      return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(vimeo)/).test( url ) && nodeName.toLowerCase() !== "video";
-    },
+    _canPlayType: canPlayType,
     _setup: function( options ) {
 
-      var media = this,
-          vimeoObject,
-          vimeoContainer = document.createElement( "div" ),
-          currentTime = 0,
-          paused = true,
-          seekTime = 0,
-          seeking = false,
-          volumeChanged = false,
-          lastMuted = false,
-          lastVolume = 0,
-          height,
-          width,
-          playerQueue = Popcorn.player.playerQueue();
+      var TIMEUPDATE_INTERVAL_MS  = 250,
+          CURRENT_TIME_MONITOR_MS = 16,
+          MediaErrorInterface = {
+            MEDIA_ERR_ABORTED: 1,
+            MEDIA_ERR_NETWORK: 2,
+            MEDIA_ERR_DECODE: 3,
+            MEDIA_ERR_SRC_NOT_SUPPORTED: 4
+          },
+          guid,
+          media = this,
+          commands = {
+            q: [],
+            queue: function queue( fn ) {
+              this.q.push( fn );
+              this.process();
+            },
+            process: function process() {
+              if ( !vimeoReady ) {
+                return;
+              }
 
-      vimeoContainer.id = media.id + Popcorn.guid();
-
-      media.appendChild( vimeoContainer );
-
-      // setting vimeo player's height and width, default to 560 x 315
-      width = media.style.width ? "" + media.offsetWidth : "560";
-      height = media.style.height ? "" + media.offsetHeight : "315";
-
-      var vimeoInit = function() {
-
-        var flashvars,
-            params,
-            attributes = {},
-            src = media.src,
-            toggleMuteVolume = 0,
-            loadStarted = false;
-
-        vimeo_player_loaded[ vimeoContainer.id ] = function() {
-
-          vimeoObject = document.getElementById( vimeoContainer.id );
-
-          vimeo_player_loaded.seek[ vimeoContainer.id ] = function( time ) {
-            if( time.seconds !== currentTime ) {
-              seeking = true;
-              media.dispatchEvent( "seeking" );
-              currentTime = time.seconds;
-              seeking = false;
-              media.dispatchEvent( "timeupdate" );
-              media.dispatchEvent( "seeked" );
-            }
-          };
-
-          vimeo_player_loaded.play[ vimeoContainer.id ] = function() {
-
-            paused = false;
-            media.dispatchEvent( "play" );
-            media.dispatchEvent( "playing" );
-            timeUpdate();
-
-            playerQueue.next();
-          };
-
-          vimeo_player_loaded.pause[ vimeoContainer.id ] = function() {
-
-            paused = true;
-            media.dispatchEvent( "pause" );
-
-            playerQueue.next();
-          };
-
-          vimeo_player_loaded.loadProgress[ vimeoContainer.id ] = function( progress ) {
-
-            if ( !loadStarted ) {
-              loadStarted = true;
-              media.dispatchEvent( "loadstart" );
-            }
-
-            if ( progress.percent === 100 ) {
-              media.dispatchEvent( "canplaythrough" );
-            }
-          };
-
-          vimeoObject.api_addEventListener( "seek", "vimeo_player_loaded.seek." + vimeoContainer.id );
-          vimeoObject.api_addEventListener( "loadProgress", "vimeo_player_loaded.loadProgress." + vimeoContainer.id );
-          vimeoObject.api_addEventListener( "play", "vimeo_player_loaded.play." + vimeoContainer.id );
-          vimeoObject.api_addEventListener( "pause", "vimeo_player_loaded.pause." + vimeoContainer.id );
-
-          var timeUpdate = function() {
-            if ( !media.paused ) {
-              currentTime = vimeoObject.api_getCurrentTime();
-              media.dispatchEvent( "timeupdate" );
-              setTimeout( timeUpdate, 10 );
+              while ( this.q.length ) {
+                var fn = this.q.shift();
+                fn();
+              }
             }
           },
+          currentTimeId,
+          timeUpdateId,
+          vimeoReady,
+          vimeoContainer = document.createElement( "iframe" ),
+          // Loosely based on HTMLMediaElement + HTMLVideoElement IDL
+          impl = {
+            // error state
+            error: null,
 
-          isMuted = function() {
+            // network state
+            src: media.src,
+            NETWORK_EMPTY: 0,
+            NETWORK_IDLE: 1,
+            NETWORK_LOADING: 2,
+            NETWORK_NO_SOURCE: 3,
+            networkState: 0,
 
-            return vimeoObject.api_getVolume() === 0;
+            // ready state
+            HAVE_NOTHING: 0,
+            HAVE_METADATA: 1,
+            HAVE_CURRENT_DATA: 2,
+            HAVE_FUTURE_DATA: 3,
+            HAVE_ENOUGH_DATA: 4,
+            readyState: 0,
+            seeking: false,
+
+            // playback state
+            currentTime: 0,
+            duration: NaN,
+            paused: true,
+            ended: false,
+            autoplay: false,
+            loop: false,
+
+            // controls
+            volume: 1,
+            muted: false,
+
+            // Video attributes
+            width: 0,
+            height: 0
           };
 
-          var volumeUpdate = function() {
+      var readOnlyAttrs = "error networkState readyState seeking duration paused ended";
+      Popcorn.forEach( readOnlyAttrs.split(" "), function( value ) {
+        Object.defineProperty( media, value, {
+          get: function() {
+            return impl[ value ];
+          }
+        });
+      });
 
-            var muted = isMuted(),
-            vol = vimeoObject.api_getVolume();
-            if ( lastMuted !== muted ) {
-              lastMuted = muted;
-              media.dispatchEvent( "volumechange" );
-            }
-
-            if ( lastVolume !== vol ) {
-              lastVolume = vol;
-              media.dispatchEvent( "volumechange" );
-            }
-
-            setTimeout( volumeUpdate, 250 );
-          };
-
-          media.play = function() {
-
-
-            paused = false;
-            playerQueue.add(function() {
-
-              if ( vimeoObject.api_paused() ) {
-
-                vimeoObject.api_play();
-              } else {
-                playerQueue.next();
-              }
+      Object.defineProperties( media, {
+        "src": {
+          get: function() {
+            return impl.src;
+          },
+          set: function( value ) {
+            // Is there any sort of logic that determines whether to load the video or not?
+            impl.src = value;
+            media.load();
+          }
+        },
+        "currentTime": {
+          get: function() {
+            return impl.currentTime;
+          },
+          set: function( value ) {
+            commands.queue(function() {
+              sendMessage( "seekTo", value );
             });
-          };
-
-          Popcorn.player.defineProperty( media, "seeking", {
-            get: function() {
-              return seeking;
-            }
-          });
-
-          media.pause = function() {
-
-            paused = true;
-            playerQueue.add(function() {
-
-              if ( !vimeoObject.api_paused() ) {
-
-                vimeoObject.api_pause();
-              } else {
-                playerQueue.next();
-              }
+            impl.seeking = true;
+            media.dispatchEvent( "seeking" );
+          }
+        },
+        "autoplay": {
+          get: function() {
+            return impl.autoplay;
+          },
+          set: function( value ) {
+            impl.autoplay = !!value;
+          }
+        },
+        "loop": {
+          get: function() {
+            return impl.loop;
+          },
+          set: function( value) {
+            impl.loop = !!value;
+            commands.queue(function() {
+              sendMessage( "setLoop", loop );
             });
-          };
+          }
+        },
+        "volume": {
+          get: function() {
+            return impl.volume;
+          },
+          set: function( value ) {
+            impl.volume = value;
+            commands.queue(function() {
+              sendMessage( "setVolume", impl.muted ? 0 : impl.volume );
+            });
+            media.dispatchEvent( "volumechange" );
+          }
+        },
+        "muted": {
+          get: function() {
+            return impl.muted;
+          },
+          set: function( value ) {
+            impl.muted = !!value;
+            commands.queue(function() {
+              sendMessage( "setVolume", impl.muted ? 0 : impl.volume );
+            });
+            media.dispatchEvent( "volumechange" );
+          }
+        },
+        "width": {
+          get: function() {
+            return vimeoContainer.width;
+          },
+          set: function( value ) {
+            vimeoContainer.width = value;
+          }
+        },
+        "height": {
+          get: function() {
+            return vimeoContainer.height;
+          },
+          set: function( value ) {
+            vimeoContainer.height = value;
+          }
+        }
+      });
 
-          Popcorn.player.defineProperty( media, "currentTime", {
+      function sendMessage( method, params ) {
+        var url = vimeoContainer.src.split( "?" )[ 0 ],
+            data = JSON.stringify({
+              method: method,
+              value: params
+            });
 
-            set: function( val ) {
+        if ( url.substr( 0, 2 ) === "//" ) {
+          url = window.location.protocol + url;
+        }
 
-              if ( !val ) {
-                return currentTime;
-              }
+        // The iframe has been destroyed, it just doesn't know it
+        if ( !vimeoContainer.contentWindow ) {
+          media.unload();
+          return;
+        }
 
-              vimeoObject.api_seekTo( +val );
+        vimeoContainer.contentWindow.postMessage( data, url );
+      }
 
-              return currentTime;
-            },
+      var vimeoAPIMethods = {
+        "getCurrentTime": function( data ) {
+          impl.currentTime = parseFloat( data.value );
+        },
+        "getDuration": function( data ) {
+          impl.duration = parseFloat( data.value );
+          maybeReady();
+        },
+        "getVolume": function( data ) {
+          impl.volume = parseFloat( data.value );
+        }
+      };
 
-            get: function() {
+      var vimeoAPIEvents = {
+        "ready": function( data ) {
+          sendMessage( "addEventListener", "loadProgress" );
+          sendMessage( "addEventListener", "playProgress" );
+          sendMessage( "addEventListener", "play" );
+          sendMessage( "addEventListener", "pause" );
+          sendMessage( "addEventListener", "finish" );
+          sendMessage( "addEventListener", "seek" );
+          sendMessage( "getDuration" );
+          vimeoReady = true;
+          commands.process();
+          media.dispatchEvent( "loadstart" );
+        },
+        "loadProgress": function( data ) {
+          media.dispatchEvent( "progress" );
+          // loadProgress has a more accurate duration than getDuration
+          impl.duration = parseFloat( data.data.duration );
+        },
+        "playProgress": function( data ) {
+          impl.currentTime = parseFloat( data.data.seconds );
+        },
+        "play": function( data ) {
+          // Vimeo plays video if seeking from an unloaded state
+          if ( impl.seeking ) {
+            impl.seeking = false;
+            media.dispatchEvent( "seeked" );
+          }
+          impl.paused = false;
+          impl.ended = false;
+          startUpdateLoops();
+          media.dispatchEvent( "play" );
+        },
+        "pause": function( data ) {
+          impl.paused = true;
+          stopUpdateLoops();
+          media.dispatchEvent( "pause" );
+        },
+        "finish": function( data ) {
+          impl.ended = true;
+          stopUpdateLoops();
+          media.dispatchEvent( "ended" );
+        },
+        "seek": function( data ) {
+          impl.currentTime = parseFloat( data.data.seconds );
+          impl.seeking = false;
+          impl.ended = false;
+          media.dispatchEvent( "timeupdate" );
+          media.dispatchEvent( "seeked" );
+        }
+      };
 
-              return currentTime;
-            }
-          });
+      function messageListener( event ) {
+        if ( event.origin !== "http://player.vimeo.com" ) {
+          return;
+        }
 
-          Popcorn.player.defineProperty( media, "paused", {
+        var data;
+        try {
+          data = JSON.parse( event.data );
+        } catch ( ex ) {
+          console.warn( ex );
+        }
 
-            get: function() {
+        if ( data.player_id != guid ) {
+          return;
+        }
 
-              return paused;
-            }
-          });
+        // Methods
+        if ( data.method && vimeoAPIMethods[ data.method ] ) {
+          vimeoAPIMethods[ data.method ]( data );
+        }
 
-          Popcorn.player.defineProperty( media, "muted", {
+        // Events
+        if ( data.event && vimeoAPIEvents[ data.event ] ) {
+          vimeoAPIEvents[ data.event ]( data );
+        }
+      }
 
-            set: function( val ) {
+      media.load = function() {
+        vimeoReady = false;
+        guid = Popcorn.guid();
 
-              if ( isMuted() !== val ) {
+        var src = parseUri( impl.src ),
+            combinedOptions = {},
+            optionsArray = [],
+            vimeoAPIOptions = {
+              api: 1,
+              player_id: guid
+            };
 
-                if ( val ) {
-                  toggleMuteVolume = vimeoObject.api_getVolume();
-                  vimeoObject.api_setVolume( 0 );
-                } else {
+        if ( !canPlayType( media.nodeName, src.source ) ) {
+          setErrorAttr( impl.MEDIA_ERR_SRC_NOT_SUPPORTED );
+          return;
+        }
 
-                  vimeoObject.api_setVolume( toggleMuteVolume );
-                }
-              }
-            },
-            get: function() {
+        // Add Popcorn ctor options, url options, then the Vimeo API options
+        Popcorn.extend( combinedOptions, options );
+        Popcorn.extend( combinedOptions, src.queryKey );
+        Popcorn.extend( combinedOptions, vimeoAPIOptions );
 
-              return isMuted();
-            }
-          });
+        // Create the base vimeo player string. It will always have query string options
+        src = "http://player.vimeo.com/video/" + ( /\d+$/ ).exec( src.path ) + "?";
 
-          Popcorn.player.defineProperty( media, "volume", {
+        for ( var key in combinedOptions ) {
+          if ( combinedOptions.hasOwnProperty( key ) ) {
+            optionsArray.push( encodeURIComponent( key ) + "=" + encodeURIComponent( combinedOptions[ key ] ) );
+          }
+        }
+        src += optionsArray.join( "&" );
 
-            set: function( val ) {
+        impl.loop = !!src.match( /loop=1/ );
+        impl.autoplay = !!src.match( /autoplay=1/ );
 
-              if ( !val || typeof val !== "number" || ( val < 0 || val > 1 ) ) {
-                return vimeoObject.api_getVolume() / 100;
-              }
+        vimeoContainer.width = media.style.width ? media.style.width : 500;
+        vimeoContainer.height = media.style.height ? media.style.height : 281;
+        vimeoContainer.frameBorder = 0;
+        vimeoContainer.webkitAllowFullScreen = true;
+        vimeoContainer.mozAllowFullScreen = true;
+        vimeoContainer.allowFullScreen = true;
+        vimeoContainer.src = src;
+        media.appendChild( vimeoContainer );
+      };
 
-              if ( vimeoObject.api_getVolume() !== val ) {
-                vimeoObject.api_setVolume( val * 100 );
-                lastVolume = vimeoObject.api_getVolume();
-                media.dispatchEvent( "volumechange" );
-              }
+      function setErrorAttr( value ) {
+        impl.error = {};
+        Popcorn.extend( impl.error, MediaErrorInterface );
+        impl.error.code = value;
+        media.dispatchEvent( "error" );
+      }
 
-              return vimeoObject.api_getVolume() / 100;
-            },
-            get: function() {
-
-              return vimeoObject.api_getVolume() / 100;
-            }
-          });
-
-          media.duration = vimeoObject.api_getDuration();
+      function maybeReady() {
+        if ( !isNaN( impl.duration ) ) {
+          impl.readyState = 4;
           media.dispatchEvent( "durationchange" );
           media.dispatchEvent( "loadedmetadata" );
           media.dispatchEvent( "loadeddata" );
-          volumeUpdate();
-          media.readyState = 4;
+          media.dispatchEvent( "canplay" );
           media.dispatchEvent( "canplaythrough" );
-        };
+        }
+      }
 
-        var clip_id = ( /\d+$/ ).exec( src );
+      function startUpdateLoops() {
+        if ( !timeUpdateId ) {
+          timeUpdateId = setInterval(function() {
+            media.dispatchEvent( "timeupdate" );
+          }, TIMEUPDATE_INTERVAL_MS );
+        }
 
-        flashvars = {
-          // Load a video not found poster if the url does not contain a valid id
-          clip_id: clip_id ? clip_id[ 0 ] : 0,
-          api: 1,
-          js_swf_id: vimeoContainer.id
-        };
+        if ( !currentTimeId ) {
+          currentTimeId = setInterval(function() {
+            sendMessage( "getCurrentTime" );
+          }, CURRENT_TIME_MONITOR_MS );
+        }
+      }
 
-        //  extend options from user to flashvars. NOTE: Videos owned by Plus Vimeo users may override these options
-        Popcorn.extend( flashvars, options );
+      function stopUpdateLoops() {
+        if ( timeUpdateId ) {
+          clearInterval( timeUpdateId );
+          timeUpdateId = 0;
+        }
 
-        params = {
-          allowscriptaccess: "always",
-          allowfullscreen: "true",
-          wmode: "transparent"
-        };
+        if ( currentTimeId ) {
+          clearInterval( currentTimeId );
+          currentTimeId = 0;
+        }
+      }
 
-        swfobject.embedSWF( "//vimeo.com/moogaloop.swf", vimeoContainer.id,
-                            width, height, "9.0.0", "expressInstall.swf",
-                            flashvars, params, attributes );
-
+      media.unload = function() {
+        stopUpdateLoops();
+        window.removeEventListener( "message", messageListener, false );
       };
 
-      if ( !window.swfobject ) {
+      media.play = function() {
+        commands.queue(function() {
+          sendMessage( "play" );
+        });
+      };
 
-        Popcorn.getScript( "//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js", vimeoInit );
-      } else {
+      media.pause = function() {
+        commands.queue(function() {
+          sendMessage( "pause" );
+        });
+      };
 
-        vimeoInit();
+      // Start the load process now, players behave like `preload="metadata"` is set
+      // Do it asynchronously so that users can attach event listeners
+      setTimeout(function() {
+        window.addEventListener( "message", messageListener, false );
+        media.load();
+      }, 0 );
+    },
+    _teardown: function( options ) {
+      // If the baseplayer doesn't call _setup
+      if ( this.unload ) {
+        this.unload();
       }
     }
   });

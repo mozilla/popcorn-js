@@ -286,7 +286,10 @@
         }
       } else {
 
-        basePlayer.dispatchEvent( "error" );
+        // Asynchronous so that users can catch this event
+        setTimeout( function() {
+          basePlayer.dispatchEvent( "error" );
+        }, 0 );
       }
 
       popcorn = new Popcorn.p.init( basePlayer, options );
