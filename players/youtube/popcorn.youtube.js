@@ -226,11 +226,20 @@ Popcorn.player( "youtube", {
 
       autoPlay = ( /autoplay=1/.test( query ) );
 
+      var params = query.split( /[\&\?]/g );
+      var playerVars = { wmode: "transparent" };
+
+      for( var i = 0; i < params.length; i++ ) {
+        var parts = params[ i ].split( "=" );
+
+        playerVars[ parts[ 0 ] ] = parts[ 1 ];
+      }
+      
       options.youtubeObject = new YT.Player( container.id, {
         height: "100%",
         width: "100%",
         wmode: "transparent",
-        playerVars: { wmode: "transparent" },
+        playerVars: playerVars,
         videoId: src,
         events: {
           "onReady": function(){
