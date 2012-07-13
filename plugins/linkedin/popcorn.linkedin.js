@@ -54,7 +54,7 @@
         },
         url: {
           elem: "input",
-          type: "text",
+          type: "url",
           label: "URL"
         },
         apikey: {
@@ -94,24 +94,24 @@
         productid: {
           elem: "input",
           type: "text",
-          label: "productid",
+          label: "Product Id",
           optional: true
         },
         related: {
           elem: "input",
           type: "text",
-          label: "related",
+          label: "Related",
           optional: true
         },
         start: {
           elem: "input",
-          type: "text",
-          label: "In"
+          type: "number",
+          label: "Start"
         },
         end: {
           elem: "input",
-          type: "text",
-          label: "Out"
+          type: "number",
+          label: "End"
         },
 
         target: "linkedin-container"

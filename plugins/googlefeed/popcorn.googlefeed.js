@@ -155,32 +155,32 @@
     options: {
       start: {
         elem: "input",
-        type: "text",
-        label: "In"
+        type: "number",
+        label: "Start"
       },
       end: {
         elem: "input",
-        type: "text",
-        label: "Out"
+        type: "number",
+        label: "End"
       },
       target: "feed-container",
       url: {
         elem: "input",
         type: "url",
-        label: "url",
+        label: "Feed URL",
         "default": "http://planet.mozilla.org/rss20.xml"
       },
       title: {
         elem: "input",
         type: "text",
-        label: "title",
+        label: "Title",
         "default": "Planet Mozilla",
         optional: true
       },
       orientation: {
         elem: "select",
         options: [ "Vertical", "Horizontal" ],
-        label: "orientation",
+        label: "Orientation",
         "default": "Vertical",
         optional: true
       }

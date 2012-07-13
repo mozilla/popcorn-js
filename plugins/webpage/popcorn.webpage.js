@@ -43,18 +43,18 @@
         },
         start: {
           elem: "input",
-          type: "text",
-          label: "In"
+          type: "number",
+          label: "Start"
         },
         end: {
           elem: "input",
-          type: "text",
-          label: "Out"
+          type: "number",
+          label: "End"
         },
         src: {
           elem: "input",
           type: "url",
-          label: "Src",
+          label: "Webpage URL",
           "default": "http://mozillapopcorn.org"
         },
         target: "iframe-container"

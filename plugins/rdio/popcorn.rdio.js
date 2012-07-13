@@ -131,15 +131,15 @@
     options: {
       start: {
         elem: "input",
-        type: "text",
-        label: "In"
+        type: "number",
+        label: "Start"
       },
       end: {
         elem: "input",
-        type: "text",
-        label: "Out"
+        type: "number",
+        label: "End"
       },
-      target: "rdio",
+      target: "rdio-container",
       artist: {
         elem: "input",
         type: "text",
