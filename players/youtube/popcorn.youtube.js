@@ -238,10 +238,6 @@ Popcorn.player( "youtube", {
             // pulling initial volume states form baseplayer
             lastVolume = media.volume;
             lastMuted = media.muted;
-
-            media.duration = options.youtubeObject.getDuration();
-
-            media.dispatchEvent( "durationchange" );
             volumeupdate();
 
             // pulling initial paused state from autoplay or the baseplayer
@@ -251,20 +247,8 @@ Popcorn.player( "youtube", {
             }
 
             createProperties();
+
             options.youtubeObject.playVideo();
-
-            if ( paused ) {
-              options.youtubeObject.pauseVideo();
-            }
-
-            media.currentTime = fragmentStart;
-
-            media.dispatchEvent( "loadedmetadata" );
-            media.dispatchEvent( "loadeddata" );
-            media.readyState = 4;
-
-            timeUpdate();
-            media.dispatchEvent( "canplaythrough" );
           },
           "onStateChange": function( state ){
 
@@ -279,13 +263,34 @@ Popcorn.player( "youtube", {
               paused = true;
               media.dispatchEvent( "pause" );
               playerQueue.next();
-            } else if ( state.data === 1 ) {
+            } else if ( state.data === 1 && !firstGo ) {
               paused = false;
               media.dispatchEvent( "play" );
               media.dispatchEvent( "playing" );
               playerQueue.next();
             } else if ( state.data === 0 ) {
               media.dispatchEvent( "ended" );
+            } else if ( state.data === 1 && firstGo ) {
+
+              // this is a true ready event right here.
+              firstGo = false;
+
+              if ( paused ) {
+                options.youtubeObject.pauseVideo();
+              }
+
+              media.duration = options.youtubeObject.getDuration();
+
+              media.dispatchEvent( "durationchange" );
+
+              media.currentTime = fragmentStart;
+
+              media.dispatchEvent( "loadedmetadata" );
+              media.dispatchEvent( "loadeddata" );
+              media.readyState = 4;
+
+              timeUpdate();
+              media.dispatchEvent( "canplaythrough" );
             }
           },
           "onError": function( error ) {
@@ -338,7 +343,7 @@ Popcorn.player( "youtube", {
     var youtubeObject = options.youtubeObject;
     if( youtubeObject ){
       youtubeObject.stopVideo();
-      youtubeObject.clearVideo();
+      youtubeObject.clearVideo && youtubeObject.clearVideo();
     }
 
     this.removeChild( document.getElementById( options._container.id ) );
