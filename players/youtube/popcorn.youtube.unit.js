@@ -243,6 +243,7 @@ asyncTest("Plugin Factory", function () {
       count = 0;
 
   function plus() {
+
     if ( ++count == expects ) {
       Popcorn.removePlugin("executor");
       Popcorn.removePlugin("complicator");
