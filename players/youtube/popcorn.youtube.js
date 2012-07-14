@@ -128,6 +128,28 @@ Popcorn.player( "youtube", {
           return options.youtubeObject.getVolume() / 100;
         }
       });
+      
+      Popcorn.player.defineProperty( media, "duration", {
+        get: (function() {
+          // store cachedDuration in closure, return getter
+          var cachedDuration = NaN;
+
+          return function() {
+            if( !isNaN( cachedDuration ) ) {
+              return cachedDuration;
+            }
+
+            // we don't have a good value yet, try YT
+            var ytDuration = options.youtubeObject.getDuration()
+            if( ytDuration != 0 ) {
+              cachedDuration = ytDuration;
+              media.dispatchEvent( "durationchange" );
+            }
+
+            return cachedDuration;
+          }
+        })()
+      });
 
       media.play = function() {
 
@@ -198,6 +220,14 @@ Popcorn.player( "youtube", {
         }
         setTimeout( timeUpdate, 250 );
       };
+      
+      var fetchDuration = function( delay ) {
+        var duration = media.duration;
+
+        if( isNaN( duration ) ) {
+          setTimeout( function() { fetchDuration( delay * 2 ) }, delay*1000 );
+        }
+      };
 
       options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1;
       options.annotations = +options.annotations === 1 || +options.annotations === 3 ? options.annotations : 1;
@@ -248,9 +278,6 @@ Popcorn.player( "youtube", {
             lastVolume = media.volume;
             lastMuted = media.muted;
 
-            media.duration = options.youtubeObject.getDuration();
-
-            media.dispatchEvent( "durationchange" );
             volumeupdate();
 
             // pulling initial paused state from autoplay or the baseplayer
@@ -290,6 +317,7 @@ Popcorn.player( "youtube", {
               playerQueue.next();
             } else if ( state.data === 1 ) {
               paused = false;
+              fetchDuration(0.05);
               media.dispatchEvent( "play" );
               media.dispatchEvent( "playing" );
               playerQueue.next();
