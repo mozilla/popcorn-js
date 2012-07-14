@@ -1613,7 +1613,7 @@
       options._natives._setup && options._natives._setup.call( this, options );
 
       // Create new track event for this instance
-      Popcorn.addTrackEvent( this, Popcorn.extend( options, options ) );
+      Popcorn.addTrackEvent( this, options );
 
       //  Future support for plugin event definitions
       //  for all of the native events
