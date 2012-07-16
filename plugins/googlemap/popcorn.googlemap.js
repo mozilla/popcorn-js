@@ -348,14 +348,15 @@ var googleCallback;
                 }
               }
             }
+
+            if ( options.onmaploaded ) {
+              options.onmaploaded( options, map );
+            }
+
           } else {
             setTimeout(function () {
               isMapSetup();
             }, 13);
-          }
-
-          if ( options.onmaploaded ) {
-            options.onmaploaded( options, map );
           }
 
         };
