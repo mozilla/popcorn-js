@@ -175,7 +175,7 @@ Popcorn.player( "youtube", {
 
     var youtubeInit = function() {
 
-      var src, query;
+      var src, query, params, playerVars, queryStringItem;
 
       var timeUpdate = function() {
 
@@ -226,13 +226,13 @@ Popcorn.player( "youtube", {
 
       autoPlay = ( /autoplay=1/.test( query ) );
 
-      var params = query.split( /[\&\?]/g );
-      var playerVars = { wmode: "transparent" };
+      params = query.split( /[\&\?]/g );
+      playerVars = { wmode: "transparent" };
 
       for( var i = 0; i < params.length; i++ ) {
-        var parts = params[ i ].split( "=" );
+        queryStringItem = params[ i ].split( "=" );
 
-        playerVars[ parts[ 0 ] ] = parts[ 1 ];
+        playerVars[ queryStringItem[ 0 ] ] = queryStringItem[ 1 ];
       }
       
       options.youtubeObject = new YT.Player( container.id, {
