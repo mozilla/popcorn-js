@@ -338,7 +338,7 @@ Popcorn.player( "youtube", {
     var youtubeObject = options.youtubeObject;
     if( youtubeObject ){
       youtubeObject.stopVideo();
-      youtubeObject.clearVideo();
+      youtubeObject.clearVideo && youtubeObject.clearVideo();
     }
 
     this.removeChild( document.getElementById( options._container.id ) );
