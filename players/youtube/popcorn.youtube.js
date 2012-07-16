@@ -14,6 +14,8 @@ if ( window.YT ) {
   window.YT = null;
 }
 
+var epsilonDecay = 0;
+
 onYouTubePlayerAPIReady.waiting = [];
 
 Popcorn.getScript( "http://www.youtube.com/player_api" );
@@ -184,15 +186,17 @@ Popcorn.player( "youtube", {
         }
 
         if ( !seeking ) {
+          epsilonDecay = 0;
           currentTime = options.youtubeObject.getCurrentTime();
           media.dispatchEvent( "timeupdate" );
-        } else if ( currentTime === options.youtubeObject.getCurrentTime() ) {
+        } else if ( currentTime >= options.youtubeObject.getCurrentTime() - epsilonDecay && currentTime <= options.youtubeObject.getCurrentTime() + epsilonDecay ) {
 
           seeking = false;
           media.dispatchEvent( "seeked" );
           media.dispatchEvent( "timeupdate" );
         } else {
-
+console.log( "decay", epsilonDecay, currentTime, options.youtubeObject.getCurrentTime() );
+          epsilonDecay += 0.1;
           // keep trying the seek until it is right.
           options.youtubeObject.seekTo( currentTime );
         }
