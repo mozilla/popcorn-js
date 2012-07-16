@@ -317,6 +317,49 @@ test( "Popcorn.removeTrackEvent", function() {
   pop.destroy();
 });
 
+asyncTest( "Popcorn.byId", 5, function() {
+  var completed, a, b;
+
+  function done() {
+    if ( ++completed === 2 ) {
+      a.destroy();
+      b.destroy();
+      start();
+    }
+  }
+
+  completed = 0;
+
+  a = Popcorn( "#video" );
+  b = Popcorn( "#video", {
+    id: "my-custom-id"
+  });
+
+  try {
+    Popcorn( "#video", {
+      id: "my-custom-id"
+    });
+  } catch (e) {
+    equal( e.message,  "Popcorn.js Error: Cannot use duplicate ID (my-custom-id)", "Attempting to use a duplicate ID will throw" );
+  }
+
+
+  equal( Popcorn.byId( "non-existant" ), null, "Popcorn.byId('non-existant') returns `null`" );
+
+  a.on( "canplayall", function() {
+    ok( this.id, "this.id exists because a default was provided" );
+    ok( /^video/.test( this.id ), "default id has nodeName prefix" );
+
+    done();
+  });
+
+  b.on( "canplayall", function() {
+    deepEqual( Popcorn.byId( "my-custom-id" ).media, this.media, "Popcorn.byId('my-custom-id') returns the correct instance" );
+
+    done();
+  });
+});
+
 test( "Popcorn.forEach", function() {
 
   expect( 3 );

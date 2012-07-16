@@ -6,8 +6,7 @@
       isSupported: false
     };
 
-    var methods = ( "removeInstance addInstance getInstanceById removeInstanceById " +
-          "forEach extend effects error guid sizeOf isArray nop position disable enable destroy" +
+    var methods = ( "byId forEach extend effects error guid sizeOf isArray nop position disable enable destroy" +
           "addTrackEvent removeTrackEvent getTrackEvents getTrackEvent getLastTrackEventId " +
           "timeUpdate plugin removePlugin compose effect xhr getJSONP getScript" ).split(/\s+/);
 
@@ -93,7 +92,7 @@
 
     init: function( entity, options ) {
 
-      var matches,
+      var matches, nodeName,
           self = this;
 
       //  Supports Popcorn(function () { /../ })
@@ -152,13 +151,21 @@
       //  Get media element by id or object reference
       this.media = matches || entity;
 
-      //  Create an audio or video element property reference
-      this[ ( this.media.nodeName && this.media.nodeName.toLowerCase() ) || "video" ] = this.media;
+      //  inner reference to this media element's nodeName string value
+      nodeName = ( this.media.nodeName && this.media.nodeName.toLowerCase() ) || "video";
 
-      //  Register new instance
-      Popcorn.instances.push( this );
+      //  Create an audio or video element property reference
+      this[ nodeName ] = this.media;
 
       this.options = options || {};
+
+      //  Resolve custom ID or default prefixed ID
+      this.id = this.options.id || Popcorn.guid( nodeName );
+
+      //  Throw if an attempt is made to use an ID that already exists
+      if ( Popcorn.byId( this.id ) ) {
+        throw new Error( "Popcorn.js Error: Cannot use duplicate ID (" + this.id + ")" );
+      }
 
       this.isDestroyed = false;
 
@@ -209,6 +216,9 @@
           previousUpdateTime: -1
         }
       };
+
+      //  Register new instance
+      Popcorn.instances.push( this );
 
       //  function to fire when video is ready
       var isReady = function() {
@@ -310,6 +320,20 @@
   //  Extend constructor prototype to instance prototype
   //  Allows chaining methods to instances
   Popcorn.p.init.prototype = Popcorn.p;
+
+  Popcorn.byId = function( str ) {
+    var instances = Popcorn.instances,
+        length = instances.length,
+        i = 0;
+
+    for ( ; i < length; i++ ) {
+      if ( instances[ i ].id === str ) {
+        return instances[ i ];
+      }
+    }
+
+    return null;
+  };
 
   Popcorn.forEach = function( obj, fn, context ) {
 
