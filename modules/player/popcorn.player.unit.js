@@ -359,7 +359,7 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
     }
   });
 
-  expect( 8 );
+  expect( 9 );
 
   var p1, p2, p3, p4, p5, p6, p7, p8,
       srcResult;
@@ -380,7 +380,12 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
   p8 = Popcorn.smart( "#multi-div-mixed8",
     [ "host.com:81/direc.tory/file.derp?query=1&test=2#anchor",
       "host.com:81/direc.tory/file.webm?query=1&test=2#anchor",
-      "host.com:81/direc.tory/file.derp?query=1&test=2#anchor" ] );
+      "host.com:81/direc.tory/file.derp?query=1&test=2#anchor" ] ),
+  p9 = Popcorn.smart( "#multi-div-mixed9", [
+      "../../test/trailer.mp4",
+      "../../test/trailer.webm",
+      "../../test/trailer.ogv"
+    ]);
 
   srcResult = p1.media.src.split( "/" );
   equal( p1.media.src.split( "/" )[ srcResult.length - 1 ], "trailer.ogv", "HTML5 works as valid fallback." );
@@ -404,7 +409,12 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
 
   equal( p8.media.src, "host.com:81/direc.tory/file.webm?query=1&test=2#anchor", "HTML5 works as second valid media, even if it has a query string." );
 
-  start();
+  p9.on( "canplay", function oncanplay() {
+    ok( true, "Using legitimate video sources, correct video is chosen and loading." );
+    p9.off( "canplay", oncanplay );
+    start();
+  });
+  
 });
 
 asyncTest( "Popcorn.smart - Defaults controls to true HTML5 Media when target is a div", function() {
