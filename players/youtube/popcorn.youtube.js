@@ -128,7 +128,7 @@ Popcorn.player( "youtube", {
           return options.youtubeObject.getVolume() / 100;
         }
       });
-
+      
       media.play = function() {
 
         if ( options.destroyed ) {
@@ -175,7 +175,7 @@ Popcorn.player( "youtube", {
 
     var youtubeInit = function() {
 
-      var src, query, params, playerVars, queryStringItem;
+      var src, query, params, playerVars, queryStringItem, firstPlay = true;
 
       var timeUpdate = function() {
 
@@ -197,6 +197,29 @@ Popcorn.player( "youtube", {
           options.youtubeObject.seekTo( currentTime );
         }
         setTimeout( timeUpdate, 250 );
+      };
+      
+      // delay is in seconds
+      var fetchDuration = function( delay ) {
+        var ytDuration = options.youtubeObject.getDuration();
+
+        if ( isNaN( ytDuration ) || ytDuration === 0 ) {
+          setTimeout( function() {
+            fetchDuration( delay * 2 );
+          }, delay*1000 );
+        } else {
+          // set duration and dispatch ready events
+          media.duration = ytDuration;
+          media.dispatchEvent( "durationchange" );
+          
+          media.dispatchEvent( "loadedmetadata" );
+          media.dispatchEvent( "loadeddata" );
+          
+          media.readyState = 4;
+
+          timeUpdate();
+          media.dispatchEvent( "canplaythrough" );
+        }
       };
 
       options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1;
@@ -248,32 +271,14 @@ Popcorn.player( "youtube", {
             lastVolume = media.volume;
             lastMuted = media.muted;
 
-            media.duration = options.youtubeObject.getDuration();
-
-            media.dispatchEvent( "durationchange" );
             volumeupdate();
-
-            // pulling initial paused state from autoplay or the baseplayer
-            // also need to explicitly set to paused otherwise.
-            if ( autoPlay || !media.paused ) {
-              paused = false;
-            }
 
             createProperties();
             options.youtubeObject.playVideo();
 
-            if ( paused ) {
-              options.youtubeObject.pauseVideo();
-            }
-
             media.currentTime = fragmentStart;
 
-            media.dispatchEvent( "loadedmetadata" );
-            media.dispatchEvent( "loadeddata" );
-            media.readyState = 4;
-
-            timeUpdate();
-            media.dispatchEvent( "canplaythrough" );
+            // wait to dispatch ready events until we get a duration
           },
           "onStateChange": function( state ){
 
@@ -288,13 +293,27 @@ Popcorn.player( "youtube", {
               paused = true;
               media.dispatchEvent( "pause" );
               playerQueue.next();
-            } else if ( state.data === 1 ) {
+            } else if ( state.data === 1 && !firstPlay ) {
               paused = false;
               media.dispatchEvent( "play" );
               media.dispatchEvent( "playing" );
               playerQueue.next();
             } else if ( state.data === 0 ) {
               media.dispatchEvent( "ended" );
+            } else if ( state.data === 1 && firstPlay ) {
+              firstPlay = false;
+              
+              // pulling initial paused state from autoplay or the baseplayer
+              // also need to explicitly set to paused otherwise.
+              if ( autoPlay || !media.paused ) {
+                paused = false;
+              }
+
+              if ( paused ) {
+                options.youtubeObject.pauseVideo();
+              }
+              
+              fetchDuration( 0.025 );
             }
           },
           "onError": function( error ) {
