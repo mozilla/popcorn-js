@@ -144,6 +144,8 @@ Popcorn.player( "youtube", {
             if( ytDuration != 0 ) {
               cachedDuration = ytDuration;
               media.dispatchEvent( "durationchange" );
+              media.dispatchEvent( "loadedmetadata" );
+              media.dispatchEvent( "loadeddata" );
             }
 
             return cachedDuration;
@@ -197,7 +199,7 @@ Popcorn.player( "youtube", {
 
     var youtubeInit = function() {
 
-      var src, query, params, playerVars, queryStringItem;
+      var src, query, params, playerVars, queryStringItem, firstPlay = true;
 
       var timeUpdate = function() {
 
@@ -221,6 +223,7 @@ Popcorn.player( "youtube", {
         setTimeout( timeUpdate, 250 );
       };
       
+      // delay is in seconds
       var fetchDuration = function( delay ) {
         var duration = media.duration;
 
@@ -280,23 +283,13 @@ Popcorn.player( "youtube", {
 
             volumeupdate();
 
-            // pulling initial paused state from autoplay or the baseplayer
-            // also need to explicitly set to paused otherwise.
-            if ( autoPlay || !media.paused ) {
-              paused = false;
-            }
-
             createProperties();
             options.youtubeObject.playVideo();
 
-            if ( paused ) {
-              options.youtubeObject.pauseVideo();
-            }
-
             media.currentTime = fragmentStart;
 
-            media.dispatchEvent( "loadedmetadata" );
-            media.dispatchEvent( "loadeddata" );
+            // wait to dispatch loadeddata/loadedmetadata events until we get a duration
+
             media.readyState = 4;
 
             timeUpdate();
@@ -315,14 +308,27 @@ Popcorn.player( "youtube", {
               paused = true;
               media.dispatchEvent( "pause" );
               playerQueue.next();
-            } else if ( state.data === 1 ) {
+            } else if ( state.data === 1 && !firstPlay ) {
               paused = false;
-              fetchDuration(0.05);
               media.dispatchEvent( "play" );
               media.dispatchEvent( "playing" );
               playerQueue.next();
             } else if ( state.data === 0 ) {
               media.dispatchEvent( "ended" );
+            } else if ( state.data === 1 && firstPlay ) {
+              firstPlay = false;
+              
+              // pulling initial paused state from autoplay or the baseplayer
+              // also need to explicitly set to paused otherwise.
+              if ( autoPlay || !media.paused ) {
+                paused = false;
+              }
+
+              if ( paused ) {
+                options.youtubeObject.pauseVideo();
+              }
+              
+              fetchDuration( 0.025 );
             }
           },
           "onError": function( error ) {
