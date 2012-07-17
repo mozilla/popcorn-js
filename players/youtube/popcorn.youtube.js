@@ -180,7 +180,7 @@
 
       var youtubeInit = function() {
 
-        var src, width, height, originalStyle, query, styleWidth, styleHeight;
+        var src, query;
 
         var timeUpdate = function() {
 
