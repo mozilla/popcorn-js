@@ -204,7 +204,7 @@ Popcorn.player( "youtube", {
         var ytDuration = options.youtubeObject.getDuration();
 
         if ( isNaN( ytDuration ) || ytDuration === 0 ) {
-          setTimeout( function() { fetchDuration( delay * 2 ) }, delay*1000 );
+          setTimeout( function() { fetchDuration( delay * 2 ); }, delay*1000 );
         } else {
           // set duration and dispatch ready events
           media.duration = ytDuration;
