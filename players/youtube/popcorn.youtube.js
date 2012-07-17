@@ -140,8 +140,8 @@ Popcorn.player( "youtube", {
             }
 
             // we don't have a good value yet, try YT
-            var ytDuration = options.youtubeObject.getDuration()
-            if( ytDuration != 0 ) {
+            var ytDuration = options.youtubeObject.getDuration();
+            if( ytDuration !== 0 ) {
               cachedDuration = ytDuration;
               media.dispatchEvent( "durationchange" );
               media.dispatchEvent( "loadedmetadata" );
@@ -227,7 +227,7 @@ Popcorn.player( "youtube", {
       var fetchDuration = function( delay ) {
         var duration = media.duration;
 
-        if( isNaN( duration ) ) {
+        if ( isNaN( duration ) ) {
           setTimeout( function() { fetchDuration( delay * 2 ) }, delay*1000 );
         }
       };
