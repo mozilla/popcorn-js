@@ -129,30 +129,6 @@ Popcorn.player( "youtube", {
         }
       });
       
-      Popcorn.player.defineProperty( media, "duration", {
-        get: (function() {
-          // store cachedDuration in closure, return getter
-          var cachedDuration = NaN;
-
-          return function() {
-            if ( !isNaN( cachedDuration ) ) {
-              return cachedDuration;
-            }
-
-            // we don't have a good value yet, try YT
-            var ytDuration = options.youtubeObject.getDuration();
-            if ( ytDuration !== 0 ) {
-              cachedDuration = ytDuration;
-              media.dispatchEvent( "durationchange" );
-              media.dispatchEvent( "loadedmetadata" );
-              media.dispatchEvent( "loadeddata" );
-            }
-
-            return cachedDuration;
-          }
-        })()
-      });
-
       media.play = function() {
 
         if ( options.destroyed ) {
@@ -225,10 +201,22 @@ Popcorn.player( "youtube", {
       
       // delay is in seconds
       var fetchDuration = function( delay ) {
-        var duration = media.duration;
+        var ytDuration = options.youtubeObject.getDuration();
 
-        if ( isNaN( duration ) ) {
+        if ( isNaN( ytDuration ) || ytDuration === 0 ) {
           setTimeout( function() { fetchDuration( delay * 2 ) }, delay*1000 );
+        } else {
+          // set duration and dispatch ready events
+          media.duration = ytDuration;
+          media.dispatchEvent( "durationchange" );
+          
+          media.dispatchEvent( "loadedmetadata" );
+          media.dispatchEvent( "loadeddata" );
+          
+          media.readyState = 4;
+
+          timeUpdate();
+          media.dispatchEvent( "canplaythrough" );
         }
       };
 
@@ -288,12 +276,7 @@ Popcorn.player( "youtube", {
 
             media.currentTime = fragmentStart;
 
-            // wait to dispatch loadeddata/loadedmetadata events until we get a duration
-
-            media.readyState = 4;
-
-            timeUpdate();
-            media.dispatchEvent( "canplaythrough" );
+            // wait to dispatch ready events until we get a duration
           },
           "onStateChange": function( state ){
 
