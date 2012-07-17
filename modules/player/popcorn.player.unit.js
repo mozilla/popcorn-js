@@ -381,11 +381,10 @@ asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
     [ "host.com:81/direc.tory/file.derp?query=1&test=2#anchor",
       "host.com:81/direc.tory/file.webm?query=1&test=2#anchor",
       "host.com:81/direc.tory/file.derp?query=1&test=2#anchor" ] ),
-  p9 = Popcorn.smart( "#multi-div-mixed9", [
-      "../../test/trailer.mp4",
+  p9 = Popcorn.smart( "#multi-div-mixed9",
+    [ "../../test/trailer.mp4",
       "../../test/trailer.webm",
-      "../../test/trailer.ogv"
-    ]);
+      "../../test/trailer.ogv" ] );
 
   srcResult = p1.media.src.split( "/" );
   equal( p1.media.src.split( "/" )[ srcResult.length - 1 ], "trailer.ogv", "HTML5 works as valid fallback." );
