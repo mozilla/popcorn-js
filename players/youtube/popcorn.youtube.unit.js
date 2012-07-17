@@ -1,3 +1,7 @@
+test( "YT Script not loaded", 1, function() {
+  ok( !window.YT, "Player doesn't load youtube before first setup call" );
+});
+
 asyncTest( "Player play, pause, autoplay", function() {
 
   var count = 0,
