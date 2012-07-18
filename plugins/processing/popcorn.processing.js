@@ -67,9 +67,6 @@
               options.codeReady = true;
             }
           });
-        } else if ( Popcorn.plugin.debug ) {
-
-          throw new Error( "Popcorn.Processing: options.sketch is undefined" );
         }
       }
 
@@ -90,10 +87,6 @@
         options.codeReady = false;
 
         options.parentTarget = document.getElementById( options.target );
-
-        if ( !options.parentTarget && Popcorn.plugin.debug ) {
-          throw new Error( "target container doesn't exist" );
-        }
 
         var canvas = document.createElement( "canvas" );
         canvas.id = Popcorn.guid( options.target + "-sketch" );

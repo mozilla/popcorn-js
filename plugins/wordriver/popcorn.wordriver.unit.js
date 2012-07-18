@@ -1,7 +1,7 @@
 test( "Popcorn wordriver Plugin", function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 17,
+      expects = 16,
       count = 0,
       firstTrack,
       secondTrack,
@@ -116,18 +116,8 @@ test( "Popcorn wordriver Plugin", function() {
   thirdCue = popped.getLastTrackEventId();
 
   // empty track events should be safe
-  Popcorn.plugin.debug = false;
-  popped.wordriver({});
-
-  // debug should log errors on empty track events
   Popcorn.plugin.debug = true;
-  try {
-    popped.wordriver({});
-    ok( false, "empty event was not caught by debug" );
-  } catch( e ) {
-    ok( true, "empty event was caught by debug" );
-    plus();
-  }
+  popped.wordriver({});
 
   popped.play();
 });

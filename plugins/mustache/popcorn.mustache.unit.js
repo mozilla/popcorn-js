@@ -1,7 +1,7 @@
 test( "Popcorn Mustache Plugin", function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 6,
+      expects = 5,
       count = 0,
       mustacheDiv = document.getElementById( "mustache-div" );
 
@@ -68,17 +68,8 @@ test( "Popcorn Mustache Plugin", function() {
   });
 
   // empty track events should be safe
-  Popcorn.plugin.debug = false;
-  popped.mustache({});
-
-  // debug should log errors on empty track events
   Popcorn.plugin.debug = true;
-  try {
-    popped.mustache({});
-  } catch( e ) {
-    ok( true, "empty event was caught by debug" );
-    plus();
-  }
+  popped.mustache({});
 
   popped.volume( 0 );
   popped.play();

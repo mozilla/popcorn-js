@@ -1,17 +1,10 @@
 test( "Popcorn LinkedIn Plugin", function() {
 
-  function plus() {
-
-    if ( ++count === expects ) {
-      start();
-    }
-  }
-
   if ( /localhost/.test( location.hostname ) ) {
 
     // run tests on localhost
     var popped = Popcorn( "#video" ),
-        expects = 23,
+        expects = 22,
         count = 0,
         setupId,
         sharediv = document.getElementById( "sharediv" ),
@@ -19,6 +12,13 @@ test( "Popcorn LinkedIn Plugin", function() {
         memberprofilediv = document.getElementById( "memberprofilediv" ),
         companyinsiderdiv = document.getElementById( "companyinsiderdiv" ),
         companyprofilediv = document.getElementById( "companyprofilediv" );
+
+
+    function plus() {
+      if ( ++count === expects ) {
+        start();
+      }
+    }
 
     expect( expects );
 
@@ -175,17 +175,7 @@ test( "Popcorn LinkedIn Plugin", function() {
     });
 
     // empty track events should be safe
-    Popcorn.plugin.debug = false;
     popped.linkedin({});
-
-    // debug should log errors on empty track events
-    Popcorn.plugin.debug = true;
-    try {
-      popped.linkedin({});
-    } catch( e ) {
-      ok( true, "empty event was caught by debug" );
-      plus();
-    }
 
     popped.volume( 0 ).play();
   } else {

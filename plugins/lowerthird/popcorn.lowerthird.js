@@ -98,9 +98,7 @@
         // if a target is specified, use that
         if ( options.target && options.target !== "lowerthird-container" ) {
           options.container = document.createElement( "div" );
-          if ( !target && Popcorn.plugin.debug ) {
-            throw new Error( "target container doesn't exist" );
-          }
+
           target && target.appendChild( options.container );
         // use shared default container
         } else {

@@ -129,32 +129,8 @@ test( "Popcorn Facebook Plugin", function () {
 
     popped.play();
   });
-});
 
-
-test( "Test Initialized Facebook Blocks", function () {
-
-  var pop = Popcorn( "#video" );
-
-  expect( 2 );
-
-  // Tests for thrown Error on emtpy block
-  try {
-    pop.facebook({});
-  } catch( e ) {
-    ok( true, "Empty event was caught by debugger" );
-  }
-
-  // Tests for thrown Error on invalid plugin type
-  try {
-    pop.facebook({
-      target: "likediv",
-      type: "asdasd",
-      start: 1,
-      end: 6
-    });
-  } catch( e ) {
-    ok( true, "Facebook plugin type was invalid." );
-  }
+  // Empty plugin should be safe.
+  popped.facebook({});
 });
 

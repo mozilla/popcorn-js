@@ -1,7 +1,7 @@
 test( "Popcorn Flickr Plugin", function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 11,
+      expects = 10,
       count = 0,
       setupId,
       flickrdiv = document.getElementById( "flickrdiv" );
@@ -83,17 +83,8 @@ test( "Popcorn Flickr Plugin", function() {
   });
 
   // empty track events should be safe
-  Popcorn.plugin.debug = false;
-  popped.flickr({});
-
-  // debug should log errors on empty track events
   Popcorn.plugin.debug = true;
-  try {
-    popped.flickr({});
-  } catch( e ) {
-    ok( true, "empty event was caught by debug" );
-    plus();
-  }
+  popped.flickr({});
 
   popped.volume( 0 ).play();
 

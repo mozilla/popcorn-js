@@ -1,6 +1,6 @@
 test( "Popcorn Rdio Plugin", function() {
   var popped = Popcorn( "#video" ),
-      expects = 12,
+      expects = 11,
       count = 0,
       setupId,
       rdiodiv = document.getElementById( "rdiodiv" ),
@@ -88,16 +88,8 @@ test( "Popcorn Rdio Plugin", function() {
   });
 
   // empty track events should be safe
-  Popcorn.plugin.debug = false;
-  popped.rdio({});
-  // debug should log errors on empty track events
   Popcorn.plugin.debug = true;
-  try {
-    popped.rdio({});
-  } catch( e ) {
-    ok( true, "empty event was caught by debug" );
-    plus();
-  }
+  popped.rdio({});
 
   popped.volume( 0 ).play();
 });

@@ -197,7 +197,7 @@
     _setup: function( options ) {
 
       var target = document.getElementById( options.target ),
-          _type = options.type;
+          _type = options.type || "like";
 
       // facebook script requires a div named fb-root
       if ( !document.getElementById( "fb-root" ) ) {
@@ -223,15 +223,6 @@
 
       // Lowercase to make value consistent no matter what user inputs
       _type = _type.toLowerCase();
-
-      var validType = function( type ) {
-        return ( [ "like", "like-box", "activity", "facepile", "live-stream", "send", "comments" ].indexOf( type ) > -1 );
-      };
-
-      // Checks if type is valid
-      if ( !validType( _type ) ) {
-        throw new Error( "Facebook plugin type was invalid." );
-      }
 
       options._container = document.createElement( "div" );
       options._container.id = "facebookdiv-" + Popcorn.guid();
@@ -261,10 +252,6 @@
         }
       });
 
-      // Checks if the plugins target container exists
-      if ( !target && Popcorn.plugin.debug ) {
-        throw new Error( "Facebook target container doesn't exist" );
-      }
       target && target.appendChild( options._container );
     },
     /**

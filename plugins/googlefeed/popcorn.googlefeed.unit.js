@@ -1,7 +1,7 @@
 test( "Popcorn Google Feed Plugin", function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 13,
+      expects = 12,
       setupId,
       count = 0;
 
@@ -70,17 +70,8 @@ test( "Popcorn Google Feed Plugin", function() {
   });
 
   // empty track events should be safe
-  Popcorn.plugin.debug = false;
-  popped.googlefeed({});
-
-  // debug should log errors on empty track events
   Popcorn.plugin.debug = true;
-  try {
-    popped.googlefeed({});
-  } catch( e ) {
-    ok( true, "empty event was caught by debug" );
-    plus();
-  }
+  popped.googlefeed({});
 
   popped.play();
 

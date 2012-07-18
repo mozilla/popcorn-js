@@ -75,10 +75,6 @@
       options._iframe.src = options.src;
       options._iframe.style.display = "none";
 
-      if ( !target && Popcorn.plugin.debug ) {
-        throw new Error( "target container doesn't exist" );
-      }
-
       // add the hidden iframe to the DOM
       target && target.appendChild( options._iframe );
 

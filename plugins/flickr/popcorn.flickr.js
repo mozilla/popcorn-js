@@ -65,11 +65,6 @@
     containerDiv.style.display = "none";
     idx++;
 
-    // ensure the target container the user chose exists
-    if ( !target && Popcorn.plugin.debug ) {
-      throw new Error( "flickr target container doesn't exist" );
-    }
-
     target && target.appendChild( containerDiv );
 
     // get the userid from Flickr API by using the username and apikey

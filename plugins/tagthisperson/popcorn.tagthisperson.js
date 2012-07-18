@@ -52,23 +52,22 @@
         var exists = false,
             target = document.getElementById( options.target );
 
-        if ( !target && Popcorn.plugin.debug ) {
-          throw new Error( "target container doesn't exist" );
-        }
+        if ( target ) {
 
-        // loop through the existing objects to ensure no duplicates
-        // the idea here is to have one object per unique options.target
-        for ( var i = 0; i < peopleArray.length; i++ ) {
-          if ( peopleArray[ i ].name === options.target ) {
-            options._p = peopleArray[ i ];
-            exists = true;
-            break;
+          // loop through the existing objects to ensure no duplicates
+          // the idea here is to have one object per unique options.target
+          for ( var i = 0; i < peopleArray.length; i++ ) {
+            if ( peopleArray[ i ].name === options.target ) {
+              options._p = peopleArray[ i ];
+              exists = true;
+              break;
+            }
           }
-        }
-        if ( !exists ) {
-          options._p = new People();
-          options._p.name = options.target;
-          peopleArray.push( options._p );
+          if ( !exists ) {
+            options._p = new People();
+            options._p.name = options.target;
+            peopleArray.push( options._p );
+          }
         }
       },
       /**
@@ -81,7 +80,9 @@
         options._p.contains[ options.person ] = ( options.image ) ? "<img src='" + options.image + "'/> " : "" ;
         options._p.contains[ options.person ] += ( options.href ) ? "<a href='" + options.href + "' target='_blank'> " + options.person + "</a>" : options.person ;
 
-        document.getElementById( options.target ).innerHTML = options._p.toString();
+        if ( document.getElementById( options.target ) ) {
+          document.getElementById( options.target ).innerHTML = options._p.toString();
+        }
       },
       /**
        * @member tagthisperson
@@ -92,7 +93,9 @@
       end: function( event, options ){
         delete options._p.contains[ options.person ];
 
-        document.getElementById( options.target ).innerHTML = options._p.toString();
+        if ( document.getElementById( options.target ) ) {
+          document.getElementById( options.target ).innerHTML = options._p.toString();
+        }
       }
    };
   })(),

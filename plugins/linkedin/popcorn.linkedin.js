@@ -138,9 +138,7 @@
       var errorMsg = function() {
         options._container = document.createElement( "p" );
         options._container.innerHTML = "Plugin requires a valid <a href='https://www.linkedin.com/secure/developer'>apikey</a>";
-        if ( !target && Popcorn.plugin.debug ) {
-          throw ( "target container doesn't exist" );
-        }
+
         target && target.appendChild( options._container );
       };
 
@@ -209,9 +207,6 @@
         setOptions[ options.type ] && setOptions[ options.type ]();
       }
 
-      if ( !target && Popcorn.plugin.debug ) {
-        throw new Error( "target container doesn't exist" );
-      }
       target && target.appendChild( options._container );
 
       options._container.style.display = "none";

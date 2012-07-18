@@ -61,9 +61,6 @@
       options._container.style.display = "none";
       options._container.innerHTML  = options.text;
 
-      if ( !target ) {
-        throw new Error( "target container doesn't exist" );
-      }
       target.appendChild( options._container );
     },
 

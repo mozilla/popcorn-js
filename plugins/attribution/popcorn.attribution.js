@@ -101,10 +101,6 @@
         }
 
         options._container.innerHTML  = attrib;
-
-        if ( !target && Popcorn.plugin.debug ) {
-          throw new Error( "target container doesn't exist" );
-        }
         target && target.appendChild( options._container );
       },
       /**

@@ -1,7 +1,7 @@
 test( "Popcorn lower third Plugin", function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 8,
+      expects = 7,
       count = 0,
       lowerthirddiv = document.getElementById( "lowerthirddiv" );
 
@@ -25,18 +25,8 @@ test( "Popcorn lower third Plugin", function() {
   plus();
 
   // empty track events should be safe
-  popped.lowerthird({});
-
-  // debug should log errors on error track events
   Popcorn.plugin.debug = true;
-  try {
-    popped.lowerthird({
-      target: "does not exist"
-    });
-  } catch( e ) {
-    ok( true, "invalid target event was caught by debug" );
-    plus();
-  }
+  popped.lowerthird({});
 
   popped.lowerthird({
       start: 0,

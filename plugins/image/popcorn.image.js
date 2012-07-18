@@ -131,10 +131,6 @@
         options.anchor.style.textDecoration = "none";
         options.anchor.style.display = "none";
 
-        if ( !target && Popcorn.plugin.debug ) {
-          throw new Error( "target container doesn't exist" );
-        }
-
         // add the widget's div to the target div.
         // if target is <video> or <audio>, create a container and routinely 
         // update its size/position to be that of the media
@@ -144,7 +140,7 @@
             options.trackedContainer.element.appendChild( options.anchor );
           }
           else {
-            target.appendChild( options.anchor );
+            target && target.appendChild( options.anchor );
           }          
         }
 
