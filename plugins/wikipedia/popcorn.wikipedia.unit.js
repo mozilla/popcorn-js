@@ -90,3 +90,24 @@ test( "Popcorn wikipedia Plugin", function() {
   Popcorn.plugin.debug = true;
   popped.wikipedia({});
 });
+
+asyncTest( "Overriding default toString", 2, function() {
+  var p = Popcorn( "#video" ),
+      srcText = "http://en.wikipedia.org/wiki/Jungle",
+      lastEvent;
+
+  function testLastEvent( compareText, message ) {
+    lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
+    equal( lastEvent.toString(), compareText, message );
+  }
+
+  p.wikipedia({
+    src: srcText
+  });
+  testLastEvent( srcText, "Custom text displayed with toString" );
+
+  p.wikipedia({});
+  testLastEvent( "http://en.wikipedia.org/wiki/Cat", "Custom text displayed with toString using default" );
+
+  start();
+});

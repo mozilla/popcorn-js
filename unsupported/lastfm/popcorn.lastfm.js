@@ -78,6 +78,9 @@
         }
         _artists[ options.artist ].count++;
 
+        options.toString = function() {
+          return options.artist || options._natives.manifest.options.artist[ "default" ];
+        }
       },
       /**
        * @member LastFM

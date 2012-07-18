@@ -199,6 +199,9 @@
         isPlayerReady();
       }
 
+      options.toString = function() {
+        return options.source || options._natives.manifest.options.source[ "default" ];
+      };
     },
     start: function( event, options ) {
       if( options._capCont ) {

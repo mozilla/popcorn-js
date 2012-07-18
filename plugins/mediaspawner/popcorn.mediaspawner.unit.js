@@ -104,3 +104,24 @@ asyncTest( "Test Initialized MediaSpawner Blocks throwing Errors", 4, function()
     ok( true, "No target container specified." );
   }
 });
+
+asyncTest( "Overriding default toString", 2, function() {
+  var p = Popcorn( "#video" ),
+      sourceText = "http://www.youtube.com/watch?v=B-N1yJyrQRY",
+      lastEvent;
+
+  function testLastEvent( compareText, message ) {
+    lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
+    equal( lastEvent.toString(), compareText, message );
+  }
+
+  p.mediaspawner({
+    source: sourceText 
+  });
+  testLastEvent( sourceText, "Custom text displayed with toString" );
+
+  p.mediaspawner({});
+  testLastEvent( "http://www.youtube.com/watch?v=CXDstfD9eJ0", "Custom text displayed with toString using default" );
+
+  start();
+});

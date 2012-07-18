@@ -117,6 +117,10 @@
 
     initialize();
 
+    options.toString = function() {
+      return options.url || options._natives.manifest.options.url[ "default" ];
+    };
+
     return {
       /**
        * @member webpage
