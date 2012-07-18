@@ -132,6 +132,9 @@ var wikiCallback;
           options.src.slice( options.src.lastIndexOf( "/" ) + 1 )  + "&format=json&callback=wikiCallback" + _guid );
       }
 
+      options.toString = function() {
+        return options.src || Popcorn.manifest[ "wikipedia" ].options.src[ "default" ];
+      };
     },
     /**
      * @member wikipedia

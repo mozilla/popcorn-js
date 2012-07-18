@@ -102,6 +102,10 @@
 
         options._container.innerHTML  = attrib;
         target && target.appendChild( options._container );
+
+        options.toString = function() {
+          return options.nameofwork || options.license || options.copyrightholder || "Attribution";
+        }
       },
       /**
        * @member attribution

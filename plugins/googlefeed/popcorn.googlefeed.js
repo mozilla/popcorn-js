@@ -117,6 +117,10 @@
 
     initialize();
 
+    options.toString = function() {
+      return options.url || Popcorn.manifest[ "googlefeed" ].options.url[ "default" ];
+    };
+
     return {
       /**
        * @member webpage

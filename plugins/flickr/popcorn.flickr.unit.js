@@ -89,3 +89,30 @@ test( "Popcorn Flickr Plugin", function() {
   popped.volume( 0 ).play();
 
 });
+
+asyncTest( "Overriding default toString", 3, function() {
+  var p = Popcorn( "#video" ),
+      tagsText = "Work Work",
+      usernameText = "Some sweet license text",
+      lastEvent;
+
+  function testLastEvent( compareText, message ) {
+    lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
+    equal( lastEvent.toString(), compareText, message );
+  }
+
+  p.flickr({
+    tags: tagsText
+  });
+  testLastEvent( tagsText, "Custom text displayed with toString using tags" );
+
+  p.flickr({
+    username: usernameText
+  });
+  testLastEvent( usernameText, "Custom text displayed with toString using username" );
+
+  p.flickr({});
+  testLastEvent( "Flickr", "Flickr displayed if nothing exists" );
+
+  start();
+});
