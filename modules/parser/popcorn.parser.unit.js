@@ -78,24 +78,22 @@ asyncTest( "Parsing Integrity", function() {
 });
 
 
-asyncTest( "Parsing Data Return and Debug", function() {
+asyncTest( "Parsing Data Return and Debug", 6, function() {
 
-  var expects = 6,
+  var callbacks = 4,
       count = 0,
       timeOut = 0,
       originallyDebug = Popcorn.parsers.debug,
       poppercore = Popcorn( "#video" );
 
-  function plus() {
-    if ( ++count === expects ) {
+  function callbackDone() {
+    if ( ++count === callbacks ) {
       start();
       // clean up added events after tests
       Popcorn.removePlugin( "parserTest" );
       Popcorn.parsers.debug = originallyDebug;
     }
   }
-
-  expect( expects );
 
   Popcorn.parser( "parseJSONCustom" , "json", function( data ) {
     data.foo = "bar";
@@ -121,7 +119,7 @@ asyncTest( "Parsing Data Return and Debug", function() {
 
     poppercore.parseJSONPlain( "data/parserData.json", function( data ) {
       deepEqual( data, {}, "Empty object passed as default" );
-      plus();
+      callbackDone();
     });
 
     poppercore.parseJSONCustom( "data/parserData.json", function( data ) {
@@ -132,10 +130,9 @@ asyncTest( "Parsing Data Return and Debug", function() {
       }
 
       strictEqual( data.foo, "bar", "Custom field passed" );
-      plus();
-
       deepEqual( data.debugData, expectedDebugData, "Debug data emptied when not in debug mode" );
-      plus();
+
+      callbackDone();
     });
   }
 
