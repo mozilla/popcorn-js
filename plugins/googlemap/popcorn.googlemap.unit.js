@@ -149,3 +149,42 @@ test( "Popcorn Google Map Plugin", function() {
 
   popped.play();
 });
+
+asyncTest( "Overriding default toString", 3, function() {
+  var p = Popcorn( "#video" ),
+      locationText = "London, England",
+      latText = "43.665429",
+      lngText = "-79.403323",
+      lastEvent;
+
+  function testLastEvent( compareText, message ) {
+    lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
+    equal( lastEvent.toString(), compareText, message );
+  }
+
+  p.googlemap({
+    location: locationText,
+    target: "height3",
+    height: "100px",
+    width: "120px"
+  });
+  testLastEvent( locationText, "Custom text displayed with toString using location" );
+
+  p.googlemap({
+    lat: latText,
+    lng: lngText,
+    target: "height3",
+    height: "100px",
+    width: "120px"
+  });
+  testLastEvent( latText + ", " + lngText, "Custom text displayed with toString using lat and lng" );
+
+  p.googlemap({
+    target: "height3",
+    height: "100px",
+    width: "120px"
+  });
+  testLastEvent( "Toronto, Ontario, Canada", "Custom text displayed with toString using default" );
+
+  start();
+});

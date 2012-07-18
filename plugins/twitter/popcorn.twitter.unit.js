@@ -114,3 +114,25 @@ asyncTest( "Popcorn Twitter Plugin", function() {
   popped.play( 4 );
 
 });
+
+asyncTest( "Overriding default toString", 2, function() {
+  var p = Popcorn( "#video" ),
+      srcText = "#asdf",
+      lastEvent;
+
+  Popcorn.plugin.debug = false;
+  function testLastEvent( compareText, message ) {
+    lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
+    equal( lastEvent.toString(), compareText, message );
+  }
+
+  p.twitter({
+    src: srcText
+  });
+  testLastEvent( srcText, "Custom text displayed with toString" );
+
+  p.twitter({});
+  testLastEvent( "@popcornjs", "Custom text displayed with toString using default" );
+
+  start();
+});

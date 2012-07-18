@@ -199,6 +199,9 @@
         isPlayerReady();
       }
 
+      options.toString = function() {
+        return options.source || Popcorn.manifest[ "mediaspawner" ].options.source[ "default" ];
+      };
     },
     start: function( event, options ) {
       if( options._capCont ) {
