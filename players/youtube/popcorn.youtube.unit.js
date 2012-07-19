@@ -2,7 +2,7 @@ test( "YT Script not loaded", 1, function() {
   ok( !window.YT, "Player doesn't load youtube before first setup call" );
 });
 
-asyncTest( "Player play, pause, autoplay", function() {
+test( "Player play, pause, autoplay", function() {
 
   var count = 0,
       expects = 4,
@@ -59,7 +59,7 @@ asyncTest( "Player play, pause, autoplay", function() {
   });
 });
 
-asyncTest("Update Timer", function () {
+test("Update Timer", function () {
 
   var p2 = Popcorn.youtube( '#video2', 'http://www.youtube.com/watch?v=nfGV32RNkhw' ),
       expects = 12,
@@ -235,7 +235,7 @@ asyncTest("Update Timer", function () {
   }
 });
 
-asyncTest("Plugin Factory", function () {
+test("Plugin Factory", function () {
 
   var popped = Popcorn.youtube( '#video2', 'http://www.youtube.com/watch?v=nfGV32RNkhw' ),
       methods = "load play pause currentTime mute volume roundTime exec removePlugin",
@@ -353,7 +353,7 @@ asyncTest("Plugin Factory", function () {
 
 });
 
-asyncTest( "Popcorn YouTube Plugin Url and Duration Tests", function() {
+test( "Popcorn YouTube Plugin Url and Duration Tests", function() {
 
   var count = 0,
       expects = 3,
@@ -388,7 +388,7 @@ asyncTest( "Popcorn YouTube Plugin Url and Duration Tests", function() {
   popcorn.volume( 0 ).play();
 });
 
-asyncTest( "Popcorn YouTube Plugin Url Regex Test", function() {
+test( "Popcorn YouTube Plugin Url Regex Test", function() {
 
   var urlTests = [
     { name: 'standard',
@@ -443,7 +443,7 @@ asyncTest( "Popcorn YouTube Plugin Url Regex Test", function() {
   });
 });
 
-asyncTest( "Player height and width", function() {
+test( "Player height and width", function() {
 
   expect( 2 );
 
@@ -469,7 +469,7 @@ asyncTest( "Player height and width", function() {
   readyStatePoll();
 });
 
-asyncTest( "Player Errors", function() {
+test( "Player Errors", function() {
 
   expect( 2 );
 
@@ -486,7 +486,7 @@ asyncTest( "Player Errors", function() {
    });
 });
 
-asyncTest( "YouTube ended event", function() {
+test( "YouTube ended event", function() {
 
   expect( 1 );
 
@@ -504,7 +504,7 @@ asyncTest( "YouTube ended event", function() {
   pop.play();
 });
 
-asyncTest( "youtube player gets a proper _teardown", function() {
+test( "youtube player gets a proper _teardown", function() {
 
   var count = 0,
       expects = 1;
@@ -527,7 +527,7 @@ asyncTest( "youtube player gets a proper _teardown", function() {
   });
 });
 
-asyncTest( "Youtube ready state events", function() {
+test( "Youtube ready state events", function() {
 
   var popped,
       expects = 4,
@@ -575,7 +575,7 @@ asyncTest( "Youtube ready state events", function() {
 
 });
 
-asyncTest( "Youtube media start time fragment", function() {
+test( "Youtube media start time fragment", function() {
 
   var popcorn1, popcorn2, popcorn3, popcorn4,
       count = 0, expects = 4,
@@ -649,13 +649,13 @@ asyncTest( "Youtube media start time fragment", function() {
   }
 });
 
-asyncTest( "youtube player quarantine", function() {
+test( "youtube player quarantine", function() {
 
   ok( window.quarantineYT, "quarantine of broken youtube player exists." );
   start();
 });
 
-asyncTest( "youtube can play type", function() {
+test( "youtube can play type", function() {
 
   ok( Popcorn.youtube.canPlayType( "div", "http://youtube.com/watch/v/6v3jsVivU6U?format=json" ), "youtube can play url in this format: http://youtube.com/watch/v/6v3jsVivU6U?format=json" );
   ok( Popcorn.youtube.canPlayType( "div", "http://www.youtube.com/v/M3r2XDceM6A&amp;fs=1" ), "youtube can play url in this format: http://www.youtube.com/v/M3r2XDceM6A&amp;fs=1" );
