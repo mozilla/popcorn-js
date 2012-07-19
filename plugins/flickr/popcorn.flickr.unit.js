@@ -102,7 +102,8 @@ asyncTest( "Overriding default toString", 3, function() {
   }
 
   p.flickr({
-    tags: tagsText
+    tags: tagsText,
+    username: usernameText
   });
   testLastEvent( tagsText, "Custom text displayed with toString using tags" );
 

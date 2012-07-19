@@ -174,9 +174,10 @@ asyncTest( "media element target test", 2, function() {
 
 });
 
-asyncTest( "Overriding default toString", 2, function() {
+asyncTest( "Overriding default toString", 3, function() {
   var p = Popcorn( "#video" ),
       srcText = "http://www.stirinoi.com/wp-content/uploads/2012/05/grass-5.jpg",
+      fullURLText = "http://www.testing.com/asdf/",
       lastEvent;
 
   function testLastEvent( compareText, message ) {
@@ -188,10 +189,15 @@ asyncTest( "Overriding default toString", 2, function() {
     src: srcText,
     target: "imagediv"
   });
-  testLastEvent( srcText, "Custom text displayed with toString" );
+  testLastEvent( srcText.replace(/.*\//, ""), "Custom text displayed with toString" );
+  p.image({
+    src: fullURLText,
+    target: "imagediv"
+  });
+  testLastEvent( fullURLText, "Custom text displayed with toString" );
 
   p.image({});
-  testLastEvent( "http://mozillapopcorn.org/wp-content/themes/popcorn/images/for_developers.png", "Custom text displayed with toString using default" );
+  testLastEvent( "for_developers.png", "Custom text displayed with toString using default" );
 
   start();
 });
