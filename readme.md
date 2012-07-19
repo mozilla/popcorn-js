@@ -1,4 +1,4 @@
-Popcorn.js
+aPopcorn.js
 =============
 Mozilla's HTML5 Video Framework: [http://popcornjs.org](http://popcornjs.org)
 
