@@ -1,3 +1,4 @@
+module( "Subtitle Plugin" );
 asyncTest( "Popcorn Subtitle Plugin", function() {
 
   var popped = Popcorn( "#video" ),
