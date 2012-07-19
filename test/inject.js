@@ -17,7 +17,7 @@
 	var	DEBUG, doPost, search, url, index, submitTimeout, curHeartbeat,
 		beatRate, testFrameworks, onErrorFnPrev;
 
-	DEBUG = false;
+	DEBUG = true;
 
 	doPost = false;
 	search = window.location.search;
