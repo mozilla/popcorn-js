@@ -482,14 +482,14 @@
         events[ item ] = null;
       }
 
-      // Remove all data.trackEvents #1178
-      trackEvents.byStart.length = 0;
-      trackEvents.byEnd.length = 0;
-
       // remove all plugins off the given instance
       for ( plugin in Popcorn.registryByName ) {
         Popcorn.removePlugin( instance, plugin );
       }
+
+      // Remove all data.trackEvents #1178
+      trackEvents.byStart.length = 0;
+      trackEvents.byEnd.length = 0;
 
       if ( !instance.isDestroyed ) {
         instance.data.timeUpdate && instance.media.removeEventListener( "timeupdate", instance.data.timeUpdate, false );
