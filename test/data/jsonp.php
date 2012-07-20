@@ -1,6 +1,6 @@
 <?php
 
-$callback = $_REQUEST['callback'];
+$callback = isset($_REQUEST['callback']) ? $_REQUEST['callback'] : $_REQUEST['jsonp'];
 
 if ( !$callback ) {
 

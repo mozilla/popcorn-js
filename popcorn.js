@@ -2025,23 +2025,40 @@
       script = document.createElement( "script" ),
       isFired = false,
       params = [],
-      paramStr, callback, callparam;
+      rjsonp = /(=)\?(?=&|$)|\?\?/,
+      replaceInUrl, prefix, paramStr, callback, callparam;
 
     if ( !isScript ) {
 
       // is there a calback already in the url
       callparam = url.match( /(callback=[^&]*)/ );
 
-      if ( callparam ) {
+      if ( callparam !== null && callparam.length ) {
+
+        prefix = callparam[ 1 ].split( "=" )[ 1 ];
+
+        // Since we need to support developer specified callbacks
+        // and placeholders in harmony, make sure matches to "callback="
+        // aren't just placeholders.
+        // We coded ourselves into a corner here.
+        // JSONP callbacks should never have been
+        // allowed to have developer specified callbacks
+        if ( prefix === "?" ) {
+          prefix = "jsonp";
+        }
 
         // get the callback name
-        callback = Popcorn.guid( callparam[ 1 ].split( "=" )[ 1 ] );
+        callback = Popcorn.guid( prefix );
 
         // replace existing callback name with unique callback name
         url = url.replace( /(callback=[^&]*)/, "callback=" + callback );
       } else {
 
         callback = Popcorn.guid( "jsonp" );
+
+        if ( rjsonp.test( url ) ) {
+          url = url.replace( rjsonp, "$1" + callback );
+        }
 
         // split on first question mark,
         // this is to capture the query string

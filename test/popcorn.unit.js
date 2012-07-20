@@ -4844,21 +4844,7 @@ if ( !/file/.test( location.protocol ) ) {
     });
   });
 
-  test( "JSONP xhr.getJSONP Response", function() {
-
-    var expects = 2,
-        count = 0;
-
-    function plus() {
-      if ( ++count === expects ) {
-        start();
-      }
-    }
-
-    expect( expects );
-
-    stop();
-
+  asyncTest( "JSONP xhr.getJSONP Response", 2, function() {
     var testObj = {
           "data": {
              "lang": "en",
@@ -4868,13 +4854,22 @@ if ( !/file/.test( location.protocol ) ) {
 
     Popcorn.xhr.getJSONP(
 
-      "data/jsonp.php?callback=jsonp",
+      "data/jsonp.php?callback=?",
       function( data ) {
 
         ok( data, "getJSONP returns data" );
-        plus();
-        ok( QUnit.equiv(data, testObj) , "Popcorn.xhr.getJSONP data.json returns an object of data" );
-        plus();
+        deepEqual( data, testObj, "Popcorn.xhr.getJSONP data.json returns an object of data" );
+        start();
+      }
+    );
+  });
+
+  asyncTest( "JSONP xhr.getJSONP, strictly enforced parameter with callback placeholder", 1, function() {
+    Popcorn.xhr.getJSONP(
+      "data/jsonpfancyapi.php?jsonpfancyapi=?",
+      function( data ) {
+        ok( data, "getJSONP with placeholder callback name returns data" );
+        start();
       }
     );
   });

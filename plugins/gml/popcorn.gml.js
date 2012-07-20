@@ -186,7 +186,7 @@
 
       var scriptReady = function() {
 
-        Popcorn.getJSONP( "//000000book.com/data/" + options.gmltag + ".json?callback=", function( data ) {
+        Popcorn.getJSONP( "//000000book.com/data/" + options.gmltag + ".json?callback=?", function( data ) {
 
           options.pjsInstance = new Processing( options.container, gmlPlayer );
           options.pjsInstance.construct( self.media, data, options );
