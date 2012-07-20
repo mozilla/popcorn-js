@@ -2,61 +2,56 @@ test( "YT Script not loaded", 1, function() {
   ok( !window.YT, "Player doesn't load youtube before first setup call" );
 });
 
-asyncTest( "Player play, pause, autoplay", function() {
+asyncTest( "autoplay on", 1, function() {
 
-  var count = 0,
-      expects = 4,
-      orderCheck1 = 0,
-      orderCheck2 = 0,
-      pop1, pop2, pop3, pop4;
+  var p = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=1" );
 
-  expect( expects );
-
-  function plus() {
-    if ( ++count === expects ) {
-
-      pop1.destroy();
-      pop2.destroy();
-      pop3.destroy();
-      pop4.destroy();
-
-      start();
-    }
-  }
-
-  pop1 = Popcorn.youtube( "#video6", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
-
-  pop1.on( "canplaythrough", function() {
-
-    pop1.play();
-
-    equal( pop1.media.paused, false, "popcorn 1 plays" );
-    plus();
+  p.on( "canplaythrough", function() {
+    equal( p.media.paused, false, "autoplay on is recognized on URL" );
+    p.pause();
+    p.destroy();
+    start();
   });
 
-  pop2 = Popcorn.youtube( "#video7", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
+});
 
-  pop2.on( "canplaythrough", function() {
+asyncTest( "autoplay off", 1, function() {
 
-    equal( pop2.media.paused, true, "popcorn 2 pauses" );
-    plus();
+  var p = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=0" );
+
+  p.on( "canplaythrough", function() {
+    equal( p.media.paused, true, "autoplay off is recognized on URL" );
+    p.pause();
+    p.destroy();
+    start();
   });
 
-  pop3 = Popcorn.youtube( "#video8", "http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=0" );
+});
 
-  pop3.on( "canplaythrough", function() {
+asyncTest( "paused is false when playing", 1, function() {
 
-    equal( pop3.media.paused, true, "popcorn 3 autoplay off paused" );
-    plus();
+  var p = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
+
+  p.on( "canplaythrough", function() {
+    p.play();
+    equal( p.media.paused, false, "paused is false when playing" );
+    p.pause();
+    p.destroy();
+    start();
   });
 
-  pop4 = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=1" );
+});
 
-  pop4.on( "canplaythrough", function() {
+asyncTest( "paused is true during canplaythrough", 1, function() {
 
-    equal( pop4.media.paused, false, "popcorn 4 is autoplaying" );
-    plus();
+  var p = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
+
+  p.on( "canplaythrough", function() {
+    equal( p.media.paused, true, "paused is true in canplaythrough" );
+    p.destroy();
+    start();
   });
+
 });
 
 asyncTest("Update Timer", function () {
@@ -664,4 +659,3 @@ asyncTest( "youtube can play type", function() {
   ok( !Popcorn.youtube.canPlayType( "div", [ "http://www.youtube.com/v/M3r2XDceM6A&amp;fs=1", "youtube.com/v/M3r2XDceM6A&fs=1" ] ), "Youtube can't play an array of urls" );
   start();
 });
-
