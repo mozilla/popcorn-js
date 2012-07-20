@@ -341,7 +341,7 @@
           type = "info";
         }
         requestString = "http://api.tumblr.com/v2/blog/" + options.base_hostname + "/" + type + "?api_key=" + options.api_key + "&id=" + options.blogId +
-          "&jsonp=tumblrCallBack";
+          "&jsonp=?";
 
         if ( options.base_hostname && options.base_hostname !== "" && options.api_key && options.blogId ) {
 
