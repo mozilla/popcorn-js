@@ -2,7 +2,7 @@ asyncTest( "Popcorn Subtitle Plugin", function() {
 
   var popped = Popcorn( "#video" ),
       popped2 = Popcorn( "#video2" ),
-      expects = 12,
+      expects = 7,
       count = 0,
       subTop = 9001,
       subLeft = 9001,
@@ -72,33 +72,6 @@ asyncTest( "Popcorn Subtitle Plugin", function() {
     popped.media.style.position = "absolute";
     popped.media.style.left = "400px";
     popped.media.style.top = "600px";
-    popped.media.play();
-
-  });
-
-  popped.exec( 3, function() {
-
-    popped.media.pause();
-
-    // check position of subttile that should of moved with video,
-    // a subtitle must be displayed to get valid data
-    ok( subtitlediv.style.left !== subLeft, "subtitle's left position has changed" );
-    plus();
-    ok( subtitlediv.style.top !== subTop, "subtitle's top position has changed" );
-    plus();
-
-    // we know values have changed, but how accurate are they?
-    // check values against the video's values
-    // we need four checks because if we just check against video's position,
-    // and video's position hasn't updated either, we'll pass when we should fail
-    equal( subtitlediv.style.left, popped.position().left + "px", "subtitle left position moved" );
-    plus();
-    ok( Popcorn.position( subtitlediv ).top > popped.position().top, "subtitle top position moved" );
-    plus();
-
-    equal( subtitlediv.children[ 1 ].innerHTML, "this is the second subtitle of 2011", "subtitle displaying correct information" );
-    plus();
-
     popped.media.play();
 
   });
