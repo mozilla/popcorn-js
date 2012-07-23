@@ -4357,7 +4357,7 @@ test( "end undefined or false should never be fired", function() {
 
 asyncTest( "Plug-ins with a `once` attribute should be removed after `end` is fired.", 3, function() {
 
-  var $pop = Popcorn( "#video" ),
+  var $pop = Popcorn( "#video-fixture" ),
       startFired = 0;
       endFired = 0;
 
@@ -4392,13 +4392,16 @@ asyncTest( "Plug-ins with a `once` attribute should be removed after `end` is fi
     start();
   });
 
-  $pop.play( 0 );
+  $pop.on( "canplayall", function() {
+    $pop.off( "canplayall" );
+    $pop.play( 0 );
+  })
 });
 
 
 module( "Popcorn Cue/Track" );
 asyncTest( "Cue API", 12, function() {
-  var p = Popcorn( "#video" );
+  var p = Popcorn( "#video-fixture" );
 
   p.on( "canplayall", function() {
 
@@ -4441,21 +4444,21 @@ asyncTest( "Cue API", 12, function() {
 
 
     // Modify an existing cue's function
-    p.cue( "c", function named() {});
+    p.cue( "c", function named() { return 1; });
 
     equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's function, p.cue( 'c', function() {} );" );
 
-    equal( p.getTrackEvent( "c" )._natives.start.name, "named", "Function modified, named" );
+    equal( p.getTrackEvent( "c" )._natives.start(), 1, "Function modified, named" );
 
 
     // Modify an existing cue's time and function
-    p.cue( "c", 14, function renamed() {});
+    p.cue( "c", 14, function renamed() { return 2 });
 
     equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's time and function, p.cue( 'c', 14, function renamed() {});" );
 
     equal( p.getTrackEvent( "c" ).start, 14, "Time modified, 14" );
 
-    equal( p.getTrackEvent( "c" )._natives.start.name, "renamed", "Function modified, renamed" );
+    equal( p.getTrackEvent( "c" )._natives.start(), 2, "Function modified, renamed" );
 
 
     start();
