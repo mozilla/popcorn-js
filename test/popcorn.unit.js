@@ -4392,18 +4392,17 @@ asyncTest( "Plug-ins with a `once` attribute should be removed after `end` is fi
     start();
   });
 
-  $pop.on( "canplayall", function() {
+  $pop.on( "metadataloaded", function() {
     $pop.off( "canplayall" );
     $pop.play( 0 );
   })
 });
 
-
 module( "Popcorn Cue/Track" );
 asyncTest( "Cue API", 12, function() {
   var p = Popcorn( "#video-fixture" );
 
-  p.on( "canplayall", function() {
+  p.on( "metadataloaded", function() {
 
     // Declare a cue: schedule a function to execute at a time.
     p.cue( 10, function() {});
