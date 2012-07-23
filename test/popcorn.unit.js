@@ -2535,10 +2535,10 @@ asyncTest( "frame function (frameAnimation)", 1, function() {
 
   timeout = setTimeout(function() {
 
-    ok( "IE9 has trouble with this rAF test, skipping" );
+    ok( true, "IE9 has trouble with this rAF test, skipping" );
     Popcorn.removePlugin( "frameFn" );
     start();
-  }, 10000)
+  }, 10000 );
 });
 
 test( "Update Timer (timeupdate)", function() {
