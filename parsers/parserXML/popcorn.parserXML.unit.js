@@ -1,20 +1,16 @@
-asyncTest( "Popcorn 0.1 XML Parser Plugin", function () {
-  
-  var expects = 7,
-      count = 0,
+asyncTest( "Popcorn 0.1 XML Parser Plugin", 7, function () {
+
+  var count = 0,
       interval,
       poppercorn = Popcorn( "#video" );
-      
+
   function plus() {
     if ( ++count === expects ) {
       start();
     }
   }
-  
-  expect(expects);
 
   Popcorn.plugin( "parserTest1", {
-    
     start: function ( event, options ) {
       ok( options.item2 === "item2", "parserTest1 has data directly from manifest" );
       plus();
@@ -25,7 +21,6 @@ asyncTest( "Popcorn 0.1 XML Parser Plugin", function () {
   });
 
   Popcorn.plugin( "parserTest2", {
-    
     start: function ( event, options ) {
       ok( options.text === "item4", "parserTest2 has text data" );
       plus();
@@ -36,7 +31,6 @@ asyncTest( "Popcorn 0.1 XML Parser Plugin", function () {
   });
 
   Popcorn.plugin( "parserTest3", {
-    
     start: function ( event, options ) {
       ok( options.item1 === "item1", "parserTest3 has cascading data from parent" );
       plus();
@@ -49,6 +43,7 @@ asyncTest( "Popcorn 0.1 XML Parser Plugin", function () {
   });
 
   poppercorn.parseXML( "data/unit.XML", function() {
-    poppercorn.currentTime(5).play();
-  });  
+    poppercorn.play( 5 );
+    poppercorn.mute();
+  });
 });

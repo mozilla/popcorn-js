@@ -3813,6 +3813,44 @@ test( "In/Out aliases", function() {
   });
 });
 
+asyncTest( "Plugins with duplicate ids only extend when of the same type", 1, function() {
+  var p = Popcorn( "#video" );
+
+  p.pause( 0 );
+
+  Popcorn.plugin( "pop", function() {
+    return {
+      start: function( event, options ) {
+        ok( !options.bad, "Trackevents of different types did not get extended" );
+        Popcorn.destroy( p );
+        Popcorn.removePlugin( "pop" );
+        Popcorn.removePlugin( "bad" );
+        start();
+      },
+      end: function() {}
+    };
+  });
+  Popcorn.plugin( "bad", function() {
+    return {
+      start: function() {},
+      end: function() {}
+    };
+  });
+
+  p.pop({
+    id: "asdf",
+    start: 1,
+    end: 5
+  })
+  .bad({
+    id: "asdf",
+    start: 1,
+    end: 5,
+    bad: true
+  });
+  p.play( 0 );
+});
+
 module( "Popcorn TrackEvents" );
 test( "Functions", function() {
 
@@ -3998,6 +4036,8 @@ test( "Index Integrity ( removing tracks )", function() {
     }
   }
 
+  // Ensure that we start at the beginning of the video
+  $pop.pause( 0 );
   $pop.test({});
 
   tId = $pop.getLastTrackEventId();
