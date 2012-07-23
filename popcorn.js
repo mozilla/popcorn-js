@@ -977,12 +977,19 @@
     // If a track event by this id currently exists, modify it
     if ( trackEvent ) {
       isUpdate = true;
-      // Create a new object with the existing trackEvent
-      // Extend with new track properties
-      track = Popcorn.extend( {}, trackEvent, track );
 
-      // Remove the existing track from the instance
-      obj.removeTrackEvent( track.id );
+      // Create a new object with the existing trackEvent
+      // Extend with new track properties if the plugin types are the same
+      if ( track._natives.type === trackEvent._natives.type ) {
+        track = Popcorn.extend( {}, trackEvent, track );
+
+        // Remove the existing track from the instance
+        obj.removeTrackEvent( track.id );
+      // if the plugin types are different, keep the initial id intact
+      // and append a guid to the new trackevents id
+      } else {
+        track.id += Popcorn.guid();
+      }
     }
 
     // Determine if this track has default options set for it

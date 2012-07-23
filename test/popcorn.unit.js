@@ -3823,6 +3823,46 @@ test( "In/Out aliases", function() {
   });
 });
 
+asyncTest( "Plugins with duplicate ids only extend when of the same type", 2, function() {
+  var p = Popcorn( "#video" ),
+      te;
+
+  // wrapping in a canplayall as attempting to play the test on its own without it
+  // causes some issues
+  p.on( "canplayall", function() {
+    Popcorn.plugin( "bad", function() {});
+    Popcorn.plugin( "pop", function() {
+      return {
+        start: function( event, options ) {
+          ok( !options.bad, "Trackevents of different types did not get extended" );
+          console.log( te );
+          ok( te.id !== "asdf", "Trackevent is given a new id composed of the original id and a guid" );
+          Popcorn.destroy( p );
+          Popcorn.removePlugin( "pop" );
+          Popcorn.removePlugin( "bad" );
+          start();
+        }
+      };
+    });
+
+    p.pause( 0 )
+    .pop({
+      id: "asdf",
+      start: 1,
+      end: 5
+    })
+    .bad({
+      id: "asdf",
+      start: 1,
+      end: 5,
+      bad: true
+    });
+
+    te = p.getTrackEvent( p.getLastTrackEventId() );
+    p.play();
+  });
+});
+
 module( "Popcorn TrackEvents" );
 test( "Functions", function() {
 
@@ -4008,6 +4048,8 @@ test( "Index Integrity ( removing tracks )", function() {
     }
   }
 
+  // Ensure that we start at the beginning of the video
+  $pop.pause( 0 );
   $pop.test({});
 
   tId = $pop.getLastTrackEventId();
