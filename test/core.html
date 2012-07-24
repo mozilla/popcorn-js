@@ -28,6 +28,11 @@
   <h2 id="qunit-userAgent"></h2>
   <ol id="qunit-tests"></ol>
   <div id="qunit-fixture">
+    <video id="video-fixture">
+      <source src="trailer.mp4" type='video/mp4; codecs="avc1, mp4a"'>
+      <source src="trailer.webm" type='video/webm; codecs="vp8, vorbis"'>
+    </video>
+
     <div class="contextual" data-contextual="true">This should break the tests</div>
     <div id="popcorn-dom-find-context">
       <div id="inside-context" class="contextual" data-contextual="true">This element will be found when its parent is used as a context</div>
