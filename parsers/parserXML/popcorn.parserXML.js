@@ -79,7 +79,7 @@
     // recursive function to process a node, or process the next child node
     var parseNode = function ( node, allAttributes, manifest ) {
       var attributes = {};
-      Popcorn.extend( attributes, allAttributes, objectifyAttributes( node.attributes ), { text: node.textContent } );
+      Popcorn.extend( attributes, allAttributes, objectifyAttributes( node.attributes ), { text: node.textContent || node.text } );
 
       var childNodes = node.childNodes;
 
