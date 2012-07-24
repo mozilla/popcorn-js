@@ -4392,7 +4392,7 @@ asyncTest( "Plug-ins with a `once` attribute should be removed after `end` is fi
     start();
   });
 
-  $pop.on( "metadataloaded", function() {
+  $pop.on( "loadedmetadata", function() {
     $pop.off( "canplayall" );
     $pop.play( 0 );
   })
@@ -4402,37 +4402,32 @@ module( "Popcorn Cue/Track" );
 asyncTest( "Cue API", 12, function() {
   var p = Popcorn( "#video-fixture" );
 
-  p.on( "metadataloaded", function() {
+  p.on( "canplayall", function() {
 
     // Declare a cue: schedule a function to execute at a time.
     p.cue( 10, function() {});
 
     equal( p.data.trackEvents.byStart.length, 3, "Declare a cue: schedule a function to execute at a time., p.cue( 10, function() {});" );
 
-
     // Declare a cue: unscheduled, no-op -- with an addressable ID
     p.cue( "a" );
 
     equal( p.data.trackEvents.byStart.length, 4, "Declare a cue: unscheduled, no-op -- with an addressable ID, p.cue( 'a' );" );
-
 
     // Declare a cue: scheduled, no-op -- with an addressable ID
     p.cue( "b", 11 );
 
     equal( p.data.trackEvents.byStart.length, 5, "Declare a cue: scheduled, no-op -- with an addressable ID, p.cue( 'b', time );" );
 
-
     // Declare a cue: unscheduled -- with an addressable ID
     p.cue( "c", function() {});
 
     equal( p.data.trackEvents.byStart.length, 6, "Declare a cue: unscheduled -- with an addressable ID, p.cue( 'c', function );" );
 
-
     // Declare a cue: scheduled -- with an addressable ID
     p.cue( "d", 12, function() {});
 
     equal( p.data.trackEvents.byStart.length, 7, "Declare a cue: scheduled -- with an addressable ID, p.cue( 'd', 12, function );" );
-
 
     // Modify an existing cue's time
     p.cue( "c", 13 );
@@ -4441,14 +4436,12 @@ asyncTest( "Cue API", 12, function() {
 
     equal( p.getTrackEvent( "c" ).start, 13, "Time modified, 13" );
 
-
     // Modify an existing cue's function
     p.cue( "c", function named() { return 1; });
 
     equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's function, p.cue( 'c', function() {} );" );
 
     equal( p.getTrackEvent( "c" )._natives.start(), 1, "Function modified, named" );
-
 
     // Modify an existing cue's time and function
     p.cue( "c", 14, function renamed() { return 2 });
@@ -4458,7 +4451,6 @@ asyncTest( "Cue API", 12, function() {
     equal( p.getTrackEvent( "c" ).start, 14, "Time modified, 14" );
 
     equal( p.getTrackEvent( "c" )._natives.start(), 2, "Function modified, renamed" );
-
 
     start();
     p.destroy();
