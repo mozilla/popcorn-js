@@ -186,7 +186,7 @@
 		// Only do our handling if not surpressed.
 		if ( ret !== true ) {
 			document.body.appendChild( document.createTextNode( '[TestSwarm] window.onerror: ' + error ) );
-			submit({ fail: 0, error: 1, total: 1 });
+			//submit({ fail: 0, error: 1, total: 1 });
 
 			return false;
 		}
