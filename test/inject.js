@@ -176,7 +176,7 @@
 	// Cover uncaught exceptions
 	// Returning true will surpress the default browser handler,
 	// returning false will let it run.
-	window.onerror = function ( error, filePath, linerNr ) {
+	/*window.onerror = function ( error, filePath, linerNr ) {
 		var ret = false;
 		if ( onErrorFnPrev ) {
 			ret = onErrorFnPrev( error, filePath, linerNr );
@@ -186,13 +186,13 @@
 		// Only do our handling if not surpressed.
 		if ( ret !== true ) {
 			document.body.appendChild( document.createTextNode( '[TestSwarm] window.onerror: ' + error ) );
-			//submit({ fail: 0, error: 1, total: 1 });
+			submit({ fail: 0, error: 1, total: 1 });
 
 			return false;
 		}
 
 		return ret;
-	};
+	};*/
 
 	// Expose the TestSwarm API
 	window.TestSwarm = {
