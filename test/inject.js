@@ -153,8 +153,8 @@
 					submit( params );
 				}, submitTimeout * 1000);
 
-				//document.body.appendChild( form );
-				//form.submit();
+				document.body.appendChild( form );
+				form.submit();
 			}
 		}
 	}
@@ -220,11 +220,15 @@
 			},
 			install: function () {
 				QUnit.done = function ( results ) {
-					submit({
-						fail: results.failed,
-						error: 0,
-						total: results.total
-					});
+				  if ( !results.runtime ) {
+				    window.TesSwarm.heartbeat();
+				  } else {
+            submit({
+              fail: results.failed,
+              error: 0,
+              total: results.total
+            });
+          }
 				};
 
 				QUnit.log = window.TestSwarm.heartbeat;
