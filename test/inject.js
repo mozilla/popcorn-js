@@ -90,7 +90,7 @@
 	}
 
 	function submit( params ) {
-	  if ( !params.runtime || ( params.failed === 0 && params.error === 0 ) ) {
+	  if ( !params.runtime || ( params.fail === 0 && params.error === 0 ) ) {
 	    return;
 	  }
 		var form, i, input, key, paramItems, parts, query;
