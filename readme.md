@@ -17,7 +17,7 @@ Community
 -------------
 The Popcorn.js community is a mix of developers, filmmakers, artists, and everything in between.  If you are interested in using Popcorn.js or helping us build it, you can use one or more of the following:
 
-* [Mailing List for Users](https://groups.google.com/group/web-made-movies-working)
+* [Mailing List for Users](https://mail.mozilla.org/listinfo/community-popcorn)
 * [IRC Channel for Developers and Technical Users](irc://irc.mozilla.org/popcorn)
 * [Twitter @popcornjs](https://twitter.com/#!/popcornjs)
 * [Documentation](http://popcornjs.org/documentation)
