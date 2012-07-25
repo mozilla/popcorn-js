@@ -90,6 +90,7 @@
 	}
 
 	function submit( params ) {
+	  alert( "WTF", JSON.stringify( params ) );
 		var form, i, input, key, paramItems, parts, query;
 
 		if ( curHeartbeat ) {
@@ -220,7 +221,6 @@
 			},
 			install: function () {
 				QUnit.done = function ( results ) {
-				  window.alert( JSON.stringify( results ) );
 					submit({
 						fail: results.failed,
 						error: 0,
