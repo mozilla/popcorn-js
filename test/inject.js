@@ -39,7 +39,7 @@
 
 	// Prevent blocking things from executing
 	if ( !DEBUG ) {
-		window.print = window.confirm = window.alert = window.open = function () {};
+		//window.print = window.confirm = window.alert = window.open = function () {};
 	}
 
 	/** Utility functions **/
