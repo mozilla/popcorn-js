@@ -223,6 +223,8 @@
             media.readyState = 4;
 
             timeUpdate();
+
+            media.dispatchEvent( "canplay" );
             media.dispatchEvent( "canplaythrough" );
           }
         };
@@ -282,6 +284,9 @@
               options.youtubeObject.playVideo();
 
               media.currentTime = fragmentStart;
+
+              media.dispatchEvent( "loadstart" );
+
               // wait to dispatch ready events until we get a duration
             },
             "onStateChange": function( state ){
