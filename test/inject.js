@@ -90,22 +90,25 @@
 	}
 
 	function submit( params ) {
+	  if ( !params.runtime || ( params.failed === 0 && params.error === 0 ) ) {
+	    return;
+	  }
 		var form, i, input, key, paramItems, parts, query;
 
 		if ( curHeartbeat ) {
 			clearTimeout( curHeartbeat );
 		}
 
-		//paramItems = (url.split( '?' )[1] || '' ).split( '&' );
+		paramItems = (url.split( '?' )[1] || '' ).split( '&' );
 
-		/*for ( i = 0; i < paramItems.length; i += 1 ) {
+		for ( i = 0; i < paramItems.length; i += 1 ) {
 			if ( paramItems[i] ) {
 				parts = paramItems[i].split( '=' );
 				if ( !params[ parts[0] ] ) {
 					params[ parts[0] ] = parts[1];
 				}
 			}
-		}*/
+		}
 
 		if ( !params.action ) {
 			params.action = 'saverun';
