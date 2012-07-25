@@ -220,7 +220,7 @@
 			},
 			install: function () {
 				QUnit.done = function ( results ) {
-				  alert( JSON.stringify( results ) );
+				  window.alert( JSON.stringify( results ) );
 					submit({
 						fail: results.failed,
 						error: 0,
