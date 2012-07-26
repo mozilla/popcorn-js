@@ -176,7 +176,7 @@ var googleCallback;
     isMapReady();
 
     options.toString = function() {
-      return options.location || ( ( options.lat && options.lng ) ? options.lat + ", " + options.lng : Popcorn.manifest[ "googlemap" ].options.location[ "default" ] );
+      return options.location || ( ( options.lat && options.lng ) ? options.lat + ", " + options.lng : options._natives.manifest.options.location[ "default" ] );
     };
 
     return {

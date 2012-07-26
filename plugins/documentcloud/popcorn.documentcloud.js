@@ -223,7 +223,7 @@ api - https://github.com/documentcloud/document-viewer/blob/master/public/javasc
 
       options.toString = function() {
         // use the default option if it doesn't exist
-        return options.src || Popcorn.manifest[ "documentcloud" ].options.src[ "default" ];
+        return options.src || options._natives.manifest.options.src[ "default" ];
       };
     },
 

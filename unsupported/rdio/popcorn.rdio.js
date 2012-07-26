@@ -93,7 +93,7 @@
         options.type && _getResults( options );
 
         options.toString = function() {
-          return options.artist || Popcorn.manifest[ "rdio" ].options.artist[ "default" ];
+          return options.artist || options._natives.manifest.options.artist[ "default" ];
         }
       },
       start: function( event, options ) {

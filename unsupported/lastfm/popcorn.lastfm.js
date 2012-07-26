@@ -79,7 +79,7 @@
         _artists[ options.artist ].count++;
 
         options.toString = function() {
-          return options.artist || Popcorn.manifest[ "lastfm" ].options.artist[ "default" ];
+          return options.artist || options._natives.manifest.options.artist[ "default" ];
         }
       },
       /**
