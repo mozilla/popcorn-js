@@ -1148,7 +1148,7 @@
           if ( start._natives._teardown ) {
             start._natives._teardown.call( obj, start );
 
-            // chache the track event being removed
+            // cache the track event being removed
             track = start;
           }
         }
@@ -1209,7 +1209,7 @@
     // Update track event references
     Popcorn.removeTrackEvent.ref( obj, removeId );
 
-    if ( track && track._natives) {
+    if ( track && track._natives ) {
 
       // Fire a trackremoved event
       obj.emit( "trackremoved", Popcorn.extend({}, track, {
