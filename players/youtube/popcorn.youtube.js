@@ -54,9 +54,18 @@
               return;
             }
 
+            val = Number( val );
+            
+            if ( isNaN ( val ) ) {
+              return;
+            }
+            
+            currentTime = val;
+            
             seeking = true;
-            // make sure val is a number
-            currentTime = Math.round( +val * 100 ) / 100;
+            media.dispatchEvent( "seeking" );
+            
+            options.youtubeObject.seekTo( val );
           },
           get: function() {
 
@@ -180,7 +189,7 @@
 
       var youtubeInit = function() {
 
-        var src, query, params, playerVars, queryStringItem, firstPlay = true;
+        var src, query, params, playerVars, queryStringItem, firstPlay = true, seekEps = 0.1;
 
         var timeUpdate = function() {
 
@@ -188,20 +197,23 @@
             return;
           }
 
+          var ytTime = options.youtubeObject.getCurrentTime();
+
           if ( !seeking ) {
-            currentTime = options.youtubeObject.getCurrentTime();
-            media.dispatchEvent( "timeupdate" );
-          } else if ( currentTime === options.youtubeObject.getCurrentTime() ) {
-
+            currentTime = ytTime;
+          } else if ( currentTime >= ytTime - seekEps && currentTime <= ytTime + seekEps ) {
             seeking = false;
+            seekEps = 0.1;
             media.dispatchEvent( "seeked" );
-            media.dispatchEvent( "timeupdate" );
           } else {
-
-            // keep trying the seek until it is right.
+            // seek didn't work very well, try again with higher tolerance
+            seekEps *= 2;
             options.youtubeObject.seekTo( currentTime );
           }
-          setTimeout( timeUpdate, 250 );
+          
+          media.dispatchEvent( "timeupdate" );
+          
+          setTimeout( timeUpdate, 200 );
         };
 
         // delay is in seconds
