@@ -1084,6 +1084,13 @@
           fn: track._natives.start
         }
       });
+    } else if ( track._natives ) {
+
+      // Fire a trackadded event
+      obj.emit( "trackadded", Popcorn.extend({}, track, {
+        plugin: track._natives.type,
+        type: "trackadded"
+      }));
     }
   };
 
@@ -1104,7 +1111,8 @@
         byStart = [],
         byEnd = [],
         animating = [],
-        history = [];
+        history = [],
+        track;
 
     while ( --length > -1 ) {
       start = obj.data.trackEvents.byStart[ index ];
@@ -1139,6 +1147,9 @@
           // enforce for track event removals
           if ( start._natives._teardown ) {
             start._natives._teardown.call( obj, start );
+
+            // chache the track event being removed
+            track = start;
           }
         }
       }
@@ -1197,6 +1208,15 @@
 
     // Update track event references
     Popcorn.removeTrackEvent.ref( obj, removeId );
+
+    if ( track && track._natives) {
+
+      // Fire a trackremoved event
+      obj.emit( "trackremoved", Popcorn.extend({}, track, {
+        plugin: track._natives.type,
+        type: "trackremoved"
+      }));
+    }
   };
 
   // Internal Only - Removes track event references from instance object's trackRefs hash table
