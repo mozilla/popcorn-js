@@ -2198,6 +2198,58 @@ asyncTest( "Start Zero Immediately", 1, function() {
   });
 });
 
+asyncTest( "Special track event listeners: trackadded", 3, function() {
+
+  var $pop = Popcorn( "#video" );
+
+  Popcorn.plugin( "trackaddedplugin", {
+    _setup: function(){},
+    _teardown: function() {},
+    start: function() {},
+    end: function() {}
+  });
+
+  $pop.on( "trackadded", function( e ) {
+
+    ok( true, "trackadded event fired" );
+    equal( e.type, "trackadded", "event is of correct type" );
+    equal( e.plugin, "trackaddedplugin", "plugin is of correct type" );
+
+    Popcorn.removePlugin( "trackaddedplugin" );
+    $pop.destroy();
+    start();
+  });
+
+  $pop.trackaddedplugin({});
+});
+
+asyncTest( "Special track event listeners: trackremoved", 3, function() {
+
+  var $pop = Popcorn( "#video" ),
+      pluginId = "trackremovedplugin";
+
+  Popcorn.plugin( "trackremovedplugin", {
+    _setup: function(){},
+    _teardown: function() {},
+    start: function() {},
+    end: function() {}
+  });
+
+  $pop.on( "trackremoved", function( e ) {
+
+    ok( true, "trackadded event fired" );
+    equal( e.type, "trackremoved", "event is of correct type" );
+    equal( e.plugin, "trackremovedplugin", "plugin is of correct type" );
+
+    Popcorn.removePlugin( "trackremovedplugin" );
+    $pop.destroy();
+    start();
+  });
+
+  $pop.trackremovedplugin( pluginId, {} );
+  $pop.removeTrackEvent( pluginId );
+});
+
 asyncTest( "Special track event listeners: trackstart, trackend", function() {
 
   var $pop = Popcorn( "#video" ),
