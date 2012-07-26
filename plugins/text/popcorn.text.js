@@ -199,7 +199,7 @@
 
       options.toString = function() {
         // use the default option if it doesn't exist
-        return options.text || Popcorn.manifest[ "text" ].options.text[ "default" ];
+        return options.text || options._natives.manifest.options.text[ "default" ];
       };
     },
 
