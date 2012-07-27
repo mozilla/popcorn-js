@@ -140,7 +140,7 @@
 
     options.toString = function() {
       return options.tags || options.username || "Flickr";
-    }
+    };
 
     return {
       /**
