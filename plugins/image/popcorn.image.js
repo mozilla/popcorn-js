@@ -185,7 +185,7 @@
 
         options.toString = function() {
           var string = options.src || options._natives.manifest.options.src[ "default" ],
-              match = string.replace(/.*\//g, "");
+              match = string.replace( /.*\//g, "" );
           return match.length ? match : string;
         };
       },

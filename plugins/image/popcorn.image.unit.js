@@ -189,7 +189,7 @@ asyncTest( "Overriding default toString", 3, function() {
     src: srcText,
     target: "imagediv"
   });
-  testLastEvent( srcText.replace(/.*\//, ""), "Custom text displayed with toString" );
+  testLastEvent( srcText.replace( /.*\//, "" ), "Custom text displayed with toString" );
   p.image({
     src: fullURLText,
     target: "imagediv"
