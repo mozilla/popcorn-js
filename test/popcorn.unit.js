@@ -2232,10 +2232,10 @@ asyncTest( "Special track event listeners: trackadded", 3, function() {
   var $pop = Popcorn( "#video" );
 
   Popcorn.plugin( "trackaddedplugin", {
-    _setup: function(){},
-    _teardown: function() {},
-    start: function() {},
-    end: function() {}
+    _setup: Popcorn.nop,
+    _teardown: Popcorn.nop,
+    start: Popcorn.nop,
+    end: Popcorn.nop
   });
 
   $pop.on( "trackadded", function( e ) {
@@ -2252,16 +2252,40 @@ asyncTest( "Special track event listeners: trackadded", 3, function() {
   $pop.trackaddedplugin({});
 });
 
+test( "Special track event listeners: tracksetup", 3, function() {
+
+  var $pop = Popcorn( "#video" );
+
+  Popcorn.plugin( "tracksetupplugin", {
+    _setup: Popcorn.nop,
+    _teardown: Popcorn.nop,
+    start: Popcorn.nop,
+    end: Popcorn.nop
+  });
+
+  $pop.on( "tracksetup", function( e ) {
+
+    ok( true, "tracksetup event fired" );
+    equal( e.type, "tracksetup", "event is of correct type" );
+    equal( e.plugin, "tracksetupplugin", "plugin is of correct type" );
+  });
+
+  $pop.tracksetupplugin({});
+
+  Popcorn.removePlugin( "tracksetupplugin" );
+  $pop.destroy();
+});
+
 asyncTest( "Special track event listeners: trackremoved", 3, function() {
 
   var $pop = Popcorn( "#video" ),
       pluginId = "trackremovedplugin";
 
   Popcorn.plugin( "trackremovedplugin", {
-    _setup: function(){},
-    _teardown: function() {},
-    start: function() {},
-    end: function() {}
+    _setup: Popcorn.nop,
+    _teardown: Popcorn.nop,
+    start: Popcorn.nop,
+    end: Popcorn.nop
   });
 
   $pop.on( "trackremoved", function( e ) {
@@ -2277,6 +2301,33 @@ asyncTest( "Special track event listeners: trackremoved", 3, function() {
 
   $pop.trackremovedplugin( pluginId, {} );
   $pop.removeTrackEvent( pluginId );
+});
+
+
+test( "Special track event listeners: trackteardown", 3, function() {
+
+  var $pop = Popcorn( "#video" ),
+      pluginId = "trackteardownplugin";
+
+  Popcorn.plugin( "trackteardownplugin", {
+    _setup: Popcorn.nop,
+    _teardown: Popcorn.nop,
+    start: Popcorn.nop,
+    end: Popcorn.nop
+  });
+
+  $pop.on( "trackteardown", function( e ) {
+
+    ok( true, "trackteardown event fired" );
+    equal( e.type, "trackteardown", "event is of correct type" );
+    equal( e.plugin, "trackteardownplugin", "plugin is of correct type" );
+  });
+
+  $pop.trackteardownplugin( pluginId, {} );
+  $pop.removeTrackEvent( pluginId );
+
+  Popcorn.removePlugin( "trackteardownplugin" );
+  $pop.destroy();
 });
 
 asyncTest( "Special track event listeners: trackstart, trackend", function() {
