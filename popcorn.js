@@ -649,8 +649,9 @@
               }
 
               // p.cue( "b", 11 );
+              // p.cue( "b", 11, function() {} );
               if ( typeof time === "number" ) {
-                fn = Popcorn.nop();
+                fn = fn || Popcorn.nop();
               }
 
               // p.cue( "c", function() {});
