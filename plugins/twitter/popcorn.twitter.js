@@ -155,6 +155,10 @@
           }
         };
 
+        options.toString = function() {
+          return options.src || options._natives.manifest.options.src[ "default" ];
+        };
+
         isReady( this );
       },
 

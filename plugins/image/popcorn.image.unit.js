@@ -173,3 +173,31 @@ asyncTest( "media element target test", 2, function() {
   });
 
 });
+
+asyncTest( "Overriding default toString", 3, function() {
+  var p = Popcorn( "#video" ),
+      srcText = "http://www.stirinoi.com/wp-content/uploads/2012/05/grass-5.jpg",
+      fullURLText = "http://www.testing.com/asdf/",
+      lastEvent;
+
+  function testLastEvent( compareText, message ) {
+    lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
+    equal( lastEvent.toString(), compareText, message );
+  }
+
+  p.image({
+    src: srcText,
+    target: "imagediv"
+  });
+  testLastEvent( srcText.replace( /.*\//, "" ), "Custom text displayed with toString" );
+  p.image({
+    src: fullURLText,
+    target: "imagediv"
+  });
+  testLastEvent( fullURLText, "Custom text displayed with toString" );
+
+  p.image({});
+  testLastEvent( "for_developers.png", "Custom text displayed with toString using default" );
+
+  start();
+});
