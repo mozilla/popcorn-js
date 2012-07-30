@@ -4478,7 +4478,7 @@ asyncTest( "Cue API", 12, function() {
 
 });
 
-asyncTest( "Modify cue or track event after creation", 6, function() {
+asyncTest( "Modify cue or track event after creation", 7, function() {
   var p = Popcorn( "#video" ),
       passed = 0;
 
@@ -4539,6 +4539,11 @@ asyncTest( "Modify cue or track event after creation", 6, function() {
 
     // now I want to change that cue to 12:
     p.cue( "cue-id", 12 );
+
+    // set a cue with id, time and function
+    p.cue( "cue-id2", 10, function() {
+      ok( true, "Cue with id, time and function is created and fired" );
+    });
 
     // now change the function...
     p.cue( "cue-id", function() {
