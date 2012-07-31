@@ -93,24 +93,3 @@ test( "Popcorn Rdio Plugin", function() {
 
   popped.volume( 0 ).play();
 });
-
-asyncTest( "Overriding default toString", 2, function() {
-  var p = Popcorn( "#video" ),
-      artistText = "Rancid",
-      lastEvent;
-
-  function testLastEvent( compareText, message ) {
-    lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
-    equal( lastEvent.toString(), compareText, message );
-  }
-
-  p.rdio({
-    artist: artistText
-  });
-  testLastEvent( artistText, "Custom text displayed with toString" );
-
-  p.rdio({});
-  testLastEvent( "The Beatles", "Custom text displayed with toString using default" );
-
-  start();
-});

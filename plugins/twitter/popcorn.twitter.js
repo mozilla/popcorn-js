@@ -155,10 +155,6 @@
           }
         };
 
-        options.toString = function() {
-          return options.src || Popcorn.manifest[ "twitter" ].options.src[ "default" ];
-        };
-
         isReady( this );
       },
 

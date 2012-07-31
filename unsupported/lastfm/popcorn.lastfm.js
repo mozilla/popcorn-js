@@ -78,9 +78,6 @@
         }
         _artists[ options.artist ].count++;
 
-        options.toString = function() {
-          return options.artist || Popcorn.manifest[ "lastfm" ].options.artist[ "default" ];
-        }
       },
       /**
        * @member LastFM

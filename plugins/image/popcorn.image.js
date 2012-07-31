@@ -182,10 +182,6 @@
         }, false );
 
         img.src = options.src;
-
-        options.toString = function() {
-          return options.src || Popcorn.manifest[ "image" ].options.src[ "default" ];
-        };
       },
 
       /**

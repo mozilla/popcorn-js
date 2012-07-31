@@ -77,35 +77,3 @@ test( "Popcorn attribution Plugin", function() {
   popped.play();
 
 });
-
-asyncTest( "Overriding default toString", 4, function() {
-  var p = Popcorn( "#video" ),
-      nameofworkText = "Work Work",
-      licenseText = "Some sweet license text",
-      copyrightholderText = "Snorlax",
-      lastEvent;
-
-  function testLastEvent( compareText, message ) {
-    lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
-    equal( lastEvent.toString(), compareText, message );
-  }
-
-  p.attribution({
-    nameofwork: nameofworkText
-  });
-  testLastEvent( nameofworkText, "Custom text displayed with toString using nameofwork" );
-
-  p.attribution({
-    license: licenseText
-  });
-  testLastEvent( licenseText, "Custom text displayed with toString using license" );
-
-  p.attribution({
-    copyrightholder: copyrightholderText
-  });
-  testLastEvent( copyrightholderText, "Custom text displayed with toString using copyrightholder" );
-
-  p.attribution({});
-  testLastEvent( "Attribution", "Attribution displayed if nothing exists" );
-  start();
-});

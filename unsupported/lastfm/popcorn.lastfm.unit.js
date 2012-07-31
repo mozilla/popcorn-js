@@ -81,24 +81,3 @@ test( "Popcorn LastFM Plugin", function() {
 
   popped.volume( 0 ).play();
 });
-
-asyncTest( "Overriding default toString", 2, function() {
-  var p = Popcorn( "#video" ),
-      artistText = "Rancid",
-      lastEvent;
-
-  function testLastEvent( compareText, message ) {
-    lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
-    equal( lastEvent.toString(), compareText, message );
-  }
-
-  p.lastfm({
-    artist: artistText
-  });
-  testLastEvent( artistText.toLowerCase(), "Custom text displayed with toString" );
-
-  p.lastfm({});
-  testLastEvent( "the beatles", "Custom text displayed with toString using default" );
-
-  start();
-});

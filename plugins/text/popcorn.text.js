@@ -196,11 +196,6 @@
       container.innerHTML = text || "";
 
       target.appendChild( container );
-
-      options.toString = function() {
-        // use the default option if it doesn't exist
-        return options.text || Popcorn.manifest[ "text" ].options.text[ "default" ];
-      };
     },
 
     /**
@@ -222,6 +217,7 @@
     end: function( event, options ) {
       options._container.style.display = "none";
     },
+
     _teardown: function( options ) {
       var target = options._target;
       if ( target ) {

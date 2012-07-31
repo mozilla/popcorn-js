@@ -76,24 +76,3 @@ test( "Popcorn Google Feed Plugin", function() {
   popped.play();
 
 });
-
-asyncTest( "Overriding default toString", 2, function() {
-  var p = Popcorn( "#video" ),
-      urlText = "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
-      lastEvent;
-
-  function testLastEvent( compareText, message ) {
-    lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
-    equal( lastEvent.toString(), compareText, message );
-  }
-
-  p.googlefeed({
-    url: urlText
-  });
-  testLastEvent( urlText, "Custom text displayed with toString" );
-
-  p.googlefeed({});
-  testLastEvent( "http://planet.mozilla.org/rss20.xml", "Custom text displayed with toString using default" );
-
-  start();
-});

@@ -137,11 +137,6 @@
       _userid = options.userid;
       getFlickrData();
     }
-
-    options.toString = function() {
-      return options.tags || options.username || "Flickr";
-    }
-
     return {
       /**
        * @member flickr

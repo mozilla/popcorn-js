@@ -96,24 +96,4 @@
     });
   });
 
-  asyncTest( "Overriding default toString", 2, function() {
-    var p = Popcorn( "#video" ),
-        testSrc = "Test Source",
-        lastEvent;
-
-    function testLastEvent( compareText, message ) {
-      lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
-      equal( lastEvent.toString(), compareText, message );
-    }
-
-    p.documentcloud({
-      src: testSrc
-    });
-    testLastEvent( testSrc, "Custom text displayed with toString" );
-
-    p.documentcloud({});
-    testLastEvent( "http://www.documentcloud.org/documents/70050-urbina-day-1-in-progress.html", "Custom text displayed with toString using default" );
-
-    start();
-  });
 })( Popcorn, document );

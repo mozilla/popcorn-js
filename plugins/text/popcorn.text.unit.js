@@ -360,37 +360,3 @@ asyncTest( "Media element as target", 2, function() {
   start();
 });
 
-asyncTest( "Overriding default toString", 1, function() {
-  var p = Popcorn( "#video" ),
-      testText = "This is some test text",
-      lastEvent;
-
-  p.text({
-    text: testText
-  });
-
-  lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
-  equal( lastEvent.toString(), testText, "Custom text displayed with toString" );
-  start();
-});
-
-asyncTest( "Overriding default toString", 2, function() {
-  var p = Popcorn( "#video" ),
-      testText = "This is some test text",
-      lastEvent;
-
-  function testLastEvent( compareText, message ) {
-    lastEvent = p.getTrackEvent( p.getLastTrackEventId() );
-    equal( lastEvent.toString(), compareText, message );
-  }
-
-  p.text({
-    text: testText
-  });
-  testLastEvent( testText, "Custom text displayed with toString" );
-
-  p.text({});
-  testLastEvent( "Popcorn.js", "Custom text displayed with toString using default" );
-
-  start();
-});

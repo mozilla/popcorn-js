@@ -91,10 +91,6 @@
           htmlString: ( options.playlist || "Unknown Source" ) || ( options.album || "Unknown Source" )
         };
         options.type && _getResults( options );
-
-        options.toString = function() {
-          return options.artist || Popcorn.manifest[ "rdio" ].options.artist[ "default" ];
-        }
       },
       start: function( event, options ) {
         var key = options.containerid,
