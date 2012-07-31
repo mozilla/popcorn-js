@@ -133,7 +133,7 @@ var wikiCallback;
       }
 
       options.toString = function() {
-        return options.src || Popcorn.manifest[ "wikipedia" ].options.src[ "default" ];
+        return options.src || options._natives.manifest.options.src[ "default" ];
       };
     },
     /**

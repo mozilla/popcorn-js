@@ -200,7 +200,7 @@
       }
 
       options.toString = function() {
-        return options.source || Popcorn.manifest[ "mediaspawner" ].options.source[ "default" ];
+        return options.source || options._natives.manifest.options.source[ "default" ];
       };
     },
     start: function( event, options ) {

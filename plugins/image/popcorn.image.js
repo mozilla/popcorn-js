@@ -184,7 +184,9 @@
         img.src = options.src;
 
         options.toString = function() {
-          return options.src || Popcorn.manifest[ "image" ].options.src[ "default" ];
+          var string = options.src || options._natives.manifest.options.src[ "default" ],
+              match = string.replace( /.*\//g, "" );
+          return match.length ? match : string;
         };
       },
 

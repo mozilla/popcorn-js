@@ -96,7 +96,8 @@ asyncTest( "Overriding default toString", 4, function() {
   testLastEvent( nameofworkText, "Custom text displayed with toString using nameofwork" );
 
   p.attribution({
-    license: licenseText
+    license: licenseText,
+    copyrightholder: copyrightholderText
   });
   testLastEvent( licenseText, "Custom text displayed with toString using license" );
 
