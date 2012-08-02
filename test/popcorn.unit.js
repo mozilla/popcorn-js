@@ -2541,6 +2541,90 @@ asyncTest( "frame function (frameAnimation)", 1, function() {
   }, 10000 );
 });
 
+asyncTest( "frameAnimation doesn't trigger timeupdate when media paused", 2, function() {
+
+  var $pop = Popcorn( "#video", {
+        frameAnimation: true
+      }),
+      fired = -1;
+
+  Popcorn.plugin( "frameFn", {
+    start: function() {
+
+      this.pause();
+      fired = 0;
+
+      // Spin and wait to make sure frame doesn't get called while paused
+      setTimeout( function() {
+        equal( fired, 0, "frame should not have fired." );
+
+        // Swing around for another run
+        $pop.play();
+
+      }, 500);
+    },
+    frame: function() {
+      fired++;
+
+      ok( true, "frame fires when played" );
+
+      Popcorn.removePlugin( "frameFn" );
+      $pop.destroy();
+      start();
+    }
+  });
+
+  $pop.frameFn({
+    start: 1,
+    end: 3
+  });
+
+  $pop.on( "seeked", function didSeek() {
+    this.off( "seeked", didSeek ).play();
+  }).pause( 1 );
+});
+
+asyncTest( "frameAnimation doesn't trigger timeupdate when media paused by external API", 1, function() {
+
+  var $pop = Popcorn( "#video", {
+        frameAnimation: true
+      }),
+      fired = false;
+
+  $pop.currentTime(0);
+
+  Popcorn.plugin( "frameFn", {
+    start: function() {
+
+    },
+    frame: function() {
+      if ( this.paused() ) {
+        fired = true;
+      }
+    },
+    end: function() {
+      ok( !fired, "frame doesn't fire when paused" );
+
+      Popcorn.removePlugin( "frameFn" );
+      $pop.destroy();
+      start();
+    }
+  });
+
+  $pop.frameFn({
+    start: 0,
+    end: 2
+  }).cue( 1, function() {
+    // Pause the video with an external API as if the user
+    // was pausing the video with the media controls
+    document.getElementById( "video" ).pause();
+
+    setTimeout( function() {
+      $pop.play();
+    }, 500 );
+  }).play();
+});
+
 test( "Update Timer (timeupdate)", function() {
 
   QUnit.reset();
