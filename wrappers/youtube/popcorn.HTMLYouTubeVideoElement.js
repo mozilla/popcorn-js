@@ -289,6 +289,9 @@
       // Don't show YouTube's branding
       playerVars.modestbranding = playerVars.modestbranding || 1;
 
+      // Don't show annotations by default
+      playerVars.iv_load_policy = playerVars.iv_load_policy || 3;
+
       // Don't show video info before playing
       playerVars.showinfo = playerVars.showinfo || 0;
 
