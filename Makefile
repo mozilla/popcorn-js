@@ -1,4 +1,3 @@
-
 PREFIX = .
 BUILD_DIR = ${PREFIX}/build
 DIST_DIR = ${PREFIX}/dist
@@ -7,6 +6,7 @@ PARSERS_DIR = ${PREFIX}/parsers
 PLAYERS_DIR = ${PREFIX}/players
 EFFECTS_DIR = $(PREFIX)/effects
 MODULES_DIR = $(PREFIX)/modules
+WRAPPERS_DIR = $(PREFIX)/wrappers
 IE8_DIR = $(PREFIX)/ie8
 
 # Version number used in naming release files. Defaults to git commit sha.
@@ -32,6 +32,10 @@ POPCORN_MIN = ${DIST_DIR}/popcorn.min.js
 # modules
 MODULES_DIST = ${DIST_DIR}/popcorn.modules.js
 MODULES_MIN = ${DIST_DIR}/popcorn.modules.min.js
+
+# wrappers
+WRAPPERS_DIST = ${DIST_DIR}/popcorn.wrappers.js
+WRAPPERS_MIN = ${DIST_DIR}/popcorn.wrappers.min.js
 
 # plugins
 PLUGINS_DIST = ${DIST_DIR}/popcorn.plugins.js
@@ -64,6 +68,9 @@ EFFECTS_SRC := $(filter-out %unit.js, $(shell find $(EFFECTS_DIR) -name 'popcorn
 # Grab all popcorn.<Module-name>.js files from modules dir
 MODULES_SRC := $(filter-out %unit.js, $(shell find $(MODULES_DIR) -name 'popcorn.*.js' -print))
 
+# Grab all popcorn.<wrapper-name>.js files from modules dir
+WRAPPERS_SRC := $(filter-out %unit.js, $(shell find $(WRAPPERS_DIR) -name 'popcorn.*.js' -print))
+
 # Grab all popcorn.<plugin-name>.unit.js files from plugins dir
 PLUGINS_UNIT := $(shell find ${PLUGINS_DIR} -name 'popcorn.*.unit.js' -print)
 
@@ -79,9 +86,13 @@ EFFECTS_UNIT := $(shell find $(EFFECTS_DIR) -name 'popcorn.*.unit.js' -print)
 # Grab all popcorn.<module-name>.unit.js files from modules dir
 MODULES_UNIT := $(shell find $(MODULES_DIR) -name 'popcorn.*.unit.js' -print)
 
+# Grab all popcorn.<wrapper-name>.unit.js files from modules dir
+WRAPPERS_UNIT := $(shell find $(WRAPPERS_DIR) -name 'popcorn.*.unit.js' -print)
+
 # popcorn + plugins
 POPCORN_COMPLETE_LIST := --js ${POPCORN_SRC} \
                          $(shell for js in ${MODULES_SRC} ; do echo --js $$js ; done) \
+                         $(shell for js in $(WRAPPERS_SRC) ; do echo --js $$js ; done) \
                          $(shell for js in ${EFFECTS_SRC} ; do echo --js $$js ; done) \
                          $(shell for js in ${PLUGINS_SRC} ; do echo --js $$js ; done) \
                          $(shell for js in ${PARSERS_SRC} ; do echo --js $$js ; done) \
@@ -114,7 +125,7 @@ run_lint = @@$(RHINO) build/jslint-check.js $(1)
 all: setup popcorn plugins parsers players effects complete min ie8
 	@@echo "Popcorn build complete.  To create a testing mirror, run: make testing."
 
-check: lint lint-plugins lint-parsers lint-players lint-effects lint-modules
+check: lint lint-plugins lint-parsers lint-players lint-effects lint-modules lint-wrappers
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
@@ -127,7 +138,7 @@ ${POPCORN_DIST}: $(POPCORN_SRC) | $(DIST_DIR)
 	@@$(call add_license, $(POPCORN_DIST))
 	@@$(call add_version, $(POPCORN_DIST))
 
-min: setup ${POPCORN_MIN} ${MODULES_MIN} ${PLUGINS_MIN} ${PARSERS_MIN} ${PLAYERS_MIN} $(EFFECTS_MIN) ${POPCORN_COMPLETE_MIN}
+min: setup ${POPCORN_MIN} ${MODULES_MIN} $(WRAPPERS_MIN) ${PLUGINS_MIN} ${PARSERS_MIN} ${PLAYERS_MIN} $(EFFECTS_MIN) ${POPCORN_COMPLETE_MIN}
 
 ${POPCORN_MIN}: ${POPCORN_DIST}
 	@@echo "Building" ${POPCORN_MIN}
@@ -150,6 +161,16 @@ ${MODULES_MIN}: ${MODULES_DIST}
 ${MODULES_DIST}: ${MODULES_SRC} ${DIST_DIR}
 	@@echo "Building ${MODULES_DIST}"
 	@@cat ${MODULES_SRC} > ${MODULES_DIST}
+
+wrappers: setup $(WRAPPERS_DIST)
+
+$(WRAPPERS_MIN): $(WRAPPERS_DIST)
+	@@echo "Building" $(WRAPPERS_MIN)
+	@@$(call compile, $(shell for js in $(WRAPPERS_SRC) ; do echo --js $$js ; done), $(WRAPPERS_MIN))
+
+$(WRAPPERS_DIST): $(WRAPPERS_SRC) $(DIST_DIR)
+	@@echo "Building $(WRAPPERS_DIST)"
+	@@cat $(WRAPPERS_SRC) > $(WRAPPERS_DIST)
 
 plugins: ${PLUGINS_DIST}
 
@@ -223,6 +244,10 @@ lint-modules:
 	@@echo "Checking all modules against JSLint..."
 	@@$(call run_lint,$(MODULES_SRC))
 
+lint-wrappers:
+	@@echo "Checking all wrappers against JSLint..."
+	@@$(call run_lint,$(WRAPPERS_SRC))
+
 lint-plugins:
 	@@echo "Checking all plugins against JSLint..."
 	@@$(call run_lint,$(PLUGINS_SRC))
@@ -243,6 +268,10 @@ lint-modules-tests:
 	@@echo "Checking modules unit tests against JSLint..."
 	@@$(call run_lint,$(MODULES_UNIT))
 
+lint-wrappers-tests:
+	@@echo "Checking wrappers unit tests against JSLint..."
+	@@$(call run_lint,$(WRAPPERS_UNIT))
+
 lint-plugin-tests:
 	@@echo "Checking plugin unit tests against JSLint..."
 	@@$(call run_lint,$(PLUGINS_UNIT))
@@ -259,7 +288,7 @@ lint-player-tests:
 	@@echo "Checking player unit tests against JSLint..."
 	@@$(call run_lint,$(PLAYERS_UNIT))
 
-lint-unit-tests: lint-modules-tests lint-plugin-tests lint-parser-tests lint-player-tests lint-effects-tests
+lint-unit-tests: lint-modules-tests lint-wrappers-tests lint-plugin-tests lint-parser-tests lint-player-tests lint-effects-tests
 	@@echo "completed"
 
 # Create a mirror copy of the tree in dist/ using popcorn-complete.js
