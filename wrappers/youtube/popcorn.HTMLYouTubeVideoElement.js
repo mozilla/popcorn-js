@@ -286,6 +286,9 @@
       // Don't show related videos when ending
       playerVars.rel = playerVars.rel || 0;
 
+      // transparent wmode allows html divs to overlay on the video.
+      playerVars.wmode = playerVars.wmode || "transparent";
+
       // Don't show YouTube's branding
       playerVars.modestbranding = playerVars.modestbranding || 1;
 
