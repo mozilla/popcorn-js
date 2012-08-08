@@ -3,7 +3,7 @@
   Popcorn.player( "youtube", {
     _canPlayType: function( nodeName, url ) {
 
-      return typeof url === "string" && (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/).test( url ) && nodeName.toLowerCase() !== "video";
+      return typeof url === "string" && Popcorn.HTMLYouTubeVideoElement.canPlayType( url ) && nodeName.toLowerCase() !== "video";
     }
   });
 

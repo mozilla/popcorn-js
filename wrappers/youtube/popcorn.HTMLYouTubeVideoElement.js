@@ -616,14 +616,14 @@
 
   HTMLYouTubeVideoElement.prototype = Popcorn._MediaElementProto;
 
-  HTMLYouTubeVideoElement.prototype.canPlayType = function( url ) {
+  Popcorn.HTMLYouTubeVideoElement = function( id ) {
+    return new HTMLYouTubeVideoElement( id );
+  };
+
+  Popcorn.HTMLYouTubeVideoElement.canPlayType = HTMLYouTubeVideoElement.prototype.canPlayType = function( url ) {
     return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/).test( url ) ?
       "probably" :
       EMPTY_STRING;
-  };
-
-  Popcorn.HTMLYouTubeVideoElement = function( id ) {
-    return new HTMLYouTubeVideoElement( id );
   };
 
 }( Popcorn, window, document ));
