@@ -295,7 +295,6 @@
       if ( !currentTimeInterval ) {
         currentTimeInterval = setInterval( monitorCurrentTime,
                                            CURRENT_TIME_MONITOR_MS ) ;
-        self.dispatchEvent( "playing" );
 
         // Only 1 play when video.loop=true
         if ( impl.loop ) {
@@ -313,6 +312,7 @@
         if ( !impl.loop ) {
           self.dispatchEvent( "play" );
         }
+        self.dispatchEvent( "playing" );
       }
     }
 
