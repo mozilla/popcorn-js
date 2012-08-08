@@ -62,7 +62,7 @@
         networkState: self.NETWORK_EMPTY,
         readyState: self.HAVE_NOTHING,
         seeking: false,
-        autoPlay: EMPTY_STRING,
+        autoplay: EMPTY_STRING,
         preload: EMPTY_STRING,
         controls: true,
         loop: false,
@@ -364,6 +364,13 @@
           "player_id=" + playerUID
         ];
 
+      // Sync loop and autoplay based on URL params, and delete.
+      // We'll manage both internally.
+      impl.loop = queryKey.loop === "1" || impl.loop;
+      delete queryKey.loop;
+      impl.autoplay = queryKey.autoplay === "1" || impl.autoplay;
+      delete queryKey.autoplay;
+
       // Create the base vimeo player string. It will always have query string options
       src = "http://player.vimeo.com/video/" + ( /\d+$/ ).exec( src.path ) + "?";
       for( key in queryKey ) {
@@ -373,11 +380,6 @@
         }
       }
       src += optionsArray.join( "&" );
-
-// TODO: this will mean doing `video.autoplay=true` gets ignored...
-// Should we allow these on the URL?  Or force through properties?
-//      impl.loop = !!src.match( /loop=1/ );
-//      impl.autoplay = !!src.match( /autoplay=1/ );
 
       elem = document.createElement( "iframe" );
       elem.id = playerUID;

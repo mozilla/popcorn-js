@@ -6,6 +6,31 @@ var testData = {
 
   createMedia: function( id ) {
     return Popcorn.HTMLVimeoVideoElement( id );
+  },
+
+  // We need to test Vimeo's URL params, which not all
+  // wrappers mimic.  Do it as a set of tests specific
+  // to Vimeo.
+  playerSpecificAsyncTests: function() {
+
+    asyncTest( "Vimeo 01 - autoplay, loop params", 4, function() {
+
+      var video = testData.createMedia( "#video" );
+
+      video.addEventListener( "loadedmetadata", function onLoadedMetadata() {
+        video.removeEventListener( "loadedmetadata", onLoadedMetadata, false );
+        equal( video.autoplay, true, "autoplay is set via param" );
+        equal( video.loop, true, "loop is set via param" );
+        start();
+      }, false);
+
+      equal( video.autoplay, false, "autoplay is initially false" );
+      equal( video.loop, false, "loop is initially false" );
+
+      video.src = testData.videoSrc + "?autoplay=1&loop=1";
+
+    });
+
   }
 
 };

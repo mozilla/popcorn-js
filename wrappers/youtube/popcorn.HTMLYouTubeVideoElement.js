@@ -66,7 +66,7 @@
         networkState: self.NETWORK_EMPTY,
         readyState: self.HAVE_NOTHING,
         seeking: false,
-        autoPlay: EMPTY_STRING,
+        autoplay: EMPTY_STRING,
         preload: EMPTY_STRING,
         controls: true,
         loop: false,
@@ -101,12 +101,6 @@
 
     function onPlayerReady( event ) {
       playerReady = true;
-
-      var i = playerReadyCallbacks.length;
-      while( i-- ) {
-        playerReadyCallbacks[ i ]();
-        delete playerReadyCallbacks[ i ];
-      }
     }
 
     // YouTube sometimes sends a duration of 0.  From the docs:
@@ -207,6 +201,12 @@
             self.play();
           }
 
+          var i = playerReadyCallbacks.length;
+          while( i-- ) {
+            playerReadyCallbacks[ i ]();
+            delete playerReadyCallbacks[ i ];
+          }
+
           break;
 
         // ended
@@ -282,6 +282,14 @@
 
       // Remove the video id, since we don't want to pass it
       delete playerVars.v;
+
+      // Sync autoplay, but manage internally
+      impl.autoplay = playerVars.autoplay === "1" || impl.autoplay;
+      delete playerVars.autoplay;
+
+      // Sync loop, but manage internally
+      impl.loop = playerVars.loop === "1" || impl.loop;
+      delete playerVars.loop;
 
       // Don't show related videos when ending
       playerVars.rel = playerVars.rel || 0;
