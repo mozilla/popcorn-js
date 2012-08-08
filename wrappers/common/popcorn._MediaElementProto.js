@@ -153,7 +153,7 @@
 
     controls: {
       get: function() {
-        return true;
+        return false;
       },
       set: Popcorn.nop
     },

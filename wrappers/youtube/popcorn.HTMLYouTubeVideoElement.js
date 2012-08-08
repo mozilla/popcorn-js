@@ -68,7 +68,7 @@
         seeking: false,
         autoPlay: EMPTY_STRING,
         preload: EMPTY_STRING,
-        controls: true,
+        controls: false,
         loop: false,
         poster: EMPTY_STRING,
         volume: -1,
