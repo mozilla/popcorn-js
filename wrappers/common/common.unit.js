@@ -394,13 +394,23 @@ asyncTest( "T19 - play event", 1, function() {
 
 asyncTest( "T20 - playing event", 1, function() {
 
-  var video = testData.createMedia( "#video" );
+  var video = testData.createMedia( "#video" ),
+    pause = 0,
+    playing = 0;
+
+  video.addEventListener( "pause", function onPause() {
+    if( pause < 2 ) {
+      pause++;
+      video.play();
+    } else {
+      equal( playing, 3, "playing event should happen, and on every play()" );
+      start();
+    }
+  }, false);
 
   video.addEventListener( "playing", function onPlaying() {
-    video.removeEventListener( "playing", onPlaying, false );
+    playing++;
     video.pause();
-    ok( true, "playing event triggered by autoplay" );
-    start();
   }, false);
 
   video.muted = true;
