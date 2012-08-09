@@ -354,6 +354,11 @@
       playerVars.controls = playerVars.controls || impl.controls ? 2 : 0;
       impl.controls = playerVars.controls;
 
+      impl.autoplay = playerVars.autoplay;
+      if ( impl.autoplay === "1" ) {
+        impl.paused = false;
+      }
+
       // Get video ID out of youtube url
       aSrc = regexYouTube.exec( aSrc )[ 1 ];
 
@@ -482,6 +487,7 @@
         addPlayerReadyCallback( function() { self.play(); } );
         return;
       }
+      impl.paused = false;
       youtubeQueue.add(function() {
         if ( player.getPlayerState() !== 1 ) {
           player.playVideo();
@@ -502,6 +508,7 @@
         addPlayerReadyCallback( function() { self.pause(); } );
         return;
       }
+      impl.paused = true;
       youtubeQueue.add(function() {
         if ( player.getPlayerState() !== 2 ) {
           player.pauseVideo();
