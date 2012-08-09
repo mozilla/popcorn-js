@@ -70,7 +70,8 @@
   }());
 
 
-  var MediaElementProto = {
+  function MediaElementProto(){}
+  MediaElementProto.prototype = {
 
     _util: {
 
@@ -140,7 +141,9 @@
 
   };
 
-  Object.defineProperties( MediaElementProto, {
+  MediaElementProto.prototype.constructor = MediaElementProto;
+
+  Object.defineProperties( MediaElementProto.prototype, {
 
     currentSrc: {
       get: function() {

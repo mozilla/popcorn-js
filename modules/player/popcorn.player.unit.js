@@ -1,3 +1,6 @@
+// Order matters, and async before sync
+QUnit.config.reorder = false;
+
 module( "Popcorn Player" );
 
 test( "Base player methods", 4, function() {
@@ -209,7 +212,6 @@ asyncTest( "Popcorn.smart player selector", function() {
     }
   }
   expect( expects );
-
   Popcorn.player( "spartaPlayer", {
     _canPlayType: function( nodeName, url ) {
 
@@ -224,7 +226,7 @@ asyncTest( "Popcorn.smart player selector", function() {
   plus();
   ok( Popcorn.spartaPlayer.canPlayType( "unsupported element", "this is sparta" ) === false, "canPlayType method fails on invalid container!" );
   plus();
-  equal( Popcorn.smart( "#video", "this is sparta" ).media.nodeName, "DIV", "A player was found for this URL" );
+  ok( !!Popcorn.smart( "#video", "this is sparta" ).media.nodeName, "A player was found for this URL" );
   plus();
 
   // invalid target throws meaningful error
@@ -301,7 +303,7 @@ asyncTest( "Popcorn.smart player selector", function() {
 
 asyncTest( "Popcorn.smart - audio and video elements", function() {
 
-  var expects = 8,
+  var expects = 2,
       count = 0,
       instanceDiv = document.getElementById( "video" ),
       p;
@@ -313,7 +315,7 @@ asyncTest( "Popcorn.smart - audio and video elements", function() {
   }
 
   p = Popcorn.smart( "#video",  [ "../../test/italia.ogg", "../../test/silence.mp3" ] );
-  equal( instanceDiv.children[ 0 ].nodeName, "AUDIO", "Smart player correctly creates audio elements" );
+  equal( instanceDiv.children[ 0 ].nodeName, "VIDEO", "Smart player correctly creates HTML5 media elements" );
   instanceDiv.innerHTML = "";
   p.destroy();
   plus();
@@ -323,110 +325,43 @@ asyncTest( "Popcorn.smart - audio and video elements", function() {
   p.destroy();
   plus();
 
-  p = Popcorn.smart( "#audioElement" );
-  equal( p.media.nodeName, "AUDIO", "Using the audio element itself works" );
-  plus();
-  equal( p.media.getAttribute( "src" ), "../../test/italia.ogg", "Using original audio src" );
-  p.destroy();
-  plus();
-
-  p = Popcorn.smart( "#videoElement" );
-  equal( p.media.nodeName, "VIDEO", "Using the video element itself works" );
-  plus();
-  equal( p.media.getAttribute( "src" ), "../../test/trailer.ogv", "Using original video src" );
-  p.destroy();
-  plus();
-
-  p = Popcorn.smart( "#audioElement", "http://upload.wikimedia.org/wikipedia/commons/1/1d/Demo_chorus.ogg" );
-  equal( p.media.src, "http://upload.wikimedia.org/wikipedia/commons/1/1d/Demo_chorus.ogg", "Overwrote original source on audio element, using specified source" );
-  p.destroy();
-  plus();
-
-  p = Popcorn.smart( "#videoElement", "http://videos.mozilla.org/serv/webmademovies/atultroll.webm" );
-  equal( p.media.src, "http://videos.mozilla.org/serv/webmademovies/atultroll.webm", "Overwrote original source on video element, using specified source" );
-  p.destroy();
-  plus();
 });
 
-asyncTest( "Popcorn.smart - multiple sources for mixed media", function() {
-
-  Popcorn.player( "playerOne", {
-    _canPlayType: function( nodeName, url ) {
-
-      return url === "playerOne";
-    }
-  });
-
-  Popcorn.player( "playerTwo", {
-    _canPlayType: function( nodeName, url ) {
-
-      return url === "playerTwo";
-    }
-  });
-
-  expect( 9 );
-
-  var p1, p2, p3, p4, p5, p6, p7, p8,
-      srcResult;
-
-  p1 = Popcorn.smart( "#multi-div-mixed1", [ "invalid", "../../test/trailer.ogv", "../../test/trailer.mp4", "playerOne" ] );
-  p2 = Popcorn.smart( "#multi-div-mixed2", [ "playerOne", "../../test/trailer.ogv", "playerTwo" ] );
-  p3 = Popcorn.smart( "#multi-div-mixed3", "playerTwo" );
-  p4 = Popcorn.smart( "#multi-div-mixed4", [ "invalid", "playerTwo", "../../test/trailer.ogv" ] );
-  p5 = Popcorn.smart( "#multi-div-mixed5", "../../test/trailer.ogv" );
-  p6 = Popcorn.smart( "#multi-div-mixed6",
-    [ "../../test/trailer.derp?smartnotsosmart=no",
-      "../../test/trailer.ogv?arewesmartyet=yes",
-      "../../test/trailer.mp4?arewesmartyet=yes",
-      "../../test/trailer.derp?smartnotsosmart=no" ] );
-  p7 = Popcorn.smart( "#multi-div-mixed7",
-    [ "http://usr:pwd@www.test.com:81/dir/dir.2/video.derp?q1=0&&test1&test2=value#top",
-      "http://www.test.com:81/dir/dir.2/video.ogv?q1=0&&test1&test2=value#top",
-      "http://www.test.com:81/dir/dir.2/video.mp4?q1=0&&test1&test2=value#top",
-      "http://usr:pwd@www.test.com:81/dir/dir.2/video.derp?q1=0&&test1&test2=value#top" ] );
-  p8 = Popcorn.smart( "#multi-div-mixed8",
-    [ "host.com:81/direc.tory/file.derp?query=1&test=2#anchor",
-      "host.com:81/direc.tory/file.webm?query=1&test=2#anchor",
-      "host.com:81/direc.tory/file.mp4?query=1&test=2#anchor",
-      "host.com:81/direc.tory/file.derp?query=1&test=2#anchor" ] );
-  p9 = Popcorn.smart( "#multi-div-mixed9",
-    [ "../../test/trailer.mp4",
-      "../../test/trailer.webm",
-      "../../test/trailer.ogv" ] );
-
-  srcResult = p1.media.src.split( "/" );
-  ok( /trailer\.(ogv|mp4)/.test( srcResult[ srcResult.length - 1 ] ), "HTML5 works as valid fallback." );
-
-  srcResult = p2.media.src.split( "/" );
-  equal( p2.media.src.split( "/" )[ srcResult.length - 1 ], "playerOne", "Custom playerOne works as first media, if valid." );
-
-  srcResult = p3.media.src.split( "/" );
-  equal( p3.media.src.split( "/" )[ srcResult.length - 1 ], "playerTwo", "Custom playerTwo works as first media, even if it is the only media." );
-
-  srcResult = p4.media.src.split( "/" );
-  equal( p4.media.src.split( "/" )[ srcResult.length - 1 ], "playerTwo", "Custom playerTwo works as valid fallback." );
-
-  srcResult = p5.media.src.split( "/" );
-  equal( p5.media.src.split( "/" )[ srcResult.length - 1 ], "trailer.ogv", "HTML5 works as first media, even if it is the only media." );
-
-  srcResult = p6.media.src.split( "/" );
-  ok( /trailer\.(ogv|mp4)\?arewesmartyet=yes/.test( srcResult[ srcResult.length - 1 ] ), "HTML5 works as second valid media, even if it has a query string." );
-
-  ok( /http:\/\/www\.test\.com:81\/dir\/dir\.2\/video\.(ogv|mp4)\?q1=0\&\&test1\&test2=value#top/.test( p7.media.src ), "HTML5 works as second valid media, even if it has a query string." );
-
-  ok( /host\.com:81\/direc\.tory\/file\.(webm|mp4)\?query=1\&test=2#anchor/.test( p8.media.src ), "HTML5 works as second valid media, even if it has a query string." );
-
-  p9.on( "loadedmetadata", function onLoadedMetaData() {
-    ok( true, "Using legitimate video sources, correct video is chosen and loading." );
-    p9.off( "loadedmetadata", onLoadedMetaData );
-    start();
-  });
-  
-});
-
-asyncTest( "Popcorn.smart - Defaults controls to true HTML5 Media when target is a div", function() {
+asyncTest( "Popcorn.smart - controls off by default as per spec", function() {
   var p1 = Popcorn.smart( "#videoControls", "../../test/trailer.ogv" );
 
-  ok( p1.controls(), "Video Element has controls attribute. Successfully defaulted to being set" );
+  ok( !p1.controls(), "Video Element has no controls" );
   start();
+});
+
+asyncTest( "Popcorn.smart - YouTube wrapper", 1, function() {
+  var src = "http://www.youtube.com/watch/?v=nfGV32RNkhw",
+    p1 = Popcorn.smart( "#video", src );
+
+  p1.on( "loadedmetadata", function() {
+    equal( p1.media.src, src, "Popcorn.smart correctly uses YouTube Wrapper" );
+    start();
+  });
+});
+
+asyncTest( "Popcorn.smart - Vimeo wrapper", 1, function() {
+
+  var src = "http://vimeo.com/12235444",
+    p1 = Popcorn.smart( "#video", src );
+
+  p1.on( "loadedmetadata", function() {
+    equal( p1.media.currentSrc, src, "Popcorn.smart correctly uses Vimeo Wrapper" );
+    start();
+  });
+});
+
+asyncTest( "Popcorn.smart - Null Video wrapper", 1, function() {
+
+  var src = "#t=,100",
+    p1 = Popcorn.smart( "#video", src );
+
+  p1.on( "loadedmetadata", function() {
+    equal( p1.media.currentSrc, src, "Popcorn.smart correctly uses Null Video Wrapper" );
+    start();
+  });
 });

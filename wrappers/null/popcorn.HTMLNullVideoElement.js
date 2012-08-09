@@ -139,7 +139,7 @@
     }
 
     function changeSrc( aSrc ) {
-      if( !self.canPlayType( aSrc ) ) {
+      if( !self._canPlaySrc( aSrc ) ) {
         impl.error = {
           name: "MediaError",
           message: "Media Source Not Supported",
@@ -414,16 +414,24 @@
     });
   }
 
-  HTMLNullVideoElement.prototype = Popcorn._MediaElementProto;
+  HTMLNullVideoElement.prototype = new Popcorn._MediaElementProto();
+  HTMLNullVideoElement.prototype.constructor = HTMLNullVideoElement;
 
-  HTMLNullVideoElement.prototype.canPlayType = function( url ) {
+  // Helper for identifying URLs we know how to play.
+  HTMLNullVideoElement.prototype._canPlaySrc = function( url ) {
     return ( /#t=\d*,?\d+?/ ).test( url ) ?
       "probably" :
       EMPTY_STRING;
   };
 
+  // We'll attempt to support a mime type of video/x-nullvideo
+  HTMLNullVideoElement.prototype.canPlayType = function( type ) {
+    return type === "video/x-nullvideo" ? "probably" : EMPTY_STRING;
+  };
+
   Popcorn.HTMLNullVideoElement = function( id ) {
     return new HTMLNullVideoElement( id );
   };
+  Popcorn.HTMLNullVideoElement._canPlaySrc = HTMLNullVideoElement.prototype._canPlaySrc;
 
 }( Popcorn, document ));
