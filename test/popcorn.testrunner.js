@@ -17,7 +17,7 @@
         results_arr = [],
         userAgent = id( "qunit-userAgent" ),
         checkboxes = [],
-        testTypes = [ "core-tests", "plugin-tests", "player-tests", "parser-tests", "module-tests" ],
+        testTypes = [ "core-tests", "plugin-tests", "player-tests", "parser-tests", "module-tests", "wrapper-tests" ],
         queryString = "",
         runSelected = document.getElementById( "run-selected" );
 
@@ -51,6 +51,7 @@
           "player-tests": "1",
           "parser-tests": "1",
           "module-tests": "1",
+          "wrapper-tests": "1"
         };
       }
       return queryVars;
@@ -219,7 +220,7 @@
           loadedCallback && typeof loadedCallback === "function" && loadedCallback();
         }
       });
-    }
+    };
 
     this.runTests = function() {
       if ( testList.length ) {
