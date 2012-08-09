@@ -10,16 +10,11 @@
     </style>
     <script src="../../popcorn.js"></script>
     <script src="../../modules/player/popcorn.player.js"></script>
+    <script src="../../wrappers/common/popcorn._MediaElementProto.js"></script>
+    <script src="../../wrappers/soundcloud/popcorn.HTMLSoundCloudAudioElement.js"></script>
     <script type="text/javascript" src="popcorn.soundcloud.js"></script>
     <!-- Plugins for demo purposes -->
     <script src="../../plugins/footnote/popcorn.footnote.js"></script>
-    <script src="../../plugins/flickr/popcorn.flickr.js"></script>
-    <script src="../../plugins/attribution/popcorn.attribution.js"></script>
-    <script src="../../plugins/webpage/popcorn.webpage.js"></script>
-    <script src="../../plugins/googlefeed/popcorn.googlefeed.js"></script>
-    <script src="../../plugins/image/popcorn.image.js"></script>
-    <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
-    <script src="../../plugins/twitter/popcorn.twitter.js"></script>
 
     <script type="text/javascript">
       document.addEventListener( "DOMContentLoaded", function() {
@@ -83,56 +78,13 @@
 
         });
 
-        popcorn.subtitle({
-          start: 5,
-          end: 15,
-          text: "This is overlaid on top of the audio visualization. You can hightlight it!",
-          display: "inline",
-          language: "en"
-        })
-        .footnote({
+        popcorn.footnote({
           start: 5,
           end: 40,
           text: "The song is 'Flickermood', by Forss",
           target: "footnotediv"
-        })
-        .flickr({
-          start: 20,
-          end: 40,
-          tags: "georgia",
-          numberofimages: "8",
-          target: "flickrdiv"
-        })
-        .twitter({
-          start: 20,
-          end: 45,
-          title: "Oil Spill",
-          src: "#oilspill",
-          target: "twitterdiv"
-        })
-        .attribution({
-          start: 5,
-          end: 60,
-          nameofwork: "Flickermood",
-          nameofworkurl:"http://soundcloud.com/forss/flickermood",
-          copyrightholder: "Eric Wahlforss",
-          target: "attribdiv"
-        })
-        .googlefeed({
-          start: 0,
-          end: 15,
-          target: "feeddiv",
-          url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
-          title: "Planet Feed",
-          orientation: "Vertical"
-        })
-        .image({
-          start: 5,
-          end: 15,
-          href: "http://www.drumbeat.org/",
-          src: "https://www.drumbeat.org/media//images/drumbeat-logo-splash.png",
-          target: "imagediv"
         });
+
       }, false);
     </script>
   </head>
@@ -155,24 +107,6 @@
       <br />
       <div id="footnotediv" width="50%" height="50%">
         <strong>Footnote Area</strong><br />
-      </div>
-      <div id="attribdiv" width="50%" height="50%">
-        <strong>Attributions Area</strong><br />
-      </div>
-      <div id="flickrdiv" width="50%" height="50%">
-        <strong>Flickr Area</strong><br />
-      </div>
-      <div id="twitterdiv" width="50%" height="50%">
-        <strong>Twitter Area</strong><br />
-      </div>
-      <div id="imagediv" width="50%" height="50%">
-        <strong>Image Area</strong><br />
-      </div>
-      <div id="feeddiv" width="50%" height="50%">
-        <strong>Google Feed Area</strong><br />
-      </div>
-      <div id="webpagediv" width="100px" height="50px">
-        <strong>Web Page Area</strong><br />
       </div>
     </div>
   </body>

@@ -48,7 +48,7 @@
     }
 
     var self = this,
-      parent = typeof id === "string" ? document.querySelector( id ) : id,
+      parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
       elem,
       impl = {
         src: EMPTY_STRING,
@@ -57,7 +57,7 @@
         seeking: false,
         autoplay: EMPTY_STRING,
         preload: EMPTY_STRING,
-        controls: true,
+        controls: false,
         loop: false,
         poster: EMPTY_STRING,
         volume: 1,
