@@ -1,5 +1,35 @@
 (function( Popcorn, window, document ) {
 
+  // player queue is to help players queue things like play and pause
+  // HTML5 video's play and pause are asynch, but do fire in sequence
+  // play() should really mean "requestPlay()" or "queuePlay()" and
+  // stash a callback that will play the media resource when it's ready to be played
+  var playerQueue = function() {
+
+    var _queue = [],
+        _running = false;
+
+    return {
+      next: function() {
+
+        _running = false;
+        _queue.shift();
+        _queue[ 0 ] && _queue[ 0 ]();
+      },
+      add: function( callback ) {
+
+        _queue.push(function() {
+
+          _running = true;
+          callback && callback();
+        });
+
+        // if there is only one item on the queue, start it
+        !_running && _queue[ 0 ]();
+      }
+    };
+  };
+
   var
 
   CURRENT_TIME_MONITOR_MS = 10,
@@ -84,10 +114,12 @@
       playerReady = false,
       player,
       firstPlay = false,
+      youtubeQueue = playerQueue(),
       playerReadyCallbacks = [],
       currentTimeInterval,
       lastCurrentTime = 0,
       seekTarget = -1,
+      seekEps = 0,
       timeUpdateInterval,
       forcedLoadMetadata = false;
 
@@ -230,12 +262,14 @@
             }
           } else {
             onPlay();
+            youtubeQueue.next();
           }
           break;
 
         // paused
         case YT.PlayerState.PAUSED:
           onPause();
+          youtubeQueue.next();
           break;
 
         // buffering
@@ -357,10 +391,16 @@
       // See if we had a pending seek via code.  YouTube drops us within
       // 1 second of our target time, so we have to round a bit, or miss
       // many seek ends.
-      if( ( seekTarget > -1 ) &&
-          ( ABS( currentTime - seekTarget ) < 1 ) ) {
-        seekTarget = -1;
-        onSeeked();
+      if( seekTarget > -1 ) {
+        if ( seekTarget >= currentTime - seekEps && seekTarget <= currentTime + seekEps ) {
+          seekTarget = -1;
+          seekEps = 0;
+          onSeeked();
+        } else {
+          // seek didn't work very well, try again with higher tolerance
+          seekEps += 0.01;
+          player.seekTo( seekTarget );
+        }
       }
       lastCurrentTime = impl.currentTime;
     }
@@ -442,7 +482,13 @@
         addPlayerReadyCallback( function() { self.play(); } );
         return;
       }
-      player.playVideo();
+      youtubeQueue.add(function() {
+        if ( player.getPlayerState() !== 1 ) {
+          player.playVideo();
+        } else {
+          youtubeQueue.next();
+        }
+      });
     };
 
     function onPause() {
@@ -456,7 +502,13 @@
         addPlayerReadyCallback( function() { self.pause(); } );
         return;
       }
-      player.pauseVideo();
+      youtubeQueue.add(function() {
+        if ( player.getPlayerState() !== 2 ) {
+          player.pauseVideo();
+        } else {
+          youtubeQueue.next();
+        }
+      });
     };
 
     function onEnded() {
