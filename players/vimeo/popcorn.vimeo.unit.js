@@ -187,35 +187,6 @@ asyncTest( "seeking and seeked from buffer", 5, function() {
 });
 
 module( "Options" );
-asyncTest( "Popcorn Options Check", 1, function() {
-  var options = {
-        title: 0,
-        byline: 0,
-        portrait: 0,
-        color: 333,
-        autoplay: 1,
-        loop: 1
-      },
-      p = Popcorn.vimeo( "#player", "http://player.vimeo.com/video/11336811", options );
-
-  p.on( "loadstart", function() {
-    var iframe = document.querySelector( "#player iframe" ).src.match( /\?(.*)$/ )[1].split("&");
-    var reflected = {};
-
-    iframe.forEach( function( value, index, array ) {
-      var pair = value.split( "=" );
-      reflected[ pair[ 0 ] ] = +pair[1];
-    });
-    delete reflected.api;
-    delete reflected.player_id;
-
-    deepEqual( options, reflected, "Vimeo options passed by Popcorn ctor are reflected in URL" );
-
-    p.destroy();
-    start();
-  });
-});
-
 asyncTest( "URL Options Check", 1, function() {
   var options = {
         title: 0,
@@ -263,10 +234,10 @@ asyncTest( "Known good short URL", 1, function() {
 });
 
 asyncTest( "Known bad URL", 1, function() {
-
   var url = "http://google.com",
       expected = "",
-      p = Popcorn.vimeo( "#player", url ).on( "error", function() {
+      p = Popcorn.vimeo( "#player", url )
+      .on( "error", function() {
         ok( true, "Vimeo failed to load bad URL" );
         p.destroy();
         start();

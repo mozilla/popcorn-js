@@ -55,7 +55,7 @@
     }
 
     var self = this,
-      parent = typeof id === "string" ? document.querySelector( id ) : id,
+      parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
       elem,
       impl = {
         src: EMPTY_STRING,
@@ -68,7 +68,7 @@
         loop: false,
         poster: EMPTY_STRING,
         // Vimeo seems to use .77 as default
-        volume: 0.77,
+        volume: 1,
         // Vimeo has no concept of muted, store volume values
         // such that muted===0 is unmuted, and muted>0 is muted.
         muted: 0,
@@ -98,9 +98,6 @@
     }
 
     function onPlayerReady( event ) {
-      player = new VimeoPlayer( elem );
-      playerReady = true;
-
       player.addEventListener( 'loadProgress' );
       player.addEventListener( 'playProgress' );
       player.addEventListener( 'play' );
@@ -109,17 +106,6 @@
       player.addEventListener( 'seek' );
 
       player.getDuration();
-
-      // Auto-start if necessary
-      if( impl.autoplay ) {
-        self.play();
-      }
-
-      var i = playerReadyCallbacks.length;
-      while( i-- ) {
-        playerReadyCallbacks[ i ]();
-        delete playerReadyCallbacks[ i ];
-      }
 
       impl.networkState = self.NETWORK_LOADING;
       self.dispatchEvent( "loadstart" );
@@ -146,6 +132,16 @@
 
           impl.readyState = self.HAVE_ENOUGH_DATA;
           self.dispatchEvent( "canplaythrough" );
+          // Auto-start if necessary
+          if( impl.autoplay ) {
+            self.play();
+          }
+
+          var i = playerReadyCallbacks.length;
+          while( i-- ) {
+            playerReadyCallbacks[ i ]();
+            delete playerReadyCallbacks[ i ];
+          }
         }
       }
     }
@@ -271,6 +267,52 @@
       lastCurrentTime = impl.currentTime;
     }
 
+    // We deal with the startup load messages differently than
+    // we will once the player is fully ready and loaded.
+    // When the player is "ready" it is playable, but not
+    // yet seekable.  We need to force a play() to get data
+    // to download (mimic preload=auto), or seeks will fail.
+    function startupMessage( event ) {
+      if( event.origin !== "http://player.vimeo.com" ) {
+        return;
+      }
+
+      var data;
+      try {
+        data = JSON.parse( event.data );
+      } catch ( ex ) {
+        console.warn( ex );
+      }
+
+      if ( data.player_id != playerUID ) {
+        return;
+      }
+
+      switch ( data.event ) {
+        case "ready":
+          player = new VimeoPlayer( elem );
+          player.addEventListener( "loadProgress" );
+          player.addEventListener( "pause" );
+          player.setVolume( 0 );
+          player.play();
+          break;
+        case "loadProgress":
+          var duration = parseFloat( data.data.duration );
+          if( duration > 0 && !playerReady ) {
+            playerReady = true;
+            player.pause();
+          }
+          break;
+        case "pause":
+          player.setVolume( 1 );
+          // Switch message pump to use run-time message callback vs. startup
+          window.removeEventListener( "message", startupMessage, false );
+          window.addEventListener( "message", onStateChange, false );
+          onPlayerReady();
+          break;
+      }
+    }
+
     function onStateChange( event ) {
       if( event.origin !== "http://player.vimeo.com" ) {
         return;
@@ -302,9 +344,6 @@
 
       // Events
       switch ( data.event ) {
-        case "ready":
-          onPlayerReady();
-          break;
         case "loadProgress":
           self.dispatchEvent( "progress" );
           updateDuration( parseFloat( data.data.duration ) );
@@ -396,7 +435,7 @@
       parent.appendChild( elem );
       elem.src = src;
 
-      window.addEventListener( 'message', onStateChange, false );
+      window.addEventListener( "message", startupMessage, false );
     }
 
     function onVolume( aValue ) {
