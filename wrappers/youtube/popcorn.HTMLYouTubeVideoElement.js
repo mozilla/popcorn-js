@@ -83,6 +83,7 @@
       },
       playerReady = false,
       player,
+      firstPlay = false,
       playerReadyCallbacks = [],
       currentTimeInterval,
       lastCurrentTime = 0,
@@ -107,6 +108,13 @@
         playerReadyCallbacks[ i ]();
         delete playerReadyCallbacks[ i ];
       }
+
+      // triggers a play to initial loaded state
+      // Youtube fires a play after the initial seek
+      // this is canceled if a play is triggered
+      // we fire a pause on the initial play
+      // then we tell popcorn we are ready
+      player.playVideo();
     }
 
     // YouTube sometimes sends a duration of 0.  From the docs:
@@ -189,24 +197,6 @@
 
         // unstarted
         case -1:
-          // XXX: this should really live in cued below, but doesn't work.
-          impl.readyState = self.HAVE_METADATA;
-          self.dispatchEvent( "loadedmetadata" );
-
-          self.dispatchEvent( "loadeddata" );
-
-          impl.readyState = self.HAVE_FUTURE_DATA;
-          self.dispatchEvent( "canplay" );
-
-          // We can't easily determine canplaythrough, but will send anyway.
-          impl.readyState = self.HAVE_ENOUGH_DATA;
-          self.dispatchEvent( "canplaythrough" );
-
-          // Auto-start if necessary
-          if( impl.autoplay ) {
-            self.play();
-          }
-
           break;
 
         // ended
@@ -216,7 +206,31 @@
 
         // playing
         case YT.PlayerState.PLAYING:
-          onPlay();
+          if ( !firstPlay ) {
+            firstPlay = true;
+
+            player.pauseVideo();
+
+            // XXX: this should really live in cued below, but doesn't work.
+            impl.readyState = self.HAVE_METADATA;
+            self.dispatchEvent( "loadedmetadata" );
+
+            self.dispatchEvent( "loadeddata" );
+
+            impl.readyState = self.HAVE_FUTURE_DATA;
+            self.dispatchEvent( "canplay" );
+
+            // We can't easily determine canplaythrough, but will send anyway.
+            impl.readyState = self.HAVE_ENOUGH_DATA;
+            self.dispatchEvent( "canplaythrough" );
+
+            // Auto-start if necessary
+            if( impl.autoplay ) {
+              self.play();
+            }
+          } else {
+            onPlay();
+          }
           break;
 
         // paused
