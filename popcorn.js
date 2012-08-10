@@ -1143,13 +1143,13 @@
         if ( start._id === removeId ) {
           indexWasAt = index;
 
+          // cache the track event being removed
+          track = start;
+
           // If a _teardown function was defined,
           // enforce for track event removals
           if ( start._natives._teardown ) {
             start._natives._teardown.call( obj, start );
-
-            // cache the track event being removed
-            track = start;
           }
         }
       }
