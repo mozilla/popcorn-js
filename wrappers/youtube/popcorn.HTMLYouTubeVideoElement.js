@@ -1,5 +1,35 @@
 (function( Popcorn, window, document ) {
 
+  // player queue is to help players queue things like play and pause
+  // HTML5 video's play and pause are asynch, but do fire in sequence
+  // play() should really mean "requestPlay()" or "queuePlay()" and
+  // stash a callback that will play the media resource when it's ready to be played
+  var playerQueue = function() {
+
+    var _queue = [],
+        _running = false;
+
+    return {
+      next: function() {
+
+        _running = false;
+        _queue.shift();
+        _queue[ 0 ] && _queue[ 0 ]();
+      },
+      add: function( callback ) {
+
+        _queue.push(function() {
+
+          _running = true;
+          callback && callback();
+        });
+
+        // if there is only one item on the queue, start it
+        !_running && _queue[ 0 ]();
+      }
+    };
+  };
+
   var
 
   CURRENT_TIME_MONITOR_MS = 10,
@@ -68,7 +98,7 @@
         seeking: false,
         autoPlay: EMPTY_STRING,
         preload: EMPTY_STRING,
-        controls: true,
+        controls: false,
         loop: false,
         poster: EMPTY_STRING,
         volume: -1,
@@ -83,10 +113,13 @@
       },
       playerReady = false,
       player,
+      firstPlay = false,
+      youtubeQueue = playerQueue(),
       playerReadyCallbacks = [],
       currentTimeInterval,
       lastCurrentTime = 0,
       seekTarget = -1,
+      seekEps = 0,
       timeUpdateInterval,
       forcedLoadMetadata = false;
 
@@ -107,6 +140,13 @@
         playerReadyCallbacks[ i ]();
         delete playerReadyCallbacks[ i ];
       }
+
+      // triggers a play to initial loaded state
+      // Youtube fires a play after the initial seek
+      // this is canceled if a play is triggered
+      // we fire a pause on the initial play
+      // then we tell popcorn we are ready
+      player.playVideo();
     }
 
     // YouTube sometimes sends a duration of 0.  From the docs:
@@ -189,24 +229,6 @@
 
         // unstarted
         case -1:
-          // XXX: this should really live in cued below, but doesn't work.
-          impl.readyState = self.HAVE_METADATA;
-          self.dispatchEvent( "loadedmetadata" );
-
-          self.dispatchEvent( "loadeddata" );
-
-          impl.readyState = self.HAVE_FUTURE_DATA;
-          self.dispatchEvent( "canplay" );
-
-          // We can't easily determine canplaythrough, but will send anyway.
-          impl.readyState = self.HAVE_ENOUGH_DATA;
-          self.dispatchEvent( "canplaythrough" );
-
-          // Auto-start if necessary
-          if( impl.autoplay ) {
-            self.play();
-          }
-
           break;
 
         // ended
@@ -216,12 +238,38 @@
 
         // playing
         case YT.PlayerState.PLAYING:
-          onPlay();
+          if ( !firstPlay ) {
+            firstPlay = true;
+
+            player.pauseVideo();
+
+            // XXX: this should really live in cued below, but doesn't work.
+            impl.readyState = self.HAVE_METADATA;
+            self.dispatchEvent( "loadedmetadata" );
+
+            self.dispatchEvent( "loadeddata" );
+
+            impl.readyState = self.HAVE_FUTURE_DATA;
+            self.dispatchEvent( "canplay" );
+
+            // We can't easily determine canplaythrough, but will send anyway.
+            impl.readyState = self.HAVE_ENOUGH_DATA;
+            self.dispatchEvent( "canplaythrough" );
+
+            // Auto-start if necessary
+            if( impl.autoplay ) {
+              self.play();
+            }
+          } else {
+            onPlay();
+            youtubeQueue.next();
+          }
           break;
 
         // paused
         case YT.PlayerState.PAUSED:
           onPause();
+          youtubeQueue.next();
           break;
 
         // buffering
@@ -286,6 +334,9 @@
       // Don't show related videos when ending
       playerVars.rel = playerVars.rel || 0;
 
+      // transparent wmode allows html divs to overlay on the video.
+      playerVars.wmode = playerVars.wmode || "transparent";
+
       // Don't show YouTube's branding
       playerVars.modestbranding = playerVars.modestbranding || 1;
 
@@ -302,6 +353,11 @@
       // Show/hide controls. Sync with impl.controls and prefer URL value.
       playerVars.controls = playerVars.controls || impl.controls ? 2 : 0;
       impl.controls = playerVars.controls;
+
+      impl.autoplay = playerVars.autoplay;
+      if ( impl.autoplay === "1" ) {
+        impl.paused = false;
+      }
 
       // Get video ID out of youtube url
       aSrc = regexYouTube.exec( aSrc )[ 1 ];
@@ -340,10 +396,16 @@
       // See if we had a pending seek via code.  YouTube drops us within
       // 1 second of our target time, so we have to round a bit, or miss
       // many seek ends.
-      if( ( seekTarget > -1 ) &&
-          ( ABS( currentTime - seekTarget ) < 1 ) ) {
-        seekTarget = -1;
-        onSeeked();
+      if( seekTarget > -1 ) {
+        if ( seekTarget >= currentTime - seekEps && seekTarget <= currentTime + seekEps ) {
+          seekTarget = -1;
+          seekEps = 0;
+          onSeeked();
+        } else {
+          // seek didn't work very well, try again with higher tolerance
+          seekEps += 0.01;
+          player.seekTo( seekTarget );
+        }
       }
       lastCurrentTime = impl.currentTime;
     }
@@ -425,7 +487,14 @@
         addPlayerReadyCallback( function() { self.play(); } );
         return;
       }
-      player.playVideo();
+      impl.paused = false;
+      youtubeQueue.add(function() {
+        if ( player.getPlayerState() !== 1 ) {
+          player.playVideo();
+        } else {
+          youtubeQueue.next();
+        }
+      });
     };
 
     function onPause() {
@@ -439,7 +508,14 @@
         addPlayerReadyCallback( function() { self.pause(); } );
         return;
       }
-      player.pauseVideo();
+      impl.paused = true;
+      youtubeQueue.add(function() {
+        if ( player.getPlayerState() !== 2 ) {
+          player.pauseVideo();
+        } else {
+          youtubeQueue.next();
+        }
+      });
     };
 
     function onEnded() {
@@ -616,14 +692,14 @@
 
   HTMLYouTubeVideoElement.prototype = Popcorn._MediaElementProto;
 
-  HTMLYouTubeVideoElement.prototype.canPlayType = function( url ) {
+  Popcorn.HTMLYouTubeVideoElement = function( id ) {
+    return new HTMLYouTubeVideoElement( id );
+  };
+
+  Popcorn.HTMLYouTubeVideoElement.canPlayType = HTMLYouTubeVideoElement.prototype.canPlayType = function( url ) {
     return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/).test( url ) ?
       "probably" :
       EMPTY_STRING;
-  };
-
-  Popcorn.HTMLYouTubeVideoElement = function( id ) {
-    return new HTMLYouTubeVideoElement( id );
   };
 
 }( Popcorn, window, document ));
