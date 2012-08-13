@@ -55,7 +55,7 @@
         networkState: self.NETWORK_EMPTY,
         readyState: self.HAVE_NOTHING,
         seeking: false,
-        autoPlay: EMPTY_STRING,
+        autoplay: EMPTY_STRING,
         preload: EMPTY_STRING,
         controls: true,
         loop: false,

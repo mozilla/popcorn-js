@@ -595,6 +595,12 @@ asyncTest( "T26 - loop (NOTE: test takes a minute to complete) [Known to fail wi
 });
 
 
+// Add any player-specific async tests now
+if( testData.playerSpecificAsyncTests ) {
+  testData.playerSpecificAsyncTests();
+}
+
+
 /** Sync Tests **/
 
 test( "T27 - canPlayType", function() {
@@ -682,3 +688,9 @@ test( "T33 - networkState", function() {
       "networkState is initially NETWORK_EMPTY or NETWORK_NO_SOURCE" );
 
 });
+
+
+// Add any player-specific sync tests now
+if( testData.playerSpecificSyncTests ) {
+  testData.playerSpecificSyncTests();
+}
