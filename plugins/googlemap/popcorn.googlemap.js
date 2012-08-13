@@ -113,7 +113,7 @@ var googleCallback;
         target = document.getElementById( options.target );
 
     options.type = options.type || "ROADMAP";
-    options.zoom = options.zoom || 1;
+    options.zoom = options.zoom || 10;
     options.lat = options.lat || 0;
     options.lng = options.lng || 0;
 
