@@ -122,6 +122,11 @@
       return "";
     },
 
+    // Popcorn expects getBoundingClientRect to exist, forward to parent node.
+    getBoundingClientRect: function() {
+      return this.parentNode.getBoundingClientRect();
+    },
+
     NETWORK_EMPTY: 0,
     NETWORK_IDLE: 1,
     NETWORK_LOADING: 2,
