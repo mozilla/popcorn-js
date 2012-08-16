@@ -337,7 +337,7 @@
     }
 
     function changeSrc( aSrc ) {
-      if( !self.canPlayType( aSrc ) ) {
+      if( !self._canPlaySrc( aSrc ) ) {
         impl.error = {
           name: "MediaError",
           message: "Media Source Not Supported",
@@ -568,15 +568,23 @@
     });
   }
 
-  HTMLVimeoVideoElement.prototype = Popcorn._MediaElementProto;
+  HTMLVimeoVideoElement.prototype = new Popcorn._MediaElementProto();
+  HTMLVimeoVideoElement.prototype.constructor = HTMLVimeoVideoElement;
 
-  HTMLVimeoVideoElement.prototype.canPlayType = function( url ) {
+  // Helper for identifying URLs we know how to play.
+  HTMLVimeoVideoElement.prototype._canPlaySrc = function( url ) {
     return ( (/player.vimeo.com\/video\/\d+/).test( url ) ||
              (/vimeo.com\/\d+/).test( url ) ) ? "probably" : EMPTY_STRING;
+  };
+
+  // We'll attempt to support a mime type of video/x-vimeo
+  HTMLVimeoVideoElement.prototype.canPlayType = function( type ) {
+    return type === "video/x-vimeo" ? "probably" : EMPTY_STRING;
   };
 
   Popcorn.HTMLVimeoVideoElement = function( id ) {
     return new HTMLVimeoVideoElement( id );
   };
+  Popcorn.HTMLVimeoVideoElement._canPlaySrc = HTMLVimeoVideoElement.prototype._canPlaySrc;
 
 }( Popcorn, window, document ));

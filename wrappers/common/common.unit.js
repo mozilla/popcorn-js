@@ -603,14 +603,15 @@ if( testData.playerSpecificAsyncTests ) {
 
 /** Sync Tests **/
 
-test( "T27 - canPlayType", function() {
+test( "T27 - _canPlaySrc", function() {
 
   var video = testData.createMedia( "#video" );
-  equal( video.canPlayType( "garbage" ), "", "Report empty string if we can't play the type" );
-  // We hijack canPlayType to check URLs vs. mime-types in some wrappers.
-  notEqual( video.canPlayType( testData.videoType ? testData.videoType : testData.videoSrc ), "",
+  // HTML5 wrapped media will always give "maybe", so deal with "" and "maybe"
+  notEqual( video._canPlaySrc( "garbage" ), "probably", "Empty string or Maybe if we can't play the type" );
+  notEqual( video._canPlaySrc( testData.videoSrc ), "",
             "Report maybe/probably if we can play the type" );
 
+  // TODO: canPlayType tests for each wrapper
 });
 
 
