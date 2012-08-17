@@ -1902,13 +1902,11 @@
     find: function( selector, context ) {
       var node = null;
 
-      //  Trim leading/trailing whitespace to avoid false negatives
-      selector = selector.trim();
-
       //  Default context is the `document`
       context = context || document;
 
       if ( selector ) {
+
         //  If the selector does not begin with "#", "." or "[",
         //  it could be either a nodeName or ID w/o "#"
         if ( !rnaiveExpr.test( selector ) ) {

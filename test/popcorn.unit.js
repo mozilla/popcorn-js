@@ -1367,7 +1367,11 @@ test( "Popcorn.dom.find() Returns null for invalid selectors", function() {
   var fixture = document.getElementById("video"),
       allowed = [
         { desc: "closing bracket", selector: "]" },
-        { desc: "escapes \\",      selector: "\/" }
+        { desc: "escapes \\",      selector: "\/" },
+        { desc: "null",            selector: null },
+        { desc: "undefined",       selector: undefined },
+        { desc: "true (Boolean)",  selector: true },
+        { desc: "7 (Number)",      selector: 7 }
       ];
 
   expect( allowed.length );
