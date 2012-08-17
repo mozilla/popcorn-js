@@ -3,7 +3,7 @@
   Popcorn.player( "soundcloud", {
     _canPlayType: function( nodeName, url ) {
       return ( typeof url === "string" &&
-               Popcorn.HTMLSoundCloudAudioElement.canPlayType( url ) &&
+               Popcorn.HTMLSoundCloudAudioElement._canPlaySrc( url ) &&
                nodeName.toLowerCase() !== "audio" );
     }
   });
