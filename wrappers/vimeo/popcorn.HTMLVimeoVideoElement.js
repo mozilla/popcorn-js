@@ -64,7 +64,7 @@
         seeking: false,
         autoplay: EMPTY_STRING,
         preload: EMPTY_STRING,
-        controls: true,
+        controls: false,
         loop: false,
         poster: EMPTY_STRING,
         // Vimeo seems to use .77 as default
@@ -361,7 +361,11 @@
         optionsArray = [
           // Vimeo API options first
           "api=1",
-          "player_id=" + playerUID
+          "player_id=" + playerUID,
+          // Turn off as much of the metadata/branding as possible
+          "title=0",
+          "byline=0",
+          "portrait=0"
         ];
 
       // Sync loop and autoplay based on URL params, and delete.
