@@ -2257,8 +2257,8 @@ asyncTest( "Special track event listeners: trackremoved", 3, function() {
 asyncTest( "Special track event listeners: trackstart, trackend", function() {
 
   var $pop = Popcorn( "#video" ),
-      expects = 24,
-      count = 0;
+      expects = 28,
+      count = 0, action = "add";
 
   expect( expects );
 
@@ -2266,6 +2266,7 @@ asyncTest( "Special track event listeners: trackstart, trackend", function() {
     if ( ++count === expects ) {
       // clean up added events after tests
       Popcorn.removePlugin( "emitter" );
+      Popcorn.removePlugin( "disableme" );
       $pop.destroy();
       start();
     }
@@ -2277,6 +2278,54 @@ asyncTest( "Special track event listeners: trackstart, trackend", function() {
     start: function() {},
     end: function() {}
   });
+
+  Popcorn.plugin( "disableme", {
+    start: function() {},
+    end: function() {}
+  });
+  
+  $pop.on( "trackstart", function( event ) {
+    if ( event.plugin !== "disableme") {
+      return;
+    }
+
+    if ( count === 0 ) {
+      equal( action, "add", "trackstart fired when event added at currentTime" );
+      action = "disable";
+    } else if ( count === 2 ) {
+      equal( action, "enable", "trackstart fired when plugin enabled" );
+      action = "remove";
+    } else {
+      ok( false, "trackstart event fired in the wrong order" );
+    }
+
+    plus();
+  });
+  $pop.on( "trackend", function( event ) {
+    if ( event.plugin !== "disableme") {
+      return;
+    }
+
+    if ( count === 1 ) {
+      equal( action, "disable", "trackstart fired when plugin disabled" );
+      action = "enable";
+    } else if ( count === 3 ) {
+      equal( action, "remove", "trackstart fired when active event removed" );
+      action = "done";
+    } else {
+      ok( false, "trackstart event fired in the wrong order" );
+    }
+
+    plus();
+  });
+
+  $pop.disableme({
+    start: 0,
+    end: 1
+  });
+  $pop.disable( "disableme" );
+  $pop.enable( "disableme" );
+  $pop.removeTrackEvent( $pop.getLastTrackEventId() );
 
   $pop.emitter({
     start: 1,
@@ -2312,7 +2361,7 @@ asyncTest( "Special track event listeners: trackstart, trackend", function() {
 
       equal( event.plugin, "emitter", "Special trackstart event object includes correct plugin name " + event.direction );
       plus();
-    } else {
+    } else if ( event.plugin !== "disableme" ) {
       ok( false, "invalid plugin fired trackstart" );
       plus();
     }
@@ -2343,7 +2392,7 @@ asyncTest( "Special track event listeners: trackstart, trackend", function() {
 
       equal( event.plugin, "emitter", "Special trackend event object includes correct plugin name " + event.direction );
       plus();
-    } else {
+    } else if ( event.plugin !== "disableme" ) {
       ok( false, "invalid plugin fired trackend" );
     }
 
