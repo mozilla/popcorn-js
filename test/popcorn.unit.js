@@ -3780,7 +3780,7 @@ asyncTest( "In/Out aliases", function() {
   });
 });
 
-asyncTest( "Popcorn instance integrity inside natives", 4, function() {
+asyncTest( "Popcorn instance integrity inside natives", 5, function() {
   var p = Popcorn( "#video" ),
       id = "test-id";
 
@@ -3797,6 +3797,9 @@ asyncTest( "Popcorn instance integrity inside natives", 4, function() {
     },
     _teardown: function( options ) {
       ok( this === p, "Popcorn instance accessible in plugin _teardown" );
+    },
+    _update: function( trackEvent, options ) {
+      ok( this === p, "Popcorn instance accessible in plugin _update" );
     }
   });
 
@@ -3807,7 +3810,8 @@ asyncTest( "Popcorn instance integrity inside natives", 4, function() {
     start();
   });
 
-  p.integrityTest( id, { start: 3, end: 4 } );
+  p.integrityTest( id, { start: 1, end: 4 } );
+  p.integrityTest( id, { start: 3 } );
   p.play( 2 );
 });
 
@@ -4645,33 +4649,72 @@ asyncTest( "Create empty trackevent w/o id and modify later", 2, function() {
   start();
 });
 
-test( "Modify trackevent after creation call teardown/setup", 3, function() {
-  var p = Popcorn( "#video" ),
-      id,
-      count = 0;
+test( "Modify cue or trackevent w/ update function provided", 3, function() {
+  var $pop = Popcorn( "#video" ),
+      numTrackEvents,
+      id = "test-id",
+      updateOptions = {
+        text: "New Text"
+      };
 
-  Popcorn.plugin( "testplugin", {
-    _setup: function( options ) {
-      if ( ++count === 2 ) {
-        ok( true, "Setup was properly called." );
-        equal( options.text, "New Text", "Successfully passed the new options to the plugin for setup" );
-      }
-    },
-    start: function(){},
+  Popcorn.plugin( "updateprovided", {
+    _setup: function() {},
+    start: function() {},
     end: function(){},
-    _teardown: function( options ) {
-      ok( true, "Teardown was properly called" );
+    _teardown: function( trackEvent ) {
+      ok( false, "Teardown function was called when an update function was provided" );
+    },
+    _update: function( trackEvent, newOptions ) {
+      ok( true, "Successfully called track events update function" );
+      deepEqual( newOptions.text, updateOptions.text, "Successfully received the new update options" );
+      equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Total number of track events didn't change" );
+      trackEvent.text = newOptions.text;
     }
   });
 
-  p.testplugin( { text: "Initial Text" } );
+  $pop.updateprovided( id, { start: 2, end: 5 } );
 
-  id = p.getLastTrackEventId();
+  numTrackEvents = $pop.data.trackEvents.byStart.length;
 
-  p.testplugin( id, { text: "New Text" } );
+  $pop.updateprovided( id, updateOptions );
 
-  Popcorn.removePlugin( "testplugin" );
-  p.destroy();
+  Popcorn.removePlugin( "updateprovided" );
+  $pop.destroy();
+
+});
+
+test( "Modify cue or trackevent w/o update function provided", 4, function() {
+  var $pop = Popcorn( "#video" ),
+      numTrackEvents,
+      count = 0,
+      id = "test-id",
+      updateOptions = {
+        text: "New Text"
+      };
+
+  Popcorn.plugin( "noupdateprovided", {
+    _setup: function( options ) {
+      if ( ++count === 2 ) {
+        ok( true, "Setup was called when updating a plugin" );
+        equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Number of track events didn't change" );
+        deepEqual( options.text, updateOptions.text, "Update options received the new properties" );
+      }
+    },
+    start: function() {},
+    end: function(){},
+    _teardown: function() {
+      ok( true, "Track Event _teardown was called when no update function was provided" );
+    }
+  });
+
+  $pop.noupdateprovided( id, {} );
+
+  numTrackEvents = $pop.data.trackEvents.byStart.length;
+
+  $pop.noupdateprovided( id, updateOptions );
+
+  Popcorn.removePlugin( "noupdateprovided" );
+  $pop.destroy();
 
 });
 

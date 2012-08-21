@@ -1028,65 +1028,14 @@
     this.previousUpdateTime = -1;
   }
 
-  // Internal Only - Adds track events to the instance object
-  Popcorn.addTrackEvent = function( obj, track ) {
-    var trackEvent, isUpdate, eventType, id;
-
-    // Construct new track event instance object
-    // based on track object argument.
-    track = new TrackEvent( track );
-
-    id = track.id || track._id;
-
-    // Do a lookup for existing trackevents with this id
-    if ( id ) {
-      trackEvent = obj.getTrackEvent( id );
-    }
-
-    // If a track event by this id currently exists, modify it
-    if ( trackEvent ) {
-      isUpdate = true;
-      // Create a new object with the existing trackEvent
-      // Extend with new track properties
-      track = Popcorn.extend( {}, trackEvent, track );
-
-      // Remove the existing track from the instance
-      obj.removeTrackEvent( id );
-    }
-
-    // Determine if this track has default options set for it
-    // If so, apply them to the track object
-    if ( track && track._natives && track._natives.type &&
-        ( obj.options.defaults && obj.options.defaults[ track._natives.type ] ) ) {
-
-      track = Popcorn.extend( {}, obj.options.defaults[ track._natives.type ], track );
-    }
-
-    if ( track._natives ) {
-      //  Supports user defined track event id
-      track._id = track.id || track._id || Popcorn.guid( track._natives.type );
-
-      //  Push track event ids into the history
-      obj.data.history.push( track._id );
-
-      // Trigger _setup method if exists
-      if ( track._natives._setup ) {
-
-        track._natives._setup.call( obj, track );
-        obj.emit( "tracksetup", Popcorn.extend( {}, track, {
-          plugin: track._natives.type,
-          type: "tracksetup"
-        }));
-      }
-    }
-
-    track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );
-    track.end   = Popcorn.util.toSeconds( track.end, obj.options.framerate );
-
+  function addToArray( obj, track ) {
     //  Store this definition in an array sorted by times
     var byStart = obj.data.trackEvents.byStart,
         byEnd = obj.data.trackEvents.byEnd,
         startIndex, endIndex;
+
+    track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );
+    track.end   = Popcorn.util.toSeconds( track.end, obj.options.framerate );
 
     for ( startIndex = byStart.length - 1; startIndex >= 0; startIndex-- ) {
 
@@ -1129,57 +1078,9 @@
 
       obj.data.trackEvents.endIndex++;
     }
+  }
 
-    this.timeUpdate( obj, null, true );
-
-    // Store references to user added trackevents in ref table
-    if ( track._id ) {
-      Popcorn.addTrackEvent.ref( obj, track );
-    }
-
-    // If the call to addTrackEvent was an update/modify call, fire an event
-    if ( isUpdate ) {
-
-      // Determine appropriate event type to trigger
-      // they are identical in function, but the naming
-      // adds some level of intuition for the end developer
-      // to rely on
-      if ( track._natives.type === "cue" ) {
-        eventType = "cuechange";
-      } else {
-        eventType = "trackchange";
-      }
-
-      // Fire an event with change information
-      obj.emit( eventType, {
-        id: track.id,
-        previousValue: {
-          time: trackEvent.start,
-          fn: trackEvent._natives.start
-        },
-        currentValue: {
-          time: track.start,
-          fn: track._natives.start
-        }
-      });
-    } else if ( track._natives ) {
-
-      // Fire a trackadded event
-      obj.emit( "trackadded", Popcorn.extend({}, track, {
-        plugin: track._natives.type,
-        type: "trackadded"
-      }));
-    }
-  };
-
-  // Internal Only - Adds track event references to the instance object's trackRefs hash table
-  Popcorn.addTrackEvent.ref = function( obj, track ) {
-    obj.data.trackRefs[ track._id ] = track;
-
-    return obj;
-  };
-
-  Popcorn.removeTrackEvent  = function( obj, removeId ) {
+  function removeFromArray( obj, removeId ) {
 
     var start, end, animate,
         historyLen = obj.data.history.length,
@@ -1223,12 +1124,6 @@
 
           // cache the track event being removed
           track = start;
-
-          // If a _teardown function was defined,
-          // enforce for track event removals
-          if ( start._natives._teardown ) {
-            start._natives._teardown.call( obj, start );
-          }
         }
       }
       // Increment the track index
@@ -1275,14 +1170,128 @@
     obj.data.trackEvents.byEnd = byEnd;
     obj.data.trackEvents.animating = animating;
 
-    for ( var i = 0; i < historyLen; i++ ) {
-      if ( obj.data.history[ i ] !== removeId ) {
-        history.push( obj.data.history[ i ] );
-      }
+  }
+
+  // Internal Only - Adds track events to the instance object
+  Popcorn.addTrackEvent = function( obj, track ) {
+    var trackEvent, isUpdate, eventType,
+        id = track.id || track._id;
+
+    // Do a lookup for existing trackevents with this id
+    if ( id ) {
+      trackEvent = obj.getTrackEvent( id );
     }
 
-    // Update ordered history array
-    obj.data.history = history;
+    // If a track event by this id currently exists, modify it
+    if ( trackEvent ) {
+      isUpdate = true;
+
+      // Create a new object with the existing trackEvent
+      // Extend with new track properties
+      track = Popcorn.extend( {}, trackEvent, track );
+
+      // Remove the existing track from the instance
+      obj.removeTrackEvent( id );
+    }
+
+    // Determine if this track has default options set for it
+    // If so, apply them to the track object
+    if ( track && track._natives && track._natives.type &&
+        ( obj.options.defaults && obj.options.defaults[ track._natives.type ] ) ) {
+
+      track = Popcorn.extend( {}, obj.options.defaults[ track._natives.type ], track );
+    }
+
+    if ( track._natives ) {
+      //  Supports user defined track event id
+      track._id = track.id || track._id || Popcorn.guid( track._natives.type );
+
+      //  Push track event ids into the history
+      obj.data.history.push( track._id );
+    }
+
+    addToArray( obj, track );
+
+    this.timeUpdate( obj, null, true );
+
+    // Store references to user added trackevents in ref table
+    if ( track._id ) {
+
+      Popcorn.addTrackEvent.ref( obj, track );
+
+      // Trigger _setup method if exists
+      track._natives && track._natives._setup && track._natives._setup.call( obj, track );
+      obj.emit( "tracksetup", Popcorn.extend( {}, track, {
+        plugin: track._natives.type,
+        type: "tracksetup"
+      }));
+    }
+
+    // If the call to addTrackEvent was an update/modify call, fire an event
+    if ( isUpdate ) {
+
+      // Determine appropriate event type to trigger
+      // they are identical in function, but the naming
+      // adds some level of intuition for the end developer
+      // to rely on
+      if ( track._natives.type === "cue" ) {
+        eventType = "cuechange";
+      } else {
+        eventType = "trackchange";
+      }
+
+      // Fire an event with change information
+      obj.emit( eventType, {
+        id: track.id,
+        previousValue: {
+          time: trackEvent.start,
+          fn: trackEvent._natives.start
+        },
+        currentValue: {
+          time: track.start,
+          fn: track._natives.start
+        }
+      });
+    } else if ( track._natives ) {
+
+      // Fire a trackadded event
+      obj.emit( "trackadded", Popcorn.extend({}, track, {
+        plugin: track._natives.type,
+        type: "trackadded"
+      }));
+    }
+  };
+
+  // Internal Only - Adds track event references to the instance object's trackRefs hash table
+  Popcorn.addTrackEvent.ref = function( obj, track ) {
+    obj.data.trackRefs[ track._id ] = track;
+
+    return obj;
+  };
+
+  Popcorn.removeTrackEvent = function( obj, removeId ) {
+
+    var track = obj.getTrackEvent( removeId ),
+        historyLen = obj.data.history.length,
+        history = [];
+
+    if ( obj.data.trackEvents.byStart.length && removeId ) {
+
+      removeFromArray( obj, removeId );
+
+      for ( var i = 0; i < historyLen; i++ ) {
+        if ( obj.data.history[ i ] !== removeId ) {
+          history.push( obj.data.history[ i ] );
+        }
+      }
+
+      // Update ordered history array
+      obj.data.history = history;
+
+      if ( track && track._natives && track._natives._teardown ) {
+        track._natives._teardown.call( obj, track );
+      }
+    }
 
     // Update track event references
     Popcorn.removeTrackEvent.ref( obj, removeId );
@@ -1784,9 +1793,29 @@
         // If the track event does exist, merge the updated properties
         } else {
 
-          options = Popcorn.extend( {}, trackEvent, options );
+          // Call the plugins defined update method if provided. Allows for
+          // custom defined updating for a track event to be defined by the plugin author
+          if ( trackEvent._natives._update ) {
 
-          Popcorn.addTrackEvent( this, options );
+            // It's safe to say that the intent of Start/End will never change
+            // Update them first before calling update
+            if ( options.hasOwnProperty( "start" ) ) {
+              trackEvent.start = options.start;
+            }
+
+            if ( options.hasOwnProperty( "end" ) ) {
+              trackEvent.end = options.end;
+            }
+
+            trackEvent._natives._update.call( this, trackEvent, options );
+
+            removeFromArray( this, trackEvent._id );
+            addToArray( this, trackEvent );
+          } else {
+            options = Popcorn.extend( {}, trackEvent, options );
+
+            Popcorn.addTrackEvent( this, options );
+          }
 
           return this;
         }
