@@ -979,10 +979,18 @@
     // If a track event by this id currently exists, modify it
     if ( trackEvent ) {
       isUpdate = true;
+
       // Create a new object with the existing trackEvent
       // Extend with new track properties
       track = Popcorn.extend( {}, trackEvent, track );
 
+      // Call the track event plugins update function if provided
+      if ( track._natives && track._natives.update ) {
+
+        hasUpdateFunction = true;
+        tearDown = false;
+        track._natives.update( newOptions );
+      }
       // Remove the existing track from the instance
       obj.removeTrackEvent( id );
     }
@@ -1059,8 +1067,13 @@
     this.timeUpdate( obj, null, true );
 
     // Store references to user added trackevents in ref table
-    if ( track._id ) {
+    if ( track._id && !hasUpdateFunction ) {
+
       Popcorn.addTrackEvent.ref( obj, track );
+      if ( track._natives._setup && isUpdate ) {
+
+        track._natives._setup( track );
+      }
     }
 
     // If the call to addTrackEvent was an update/modify call, fire an event
@@ -1105,7 +1118,7 @@
     return obj;
   };
 
-  Popcorn.removeTrackEvent  = function( obj, removeId ) {
+  Popcorn.removeTrackEvent = function( obj, removeId, tearDown ) {
 
     var start, end, animate,
         historyLen = obj.data.history.length,
@@ -1117,6 +1130,8 @@
         animating = [],
         history = [],
         track;
+
+    tearDown = tearDown !== undefined ? tearDown : true;
 
     while ( --length > -1 ) {
       start = obj.data.trackEvents.byStart[ index ];
@@ -1152,7 +1167,7 @@
 
           // If a _teardown function was defined,
           // enforce for track event removals
-          if ( start._natives._teardown ) {
+          if ( start._natives._teardown && tearDown ) {
             start._natives._teardown.call( obj, start );
           }
         }
@@ -1465,9 +1480,9 @@
       return Popcorn.getLastTrackEventId.call( null, this );
     },
 
-    removeTrackEvent: function( id ) {
+    removeTrackEvent: function( id, tearDown ) {
 
-      Popcorn.removeTrackEvent.call( null, this, id );
+      Popcorn.removeTrackEvent.call( null, this, id, tearDown );
       return this;
     },
 
@@ -1682,7 +1697,8 @@
     //  Assign new named definition
     Popcorn.p[ name ] = plugin[ name ] = function( id, options ) {
       var length = arguments.length,
-          trackEvent, defaults, mergedSetupOpts;
+          trackEvent, defaults, mergedSetupOpts,
+          originalOpts;
 
       // Shift arguments based on use case
       //
@@ -1704,9 +1720,11 @@
         // If the track event does exist, merge the updated properties
         } else {
 
+          // Store old options for use with update calls
+          originalOpts = options;
           options = Popcorn.extend( {}, trackEvent, options );
 
-          Popcorn.addTrackEvent( this, options );
+          Popcorn.addTrackEvent( this, options, originalOpts );
 
           return this;
         }
