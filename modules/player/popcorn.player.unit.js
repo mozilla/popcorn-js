@@ -15,6 +15,43 @@ test( "Base player methods", 4, function() {
 
 });
 
+test( "Base player properties", 12, function() {
+
+  Popcorn.player( "baseplayer" );
+
+  var sansDuration = Popcorn.baseplayer( "#video" ),
+      withDuration = Popcorn.baseplayer( "#video", "", {
+        duration: 30
+      });
+
+  equal( sansDuration.duration(), Infinity, "media without duration returns a positive Infinity value." );
+  equal( withDuration.duration(), 30, "media with duration returns a the specified value." );
+
+  sansDuration.duration( 10 );
+  equal( sansDuration.duration(), 10, "media without duration can have its duration changed." );
+
+  withDuration.duration( 40 );
+  equal( withDuration.duration(), 40, "media with duration can have its duration changed." );
+
+  withDuration.play().currentTime( 50 );
+
+  equal( withDuration.currentTime(), 40, "media with duration cannot go beyond the specified duration." );
+  equal( withDuration.paused(), false, "media that goes beyond duration while playing is still playing." );
+  equal( withDuration.ended(), true, "media that goes beyond duration is ended." );
+
+  withDuration.currentTime( 1 );
+
+  equal( withDuration.currentTime(), 1, "media with duration that ended can still have its time changed." );
+  equal( withDuration.paused(), false, "media that goes beyond duration and back while playing, is still playing." );
+  equal( withDuration.ended(), false, "media that was ended, and be at playing again." );
+
+  withDuration.pause();
+  equal( withDuration.paused(), true, "media that goes beyond duration and back while playing, is still playing, and can then be paused again." );
+
+  withDuration.duration( 0 );
+  equal( withDuration.duration(), 0, "0 is a valid duration." );
+});
+
 asyncTest( "Base player functionality", function() {
 
   Popcorn.player( "baseplayer" );
