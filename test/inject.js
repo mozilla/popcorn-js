@@ -34,12 +34,12 @@
 	}
 
 	if ( !DEBUG && ( !url || url.indexOf( 'http' ) !== 0 ) ) {
-		return;
+		//return;
 	}
 
 	// Prevent blocking things from executing
 	if ( !DEBUG ) {
-		window.print = window.confirm = window.alert = window.open = function () {};
+		//window.print = window.confirm = window.alert = window.open = function () {};
 	}
 
 	/** Utility functions **/
@@ -90,6 +90,9 @@
 	}
 
 	function submit( params ) {
+	  if ( !params.runtime || ( params.fail === 0 && params.error === 0 ) ) {
+	    return;
+	  }
 		var form, i, input, key, paramItems, parts, query;
 
 		if ( curHeartbeat ) {
@@ -220,11 +223,15 @@
 			},
 			install: function () {
 				QUnit.done = function ( results ) {
-					submit({
-						fail: results.failed,
-						error: 0,
-						total: results.total
-					});
+				  if ( !results.runtime ) {
+				    window.TesSwarm.heartbeat();
+				  } else {
+            submit({
+              fail: results.failed,
+              error: 0,
+              total: results.total
+            });
+          }
 				};
 
 				QUnit.log = window.TestSwarm.heartbeat;
