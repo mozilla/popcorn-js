@@ -176,7 +176,7 @@
 	// Cover uncaught exceptions
 	// Returning true will surpress the default browser handler,
 	// returning false will let it run.
-	window.onerror = function ( error, filePath, linerNr ) {
+	/*window.onerror = function ( error, filePath, linerNr ) {
 		var ret = false;
 		if ( onErrorFnPrev ) {
 			ret = onErrorFnPrev( error, filePath, linerNr );
@@ -192,7 +192,7 @@
 		}
 
 		return ret;
-	};
+	};*/
 
 	// Expose the TestSwarm API
 	window.TestSwarm = {
