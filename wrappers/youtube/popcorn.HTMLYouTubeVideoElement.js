@@ -23,7 +23,9 @@
     // If the YouTube iframe API isn't injected, to it now.
     if( !ytLoaded ) {
       var tag = document.createElement( "script" );
-      tag.src = "//www.youtube.com/iframe_api";
+      var protocol = window.location.protocol === "file:" ? "http:" : "";
+
+      tag.src = protocol + "//www.youtube.com/iframe_api";
       var firstScriptTag = document.getElementsByTagName( "script" )[ 0 ];
       firstScriptTag.parentNode.insertBefore( tag, firstScriptTag );
       ytLoaded = true;
@@ -304,7 +306,8 @@
       playerVars.showinfo = playerVars.showinfo || 0;
 
       // Specify our domain as origin for iframe security
-      var domain = window.location.protocol + "//" + window.location.host;
+      var domain = window.location.protocol === "file:" ? "*" :
+        window.location.protocol + "//" + window.location.host;
       playerVars.origin = playerVars.origin || domain;
 
       // Show/hide controls. Sync with impl.controls and prefer URL value.
