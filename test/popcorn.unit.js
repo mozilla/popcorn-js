@@ -4514,13 +4514,7 @@ test( "Modify cue or trackevent w/o update function provided", function() {
       };
 
   Popcorn.plugin( "noupdateprovided", {
-    _setup: function( options ) {console.log(options);
-      if ( ++count === 4 ) {
-        ok( true, "Track Event _setup was called when no update function was provided" );
-        equal( options.text, updateOptions.text, "New options were still passed to the track event" );
-        equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Total number of track events didn't change" );
-      }
-    },
+    _setup: function() {},
     start: function() {},
     end: function(){},
     _teardown: function() {
