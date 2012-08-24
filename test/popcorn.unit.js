@@ -4456,7 +4456,7 @@ test( "Modify cue or trackevent w/ update function provided", function() {
       // If this executes, code is broken
       ok( false, "Teardown should not have been called when an update function was provided" );
     },
-    update: function( newOptions ) {
+    _update: function( newOptions ) {
       ok( true, "Successfully called track events update function" );
       equal( newOptions.text, updateOptions.text, "Successfully received the new update options" );
       equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Total number of track events didn't change" );
@@ -4486,8 +4486,8 @@ test( "Modify cue or trackevent w/o update function provided", function() {
       };
 
   Popcorn.plugin( "noupdateprovided", {
-    _setup: function( options ) {
-      if ( ++count === 2 ) {
+    _setup: function( options ) {console.log(options);
+      if ( ++count === 4 ) {
         ok( true, "Track Event _setup was called when no update function was provided" );
         equal( options.text, updateOptions.text, "New options were still passed to the track event" );
         equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Total number of track events didn't change" );
