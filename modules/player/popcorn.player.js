@@ -366,7 +366,7 @@
       // See if we can use a wrapper directly, if not, try players.
       for ( j = 0; j < wrappers.length; j++ ) {
         mediaWrapper = Popcorn[ wrappers[ j ] ];
-        if ( mediaWrapper._canPlaySrc( srci ) === "probably" ) {
+        if ( mediaWrapper && mediaWrapper._canPlaySrc( srci ) === "probably" ) {
           media = mediaWrapper( node );
           popcorn = Popcorn( media, options );
           // Set src, but not until after we return the media so the caller
