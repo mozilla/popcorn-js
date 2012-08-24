@@ -4456,7 +4456,7 @@ test( "Modify cue or trackevent w/ update function provided", function() {
       // If this executes, code is broken
       ok( false, "Teardown should not have been called when an update function was provided" );
     },
-    _update: function( newOptions ) {
+    _update: function( trackEvent, newOptions ) {
       ok( true, "Successfully called track events update function" );
       equal( newOptions.text, updateOptions.text, "Successfully received the new update options" );
       equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Total number of track events didn't change" );
