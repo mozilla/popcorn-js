@@ -4472,6 +4472,7 @@ test( "Modify cue or trackevent w/ update function provided", function() {
       count = 0,
       id,
       trackEvent,
+      newStart = 3,
       updateOptions = {
         text: "New Text"
       };
@@ -4480,18 +4481,18 @@ test( "Modify cue or trackevent w/ update function provided", function() {
     _setup: function() {},
     start: function() {},
     end: function(){},
-    _teardown: function() {
-      // If this executes, code is broken
-      ok( false, "Teardown should not have been called when an update function was provided" );
+    _teardown: function( trackEvent ) {
+      ok( true, "Teardown function was called when trying to update start time" );
     },
     _update: function( trackEvent, newOptions ) {
       ok( true, "Successfully called track events update function" );
       equal( newOptions.text, updateOptions.text, "Successfully received the new update options" );
       equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Total number of track events didn't change" );
+      trackEvent.text = newOptions.text;
     }
   });
 
-  $pop.updateprovided( "test-id", {});
+  $pop.updateprovided( "test-id", { start: 2, end: 5 } );
 
   id = $pop.getLastTrackEventId();
   trackEvent = $pop.getTrackEvent( id );
@@ -4499,7 +4500,10 @@ test( "Modify cue or trackevent w/ update function provided", function() {
 
   $pop[ trackEvent._natives.type ]( id, updateOptions );
 
+  $pop[ trackEvent._natives.type ]( id, { start: newStart } );
+
   Popcorn.removePlugin( "updateprovided" );
+  $pop.destroy();
 
 });
 
@@ -4531,6 +4535,7 @@ test( "Modify cue or trackevent w/o update function provided", function() {
   $pop[ trackEvent._natives.type ]( id, updateOptions );
 
   Popcorn.removePlugin( "noupdateprovided" );
+  $pop.destroy();
 
 });
 
