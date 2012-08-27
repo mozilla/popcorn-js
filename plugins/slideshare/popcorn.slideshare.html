@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn SlideShare Plug-in Demo</title>
+  <script src="../../popcorn.js"></script>
+  <script src="popcorn.slideshare.js"></script>
+  <script>
+    document.addEventListener( "DOMContentLoaded", function () {
+
+      var p = Popcorn( "#video" )
+      .slideshare({
+        start: 1,
+        end: 5,
+        slideshowurl: "http://www.slideshare.net/storycode/storycode-immersion-5-popcornjs-deep-dive",
+        startslide:1,
+        target: "slidesharediv"
+      })
+      .slideshare({
+        start: 5,
+        end: 10,
+        slideshowurl: "http://www.slideshare.net/storycode/storycode-immersion-5-popcornjs-deep-dive",
+        startslide:8,
+        target: "slidesharediv"
+      })  
+      .slideshare({
+        start: 10,
+        end: 40,
+        slideshowurl: "http://www.slideshare.net/storycode/storycode-immersion-5-popcornjs-deep-dive",
+        startslide:16,
+        target: "slidesharediv"
+      })  
+      .play();
+    }, false );
+
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">Popcorn SlideShare Plug-in Demo</h1>
+  <p>SlideShare slide #1 by 'storycode' will appear at 1 seconds and disappear at 5 seconds.
+  <br />SlideShare slide #8 by 'storycode' will appear at 5 seconds and disappear at 10 seconds.
+  <br />SlideShare slide #12  by 'storycode' will appear at 10 seconds and disappear at 40 seconds.
+  <div>
+    <video id="video"
+      controls
+      width="250px"
+      poster="../../test/poster.png">
+
+      <source id="mp4"
+        src="../../test/trailer.mp4"
+        type='video/mp4; codecs="avc1, mp4a"'>
+
+      <source id="ogv"
+        src="../../test/trailer.ogv"
+        type='video/ogg; codecs="theora, vorbis"'>
+
+      <p>Your user agent does not support the HTML5 Video element.</p>
+
+    </video>
+  </div>
+  <div id="slidesharediv"></div>
+</body>
+</html>
