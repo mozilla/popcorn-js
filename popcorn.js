@@ -1706,13 +1706,20 @@
         // If the track event does exist, merge the updated properties
         } else {
 
-          // If provided, call the update method of a plugin
-          if ( trackEvent._natives._update ) {
-            trackEvent._natives._update( trackEvent, options );
+          newOpts = options;
+          options = Popcorn.extend( {}, trackEvent, options );
+
+          if ( ( ( newOpts.start >= 0 && newOpts.start === trackEvent.start ) &&
+               !newOpts.end >= 0 ) ||
+             ( ( newOpts.end >= 0 && newOpts.end === trackEvent.end ) &&
+               !newOpts.start >= 0 ) ||
+             ( ( newOpts.start >= 0 && newOpts.start === trackEvent.start ) &&
+               ( newOpts.end >= 0 && newOpts.end === trackEvent.end ) ) ||
+             ( !newOpts.start >= 0 && !newOpts.end >= 0 ) ) {
+            
+            trackEvent._natives._update( options, newOpts );
             return this;
           }
-
-          options = Popcorn.extend( {}, trackEvent, options );
 
           Popcorn.addTrackEvent( this, options );
 
