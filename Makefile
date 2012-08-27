@@ -92,7 +92,7 @@ WRAPPERS_UNIT := $(shell find $(WRAPPERS_DIR) -name 'popcorn.*.unit.js' -print)
 # popcorn + plugins
 POPCORN_COMPLETE_LIST := --js ${POPCORN_SRC} \
                          $(shell for js in ${MODULES_SRC} ; do echo --js $$js ; done) \
-                         $(shell for js in $(WRAPPERS_SRC) ; do echo --js $$js ; done) \
+                         $(shell for js in ${WRAPPERS_SRC} ; do echo --js $$js ; done) \
                          $(shell for js in ${EFFECTS_SRC} ; do echo --js $$js ; done) \
                          $(shell for js in ${PLUGINS_SRC} ; do echo --js $$js ; done) \
                          $(shell for js in ${PARSERS_SRC} ; do echo --js $$js ; done) \
@@ -122,7 +122,7 @@ add_version = cat $(1) | sed -e 's/@VERSION/${VERSION}/' > $(1).__tmp__ ; \
 # Run the file through jslint
 run_lint = @@$(RHINO) build/jslint-check.js $(1)
 
-all: setup popcorn plugins parsers players effects complete min ie8
+all: setup popcorn modules wrappers plugins parsers players effects complete min ie8
 	@@echo "Popcorn build complete.  To create a testing mirror, run: make testing."
 
 check: lint lint-plugins lint-parsers lint-players lint-effects lint-modules lint-wrappers
@@ -162,15 +162,15 @@ ${MODULES_DIST}: ${MODULES_SRC} ${DIST_DIR}
 	@@echo "Building ${MODULES_DIST}"
 	@@cat ${MODULES_SRC} > ${MODULES_DIST}
 
-wrappers: setup $(WRAPPERS_DIST)
+wrappers: setup ${WRAPPERS_DIST}
 
-$(WRAPPERS_MIN): $(WRAPPERS_DIST)
-	@@echo "Building" $(WRAPPERS_MIN)
-	@@$(call compile, $(shell for js in $(WRAPPERS_SRC) ; do echo --js $$js ; done), $(WRAPPERS_MIN))
+${WRAPPERS_MIN}: ${WRAPPERS_DIST}
+	@@echo "Building ${WRAPPERS_MIN}"
+	@@$(call compile, $(shell for js in ${WRAPPERS_SRC} ; do echo --js $$js ; done), ${WRAPPERS_MIN})
 
-$(WRAPPERS_DIST): $(WRAPPERS_SRC) $(DIST_DIR)
-	@@echo "Building $(WRAPPERS_DIST)"
-	@@cat $(WRAPPERS_SRC) > $(WRAPPERS_DIST)
+${WRAPPERS_DIST}: ${WRAPPERS_SRC) ${DIST_DIR}
+	@@echo "Building ${WRAPPERS_DIST}"
+	@@cat ${WRAPPERS_SRC} > ${WRAPPERS_DIST}
 
 plugins: ${PLUGINS_DIST}
 
@@ -212,9 +212,9 @@ $(EFFECTS_DIST): $(EFFECTS_SRC) $(DIST_DIR)
 	@@echo "Building $(EFFECTS_DIST)"
 	@@cat $(EFFECTS_SRC) > $(EFFECTS_DIST)
 
-complete: setup ${POPCORN_SRC} ${MODULES_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) ${DIST_DIR}
-	@@echo "Building popcorn + modules + plugins + parsers + players + effects..."
-	@@cat ${POPCORN_SRC} ${MODULES_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) > $(POPCORN_COMPLETE_DIST)
+complete: setup ${POPCORN_SRC} ${MODULES_SRC} ${WRAPPERS_SRC} ${PARSERS_SRC} ${PLUGINS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) ${DIST_DIR}
+	@@echo "Building popcorn + modules + wrappers + plugins + parsers + players + effects..."
+	@@cat ${POPCORN_SRC} ${MODULES_SRC} ${WRAPPERS_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) > $(POPCORN_COMPLETE_DIST)
 	@@$(call add_license, $(POPCORN_COMPLETE_DIST))
 	@@$(call add_version, $(POPCORN_COMPLETE_DIST))
 
