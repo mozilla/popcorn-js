@@ -4440,6 +4440,35 @@ asyncTest( "Create empty cue and modify later", 5, function() {
 
 });
 
+asyncTest( "Create empty trackevent w/o id and modify later", 2, function() {
+  var p = Popcorn( "#video" ),
+      id,
+      trackEvent,
+      numTrackEvents;
+
+  Popcorn.plugin( "testplugin", {} );
+
+  p.testplugin( { text: "Initial Text" } );
+
+  numTrackEvents = p.data.trackEvents.byStart.length;
+
+  id = p.getLastTrackEventId();
+
+  trackEvent = p.getTrackEvent( id );
+
+  p.testplugin( id, { text: "New Text" } );
+
+  trackEvent = p.getTrackEvent( id );
+
+  equal( p.data.trackEvents.byStart.length, numTrackEvents, "Modifying trackevent later didn't create extra trackevents." );
+  equal( trackEvent.text, "New Text", "Properly updated the trackevent with the value \"New Text\"" );
+
+  Popcorn.removePlugin( "testplugin" );
+  p.destroy();
+
+  start();
+});
+
 module( "Popcorn XHR" );
 test( "Basic", 2, function() {
 

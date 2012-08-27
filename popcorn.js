@@ -968,11 +968,12 @@
 
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
-    var trackEvent, isUpdate, eventType;
+    var trackEvent, isUpdate, eventType,
+        id = track.id || track._id;
 
     // Do a lookup for existing trackevents with this id
-    if ( track.id ) {
-      trackEvent = obj.getTrackEvent( track.id );
+    if ( id ) {
+      trackEvent = obj.getTrackEvent( id );
     }
 
     // If a track event by this id currently exists, modify it
@@ -983,7 +984,7 @@
       track = Popcorn.extend( {}, trackEvent, track );
 
       // Remove the existing track from the instance
-      obj.removeTrackEvent( track.id );
+      obj.removeTrackEvent( id );
     }
 
     // Determine if this track has default options set for it
