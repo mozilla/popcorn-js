@@ -4460,6 +4460,7 @@ test( "Modify cue or trackevent w/ update function provided", function() {
       ok( true, "Successfully called track events update function" );
       equal( newOptions.text, updateOptions.text, "Successfully received the new update options" );
       equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Total number of track events didn't change" );
+trackEvent.text = newOptions.text;
     }
   });
 

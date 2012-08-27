@@ -1683,8 +1683,7 @@
     //  Assign new named definition
     Popcorn.p[ name ] = plugin[ name ] = function( id, options ) {
       var length = arguments.length,
-          trackEvent, defaults, mergedSetupOpts,
-          newOpts;
+          trackEvent, defaults, mergedSetupOpts;
 
       // Shift arguments based on use case
       //
@@ -1706,21 +1705,19 @@
         // If the track event does exist, merge the updated properties
         } else {
 
-          newOpts = options;
-          options = Popcorn.extend( {}, trackEvent, options );
-
-          if ( ( ( newOpts.start >= 0 && newOpts.start === trackEvent.start ) &&
-               !newOpts.end >= 0 ) ||
-             ( ( newOpts.end >= 0 && newOpts.end === trackEvent.end ) &&
-               !newOpts.start >= 0 ) ||
-             ( ( newOpts.start >= 0 && newOpts.start === trackEvent.start ) &&
-               ( newOpts.end >= 0 && newOpts.end === trackEvent.end ) ) ||
-             ( !newOpts.start >= 0 && !newOpts.end >= 0 ) ) {
+          if ( ( ( options.start >= 0 && options.start === trackEvent.start ) &&
+               !options.end >= 0 ) ||
+             ( ( options.end >= 0 && options.end === trackEvent.end ) &&
+               !options.start >= 0 ) ||
+             ( ( options.start >= 0 && options.start === trackEvent.start ) &&
+               ( options.end >= 0 && options.end === trackEvent.end ) ) ||
+             ( !options.start >= 0 && !options.end >= 0 ) ) {
             
-            trackEvent._natives._update( options, newOpts );
+            trackEvent._natives._update( trackEvent, options );
             return this;
           }
 
+          options = Popcorn.extend( {}, trackEvent, options );
           Popcorn.addTrackEvent( this, options );
 
           return this;
