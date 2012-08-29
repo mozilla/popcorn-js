@@ -4440,6 +4440,75 @@ asyncTest( "Create empty cue and modify later", 5, function() {
 
 });
 
+test( "Modify cue or trackevent w/ update function provided", function() {
+  var $pop = Popcorn( "#video" ),
+      numTrackEvents,
+      count = 0,
+      id,
+      trackEvent,
+      updateOptions = {
+        text: "New Text"
+      };
+
+  Popcorn.plugin( "updateprovided", {
+    _setup: function() {},
+    start: function() {},
+    end: function(){},
+    _teardown: function() {
+      // If this executes, code is broken
+      ok( false, "Teardown should not have been called when an update function was provided" );
+    },
+    _update: function( trackEvent, newOptions ) {
+      ok( true, "Successfully called track events update function" );
+      equal( newOptions.text, updateOptions.text, "Successfully received the new update options" );
+      equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Total number of track events didn't change" );
+trackEvent.text = newOptions.text;
+    }
+  });
+
+  $pop.updateprovided( "test-id", {});
+
+  id = $pop.getLastTrackEventId();
+  trackEvent = $pop.getTrackEvent( id );
+  numTrackEvents = $pop.data.trackEvents.byStart.length;
+
+  $pop[ trackEvent._natives.type ]( id, updateOptions );
+
+  Popcorn.removePlugin( "updateprovided" );
+
+});
+
+test( "Modify cue or trackevent w/o update function provided", function() {
+  var $pop = Popcorn( "#video" ),
+      numTrackEvents,
+      count = 0,
+      id,
+      trackEvent,
+      updateOptions = {
+        text: "New Text"
+      };
+
+  Popcorn.plugin( "noupdateprovided", {
+    _setup: function() {},
+    start: function() {},
+    end: function(){},
+    _teardown: function() {
+      ok( true, "Track Event _teardown was called when no update function was provided" );
+    }
+  });
+
+  $pop.noupdateprovided( "test-id", {} );
+
+  id = $pop.getLastTrackEventId();
+  trackEvent = $pop.getTrackEvent( id );
+  numTrackEvents = $pop.data.trackEvents.byStart.length;
+
+  $pop[ trackEvent._natives.type ]( id, updateOptions );
+
+  Popcorn.removePlugin( "noupdateprovided" );
+
+});
+
 module( "Popcorn XHR" );
 test( "Basic", 2, function() {
 

@@ -978,6 +978,7 @@
     // If a track event by this id currently exists, modify it
     if ( trackEvent ) {
       isUpdate = true;
+
       // Create a new object with the existing trackEvent
       // Extend with new track properties
       track = Popcorn.extend( {}, trackEvent, track );
@@ -1056,6 +1057,7 @@
 
     // Store references to user added trackevents in ref table
     if ( track._id ) {
+
       Popcorn.addTrackEvent.ref( obj, track );
     }
 
@@ -1101,7 +1103,7 @@
     return obj;
   };
 
-  Popcorn.removeTrackEvent  = function( obj, removeId ) {
+  Popcorn.removeTrackEvent = function( obj, removeId ) {
 
     var start, end, animate,
         historyLen = obj.data.history.length,
@@ -1703,8 +1705,19 @@
         // If the track event does exist, merge the updated properties
         } else {
 
-          options = Popcorn.extend( {}, trackEvent, options );
+          if ( ( ( options.start >= 0 && options.start === trackEvent.start ) &&
+               !options.end >= 0 ) ||
+             ( ( options.end >= 0 && options.end === trackEvent.end ) &&
+               !options.start >= 0 ) ||
+             ( ( options.start >= 0 && options.start === trackEvent.start ) &&
+               ( options.end >= 0 && options.end === trackEvent.end ) ) ||
+             ( !options.start >= 0 && !options.end >= 0 ) ) {
+            
+            trackEvent._natives._update( trackEvent, options );
+            return this;
+          }
 
+          options = Popcorn.extend( {}, trackEvent, options );
           Popcorn.addTrackEvent( this, options );
 
           return this;
