@@ -1821,20 +1821,19 @@
     var byStart = obj.data.trackEvents.byStart,
         byEnd = obj.data.trackEvents.byEnd,
         animating = obj.data.trackEvents.animating,
-        idx, sl;
+        sl;
 
     // remove all trackEvents
-    for ( idx = 0, sl = byStart.length; idx < sl; idx++ ) {
+    for ( sl = byStart.length; sl > 0; sl-- ) {
 
-      if ( byStart[ idx ] && byStart[ idx ]._natives && byStart[ idx ]._natives.type === name ) {
+      if ( byStart[ sl ] && byStart[ sl ]._natives && byStart[ sl ]._natives.type === name ) {
 
-        byStart[ idx ]._natives._teardown && byStart[ idx ]._natives._teardown.call( obj, byStart[ idx ] );
+        byStart[ sl ]._natives._teardown && byStart[ sl ]._natives._teardown.call( obj, byStart[ sl ] );
 
-        byStart.splice( idx, 1 );
+        byStart.splice( sl, 1 );
 
         // update for loop if something removed, but keep checking
-        idx--; sl--;
-        if ( obj.data.trackEvents.startIndex <= idx ) {
+        if ( obj.data.trackEvents.startIndex > sl ) {
           obj.data.trackEvents.startIndex--;
           obj.data.trackEvents.endIndex--;
         }
@@ -1842,24 +1841,20 @@
 
       // clean any remaining references in the end index
       // we do this seperate from the above check because they might not be in the same order
-      if ( byEnd[ idx ] && byEnd[ idx ]._natives && byEnd[ idx ]._natives.type === name ) {
+      if ( byEnd[ sl ] && byEnd[ sl ]._natives && byEnd[ sl ]._natives.type === name ) {
 
-        byEnd.splice( idx, 1 );
+        byEnd.splice( sl, 1 );
       }
     }
 
     //remove all animating events
-    for ( idx = 0, sl = animating.length; idx < sl; idx++ ) {
+    for ( sl = animating.length; sl > 0; sl-- ) {
 
-      if ( animating[ idx ] && animating[ idx ]._natives && animating[ idx ]._natives.type === name ) {
+      if ( animating[ sl ] && animating[ sl ]._natives && animating[ sl ]._natives.type === name ) {
 
-        animating.splice( idx, 1 );
-
-        // update for loop if something removed, but keep checking
-        idx--; sl--;
+        animating.splice( sl, 1 );
       }
     }
-
   };
 
   Popcorn.compositions = {};
