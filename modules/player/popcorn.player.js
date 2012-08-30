@@ -345,7 +345,7 @@
   // it will default to using an HTML5 video in the target.
   Popcorn.smart = function( target, src, options ) {
     var node = typeof target === "string" ? Popcorn.dom.find( target ) : target,
-        i, srci, j, media, mediaWrapper, popcorn,
+        i, srci, j, media, mediaWrapper, popcorn, srcLength, 
         // We leave HTMLVideoElement and HTMLAudioElement wrappers out
         // of the mix, since we'll default to HTML5 video if nothing
         // else works.  Waiting on #1254 before we add YouTube to this.
