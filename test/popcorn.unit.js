@@ -2359,6 +2359,7 @@ asyncTest( "Special track event listeners: trackstart, trackend", function() {
 });
 
 test( "Special track event listeners: trackstart/trackadd fire on add, remove, enable, disable", function() {
+
   var $pop = Popcorn( "#video" ),
       expects = 4,
       count = 0,
