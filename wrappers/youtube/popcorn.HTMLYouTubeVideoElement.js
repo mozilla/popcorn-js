@@ -86,6 +86,9 @@
       playerReady = false,
       player,
       playerReadyCallbacks = [],
+      playerState = -1,
+      bufferedInterval,
+      lastLoadedFraction = 0,
       currentTimeInterval,
       lastCurrentTime = 0,
       seekTarget = -1,
@@ -188,6 +191,7 @@
           // XXX: this should really live in cued below, but doesn't work.
           impl.readyState = self.HAVE_METADATA;
           self.dispatchEvent( "loadedmetadata" );
+          bufferedInterval = setInterval( monitorBuffered, 50 );
 
           self.dispatchEvent( "loadeddata" );
 
@@ -237,6 +241,12 @@
           // XXX: cued doesn't seem to fire reliably, bug in youtube api?
           break;
       }
+
+      if (event.data !== YT.PlayerState.BUFFERING && playerState === YT.PlayerState.BUFFERING) {
+        onProgress();
+      }
+
+      playerState = event.data;
     }
 
     function destroyPlayer() {
@@ -359,6 +369,20 @@
       lastCurrentTime = impl.currentTime;
     }
 
+    function monitorBuffered() {
+      var fraction = player.getVideoLoadedFraction();
+
+      if ( lastLoadedFraction !== fraction ) {
+        lastLoadedFraction = fraction;
+
+        onProgress();
+
+        if (fraction >= 1) {
+          clearInterval( bufferedInterval );
+        }
+      }
+    }
+
     function getCurrentTime() {
       if( !playerReady ) {
         return 0;
@@ -429,6 +453,10 @@
         }
         self.dispatchEvent( "playing" );
       }
+    }
+
+    function onProgress() {
+      self.dispatchEvent( "progress" );
     }
 
     self.play = function() {
@@ -620,6 +648,45 @@
       error: {
         get: function() {
           return impl.error;
+        }
+      },
+
+      buffered: {
+        get: function () {
+          var timeRanges = {
+            start: function( index ) {
+              if (index === 0) {
+                return 0;
+              }
+
+              //throw fake DOMException/INDEX_SIZE_ERR
+              throw "INDEX_SIZE_ERR: DOM Exception 1";
+            },
+            end: function( index ) {
+              var duration;
+              if (index === 0) {
+                duration = getDuration();
+                if (!duration) {
+                  return 0;
+                }
+
+                return duration * player.getVideoLoadedFraction();
+              }
+
+              //throw fake DOMException/INDEX_SIZE_ERR
+              throw "INDEX_SIZE_ERR: DOM Exception 1";
+            }
+          };
+
+          Object.defineProperties( timeRanges, {
+            length: {
+              get: function() {
+                return ( getDuration() && player.getVideoLoadedFraction() ) > 0 ? 1 : 0;
+              }
+            }
+          });
+
+          return timeRanges;
         }
       }
     });
