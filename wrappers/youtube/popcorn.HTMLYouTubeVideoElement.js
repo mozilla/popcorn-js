@@ -85,6 +85,9 @@
       player,
       playerPaused = true,
       mediaReadyCallbacks = [],
+      playerState = -1,
+      bufferedInterval,
+      lastLoadedFraction = 0,
       currentTimeInterval,
       timeUpdateInterval,
       firstPlay = true;
@@ -200,10 +203,16 @@
             // fake ready event
             firstPlay = false;
 
+            addMediaReadyCallback(function() {
+              bufferedInterval = setInterval( monitorBuffered, 50 );
+            });
+
             // Set initial paused state
             if( impl.autoplay || !impl.paused ) {
               impl.paused = false;
-              addMediaReadyCallback( function() { onPlay(); } );
+              addMediaReadyCallback(function() {
+                onPlay();
+              });
             } else {
               // if a pause happens while seeking, ensure we catch it.
               // in youtube seeks fire pause events, and we don't want to listen to that.
@@ -268,6 +277,13 @@
           // XXX: cued doesn't seem to fire reliably, bug in youtube api?
           break;
       }
+
+      if ( event.data !== YT.PlayerState.BUFFERING &&
+           playerState === YT.PlayerState.BUFFERING ) {
+        onProgress();
+      }
+
+      playerState = event.data;
     }
 
     function destroyPlayer() {
@@ -275,6 +291,7 @@
         return;
       }
       clearInterval( currentTimeInterval );
+      clearInterval( bufferedInterval );
       player.stopVideo();
       player.clearVideo();
 
@@ -383,6 +400,20 @@
       }
     }
 
+    function monitorBuffered() {
+      var fraction = player.getVideoLoadedFraction();
+
+      if ( lastLoadedFraction !== fraction ) {
+        lastLoadedFraction = fraction;
+
+        onProgress();
+
+        if ( fraction >= 1 ) {
+          clearInterval( bufferedInterval );
+        }
+      }
+    }
+
     function getCurrentTime() {
       return impl.currentTime;
     }
@@ -443,6 +474,10 @@
         }
         self.dispatchEvent( "playing" );
       }
+    }
+
+    function onProgress() {
+      self.dispatchEvent( "progress" );
     }
 
     self.play = function() {
@@ -637,6 +672,45 @@
       error: {
         get: function() {
           return impl.error;
+        }
+      },
+
+      buffered: {
+        get: function () {
+          var timeRanges = {
+            start: function( index ) {
+              if ( index === 0 ) {
+                return 0;
+              }
+
+              //throw fake DOMException/INDEX_SIZE_ERR
+              throw "INDEX_SIZE_ERR: DOM Exception 1";
+            },
+            end: function( index ) {
+              var duration;
+              if ( index === 0 ) {
+                duration = getDuration();
+                if ( !duration ) {
+                  return 0;
+                }
+
+                return duration * player.getVideoLoadedFraction();
+              }
+
+              //throw fake DOMException/INDEX_SIZE_ERR
+              throw "INDEX_SIZE_ERR: DOM Exception 1";
+            }
+          };
+
+          Object.defineProperties( timeRanges, {
+            length: {
+              get: function() {
+                return 1;
+              }
+            }
+          });
+
+          return timeRanges;
         }
       }
     });
