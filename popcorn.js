@@ -966,6 +966,44 @@
     Popcorn.p[ key[ 0 ] ] = Popcorn.p[ key[ 1 ] ] = Popcorn.events.fn[ key[ 0 ] ];
   });
 
+  function addToArrays( obj, track ) {
+    //  Store this definition in an array sorted by times
+    var byStart = obj.data.trackEvents.byStart,
+        byEnd = obj.data.trackEvents.byEnd,
+        startIndex, endIndex;
+
+    for ( startIndex = byStart.length - 1; startIndex >= 0; startIndex-- ) {
+
+      if ( track.start >= byStart[ startIndex ].start ) {
+        byStart.splice( startIndex + 1, 0, track );
+        break;
+      }
+    }
+
+    for ( endIndex = byEnd.length - 1; endIndex >= 0; endIndex-- ) {
+
+      if ( track.end > byEnd[ endIndex ].end ) {
+        byEnd.splice( endIndex + 1, 0, track );
+        break;
+      }
+    }
+
+    // update startIndex and endIndex
+    if ( startIndex <= obj.data.trackEvents.startIndex &&
+      track.start <= obj.data.trackEvents.previousUpdateTime ) {
+
+      obj.data.trackEvents.startIndex++;
+    }
+
+    if ( endIndex <= obj.data.trackEvents.endIndex &&
+      track.end < obj.data.trackEvents.previousUpdateTime ) {
+
+      obj.data.trackEvents.endIndex++;
+    }
+
+    obj.timeUpdate( obj, null, true );
+  }
+
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
     var trackEvent, isUpdate, eventType,
@@ -1010,27 +1048,6 @@
     track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );
     track.end   = Popcorn.util.toSeconds( track.end, obj.options.framerate );
 
-    //  Store this definition in an array sorted by times
-    var byStart = obj.data.trackEvents.byStart,
-        byEnd = obj.data.trackEvents.byEnd,
-        startIndex, endIndex;
-
-    for ( startIndex = byStart.length - 1; startIndex >= 0; startIndex-- ) {
-
-      if ( track.start >= byStart[ startIndex ].start ) {
-        byStart.splice( startIndex + 1, 0, track );
-        break;
-      }
-    }
-
-    for ( endIndex = byEnd.length - 1; endIndex >= 0; endIndex-- ) {
-
-      if ( track.end > byEnd[ endIndex ].end ) {
-        byEnd.splice( endIndex + 1, 0, track );
-        break;
-      }
-    }
-
     // Display track event immediately if it's enabled and current
     if ( track.end > obj.media.currentTime &&
         track.start <= obj.media.currentTime ) {
@@ -1044,20 +1061,8 @@
       }
     }
 
-    // update startIndex and endIndex
-    if ( startIndex <= obj.data.trackEvents.startIndex &&
-      track.start <= obj.data.trackEvents.previousUpdateTime ) {
-
-      obj.data.trackEvents.startIndex++;
-    }
-
-    if ( endIndex <= obj.data.trackEvents.endIndex &&
-      track.end < obj.data.trackEvents.previousUpdateTime ) {
-
-      obj.data.trackEvents.endIndex++;
-    }
-
-    this.timeUpdate( obj, null, true );
+    // Update the positioning of the byStart/byEnd arrays with current track event
+    addToArrays( obj, track );
 
     // Store references to user added trackevents in ref table
     if ( track._id ) {
@@ -1709,11 +1714,12 @@
           // If a start or end are provided, check if they are different than the
           // current start/end. If they are the same, call the plugins update method
           // if defined
-          if ( trackEvent._natives.update &&
-               ( ( options.start == null ) || ( options.start === trackEvent.start ) ) &&
-               ( ( options.end == null ) || ( options.end === trackEvent.end ) ) ) {
 
+          if ( trackEvent._natives._update ) {
             trackEvent._natives._update( trackEvent, options );
+
+            // Update the positioning of the byStart/byEnd arrays with current track event
+            addToArrays( this, trackEvent );
             return this;
           }
 
