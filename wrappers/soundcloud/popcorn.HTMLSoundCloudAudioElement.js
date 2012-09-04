@@ -419,8 +419,8 @@
           "&liking=false" +
           "&sharing=false" +
           "&download=false" +
-          "show_comments=false" +
-          "show_user=false";
+          "&show_comments=false" +
+          "&show_user=false";
       });
     }
 
