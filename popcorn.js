@@ -1001,6 +1001,9 @@
 
       //  Push track event ids into the history
       obj.data.history.push( track._id );
+
+      // Trigger _setup method if exists
+      track._natives._setup && track._natives._setup.call( this, track );
     }
 
     track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );
@@ -1654,9 +1657,6 @@
         // ensure an initial id is there before setup is called
         options._id = Popcorn.guid( options._natives.type );
       }
-
-      // Trigger _setup method if exists
-      options._natives._setup && options._natives._setup.call( this, options );
 
       // Create new track event for this instance
       Popcorn.addTrackEvent( this, options );

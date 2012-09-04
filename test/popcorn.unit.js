@@ -4469,6 +4469,36 @@ asyncTest( "Create empty trackevent w/o id and modify later", 2, function() {
   start();
 });
 
+test( "Modify trackevent after creation call teardown/setup", 3, function() {
+  var p = Popcorn( "#video" ),
+      id,
+      count = 0;
+
+  Popcorn.plugin( "testplugin", {
+    _setup: function( options ) {
+      if ( ++count === 2 ) {
+        ok( true, "Setup was properly called." );
+        equal( options.text, "New Text", "Successfully passed the new options to the plugin for setup" );
+      }
+    },
+    start: function(){},
+    end: function(){},
+    _teardown: function( options ) {
+      ok( true, "Teardown was properly called" );
+    }
+  });
+
+  p.testplugin( { text: "Initial Text" } );
+
+  id = p.getLastTrackEventId();
+
+  p.testplugin( id, { text: "New Text" } );
+
+  Popcorn.removePlugin( "testplugin" );
+  p.destroy();
+
+});
+
 module( "Popcorn XHR" );
 test( "Basic", 2, function() {
 
