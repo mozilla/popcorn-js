@@ -467,8 +467,8 @@ asyncTest( "T23 - video.duration, durationchagne event", 1, function() {
 
   video.addEventListener( "durationchange", function onDurationChange() {
     video.removeEventListener( "durationchange", onDurationChange, false );
-    equal( Math.floor( video.duration ),
-           Math.floor( testData.expectedDuration ),
+    equal( Math.round( video.duration ),
+           Math.round( testData.expectedDuration ),
            "duration is set and durationchange fired." );
     start();
   }, false);
@@ -478,7 +478,7 @@ asyncTest( "T23 - video.duration, durationchagne event", 1, function() {
 });
 
 
-asyncTest( "T24 - currentTime, seeking, seeked [Known to fail with Vimeo+Chrome, Vimeo+Firefox, SoundClound+Firefox (ticket #1265)]", 2, function() {
+asyncTest( "T24 - currentTime, seeking, seeked [Known to fail with Vimeo+Firefox, SoundClound+Firefox (ticket #1265)]", 2, function() {
 
   var video = testData.createMedia( "#video" ),
       eventOrder = "";

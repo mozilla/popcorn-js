@@ -2,7 +2,7 @@
 var testData = {
 
   videoSrc: "http://vimeo.com/12235444",
-  expectedDuration: 383,
+  expectedDuration: 382.502,
 
   createMedia: function( id ) {
     return Popcorn.HTMLVimeoVideoElement( id );
