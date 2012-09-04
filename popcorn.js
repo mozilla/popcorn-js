@@ -1708,13 +1708,15 @@
 
           // If a start or end are provided, check if they are different than the
           // current start/end. If they are the same, call the plugins update method
-          if ( ( ( options.start >= 0 && options.start === trackEvent.start ) &&
+          // if defined
+          if ( trackEvent._natives.update &&
+             ( ( ( options.start >= 0 && options.start === trackEvent.start ) &&
                !options.end >= 0 ) ||
              ( ( options.end >= 0 && options.end === trackEvent.end ) &&
                !options.start >= 0 ) ||
              ( ( options.start >= 0 && options.start === trackEvent.start ) &&
                ( options.end >= 0 && options.end === trackEvent.end ) ) ||
-             ( !options.start && !options.end ) ) {
+             ( !options.start && !options.end ) ) ) {
             
             trackEvent._natives._update( trackEvent, options );
             return this;
