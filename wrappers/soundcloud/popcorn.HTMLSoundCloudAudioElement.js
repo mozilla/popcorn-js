@@ -123,7 +123,8 @@
       player.bind( SC.Widget.Events.SEEK, function( data ) {
         onStateChange({
           type: "seek",
-          data: data.currentPosition
+          // currentTime is in ms vs. s
+          data: data.currentPosition / 1000
         });
       });
 
@@ -326,14 +327,14 @@
       }
     }
 
-    function onCurrentTime( aTime ) {
-      var currentTime = impl.currentTime = aTime / 1000;
+    function onCurrentTime( currentTime ) {
+      impl.currentTime = currentTime;
 
       if( currentTime !== lastCurrentTime ) {
         self.dispatchEvent( "timeupdate" );
       }
 
-      lastCurrentTime = impl.currentTime;
+      lastCurrentTime = currentTime;
     }
 
     function onStateChange( event ) {
@@ -361,7 +362,10 @@
     }
 
     function monitorCurrentTime() {
-      player.getPosition( onCurrentTime );
+      player.getPosition( function( currentTimeInMS ) {
+        // Convert from ms to s
+        onCurrentTime( currentTimeInMS / 1000 );
+      });
     }
 
     function changeSrc( aSrc ) {
