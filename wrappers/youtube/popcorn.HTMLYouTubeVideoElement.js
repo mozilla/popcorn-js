@@ -194,6 +194,10 @@
             // fake ready event
             firstPlay = false;
 
+            addPlayerReadyCallback( function() {
+              bufferedInterval = setInterval( monitorBuffered, 50 );
+            });
+
             // Set initial paused state
             if( impl.autoplay || !impl.paused ) {
               impl.paused = false;
@@ -272,6 +276,7 @@
         return;
       }
       clearInterval( currentTimeInterval );
+      clearInterval( bufferedInterval );
       player.stopVideo();
       player.clearVideo();
 
@@ -682,7 +687,7 @@
           Object.defineProperties( timeRanges, {
             length: {
               get: function() {
-                return ( getDuration() && player.getVideoLoadedFraction() ) > 0 ? 1 : 0;
+                return 1;
               }
             }
           });
