@@ -191,7 +191,13 @@
           // XXX: this should really live in cued below, but doesn't work.
           impl.readyState = self.HAVE_METADATA;
           self.dispatchEvent( "loadedmetadata" );
-          bufferedInterval = setInterval( monitorBuffered, 50 );
+          if (!playerReady) {
+            addPlayerReadyCallback( function() {
+              bufferedInterval = setInterval( monitorBuffered, 50 );
+            });
+          } else {
+            bufferedInterval = setInterval( monitorBuffered, 50 );
+          }
 
           self.dispatchEvent( "loadeddata" );
 
@@ -254,6 +260,7 @@
         return;
       }
       clearInterval( currentTimeInterval );
+      clearInterval( bufferedInterval );
       player.stopVideo();
       player.clearVideo();
 
@@ -681,7 +688,7 @@
           Object.defineProperties( timeRanges, {
             length: {
               get: function() {
-                return ( getDuration() && player.getVideoLoadedFraction() ) > 0 ? 1 : 0;
+                return 1;
               }
             }
           });
