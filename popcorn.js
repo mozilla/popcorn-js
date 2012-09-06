@@ -915,10 +915,22 @@
         return this;
       },
       unlisten: function( type, fn ) {
+        var events = this.data.events[ type ];
 
-        if ( this.data.events[ type ] && this.data.events[ type ][ fn ] ) {
+        if ( !events ) {
+          return; // no listeners = nothing to do
+        }
 
-          delete this.data.events[ type ][ fn ];
+        if ( typeof fn === "string" && events[ fn ] ) {
+          delete events[ fn ];
+
+          return this;
+        } else if ( typeof fn === "function" ) {
+          for ( var i in events ) {
+            if ( hasOwn.call( events, i ) && events[ i ] === fn ) {
+              delete events[ i ];
+            }
+          }
 
           return this;
         }
