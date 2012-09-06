@@ -1744,21 +1744,46 @@ asyncTest( "Custom", 1, function() {
   p.emit( "eventz0rz" );
 });
 
-test( "on/off/emit", 4, function() {
+test( "on/off/emit", 6, function() {
 
   var $pop = Popcorn( "#video" );
 
-  $pop.on( "foo", function() {
-    deepEqual( this, $pop, "`this` is the popcorn instance" );
-    equal( typeof this.data.events.foo, "object", "events hash registered at this.data.events.foo" );
-    equal( Popcorn.sizeOf( this.data.events.foo ), 1, "Only one event is registered" );
+  var decoyCalled = false,
+      finishCount = 0;
 
-    $pop.off( "foo" );
+  var finishTest = function() {
+    finishCount++;
 
-    equal( this.data.events.foo, null, "events hash is null at this.data.events.foo" );
-  });
+    if( finishCount === 1 ) {
+      deepEqual( this, $pop, "`this` is the popcorn instance" );
+      equal( typeof this.data.events.foo, "object", "events hash registered at this.data.events.foo" );
+      equal( Popcorn.sizeOf( this.data.events.foo ), 2, "Two events are registered" );
+    } else if( finishCount === 2 ) {
+      equal( Popcorn.sizeOf( this.data.events.foo ), 1, "Only one event is registered" );
+    } else {
+      ok( false, "global off() is broken" );
+    }
+  };
+
+  var decoyFunc = function() {
+    equal( decoyCalled, false, "second callback on is called precisely once" );
+    decoyCalled = true;
+  };
+
+  $pop.on( "foo", finishTest );
+  $pop.on( "foo", decoyFunc );
 
   $pop.emit( "foo" );
+
+  $pop.off( "foo", decoyFunc );
+
+  $pop.emit( "foo" );
+
+  $pop.off( "foo" );
+
+  equal( $pop.data.events.foo, null, "events hash is null at this.data.events.foo" );
+
+  $pop.emit( "foo" ); // shouldn't do anything
 
   $pop.destroy();
 });
