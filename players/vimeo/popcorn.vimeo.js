@@ -3,7 +3,7 @@
   Popcorn.player( "vimeo", {
     _canPlayType: function( nodeName, url ) {
       return ( typeof url === "string" &&
-               Popcorn.HTMLVimeoVideoElement.canPlayType( url ) );
+               Popcorn.HTMLVimeoVideoElement._canPlaySrc( url ) );
     }
   });
 
