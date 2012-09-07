@@ -402,7 +402,11 @@
         elem.webkitAllowFullScreen = true;
         elem.mozAllowFullScreen = true;
         elem.allowFullScreen = true;
+
         parent.appendChild( elem );
+        // Apply the current controls state, since iframe wasn't ready yet.
+        setControls( impl.controls );
+
         elem.onload = function() {
           elem.onload = null;
 
@@ -423,7 +427,6 @@
           "&show_user=false";
       });
     }
-
 
     function onVolume( aValue ) {
       // Remap from 0..100 to 0..1
@@ -474,6 +477,14 @@
 
     function getMuted() {
       return impl.muted > 0;
+    }
+
+    function setControls( controls ) {
+      // If the iframe elem isn't ready yet, bail.  We'll call again when it is.
+      if ( elem ) {
+        elem.style.visibility = controls ? "visible" : "hidden";
+      }
+      impl.controls = controls;
     }
 
     Object.defineProperties( self, {
@@ -599,6 +610,17 @@
       error: {
         get: function() {
           return impl.error;
+        }
+      },
+
+      // Similar to HTML5 Audio Elements, with SoundCloud you can
+      // hide all visible UI for the player by setting controls=false.
+      controls: {
+        get: function() {
+          return impl.controls;
+        },
+        set: function( aValue ) {
+          setControls( !!aValue );
         }
       }
     });
