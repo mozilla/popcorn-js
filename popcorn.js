@@ -1003,7 +1003,7 @@
       obj.data.history.push( track._id );
 
       // Trigger _setup method if exists
-      track._natives._setup && track._natives._setup.call( this, track );
+      track._natives._setup && track._natives._setup.call( obj, track );
     }
 
     track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );

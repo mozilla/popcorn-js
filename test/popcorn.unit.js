@@ -3672,6 +3672,38 @@ asyncTest( "In/Out aliases", function() {
   });
 });
 
+asyncTest( "Popcorn instance integrity inside natives", 4, function() {
+  var p = Popcorn( "#video" ),
+      id = "test-id";
+
+  Popcorn.plugin( "integrityTest", {
+    _setup: function( options ) {
+      ok( this === p, "Popcorn instance accessible in plugin _setup" );
+    },
+    start: function( event, options ) {
+      ok( this === p, "Popcorn instance accessible in plugin start" );
+    },
+    end: function( event, options ) {
+      ok( this === p, "Popcorn instance accessible in plugin end" );
+      p.removeTrackEvent( id );
+    },
+    _teardown: function( options ) {
+      ok( this === p, "Popcorn instance accessible in plugin _teardown" );
+    }
+  });
+
+  p.cue( 4.5, function() {
+    Popcorn.removePlugin( "integrityTest" );
+    p.currentTime( 0 );
+    p.destroy();
+    start();
+  });
+
+  p.integrityTest( id, { start: 3, end: 4 } );
+  p.play( 2 );
+
+});
+
 module( "Popcorn TrackEvents" );
 test( "Functions", 19, function() {
 
