@@ -3726,7 +3726,43 @@ asyncTest( "Popcorn instance integrity inside natives", 4, function() {
 
   p.integrityTest( id, { start: 3, end: 4 } );
   p.play( 2 );
+});
 
+test( "Disable/Enable/Toggle on non existent plugins", 5, function() {
+  var popcorn = Popcorn( "#video" ),
+      plugin = "garbage";
+
+  ok( !popcorn.data.disabled[ plugin ], "non existent plugin starts enabled." );
+  popcorn.disable( plugin );
+  ok( popcorn.data.disabled[ plugin ], "non existent plugin can be disiabled." );
+  popcorn.enable( plugin );
+  ok( !popcorn.data.disabled[ plugin ], "non existent plugin can become enabled again." );
+  popcorn.toggle( plugin );
+  ok( popcorn.data.disabled[ plugin ], "non existent plugin can be toggled." );
+  popcorn.toggle( plugin );
+  ok( !popcorn.data.disabled[ plugin ], "non existent plugin can be toggled again." );
+});
+
+test( "Disable/Enable/Toggle on dead plugins", 5, function() {
+  var popcorn = Popcorn( "#video" ),
+      plugin = "dead";
+
+  Popcorn.plugin( plugin, {
+    _setup: Popcorn.nop,
+    _teardown: Popcorn.nop,
+    start: Popcorn.nop,
+    end: Popcorn.nop
+  });
+
+  ok( !popcorn.data.disabled[ plugin ], "dead plugins plugin starts enabled." );
+  popcorn.disable( plugin );
+  ok( popcorn.data.disabled[ plugin ], "dead plugins plugin can be disiabled." );
+  popcorn.enable( plugin );
+  ok( !popcorn.data.disabled[ plugin ], "dead plugins plugin can become enabled again." );
+  popcorn.toggle( plugin );
+  ok( popcorn.data.disabled[ plugin ], "dead plugins plugin can be toggled." );
+  popcorn.toggle( plugin );
+  ok( !popcorn.data.disabled[ plugin ], "dead plugins plugin can be toggled again." );
 });
 
 module( "Popcorn TrackEvents" );
