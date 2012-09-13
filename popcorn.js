@@ -440,7 +440,9 @@
 
     disable: function( instance, plugin ) {
 
-      if ( !instance.data.disabled[ plugin ] ) {
+      if ( plugin in Popcorn.registryByName &&
+           instance.data.running[ plugin ] &&
+           !instance.data.disabled[ plugin ] ) {
 
         instance.data.disabled[ plugin ] = true;
 
@@ -455,7 +457,9 @@
     },
     enable: function( instance, plugin ) {
 
-      if ( instance.data.disabled[ plugin ] ) {
+      if ( plugin in Popcorn.registryByName &&
+           instance.data.running[ plugin ] &&
+           instance.data.disabled[ plugin ] ) {
 
         instance.data.disabled[ plugin ] = false;
 

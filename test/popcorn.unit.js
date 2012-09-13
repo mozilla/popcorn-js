@@ -3701,7 +3701,43 @@ asyncTest( "Popcorn instance integrity inside natives", 4, function() {
 
   p.integrityTest( id, { start: 3, end: 4 } );
   p.play( 2 );
+});
 
+asyncTest( "Disable/Enable/Toggle on non existent plugins", 1, function() {
+  var popcorn = Popcorn( "#video" );
+
+  try {
+    popcorn.disable( "garbage" );
+    popcorn.enable( "garbage" );
+    popcorn.toggle( "garbage" );
+    ok( true, "safe to call enable/disable/toggle on plugins that do not exist" );
+  } catch ( e ) {
+    ok( false, "safe to call enable/disable/toggle on plugins that do not exist" );
+  }
+
+  start();
+});
+
+asyncTest( "Disable/Enable/Toggle on dead plugins", 1, function() {
+  var popcorn = Popcorn( "#video" );
+
+  Popcorn.plugin( "dead", {
+    _setup: Popcorn.nop,
+    _teardown: Popcorn.nop,
+    start: Popcorn.nop,
+    end: Popcorn.nop
+  });
+
+  try {
+    popcorn.disable( "dead" );
+    popcorn.enable( "dead" );
+    popcorn.toggle( "dead" );
+    ok( true, "safe to call enable/disable/toggle on plugins that are dead" );
+  } catch ( e ) {
+    ok( false, "safe to call enable/disable/toggle on plugins that are dead" );
+  }
+
+  start();
 });
 
 module( "Popcorn TrackEvents" );
