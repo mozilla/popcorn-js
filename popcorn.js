@@ -440,9 +440,14 @@
 
     disable: function( instance, plugin ) {
 
-      if ( !instance.data.disabled[ plugin ] ) {
+      if ( instance.data.disabled[ plugin ] ) {
+        return;
+      }
 
-        instance.data.disabled[ plugin ] = true;
+      instance.data.disabled[ plugin ] = true;
+
+      if ( plugin in Popcorn.registryByName &&
+           instance.data.running[ plugin ] ) {
 
         for ( var i = instance.data.running[ plugin ].length - 1, event; i >= 0; i-- ) {
 
@@ -455,9 +460,14 @@
     },
     enable: function( instance, plugin ) {
 
-      if ( instance.data.disabled[ plugin ] ) {
+      if ( !instance.data.disabled[ plugin ] ) {
+        return;
+      }
 
-        instance.data.disabled[ plugin ] = false;
+      instance.data.disabled[ plugin ] = false;
+
+      if ( plugin in Popcorn.registryByName &&
+           instance.data.running[ plugin ] ) {
 
         for ( var i = instance.data.running[ plugin ].length - 1, event; i >= 0; i-- ) {
 
