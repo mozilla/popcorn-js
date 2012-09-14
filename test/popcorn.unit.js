@@ -3703,41 +3703,41 @@ asyncTest( "Popcorn instance integrity inside natives", 4, function() {
   p.play( 2 );
 });
 
-asyncTest( "Disable/Enable/Toggle on non existent plugins", 1, function() {
-  var popcorn = Popcorn( "#video" );
+test( "Disable/Enable/Toggle on non existent plugins", 5, function() {
+  var popcorn = Popcorn( "#video" ),
+      plugin = "garbage";
 
-  try {
-    popcorn.disable( "garbage" );
-    popcorn.enable( "garbage" );
-    popcorn.toggle( "garbage" );
-    ok( true, "safe to call enable/disable/toggle on plugins that do not exist" );
-  } catch ( e ) {
-    ok( false, "safe to call enable/disable/toggle on plugins that do not exist" );
-  }
-
-  start();
+  ok( !popcorn.data.disabled[ plugin ], "non existent plugin starts enabled." );
+  popcorn.disable( plugin );
+  ok( popcorn.data.disabled[ plugin ], "non existent plugin can be disiabled." );
+  popcorn.enable( plugin );
+  ok( !popcorn.data.disabled[ plugin ], "non existent plugin can become enabled again." );
+  popcorn.toggle( plugin );
+  ok( popcorn.data.disabled[ plugin ], "non existent plugin can be toggled." );
+  popcorn.toggle( plugin );
+  ok( !popcorn.data.disabled[ plugin ], "non existent plugin can be toggled again." );
 });
 
-asyncTest( "Disable/Enable/Toggle on dead plugins", 1, function() {
-  var popcorn = Popcorn( "#video" );
+test( "Disable/Enable/Toggle on dead plugins", 5, function() {
+  var popcorn = Popcorn( "#video" ),
+      plugin = "dead";
 
-  Popcorn.plugin( "dead", {
+  Popcorn.plugin( plugin, {
     _setup: Popcorn.nop,
     _teardown: Popcorn.nop,
     start: Popcorn.nop,
     end: Popcorn.nop
   });
 
-  try {
-    popcorn.disable( "dead" );
-    popcorn.enable( "dead" );
-    popcorn.toggle( "dead" );
-    ok( true, "safe to call enable/disable/toggle on plugins that are dead" );
-  } catch ( e ) {
-    ok( false, "safe to call enable/disable/toggle on plugins that are dead" );
-  }
-
-  start();
+  ok( !popcorn.data.disabled[ plugin ], "dead plugins plugin starts enabled." );
+  popcorn.disable( plugin );
+  ok( popcorn.data.disabled[ plugin ], "dead plugins plugin can be disiabled." );
+  popcorn.enable( plugin );
+  ok( !popcorn.data.disabled[ plugin ], "dead plugins plugin can become enabled again." );
+  popcorn.toggle( plugin );
+  ok( popcorn.data.disabled[ plugin ], "dead plugins plugin can be toggled." );
+  popcorn.toggle( plugin );
+  ok( !popcorn.data.disabled[ plugin ], "dead plugins plugin can be toggled again." );
 });
 
 module( "Popcorn TrackEvents" );
