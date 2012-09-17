@@ -233,7 +233,7 @@
           self.media.currentTime = 0;
         }
 
-        self.media.removeEventListener( "loadeddata", isReady, false );
+        self.media.removeEventListener( "loadedmetadata", isReady, false );
 
         var duration, videoDurationPlus,
             runningPlugins, runningPlugin, rpLength, rpNatives;
@@ -305,12 +305,25 @@
         }
       });
 
-      if ( self.media.readyState >= 2 ) {
+      // http://www.whatwg.org/specs/web-apps/current-work/#dom-media-readystate
+      //
+      // If media is in readyState (rS) >= 1, we know the media's duration,
+      // which is required before running the isReady function.
+      // If rS is 0, attach a listener for "loadedmetadata",
+      // ( Which indicates that the media has moved from rS 0 to 1 )
+      //
+      // This has been changed from a check for rS 2 because
+      // in certain conditions, Firefox can enter this code after dropping
+      // to rS 1 from a higher state such as 2 or 3. This caused a "loadeddata"
+      // listener to be attached to the media object, an event that had
+      // already triggered and would not trigger again. This left Popcorn with an
+      // instance that could never start a timeUpdate loop.
+      if ( self.media.readyState >= 1 ) {
 
         isReady();
       } else {
 
-        self.media.addEventListener( "loadeddata", isReady, false );
+        self.media.addEventListener( "loadedmetadata", isReady, false );
       }
 
       return this;
@@ -505,6 +518,8 @@
         instance.data.timeUpdate && instance.media.removeEventListener( "timeupdate", instance.data.timeUpdate, false );
         instance.isDestroyed = true;
       }
+
+      Popcorn.instances.splice( Popcorn.instances.indexOf( instance ), 1 );
     }
   });
 
@@ -1299,7 +1314,6 @@
   };
 
   Popcorn.timeUpdate = function( obj, event ) {
-
     var currentTime = obj.media.currentTime,
         previousTime = obj.data.trackEvents.previousUpdateTime,
         tracks = obj.data.trackEvents,
@@ -1359,12 +1373,10 @@
         byStart = tracks.byStart[ start ];
         natives = byStart._natives;
         type = natives && natives.type;
-
         //  If plugin does not exist on this instance, remove it
         if ( !natives ||
             ( !!registryByName[ type ] ||
               !!obj[ type ] ) ) {
-
           if ( byStart.end > currentTime &&
                 byStart._running === false ) {
 
