@@ -520,7 +520,7 @@
 
       width: {
         get: function() {
-          return elem.width;
+          return elem ? elem.width : impl.width || 0;
         },
         set: function( aValue ) {
           impl.width = aValue;
@@ -529,7 +529,7 @@
 
       height: {
         get: function() {
-          return elem.height;
+          return elem ? elem.height : impl.height || 0;
         },
         set: function( aValue ) {
           impl.height = aValue;
