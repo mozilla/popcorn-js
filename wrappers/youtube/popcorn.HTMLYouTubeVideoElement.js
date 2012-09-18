@@ -19,6 +19,28 @@
   ytLoaded = false,
   ytCallbacks = [];
 
+  var callbackQueue = function() {
+    var _queue = [],
+        _running = false;
+
+    return {
+      next: function() {
+        _running = false;
+        _queue.shift();
+        _queue[ 0 ] && _queue[ 0 ]();
+      },
+      add: function( callback ) {
+        _queue.push(function() {
+          _running = true;
+          callback && callback();
+        });
+
+        // if there is only one item on the queue, start it
+        !_running && _queue[ 0 ]();
+      }
+    };
+  };
+
   function isYouTubeReady() {
     // If the YouTube iframe API isn't injected, to it now.
     if( !ytLoaded ) {
@@ -90,7 +112,9 @@
       lastCurrentTime = 0,
       seekTarget = -1,
       timeUpdateInterval,
-      forcedLoadMetadata = false;
+      forcedLoadMetadata = false,
+      firstPlay = true,
+      actionQueue = callbackQueue();
 
     // Namespace all events we'll produce
     self._eventNamespace = Popcorn.guid( "HTMLYouTubeVideoElement::" );
@@ -103,6 +127,7 @@
 
     function onPlayerReady( event ) {
       playerReady = true;
+      self.play();
     }
 
     // YouTube sometimes sends a duration of 0.  From the docs:
@@ -185,30 +210,6 @@
 
         // unstarted
         case -1:
-          // XXX: this should really live in cued below, but doesn't work.
-          impl.readyState = self.HAVE_METADATA;
-          self.dispatchEvent( "loadedmetadata" );
-
-          self.dispatchEvent( "loadeddata" );
-
-          impl.readyState = self.HAVE_FUTURE_DATA;
-          self.dispatchEvent( "canplay" );
-
-          // We can't easily determine canplaythrough, but will send anyway.
-          impl.readyState = self.HAVE_ENOUGH_DATA;
-          self.dispatchEvent( "canplaythrough" );
-
-          // Auto-start if necessary
-          if( impl.autoplay ) {
-            self.play();
-          }
-
-          var i = playerReadyCallbacks.length;
-          while( i-- ) {
-            playerReadyCallbacks[ i ]();
-            delete playerReadyCallbacks[ i ];
-          }
-
           break;
 
         // ended
@@ -218,7 +219,39 @@
 
         // playing
         case YT.PlayerState.PLAYING:
-          onPlay();
+          if( firstPlay ) {
+            firstPlay = false;
+
+            // XXX: this should really live in cued below, but doesn't work.
+            impl.readyState = self.HAVE_METADATA;
+            self.dispatchEvent( "loadedmetadata" );
+
+            self.dispatchEvent( "loadeddata" );
+
+            impl.readyState = self.HAVE_FUTURE_DATA;
+            self.dispatchEvent( "canplay" );
+
+            // We can't easily determine canplaythrough, but will send anyway.
+            impl.readyState = self.HAVE_ENOUGH_DATA;
+            self.dispatchEvent( "canplaythrough" );
+
+            // Pause video if we aren't auto-starting
+            if( !impl.autoplay ) {
+              actionQueue.next();
+              player.pauseVideo();
+            } else {
+              // This is a real play as well as a ready event
+              onPlay();
+            }
+
+            var i = playerReadyCallbacks.length;
+            while( i-- ) {
+              playerReadyCallbacks[ i ]();
+              delete playerReadyCallbacks[ i ];
+            }
+          } else {
+            onPlay();
+          }
           break;
 
         // paused
@@ -429,6 +462,8 @@
         }
         self.dispatchEvent( "playing" );
       }
+      
+      actionQueue.next();
     }
 
     self.play = function() {
@@ -436,13 +471,23 @@
         addPlayerReadyCallback( function() { self.play(); } );
         return;
       }
-      player.playVideo();
+
+      actionQueue.add(function() {
+        if ( player.getPlayerState() !== 1 ) {
+          seeking = false;
+          player.playVideo();
+        } else {
+          actionQueue.next();
+        }
+      });
     };
 
     function onPause() {
       impl.paused = true;
       clearInterval( timeUpdateInterval );
       self.dispatchEvent( "pause" );
+      
+      actionQueue.next();
     }
 
     self.pause = function() {
@@ -450,7 +495,15 @@
         addPlayerReadyCallback( function() { self.pause(); } );
         return;
       }
-      player.pauseVideo();
+
+      actionQueue.add(function() {
+        if ( player.getPlayerState() !== 2 ) {
+          seeking = false;
+          player.pauseVideo();
+        } else {
+          actionQueue.next();
+        }
+      });
     };
 
     function onEnded() {
