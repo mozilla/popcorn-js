@@ -464,32 +464,42 @@
     }
 
     function setVolume( aValue ) {
+      impl.volume = aValue;
+      
       if( !playerReady ) {
-        impl.volume = aValue;
         addPlayerReadyCallback( function() {
           setVolume( impl.volume );
         });
         return;
       }
       player.setVolume( aValue );
-      self.dispatchEvent( "volumechange" );
+
+      // YouTube doesn't update volume immediately
+      setTimeout( function() {
+        self.dispatchEvent( "volumechange" )
+      }, 10 );
     }
 
     function getVolume() {
       if( !playerReady ) {
-        return impl.volume > -1 ? impl.volume : 1;
+        return impl.volume > -1 ? impl.volume : 100;
       }
       return player.getVolume();
     }
 
     function setMuted( aValue ) {
+      impl.muted = aValue;
+
       if( !playerReady ) {
-        impl.muted = aValue;
         addPlayerReadyCallback( function() { setMuted( impl.muted ); } );
         return;
       }
       player[ aValue ? "mute" : "unMute" ]();
-      self.dispatchEvent( "volumechange" );
+
+      // YouTube doesn't update volume immediately
+      setTimeout( function() {
+        self.dispatchEvent( "volumechange" )
+      }, 10 );
     }
 
     function getMuted() {
