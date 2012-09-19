@@ -93,6 +93,9 @@
 
     self.parentNode = parent;
 
+    // Mark type as Vimeo
+    self._util.type = "Vimeo";
+
     function addPlayerReadyCallback( callback ) {
       playerReadyCallbacks.unshift( callback );
     }
