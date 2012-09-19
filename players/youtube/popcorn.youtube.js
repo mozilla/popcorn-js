@@ -241,7 +241,8 @@
           }
         };
 
-        options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 1;
+        // Default controls to off
+        options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 0;
         options.annotations = +options.annotations === 1 || +options.annotations === 3 ? options.annotations : 1;
 
         src = /^.*(?:\/|v=)(.{11})/.exec( media.src )[ 1 ];
@@ -275,7 +276,22 @@
           queryStringItem = params[ i ].split( "=" );
           playerVars[ queryStringItem[ 0 ] ] = queryStringItem[ 1 ];
         }
-        
+
+        // Don't show related videos when ending
+        playerVars.rel = playerVars.rel || 0;
+
+        // Don't show YouTube's branding
+        playerVars.modestbranding = playerVars.modestbranding || 1;
+
+        // Don't show annotations by default
+        playerVars.iv_load_policy = playerVars.iv_load_policy || 3;
+
+        // Don't show video info before playing
+        playerVars.showinfo = playerVars.showinfo || 0;
+
+        // Show/hide controls.
+        playerVars.controls = playerVars.controls || ( options.controls || 0 );
+
         options.youtubeObject = new YT.Player( container.id, {
           height: "100%",
           width: "100%",
