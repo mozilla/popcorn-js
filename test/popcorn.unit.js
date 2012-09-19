@@ -513,7 +513,7 @@ test( "Popcorn.util.toSeconds" , function() {
   }
 });
 
-asyncTest( "Popcorn.destroy", 9, function() {
+asyncTest( "Popcorn.destroy", 10, function() {
   var popcorn = Popcorn( "#video" ),
       pcorn,
       playCounter = 0,
@@ -527,16 +527,17 @@ asyncTest( "Popcorn.destroy", 9, function() {
   equal( timeUpdateCounter, 0, "timeUpdateCounter is intially 0" );
 
   //  add some event listeners for testing
-  popcorn.on( "timeupdate", function( event ) { timeUpdateCounter++; } );
+  popcorn.on( "timeupdate", function( event ) { 
+    timeUpdateCounter++;
+    popcorn.pause();
+  });
   popcorn.on( "play", function( event ) {
     playCounter++;
-
-    this.pause();
   });
 
   popcorn.on( "pause", function() {
 
-    equal( Popcorn.sizeOf( popcorn.data.events ), 3, "popcorn.data.events has correct number of events - before Popcorn.destroy" );
+    equal( Popcorn.sizeOf( popcorn.data.events ), 5, "popcorn.data.events has correct number of events - before Popcorn.destroy" );
 
     ok( playCounter > 0, "playCounter is greater than 0, events are being triggered" );
 
@@ -545,6 +546,8 @@ asyncTest( "Popcorn.destroy", 9, function() {
     playCounter = timeUpdateCounter = 0;
 
     popcorn.destroy();
+
+    equal( Popcorn.instances.length, 0, "The instance was removed" );
 
     //  Doing this to ensure we are working, a fail will run before this if the old popcorn instances events were
     //  not properly destroyed
@@ -568,10 +571,13 @@ asyncTest( "Popcorn.destroy", 9, function() {
     ok( false, "This cue should never have been run, destroy not working" );
   });
 
-  popcorn.play( 0 );
+  popcorn.on( "canplayall", function ready() {
+    popcorn.off( "canplayall", ready );
+    popcorn.play( 0 );
+  });
 });
 
-test( "Popcorn.destroy (events & trackEvents)", 2, function() {
+test( "Popcorn.destroy (events & trackEvents)", 3, function() {
   var p = Popcorn( "#video" );
 
   Popcorn.plugin( "destroyable", {
@@ -588,6 +594,8 @@ test( "Popcorn.destroy (events & trackEvents)", 2, function() {
   });
 
   p.destroy();
+
+  equal( Popcorn.instances.length, 0, "The instance was removed from the Popcorn.instances array." );
 
   equal( p.data.trackEvents.byStart.length, 0, "Zero trackEvents.byStart after destroy" );
 
