@@ -161,11 +161,14 @@
         player.bind( SC.Widget.Events.PAUSE, function( data ) {
           player.unbind( SC.Widget.Events.PAUSE );
 
-          // Play/Pause cycle is done, continue loading.
+          // Play/Pause cycle is done, restore volume and continue loading.
+          player.setVolume( 100 );
           onLoaded();
         });
       });
 
+      // Turn down the volume and kick-off a play to force load
+      player.setVolume( 0 );
       player.play();
     }
 
@@ -426,15 +429,6 @@
           "&show_comments=false" +
           "&show_user=false";
       });
-    }
-
-    function onVolume( aValue ) {
-      // Remap from 0..100 to 0..1
-      aValue = aValue / 100;
-      if( impl.volume !== aValue ) {
-        impl.volume = aValue;
-        self.dispatchEvent( "volumechange" );
-      }
     }
 
     function setVolume( aValue ) {
