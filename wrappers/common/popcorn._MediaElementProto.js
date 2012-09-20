@@ -75,6 +75,9 @@
 
     _util: {
 
+      // Each wrapper stamps a type.
+      type: "HTML5",
+
       // How often to trigger timeupdate events
       TIMEUPDATE_MS: 250,
 

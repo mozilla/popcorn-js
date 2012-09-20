@@ -93,6 +93,9 @@
     // Attach parentNode
     self.parentNode = parent;
 
+    // Mark type as NullVideo
+    self._util.type = "NullVideo";
+
     function addPlayerReadyCallback( callback ) {
       playerReadyCallbacks.unshift( callback );
     }
