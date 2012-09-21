@@ -79,8 +79,8 @@
         duration: NaN,
         ended: false,
         paused: true,
-        width: parent.width|0   ? parent.width  : MIN_WIDTH,
-        height: parent.height|0 ? parent.height : MIN_HEIGHT,
+        width: '100%',
+        height: '100%',
         error: null
       },
       playerReady = false,
