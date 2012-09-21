@@ -31,7 +31,7 @@ var testData = {
 
     });
 
-    asyncTest( "YouTube 03 - change size", 0, function() {
+    asyncTest( "YouTube 03 - change size", 4, function() {
       var video = testData.createMedia( "#video" );
       video.width = 320;
       video.height = 240;
@@ -41,6 +41,12 @@ var testData = {
         video.width = 640;
         video.height = 480;
         video.pause();
+
+        equal( video.width, 640, "Video width is set" );
+        equal( video.height, 480, "Video height is set" );
+
+        equal( video.lastChild.width, 640, "Video iframe width is set" );
+        equal( video.lastChild.height, 480, "Video iframe height is set" );
         start();
       }, false);
 
