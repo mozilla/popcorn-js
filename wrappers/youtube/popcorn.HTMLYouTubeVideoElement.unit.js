@@ -31,6 +31,24 @@ var testData = {
 
     });
 
+    asyncTest( "YouTube 03 - change size", 0, function() {
+      var video = testData.createMedia( "#video" );
+      video.width = 320;
+      video.height = 240;
+
+      video.addEventListener( "play", function onPlay() {
+        video.removeEventListener( "play", onPlay, false );
+        video.width = 640;
+        video.height = 480;
+        video.pause();
+        start();
+      }, false);
+
+      video.src = testData.videoSrc;
+      video.play();
+
+    });
+
   }
 };
 
