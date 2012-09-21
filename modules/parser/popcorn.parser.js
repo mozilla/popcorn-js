@@ -45,7 +45,8 @@
         return this;
       }
 
-      var that = this;
+      var that = this,
+          isDebug = !!Popcorn.parser.debug;
 
       Popcorn.xhr({
         url: filename,
@@ -81,7 +82,14 @@
             }
           }
           if ( callback ) {
-            callback();
+            delete tracksObject.data;
+
+            if ( !isDebug && tracksObject.debugData && tracksObject.debugData !== {} ) {
+              console.warn( "Debug data detected and not in debug mode. Clearing debug data." );
+              tracksObject.debugData = {};
+            }
+
+            callback( tracksObject );
           }
         }
       });

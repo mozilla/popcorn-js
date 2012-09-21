@@ -77,6 +77,69 @@ asyncTest( "Parsing Integrity", function() {
   });
 });
 
+
+asyncTest( "Parsing Data Return and Debug", 6, function() {
+
+  var callbacks = 4,
+      count = 0,
+      timeOut = 0,
+      originallyDebug = Popcorn.parsers.debug,
+      poppercore = Popcorn( "#video" );
+
+  function callbackDone() {
+    if ( ++count === callbacks ) {
+      start();
+      // clean up added events after tests
+      Popcorn.removePlugin( "parserTest" );
+      Popcorn.parsers.debug = originallyDebug;
+    }
+  }
+
+  Popcorn.parser( "parseJSONCustom" , "json", function( data ) {
+    data.foo = "bar";
+    data.debugData = {
+      foo : "bar"
+    }
+
+    return data;
+  });
+
+  Popcorn.parser( "parseJSONPlain" , "json", function( data ) {
+    return data;
+  });
+
+  Popcorn.plugin( "parserTest", {
+
+    start: function() {},
+    end: function() {}
+  });
+
+  function testDebugMode( isDebug ) {
+    Popcorn.parser.debug = isDebug;
+
+    poppercore.parseJSONPlain( "data/parserData.json", function( data ) {
+      deepEqual( data, {}, "Empty object passed as default" );
+      callbackDone();
+    });
+
+    poppercore.parseJSONCustom( "data/parserData.json", function( data ) {
+      var expectedDebugData = {};
+
+      if ( isDebug ) {
+        expectedDebugData.foo = "bar";
+      }
+
+      strictEqual( data.foo, "bar", "Custom field passed" );
+      deepEqual( data.debugData, expectedDebugData, "Debug data emptied when not in debug mode" );
+
+      callbackDone();
+    });
+  }
+
+  testDebugMode( true );
+  testDebugMode( false );
+});
+
 asyncTest( "Parsing Handler - References unavailable plugin", function() {
 
   var expects = 1,
