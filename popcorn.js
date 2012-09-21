@@ -1032,24 +1032,6 @@
       track = Popcorn.extend( {}, obj.options.defaults[ track._natives.type ], track );
     }
 
-    if ( track._natives ) {
-      //  Supports user defined track event id
-      track._id = track.id || track._id || Popcorn.guid( track._natives.type );
-
-      //  Push track event ids into the history
-      obj.data.history.push( track._id );
-
-      // Trigger _setup method if exists
-      if ( track._natives._setup ) {
-
-        track._natives._setup.call( obj, track );
-        obj.emit( "tracksetup", Popcorn.extend( {}, track, {
-          plugin: track._natives.type,
-          type: "tracksetup"
-        }));
-      }
-    }
-
     track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );
     track.end   = Popcorn.util.toSeconds( track.end, obj.options.framerate );
 
@@ -1074,37 +1056,22 @@
       }
     }
 
-    // Display track event immediately if it's enabled and current
-    if ( track.end > obj.media.currentTime &&
-        track.start <= obj.media.currentTime ) {
+    if ( track._natives ) {
+      //  Supports user defined track event id
+      track._id = track.id || track._id || Popcorn.guid( track._natives.type );
 
-      track._running = true;
-      obj.data.running[ track._natives.type ].push( track );
+      //  Push track event ids into the history
+      obj.data.history.push( track._id );
 
-      if ( !obj.data.disabled[ track._natives.type ] ) {
+      // Trigger _setup method if exists
+      if ( track._natives._setup ) {
 
-        track._natives.start.call( obj, null, track );
+        track._natives._setup.call( obj, track );
+        obj.emit( "tracksetup", Popcorn.extend( {}, track, {
+          plugin: track._natives.type,
+          type: "tracksetup"
+        }));
       }
-    }
-
-    // update startIndex and endIndex
-    if ( startIndex <= obj.data.trackEvents.startIndex &&
-      track.start <= obj.data.trackEvents.previousUpdateTime ) {
-
-      obj.data.trackEvents.startIndex++;
-    }
-
-    if ( endIndex <= obj.data.trackEvents.endIndex &&
-      track.end < obj.data.trackEvents.previousUpdateTime ) {
-
-      obj.data.trackEvents.endIndex++;
-    }
-
-    this.timeUpdate( obj, null, true );
-
-    // Store references to user added trackevents in ref table
-    if ( track._id ) {
-      Popcorn.addTrackEvent.ref( obj, track );
     }
 
     // If the call to addTrackEvent was an update/modify call, fire an event
@@ -1139,6 +1106,44 @@
         plugin: track._natives.type,
         type: "trackadded"
       }));
+    }
+
+    // Display track event immediately if it's enabled and current
+    if ( track.end > obj.media.currentTime &&
+        track.start <= obj.media.currentTime ) {
+
+      track._running = true;
+      obj.data.running[ track._natives.type ].push( track );
+
+      if ( !obj.data.disabled[ track._natives.type ] ) {
+        obj.emit( "trackstart",
+          Popcorn.extend({}, byStart, {
+            plugin: track._natives.type,
+            type: "trackstart"
+          })
+        );
+        track._natives.start.call( obj, null, track );
+      }
+    }
+
+    // update startIndex and endIndex
+    if ( startIndex <= obj.data.trackEvents.startIndex &&
+      track.start <= obj.data.trackEvents.previousUpdateTime ) {
+
+      obj.data.trackEvents.startIndex++;
+    }
+
+    if ( endIndex <= obj.data.trackEvents.endIndex &&
+      track.end < obj.data.trackEvents.previousUpdateTime ) {
+
+      obj.data.trackEvents.endIndex++;
+    }
+
+    this.timeUpdate( obj, null, true );
+
+    // Store references to user added trackevents in ref table
+    if ( track._id ) {
+      Popcorn.addTrackEvent.ref( obj, track );
     }
   };
 
@@ -1385,14 +1390,14 @@
 
             if ( !obj.data.disabled[ type ] ) {
 
-              natives.start.call( obj, event, byStart );
-
               obj.emit( trackstart,
                 Popcorn.extend({}, byStart, {
                   plugin: type,
                   type: trackstart
                 })
               );
+
+              natives.start.call( obj, event, byStart );
             }
           }
           start++;
@@ -1425,14 +1430,14 @@
 
             if ( !obj.data.disabled[ type ] ) {
 
-              natives.end.call( obj, event, byStart );
-
               obj.emit( trackend,
                 Popcorn.extend({}, byStart, {
                   plugin: type,
                   type: trackend
                 })
               );
+
+              natives.end.call( obj, event, byStart );
             }
           }
           start--;
