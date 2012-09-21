@@ -534,6 +534,11 @@
         },
         set: function( aValue ) {
           impl.width = aValue;
+          elem.width = aValue;
+
+          if( playerReady ) {
+              player.setSize( impl.width, impl.height );
+          }
         }
       },
 
@@ -543,6 +548,11 @@
         },
         set: function( aValue ) {
           impl.height = aValue;
+          elem.height = aValue;
+
+          if( playerReady ) {
+              player.setSize( impl.width, impl.height );
+          }
         }
       },
 
