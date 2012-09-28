@@ -172,6 +172,30 @@ test( "Popcorn.getTrackEvent", 3, function() {
 
 });
 
+test( "Popcorn constructed TrackEvents", 2, function() {
+  var p = Popcorn( "#video" );
+
+  Popcorn.plugin( "temp", {
+    setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {}
+  });
+
+  p.temp({
+    id: "asdf",
+    start: 1,
+    end: 2,
+  });
+
+  notEqual( p.data.trackEvents.constructor, Object, "The trackEvents property is not constructed by Object (TrackEvents)" );
+
+  notEqual( p.data.trackEvents.byStart[1], Object, "Individual trackEvent objects are not constructed by Object (TrackEvent)" );
+
+  Popcorn.removePlugin( "temp" );
+  p.destroy();
+});
+
+
 test( "Popcorn.removeTrackEvent", 5, function() {
 
   var pop = Popcorn( "#video" ),
@@ -527,7 +551,7 @@ asyncTest( "Popcorn.destroy", 10, function() {
   equal( timeUpdateCounter, 0, "timeUpdateCounter is intially 0" );
 
   //  add some event listeners for testing
-  popcorn.on( "timeupdate", function( event ) { 
+  popcorn.on( "timeupdate", function( event ) {
     timeUpdateCounter++;
     popcorn.pause();
   });

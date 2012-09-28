@@ -70,7 +70,6 @@
     })( obj );
   },
 
-  // Abstract operations
   Abstract = {
     // [[Put]] props from dictionary onto |this|
     // MUST BE CALLED FROM WITHIN A CONSTRUCTOR:
@@ -81,11 +80,6 @@
       Object.getOwnPropertyNames( dictionary ).forEach(function( key ) {
         this[ key ] = dictionary[ key ];
       }, this);
-    },
-    assign: function( O, dictionary ) {
-      Abstract.put.call( O, dictionary );
-
-      return O;
     }
   },
 
@@ -1041,8 +1035,6 @@
     // Construct new track event instance object
     // based on track object argument.
     track = new TrackEvent( track );
-
-    console.log( track );
 
     id = track.id || track._id;
 
