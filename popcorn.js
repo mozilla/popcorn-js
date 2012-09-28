@@ -70,6 +70,20 @@
     })( obj );
   },
 
+  Abstract = {
+    // [[Put]] props from dictionary onto |this|
+    // MUST BE CALLED FROM WITHIN A CONSTRUCTOR:
+    //  Abstract.put.call( this, dictionary );
+    put: function( dictionary ) {
+      // For each own property of src, let key be the property key
+      // and desc be the property descriptor of the property.
+      Object.getOwnPropertyNames( dictionary ).forEach(function( key ) {
+        this[ key ] = dictionary[ key ];
+      }, this);
+    }
+  },
+
+
   //  Declare constructor
   //  Returns an instance object.
   Popcorn = function( entity, options ) {
@@ -200,21 +214,7 @@
         trackRefs: {},
 
         // Playback track event queues
-        trackEvents: {
-          byStart: [{
-
-            start: -1,
-            end: -1
-          }],
-          byEnd: [{
-            start: -1,
-            end: -1
-          }],
-          animating: [],
-          startIndex: 0,
-          endIndex: 0,
-          previousUpdateTime: -1
-        }
+        trackEvents: new TrackEvents()
       };
 
       //  Register new instance
@@ -1003,10 +1003,40 @@
     Popcorn.p[ key[ 0 ] ] = Popcorn.p[ key[ 1 ] ] = Popcorn.events.fn[ key[ 0 ] ];
   });
 
+  // Internal Only - construct simple "TrackEvent"
+  // data type objects
+  function TrackEvent( track ) {
+    Abstract.put.call( this, track );
+  }
+
+  // Internal Only - construct "TrackEvents"
+  // data type objects that are used by the Popcorn
+  // instance, stored at p.data.trackEvents
+  function TrackEvents() {
+    this.byStart = [{
+      start: -1,
+      end: -1
+    }];
+
+    this.byEnd = [{
+      start: -1,
+      end: -1
+    }];
+    this.animating = [];
+    this.startIndex = 0;
+    this.endIndex = 0;
+    this.previousUpdateTime = -1;
+  }
+
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
-    var trackEvent, isUpdate, eventType,
-        id = track.id || track._id;
+    var trackEvent, isUpdate, eventType, id;
+
+    // Construct new track event instance object
+    // based on track object argument.
+    track = new TrackEvent( track );
+
+    id = track.id || track._id;
 
     // Do a lookup for existing trackevents with this id
     if ( id ) {
