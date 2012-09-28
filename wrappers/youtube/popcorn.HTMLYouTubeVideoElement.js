@@ -87,6 +87,8 @@
       player,
       playerReadyCallbacks = [],
       currentTimeInterval,
+      volumeInterval,
+      volumeQueue = [],
       lastCurrentTime = 0,
       seekTarget = -1,
       timeUpdateInterval,
@@ -465,19 +467,31 @@
 
     function setVolume( aValue ) {
       impl.volume = aValue;
-      
+
       if( !playerReady ) {
         addPlayerReadyCallback( function() {
           setVolume( impl.volume );
         });
         return;
       }
-      player.setVolume( aValue );
+      volumeQueue.push( aValue );
 
       // YouTube doesn't update volume immediately
-      setTimeout( function() {
-        self.dispatchEvent( "volumechange" )
-      }, 10 );
+      if ( !volumeInterval ) {
+        player.setVolume( aValue );
+        volumeInterval = setInterval(function() {
+          if ( player.getVolume() === volumeQueue[ 0 ] ) {
+            self.dispatchEvent( "volumechange" )
+            volumeQueue.shift();
+            if ( !volumeQueue.length ) {
+              clearInterval( volumeInterval );
+              volumeInterval = null;
+            } else {
+              player.setVolume( volumeQueue[ 0 ] );
+            }
+          }
+        }, 10 );
+      }
     }
 
     function getVolume() {
