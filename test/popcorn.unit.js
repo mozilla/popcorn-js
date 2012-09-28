@@ -153,15 +153,15 @@ test( "Popcorn.getTrackEvent", 3, function() {
   equal( typeof Popcorn.getTrackEvent.ref, "function", "Popcorn.getTrackEvent.ref() is a private use  static function" );
 
   Popcorn.plugin( "temp", {
-    setup: function( options ) { },
-    start: function( event, options ) { },
-    end: function( event, options ) { }
+    setup: function( options ) {},
+    start: function( event, options ) {},
+    end: function( event, options ) {}
   });
 
   popcorn.temp({
     id: "asdf",
     start: 1,
-    end: 2,
+    end: 2
   });
 
   equal( typeof Popcorn.getTrackEvent( popcorn, "asdf" ), "object", "Popcorn.getTrackEvent() returns an object" );
@@ -184,12 +184,12 @@ test( "Popcorn constructed TrackEvents", 2, function() {
   p.temp({
     id: "asdf",
     start: 1,
-    end: 2,
+    end: 2
   });
 
   notEqual( p.data.trackEvents.constructor, Object, "The trackEvents property is not constructed by Object (TrackEvents)" );
 
-  notEqual( p.data.trackEvents.byStart[1], Object, "Individual trackEvent objects are not constructed by Object (TrackEvent)" );
+  notEqual( p.data.trackEvents.byStart[ 1 ], Object, "Individual trackEvent objects are not constructed by Object (TrackEvent)" );
 
   Popcorn.removePlugin( "temp" );
   p.destroy();
