@@ -1015,15 +1015,16 @@
     Abstract.put.call( this, track );
   }
 
-  // TrackEvent.prototype.?
-  //
-
+  // Internal Only - construct "TrackEvents"
+  // data type objects that are used by the Popcorn
+  // instance, stored at p.data.trackEvents
   function TrackEvents( ) {
     this.byStart = [{
       start: -1,
       end: -1
     }];
-    this.byEnd: [{
+
+    this.byEnd = [{
       start: -1,
       end: -1
     }];
