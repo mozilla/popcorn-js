@@ -60,7 +60,8 @@
         controls: false,
         loop: false,
         poster: EMPTY_STRING,
-        volume: 1,
+        // SC Volume values are 0-100, we remap to 0-1 in volume getter/setter
+        volume: 100,
         muted: 0,
         currentTime: 0,
         duration: NaN,
