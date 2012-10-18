@@ -13,8 +13,8 @@
   function isSoundCloudReady() {
     // If the SoundCloud Widget API + JS SDK aren't loaded, do it now.
     if( !scLoaded ) {
-      Popcorn.getScript( "http://w.soundcloud.com/player/api.js", function() {
-        Popcorn.getScript( "http://connect.soundcloud.com/sdk.js", function() {
+      Popcorn.getScript( "//w.soundcloud.com/player/api.js", function() {
+        Popcorn.getScript( "//connect.soundcloud.com/sdk.js", function() {
           scReady = true;
 
           // XXX: SoundCloud won't let us use real URLs with the API,
