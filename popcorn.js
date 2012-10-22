@@ -1048,6 +1048,11 @@
         byEnd = obj.data.trackEvents.byEnd,
         startIndex, endIndex;
 
+    //  Push track event ids into the history
+    if ( track && track._id ) {
+      obj.data.history.push( track._id );
+    }
+
     track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );
     track.end   = Popcorn.util.toSeconds( track.end, obj.options.framerate );
 
@@ -1067,19 +1072,6 @@
       }
     }
 
-    // Display track event immediately if it's enabled and current
-    if ( track.end > obj.media.currentTime &&
-        track.start <= obj.media.currentTime ) {
-
-      track._running = true;
-      obj.data.running[ track._natives.type ].push( track );
-
-      if ( !obj.data.disabled[ track._natives.type ] ) {
-
-        track._natives.start.call( obj, null, track );
-      }
-    }
-
     // update startIndex and endIndex
     if ( startIndex <= obj.data.trackEvents.startIndex &&
       track.start <= obj.data.trackEvents.previousUpdateTime ) {
@@ -1092,12 +1084,25 @@
 
       obj.data.trackEvents.endIndex++;
     }
+
+    // Display track event immediately if it's enabled and current
+    if ( track.end > obj.media.currentTime &&
+        track.start <= obj.media.currentTime ) {
+
+      track._running = true;
+      obj.data.running[ track._natives.type ].push( track );
+
+      if ( !obj.data.disabled[ track._natives.type ] ) {
+
+        track._natives.start.call( obj, null, track );
+      }
+    }
   }
 
   function removeFromArray( obj, removeId ) {
 
     var start, end, animate,
-        historyLen = obj.data.history.length,
+        historyLen,
         length = obj.data.trackEvents.byStart.length,
         index = 0,
         indexWasAt = 0,
@@ -1184,12 +1189,27 @@
     obj.data.trackEvents.byEnd = byEnd;
     obj.data.trackEvents.animating = animating;
 
+    historyLen = obj.data.history.length;
+
+    for ( var i = 0; i < historyLen; i++ ) {
+      if ( obj.data.history[ i ] !== removeId ) {
+        history.push( obj.data.history[ i ] );
+      }
+    }
+
+    // Update ordered history array
+    obj.data.history = history;
   }
 
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
-    var trackEvent, isUpdate, eventType,
-        id = track.id || track._id;
+    var trackEvent, isUpdate, eventType, id;
+
+    // Construct new track event instance object
+    // based on track object argument.
+    track = new TrackEvent( track );
+
+    id = track.id || track._id;
 
     // Do a lookup for existing trackevents with this id
     if ( id ) {
@@ -1220,8 +1240,15 @@
       //  Supports user defined track event id
       track._id = track.id || track._id || Popcorn.guid( track._natives.type );
 
-      //  Push track event ids into the history
-      obj.data.history.push( track._id );
+      // Trigger _setup method if exists
+      if ( track._natives._setup ) {
+
+        track._natives._setup.call( obj, track );
+        obj.emit( "tracksetup", Popcorn.extend( {}, track, {
+          plugin: track._natives.type,
+          type: "tracksetup"
+        }));
+      }
     }
 
     addToArray( obj, track );
@@ -1232,13 +1259,6 @@
     if ( track._id ) {
 
       Popcorn.addTrackEvent.ref( obj, track );
-
-      // Trigger _setup method if exists
-      track._natives && track._natives._setup && track._natives._setup.call( obj, track );
-      obj.emit( "tracksetup", Popcorn.extend( {}, track, {
-        plugin: track._natives.type,
-        type: "tracksetup"
-      }));
     }
 
     // If the call to addTrackEvent was an update/modify call, fire an event
@@ -1285,32 +1305,24 @@
 
   Popcorn.removeTrackEvent = function( obj, removeId ) {
 
-    var track = obj.getTrackEvent( removeId ),
-        historyLen = obj.data.history.length,
-        history = [];
+    var track = obj.getTrackEvent( removeId );
 
-    if ( obj.data.trackEvents.byStart.length && removeId ) {
-
-      removeFromArray( obj, removeId );
-
-      for ( var i = 0; i < historyLen; i++ ) {
-        if ( obj.data.history[ i ] !== removeId ) {
-          history.push( obj.data.history[ i ] );
-        }
-      }
-
-      // Update ordered history array
-      obj.data.history = history;
-
-      if ( track && track._natives && track._natives._teardown ) {
-        track._natives._teardown.call( obj, track );
-      }
+    if ( !track ) {
+      return;
     }
+
+    // If a _teardown function was defined,
+    // enforce for track event removals
+    if ( track._natives._teardown ) {
+      track._natives._teardown.call( obj, track );
+    }
+
+    removeFromArray( obj, removeId );
 
     // Update track event references
     Popcorn.removeTrackEvent.ref( obj, removeId );
 
-    if ( track && track._natives ) {
+    if ( track._natives ) {
 
       // Fire a trackremoved event
       obj.emit( "trackremoved", Popcorn.extend({}, track, {
