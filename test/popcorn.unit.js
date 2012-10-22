@@ -4066,6 +4066,7 @@ asyncTest( "Index Integrity ( timeUpdate )", function() {
       count = 0,
       expects = 8;
 
+  $pop.pause( 0 );
   expect( expects );
 
   function plus() {
@@ -4134,6 +4135,7 @@ asyncTest( "Index Integrity (frameAnimation)", function() {
       count = 0,
       expects = 8;
 
+  $pop.pause( 0 );
   expect( expects );
 
   function plus() {
@@ -4683,9 +4685,8 @@ test( "Modify cue or trackevent w/ update function provided", 3, function() {
 
 });
 
-test( "Modify cue or trackevent w/o update function provided", 4, function() {
+test( "Modify cue or trackevent w/o update function provided", 3, function() {
   var $pop = Popcorn( "#video" ),
-      numTrackEvents,
       count = 0,
       id = "test-id",
       updateOptions = {
@@ -4696,7 +4697,6 @@ test( "Modify cue or trackevent w/o update function provided", 4, function() {
     _setup: function( options ) {
       if ( ++count === 2 ) {
         ok( true, "Setup was called when updating a plugin" );
-        equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Number of track events didn't change" );
         deepEqual( options.text, updateOptions.text, "Update options received the new properties" );
       }
     },
@@ -4708,8 +4708,6 @@ test( "Modify cue or trackevent w/o update function provided", 4, function() {
   });
 
   $pop.noupdateprovided( id, {} );
-
-  numTrackEvents = $pop.data.trackEvents.byStart.length;
 
   $pop.noupdateprovided( id, updateOptions );
 
