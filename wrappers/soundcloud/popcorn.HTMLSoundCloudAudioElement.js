@@ -252,6 +252,9 @@
         addPlayerReadyCallback( function() { self.play(); } );
         return;
       }
+      if( impl.ended ) {
+        changeCurrentTime( 0 );
+      }
       player.play();
     };
 
@@ -274,6 +277,8 @@
     }
 
     function onSeeked() {
+      // XXX: make sure seeks don't hold us in the ended state
+      impl.ended = false;
       impl.seeking = false;
       self.dispatchEvent( "timeupdate" );
       self.dispatchEvent( "seeked" );
@@ -301,10 +306,6 @@
     }
 
     function onPlay() {
-      if( impl.ended ) {
-        changeCurrentTime( 0 );
-      }
-
       if ( !currentTimeInterval ) {
         currentTimeInterval = setInterval( monitorCurrentTime,
                                            CURRENT_TIME_MONITOR_MS ) ;
@@ -334,6 +335,14 @@
         changeCurrentTime( 0 );
         self.play();
       } else {
+        // XXX: SoundCloud doesn't manage end/paused state well.  We have to
+        // simulate a pause or we leave the player in a state where it can't
+        // restart playing after ended.  Also, the onPause callback won't get
+        // called when we do self.pause() here, so we manually set impl.paused
+        // to get the state right.
+        self.pause();
+        onPause();
+
         impl.ended = true;
         self.dispatchEvent( "ended" );
       }
@@ -374,6 +383,9 @@
     }
 
     function monitorCurrentTime() {
+      if ( impl.ended ) {
+        return;
+      }
       player.getPosition( function( currentTimeInMS ) {
         // Convert from ms to s
         onCurrentTime( currentTimeInMS / 1000 );
