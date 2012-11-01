@@ -847,15 +847,14 @@
     //  Defines all Event handling static functions
     fn: {
       trigger: function( type, data ) {
+        var eventInterface, evt, clonedEvents,
+            events = this.data.events[ type ];
 
-        var eventInterface, evt;
         //  setup checks for custom event system
-        if ( this.data.events[ type ] && Popcorn.sizeOf( this.data.events[ type ] ) ) {
-
+        if ( events ) {
           eventInterface  = Popcorn.events.getInterface( type );
 
           if ( eventInterface ) {
-
             evt = document.createEvent( eventInterface );
             evt.initEvent( type, true, true, global, 1 );
 
@@ -864,33 +863,38 @@
             return this;
           }
 
-          //  Custom events
-          Popcorn.forEach( this.data.events[ type ], function( obj, key ) {
+          // clone events in case callbacks remove callbacks themselves
+          clonedEvents = events.slice();
 
-            obj.call( this, data );
-
-          }, this );
-
+          // iterate through all callbacks
+          while ( clonedEvents.length ) {
+            clonedEvents.shift().call( this, data );
+          }
         }
 
         return this;
       },
       listen: function( type, fn ) {
-
         var self = this,
             hasEvents = true,
             eventHook = Popcorn.events.hooks[ type ],
             origType = type,
+            clonedEvents,
             tmp;
 
+        if ( typeof fn !== "function" ) {
+          throw new Error( "Popcorn.js Error: Listener is not a function" );
+        }
+
+        // Setup event registry entry
         if ( !this.data.events[ type ] ) {
-          this.data.events[ type ] = {};
+          this.data.events[ type ] = [];
+          // Toggle if the previous assumption was untrue
           hasEvents = false;
         }
 
         // Check and setup event hooks
         if ( eventHook ) {
-
           // Execute hook add method if defined
           if ( eventHook.add ) {
             eventHook.add.call( this, {}, fn );
@@ -909,57 +913,67 @@
               eventHook.handler.call( self, event, tmp );
             };
           }
-
+          
           // assume the piggy back event is registered
           hasEvents = true;
-
+          
           // Setup event registry entry
           if ( !this.data.events[ type ] ) {
-            this.data.events[ type ] = {};
+            this.data.events[ type ] = [];
             // Toggle if the previous assumption was untrue
             hasEvents = false;
           }
         }
 
         //  Register event and handler
-        this.data.events[ type ][ fn.name || ( fn.toString() + Popcorn.guid() ) ] = fn;
+        this.data.events[ type ].push( fn );
 
         // only attach one event of any type
         if ( !hasEvents && Popcorn.events.all.indexOf( type ) > -1 ) {
-
           this.media.addEventListener( type, function( event ) {
+            if ( self.data.events[ type ] ) {
+              // clone events in case callbacks remove callbacks themselves
+              clonedEvents = self.data.events[ type ].slice();
 
-            Popcorn.forEach( self.data.events[ type ], function( obj, key ) {
-              if ( typeof obj === "function" ) {
-                obj.call( self, event );
+              // iterate through all callbacks
+              while ( clonedEvents.length ) {
+                clonedEvents.shift().call( self, event );
               }
-            });
-
-          }, false);
+            }
+          }, false );
         }
         return this;
       },
       unlisten: function( type, fn ) {
-        var events = this.data.events[ type ];
+        var ind,
+            events = this.data.events[ type ];
 
         if ( !events ) {
           return; // no listeners = nothing to do
         }
 
-        if ( typeof fn === "string" && events[ fn ] ) {
-          delete events[ fn ];
+        if ( typeof fn === "string" ) {
+          // legacy support for string-based removal -- not recommended
+          for ( var i = 0; i < events.length; i++ ) {
+            if ( events[ i ].name === fn ) {
+              // decrement i because array length just got smaller
+              events.splice( i--, 1 );
+            }
+          }
 
           return this;
         } else if ( typeof fn === "function" ) {
-          for ( var i in events ) {
-            if ( hasOwn.call( events, i ) && events[ i ] === fn ) {
-              delete events[ i ];
+          while( ind !== -1 ) {
+            ind = events.indexOf( fn );
+            if ( ind !== -1 ) {
+              events.splice( ind, 1 );
             }
           }
 
           return this;
         }
 
+        // if we got to this point, we are deleting all functions of this type
         this.data.events[ type ] = null;
 
         return this;
