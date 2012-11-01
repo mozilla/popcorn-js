@@ -466,6 +466,14 @@
 
           event = instance.data.running[ plugin ][ i ];
           event._natives.end.call( instance, null, event  );
+
+          instance.emit( "trackend",
+            Popcorn.extend({}, event, {
+              plugin: plugin,
+              type: "trackend"
+            })
+          );
+
         }
       }
 
@@ -486,6 +494,13 @@
 
           event = instance.data.running[ plugin ][ i ];
           event._natives.start.call( instance, null, event  );
+
+          instance.emit( "trackstart",
+            Popcorn.extend({}, event, {
+              plugin: plugin,
+              type: "trackstart"
+            })
+          );
         }
       }
 
@@ -1063,6 +1078,13 @@
       if ( !obj.data.disabled[ track._natives.type ] ) {
 
         track._natives.start.call( obj, null, track );
+
+        obj.emit( "trackstart",
+          Popcorn.extend({}, track, {
+            plugin: track._natives.type,
+            type: "trackstart"
+          })
+        );
       }
     }
 
@@ -1668,9 +1690,17 @@
         args.unshift( null );
 
         // only call end if event is running
-        args[ 1 ]._running &&
-          runningPlugins.splice( runningPlugins.indexOf( options ), 1 ) &&
+        if ( args[ 1 ]._running &&
+          runningPlugins.splice( runningPlugins.indexOf( options ), 1 ) ) {
+
           natives.end.apply( this, args );
+          this.emit( "trackend",
+            Popcorn.extend({}, options, {
+              plugin: name,
+              type: "trackend"
+            })
+          );
+        }
       }, natives._teardown );
 
       // extend teardown to always trigger trackteardown after teardown

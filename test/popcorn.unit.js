@@ -2466,6 +2466,162 @@ asyncTest( "Special track event listeners: trackstart, trackend", function() {
   });
 });
 
+test( "Special track event listeners: trackstart/trackadd fire on add, remove, enable, disable", function() {
+
+  var $pop = Popcorn( "#video" ),
+      expects = 4,
+      count = 0,
+      action = "add";
+
+  function plus() {
+    count++;
+  }
+
+
+  expect( expects );
+
+  Popcorn.plugin( "disableme", {
+    start: function() {},
+    end: function() {}
+  });
+
+  $pop.on( "canplayall", function() {
+    $pop.pause( 0 );
+    
+    $pop.on( "trackstart", function( event ) {
+      if ( event.plugin !== "disableme") {
+        return;
+      }
+
+      if ( count === 0 ) {
+        equal( action, "add", "trackstart fired when event added at currentTime" );
+        action = "disable";
+      } else if ( count === 2 ) {
+        equal( action, "enable", "trackstart fired when plugin enabled" );
+        action = "remove";
+      } else {
+        ok( false, "trackstart event fired in the wrong order" );
+      }
+
+      plus();
+    });
+    $pop.on( "trackend", function( event ) {
+      if ( event.plugin !== "disableme") {
+        return;
+      }
+
+      if ( count === 1 ) {
+        equal( action, "disable", "trackstart fired when plugin disabled" );
+        action = "enable";
+      } else if ( count === 3 ) {
+        equal( action, "remove", "trackstart fired when active event removed" );
+        action = "done";
+      } else {
+        ok( false, "trackstart event fired in the wrong order" );
+      }
+
+      plus();
+    });
+
+    $pop.disableme({
+      start: 0,
+      end: 1
+    });
+    $pop.disable( "disableme" );
+    $pop.enable( "disableme" );
+    $pop.removeTrackEvent( $pop.getLastTrackEventId() );
+
+    $pop.emitter({
+      start: 1,
+      end: 3,
+      direction: "forward"
+    }).emitter({
+      start: 4,
+      end: 6,
+      direction: "backward"
+    }).on( "trackstart", function( event ) {
+
+      if ( event.plugin === "cue" ) {
+        ok( !event.direction, "trackstart no plugin specific data on cue" );
+        plus();
+
+        equal( event._running, true, "cue event is running on trackstart" );
+        plus();
+
+        equal( event.type, "trackstart", "cue special trackstart event object includes correct type" );
+        plus();
+
+        equal( event.plugin, "cue", "cue special trackstart event object includes correct plugin name" );
+        plus();
+      } else if ( event.plugin === "emitter" ) {
+        ok( event.direction, "a direction exsists with plugin specific data going " + event.direction );
+        plus();
+
+        equal( event._running, true, "event is running on trackstart going " + event.direction );
+        plus();
+
+        equal( event.type, "trackstart", "Special trackstart event object includes correct type going " + event.direction );
+        plus();
+
+        equal( event.plugin, "emitter", "Special trackstart event object includes correct plugin name " + event.direction );
+        plus();
+      } else if ( event.plugin !== "disableme" ) {
+        ok( false, "invalid plugin fired trackstart" );
+        plus();
+      }
+
+    }).on( "trackend", function( event ) {
+
+      if ( event.plugin === "cue" ) {
+        ok( !event.direction, "trackend no plugin specific data on cue" );
+        plus();
+
+        equal( event._running, false, "cue event is not running on trackend" );
+        plus();
+
+        equal( event.type, "trackend", "cue special trackend event object includes correct type" );
+        plus();
+
+        equal( event.plugin, "cue", "cue special trackend event object includes correct plugin name" );
+        plus();
+      } else if ( event.plugin === "emitter" ) {
+        ok( event.direction, "a direction exsists with plugin specific data going " + event.direction );
+        plus();
+
+        equal( event._running, false, "event is not running on trackend going " + event.direction );
+        plus();
+
+        equal( event.type, "trackend", "Special trackend event object includes correct type " + event.direction );
+        plus();
+
+        equal( event.plugin, "emitter", "Special trackend event object includes correct plugin name " + event.direction );
+        plus();
+      } else if ( event.plugin !== "disableme" ) {
+        ok( false, "invalid plugin fired trackend" );
+      }
+
+    }).cue( 4, function() {
+      $pop.pause().currentTime( 10 );
+    }).cue( 10, function() {
+      $pop.currentTime( 5 );
+    }).cue( 5, function() {
+      $pop.currentTime( 0 );
+    }).play();
+
+    //doesn't matter where we put the event as long as it's current
+    $pop.disableme({
+      start: $pop.currentTime(),
+      end: $pop.currentTime() + 1
+    });
+    $pop.disable( "disableme" );
+    $pop.enable( "disableme" );
+    $pop.removeTrackEvent( $pop.getLastTrackEventId() );
+
+    Popcorn.removePlugin( "disableme" );
+    $pop.destroy();
+  });
+});
+
 test( "Range of track events #1015", 2, function() {
 
   var $pop = Popcorn( "#video" );
@@ -4358,7 +4514,7 @@ asyncTest( "end undefined or false should never be fired", 1, function() {
     end: function() {
       ok( false, "" );
       endFired = true;
-	}
+  }
   });
 
   Popcorn.plugin( "endingStory", {
