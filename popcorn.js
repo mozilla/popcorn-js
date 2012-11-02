@@ -913,10 +913,10 @@
               eventHook.handler.call( self, event, tmp );
             };
           }
-          
+
           // assume the piggy back event is registered
           hasEvents = true;
-          
+
           // Setup event registry entry
           if ( !this.data.events[ type ] ) {
             this.data.events[ type ] = [];
@@ -1779,15 +1779,13 @@
       //  Future support for plugin event definitions
       //  for all of the native events
       Popcorn.forEach( setup, function( callback, type ) {
-
-        if ( type !== "type" ) {
-
+        // Don't attempt to create events for certain properties:
+        // "type", "manifest". Fixes #1365
+        if ( type !== "type" && type !== "manifest" ) {
           if ( reserved.indexOf( type ) === -1 ) {
-
             this.on( type, callback );
           }
         }
-
       }, this );
 
       return this;
