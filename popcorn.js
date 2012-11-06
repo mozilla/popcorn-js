@@ -913,10 +913,10 @@
               eventHook.handler.call( self, event, tmp );
             };
           }
-          
+
           // assume the piggy back event is registered
           hasEvents = true;
-          
+
           // Setup event registry entry
           if ( !this.data.events[ type ] ) {
             this.data.events[ type ] = [];
@@ -1609,11 +1609,11 @@
 
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p
-    var reserved = [ "start", "end" ],
+    var isfn = typeof definition === "function",
+        blacklist = [ "start", "end", "type", "manifest" ],
+        methods = [ "_setup", "_teardown", "start", "end", "frame" ],
         plugin = {},
-        setup,
-        isfn = typeof definition === "function",
-        methods = [ "_setup", "_teardown", "start", "end", "frame" ];
+        setup;
 
     // combines calls of two function calls into one
     var combineFn = function( first, second ) {
@@ -1779,15 +1779,11 @@
       //  Future support for plugin event definitions
       //  for all of the native events
       Popcorn.forEach( setup, function( callback, type ) {
-
-        if ( type !== "type" ) {
-
-          if ( reserved.indexOf( type ) === -1 ) {
-
-            this.on( type, callback );
-          }
+        // Don't attempt to create events for certain properties:
+        // "start", "end", "type", "manifest". Fixes #1365
+        if ( blacklist.indexOf( type ) === -1 ) {
+          this.on( type, callback );
         }
-
       }, this );
 
       return this;
