@@ -1609,11 +1609,11 @@
 
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p
-    var reserved = [ "start", "end" ],
+    var isfn = typeof definition === "function",
+        blacklist = [ "start", "end", "type", "manifest" ],
+        methods = [ "_setup", "_teardown", "start", "end", "frame" ],
         plugin = {},
-        setup,
-        isfn = typeof definition === "function",
-        methods = [ "_setup", "_teardown", "start", "end", "frame" ];
+        setup;
 
     // combines calls of two function calls into one
     var combineFn = function( first, second ) {
@@ -1780,11 +1780,9 @@
       //  for all of the native events
       Popcorn.forEach( setup, function( callback, type ) {
         // Don't attempt to create events for certain properties:
-        // "type", "manifest". Fixes #1365
-        if ( type !== "type" && type !== "manifest" ) {
-          if ( reserved.indexOf( type ) === -1 ) {
-            this.on( type, callback );
-          }
+        // "start", "end", "type", "manifest". Fixes #1365
+        if ( blacklist.indexOf( type ) === -1 ) {
+          this.on( type, callback );
         }
       }, this );
 
