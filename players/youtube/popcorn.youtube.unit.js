@@ -2,6 +2,19 @@ test( "YT Script not loaded", 1, function() {
   ok( !window.YT, "Player doesn't load youtube before first setup call" );
 });
 
+asyncTest( "_util.type = YouTube", 1, function() {
+
+  var p = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
+
+  p.on( "canplaythrough", function() {
+    equal( p.media._util.type, "YouTube", "Youtube player media object has a _util.type value defined, and it is \"YouTube\"" );
+    p.pause();
+    p.destroy();
+    start();
+  });
+
+});
+
 asyncTest( "autoplay on", 1, function() {
 
   var p = Popcorn.youtube( "#video", "http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=1" );
