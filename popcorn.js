@@ -466,6 +466,13 @@
 
           event = instance.data.running[ plugin ][ i ];
           event._natives.end.call( instance, null, event  );
+
+          instance.emit( "trackend",
+            Popcorn.extend({}, event, {
+              plugin: event.type,
+              type: "trackend"
+            })
+          );
         }
       }
 
@@ -486,6 +493,13 @@
 
           event = instance.data.running[ plugin ][ i ];
           event._natives.start.call( instance, null, event  );
+
+          instance.emit( "trackstart",
+            Popcorn.extend({}, event, {
+              plugin: event.type,
+              type: "trackstart"
+            })
+          );
         }
       }
 
@@ -1120,6 +1134,13 @@
       if ( !obj.data.disabled[ track._natives.type ] ) {
 
         track._natives.start.call( obj, null, track );
+
+        obj.emit( "trackstart",
+          Popcorn.extend({}, track, {
+            plugin: track.type,
+            type: "trackstart"
+          })
+        );
       }
     }
   }
@@ -1135,7 +1156,8 @@
         byEnd = [],
         animating = [],
         history = [],
-        track;
+        track,
+        runningPlugins;
 
     while ( --length > -1 ) {
       start = obj.data.trackEvents.byStart[ index ];
@@ -1224,6 +1246,28 @@
 
     // Update ordered history array
     obj.data.history = history;
+
+    // Call track event end immediately if it's enabled and current
+    if ( track.end > obj.media.currentTime &&
+        track.start <= obj.media.currentTime ) {
+
+      runningPlugins = obj.data.running[ track._natives.type ];
+
+      track._running = false;
+      runningPlugins.splice( runningPlugins.indexOf( track ), 1 );
+
+      if ( !obj.data.disabled[ track._natives.type ] ) {
+
+        track._natives.end.call( obj, null, track );
+
+        obj.emit( "trackend",
+          Popcorn.extend({}, track, {
+            plugin: track._natives.type,
+            type: "trackend"
+          })
+        );
+      }
+    }
   }
 
   // Helper function used to retrieve old values of properties that
@@ -1682,6 +1726,13 @@
         args[ 1 ]._running &&
           runningPlugins.splice( runningPlugins.indexOf( options ), 1 ) &&
           natives.end.apply( this, args );
+
+          this.emit( "trackend",
+            Popcorn.extend({}, options, {
+              plugin: natives.type,
+              type: "trackend"
+            })
+          );
       }, natives._teardown );
 
       // extend teardown to always trigger trackteardown after teardown
@@ -1813,6 +1864,8 @@
           // custom defined updating for a track event to be defined by the plugin author
           if ( trackEvent._natives._update ) {
 
+            removeFromArray( this, trackEvent._id );
+
             // It's safe to say that the intent of Start/End will never change
             // Update them first before calling update
             if ( hasOwn.call( options, "start" ) ) {
@@ -1824,8 +1877,6 @@
             }
 
             trackEvent._natives._update.call( this, trackEvent, options );
-
-            removeFromArray( this, trackEvent._id );
             addToArray( this, trackEvent );
           } else {
             options = Popcorn.extend( {}, trackEvent, options );

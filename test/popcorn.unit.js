@@ -4658,7 +4658,6 @@ test( "Modify cue or trackevent w/ update function provided", 3, function() {
     _update: function( trackEvent, newOptions ) {
       ok( true, "Successfully called track events update function" );
       deepEqual( newOptions.text, updateOptions.text, "Successfully received the new update options" );
-      equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Total number of track events didn't change" );
       trackEvent.text = newOptions.text;
     }
   });
@@ -4668,6 +4667,7 @@ test( "Modify cue or trackevent w/ update function provided", 3, function() {
   numTrackEvents = $pop.data.trackEvents.byStart.length;
 
   $pop.updateprovided( id, updateOptions );
+  equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Total number of track events didn't change" );
 
   Popcorn.removePlugin( "updateprovided" );
   $pop.destroy();
@@ -4697,6 +4697,91 @@ test( "Modify cue or trackevent w/o update function provided", 3, function() {
   });
 
   $pop.noupdateprovided( id, {} );
+
+  $pop.noupdateprovided( id, updateOptions );
+
+  Popcorn.removePlugin( "noupdateprovided" );
+  $pop.destroy();
+
+});
+
+test( "trackstart/trackend w/ update function provided", 3, function() {
+  var $pop = Popcorn( "#video" ),
+      id = "test-id",
+      endCalledFirst = false,
+      updateOptions = {
+        start: 4,
+        text: "New Text"
+      };
+
+  Popcorn.plugin( "updateprovided", {
+    _setup: function() {},
+    start: function() {},
+    end: function(){},
+    _teardown: function( trackEvent ) {},
+    _update: function( trackEvent, newOptions ) {}
+  });
+
+  $pop.updateprovided( id, { start: 2, end: 5 } );
+
+  $pop.on( "trackstart", function() {
+    ok( true, "trackstart was successfully fired when updating a plugin" );
+    ok( endCalledFirst, "End was called before start when updating a plugin" );
+  });
+
+  $pop.on( "trackend", function() {
+    endCalledFirst = true;
+    ok( true, "trackend was successfully fired when updating a plugin" );
+    $pop.currentTime( 4 );
+  });
+
+  $pop.currentTime( 3 );
+
+  $pop.updateprovided( id, updateOptions );
+
+  Popcorn.removePlugin( "updateprovided" );
+  $pop.destroy();
+
+});
+
+test( "trackstart/trackend fired appropriately w/o update function", 3, function() {
+  var $pop = Popcorn( "#video" ),
+      id = "test-id",
+      ignoreEnd = true,
+      endCalledFirst = false,
+      updateOptions = {
+        start: 3,
+        end: 5
+      };
+
+  Popcorn.plugin( "noupdateprovided", {
+    _setup: function() {},
+    start: function() {},
+    end: function(){},
+    _teardown: function() {
+      ignoreEnd = false;
+    }
+  });
+
+  $pop.noupdateprovided( id, {
+    start: 0,
+    end: 3
+  });
+
+  $pop.on( "trackstart", function() {
+    ok( true, "trackstart was successfully fired when updating a plugin" );
+    ok( endCalledFirst, "End was called first before start when updating a plugin with default update." );
+  });
+
+  $pop.on( "trackend", function() {
+    if ( !ignoreEnd ) {
+      endCalledFirst = true;
+      ok( true, "trackend was successfully fired when updating a plugin with default update." );
+      $pop.currentTime( 4 );
+    }
+  });
+
+  $pop.currentTime( 2 );
 
   $pop.noupdateprovided( id, updateOptions );
 
@@ -4770,7 +4855,7 @@ test( "trackchange w/o update function provided", 3, function() {
 
 });
 
-test( "Modify plugin w/o provided update without setup for plugins that use function that returns object", 6, function() {
+test( "Modify plugin w/o provided update without setup for plugins that use function that returns object", 7, function() {
   var $pop = Popcorn( "#video" ),
       count = 0,
       id,
@@ -4813,7 +4898,7 @@ test( "Modify plugin w/o provided update without setup for plugins that use func
   $pop.destroy();
 });
 
-test( "Modify plugin w/o provided update with setup for plugins that use function that returns object", 6, function() {
+test( "Modify plugin w/o provided update with setup for plugins that use function that returns object", 7, function() {
   var $pop = Popcorn( "#video" ),
       count = 0,
       id,
