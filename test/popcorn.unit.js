@@ -2523,6 +2523,7 @@ asyncTest( "frameAnimation doesn't trigger timeupdate when media paused", 2, fun
     end: 3
   });
 
+  $pop.currentTime( 0 );
   $pop.play();
 });
 
