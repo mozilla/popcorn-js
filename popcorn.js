@@ -1609,8 +1609,7 @@
 
     //  Provides some sugar, but ultimately extends
     //  the definition into Popcorn.p
-    var isfn = typeof definition === "function",
-        blacklist = [ "start", "end", "type", "manifest" ],
+    var blacklist = [ "start", "end", "type", "manifest" ],
         methods = [ "_setup", "_teardown", "start", "end", "frame" ],
         plugin = {},
         setup;
@@ -1636,7 +1635,9 @@
       definition[ method ] = safeTry( definition[ method ] || Popcorn.nop, name );
     });
 
-    var pluginFn = function( setup, options ) {
+    var pluginFn = function( setupFn, options ) {
+      var isfn = typeof setupFn === "function",
+          setupObject = isfn ? setupFn.call( this, options ) : setupFn;
 
       if ( !options ) {
         return this;
@@ -1669,7 +1670,11 @@
           compose = "",
           originalOpts, manifestOpts;
 
-      Popcorn.extend( natives, setup );
+      if ( !setupObject._setup ) {
+        setupObject._setup = setupFn;
+      }
+
+      Popcorn.extend( natives, setupObject );
 
       options._natives.type = name;
       options._running = false;
@@ -1778,7 +1783,7 @@
 
       //  Future support for plugin event definitions
       //  for all of the native events
-      Popcorn.forEach( setup, function( callback, type ) {
+      Popcorn.forEach( setupObject, function( callback, type ) {
         // Don't attempt to create events for certain properties:
         // "start", "end", "type", "manifest". Fixes #1365
         if ( blacklist.indexOf( type ) === -1 ) {
@@ -1849,8 +1854,7 @@
       defaults = ( this.options.defaults && this.options.defaults[ name ] ) || {};
       mergedSetupOpts = Popcorn.extend( {}, defaults, options );
 
-      return pluginFn.call( this, isfn ? definition.call( this, mergedSetupOpts ) : definition,
-                                  mergedSetupOpts );
+      return pluginFn.call( this, definition, mergedSetupOpts );
     };
 
     // if the manifest parameter exists we should extend it onto the definition object
