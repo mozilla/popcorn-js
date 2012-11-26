@@ -1202,7 +1202,7 @@
   }
 
   // Internal Only - Adds track events to the instance object
-  Popcorn.addTrackEvent = function( obj, track ) {
+  Popcorn.addTrackEvent = function( obj, track, definition ) {
     var trackEvent, isUpdate, eventType, id;
 
     // Construct new track event instance object
@@ -1244,11 +1244,14 @@
       if ( track._natives._setup ) {
 
         track._natives._setup.call( obj, track );
-        obj.emit( "tracksetup", Popcorn.extend( {}, track, {
-          plugin: track._natives.type,
-          type: "tracksetup"
-        }));
+      } else if ( typeof definition === "function" ) {
+        track._natives._setup = definition;
       }
+
+      obj.emit( "tracksetup", Popcorn.extend( {}, track, {
+        plugin: track._natives.type,
+        type: "tracksetup"
+      }));
     }
 
     addToArray( obj, track );
@@ -1636,7 +1639,7 @@
       definition[ method ] = safeTry( definition[ method ] || Popcorn.nop, name );
     });
 
-    var pluginFn = function( setup, options ) {
+    var pluginFn = function( setup, options, definition ) {
 
       if ( !options ) {
         return this;
@@ -1774,7 +1777,7 @@
       }
 
       // Create new track event for this instance
-      Popcorn.addTrackEvent( this, options );
+      Popcorn.addTrackEvent( this, options, definition );
 
       //  Future support for plugin event definitions
       //  for all of the native events
@@ -1850,7 +1853,7 @@
       mergedSetupOpts = Popcorn.extend( {}, defaults, options );
 
       return pluginFn.call( this, isfn ? definition.call( this, mergedSetupOpts ) : definition,
-                                  mergedSetupOpts );
+                                  mergedSetupOpts, definition );
     };
 
     // if the manifest parameter exists we should extend it onto the definition object

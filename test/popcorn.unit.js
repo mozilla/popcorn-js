@@ -4716,6 +4716,36 @@ test( "Modify cue or trackevent w/o update function provided", 3, function() {
 
 });
 
+test( "Modify plugin w/o provided update for plugins that use function that returns object", 2, function() {
+  var $pop = Popcorn( "#video" ),
+      count = 0,
+      id = "test-id",
+      updateOptions = {
+        text: "New Text"
+      };
+
+  Popcorn.plugin( "weirdstyle", function( options ) {
+
+    if ( ++count === 2 ) {
+      ok( true, "Function acting as setup was called again after update" );
+      deepEqual( options.text, updateOptions.text, "Update options were merged correctly" );
+    }
+
+    return {
+      start: function() {},
+      end: function() {},
+      _teardown: function() {}
+    };
+  });
+
+  $pop.weirdstyle( id, {} );
+
+  $pop.weirdstyle( id, updateOptions );
+
+  Popcorn.removePlugin( "weirdstyle" );
+  $pop.destroy();
+});
+
 module( "Popcorn XHR" );
 test( "Basic", 2, function() {
 
