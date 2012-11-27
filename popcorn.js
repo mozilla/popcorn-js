@@ -1836,6 +1836,10 @@
           } else {
             options = Popcorn.extend( {}, trackEvent, options );
 
+            if ( isfn ) {
+              definition.call( this, options )
+            }
+
             Popcorn.addTrackEvent( this, options );
           }
 
