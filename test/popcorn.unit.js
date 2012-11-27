@@ -4781,6 +4781,94 @@ test( "trackchange w/o update function provided", 3, function() {
 
 });
 
+test( "Modify plugin w/o provided update without setup for plugins that use function that returns object", 6, function() {
+  var $pop = Popcorn( "#video" ),
+      count = 0,
+      id,
+      updateOptions = {
+        text: "New Text"
+      };
+
+  Popcorn.plugin( "weirdstyle", function( options ) {
+    var text = options.text;
+
+    if ( ++count === 2 ) {
+      ok( true, "Function acting as setup was called again after update" );
+      deepEqual( options.text, updateOptions.text, "Update options were merged correctly" );
+    }
+
+    return {
+      start: function( event, options ) {
+        equal( options.text, text, "Function scope variable matches" );
+      },
+      end: function( event, options ) {
+        ok( true, "end called on update");
+      },
+      _teardown: function( options ) {
+        ok( true, "_teardown called on update");
+      }
+    };
+  });
+
+  $pop.weirdstyle({
+    start: $pop.currentTime(),
+    end: $pop.currentTime() + 1,
+    text: "Old Text"
+  });
+
+  id = $pop.getLastTrackEventId();
+
+  $pop.weirdstyle( id, updateOptions );
+
+  Popcorn.removePlugin( "weirdstyle" );
+  $pop.destroy();
+});
+
+test( "Modify plugin w/o provided update with setup for plugins that use function that returns object", 6, function() {
+  var $pop = Popcorn( "#video" ),
+      count = 0,
+      id,
+      updateOptions = {
+        text: "New Text"
+      };
+
+  Popcorn.plugin( "weirdstyle", function( options ) {
+    var text;
+
+    return {
+      _setup: function( options ) {
+        text = options.text;
+
+        if ( ++count === 2 ) {
+          ok( true, "Function acting as setup was called again after update" );
+          deepEqual( text, updateOptions.text, "Update options were merged correctly" );
+        }
+      },
+      start: function( event, options ) {
+        equal( options.text, text, "Function scope variable matches" );
+      },
+      end: function() {
+        ok( true, "end called on update");
+      },
+      _teardown: function() {
+        ok( true, "_teardown called on update");
+      }
+    };
+  });
+
+  $pop.weirdstyle({
+    start: $pop.currentTime(),
+    end: $pop.currentTime() + 1,
+    text: "Old Text"
+  });
+
+  id = $pop.getLastTrackEventId();
+
+  $pop.weirdstyle( id, updateOptions );
+  Popcorn.removePlugin( "weirdstyle" );
+  $pop.destroy();
+});
+
 module( "Popcorn XHR" );
 test( "Basic", 2, function() {
 
