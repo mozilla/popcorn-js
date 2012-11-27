@@ -1,4 +1,5 @@
 (function( window, Popcorn ) {
+  var videoIdRegex = new RegExp( "(?:http://www\\.|http://|www\\.|\\.|^)(?:youtu).*(?:/|v=)(.{11})" );
   // A global callback for youtube... that makes me angry
   window.onYouTubePlayerAPIReady = function() {
 
@@ -21,8 +22,7 @@
 
   Popcorn.player( "youtube", {
     _canPlayType: function( nodeName, url ) {
-
-      return typeof url === "string" && (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/).test( url ) && nodeName.toLowerCase() !== "video";
+      return typeof url === "string" && videoIdRegex.test( url ) && nodeName.toLowerCase() !== "video";
     },
     _setup: function( options ) {
       if ( !window.YT && !_loading ) {
@@ -245,7 +245,7 @@
         options.controls = +options.controls === 0 || +options.controls === 1 ? options.controls : 0;
         options.annotations = +options.annotations === 1 || +options.annotations === 3 ? options.annotations : 1;
 
-        src = /^.*(?:\/|v=)(.{11})/.exec( media.src )[ 1 ];
+        src = videoIdRegex.exec( media.src )[ 1 ];
 
         query = ( media.src.split( "?" )[ 1 ] || "" )
                            .replace( /v=.{11}/, "" );
