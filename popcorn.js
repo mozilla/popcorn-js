@@ -1241,7 +1241,7 @@
       track._id = track.id || track._id || Popcorn.guid( track._natives.type );
 
       // Trigger _setup method if exists
-      if ( track._natives._setup ) {
+      if ( track._natives._setup && isUpdate ) {
 
         track._natives._setup.call( obj, track );
         obj.emit( "tracksetup", Popcorn.extend( {}, track, {
@@ -1792,7 +1792,7 @@
     //  Extend Popcorn.p with new named definition
     //  Assign new named definition
     Popcorn.p[ name ] = plugin[ name ] = function( id, options ) {
-      var length = arguments.length,
+      var length = arguments.length, pluginObject,
           trackEvent, defaults, mergedSetupOpts;
 
       // Shift arguments based on use case
@@ -1849,8 +1849,19 @@
       defaults = ( this.options.defaults && this.options.defaults[ name ] ) || {};
       mergedSetupOpts = Popcorn.extend( {}, defaults, options );
 
-      return pluginFn.call( this, isfn ? definition.call( this, mergedSetupOpts ) : definition,
-                                  mergedSetupOpts );
+      if ( isfn ) {
+        pluginObject = definition.call( this, mergedSetupOpts );
+        // if there is no setup after calling definition, definition is the setup.
+        if ( !pluginObject._setup ) {
+          pluginObject._setup = definition;
+          return pluginFn.call( this, pluginObject, mergedSetupOpts );
+        }
+      } else {
+        pluginObject = definition;
+      }
+      pluginObject._setup.call( this, mergedSetupOpts );
+
+      return pluginFn.call( this, pluginObject, mergedSetupOpts );
     };
 
     // if the manifest parameter exists we should extend it onto the definition object
