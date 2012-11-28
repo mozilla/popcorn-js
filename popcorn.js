@@ -1821,11 +1821,11 @@
 
             // It's safe to say that the intent of Start/End will never change
             // Update them first before calling update
-            if ( options.hasOwnProperty( "start" ) ) {
+            if ( hasOwn.call( options, "start" ) ) {
               trackEvent.start = options.start;
             }
 
-            if ( options.hasOwnProperty( "end" ) ) {
+            if ( hasOwn.call( options, "end" ) ) {
               trackEvent.end = options.end;
             }
 
