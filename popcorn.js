@@ -1843,14 +1843,8 @@
             // Fire an event with change information
             this.emit( "trackchange", {
               id: options.id,
-              previousValue: {
-                time: trackEvent.start,
-                fn: trackEvent._natives.start
-              },
-              currentValue: {
-                time: options.start,
-                fn: options._natives.start
-              }
+              previousValue: trackEvent,
+              currentValue: options
             });
 
             return this;
