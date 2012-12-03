@@ -4716,6 +4716,71 @@ test( "Modify cue or trackevent w/o update function provided", 3, function() {
 
 });
 
+test( "trackchange w/ update function provided", 3, function() {
+  var $pop = Popcorn( "#video" ),
+      id = "test-id",
+      updateOptions = {
+        text: "New Text"
+      };
+
+  Popcorn.plugin( "updateprovided", {
+    _setup: function() {},
+    start: function() {},
+    end: function(){},
+    _teardown: function( trackEvent ) {},
+    _update: function( trackEvent, newOptions ) {}
+  });
+
+  $pop.updateprovided( id, {
+    start: 2,
+    end: 5,
+    text: "Old Text"
+  });
+
+  $pop.on( "trackchange", function( e ) {
+    ok( true, "trackchange fired with an update function provided" );
+    equal( e.previousValue.text, "Old Text", "Previous options passed expected value" );
+    deepEqual( e.currentValue.text, updateOptions.text, "Previous options passed expected value" );
+  });
+
+  $pop.updateprovided( id, updateOptions );
+
+  Popcorn.removePlugin( "updateprovided" );
+  $pop.destroy();
+
+});
+
+test( "trackchange w/o update function provided", 3, function() {
+  var $pop = Popcorn( "#video" ),
+      id = "test-id",
+      updateOptions = {
+        text: "New Text"
+      };
+
+  Popcorn.plugin( "noupdateprovided", {
+    _setup: function( options ) {},
+    start: function() {},
+    end: function(){},
+    _teardown: function() {}
+  });
+
+  $pop.noupdateprovided( id, {
+    text: "Old Text"
+  });
+
+  $pop.on( "trackchange", function( e ) {
+    ok( true, "trackchange fired without an update function provided" );
+    equal( e.previousValue.text, "Old Text", "Previous options passed expected value" );
+    deepEqual( e.currentValue.text, updateOptions.text, "Previous options passed expected value" );
+  });
+
+  $pop.noupdateprovided( id, updateOptions );
+
+  Popcorn.removePlugin( "noupdateprovided" );
+  $pop.destroy();
+
+});
+
 module( "Popcorn XHR" );
 test( "Basic", 2, function() {
 

@@ -1201,6 +1201,20 @@
     obj.data.history = history;
   }
 
+  // Helper function used to retrieve old values of properties that
+  // are provided for update.
+  function getPreviousProperties( oldOptions, newOptions ) {
+    var matchProps = {};
+
+    for ( var prop in oldOptions ) {
+      if ( hasOwn.call( newOptions, prop ) && hasOwn.call( oldOptions, prop ) ) {
+        matchProps[ prop ] = oldOptions[ prop ];
+      }
+    }
+
+    return matchProps;
+  }
+
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
     var trackEvent, isUpdate, eventType, id;
@@ -1262,20 +1276,10 @@
     }
 
     // If the call to addTrackEvent was an update/modify call, fire an event
-    if ( isUpdate ) {
-
-      // Determine appropriate event type to trigger
-      // they are identical in function, but the naming
-      // adds some level of intuition for the end developer
-      // to rely on
-      if ( track._natives.type === "cue" ) {
-        eventType = "cuechange";
-      } else {
-        eventType = "trackchange";
-      }
+    if ( isUpdate && track._natives.type === "cue" ) {
 
       // Fire an event with change information
-      obj.emit( eventType, {
+      obj.emit( "cuechange", {
         id: track.id,
         previousValue: {
           time: trackEvent.start,
@@ -1286,7 +1290,7 @@
           fn: track._natives.start
         }
       });
-    } else if ( track._natives ) {
+    } else if ( track._natives && !isUpdate ) {
 
       // Fire a trackadded event
       obj.emit( "trackadded", Popcorn.extend({}, track, {
@@ -1793,7 +1797,7 @@
     //  Assign new named definition
     Popcorn.p[ name ] = plugin[ name ] = function( id, options ) {
       var length = arguments.length,
-          trackEvent, defaults, mergedSetupOpts;
+          trackEvent, defaults, mergedSetupOpts, previousOpts, newOpts;
 
       // Shift arguments based on use case
       //
@@ -1814,6 +1818,9 @@
 
         // If the track event does exist, merge the updated properties
         } else {
+
+          newOpts = options;
+          previousOpts = getPreviousProperties( trackEvent, newOpts );
 
           // Call the plugins defined update method if provided. Allows for
           // custom defined updating for a track event to be defined by the plugin author
@@ -1837,6 +1844,15 @@
             options = Popcorn.extend( {}, trackEvent, options );
 
             Popcorn.addTrackEvent( this, options );
+          }
+
+          if ( trackEvent._natives.type !== "cue" ) {
+            // Fire an event with change information
+            this.emit( "trackchange", {
+              id: trackEvent.id,
+              previousValue: previousOpts,
+              currentValue: newOpts
+            });
           }
 
           return this;
