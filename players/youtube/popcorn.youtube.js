@@ -55,16 +55,16 @@
             }
 
             val = Number( val );
-            
+
             if ( isNaN ( val ) ) {
               return;
             }
-            
+
             currentTime = val;
-            
+
             seeking = true;
             media.dispatchEvent( "seeking" );
-            
+
             options.youtubeObject.seekTo( val );
           },
           get: function() {
@@ -183,6 +183,9 @@
         };
       };
 
+      media._util = {};
+      media._util.type = "YouTube";
+
       container.id = media.id + Popcorn.guid();
       options._container = container;
       media.appendChild( container );
@@ -210,9 +213,9 @@
             seekEps *= 2;
             options.youtubeObject.seekTo( currentTime );
           }
-          
+
           media.dispatchEvent( "timeupdate" );
-          
+
           setTimeout( timeUpdate, 200 );
         };
 
@@ -228,10 +231,10 @@
             // set duration and dispatch ready events
             media.duration = ytDuration;
             media.dispatchEvent( "durationchange" );
-            
+
             media.dispatchEvent( "loadedmetadata" );
             media.dispatchEvent( "loadeddata" );
-            
+
             media.readyState = 4;
 
             timeUpdate();
@@ -348,7 +351,7 @@
                 if ( paused ) {
                   options.youtubeObject.pauseVideo();
                 }
-                
+
                 fetchDuration( 0.025 );
               }
             },
