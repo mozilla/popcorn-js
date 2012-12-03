@@ -317,12 +317,16 @@
       playerVars.controls = playerVars.controls || impl.controls ? 2 : 0;
       impl.controls = playerVars.controls;
 
+      // Set wmode to transparent to show video overlays
+      playerVars.wmode = playerVars.wmode || "transparent";
+
       // Get video ID out of youtube url
       aSrc = regexYouTube.exec( aSrc )[ 1 ];
 
       player = new YT.Player( elem, {
         width: impl.width,
         height: impl.height,
+        wmode: playerVars.wmode,
         videoId: aSrc,
         playerVars: playerVars,
         events: {
