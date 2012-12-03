@@ -4466,21 +4466,24 @@ asyncTest( "Cue API", 12, function() {
 
 
     // Modify an existing cue's function
-    p.cue( "c", function named() {});
+    function firstFn() {}
+    function secondFn() {}
 
-    equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's function, p.cue( 'c', function() {} );" );
+    p.cue( "c", firstFn );
 
-    equal( p.getTrackEvent( "c" )._natives.start.name, "named", "Function modified, named" );
+    equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's function, p.cue( 'c', firstFn );" );
+
+    equal( p.getTrackEvent( "c" )._natives.start, firstFn, "Function modified, is 'firstFn'" );
 
 
     // Modify an existing cue's time and function
-    p.cue( "c", 14, function renamed() {});
+    p.cue( "c", 14, secondFn );
 
-    equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's time and function, p.cue( 'c', 14, function renamed() {});" );
+    equal( p.data.trackEvents.byStart.length, 7, "Modify an existing cue's time and function, p.cue( 'c', 14, secondFn );" );
 
     equal( p.getTrackEvent( "c" ).start, 14, "Time modified, 14" );
 
-    equal( p.getTrackEvent( "c" )._natives.start.name, "renamed", "Function modified, renamed" );
+    equal( p.getTrackEvent( "c" )._natives.start, secondFn, "Function modified, is 'secondFn'" );
 
 
     start();
