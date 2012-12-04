@@ -1,5 +1,5 @@
 (function( window, Popcorn ) {
-  var videoIdRegex = new RegExp( "(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(?:youtu).*(?:\/|v=)(.{11})" );
+  var videoIdRegex = new RegExp( "(?:http://www\\.|http://|www\\.|\\.|^)(?:youtu).*(?:/|v=)(.{11})" );
   // A global callback for youtube... that makes me angry
   window.onYouTubePlayerAPIReady = function() {
 
