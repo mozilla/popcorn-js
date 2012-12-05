@@ -723,7 +723,7 @@
       } else {
         this.emit( eventType, Popcorn.extend({}, options, {
           plugin: "cue",
-          type: "trackadded"
+          type: eventType
         }));
       }
 
@@ -1245,8 +1245,6 @@
     // Construct new track event instance object
     // based on track object argument.
     track = new TrackEvent( track );
-
-    id = track.id || track._id;
 
     // Determine if this track has default options set for it
     // If so, apply them to the track object
@@ -1831,12 +1829,10 @@
           } else {
             options = Popcorn.extend( {}, trackEvent, options );
 
+            Popcorn.removeTrackEvent( this, id );
             if ( isfn ) {
-              Popcorn.removeTrackEvent( this, id );
               pluginFn.call( this, definition.call( this, options ), options );
             } else {
-
-              Popcorn.removeTrackEvent( this, id );
               Popcorn.addTrackEvent( this, options );
             }
 
