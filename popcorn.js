@@ -1822,6 +1822,9 @@
               trackEvent.end = options.end;
             }
 
+            if ( isfn ) {
+              definition.call( this, trackEvent );
+            }
             trackEvent._natives._update.call( this, trackEvent, options );
 
             removeFromArray( this, trackEvent._id );
