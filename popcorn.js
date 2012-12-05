@@ -1931,6 +1931,9 @@
               trackEvent.end = options.end;
             }
 
+            if ( isfn ) {
+              definition.call( this, trackEvent );
+            }
             trackEvent._natives._update.call( this, trackEvent, options );
 
             addToArray( this, trackEvent );
