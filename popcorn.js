@@ -600,8 +600,8 @@
 
     //  Attach an event to a single point in time
     exec: function( id, time, fn ) {
-      var length = arguments.length,
-          trackEvent, sec;
+      var length = arguments.length, options,
+          trackEvent, sec, eventType = "trackadded";
 
       // Check if first could possibly be a SMPTE string
       // p.cue( "smpte string", fn );
@@ -640,6 +640,10 @@
           trackEvent = this.getTrackEvent( id );
 
           if ( trackEvent ) {
+
+            // remove existing cue so a new one can be added via addTrackEvent
+            Popcorn.removeTrackEvent( this, id );
+            eventType = "cuechange";
 
             // p.cue( "my-id", 12 );
             // p.cue( "my-id", function() { ... });
@@ -689,9 +693,7 @@
         }
       }
 
-      //  Creating a one second track event with an empty end
-      //  Or update an existing track event with new values
-      Popcorn.addTrackEvent( this, {
+      options = {
         id: id,
         start: time,
         end: time + 1,
@@ -701,7 +703,29 @@
           end: Popcorn.nop,
           type: "cue"
         }
-      });
+      };
+
+      //  Creating a one second track event with an empty end
+      Popcorn.addTrackEvent( this, options );
+
+      if ( eventType === "cuechange" ) {
+        this.emit( eventType, Popcorn.extend({}, options, {
+          id: id,
+          previousValue: {
+            time: trackEvent.start,
+            fn: trackEvent._natives.start
+          },
+          currentValue: {
+            time: time,
+            fn: fn || Popcorn.nop
+          }
+        }));
+      } else {
+        this.emit( eventType, Popcorn.extend({}, options, {
+          plugin: "cue",
+          type: eventType
+        }));
+      }
 
       return this;
     },
@@ -1217,30 +1241,10 @@
 
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
-    var trackEvent, isUpdate, eventType, id;
 
     // Construct new track event instance object
     // based on track object argument.
     track = new TrackEvent( track );
-
-    id = track.id || track._id;
-
-    // Do a lookup for existing trackevents with this id
-    if ( id ) {
-      trackEvent = obj.getTrackEvent( id );
-    }
-
-    // If a track event by this id currently exists, modify it
-    if ( trackEvent ) {
-      isUpdate = true;
-
-      // Create a new object with the existing trackEvent
-      // Extend with new track properties
-      track = Popcorn.extend( {}, trackEvent, track );
-
-      // Remove the existing track from the instance
-      obj.removeTrackEvent( id );
-    }
 
     // Determine if this track has default options set for it
     // If so, apply them to the track object
@@ -1273,30 +1277,6 @@
     if ( track._id ) {
 
       Popcorn.addTrackEvent.ref( obj, track );
-    }
-
-    // If the call to addTrackEvent was an update/modify call, fire an event
-    if ( isUpdate && track._natives.type === "cue" ) {
-
-      // Fire an event with change information
-      obj.emit( "cuechange", {
-        id: track.id,
-        previousValue: {
-          time: trackEvent.start,
-          fn: trackEvent._natives.start
-        },
-        currentValue: {
-          time: track.start,
-          fn: track._natives.start
-        }
-      });
-    } else if ( track._natives && !isUpdate ) {
-
-      // Fire a trackadded event
-      obj.emit( "trackadded", Popcorn.extend({}, track, {
-        plugin: track._natives.type,
-        type: "trackadded"
-      }));
     }
   };
 
@@ -1714,8 +1694,14 @@
 
       // default to an empty string if no effect exists
       // split string into an array of effects
-      options.compose = options.compose && options.compose.split( " " ) || [];
-      options.effect = options.effect && options.effect.split( " " ) || [];
+      options.compose = options.compose || [];
+      if ( typeof options.compose === "string" ) {
+        options.compose = options.compose.split( " " );
+      }
+      options.effect = options.effect || [];
+      if ( typeof options.effect === "string" ) {
+        options.effect = options.effect.split( " " );
+      }
 
       // join the two arrays together
       options.compose = options.compose.concat( options.effect );
@@ -1772,7 +1758,7 @@
         options.target = manifestOpts && "target" in manifestOpts && manifestOpts.target;
       }
 
-      if ( options._natives ) {
+      if ( !options._id && options._natives ) {
         // ensure an initial id is there before setup is called
         options._id = Popcorn.guid( options._natives.type );
       }
@@ -1836,6 +1822,9 @@
               trackEvent.end = options.end;
             }
 
+            if ( isfn ) {
+              definition.call( this, trackEvent );
+            }
             trackEvent._natives._update.call( this, trackEvent, options );
 
             removeFromArray( this, trackEvent._id );
@@ -1843,7 +1832,21 @@
           } else {
             options = Popcorn.extend( {}, trackEvent, options );
 
-            Popcorn.addTrackEvent( this, options );
+            Popcorn.removeTrackEvent( this, id );
+            if ( isfn ) {
+              pluginFn.call( this, definition.call( this, options ), options );
+            } else {
+              Popcorn.addTrackEvent( this, options );
+            }
+
+            // Fire an event with change information
+            this.emit( "trackchange", {
+              id: options.id,
+              previousValue: trackEvent,
+              currentValue: options
+            });
+
+            return this;
           }
 
           if ( trackEvent._natives.type !== "cue" ) {
@@ -1865,8 +1868,15 @@
       defaults = ( this.options.defaults && this.options.defaults[ name ] ) || {};
       mergedSetupOpts = Popcorn.extend( {}, defaults, options );
 
-      return pluginFn.call( this, isfn ? definition.call( this, mergedSetupOpts ) : definition,
+      pluginFn.call( this, isfn ? definition.call( this, mergedSetupOpts ) : definition,
                                   mergedSetupOpts );
+
+      this.emit( "trackadded", Popcorn.extend({}, mergedSetupOpts, {
+        plugin: name,
+        type: "trackadded"
+      }));
+
+      return this;
     };
 
     // if the manifest parameter exists we should extend it onto the definition object
