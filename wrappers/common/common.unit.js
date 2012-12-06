@@ -644,7 +644,6 @@ test( "T30 - error when video parameter is bad", function() {
     video.removeEventListener( "error", onError, false );
     equal( video.error.code, MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED,
            "MEDIA_ERR_SRC_NOT_SUPPORTED when param is invalid." );
-    start();
   }, false);
 
   video.src = "data:video/x-fake;base64,0";
@@ -687,6 +686,57 @@ test( "T33 - networkState", function() {
   ok( video.networkState === video.NETWORK_EMPTY ||
       video.networkState === video.NETWORK_NO_SOURCE,
       "networkState is initially NETWORK_EMPTY or NETWORK_NO_SOURCE" );
+
+});
+
+
+asyncTest( "T34 - paused state during autoplay", 10, function() {
+
+  var video = testData.createMedia( "#video" ),
+      loadedMetaDataFired = false,
+      canplayFired = false,
+      playFired = false,
+      playingFired = false,
+      canPlayThrough = false;
+
+  video.addEventListener( "loadedmetadata", function onLoadedMetaData() {
+    video.removeEventListener( "loadedmetadata", onLoadedMetaData, false );
+    loadedMetaDataFired = true;
+    ok( !video.paused, "video is playing during loadedmetadata" );
+  }, false);
+
+  video.addEventListener( "canplay", function onCanPlay() {
+    video.removeEventListener( "canplay", onCanPlay, false );
+    canPlayFired = true;
+    ok( !playFired, "play has not yet been fired on canplay from an autoplay" );
+    ok( loadedMetaDataFired, "loadedMetaDataFired has been fired on canplay from an autoplay" );
+  }, false);
+
+  video.addEventListener( "play", function onPlay() {
+    video.removeEventListener( "play", onPlay, false );
+    playFired = true;
+    ok( !playingFired, "playing has not yet been fired on play from an autoplay" );
+    ok( canPlayFired, "canplay has been fired on play from an autoplay" );
+  }, false);
+
+  video.addEventListener( "playing", function onPlaying() {
+    video.removeEventListener( "playing", onPlaying, false );
+    playingFired = true;
+    ok( !canPlayThrough, "canplaythrough has not yet been fired on playing from an autoplay" );
+    ok( playFired, "play has been fired on playing from an autoplay" );
+  }, false);
+
+  video.addEventListener( "canplaythrough", function onCanPlayThrough() {
+    video.removeEventListener( "canplaythrough", onCanPlayThrough, false );
+    canPlayThrough = true;
+    ok( playingFired, "playing has been fired on canplaythrough from an autoplay" );
+    start();
+  }, false);
+
+  video.autoplay = true;
+  ok( video.paused, "video does not autoplay before source" );
+  video.src = testData.videoSrc;
+  ok( video.paused, "video does not autoplay before ready events" );
 
 });
 
