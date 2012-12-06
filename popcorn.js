@@ -600,8 +600,9 @@
 
     //  Attach an event to a single point in time
     exec: function( id, time, fn ) {
-      var length = arguments.length, options,
-          trackEvent, sec, eventType = "trackadded";
+      var length = arguments.length,
+          eventType = "trackadded",
+          trackEvent, sec, options;
 
       // Check if first could possibly be a SMPTE string
       // p.cue( "smpte string", fn );
