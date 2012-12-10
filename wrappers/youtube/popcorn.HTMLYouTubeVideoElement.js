@@ -84,12 +84,15 @@
         error: null
       },
       playerReady = false,
+      mediaReady = false,
       player,
-      playerReadyCallbacks = [],
+      playerPaused = true,
+      mediaReadyCallbacks = [],
       currentTimeInterval,
       lastCurrentTime = 0,
       seekTarget = -1,
       timeUpdateInterval,
+      firstPlay = true,
       forcedLoadMetadata = false;
 
     // Namespace all events we'll produce
@@ -100,8 +103,8 @@
     // Mark this as YouTube
     self._util.type = "YouTube";
 
-    function addPlayerReadyCallback( callback ) {
-      playerReadyCallbacks.unshift( callback );
+    function addMediaReadyCallback( callback ) {
+      mediaReadyCallbacks.unshift( callback );
     }
 
     function onPlayerReady( event ) {
@@ -120,9 +123,9 @@
     }
 
     function getDuration() {
-      if( !playerReady ) {
+      if( !mediaReady ) {
         // Queue a getDuration() call so we have correct duration info for loadedmetadata
-        addPlayerReadyCallback( function() { getDuration(); } );
+        addMediaReadyCallback( function() { getDuration(); } );
         return impl.duration;
       }
 
@@ -189,29 +192,9 @@
         // unstarted
         case -1:
           // XXX: this should really live in cued below, but doesn't work.
-          impl.readyState = self.HAVE_METADATA;
-          self.dispatchEvent( "loadedmetadata" );
 
-          self.dispatchEvent( "loadeddata" );
-
-          impl.readyState = self.HAVE_FUTURE_DATA;
-          self.dispatchEvent( "canplay" );
-
-          // We can't easily determine canplaythrough, but will send anyway.
-          impl.readyState = self.HAVE_ENOUGH_DATA;
-          self.dispatchEvent( "canplaythrough" );
-
-          // Auto-start if necessary
-          if( impl.autoplay ) {
-            self.play();
-          }
-
-          var i = playerReadyCallbacks.length;
-          while( i-- ) {
-            playerReadyCallbacks[ i ]();
-            delete playerReadyCallbacks[ i ];
-          }
-
+          // force an initial play on the video, to remove autostart on initial seekTo.
+          player.playVideo();
           break;
 
         // ended
@@ -221,7 +204,39 @@
 
         // playing
         case YT.PlayerState.PLAYING:
-          onPlay();
+          if( firstPlay ) {
+            // fake ready event
+            firstPlay = false;
+
+            // Set initial paused state
+            if( impl.autoplay || !impl.paused ) {
+              impl.paused = false;
+              addMediaReadyCallback( function() { onPlay(); } );
+            } else {
+              player.pauseVideo();
+            }
+            
+            impl.readyState = self.HAVE_METADATA;
+            self.dispatchEvent( "loadedmetadata" );
+            
+            self.dispatchEvent( "loadeddata" );
+
+            impl.readyState = self.HAVE_FUTURE_DATA;
+            self.dispatchEvent( "canplay" );
+
+            mediaReady = true;
+            var i = mediaReadyCallbacks.length;
+            while( i-- ) {
+              mediaReadyCallbacks[ i ]();
+              delete mediaReadyCallbacks[ i ];
+            }
+
+            // We can't easily determine canplaythrough, but will send anyway.
+            impl.readyState = self.HAVE_ENOUGH_DATA;
+            self.dispatchEvent( "canplaythrough" );
+          } else {
+            onPlay();
+          }
           break;
 
         // paused
@@ -367,7 +382,7 @@
     }
 
     function getCurrentTime() {
-      if( !playerReady ) {
+      if( !mediaReady ) {
         return 0;
       }
 
@@ -376,8 +391,8 @@
     }
 
     function changeCurrentTime( aTime ) {
-      if( !playerReady ) {
-        addPlayerReadyCallback( function() { changeCurrentTime( aTime ); } );
+      if( !mediaReady ) {
+        addMediaReadyCallback( function() { changeCurrentTime( aTime ); } );
         return;
       }
 
@@ -427,8 +442,8 @@
       timeUpdateInterval = setInterval( onTimeUpdate,
                                         self._util.TIMEUPDATE_MS );
 
-      if( impl.paused ) {
-        impl.paused = false;
+      if( playerPaused ) {
+        playerPaused = false;
 
         // Only 1 play when video.loop=true
         if ( !impl.loop ) {
@@ -439,22 +454,26 @@
     }
 
     self.play = function() {
-      if( !playerReady ) {
-        addPlayerReadyCallback( function() { self.play(); } );
+      impl.paused = false;
+      if( !mediaReady ) {
+        addMediaReadyCallback( function() { self.play(); } );
         return;
       }
       player.playVideo();
     };
 
     function onPause() {
-      impl.paused = true;
-      clearInterval( timeUpdateInterval );
-      self.dispatchEvent( "pause" );
+      if ( !playerPaused ) {
+        playerPaused = true;
+        clearInterval( timeUpdateInterval );
+        self.dispatchEvent( "pause" );
+      }
     }
 
     self.pause = function() {
-      if( !playerReady ) {
-        addPlayerReadyCallback( function() { self.pause(); } );
+      impl.paused = true;
+      if( !mediaReady ) {
+        addMediaReadyCallback( function() { self.pause(); } );
         return;
       }
       player.pauseVideo();
@@ -471,9 +490,9 @@
     }
 
     function setVolume( aValue ) {
-      if( !playerReady ) {
+      if( !mediaReady ) {
         impl.volume = aValue;
-        addPlayerReadyCallback( function() {
+        addMediaReadyCallback( function() {
           setVolume( impl.volume );
         });
         return;
@@ -483,16 +502,16 @@
     }
 
     function getVolume() {
-      if( !playerReady ) {
+      if( !mediaReady ) {
         return impl.volume > -1 ? impl.volume : 1;
       }
       return player.getVolume();
     }
 
     function setMuted( aValue ) {
-      if( !playerReady ) {
+      if( !mediaReady ) {
         impl.muted = aValue;
-        addPlayerReadyCallback( function() { setMuted( impl.muted ); } );
+        addMediaReadyCallback( function() { setMuted( impl.muted ); } );
         return;
       }
       player[ aValue ? "mute" : "unMute" ]();
