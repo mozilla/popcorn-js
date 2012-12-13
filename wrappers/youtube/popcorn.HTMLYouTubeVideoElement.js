@@ -502,7 +502,7 @@
     }
 
     function getVolume() {
-      // YouTube has getColume(), but for sync access we use impl.volume
+      // YouTube has getVolume(), but for sync access we use impl.volume
       return impl.volume;
     }
 
