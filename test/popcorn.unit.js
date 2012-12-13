@@ -938,8 +938,11 @@ asyncTest( "roundTime", 1, function() {
 
   popped.on( "canplayall", function() {
     popped.off( "canplayall" );
-    popped.play().pause().currentTime( 0.98 );
+    popped.pause( 0.98 );
+  });
 
+  popped.on( "seeked", function() {
+    popped.off( "seeked" );
     equal( 1, popped.roundTime(), ".roundTime() returns 1 when currentTime is 0.98s" );
     popped.destroy();
     start();
