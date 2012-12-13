@@ -410,6 +410,11 @@
       }
       impl.seeking = true;
       self.dispatchEvent( "seeking" );
+      
+      // start monitorCurrentTime interval in case we haven't played yet
+      if ( !currentTimeInterval ) {
+        currentTimeInterval = setInterval( monitorCurrentTime, CURRENT_TIME_MONITOR_MS );
+      }
     }
 
     function onSeeked() {
