@@ -73,7 +73,7 @@
         controls: false,
         loop: false,
         poster: EMPTY_STRING,
-        volume: -1,
+        volume: 1,
         muted: false,
         currentTime: 0,
         duration: NaN,
@@ -490,27 +490,25 @@
     }
 
     function setVolume( aValue ) {
+      impl.volume = aValue;
       if( !mediaReady ) {
-        impl.volume = aValue;
         addMediaReadyCallback( function() {
           setVolume( impl.volume );
         });
         return;
       }
-      player.setVolume( aValue );
+      player.setVolume( impl.volume * 100 );
       self.dispatchEvent( "volumechange" );
     }
 
     function getVolume() {
-      if( !mediaReady ) {
-        return impl.volume > -1 ? impl.volume : 1;
-      }
-      return player.getVolume();
+      // YouTube has getVolume(), but for sync access we use impl.volume
+      return impl.volume;
     }
 
     function setMuted( aValue ) {
+      impl.muted = aValue;
       if( !mediaReady ) {
-        impl.muted = aValue;
         addMediaReadyCallback( function() { setMuted( impl.muted ); } );
         return;
       }
