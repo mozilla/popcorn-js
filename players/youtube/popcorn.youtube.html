@@ -7,7 +7,6 @@
       <script type="text/javascript" src="popcorn.youtube.js"></script>
       <script src="../../plugins/footnote/popcorn.footnote.js"></script>
       <script src="../../plugins/flickr/popcorn.flickr.js"></script>
-      <script src="../../plugins/attribution/popcorn.attribution.js"></script>
       <script src="../../plugins/webpage/popcorn.webpage.js"></script>
       <script src="../../plugins/googlefeed/popcorn.googlefeed.js"></script>
       <script src="../../plugins/image/popcorn.image.js"></script>
@@ -19,95 +18,85 @@
 
           return document.getElementById(id);
         }
-        
+
         document.addEventListener( 'DOMContentLoaded', function() {
           var paused = true,
               popcorn;
 
           popcorn = Popcorn.youtube( '#video', 'http://www.youtube.com/watch?v=nfGV32RNkhw&autoplay=0' );
-          
+
           popcorn = popcorn
             .footnote({
-              start: 5, // seconds
-              end: 40, // seconds
+              start: 5,
+              end: 40,
               text: 'The video is "RiP: A Remix Manifesto", by Brett Gaylor',
               target: 'footnotediv'
             })
             .flickr({
-              start: 20, // seconds
-              end: 40, // seconds
+              start: 20,
+              end: 40,
               tags: 'georgia',
               numberofimages: '8',
               target: 'flickrdiv'
             })
             .twitter({
-              start: 20, // seconds
-              end: 45, // seconds
+              start: 20,
+              end: 45,
               title: 'Oil Spill',
               src: '#oilspill',
               target: 'twitterdiv'
             })
-            .attribution({
-              start: 5, // seconds
-              end: 60, // seconds
-              nameofwork: "Internet",
-              nameofworkurl:"http://www.archive.org/details/CC1232_internet",
-              copyrightholder:"The Computer Chronicles",
-              license:"CC-BY-NC-ND",
-              licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
-              target: 'attribdiv'
-            })
             .subtitle({
-              start: 5, // seconds
-              end: 15, // seconds
+              start: 5,
+              end: 15,
               text: 'This is overlaid on top of the video. You can hightlight it!',
               display: 'inline',
               language: "en"
             })
             .webpage({
               id: "webpages-a", 
-              start: 0, // seconds
-              end: 15, // seconds
+              start: 0,
+              end: 15,
               src: 'http://webmademovies.org/',
               target: 'webpagediv'
             })
             .googlefeed({
-                start: 0, // seconds
-                end: 15, // seconds
-                target: "feeddiv",
-                url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
-                title: "Planet Feed",
-                orientation: "Vertical"
+              start: 0,
+              end: 15,
+              target: "feeddiv",
+              url: "http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml",
+              title: "Planet Feed",
+              orientation: "Vertical"
             })
             .image({
-              start: 5, // seconds
-              end: 15, // seconds
+              start: 5,
+              end: 15,
               href: 'http://www.drumbeat.org/',
               src: 'https://www.drumbeat.org/media//images/drumbeat-logo-splash.png',
               target: 'imagediv'
             })
-          .listen( 'durationchange', function() {
+          .on( 'durationchange', function() {
             element( 'player-duration' ).innerHTML = popcorn.duration();
           })
-          .listen( 'volumechange', function() {
+          .on( 'volumechange', function() {
             element( 'player_vol' ).innerHTML = popcorn.volume();
           })
-          .listen( 'timeupdate', function() {
+          .on( 'timeupdate', function() {
             element( 'player-time' ).innerHTML = popcorn.currentTime();
           })
           // Update button labels
-          .listen( 'play' , function() {
+          .on( 'play' , function() {
             paused = false;
             element( 'btn-play-pause' ).innerHTML = 'Pause';
           })
-          .listen('pause', function() {
+          .on('pause', function() {
             paused = true;
             element( 'btn-play-pause' ).innerHTML = 'Play';
           });
 
           element( 'player-status' ).innerHTML = 'Ready';
           element( 'player_vol' ).innerHTML = popcorn.volume();
-          
+
           // Single play/pause button
           element( 'btn-play-pause' ).addEventListener( 'click', function() {
             if ( paused ) {
@@ -169,7 +158,6 @@
           <li>From 5 to 40 seconds, the footnote 'The video is "RiP: A Remix Manifesto", by Brett Gaylor' will appear below 'Footnote Area'.</li>
           <li>From 20 to 40 seconds, the a flickr stream of 8 images  tagged 'georgia' will appear below 'Flickr Area'.</li>
           <li>From 20 to 45 seconds, tweets tagged #oilspill will appear below 'Twitter Area'.</li>
-          <li>From 5 to 60 seconds, the Creative Commons license will appear below 'Attributions Area'.</li>
           <li>From 5 to 15 seconds, the Mozilla Drumbeat logo will appear below 'Image Area'.</li>
           <li>From 5 to 15 seconds, the subtitle 'This is overlaid on top of the video. You can hightlight it!' will appear in front of the video.</li>
           <li>From 0 to 20 seconds, blogs from 'http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml' will appear below 'Google Feed Area'.</li>
@@ -178,9 +166,6 @@
       </div>
       <div id="footnotediv" width="50%" height="50%">
         <strong>Footnote Area</strong><br />
-      </div>
-      <div id="attribdiv" width="50%" height="50%">
-        <strong>Attributions Area</strong><br />
       </div>
       <div id="flickrdiv" width="50%" height="50%">
         <strong>Flickr Area</strong><br />
