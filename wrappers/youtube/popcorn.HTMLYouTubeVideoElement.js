@@ -221,9 +221,6 @@
             self.dispatchEvent( "loadedmetadata" );
             currentTimeInterval = setInterval( monitorCurrentTime,
                                                CURRENT_TIME_MONITOR_MS );
-
-            timeUpdateInterval = setInterval( onTimeUpdate,
-                                              self._util.TIMEUPDATE_MS );
             
             self.dispatchEvent( "loadeddata" );
 
@@ -434,6 +431,8 @@
       if( impl.ended ) {
         changeCurrentTime( 0 );
       }
+      timeUpdateInterval = setInterval( onTimeUpdate,
+                                        self._util.TIMEUPDATE_MS );
 
       if( playerPaused ) {
         playerPaused = false;
