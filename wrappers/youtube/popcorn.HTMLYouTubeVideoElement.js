@@ -85,6 +85,7 @@
       },
       playerReady = false,
       mediaReady = false,
+      loopedPlay = false,
       player,
       playerPaused = true,
       mediaReadyCallbacks = [],
@@ -218,6 +219,11 @@
             
             impl.readyState = self.HAVE_METADATA;
             self.dispatchEvent( "loadedmetadata" );
+            currentTimeInterval = setInterval( monitorCurrentTime,
+                                               CURRENT_TIME_MONITOR_MS );
+
+            timeUpdateInterval = setInterval( onTimeUpdate,
+                                              self._util.TIMEUPDATE_MS );
             
             self.dispatchEvent( "loadeddata" );
 
@@ -429,24 +435,12 @@
         changeCurrentTime( 0 );
       }
 
-      if ( !currentTimeInterval ) {
-        currentTimeInterval = setInterval( monitorCurrentTime,
-                                           CURRENT_TIME_MONITOR_MS ) ;
-
-        // Only 1 play when video.loop=true
-        if ( impl.loop ) {
-          self.dispatchEvent( "play" );
-        }
-      }
-
-      timeUpdateInterval = setInterval( onTimeUpdate,
-                                        self._util.TIMEUPDATE_MS );
-
       if( playerPaused ) {
         playerPaused = false;
 
         // Only 1 play when video.loop=true
-        if ( !impl.loop ) {
+        if ( ( impl.loop && !loopedPlay ) || !impl.loop ) {
+          loopedPlay = true;
           self.dispatchEvent( "play" );
         }
         self.dispatchEvent( "playing" );
