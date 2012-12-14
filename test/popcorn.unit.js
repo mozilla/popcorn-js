@@ -1054,50 +1054,33 @@ asyncTest( "mute", function() {
   audio.mute();
 });
 
-asyncTest( "play(n)/pause(n) as shorthand to currentTime(n).play()/pause()", function() {
+asyncTest( "play(n) as shorthand to currentTime(n).play()", 1, function() {
+  var p = Popcorn( "#video" );
 
-  var $pop = Popcorn( "#video" ),
-      expects = 2,
-      count = 0,
-      fired = 0;
+  p.on( "seeked", function() {
+    equal( Math.round( p.currentTime() ), 5, "play(n) sets currentTime to 5" );
+    p.destroy();
+    start();
+  });
 
-  expect( expects );
+  p.on( "canplayall", function() {
+    p.play( 5 );
+  });
 
-  function plus() {
-    if ( ++count == expects ) {
-      $pop.destroy();
-      start();
-    }
-  }
+});
 
-  function poll() {
+asyncTest( "pause(n) as shorthand to currentTime(n).pause()", 1, function() {
+  var p = Popcorn( "#video" );
 
-    if ( $pop.media.readyState >= 2 ) {
-      // this should trigger immediately
-      var firstSeekedEvent = function() {
+  p.on( "seeked", function() {
+    equal( Math.round( p.currentTime() ), 5, "pause(n) sets currentTime to 5" );
+    p.destroy();
+    start();
+  });
 
-        $pop.off( "seeked", firstSeekedEvent );
-        equal( Math.round( $pop.currentTime() ), 10, "play(n) sets currentTime to 10" );
-        plus();
-
-        $pop.on( "seeked", secondSeekedEvent );
-        $pop.pause( 5 );
-      },
-      secondSeekedEvent = function() {
-
-        $pop.off( "seeked", secondSeekedEvent );
-        equal( Math.round( $pop.currentTime() ), 5, "pause(n) sets currentTime to 5" );
-        plus();
-      };
-
-      $pop.on( "seeked", firstSeekedEvent );
-      $pop.play( 10 ).pause();
-    } else {
-      setTimeout( poll, 10 );
-    }
-  }
-
-  poll();
+  p.on( "canplayall", function() {
+    p.pause( 5 );
+  });
 });
 
 // Originally written for #705 by chris de cairos
