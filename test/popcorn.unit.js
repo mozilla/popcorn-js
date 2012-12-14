@@ -1278,6 +1278,23 @@ asyncTest( "Popcorn.events.hooks: canplayall fires immediately if ready", 1, fun
   poll();
 });
 
+asyncTest( "canplayall always fires asynchronously", 1, function() {
+
+  var p = Popcorn( "#video" ),
+      outsideFired = false;
+
+  // Bug 1391 - Wait for video to load some data so this can be tested properly
+  setTimeout(function() {
+    p.on( "canplayall", function() {
+      ok( outsideFired, "canplayall fired asynchronously" );
+      p.destroy();
+      start();
+    });
+
+    outsideFired = true;
+  }, 1000 );
+});
+
 asyncTest( "Popcorn.events.hooks: attrchange fires when attribute setter methods are called", 1, function() {
 
   var $pop = Popcorn( "#video" ),

@@ -1027,7 +1027,10 @@
 
           if ( this.media.readyState ) {
 
-            callback.call( this, event );
+            // always call canplayall asynchronously
+            setTimeout(function() {
+              callback.call( this, event );
+            }.bind(this), 0 );
 
             state = true;
           }
