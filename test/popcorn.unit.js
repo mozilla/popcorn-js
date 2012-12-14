@@ -195,6 +195,54 @@ test( "Popcorn constructed TrackEvents", 2, function() {
   p.destroy();
 });
 
+asyncTest( "TrackEvent instance integrity", 1, function() {
+  var p = Popcorn( "#video" ),
+      references = [],
+      result;
+
+  Popcorn.plugin( "temp", {
+    _setup: function( options ) {
+      references.push( options );
+    },
+    start: function( event, options ) {
+      references.push( options );
+    },
+    end: function( event, options ) {
+      references.push( options );
+    }
+  });
+
+  // Once https://github.com/mozilla/popcorn-js/pull/258 lands,
+  // uncomment to enable this
+  // p.on("tracksetup", function() {
+  //   references.push( options.data );
+  // });
+
+  p.temp({
+    id: "asdf",
+    start: 0,
+    end: 1
+  });
+
+  p.on( "canplayall", function() {
+    var track = this.getTrackEvent( "asdf" );
+
+    this.cue( 2, function() {
+      result = references.every(function( ref ) {
+        return ref === track;
+      });
+
+      ok( result, "All TrackEvents are true references" );
+
+      Popcorn.removePlugin( "temp" );
+      p.destroy();
+
+      start();
+    });
+
+    this.play();
+  });
+});
 
 test( "Popcorn.removeTrackEvent", 5, function() {
 
