@@ -171,7 +171,7 @@
       //  Create an audio or video element property reference
       this[ nodeName ] = this.media;
 
-      this.options = options || {};
+      this.options = Popcorn.extend( {}, options ) || {};
 
       //  Resolve custom ID or default prefixed ID
       this.id = this.options.id || Popcorn.guid( nodeName );
