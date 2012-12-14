@@ -1257,25 +1257,14 @@ asyncTest( "Popcorn.events.hooks: canplayall", 1, function() {
 
 asyncTest( "Popcorn.events.hooks: canplayall fires immediately if ready", 1, function() {
 
-  //qunit-fixture
-  var $pop = Popcorn( "#video" ),
-      fired = 0;
+  var $pop = Popcorn( "#video" );
 
-  function poll() {
-    if ( $pop.media.readyState >= 2 ) {
-      // this should trigger immediately
-      $pop.on( "canplayall", function( event ) {
-        this.off( "canplayall" );
-        equal( ++fired, 1, "canplayall is fired immediately if readyState permits" );
-        $pop.destroy();
-        start();
-      });
-    } else {
-      setTimeout( poll, 10 );
-    }
-  }
+  $pop.on( "canplayall", function( event ) {
+    ok( true, "canplayall is fired immediately if readyState permits" );
+    $pop.destroy();
+    start();
+  });
 
-  poll();
 });
 
 asyncTest( "canplayall always fires asynchronously", 1, function() {
