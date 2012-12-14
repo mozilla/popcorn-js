@@ -726,7 +726,7 @@
         this.emit( eventType, Popcorn.extend({}, options, {
           plugin: "cue",
           type: eventType,
-          options: options
+          data: options
         }));
       }
 
@@ -1268,7 +1268,7 @@
         obj.emit( "tracksetup", Popcorn.extend( {}, track, {
           plugin: track._natives.type,
           type: "tracksetup",
-          options: track
+          data: track
         }));
       }
     }
@@ -1316,7 +1316,7 @@
       obj.emit( "trackremoved", Popcorn.extend({}, track, {
         plugin: track._natives.type,
         type: "trackremoved",
-        options: track
+        data: track
       }));
     }
   };
@@ -1409,7 +1409,7 @@
                 Popcorn.extend({}, byEnd, {
                   plugin: type,
                   type: trackend,
-                  options: byEnd
+                  data: byEnd
                 })
               );
             }
@@ -1446,7 +1446,7 @@
                 Popcorn.extend({}, byStart, {
                   plugin: type,
                   type: trackstart,
-                  options: byStart
+                  data: byStart
                 })
               );
             }
@@ -1487,7 +1487,7 @@
                 Popcorn.extend({}, byStart, {
                   plugin: type,
                   type: trackend,
-                  options: byStart
+                  data: byStart
                 })
               );
             }
@@ -1525,7 +1525,7 @@
                 Popcorn.extend({}, byEnd, {
                   plugin: type,
                   type: trackstart,
-                  options: byEnd
+                  data: byEnd
                 })
               );
             }
@@ -1698,7 +1698,7 @@
         this.emit( "trackteardown", Popcorn.extend( {}, options, {
           plugin: name,
           type: "trackteardown",
-          options: options
+          data: options
         }));
       });
 
@@ -1883,7 +1883,7 @@
       this.emit( "trackadded", Popcorn.extend({}, mergedSetupOpts, {
         plugin: name,
         type: "trackadded",
-        options: mergedSetupOpts
+        data: mergedSetupOpts
       }));
 
       return this;
