@@ -498,7 +498,7 @@
             Popcorn.extend({}, event, {
               plugin: event.type,
               type: "trackstart",
-              data: event
+              track: event
             })
           );
         }
@@ -736,13 +736,13 @@
             time: time,
             fn: fn || Popcorn.nop
           },
-          data: trackEvent
+          track: trackEvent
         }));
       } else {
         this.emit( eventType, Popcorn.extend({}, options, {
           plugin: "cue",
           type: eventType,
-          data: Popcorn.getTrackEvent( this, options.id || options._id )
+          track: Popcorn.getTrackEvent( this, options.id || options._id )
         }));
       }
 
@@ -1143,7 +1143,7 @@
           Popcorn.extend({}, track, {
             plugin: track._natives.type,
             type: "trackstart",
-            data: track
+            track: track
           })
         );
       }
@@ -1298,7 +1298,7 @@
           Popcorn.extend({}, track, {
             plugin: track._natives.type,
             type: "trackend",
-            data: track
+            track: track
           })
         );
       }
@@ -1349,7 +1349,7 @@
         obj.emit( "tracksetup", Popcorn.extend( {}, track, {
           plugin: track._natives.type,
           type: "tracksetup",
-          data: track
+          track: track
         }));
       }
     }
@@ -1370,7 +1370,7 @@
       obj.emit( "trackadded", Popcorn.extend({}, track,
         track._natives ? { plugin: track._natives.type } : {}, {
           type: "trackadded",
-          data: track
+          track: track
       }));
     }
   };
@@ -1408,7 +1408,7 @@
       obj.emit( "trackremoved", Popcorn.extend({}, track, {
         plugin: track._natives.type,
         type: "trackremoved",
-        data: track
+        track: track
       }));
     }
   };
@@ -1501,7 +1501,7 @@
                 Popcorn.extend({}, byEnd, {
                   plugin: type,
                   type: trackend,
-                  data: byEnd
+                  track: byEnd
                 })
               );
             }
@@ -1538,7 +1538,7 @@
                 Popcorn.extend({}, byStart, {
                   plugin: type,
                   type: trackstart,
-                  data: byStart
+                  track: byStart
                 })
               );
             }
@@ -1579,7 +1579,7 @@
                 Popcorn.extend({}, byStart, {
                   plugin: type,
                   type: trackend,
-                  data: byStart
+                  track: byStart
                 })
               );
             }
@@ -1617,7 +1617,7 @@
                 Popcorn.extend({}, byEnd, {
                   plugin: type,
                   type: trackstart,
-                  data: byEnd
+                  track: byEnd
                 })
               );
             }
@@ -1787,7 +1787,7 @@
             Popcorn.extend({}, options, {
               plugin: natives.type,
               type: "trackend",
-              data: Popcorn.getTrackEvent( this, options.id || options._id )
+              track: Popcorn.getTrackEvent( this, options.id || options._id )
             })
           );
       }, natives._teardown );
@@ -1798,7 +1798,7 @@
         this.emit( "trackteardown", Popcorn.extend( {}, options, {
           plugin: name,
           type: "trackteardown",
-          data: Popcorn.getTrackEvent( this, options.id || options._id )
+          track: Popcorn.getTrackEvent( this, options.id || options._id )
         }));
       });
 
@@ -1974,7 +1974,7 @@
               type: "trackchange",
               previousValue: previousOpts,
               currentValue: trackEvent,
-              data: trackEvent
+              track: trackEvent
             });
 
             return this;
@@ -1987,7 +1987,7 @@
               type: "trackchange",
               previousValue: previousOpts,
               currentValue: newOpts,
-              data: trackEvent
+              track: trackEvent
             });
           }
 

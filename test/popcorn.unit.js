@@ -246,10 +246,10 @@ asyncTest( "TrackEvent Invariant", 1, function() {
     p.on( eventType, function( event ) {
       // We're only looking for events that were emitted for
       // our test plugin.
-      if ( event.data.id === "asdf" ) {
+      if ( event.track.id === "asdf" ) {
         references.push({
           source: event.type,
-          track: event.data
+          track: event.track
         });
       }
     });
