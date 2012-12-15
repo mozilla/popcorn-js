@@ -1962,10 +1962,8 @@
 
             if ( isfn ) {
               pluginFn.call( this, definition.call( this, trackEvent ), trackEvent );
-              // pluginFn.call( this, definition.call( this, options ), options );
             } else {
               Popcorn.addTrackEvent( this, trackEvent );
-              // Popcorn.addTrackEvent( this, options );
             }
 
             // Fire an event with change information
