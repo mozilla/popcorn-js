@@ -1893,7 +1893,7 @@
     //  Assign new named definition
     Popcorn.p[ name ] = plugin[ name ] = function( id, options ) {
       var length = arguments.length,
-          trackEvent, defaults, mergedSetupOpts, cloneTrackEvent, previousOpts, newOpts;
+          trackEvent, defaults, mergedSetupOpts, previousOpts, newOpts;
 
       // Shift arguments based on use case
       //
