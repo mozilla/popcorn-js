@@ -726,6 +726,7 @@
       if ( eventType === "cuechange" ) {
         this.emit( eventType, Popcorn.extend({}, options, {
           id: id,
+          type: "cuechange",
           previousValue: {
             time: trackEvent.start,
             fn: trackEvent._natives.start
@@ -738,7 +739,8 @@
       } else {
         this.emit( eventType, Popcorn.extend({}, options, {
           plugin: "cue",
-          type: eventType
+          type: eventType,
+          data: options
         }));
       }
 
@@ -1309,7 +1311,8 @@
         track._natives._setup.call( obj, track );
         obj.emit( "tracksetup", Popcorn.extend( {}, track, {
           plugin: track._natives.type,
-          type: "tracksetup"
+          type: "tracksetup",
+          data: track
         }));
       }
     }
@@ -1356,7 +1359,8 @@
       // Fire a trackremoved event
       obj.emit( "trackremoved", Popcorn.extend({}, track, {
         plugin: track._natives.type,
-        type: "trackremoved"
+        type: "trackremoved",
+        data: track
       }));
     }
   };
@@ -1448,7 +1452,8 @@
               obj.emit( trackend,
                 Popcorn.extend({}, byEnd, {
                   plugin: type,
-                  type: trackend
+                  type: trackend,
+                  data: byEnd
                 })
               );
             }
@@ -1484,7 +1489,8 @@
               obj.emit( trackstart,
                 Popcorn.extend({}, byStart, {
                   plugin: type,
-                  type: trackstart
+                  type: trackstart,
+                  data: byStart
                 })
               );
             }
@@ -1524,7 +1530,8 @@
               obj.emit( trackend,
                 Popcorn.extend({}, byStart, {
                   plugin: type,
-                  type: trackend
+                  type: trackend,
+                  data: byStart
                 })
               );
             }
@@ -1561,7 +1568,8 @@
               obj.emit( trackstart,
                 Popcorn.extend({}, byEnd, {
                   plugin: type,
-                  type: trackstart
+                  type: trackstart,
+                  data: byEnd
                 })
               );
             }
@@ -1740,7 +1748,8 @@
 
         this.emit( "trackteardown", Popcorn.extend( {}, options, {
           plugin: name,
-          type: "trackteardown"
+          type: "trackteardown",
+          data: options
         }));
       });
 
@@ -1891,6 +1900,7 @@
             // Fire an event with change information
             this.emit( "trackchange", {
               id: options.id,
+              type: "trackchange",
               previousValue: trackEvent,
               currentValue: options
             });
@@ -1902,6 +1912,7 @@
             // Fire an event with change information
             this.emit( "trackchange", {
               id: trackEvent.id,
+              type: "trackchange",
               previousValue: previousOpts,
               currentValue: newOpts
             });
@@ -1922,7 +1933,8 @@
 
       this.emit( "trackadded", Popcorn.extend({}, mergedSetupOpts, {
         plugin: name,
-        type: "trackadded"
+        type: "trackadded",
+        data: mergedSetupOpts
       }));
 
       return this;
