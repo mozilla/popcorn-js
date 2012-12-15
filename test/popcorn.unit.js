@@ -196,10 +196,16 @@ test( "Popcorn constructed TrackEvents", 2, function() {
 });
 
 asyncTest( "TrackEvent Invariant", 1, function() {
-  // Invariant:
+  // Invariant Policy:
   //
-  // Once a TrackEvent has been created, all future "references" to that TrackEvent
-  // must actually be a true reference, by complying to the following invariant tests.
+  // 1. Popcorn invariantly exposes a TrackEvent where "track event data" is expected
+  // (eg. Popcorn had been allowed to freely jump between sometimes providing a TrackEvent
+  // and sometimes a plain object that is the result of extending a TrackEvent with
+  // options onto a new plain object).
+  //
+  // 2. A TrackEvent reference is invariantly always the same reference
+  // (vs. getting a new TrackEvent reference after modifying an existing TrackEvent)
+  //
 
   var p = Popcorn( "#video" ),
       references = [],
