@@ -213,9 +213,16 @@ asyncTest( "TrackEvent instance integrity", 1, function() {
   });
 
   // Once https://github.com/mozilla/popcorn-js/pull/258 lands,
-  // uncomment to enable this
-  // p.on("tracksetup", function() {
-  //   references.push( options.data );
+  // the following should be uncommented:
+  //
+  // [
+  //   "tracksetup", "trackstart", "trackend", "trackteardown",
+  //   "trackadded", "trackremoved",
+  //   "trackchange"
+  // ].forEach(function( eventType ) {
+  //   p.on( eventType, function( event ) {
+  //     references.push( event.data );
+  //   });
   // });
 
   p.temp({
