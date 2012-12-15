@@ -497,7 +497,8 @@
           instance.emit( "trackstart",
             Popcorn.extend({}, event, {
               plugin: event.type,
-              type: "trackstart"
+              type: "trackstart",
+              data: event
             })
           );
         }
@@ -651,7 +652,7 @@
 
         } else {
 
-          // Get the trackEvent that matches the given id.
+          // Get the TrackEvent that matches the given id.
           trackEvent = this.getTrackEvent( id );
 
           if ( trackEvent ) {
@@ -667,7 +668,7 @@
               // p.cue( "my-id", 12 );
               // The path will update the cue time.
               if ( typeof time === "number" ) {
-                // Re-use existing trackEvent start callback
+                // Re-use existing TrackEvent start callback
                 fn = trackEvent._natives.start;
               }
 
@@ -675,7 +676,7 @@
               // The path will update the cue function
               if ( typeof time === "function" ) {
                 fn = time;
-                // Re-use existing trackEvent start time
+                // Re-use existing TrackEvent start time
                 time = trackEvent.start;
               }
             }
@@ -734,13 +735,14 @@
           currentValue: {
             time: time,
             fn: fn || Popcorn.nop
-          }
+          },
+          data: trackEvent
         }));
       } else {
         this.emit( eventType, Popcorn.extend({}, options, {
           plugin: "cue",
           type: eventType,
-          data: options
+          data: Popcorn.getTrackEvent( this, options.id || options._id )
         }));
       }
 
@@ -1139,18 +1141,26 @@
 
         obj.emit( "trackstart",
           Popcorn.extend({}, track, {
-            plugin: track.type,
-            type: "trackstart"
+            plugin: track._natives.type,
+            type: "trackstart",
+            data: track
           })
         );
       }
     }
   }
 
-  function removeFromArray( obj, removeId ) {
-
-    var start, end, animate,
-        historyLen,
+  // Remove a TrackEvent from an object's .trackEvent instance
+  // array.
+  //
+  // Allows an optional "state" mechanism that allows specific states
+  // to override condition mechanisms.
+  //
+  // Current uses are for preserving comparable values of a previous
+  // TrackEvent state—which allows us to properly enforce a TrackEvent
+  // instance invariant.
+  function removeFromArray( obj, removeId, state ) {
+    var start, end, animate, historyLen, track, runningPlugins,
         length = obj.data.trackEvents.byStart.length,
         index = 0,
         indexWasAt = 0,
@@ -1158,8 +1168,9 @@
         byEnd = [],
         animating = [],
         history = [],
-        track,
-        runningPlugins;
+        comparable = {};
+
+    state = state || {};
 
     while ( --length > -1 ) {
       start = obj.data.trackEvents.byStart[ index ];
@@ -1249,9 +1260,30 @@
     // Update ordered history array
     obj.data.history = history;
 
-    // Call track event end immediately if it's enabled and current
-    if ( track.end > obj.media.currentTime &&
-        track.start <= obj.media.currentTime ) {
+    // Always assume that the comparable start and end are
+    // the _current_ values.
+    // This supports TrackEvent invariant enforcement.
+    comparable.start = track.start;
+    comparable.end = track.end;
+
+    // If a previous state has been provided to override the comparison,
+    // enforce the previous state.
+    // This supports TrackEvent invariant enforcement.
+    if ( state && state.previous ) {
+      comparable.start = state.previous.start !== undefined ?
+        state.previous.start : comparable.start;
+
+      comparable.end = state.previous.end !== undefined ?
+        state.previous.end : comparable.end;
+    }
+
+    // Determine if a TrackEvent's "end" and "trackend" must be called
+    // as a consequence of removal from the .trackEvents array.
+    //
+    // This value may be the _current_ state of the TrackEvent or an
+    // explicitly provided state override.
+    if ( comparable.end > obj.media.currentTime &&
+        comparable.start <= obj.media.currentTime ) {
 
       runningPlugins = obj.data.running[ track._natives.type ];
 
@@ -1265,7 +1297,8 @@
         obj.emit( "trackend",
           Popcorn.extend({}, track, {
             plugin: track._natives.type,
-            type: "trackend"
+            type: "trackend",
+            data: track
           })
         );
       }
@@ -1288,10 +1321,13 @@
 
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
-
-    // Construct new track event instance object
-    // based on track object argument.
-    track = new TrackEvent( track );
+    var isFresh = false;
+    // If "track" argument is NOT ALREADY A TrackEvent instance,
+    // construct a new TrackEvent instance from the plain object.
+    if ( !(track instanceof TrackEvent) ) {
+      track = new TrackEvent( track );
+      isFresh = true;
+    }
 
     // Determine if this track has default options set for it
     // If so, apply them to the track object
@@ -1309,6 +1345,7 @@
       if ( track._natives._setup ) {
 
         track._natives._setup.call( obj, track );
+
         obj.emit( "tracksetup", Popcorn.extend( {}, track, {
           plugin: track._natives.type,
           type: "tracksetup",
@@ -1323,8 +1360,18 @@
 
     // Store references to user added trackevents in ref table
     if ( track._id ) {
-
       Popcorn.addTrackEvent.ref( obj, track );
+    }
+
+    // "trackadded" should only be emitted for NEWLY constructed TrackEvent objects.
+    // TrackEvent modifications SHOULD NOT be treated as NEWLY constructed and
+    // therefore SHOULD NOT qualify for a "trackadded" event.
+    if ( isFresh ) {
+      obj.emit( "trackadded", Popcorn.extend({}, track,
+        track._natives ? { plugin: track._natives.type } : {}, {
+          type: "trackadded",
+          data: track
+      }));
     }
   };
 
@@ -1335,9 +1382,10 @@
     return obj;
   };
 
-  Popcorn.removeTrackEvent = function( obj, removeId ) {
-
+  Popcorn.removeTrackEvent = function( obj, removeId, state ) {
     var track = obj.getTrackEvent( removeId );
+
+    state = state || {};
 
     if ( !track ) {
       return;
@@ -1349,7 +1397,7 @@
       track._natives._teardown.call( obj, track );
     }
 
-    removeFromArray( obj, removeId );
+    removeFromArray( obj, removeId, state );
 
     // Update track event references
     Popcorn.removeTrackEvent.ref( obj, removeId );
@@ -1738,7 +1786,8 @@
           this.emit( "trackend",
             Popcorn.extend({}, options, {
               plugin: natives.type,
-              type: "trackend"
+              type: "trackend",
+              data: Popcorn.getTrackEvent( this, options.id || options._id )
             })
           );
       }, natives._teardown );
@@ -1749,7 +1798,7 @@
         this.emit( "trackteardown", Popcorn.extend( {}, options, {
           plugin: name,
           type: "trackteardown",
-          data: options
+          data: Popcorn.getTrackEvent( this, options.id || options._id )
         }));
       });
 
@@ -1844,7 +1893,7 @@
     //  Assign new named definition
     Popcorn.p[ name ] = plugin[ name ] = function( id, options ) {
       var length = arguments.length,
-          trackEvent, defaults, mergedSetupOpts, previousOpts, newOpts;
+          trackEvent, defaults, mergedSetupOpts, cloneTrackEvent, previousOpts, newOpts;
 
       // Shift arguments based on use case
       //
@@ -1886,23 +1935,46 @@
             }
 
             trackEvent._natives._update.call( this, trackEvent, options );
+
             addToArray( this, trackEvent );
           } else {
-            options = Popcorn.extend( {}, trackEvent, options );
+            // This branch is taken when there is no explicitly defined
+            // _update method for a plugin. Which will occur either explicitly or
+            // as a result of the plugin definition being a function that _returns_
+            // a definition object.
+            //
+            // In either case, this path can ONLY be reached for TrackEvents that
+            // already exist.
 
-            Popcorn.removeTrackEvent( this, id );
+            // Directly update the TrackEvent instance.
+            // This supports TrackEvent invariant enforcement.
+            Popcorn.extend( trackEvent, options );
+
+            // Since this TrackEvent already exists, this call to removeTrackEvent will
+            // result in only a TEMPORARY removal of the actual TrackEvent instance.
+            // In order to ensure the correct start/end method invocation behaviour in the case
+            // of enabled and current plugin events that are being updated, provide an explicit
+            // STATE object as the third parameter, this will be passed along to
+            // removeFromArray(x, x, STATE).
+            //
+            // The STATE object supports TrackEvent invariant enforcement.
+            Popcorn.removeTrackEvent( this, id, { previous: previousOpts });
+
             if ( isfn ) {
-              pluginFn.call( this, definition.call( this, options ), options );
+              pluginFn.call( this, definition.call( this, trackEvent ), trackEvent );
+              // pluginFn.call( this, definition.call( this, options ), options );
             } else {
-              Popcorn.addTrackEvent( this, options );
+              Popcorn.addTrackEvent( this, trackEvent );
+              // Popcorn.addTrackEvent( this, options );
             }
 
             // Fire an event with change information
             this.emit( "trackchange", {
-              id: options.id,
+              id: trackEvent.id,
               type: "trackchange",
-              previousValue: trackEvent,
-              currentValue: options
+              previousValue: previousOpts,
+              currentValue: trackEvent,
+              data: trackEvent
             });
 
             return this;
@@ -1914,7 +1986,8 @@
               id: trackEvent.id,
               type: "trackchange",
               previousValue: previousOpts,
-              currentValue: newOpts
+              currentValue: newOpts,
+              data: trackEvent
             });
           }
 
@@ -1930,12 +2003,6 @@
 
       pluginFn.call( this, isfn ? definition.call( this, mergedSetupOpts ) : definition,
                                   mergedSetupOpts );
-
-      this.emit( "trackadded", Popcorn.extend({}, mergedSetupOpts, {
-        plugin: name,
-        type: "trackadded",
-        data: mergedSetupOpts
-      }));
 
       return this;
     };
