@@ -738,12 +738,6 @@
           },
           track: trackEvent
         }));
-      } else {
-        this.emit( eventType, Popcorn.extend({}, options, {
-          plugin: "cue",
-          type: eventType,
-          track: Popcorn.getTrackEvent( this, options.id || options._id )
-        }));
       }
 
       return this;
