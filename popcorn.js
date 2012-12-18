@@ -1376,9 +1376,11 @@
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
 
-    if ( !(track instanceof TrackEvent) ) {
-      track = new TrackEvent( track );
+    if ( ( track instanceof TrackEvent ) ) {
+      return;
     }
+
+    track = new TrackEvent( track );
 
     // Determine if this track has default options set for it
     // If so, apply them to the track object
@@ -1917,8 +1919,37 @@
         options._id = Popcorn.guid( options._natives.type );
       }
 
-      // Create new track event for this instance
-      Popcorn.addTrackEvent( this, options );
+      if ( ( options instanceof TrackEvent ) ) {
+
+        if ( options._natives ) {
+          //  Supports user defined track event id
+          options._id = options.id || options._id || Popcorn.guid( options._natives.type );
+
+          // Trigger _setup method if exists
+          if ( options._natives._setup ) {
+
+            options._natives._setup.call( this, options );
+
+            this.emit( "tracksetup", Popcorn.extend( {}, options, {
+              plugin: options._natives.type,
+              type: "tracksetup",
+              track: options
+            }));
+          }
+        }
+
+        addToArray( this, options );
+
+        this.timeUpdate( this, null, true );
+
+        // Store references to user added trackevents in ref table
+        if ( options._id ) {
+          Popcorn.addTrackEvent.ref( this, options );
+        }
+      } else {
+        // Create new track event for this instance
+        Popcorn.addTrackEvent( this, options );
+      }
 
       //  Future support for plugin event definitions
       //  for all of the native events
@@ -2014,7 +2045,6 @@
             Popcorn.removeTrackEvent.ref( this, id );
 
             if ( isfn ) {
-              // This still sends us through addTrackEvent, sadly.
               pluginFn.call( this, definition.call( this, trackEvent ), trackEvent );
             } else {
 
