@@ -214,7 +214,7 @@
         trackRefs: {},
 
         // Playback track event queues
-        trackEvents: new TrackEvents()
+        trackEvents: new TrackEvents( this )
       };
 
       //  Register new instance
@@ -1066,7 +1066,9 @@
   // Internal Only - construct "TrackEvents"
   // data type objects that are used by the Popcorn
   // instance, stored at p.data.trackEvents
-  function TrackEvents() {
+  function TrackEvents( parent ) {
+    this.parent = parent;
+
     this.byStart = [{
       start: -1,
       end: -1
@@ -1080,7 +1082,48 @@
     this.startIndex = 0;
     this.endIndex = 0;
     this.previousUpdateTime = -1;
+
+    Object.defineProperty( this, "count", {
+      get: function() {
+        return this.byStart.length;
+      }
+    });
   }
+
+  function isMatch( obj, key, value ) {
+    return obj[ key ] && obj[ key ] === value;
+  }
+
+  TrackEvents.prototype.remove = function( params ) {
+    // Filter by key=val and remove all matching TrackEvents
+    this.where( params ).forEach(function( event ) {
+      // |this| refers to the calling Popcorn "parent" instance
+      this.removeTrackEvent( event._id );
+    }, this.parent );
+
+    return this;
+  };
+
+  TrackEvents.prototype.where = function( params ) {
+    return ( this.parent.getTrackEvents() || [] ).filter(function( event ) {
+      var key, value;
+
+      // If no explicit params, match all TrackEvents
+      if ( !params ) {
+        return true;
+      }
+
+      // Filter keys in params against both the top level properties
+      // and the _natives properties
+      for ( key in params ) {
+        value = params[ key ];
+        if ( isMatch( event, key, value ) || isMatch( event._natives, key, value ) ) {
+          return true;
+        }
+      }
+      return false;
+    });
+  };
 
   function addToArray( obj, track ) {
     //  Store this definition in an array sorted by times
@@ -1753,7 +1796,7 @@
 
       Popcorn.extend( natives, setup );
 
-      options._natives.type = name;
+      options._natives.type = options._natives.plugin = name;
       options._running = false;
 
       natives.start = natives.start || natives[ "in" ];
