@@ -195,6 +195,108 @@ test( "Popcorn constructed TrackEvents", 2, function() {
   p.destroy();
 });
 
+asyncTest( "TrackEvent Invariant", 1, function() {
+  // Invariant Policy:
+  //
+  // 1. Popcorn invariantly exposes a TrackEvent where "track event data" is expected
+  // (eg. Popcorn had been allowed to freely jump between sometimes providing a TrackEvent
+  // and sometimes a plain object that is the result of extending a TrackEvent with
+  // options onto a new plain object).
+  //
+  // 2. A TrackEvent reference is invariantly always the same reference
+  // (vs. getting a new TrackEvent reference after modifying an existing TrackEvent)
+  //
+
+  var p = Popcorn( "#video" ),
+      references = [],
+      result;
+
+  Popcorn.plugin( "temp", {
+    _setup: function( track ) {
+      references.push({
+        source: "_setup",
+        track: track
+      });
+    },
+    start: function( event, track ) {
+      references.push({
+        source: "start",
+        track: track
+      });
+    },
+    end: function( event, track ) {
+      references.push({
+        source: "end",
+        track: track
+      });
+    },
+    _teardown: function( track ) {
+      references.push({
+        source: "_teardown",
+        track: track
+      });
+    },
+    _update: function( track ) {
+      references.push({
+        source: "_update",
+        track: track
+      });
+    }
+  });
+
+  [
+    "tracksetup", "trackstart", "trackend", "trackteardown",
+    "trackadded", "trackremoved",
+    "trackchange"
+  ].forEach(function( eventType ) {
+    p.on( eventType, function( event ) {
+      // We're only looking for events that were emitted for
+      // our test plugin.
+      if ( event.track.id === "asdf" ) {
+        references.push({
+          source: event.type,
+          track: event.track
+        });
+      }
+    });
+  });
+
+  p.temp({
+    id: "asdf",
+    start: 0,
+    end: 0
+  });
+
+  p.on( "canplayall", function() {
+    var track = this.getTrackEvent( "asdf" ),
+        sources = [];
+
+    // Modify the trackevent to initiate a trackchange event. This test
+    // revealed a bug that resulted in track modifications creating
+    // completely new track event instances, which is not _exactly_ what
+    // should happen. The same instance needs to persist for sake of reliable
+    // invariants. We can still safely recreate the behaviour of building
+    // an all new track event, but in reality we've reused the instance.
+    p.temp( "asdf", {
+      end: 1
+    });
+
+    this.cue( 3, function() {
+      result = references.every(function( ref, k ) {
+        sources.push( ref.source );
+        return ref.track === track;
+      });
+
+      ok( result, "All TrackEvents are true references, sources: " + sources.join(", ") );
+
+      Popcorn.removePlugin( "temp" );
+      p.destroy();
+      start();
+    });
+
+    this.play();
+  });
+});
 
 test( "Popcorn.removeTrackEvent", 5, function() {
 
