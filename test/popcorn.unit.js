@@ -2234,6 +2234,16 @@ asyncTest( "Configurable Defaults", function() {
   }).currentTime( 2 ).play();
 });
 
+test( "Constructor options are copied to a new object. #1374", 1, function() {
+  var shared = {
+        a: 1
+      },
+      $a = Popcorn( "#video", shared ),
+      $b = Popcorn( "#video", shared );
+
+  notEqual( $a.options, $b.options, "Instance options are unique" );
+});
+
 test( "Plugin toString", 2, function() {
 
   var $pop = Popcorn( "#video" ),
