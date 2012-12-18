@@ -727,7 +727,7 @@
       if ( eventType === "cuechange" ) {
         this.emit( eventType, Popcorn.extend({}, options, {
           id: id,
-          type: "cuechange",
+          type: eventType,
           previousValue: {
             time: trackEvent.start,
             fn: trackEvent._natives.start
