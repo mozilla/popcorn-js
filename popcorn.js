@@ -657,8 +657,11 @@
 
           if ( trackEvent ) {
 
-            // remove existing cue so a new one can be added via addTrackEvent
-            Popcorn.removeTrackEvent( this, id );
+            // remove existing cue so a new one can be added via addToArray
+            removeFromArray( this, id );
+            // Update track event references
+            Popcorn.removeTrackEvent.ref( this, id );
+
             eventType = "cuechange";
 
             // p.cue( "my-id", 12 );
@@ -721,10 +724,18 @@
         }
       };
 
-      //  Creating a one second track event with an empty end
-      Popcorn.addTrackEvent( this, options );
-
       if ( eventType === "cuechange" ) {
+
+        //  Supports user defined track event id
+        options._id = options.id || options._id || Popcorn.guid( options._natives.type );
+
+        addToArray( this, options );
+
+        this.timeUpdate( this, null, true );
+
+        // Store references to user added trackevents in ref table
+        Popcorn.addTrackEvent.ref( this, options );
+
         this.emit( eventType, Popcorn.extend({}, options, {
           id: id,
           type: eventType,
@@ -738,6 +749,9 @@
           },
           track: trackEvent
         }));
+      } else {
+        //  Creating a one second track event with an empty end
+        Popcorn.addTrackEvent( this, options );
       }
 
       return this;
@@ -1361,12 +1375,9 @@
 
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
-    var isFresh = false;
-    // If "track" argument is NOT ALREADY A TrackEvent instance,
-    // construct a new TrackEvent instance from the plain object.
+
     if ( !(track instanceof TrackEvent) ) {
       track = new TrackEvent( track );
-      isFresh = true;
     }
 
     // Determine if this track has default options set for it
@@ -1403,16 +1414,11 @@
       Popcorn.addTrackEvent.ref( obj, track );
     }
 
-    // "trackadded" should only be emitted for NEWLY constructed TrackEvent objects.
-    // TrackEvent modifications SHOULD NOT be treated as NEWLY constructed and
-    // therefore SHOULD NOT qualify for a "trackadded" event.
-    if ( isFresh ) {
-      obj.emit( "trackadded", Popcorn.extend({}, track,
-        track._natives ? { plugin: track._natives.type } : {}, {
-          type: "trackadded",
-          track: track
-      }));
-    }
+    obj.emit( "trackadded", Popcorn.extend({}, track,
+      track._natives ? { plugin: track._natives.type } : {}, {
+        type: "trackadded",
+        track: track
+    }));
   };
 
   // Internal Only - Adds track event references to the instance object's trackRefs hash table
@@ -1422,10 +1428,8 @@
     return obj;
   };
 
-  Popcorn.removeTrackEvent = function( obj, removeId, state ) {
+  Popcorn.removeTrackEvent = function( obj, removeId ) {
     var track = obj.getTrackEvent( removeId );
-
-    state = state || {};
 
     if ( !track ) {
       return;
@@ -1437,7 +1441,7 @@
       track._natives._teardown.call( obj, track );
     }
 
-    removeFromArray( obj, removeId, state );
+    removeFromArray( obj, removeId );
 
     // Update track event references
     Popcorn.removeTrackEvent.ref( obj, removeId );
@@ -1993,20 +1997,47 @@
             // This supports TrackEvent invariant enforcement.
             Popcorn.extend( trackEvent, options );
 
-            // Since this TrackEvent already exists, this call to removeTrackEvent will
-            // result in only a TEMPORARY removal of the actual TrackEvent instance.
+            // If a _teardown function was defined,
+            // enforce for track event removals
+            if ( trackEvent._natives._teardown ) {
+              trackEvent._natives._teardown.call( this, trackEvent );
+            }
+
             // In order to ensure the correct start/end method invocation behaviour in the case
             // of enabled and current plugin events that are being updated, provide an explicit
-            // STATE object as the third parameter, this will be passed along to
-            // removeFromArray(x, x, STATE).
+            // STATE object as the third parameter to removeFromArray(x, x, STATE).
             //
             // The STATE object supports TrackEvent invariant enforcement.
-            Popcorn.removeTrackEvent( this, id, { previous: previousOpts });
+            removeFromArray( this, id, { previous: previousOpts } );
+
+            // Update track event references
+            Popcorn.removeTrackEvent.ref( this, id );
 
             if ( isfn ) {
+              // This still sends us through addTrackEvent, sadly.
               pluginFn.call( this, definition.call( this, trackEvent ), trackEvent );
             } else {
-              Popcorn.addTrackEvent( this, trackEvent );
+
+              //  Supports user defined track event id
+              trackEvent._id = trackEvent.id || trackEvent._id || Popcorn.guid( trackEvent._natives.type );
+
+              if ( trackEvent._natives && trackEvent._natives._setup ) {
+
+                trackEvent._natives._setup.call( this, trackEvent );
+
+                this.emit( "tracksetup", Popcorn.extend( {}, trackEvent, {
+                  plugin: trackEvent._natives.type,
+                  type: "tracksetup",
+                  track: trackEvent
+                }));
+              }
+
+              addToArray( this, trackEvent );
+
+              this.timeUpdate( this, null, true );
+
+              // Store references to user added trackevents in ref table
+              Popcorn.addTrackEvent.ref( this, trackEvent );
             }
 
             // Fire an event with change information
