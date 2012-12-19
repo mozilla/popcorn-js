@@ -5061,6 +5061,79 @@ test( "Modify plugin w/o provided update with setup for plugins that use functio
   $pop.destroy();
 });
 
+test( "Updates apply to options object if plugin is defined as an Object (#1384)", 2 , function() {
+  var $pop = Popcorn( "#video" ),
+      trackEvent;
+
+  Popcorn.plugin( "definedByObject", {
+      start: Popcorn.nop,
+      end: Popcorn.nop,
+      _update: function( trackEvent, options ) {
+        trackEvent.text = options.text;
+      },
+      _setup: function( options ) {
+        options.toString = function() {
+          return options.text;
+        };
+      }
+    }
+  );
+
+  $pop.definedByObject( "fooTest", {
+    text: "foo"
+  });
+
+  trackEvent = $pop.getTrackEvent( "fooTest" );
+
+  equal( trackEvent.toString(), "foo", "Calling toString on the track event returns initialized value" );
+
+  $pop.definedByObject( "fooTest", {
+    text: "newFoo"
+  });
+
+  equal( trackEvent.toString(), "newFoo", "After an update, calling toString on the track event returns updated value" );
+
+  $pop.removePlugin( "definedByObject" );
+  $pop.destroy();
+
+});
+
+test( "Call definition function if plugin is defined by a function (#1384)", 2 , function() {
+  var $pop = Popcorn( "#video" ),
+      trackEvent;
+
+  Popcorn.plugin( "definedByFunction", function( options ) {
+    options.toString = function() {
+      return options.text;
+    };
+    return {
+      start: Popcorn.nop,
+      end: Popcorn.nop,
+      _update: function( trackEvent, options ) {
+        trackEvent.text = options.text;
+      }
+    };
+  });
+
+  $pop.definedByFunction( "fooTest", {
+    text: "foo"
+  });
+
+  trackEvent = $pop.getTrackEvent( "fooTest" );
+
+  equal( trackEvent.toString(), "foo", "Calling toString on the track event returns initialized value" );
+
+  $pop.definedByFunction( "fooTest", {
+    text: "newFoo"
+  });
+
+  equal( trackEvent.toString(), "newFoo", "After an update, calling toString on the track event returns updated value" );
+
+  $pop.removePlugin( "definedByFunction" );
+  $pop.destroy();
+
+});
+
 module( "Popcorn XHR" );
 test( "Basic", 2, function() {
 
