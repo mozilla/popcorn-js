@@ -90,7 +90,6 @@
       playerPaused = true,
       mediaReadyCallbacks = [],
       currentTimeInterval,
-      lastCurrentTime = 0,
       timeUpdateInterval,
       firstPlay = true,
       forcedLoadMetadata = false;
