@@ -90,8 +90,6 @@
       playerPaused = true,
       mediaReadyCallbacks = [],
       currentTimeInterval,
-      lastCurrentTime = 0,
-      seekTarget = -1,
       timeUpdateInterval,
       firstPlay = true,
       forcedLoadMetadata = false;
@@ -365,41 +363,34 @@
     }
 
     function monitorCurrentTime() {
-      var currentTime = impl.currentTime = player.getCurrentTime();
-
-      // See if the user seeked the video via controls
-      if( !impl.seeking && ABS( lastCurrentTime - currentTime ) > CURRENT_TIME_MONITOR_MS ) {
-        onSeeking();
+      var playerTime = player.getCurrentTime();
+      if ( !impl.seeking ) {
+        impl.currentTime = playerTime;
+        if ( ABS( impl.currentTime - playerTime ) > CURRENT_TIME_MONITOR_MS ) {
+          onSeeking();
+          onSeeked();
+        }
+      } else if ( ABS( playerTime - impl.currentTime ) < 1 ) {
         onSeeked();
       }
-
-      // See if we had a pending seek via code.  YouTube drops us within
-      // 1 second of our target time, so we have to round a bit, or miss
-      // many seek ends.
-      if( ( seekTarget > -1 ) &&
-          ( ABS( currentTime - seekTarget ) < 1 ) ) {
-        seekTarget = -1;
-        onSeeked();
-      }
-      lastCurrentTime = impl.currentTime;
     }
 
     function getCurrentTime() {
-      if( !mediaReady ) {
-        return 0;
-      }
-
-      impl.currentTime = player.getCurrentTime();
       return impl.currentTime;
     }
 
     function changeCurrentTime( aTime ) {
+      impl.currentTime = aTime;
       if( !mediaReady ) {
-        addMediaReadyCallback( function() { changeCurrentTime( aTime ); } );
+        addMediaReadyCallback( function() {
+
+          onSeeking();
+          player.seekTo( aTime );
+        });
         return;
       }
 
-      onSeeking( aTime );
+      onSeeking();
       player.seekTo( aTime );
     }
 
@@ -407,10 +398,7 @@
       self.dispatchEvent( "timeupdate" );
     }
 
-    function onSeeking( target ) {
-      if( target !== undefined ) {
-        seekTarget = target;
-      }
+    function onSeeking() {
       impl.seeking = true;
       self.dispatchEvent( "seeking" );
     }
