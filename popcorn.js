@@ -1376,7 +1376,7 @@
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
 
-    if ( ( track instanceof TrackEvent ) ) {
+    if ( track instanceof TrackEvent ) {
       return;
     }
 
@@ -1919,7 +1919,7 @@
         options._id = Popcorn.guid( options._natives.type );
       }
 
-      if ( ( options instanceof TrackEvent ) ) {
+      if ( options instanceof TrackEvent ) {
 
         if ( options._natives ) {
           //  Supports user defined track event id
