@@ -4464,7 +4464,7 @@ asyncTest( "end undefined or false should never be fired", 1, function() {
     end: function() {
       ok( false, "" );
       endFired = true;
-	}
+  }
   });
 
   Popcorn.plugin( "endingStory", {
@@ -5130,6 +5130,84 @@ test( "Call definition function if plugin is defined by a function (#1384)", 2 ,
   equal( trackEvent.toString(), "newFoo", "After an update, calling toString on the track event returns updated value" );
 
   $pop.removePlugin( "definedByFunction" );
+  $pop.destroy();
+
+});
+
+test( "Filter TrackEvents by parameters", 4, function() {
+  var $pop = Popcorn( "#video" ),
+      tracks = 6,
+      result = false,
+      filtereds;
+
+  Popcorn.plugin( "filterme" , function() {
+    return {
+      start: function( event, options ) {},
+      end: function( event, options ) {}
+    };
+  });
+
+  while ( tracks-- ) {
+    $pop.filterme({
+      start: 0,
+      end: 10
+    });
+  }
+
+  equal( $pop.data.trackEvents.count, 8, "There are 8 trackevents: 2 padding, 6 user" );
+
+  filtereds = $pop.data.trackEvents.where({ plugin: "filterme" });
+
+  result = filtereds.every(function( event ) {
+    return event._natives.plugin === "filterme";
+  });
+
+  equal( filtereds.length, 6, "Correct number of plugins matching the name 'filterme' " );
+  ok( result, "Plugins matching the name 'filterme'" );
+
+  filtereds = $pop.data.trackEvents.where({ _running: true });
+
+  result = filtereds.every(function( event ) {
+    return event._running === true;
+  });
+
+  ok( result, "Filter TrackEvents for plugins currently running" );
+
+  Popcorn.removePlugin( "filterme" );
+  $pop.destroy();
+});
+
+test( "Remove TrackEvents by parameters", 2, function() {
+  var $pop = Popcorn( "#video" ),
+      tracks = 6,
+      result = false,
+      remaining;
+
+  Popcorn.plugin( "removeme" , function() {
+    return {
+      start: function( event, options ) {},
+      end: function( event, options ) {}
+    };
+  });
+
+  // Add 6 of the TrackEvents for the "removeme" plugin
+  // Doing so and testing against an object with many of the
+  // same trackevents will ensure that the implementation correctly
+  // removes _all_ trackevents of a given type.
+  while ( tracks-- ) {
+    $pop.removeme({
+      start: 0,
+      end: 10
+    });
+  }
+
+  equal( $pop.data.trackEvents.count, 8, "8 trackevents: 2 padding, 6 user" );
+
+  $pop.data.trackEvents.remove({ plugin: "removeme" });
+
+  equal( $pop.data.trackEvents.count, 2, "2 trackevents: 2 padding, 0 user" );
+
+  Popcorn.removePlugin( "removeme" );
   $pop.destroy();
 
 });
