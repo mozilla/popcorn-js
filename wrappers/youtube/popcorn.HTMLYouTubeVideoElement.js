@@ -265,9 +265,6 @@
     }
 
     function destroyPlayer() {
-      if( !( playerReady && player ) ) {
-        return;
-      }
       deleteYtCallbacks();
       clearInterval( currentTimeInterval );
       player.stopVideo();
@@ -291,12 +288,13 @@
       impl.src = aSrc;
 
       // Make sure YouTube is ready, and if not, register a callback
-      if( !isYouTubeReady() ) {
+      if( !isYouTubeReady() || !mediaReady ) {
         addYouTubeCallback( function() { changeSrc( aSrc ); } );
         return;
       }
 
-      if( playerReady ) {
+      // destroy an existing player
+      if ( player ) {
         destroyPlayer();
       }
 
