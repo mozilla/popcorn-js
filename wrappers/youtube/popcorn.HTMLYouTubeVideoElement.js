@@ -44,13 +44,17 @@
     window.YT = null;
   }
 
-  window.onYouTubeIframeAPIReady = function() {
-    ytReady = true;
+  function deleteYtCallbacks () {
     var i = ytCallbacks.length;
     while( i-- ) {
       ytCallbacks[ i ]();
       delete ytCallbacks[ i ];
     }
+  }
+
+  window.onYouTubeIframeAPIReady = function() {
+    ytReady = true;
+    deleteYtCallbacks();
   };
 
   function HTMLYouTubeVideoElement( id ) {
@@ -261,9 +265,7 @@
     }
 
     function destroyPlayer() {
-      if( !( playerReady && player ) ) {
-        return;
-      }
+      deleteYtCallbacks();
       clearInterval( currentTimeInterval );
       player.stopVideo();
       player.clearVideo();
@@ -286,12 +288,13 @@
       impl.src = aSrc;
 
       // Make sure YouTube is ready, and if not, register a callback
-      if( !isYouTubeReady() ) {
+      if( !isYouTubeReady() || !mediaReady ) {
         addYouTubeCallback( function() { changeSrc( aSrc ); } );
         return;
       }
 
-      if( playerReady ) {
+      // destroy an existing player
+      if ( player ) {
         destroyPlayer();
       }
 
