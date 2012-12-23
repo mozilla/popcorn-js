@@ -139,13 +139,15 @@
           if( impl.autoplay ) {
             self.play();
           }
-
-          var i = playerReadyCallbacks.length;
-          while( i-- ) {
-            playerReadyCallbacks[ i ]();
-            delete playerReadyCallbacks[ i ];
-          }
         }
+
+        var i = playerReadyCallbacks.length;
+        while( i-- ) {
+          playerReadyCallbacks[ i ]();
+        }
+
+        delete playerReadyCallbacks;
+        playerReadyCallbacks = [];
       }
     }
 
