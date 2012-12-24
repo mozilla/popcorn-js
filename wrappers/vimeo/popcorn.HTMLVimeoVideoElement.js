@@ -139,15 +139,14 @@
           if( impl.autoplay ) {
             self.play();
           }
-        }
 
-        var i = playerReadyCallbacks.length;
-        while( i-- ) {
-          playerReadyCallbacks[ i ]();
-        }
+          var i = playerReadyCallbacks.length;
+          while( i-- ) {
+            playerReadyCallbacks[ i ]();
+          }
 
-        delete playerReadyCallbacks;
-        playerReadyCallbacks = [];
+          playerReadyCallbacks = [];
+        }
       }
     }
 
@@ -397,7 +396,9 @@
         destroyPlayer();
       }
 
+      // Reset Player state variables.
       playerReady = false;
+      impl.duration = NaN;
 
       var src = self._util.parseUri( aSrc ),
         queryKey = src.queryKey,
