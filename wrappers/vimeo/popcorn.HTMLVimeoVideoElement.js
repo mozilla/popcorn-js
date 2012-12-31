@@ -4,7 +4,7 @@
 
   CURRENT_TIME_MONITOR_MS = 16,
   EMPTY_STRING = "",
-  VIMEO_PLAYER_URL = "http://player.vimeo.com/video/",
+  VIMEO_HOST = window.location.protocol + "//player.vimeo.com",
 
   // Vimeo doesn't give a suggested min size, YouTube suggests 200x200
   // as minimum, video spec says 300x150.
@@ -276,7 +276,7 @@
     // yet seekable.  We need to force a play() to get data
     // to download (mimic preload=auto), or seeks will fail.
     function startupMessage( event ) {
-      if( event.origin !== "http://player.vimeo.com" ) {
+      if( event.origin !== VIMEO_HOST ) {
         return;
       }
 
@@ -317,7 +317,7 @@
     }
 
     function onStateChange( event ) {
-      if( event.origin !== "http://player.vimeo.com" ) {
+      if( event.origin !== VIMEO_HOST ) {
         return;
       }
 
@@ -418,7 +418,7 @@
       delete queryKey.autoplay;
 
       // Create the base vimeo player string. It will always have query string options
-      src = "http://player.vimeo.com/video/" + ( /\d+$/ ).exec( src.path ) + "?";
+      src = VIMEO_HOST + '/video/' + ( /\d+$/ ).exec( src.path ) + "?";
       for( key in queryKey ) {
         if ( queryKey.hasOwnProperty( key ) ) {
           optionsArray.push( encodeURIComponent( key ) + "=" +
