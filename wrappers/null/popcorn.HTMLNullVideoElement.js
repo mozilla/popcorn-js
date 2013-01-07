@@ -63,7 +63,7 @@
 
     var self = this,
       parent = typeof id === "string" ? document.querySelector( id ) : id,
-      elem,
+      elem = document.createElement( "div" ),
       playerReady = false,
       player,
       impl = {
@@ -138,7 +138,7 @@
       player.pause();
       player = null;
       parent.removeChild( elem );
-      elem = null;
+      elem = document.createElement( "div" );
     }
 
     function changeSrc( aSrc ) {
@@ -158,7 +158,6 @@
         destroyPlayer();
       }
 
-      elem = document.createElement( "div" );
       elem.width = impl.width;
       elem.height = impl.height;
       parent.appendChild( elem );
@@ -330,7 +329,8 @@
           return elem.width;
         },
         set: function( aValue ) {
-          impl.width = aValue;
+          elem.width = aValue;
+          impl.width = elem.width;
         }
       },
 
@@ -339,7 +339,8 @@
           return elem.height;
         },
         set: function( aValue ) {
-          impl.height = aValue;
+          elem.height = aValue;
+          impl.height = elem.height;
         }
       },
 
