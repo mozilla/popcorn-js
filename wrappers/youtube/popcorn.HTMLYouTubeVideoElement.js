@@ -384,13 +384,13 @@
       if( !mediaReady ) {
         addMediaReadyCallback( function() {
 
-          onSeeking( aTime );
+          onSeeking();
           player.seekTo( aTime );
         });
         return;
       }
 
-      onSeeking( aTime );
+      onSeeking();
       player.seekTo( aTime );
     }
 
@@ -398,7 +398,7 @@
       self.dispatchEvent( "timeupdate" );
     }
 
-    function onSeeking( target ) {
+    function onSeeking() {
       impl.seeking = true;
       self.dispatchEvent( "seeking" );
     }
