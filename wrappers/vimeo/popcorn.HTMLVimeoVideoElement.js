@@ -56,7 +56,7 @@
 
     var self = this,
       parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
-      elem,
+      elem = document.createElement( "iframe" ),
       impl = {
         src: EMPTY_STRING,
         networkState: self.NETWORK_EMPTY,
@@ -167,7 +167,7 @@
 
       window.removeEventListener( 'message', onStateChange, false );
       parent.removeChild( elem );
-      elem = null;
+      elem = document.createElement( "iframe" );
     }
 
     self.play = function() {
@@ -427,7 +427,6 @@
       }
       src += optionsArray.join( "&" );
 
-      elem = document.createElement( "iframe" );
       elem.id = playerUID;
       elem.width = impl.width; // 500?
       elem.height = impl.height; // 281?
@@ -526,7 +525,8 @@
           return elem.width;
         },
         set: function( aValue ) {
-          impl.width = aValue;
+          elem.width = aValue;
+          impl.width = elem.width;
         }
       },
 
@@ -535,7 +535,8 @@
           return elem.height;
         },
         set: function( aValue ) {
-          impl.height = aValue;
+          elem.height = aValue;
+          impl.height = elem.height;
         }
       },
 
