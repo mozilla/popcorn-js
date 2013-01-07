@@ -290,6 +290,7 @@ asyncTest( "TrackEvent Invariant", 1, function() {
       ok( result, "All TrackEvents are true references, sources: " + sources.join(", ") );
 
       Popcorn.removePlugin( "temp" );
+      p.pause( 0 );
       p.destroy();
       start();
     });
