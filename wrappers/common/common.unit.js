@@ -689,7 +689,6 @@ test( "T33 - networkState", function() {
 
 });
 
-
 asyncTest( "T34 - paused state during autoplay", 10, function() {
 
   var video = testData.createMedia( "#video" ),
@@ -747,6 +746,17 @@ test( "T35 - style property accessible on wrapper object", 1, function() {
   ok( video.style, "Style property on wrapper object isn't null" );
 });
 
+asyncTest( "T36 - duration ready in loadedmetadata", 1, function() {
+
+  var video = testData.createMedia( "#video" );
+
+  video.addEventListener( "loadedmetadata", function onLoadedMetaData() {
+    video.removeEventListener( "loadedmetadata", onLoadedMetaData, false );
+    ok( video.duration, "video is playing during loadedmetadata" );
+    start();
+  }, false);
+  video.src = testData.videoSrc;
+});
 
 // Add any player-specific sync tests now
 if( testData.playerSpecificSyncTests ) {
