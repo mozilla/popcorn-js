@@ -440,7 +440,7 @@ asyncTest( "Popcorn YouTube Plugin Url Regex Test", function() {
 
 asyncTest( "Player height and width", function() {
 
-  expect( 2 );
+  expect( 4 );
 
   var popcorn = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
   var readyStatePoll = function() {
@@ -450,10 +450,15 @@ asyncTest( "Player height and width", function() {
       setTimeout( readyStatePoll, 10 );
     } else {
 
-      equal( popcorn.media.children[ 0 ].width, "100%",
-        "Youtube player width is 100%" );
-      equal( popcorn.media.children[ 0 ].height, "100%",
-        "Youtube player height is 100%" );
+      equal( popcorn.media.width, "400",
+        "Youtube player width is 400" );
+      equal( popcorn.media.height, "400",
+        "Youtube player height is 400" );
+
+      equal( popcorn.media.offsetWidth, "400",
+        "Youtube player offset width is 400" );
+      equal( popcorn.media.offsetHeight, "400",
+        "Youtube player offset height is 400" );
       popcorn.destroy();
       start();
     }
@@ -468,17 +473,15 @@ asyncTest( "Player Errors", function() {
 
   expect( 2 );
 
-  var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk", {
-    events: {
-      error: function() {
+  var pop = Popcorn.youtube( "#video4", "http://www.youtube.com/watch?v=abcdefghijk" );
 
-        ok( true, "error trigger by invalid URL" );
-        equal( pop.error.customCode, 100, "error.customCode is 100 for invalid URL" );
-        pop.destroy();
-        start();
-      }
-    }
-   });
+  pop.on( "error", function() {
+
+    ok( pop.error, "error trigger by invalid URL" );
+    equal( pop.error.code, 2, "Error code 2" );
+    pop.destroy();
+    start();
+  } );
 });
 
 asyncTest( "YouTube ended event", function() {
@@ -499,33 +502,10 @@ asyncTest( "YouTube ended event", function() {
   pop.play();
 });
 
-asyncTest( "youtube player gets a proper _teardown", function() {
-
-  var count = 0,
-      expects = 1;
-
-  function plus() {
-    if ( ++count === expects ) {
-
-      start();
-    }
-  }
-
-  expect( expects );
-
-  var popcorn = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
-  popcorn.on( "loadeddata", function() {
-
-    popcorn.destroy();
-    equal( popcorn.media.children.length, 0, "" );
-    plus();
-  });
-});
-
 asyncTest( "Youtube ready state events", function() {
 
   var popped,
-      expects = 4,
+      expects = 3,
       count = 0,
       state = 0;
 
@@ -540,108 +520,22 @@ asyncTest( "Youtube ready state events", function() {
 
   expect( expects );
 
-  var popcorn = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
-  popcorn.on( "loadeddata", function() {
+  popped = Popcorn.youtube( "#video6", "http://www.youtube.com/watch?v=nfGV32RNkhw" );
+  popped.on( "canplaythrough", function() {
 
-    popcorn.destroy();
-    equal( popcorn.media.children.length, 0, "" );
+    equal( state++, 2, "canplaythrough fired first" );
     plus();
   });
+  popped.on( "loadedmetadata", function() {
 
-  popped = Popcorn.youtube( "#video6", "http://www.youtube.com/watch?v=nfGV32RNkhw", {
-    events: {
-      canplaythrough: function( e ) {
-
-        equal( state++, 2, "canplaythrough fired first" );
-        plus();
-      },
-      loadedmetadata: function( e ) {
-
-        equal( state++, 0, "loadedmetadata fired third" );
-        plus();
-      },
-      loadeddata: function( e ) {
-
-        equal( state++, 1, "loadeddata fired last" );
-        plus();
-      }
-    }
+    equal( state++, 0, "loadedmetadata fired third" );
+    plus();
   });
+  popped.on( "loadeddata", function() {
 
-});
-
-asyncTest( "Youtube media start time fragment", function() {
-
-  var popcorn1, popcorn2, popcorn3, popcorn4,
-      count = 0, expects = 4,
-      // Youtube's fragment can be off by give or take a second.
-      epsilon = 1;
-
-  expect( expects );
-
-  function plus() {
-    if ( ++count === expects ) {
-
-      popcorn1.destroy();
-      popcorn2.destroy();
-      popcorn3.destroy();
-      popcorn4.destroy();
-      start();
-    }
-  }
-
-  var firstTest = function() {
-
-        popcorn1.off( "loadeddata", firstTest );
-        ok( Math.ceil( popcorn1.currentTime() ) + epsilon >= 130, "youtube fragment works with &start=130" );
-        plus();
-      },
-      secondTest = function() {
-
-        popcorn2.off( "loadeddata", secondTest );
-        ok( Math.ceil( popcorn2.currentTime() ) + epsilon >= 130, "youtube fragment works with &t=2m10s" );
-        plus();
-      },
-      thirdTest = function() {
-
-        popcorn3.off( "loadeddata", thirdTest );
-        ok( Math.ceil( popcorn3.currentTime() ) + epsilon >= 120, "youtube fragment works with &t=2m" );
-        plus();
-      },
-      fourthTest = function() {
-
-        popcorn4.off( "loadeddata", fourthTest );
-        ok( Math.ceil( popcorn4.currentTime() )+ epsilon >= 10, "youtube fragment works with &t=10s" );
-        plus();
-      };
-
-  popcorn1 = Popcorn.youtube( "#video8", "http://www.youtube.com/watch?v=nfGV32RNkhw&start=130" );
-  popcorn1.on( "loadeddata", firstTest);
-  if ( popcorn1.readyState >= 4 ) {
-
-    firstTest();
-  }
-
-  popcorn2 = Popcorn.youtube( "#video9", "http://www.youtube.com/watch?v=nfGV32RNkhw&t=2m10s" );
-  popcorn2.on( "loadeddata", secondTest);
-  if ( popcorn2.readyState >= 4 ) {
-
-    secondTest();
-  }
-
-  popcorn3 = Popcorn.youtube( "#video10", "http://www.youtube.com/watch?v=nfGV32RNkhw&t=2m" );
-  popcorn3.on( "loadeddata", thirdTest);
-  if ( popcorn3.readyState >= 4 ) {
-
-    thirdTest();
-  }
-
-  popcorn4 = Popcorn.youtube( "#video11", "http://www.youtube.com/watch?v=nfGV32RNkhw&t=10s" );
-  popcorn4.on( "loadeddata", fourthTest);
-  if ( popcorn4.readyState >= 4 ) {
-
-    fourthTest();
-  }
+    equal( state++, 1, "loadeddata fired last" );
+    plus();
+  });
 });
 
 asyncTest( "youtube player quarantine", function() {

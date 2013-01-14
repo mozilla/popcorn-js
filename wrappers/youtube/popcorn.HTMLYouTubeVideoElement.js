@@ -79,8 +79,8 @@
         duration: NaN,
         ended: false,
         paused: true,
-        width: parent.width|0   ? parent.width  : MIN_WIDTH,
-        height: parent.height|0 ? parent.height : MIN_HEIGHT,
+        width: parent.offsetWidth|0   ? parent.offsetWidth  : MIN_WIDTH,
+        height: parent.offsetHeight|0 ? parent.offsetHeight : MIN_HEIGHT,
         error: null
       },
       playerReady = false,
@@ -551,6 +551,25 @@
         }
       },
 
+
+      offsetWidth: {
+        get: function() {
+          return elem.width;
+        },
+        set: function( aValue ) {
+          impl.width = aValue;
+        }
+      },
+
+      offsetHeight: {
+        get: function() {
+          return elem.height;
+        },
+        set: function( aValue ) {
+          impl.height = aValue;
+        }
+      },
+
       currentTime: {
         get: function() {
           return getCurrentTime();
@@ -635,7 +654,7 @@
 
   // Helper for identifying URLs we know how to play.
   HTMLYouTubeVideoElement.prototype._canPlaySrc = function( url ) {
-    return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/).test( url ) ?
+    return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu).*(?:\/|v=)(.{11})/).test( url ) ?
       "probably" :
       EMPTY_STRING;
   };
