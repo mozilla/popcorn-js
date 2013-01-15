@@ -366,6 +366,7 @@
       // See if we can use a wrapper directly, if not, try players.
       for ( j = 0; j < wrappers.length; j++ ) {
         mediaWrapper = Popcorn[ wrappers[ j ] ];
+        srci = srci.replace( /^https\:\/\/soundcloud\.com/, "http://soundcloud.com" );
         if ( mediaWrapper && mediaWrapper._canPlaySrc( srci ) === "probably" ) {
           media = mediaWrapper( node );
           popcorn = Popcorn( media, options );
