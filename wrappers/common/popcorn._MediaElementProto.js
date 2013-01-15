@@ -195,6 +195,12 @@
       }
     },
 
+    style: {
+      get: function() {
+        return this.parentNode.style;
+      }
+    },
+
     seekable: {
       get: function() {
         return _fakeTimeRanges;

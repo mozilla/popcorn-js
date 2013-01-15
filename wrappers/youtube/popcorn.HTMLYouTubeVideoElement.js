@@ -340,8 +340,8 @@
       aSrc = regexYouTube.exec( aSrc )[ 1 ];
 
       player = new YT.Player( elem, {
-        width: impl.width,
-        height: impl.height,
+        width: "100%",
+        height: "100%",
         wmode: playerVars.wmode,
         videoId: aSrc,
         playerVars: playerVars,
