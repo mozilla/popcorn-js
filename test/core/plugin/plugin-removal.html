@@ -138,10 +138,18 @@
           });
           p2.removeTrackEvent( p2.getLastTrackEventId() );
 
-          p2.currentTime( 2 ).play();
+          p2.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+          });
+          p2.currentTime( 2 );
         });
 
-        p.currentTime( 0 ).pause();
+        p.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+          this.pause();
+          this.currentTime( 0 );
+        });
 
       });
     </script>

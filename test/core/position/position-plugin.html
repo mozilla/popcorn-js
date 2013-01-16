@@ -46,7 +46,12 @@
         $pop.positionPlugin({
           start: 0,
           end: 1
-        }).currentTime( 0 ).play();
+        });
+
+        $pop.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+          this.play();
+        });
       });
     </script>
   </head>

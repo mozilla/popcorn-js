@@ -53,8 +53,15 @@
         // to ensure the end function will never be called outside of _teardown
         popped.teardownEndTester({});
 
-        popped.currentTime( 0 ).play();
-        popped.removePlugin( "teardownEndTester" );
+        popped.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+            popped.removePlugin( "teardownEndTester" );
+          });
+          this.currentTime( 0 );
+        });
       });
     </script>
   </head>

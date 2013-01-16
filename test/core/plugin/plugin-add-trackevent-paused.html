@@ -25,12 +25,19 @@
           };
         });
 
-        $pop.currentTime( 2 ).pause();
-
-        $pop.timeUpdateTester({
-          start: 1,
-          end: 3
+        $pop.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady )
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            $pop.timeUpdateTester({
+              start: 1,
+              end: 3
+            });
+          });
+          this.pause();
+          this.currentTime( 2 );
         });
+
       });
     </script>
   </head>

@@ -10,11 +10,13 @@
     <script>
       asyncTest( "Index Integrity ( timeUpdate )", function() {
 
-        var $pop = Popcorn( "#video" );
+        var $pop = Popcorn( "#video" ),
             count = 0,
-            expects = 8;
+            expects = 8,
+            hasrun = false,
+            lastrun = false,
+            trackLen;
 
-        $pop.pause( 0 );
         expect( expects );
 
         function plus() {
@@ -25,10 +27,6 @@
           }
         }
 
-        var trackLen,
-          hasrun = false,
-          lastrun = false;
-
         Popcorn.plugin( "ff", function() {
           return {
             start: function() {
@@ -38,13 +36,14 @@
           };
         });
 
-        equal( $pop.data.trackEvents.endIndex, 1, "$pop.data.trackEvents.endIndex is 1" );
-        plus();
+        $pop.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
 
-        equal( $pop.data.trackEvents.startIndex, 1, "$pop.data.trackEvents.startIndex is 1" );
-        plus();
+          equal( $pop.data.trackEvents.endIndex, 1, "$pop.data.trackEvents.endIndex is 1" );
+          plus();
 
-        $pop.on( "canplayall", function() {
+          equal( $pop.data.trackEvents.startIndex, 1, "$pop.data.trackEvents.startIndex is 1" );
+          plus();
 
           $pop.ff({
             id: "removeable-track-event",
@@ -71,7 +70,13 @@
             equal( $pop.data.trackEvents.endIndex, 1, "$pop.data.trackEvents.endIndex is 1 - after removeTrackEvent" );
             plus();
 
-          }).play( 40 );
+          });
+
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+          });
+          this.currentTime( 40 );
         });
       });
     </script>

@@ -16,32 +16,22 @@
           return this.pause( 0 );
         };
 
-        var outerHTML = [
-            "<video id='video-fixture' preload='auto' controls='' style='display:;width:300px' tabindex='0'>",
-            document.getElementById( "video" ).innerHTML,
-            "</video>"
-            ].join( "\n" ),
-            count = 0,
+        var count = 0,
             expects = 2,
             $pop;
 
-        document.getElementById( "qunit-fixture" ).innerHTML = outerHTML;
-
-        $pop = Popcorn( "#video-fixture" );
+        $pop = Popcorn( "#video" );
 
         expect( expects );
 
         function plus() {
           if ( ++count === expects ) {
-            // Remove custom stop() method
-            delete Popcorn.p.stop;
-            $pop.off( "canplayall" );
-            $pop.destroy();
             start();
           }
         }
 
-        $pop.on( "canplayall", function() {
+        $pop.on( "canplayall", function onReady() {
+          $pop.off( "canplayall", onReady );
 
           this.cue( 4, function() {
 
@@ -53,7 +43,12 @@
               equal( this.media.paused, true, "The media is paused" );
               plus();
             }).stop();
-          }).play( 3 );
+          })
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+          });
+          this.currentTime( 3 );
         });
       });
     </script>

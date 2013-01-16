@@ -41,11 +41,16 @@
           out: 3
         });
 
-        popcorn.listen( "seeked", function() {
-          this.off( "seeked" ).play( 0 );
+
+        popcorn.on( "canplayall", function onReady() {
+          this.listen( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play( 0 );
+          });
+          this.off( "canplayall", onReady );
+          this.currentTime( 0 );
         });
 
-        popcorn.currentTime( 0 );
 
         ok( popcorn.data.events[ "in" ], "in is a valid alias for start" );
         plus();

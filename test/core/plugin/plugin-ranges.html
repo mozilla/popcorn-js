@@ -8,7 +8,7 @@
     <script src="../../../popcorn.js"></script>
     <script src="../../popcorn.inject.js"></script>
     <script>
-      test( "Range of track events #1015", 2, function() {
+      asyncTest( "Range of track events #1015", 2, function() {
 
         var $pop = Popcorn( "#video" );
 
@@ -17,20 +17,22 @@
           end: function() {}
         });
 
-        $pop.ranger({
-          text: "I will appear at 3 different times",
-          ranges: [
-            { start: 15, end: 16 },
-            { start: 18, end: 19 },
-            { start: 21, end: 22 }
-          ]
+        $pop.on( "canplayall", function onReady() {
+          $pop.ranger({
+            text: "I will appear at 3 different times",
+            ranges: [
+              { start: 15, end: 16 },
+              { start: 18, end: 19 },
+              { start: 21, end: 22 }
+            ]
+          });
+
+          equal( $pop.data.trackEvents.byStart.length, 5, "There are 5 start track events (2 padding events, 3 custom event)" );
+          equal( $pop.data.trackEvents.byEnd.length, 5, "There are 5 end track events (2 padding events, 3 custom event)" );
+
+          Popcorn.removePlugin( "ranger" );
+          start();
         });
-
-        equal( $pop.data.trackEvents.byStart.length, 5, "There are 5 start track events (2 padding events, 3 custom event)" );
-        equal( $pop.data.trackEvents.byEnd.length, 5, "There are 5 end track events (2 padding events, 3 custom event)" );
-
-        Popcorn.removePlugin( "ranger" );
-        $pop.destroy();
       });
     </script>
   </head>

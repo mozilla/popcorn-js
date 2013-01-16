@@ -58,11 +58,18 @@
         popped.noise({end: 21});
         popped.teardownEndTester({end: 20});
 
-        popped.currentTime( 0 ).play();
-        popped.removePlugin( "teardownEndTester" );
+        popped.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+            popped.removePlugin( "teardownEndTester" );
+            equal( popped.data.trackEvents.byEnd[ 1 ]._natives.type, "noise", "proper end was removed"  );
+            plus();
+          });
+          this.currentTime( 0 );
+        });
 
-        equal( popped.data.trackEvents.byEnd[ 1 ]._natives.type, "noise", "proper end was removed"  );
-        plus();
       });
     </script>
   </head>

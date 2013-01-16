@@ -32,15 +32,20 @@
         });
 
         p.cue( 4.5, function() {
-          Popcorn.removePlugin( "integrityTest" );
-          p.currentTime( 0 );
-          p.destroy();
           start();
         });
 
         p.integrityTest( id, { start: 1, end: 4 } );
         p.integrityTest( id, { start: 3 } );
-        p.play( 2 );
+
+        p.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+          });
+          this.currentTime( 2 );
+        });
       });
     </script>
   </head>

@@ -25,8 +25,6 @@
           start();
         }
 
-        $pop.pause().currentTime( 1 );
-
         Popcorn.plugin( "frameFn", {
           start: function() {
           },
@@ -40,17 +38,31 @@
           }
         });
 
-        $pop.frameFn({
-          start: 1,
-          end: 3
-        }).play();
+        $pop.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady )
 
-        timeout = setTimeout(function() {
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
 
-          ok( true, "IE9 has trouble with this rAF test, skipping" );
-          Popcorn.removePlugin( "frameFn" );
-          start();
-        }, 10000 );
+            this.frameFn({
+              start: 1,
+              end: 3
+            });
+
+            this.play();
+
+            timeout = setTimeout(function() {
+
+              ok( true, "IE9 has trouble with this rAF test, skipping" );
+              Popcorn.removePlugin( "frameFn" );
+              start();
+            }, 10000 );
+
+          });
+          this.pause();
+          this.currentTime( 1 );
+        });
+
       });
     </script>
   </head>

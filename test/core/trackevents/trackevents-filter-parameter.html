@@ -8,7 +8,7 @@
     <script src="../../../popcorn.js"></script>
     <script src="../../popcorn.inject.js"></script>
     <script>
-      test( "Filter TrackEvents by parameters", 4, function() {
+      asyncTest( "Filter TrackEvents by parameters", 4, function() {
         var $pop = Popcorn( "#video" ),
             tracks = 6,
             result = false,
@@ -21,34 +21,37 @@
           };
         });
 
-        while ( tracks-- ) {
-          $pop.filterme({
-            start: 0,
-            end: 10
+        $pop.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+
+          while ( tracks-- ) {
+            $pop.filterme({
+              start: 0,
+              end: 10
+            });
+          }
+
+          equal( $pop.data.trackEvents.count, 8, "There are 8 trackevents: 2 padding, 6 user" );
+
+          filtereds = $pop.data.trackEvents.where({ plugin: "filterme" });
+
+          result = filtereds.every(function( event ) {
+            return event._natives.plugin === "filterme";
           });
-        }
 
-        equal( $pop.data.trackEvents.count, 8, "There are 8 trackevents: 2 padding, 6 user" );
+          equal( filtereds.length, 6, "Correct number of plugins matching the name 'filterme' " );
+          ok( result, "Plugins matching the name 'filterme'" );
 
-        filtereds = $pop.data.trackEvents.where({ plugin: "filterme" });
+          filtereds = $pop.data.trackEvents.where({ _running: true });
 
-        result = filtereds.every(function( event ) {
-          return event._natives.plugin === "filterme";
+          result = filtereds.every(function( event ) {
+            return event._running === true;
+          });
+
+          ok( result, "Filter TrackEvents for plugins currently running" );
+
+          start();
         });
-
-        equal( filtereds.length, 6, "Correct number of plugins matching the name 'filterme' " );
-        ok( result, "Plugins matching the name 'filterme'" );
-
-        filtereds = $pop.data.trackEvents.where({ _running: true });
-
-        result = filtereds.every(function( event ) {
-          return event._running === true;
-        });
-
-        ok( result, "Filter TrackEvents for plugins currently running" );
-
-        Popcorn.removePlugin( "filterme" );
-        $pop.destroy();
       });
     </script>
   </head>

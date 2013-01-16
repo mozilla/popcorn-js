@@ -30,7 +30,7 @@
             backwardEnd = false,
             wrapperRunning = {
               one: false,
-              two: false,
+              two: false
             };
 
         function plus() {
@@ -178,12 +178,15 @@
           }
         });
 
-        p2.on( "seeked", function onSeeked() {
-          p2.off( "seeked", onSeeked );
-          this.play();
+        p2.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+          });
+          this.currentTime( 3 );
         });
 
-        p2.currentTime( 3 );
       });
     </script>
   </head>

@@ -27,7 +27,7 @@
           end: function() {
             if ( !endFired ) {
               ok( true, "end called once" );
-              this.currentTime( 0 );
+              this.currentTime( 3 );
               endFired++;
             } else {
               ok( false, "End should only execute once!" );
@@ -36,16 +36,17 @@
           }
         });
 
-        $pop.onceplugin({ start: 2, end: 3, once: true });
+        $pop.onceplugin({ start: 1, end: 2, once: true });
 
         $pop.cue( 4, function() {
-          ok( startFired === 1 && endFired === 1, "start and end called one each" );
-          $pop.removePlugin( "onceplugin" );
-          $pop.destroy();
+          ok( startFired === 1 && endFired === 1, "start and end called once each" );
           start();
         });
 
-        $pop.play( 0 );
+        $pop.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+          this.play();
+        });
       });
     </script>
   </head>

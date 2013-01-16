@@ -47,7 +47,11 @@
               plus();
 
               // running tracks again to make sure data increments uniquly
-              popped.currentTime( 5 ).play();
+              this.on( "seeked", function onSeeked() {
+                this.off( "seeked", onSeeked );
+                this.play();
+              });
+              this.currentTime( 5 );
             }
           };
         });
@@ -63,7 +67,14 @@
           nick: "second closure track"
         });
 
-        popped.currentTime( 5 ).play();
+        popped.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+          });
+          this.currentTime( 5 );
+        });
 
       });
     </script>

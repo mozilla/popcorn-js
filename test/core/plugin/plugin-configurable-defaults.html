@@ -165,7 +165,16 @@
           end: 5,
           target: "custom",
           text: "hello!"
-        }).currentTime( 2 ).play();
+        })
+
+        p.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady )
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+          });
+          this.currentTime( 2 );
+        });
       });
     </script>
   </head>

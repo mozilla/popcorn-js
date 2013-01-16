@@ -12,7 +12,12 @@
 
         var $pop = Popcorn( "#video" );
 
-        $pop.pause().currentTime( 0 );
+
+        $pop.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+          this.pause();
+          this.currentTime( 0 );
+        });
 
         Popcorn.plugin( "zero", {
           start: function() {

@@ -8,7 +8,7 @@
     <script src="../../../popcorn.js"></script>
     <script src="../../popcorn.inject.js"></script>
     <script>
-      test( "Remove TrackEvents by parameters", 2, function() {
+      asyncTest( "Remove TrackEvents by parameters", 2, function() {
         var $pop = Popcorn( "#video" ),
             tracks = 6,
             result = false,
@@ -21,26 +21,28 @@
           };
         });
 
-        // Add 6 of the TrackEvents for the "removeme" plugin
-        // Doing so and testing against an object with many of the
-        // same trackevents will ensure that the implementation correctly
-        // removes _all_ trackevents of a given type.
-        while ( tracks-- ) {
-          $pop.removeme({
-            start: 0,
-            end: 10
-          });
-        }
+        $pop.on( "canplayall", function onReady() {
+          $pop.off( "canplayall", onReady );
 
-        equal( $pop.data.trackEvents.count, 8, "8 trackevents: 2 padding, 6 user" );
+          // Add 6 of the TrackEvents for the "removeme" plugin
+          // Doing so and testing against an object with many of the
+          // same trackevents will ensure that the implementation correctly
+          // removes _all_ trackevents of a given type.
+          while ( tracks-- ) {
+            $pop.removeme({
+              start: 0,
+              end: 10
+            });
+          }
 
-        $pop.data.trackEvents.remove({ plugin: "removeme" });
+          equal( $pop.data.trackEvents.count, 8, "8 trackevents: 2 padding, 6 user" );
 
-        equal( $pop.data.trackEvents.count, 2, "2 trackevents: 2 padding, 0 user" );
+          $pop.data.trackEvents.remove({ plugin: "removeme" });
 
-        Popcorn.removePlugin( "removeme" );
-        $pop.destroy();
+          equal( $pop.data.trackEvents.count, 2, "2 trackevents: 2 padding, 0 user" );
 
+          start();
+        });
       });
     </script>
   </head>

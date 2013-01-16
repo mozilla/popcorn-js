@@ -17,24 +17,26 @@
           end: function() {
             ok( false, "" );
             endFired = true;
-        }
+          }
         });
 
         Popcorn.plugin( "endingStory", {
           end: function() {
             ok( !endFired, "end should not of been fired." );
-            Popcorn.removePlugin( "neverEndingStory" );
-            Popcorn.removePlugin( "endingStory" );
-            $pop.destroy();
             start();
           }
         });
 
-        $pop.neverEndingStory({});
-        $pop.neverEndingStory({ end: false });
-        $pop.neverEndingStory({ end: undefined });
-        $pop.endingStory({ end: $pop.duration() });
-        $pop.currentTime( $pop.duration() );
+        $pop.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+
+          $pop.neverEndingStory({});
+          $pop.neverEndingStory({ end: false });
+          $pop.neverEndingStory({ end: undefined });
+          $pop.endingStory({ end: $pop.duration() });
+
+          this.currentTime( this.duration() );
+        });
       });
     </script>
   </head>

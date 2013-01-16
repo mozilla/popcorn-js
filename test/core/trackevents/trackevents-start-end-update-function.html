@@ -8,7 +8,7 @@
     <script src="../../../popcorn.js"></script>
     <script src="../../popcorn.inject.js"></script>
     <script>
-      test( "trackstart/trackend w/ update function provided", 3, function() {
+      asyncTest( "trackstart/trackend w/ update function provided", 3, function() {
         var $pop = Popcorn( "#video" ),
             id = "test-id",
             endCalledFirst = false,
@@ -25,26 +25,32 @@
           _update: function( trackEvent, newOptions ) {}
         });
 
-        $pop.updateprovided( id, { start: 2, end: 5 } );
+        $pop.on( "canplayall", function onReady() {
+          this.updateprovided( id, { start: 2, end: 5 } );
 
-        $pop.on( "trackstart", function() {
-          ok( true, "trackstart was successfully fired when updating a plugin" );
-          ok( endCalledFirst, "End was called before start when updating a plugin" );
+          this.on( "trackstart", function() {
+            this.off( "trackstart" );
+            ok( true, "trackstart was successfully fired when updating a plugin" );
+            ok( endCalledFirst, "End was called before start when updating a plugin" );
+            start();
+          });
+
+          this.on( "trackend", function() {
+            this.off( "trackend" );
+            endCalledFirst = true;
+            ok( true, "trackend was successfully fired when updating a plugin" );
+            this.currentTime( 4 );
+          });
+
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+          });
+
+          this.currentTime( 3 );
+
+          this.updateprovided( id, updateOptions );
         });
-
-        $pop.on( "trackend", function() {
-          endCalledFirst = true;
-          ok( true, "trackend was successfully fired when updating a plugin" );
-          $pop.currentTime( 4 );
-        });
-
-        $pop.currentTime( 3 );
-
-        $pop.updateprovided( id, updateOptions );
-
-        Popcorn.removePlugin( "updateprovided" );
-        $pop.destroy();
-
       });
     </script>
   </head>
