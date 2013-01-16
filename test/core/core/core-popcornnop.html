@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Popcorn.nop", 2, function() {
+
+        equal( typeof Popcorn.nop, "function", "Popcorn.nop is a provided static function" );
+
+        equal( typeof Popcorn.nop(), "undefined", "Popcorn.nop returning undefined" );
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Core - Popcorn.nop ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Can Detect Native event types", function() {
+
+        var tests = [ "play", "pause", "rough loade", "data seek" ],
+            expects = [ true, true, false, false ];
+
+        expect( tests.length );
+
+        tests.forEach(function( type, idx ) {
+          equal( Popcorn.events.isNative( type ), expects[ idx ], type + ( expects[ idx ] ? " is " : " is not " ) + "a valid native event" );
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Events - Debug ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+    </div>
+  </body>
+</html>

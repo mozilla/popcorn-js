@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      // Originally written for #705 by chris de cairos
+      asyncTest( "play(n)/pause(n) custom stop()", function() {
+
+        // Implement custom stop() method
+        Popcorn.p.stop = function() {
+          return this.pause( 0 );
+        };
+
+        var outerHTML = [
+            "<video id='video-fixture' preload='auto' controls='' style='display:;width:300px' tabindex='0'>",
+            document.getElementById( "video" ).innerHTML,
+            "</video>"
+            ].join( "\n" ),
+            count = 0,
+            expects = 2,
+            $pop;
+
+        document.getElementById( "qunit-fixture" ).innerHTML = outerHTML;
+
+        $pop = Popcorn( "#video-fixture" );
+
+        expect( expects );
+
+        function plus() {
+          if ( ++count === expects ) {
+            // Remove custom stop() method
+            delete Popcorn.p.stop;
+            $pop.off( "canplayall" );
+            $pop.destroy();
+            start();
+          }
+        }
+
+        $pop.on( "canplayall", function() {
+
+          this.cue( 4, function() {
+
+            this.cue( 0, function() {
+
+              equal( this.currentTime(), 0, "currentTime is 0" );
+              plus();
+
+              equal( this.media.paused, true, "The media is paused" );
+              plus();
+            }).stop();
+          }).play( 3 );
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Prototype - custom stop ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="display:;width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

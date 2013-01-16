@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Popcorn.destroy (events & trackEvents)", 3, function() {
+        var p = Popcorn( "#video" );
+
+        Popcorn.plugin( "destroyable", {
+          start: function() {},
+          end: function() {}
+        });
+
+        p.cue( 1, Popcorn.nop );
+
+        p.destroyable({
+          start: 1,
+          end: 2,
+          text: "hi"
+        });
+
+        p.destroy();
+
+        equal( Popcorn.instances.length, 0, "The instance was removed from the Popcorn.instances array." );
+
+        equal( p.data.trackEvents.byStart.length, 0, "Zero trackEvents.byStart after destroy" );
+
+        equal( p.data.trackEvents.byEnd.length, 0, "Zero trackEvents.byEnd after destroy" );
+
+        Popcorn.removePlugin( "destroyable" );
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Core - Popcorn.destroy( events & trackEvents ) ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="display:;width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

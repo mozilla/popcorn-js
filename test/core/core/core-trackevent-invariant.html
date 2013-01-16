@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "TrackEvent Invariant", 1, function() {
+        // Invariant Policy:
+        //
+        // 1. Popcorn invariantly exposes a TrackEvent where "track event data" is expected
+        // (eg. Popcorn had been allowed to freely jump between sometimes providing a TrackEvent
+        // and sometimes a plain object that is the result of extending a TrackEvent with
+        // options onto a new plain object).
+        //
+        // 2. A TrackEvent reference is invariantly always the same reference
+        // (vs. getting a new TrackEvent reference after modifying an existing TrackEvent)
+        //
+
+        var p = Popcorn( "#video" ),
+            references = [],
+            result;
+
+        Popcorn.plugin( "temp", {
+          _setup: function( track ) {
+            references.push({
+              source: "_setup",
+              track: track
+            });
+          },
+          start: function( event, track ) {
+            references.push({
+              source: "start",
+              track: track
+            });
+          },
+          end: function( event, track ) {
+            references.push({
+              source: "end",
+              track: track
+            });
+          },
+          _teardown: function( track ) {
+            references.push({
+              source: "_teardown",
+              track: track
+            });
+          },
+          _update: function( track ) {
+            references.push({
+              source: "_update",
+              track: track
+            });
+          }
+        });
+
+        [
+          "tracksetup", "trackstart", "trackend", "trackteardown",
+          "trackadded", "trackremoved",
+          "trackchange"
+        ].forEach(function( eventType ) {
+          p.on( eventType, function( event ) {
+            // We're only looking for events that were emitted for
+            // our test plugin.
+            if ( event.track.id === "asdf" ) {
+              references.push({
+                source: event.type,
+                track: event.track
+              });
+            }
+          });
+        });
+
+        p.temp({
+          id: "asdf",
+          start: 0,
+          end: 0
+        });
+
+        p.on( "canplayall", function() {
+          var track = this.getTrackEvent( "asdf" ),
+              sources = [];
+
+          // Modify the trackevent to initiate a trackchange event. This test
+          // revealed a bug that resulted in track modifications creating
+          // completely new track event instances, which is not _exactly_ what
+          // should happen. The same instance needs to persist for sake of reliable
+          // invariants. We can still safely recreate the behaviour of building
+          // an all new track event, but in reality we've reused the instance.
+          p.temp( "asdf", {
+            end: 1
+          });
+
+          this.cue( 3, function() {
+            result = references.every(function( ref, k ) {
+              sources.push( ref.source );
+              return ref.track === track;
+            });
+
+            ok( result, "All TrackEvents are true references, sources: " + sources.join(", ") );
+
+            Popcorn.removePlugin( "temp" );
+            p.destroy();
+            start();
+          });
+
+          this.play();
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Core - TrackEvent Invariant ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="display:;width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

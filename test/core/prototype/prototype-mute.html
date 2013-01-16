@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "mute", function() {
+
+        var video = Popcorn( "#video" ),
+            audio = Popcorn( "#audio" ),
+            expects = 4,
+            count = 0;
+
+        expect( expects );
+
+        function plus(){
+          if ( ++count == expects ) {
+            video.destroy();
+            audio.destroy();
+            start();
+          }
+        }
+
+        video.on( "muted", function() {
+
+          equal( this.media.muted, true, "Video `muted` attribute is true when muted" );
+          plus();
+
+          this.unmute();
+
+        }).on( "unmuted", function() {
+
+          equal( this.media.muted, false, "Video `muted` attribute is false when unmuted" );
+          plus();
+        });
+
+        audio.on( "muted", function() {
+
+          equal( this.media.muted, true, "Audio `muted` attribute is true when muted" );
+          plus();
+
+          this.unmute();
+
+        }).on( "unmuted", function() {
+
+          equal( this.media.muted, false, "Audio `muted` attribute is false when unmuted" );
+          plus();
+        });
+
+        video.mute();
+        audio.mute();
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Prototype - mute ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="display:;width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+      <audio id="audio" data-timeline-sources="data/parserData.json" controls>
+        <source src="../../italia.mp4" type='audio/mp4; codecs="mp4a.40.2"'>
+        <source src="../../italia.ogg" type='audio/ogg; codecs="vorbis"'>
+      </audio>
+    </div>
+  </body>
+</html>

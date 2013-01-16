@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Popcorn.forEach", 3, function() {
+
+        var count = 0,
+            nodelist = document.querySelectorAll( "div[id^='qunit-']" ),
+            array = [ 1, 2 ],
+            object = {
+              a: "1",
+              b: "2"
+            };
+
+        Popcorn.forEach( nodelist, function() {
+          count++;
+        });
+
+        equal( count, nodelist.length, nodelist.length + " elements in NodeList" );
+        count = 0;
+
+        Popcorn.forEach( array, function() {
+          count++;
+        });
+
+        equal( count, array.length, array.length + " items in Array" );
+        count = 0;
+
+        Popcorn.forEach( object, function() {
+          count++;
+        });
+
+        equal( count, Popcorn.sizeOf( object ), Popcorn.sizeOf( object ) + " properties in object" );
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Core - Popcorn.forEach ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+    </div>
+  </body>
+</html>

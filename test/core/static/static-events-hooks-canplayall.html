@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Popcorn.events.hooks: canplayall", 1, function() {
+
+        //qunit-fixture
+        var fired = 0,
+            $pop;
+
+        var video = document.createElement( "video" ),
+            sources = {
+              mp4: document.createElement( "source" ),
+              ogv: document.createElement( "source" ),
+              webm: document.createElement( "source" )
+            },
+            url = "http://videos.mozilla.org/serv/webmademovies/popcornplug.";
+
+        video.id = "event-fixture";
+        video.controls = true;
+        video.autoplay = true;
+        video.preload = "auto";
+
+        Popcorn.forEach( sources, function( source, type ) {
+          source.src = url + type;
+          video.appendChild( source );
+        });
+
+        document.getElementById( "qunit-fixture" ).appendChild( video );
+
+        $pop = Popcorn( "#event-fixture" );
+
+        $pop.on( "canplayall", function( event ) {
+          equal( ++fired, 1, "canplayall is fired only once" );
+          $pop.off( "canplayall");
+          $pop.off( "canplaythrough" );
+          $pop.destroy();
+          start();
+        });
+
+        $pop.on( "canplaythrough", function( event ) {
+          // this should trigger re-fires of the original event
+          this.currentTime( 0 );
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Static Methods - events.hooks: canplayall ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="display:;width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

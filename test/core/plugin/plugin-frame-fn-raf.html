@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "frame function (frameAnimation)", 1, function() {
+
+        var $pop = Popcorn( "#video", {
+              frameAnimation: true
+            }),
+            fired = 0,
+            count = 0,
+            timeout;
+
+        function endTest() {
+          clearTimeout( timeout );
+          // clean up added events after tests
+          Popcorn.removePlugin( "frameFn" );
+          $pop.destroy();
+          start();
+        }
+
+        $pop.pause().currentTime( 1 );
+
+        Popcorn.plugin( "frameFn", {
+          start: function() {
+          },
+          frame: function() {
+            fired++;
+          },
+          end: function() {
+            // if `frame` fired, then it will have value > 0
+            ok( fired, "frame fired. (actual: " + fired + ")" );
+            endTest();
+          }
+        });
+
+        $pop.frameFn({
+          start: 1,
+          end: 3
+        }).play();
+
+        timeout = setTimeout(function() {
+
+          ok( true, "IE9 has trouble with this rAF test, skipping" );
+          Popcorn.removePlugin( "frameFn" );
+          start();
+        }, 10000 );
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Plugin - Frame function (frameanimation) ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="display:;width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

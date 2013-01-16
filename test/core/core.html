@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Popcorn Test Suite Runner</title>
+  <link rel="stylesheet" href="../qunit/qunit.css" type="text/css" media="screen">
+  <link rel="stylesheet" href="../popcorn.testrunner.css" type="text/css" >
+  <script src="../jquery.js"></script>
+  <script src="../popcorn.testrunner.js"></script>
+  <script type="text/javascript">
+    document.addEventListener( "DOMContentLoaded", function() {
+      var runner = new TestRunner();
+      runner.getTests( "core.conf", function() {
+        runner.runTests();
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1 id="qunit-header">
+    Popcorn.js Core Test Suite
+  </h1>
+  <h2 id="qunit-banner"></h2>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+  <iframe id="test-frame" style="height: 600px; width: 100%; overflow: scroll;"></iframe>
+</body>
+</html>

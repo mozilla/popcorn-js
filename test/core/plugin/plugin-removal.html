@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Remove Plugin", function() {
+
+        var p = Popcorn( "#video" ),
+            p2 = Popcorn( "#video" ),
+            rlen = Popcorn.registry.length,
+            count = 0,
+            expects = 23,
+            interval;
+
+        function plus() {
+          if ( ++count === expects ) {
+            Popcorn.removePlugin( "cleanup" );
+            p.destroy();
+            p2.destroy();
+            start();
+          }
+        }
+
+        expect( expects );
+
+        p.on( "seeked", function() {
+          this.off( "seeked" );
+
+          equal( rlen, 0, "Popcorn.registry.length is empty" );
+          plus();
+
+          equal( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is initialized and has 2 entries" );
+          plus();
+          equal( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is initialized and has 2 entries" );
+          plus();
+
+          Popcorn.plugin( "removeme", {
+
+            start: function() {
+
+            },
+            end: function() {
+
+            },
+            _teardown: function( options ) {
+              ok( true, "teardown called on " + options.order + " plugin via removePlugin()" );
+              plus();
+            }
+          });
+
+          p.removeme({
+            start: 2,
+            end: 3,
+            order: "first"
+          });
+
+          p2.removeme({
+            start: 2,
+            end: 3,
+            order: "second"
+          });
+
+          equal( Popcorn.registry.length, 1, "Popcorn.registry.length is 1" );
+          plus();
+          equal( p.data.trackEvents.byStart.length, 3, "p.data.trackEvents.byStart is updated and has 3 entries" );
+          plus();
+          equal( p.data.trackEvents.byEnd.length, 3, "p.data.trackEvents.byEnd is updated and has 3 entries" );
+          plus();
+
+          p.removePlugin( "removeme" );
+
+          // p.removeme still exists on the prototype, even though we said to remove it
+          // the tracks of that type though, are removed.
+          // think of it as removing all tracks of plugin type attached to an instance
+          ok( typeof p.removeme === "function", "removeme plugin is still defined to p instance" );
+          plus();
+          ok( ( "removeme" in Popcorn.prototype ), "removeme plugin is still available to Popcorn.prototype" );
+          plus();
+          equal( Popcorn.registry.length, 1, "Popcorn.registry.length has not changed" );
+          plus();
+
+          ok( ( typeof p2.removeme === "function" ), "removeme plugin is defined to p2 instance" );
+          plus();
+
+          equal( p2.data.trackEvents.byStart.length, 3, "p2.data.trackEvents.byStart is updated and has 3 entries" );
+          plus();
+          equal( p2.data.trackEvents.byEnd.length, 3, "p2.data.trackEvents.byEnd is updated and has 3 entries" );
+          plus();
+
+          equal( p.data.trackEvents.byStart.length, 2, "p.data.trackEvents.byStart is updated and has 2 entries" );
+          plus();
+          equal( p.data.trackEvents.byEnd.length, 2, "p.data.trackEvents.byEnd is updated and has 2 entries" );
+          plus();
+          Popcorn.removePlugin( "removeme" );
+
+          ok( !( "removeme" in p2 ), "removeme plugin is no longer available to p2 instance" );
+          plus();
+          ok( !( "removeme" in Popcorn.prototype ), "removeme plugin is no longer available to Popcorn.prototype" );
+          plus();
+          equal( Popcorn.registry.length, 0, "Popcorn.registry.length is empty again" );
+          plus();
+
+          interval = setInterval(function() {
+            if( p2.currentTime() > 3 ) {
+
+              equal( p2.data.trackEvents.byStart.length, 2, "p2.data.trackEvents.byStart is updated and has 2 entries" );
+              plus();
+              equal( p2.data.trackEvents.byEnd.length, 2, "p2.data.trackEvents.byEnd is updated and has 2 entries" );
+              plus();
+              clearInterval( interval );
+            }
+          }, 1 );
+
+          Popcorn.plugin( "cleanup", {
+
+            _setup: function( options ) {
+
+              options.exist = true;
+            },
+            _teardown: function( options ) {
+
+              ok( true, "cleanup function is called during removal" );
+              plus();
+
+              ok( options.exist, "options object exists at time of cleanup" );
+              plus();
+            }
+          });
+
+          p2.cleanup({
+            start: 2,
+            end: 3
+          });
+          p2.removeTrackEvent( p2.getLastTrackEventId() );
+
+          p2.currentTime( 2 ).play();
+        });
+
+        p.currentTime( 0 ).pause();
+
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Plugin - Removal ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="display:;width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

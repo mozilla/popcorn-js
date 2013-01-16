@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Plugin Breaker", function() {
+
+        var popped = Popcorn( "#video" ),
+            expects = 6,
+            count = 0;
+
+        function plus() {
+          if ( ++count == expects ) {
+            Popcorn.removePlugin( "breaker" );
+            popped.destroy();
+            start();
+          }
+        }
+
+        expect( expects );
+
+        var breaker = {
+          start: 0,
+          end: 0
+        };
+
+        Popcorn.plugin( "breaker", {
+
+          start: function() {
+
+            breaker.start++;
+
+            ok( true, "breaker started" );
+            plus();
+          },
+          end: function() {
+
+            breaker.end++;
+
+            ok( true, "breaker ended" );
+            plus();
+
+            equal( breaker.start, 1, "plugin start method fires only once" );
+            plus();
+            equal( breaker.end, 1, "plugin end method fires only once" );
+            plus();
+          }
+        });
+
+        ok( "breaker" in popped, "breaker plugin is now available to instance" );
+        plus();
+        equal( Popcorn.registry.length, 1, "Three items in the registry" );
+        plus();
+
+        popped.breaker({
+          start: 1,
+          end: 2
+        });
+
+        popped.currentTime( 0 ).play();
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Plugin - Plugin Breaker ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="display:;width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Modify plugin w/o provided update with setup for plugins that use function that returns object", 7, function() {
+        var $pop = Popcorn( "#video" ),
+            count = 0,
+            id,
+            updateOptions = {
+              text: "New Text"
+            };
+
+        Popcorn.plugin( "weirdstyle", function( options ) {
+          var text;
+
+          return {
+            _setup: function( options ) {
+              text = options.text;
+
+              if ( ++count === 2 ) {
+                ok( true, "Function acting as setup was called again after update" );
+                deepEqual( text, updateOptions.text, "Update options were merged correctly" );
+              }
+            },
+            start: function( event, options ) {
+              equal( options.text, text, "Function scope variable matches" );
+            },
+            end: function() {
+              ok( true, "end called on update");
+            },
+            _teardown: function() {
+              ok( true, "_teardown called on update");
+            }
+          };
+        });
+
+        $pop.weirdstyle({
+          start: $pop.currentTime(),
+          end: $pop.currentTime() + 1,
+          text: "Old Text"
+        });
+
+        id = $pop.getLastTrackEventId();
+
+        $pop.weirdstyle( id, updateOptions );
+        Popcorn.removePlugin( "weirdstyle" );
+        $pop.destroy();
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Trackevents - modify event ( with setup fn, function creation pattern) ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="display:;width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

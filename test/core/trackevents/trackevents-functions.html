@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Functions", 19, function() {
+
+        //  TODO: break this into sep. units per function
+
+        var popped = Popcorn( "#video" ), ffTrackId, rwTrackId, rw2TrackId, rw3TrackId, historyRef, trackEvents;
+
+        Popcorn.plugin( "ff", function() {
+          return {
+            start: function() {},
+            end: function() {}
+          };
+        });
+
+        popped.ff({
+          start: 3,
+          end: 4
+        });
+
+
+        ffTrackId = popped.getLastTrackEventId();
+
+        Popcorn.plugin( "rw", function() {
+          return {
+            start: function() {},
+            end: function() {}
+          };
+        });
+
+        popped.rw({
+          start: 1,
+          end: 2
+        });
+
+        rwTrackId = popped.getLastTrackEventId();
+
+        historyRef = popped.data.history;
+
+        equal( historyRef.length, 2, "2 TrackEvents in history index" );
+        equal( popped.data.trackEvents.byStart.length, 4, "4 TrackEvents in popped.data.trackEvents.byStart " );
+        equal( popped.data.trackEvents.byEnd.length, 4, "4 TrackEvents in popped.data.trackEvents.byEnd " );
+
+        trackEvents = popped.getTrackEvents();
+
+        equal( trackEvents.length, 2, "2 user created trackEvents returned by popped.getTrackEvents()" )
+
+        ok( ffTrackId !== rwTrackId, "Track Events have different ids" );
+
+        popped.removeTrackEvent( rwTrackId );
+
+        equal( popped.data.history.length, 1, "1 TrackEvent in history index - after popped.removeTrackEvent( rwTrackId ); " );
+        equal( popped.data.trackEvents.byStart.length, 3, "3 TrackEvents in popped.data.trackEvents.byStart " );
+        equal( popped.data.trackEvents.byEnd.length, 3, "3 TrackEvents in popped.data.trackEvents.byEnd " );
+
+        trackEvents = popped.getTrackEvents();
+
+        equal( trackEvents.length, 1, "1 user created trackEvents returned by popped.getTrackEvents()" );
+
+        popped.rw({
+          start: 1,
+          end: 2
+        });
+
+        rw2TrackId = popped.getLastTrackEventId();
+
+        equal( popped.data.history.length, 2, "2 TrackEvents in history index - after new track added ");
+
+        ok( rw2TrackId !== rwTrackId, "rw2TrackId !== rwTrackId" );
+
+        equal( popped.data.trackEvents.byStart.length, 4, "4 TrackEvents in popped.data.trackEvents.byStart  - after new track added" );
+        equal( popped.data.trackEvents.byEnd.length, 4, "4 TrackEvents in popped.data.trackEvents.byEnd  - after new track added" );
+
+        trackEvents = popped.getTrackEvents();
+
+        equal( trackEvents.length, 2, "2 user created trackEvents returned by popped.getTrackEvents()" )
+
+        popped.rw({
+          id: "my-track-id",
+          start: 3,
+          end: 10
+        });
+
+        rw3TrackId = popped.getLastTrackEventId();
+
+        equal( popped.data.history.length, 3, "3 TrackEvents in history index - after new track added " );
+        equal( popped.data.trackEvents.byStart.length, 5, "5 TrackEvents in popped.data.trackEvents.byStart  - after new track added" );
+        equal( popped.data.trackEvents.byEnd.length, 5, "5 TrackEvents in popped.data.trackEvents.byEnd  - after new track added" );
+
+        equal( rw3TrackId, "my-track-id", "TrackEvent has user defined id" );
+
+        trackEvents = popped.getTrackEvents();
+
+        equal( trackEvents.length, 3, "3 user created trackEvents returned by popped.getTrackEvents()" );
+
+        popped.destroy();
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Popcorn TrackEvents - Functions ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="display:;width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

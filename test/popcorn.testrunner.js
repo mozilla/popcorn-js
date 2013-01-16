@@ -2,7 +2,7 @@
 
   var TestRunner = window.TestRunner = function() {
 
-    var index = 0,
+    var index,
         testFrame = id( "test-frame" ),
         results = id( "qunit-tests" ),
         totalPass = 0,
@@ -16,8 +16,8 @@
         testList = [],
         results_arr = [],
         userAgent = id( "qunit-userAgent" ),
-        checkboxes = [],
-        testTypes = [ "core-tests", "plugin-tests", "player-tests", "parser-tests", "module-tests", "wrapper-tests" ],
+        testTypes = [],
+        checkboxes,
         queryString = "",
         runSelected = document.getElementById( "run-selected" );
 
@@ -59,15 +59,15 @@
 
     function buildQueryString() {
       queryString = "?";
-      checkboxes.forEach(function( cb ) {
-        if ( cb.checked ) {
-          queryString += cb.id + "=1&";
+      for( var i = 0; i < checkboxes.length; i++ ) {
+        if ( checkboxes[ i ].checked ) {
+          queryString += checkboxes[ i ].id + "=1&";
         }
-      });
+      }
     }
 
     function receiveResults( data ) {
-      var message = JSON.parse( data ),
+      var message,
           li,
           b,
           ol,
@@ -80,9 +80,18 @@
           pass = 0,
           total = 0;
 
+      if ( data === "getFocus" ) {
+        return;
+      } else {
+        message = JSON.parse( data );
+      }
+
       // If name is present, we know this is a testDone post, so push results into array.
       if ( message.name ) {
         results_arr.push( message )
+        if ( window.parent !== window ) {
+          window.parent.postMessage( JSON.stringify( message ), "*" );
+        }
       } else {
 
         // this message is a Done post, so tally up everything and build the list item
@@ -150,7 +159,7 @@
     }
 
     function advance() {
-      if ( ++index < testList.length ) {
+      if ( --index >= 0 ) {
         currentTest = testList[ index ];
         main_li = create( "li" );
         main_b = create ( "b" );
@@ -184,6 +193,16 @@
         banner.className = "result";
         banner.innerHTML = html;
         results.parentNode.insertBefore( banner, results );
+
+        if ( window.parent !== window ) {
+          window.parent.postMessage( JSON.stringify({
+            failed: totalFail,
+            passed: totalPass,
+            total: totalRun,
+            runtime: totalTime
+          }), "*" );
+        }
+
       }
     }
 
@@ -200,10 +219,29 @@
       }
     }
 
+    function addAllTests() {
+      var testSetName,
+          testSet;
+      for( var testSetName in allTests ) {
+        if ( allTests.hasOwnProperty( testSetName ) ) {
+          testSet = allTests[ testSetName ]
+          for( var test in testSet ) {
+            if ( testSet.hasOwnProperty( test ) ) {
+              testList.unshift({
+                "name": test,
+                "path": testSet[ test ],
+                "type": testSetName
+              });
+            }
+          }
+        }
+      }
+    }
+
     function parseTests() {
       var qVars = parseQueryString(),
           cb;
-      for ( var i = 0, len = testTypes.length; i < len; i++ ) {
+      for ( var i = 0, len = checkboxes.length; i < len; i++ ) {
         cb = checkboxes[ i ];
         cb.checked = !!( qVars[ cb.id ] === "1" );
         if ( cb.checked ) {
@@ -212,17 +250,24 @@
       }
     }
 
-    this.getTests = function( loadedCallback ) {
-      $.getJSON( "../tests.conf", function( data ) {
+    this.getTests = function( tests, loadedCallback ) {
+      $.getJSON( tests, function( data ) {
         if ( data ) {
           allTests = data;
-          parseTests();
+          if ( checkboxes.length ) {
+            parseTests();
+          } else {
+            addAllTests();
+          }
           loadedCallback && typeof loadedCallback === "function" && loadedCallback();
         }
       });
     };
 
     this.runTests = function() {
+
+      index = testList.length - 1;
+
       if ( testList.length ) {
         currentTest = testList[ index ];
         main_b.innerHTML = "Running " + currentTest.name;
@@ -235,9 +280,7 @@
     };
 
     // Get references to the checkboxes
-    testTypes.forEach(function( checkBoxId ) {
-      checkboxes.unshift( id( checkBoxId ) );
-    });
+    checkboxes = document.querySelectorAll( "input[type=checkbox]" );
 
     // Tells the tests within the iframe to take focus
     testFrame.addEventListener( "load", sendGetFocus, false );
@@ -252,19 +295,15 @@
       receiveResults( e.data );
     });
 
-    runSelected.addEventListener( "click", function() {
-      var location = window.location;
-      buildQueryString();
-      if ( queryString.length > 1 ) {
-        window.location = location.href.split( "?" )[ 0 ] + queryString;
-      }
-    });
+    if ( runSelected ) {
+      runSelected.addEventListener( "click", function() {
+        var location = window.location;
+        buildQueryString();
+        if ( queryString.length > 1 ) {
+          window.location = location.href.split( "?" )[ 0 ] + queryString;
+        }
+      });
+    }
   };
 
-  document.addEventListener( "DOMContentLoaded", function() {
-    var runner = new TestRunner();
-    runner.getTests(function() {
-      runner.runTests();
-    });
-  });
 }());

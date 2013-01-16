@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "In/Out aliases", function() {
+        var popcorn = Popcorn( "#video" ),
+            expects = 5,
+            count = 0,
+            counter = 0;
+
+        expect( expects );
+
+        function plus() {
+          if ( ++count === expects ) {
+            Popcorn.removePlugin( "aliasTester" );
+            popcorn.destroy();
+            start();
+          }
+        }
+
+        Popcorn.plugin( "aliasTester", function() {
+
+          return {
+            "in": function() {
+              counter++;
+            },
+            out: function() {
+              counter++;
+            }
+          };
+        });
+
+        popcorn.aliasTester({
+          "in": 1,
+          out: 3
+        });
+
+        popcorn.listen( "seeked", function() {
+          this.off( "seeked" ).play( 0 );
+        });
+
+        popcorn.currentTime( 0 );
+
+        ok( popcorn.data.events[ "in" ], "in is a valid alias for start" );
+        plus();
+
+        ok( popcorn.data.events[ "out" ], "out is a valid alias for end" );
+        plus();
+
+        equal( counter, 0, "Counter is at 0, neither in or out have been called" );
+        plus();
+
+        popcorn.cue( 2, function() {
+          equal( counter, 1, "Counter is at 1, in has been called" );
+          plus();
+        });
+
+        popcorn.cue( 4, function() {
+          equal( counter, 2, "Counter is at 2, out has been called" );
+          plus();
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Plugin - in/out aliases ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="display:;width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

@@ -6,6 +6,14 @@
   <link rel="stylesheet" href="popcorn.testrunner.css" type="text/css" >
   <script src="jquery.js"></script>
   <script src="popcorn.testrunner.js"></script>
+  <script type="text/javascript">
+    document.addEventListener( "DOMContentLoaded", function() {
+      var runner = new TestRunner();
+      runner.getTests( "../tests.conf", function() {
+        runner.runTests();
+      });
+    });
+  </script>
 </head>
 <body>
   <h1 id="qunit-header">

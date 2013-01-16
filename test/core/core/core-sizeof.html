@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Popcorn.sizeOf", 6, function() {
+
+        equal( typeof Popcorn.sizeOf, "function", "Popcorn.sizeOf() is a provided static function" );
+
+        equal( Popcorn.sizeOf([ "a", "b", "c" ]), 3, "Popcorn.sizeOf working with arrays" );
+
+        equal( Popcorn.sizeOf([ ]), 0, "Popcorn.sizeOf working with empty arrays" );
+
+        equal( Popcorn.sizeOf({ a: 1, b: "test" }), 2, "Popcorn.sizeOf working with objects" );
+
+        equal( Popcorn.sizeOf({ }), 0, "Popcorn.sizeOf working with empty objects" );
+
+        equal( Popcorn.sizeOf(), 0, "Popcorn.sizeOf safely handling no parameter being passed in" );
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Core - Popcorn.sizeOf ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../popcorn.unit.setup.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "noConflict", 6, function() {
+
+        ok( Popcorn.noConflict, "Popcorn.noConflict exists" );
+        equal( typeof Popcorn.noConflict, "function", "Popcorn.noConflict is a function" );
+
+        var $$ = Popcorn;
+
+        deepEqual( Popcorn, Popcorn.noConflict(), "noConflict returned the Popcorn object" );
+        deepEqual( Popcorn, $$, "Make sure Popcorn wasn't touched." );
+
+
+        Popcorn = $$;
+
+        deepEqual( Popcorn.noConflict( true ), $$, "noConflict returned the Popcorn object" );
+        deepEqual( Popcorn, originalPopcorn, "Make sure Popcorn was reverted." );
+
+        Popcorn = $$;
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Core - No Conflict ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+    </div>
+  </body>
+</html>

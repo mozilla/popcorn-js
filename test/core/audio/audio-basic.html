@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Basic Audio Support (timeupdate)", function() {
+
+        var popped = Popcorn( "#audio" ),
+            popObj = Popcorn( document.getElementById( "audio" ) ),
+            methods = "load play pause currentTime mute volume roundTime exec removePlugin",
+            count = 0,
+            expects = 30;
+
+        expect( expects );
+
+        function plus() {
+
+          if ( ++count === expects ) {
+
+            popped.destroy();
+            popObj.destroy();
+            start();
+          }
+        }
+
+        // testing element passed by id
+        ok( "audio" in popped, "instance by id has `media` property" );
+        plus();
+        equal( Object.prototype.toString.call( popped.media ), "[object HTMLAudioElement]", "instance by id media property is a HTMLAudioElement" );
+        plus();
+
+        ok( "data" in popped, "instance by id has `data` property" );
+        plus();
+        equal( Object.prototype.toString.call( popped.data ), "[object Object]", "instance by id data property is an object" );
+        plus();
+
+        ok( "trackEvents" in popped.data, "instance by id has `trackEvents` property" );
+        plus();
+        equal( Object.prototype.toString.call( popped.data.trackEvents ), "[object Object]", "instance by id trackEvents property is an object" );
+        plus();
+
+        popped.play();
+
+        methods.split( /\s+/g ).forEach(function( k, v ) {
+
+          ok( k in popped, "instance by id has method: " + k );
+          plus();
+        });
+
+        // testing element passed by reference
+        ok( "media" in popObj, "instance by reference has `media` property" );
+        plus();
+        equal( Object.prototype.toString.call( popObj.media ), "[object HTMLAudioElement]", "instance by reference media property is a HTMLAudioElement" );
+        plus();
+
+        ok( "data" in popObj, "instance by reference has `data` property" );
+        plus();
+        equal( Object.prototype.toString.call( popObj.data ), "[object Object]", "instance by reference data property is an object" );
+        plus();
+
+        ok( "trackEvents" in popObj.data, "instance by reference has `trackEvents` property" );
+        plus();
+        equal( Object.prototype.toString.call( popObj.data.trackEvents ), "[object Object]", "instance by reference trackEvents property is an object" );
+        plus();
+
+        popObj.play();
+
+        methods.split( /\s+/g ).forEach(function( k, v ) {
+
+          ok( k in popObj, "instance by reference has method: " + k );
+          plus();
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Audio - Debug ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <audio id="audio" controls>
+        <source src="../../italia.mp4" type='audio/mp4; codecs="mp4a.40.2"'>
+        <source src="../../italia.ogg" type='audio/ogg; codecs="vorbis"'>
+      </audio>
+    </div>
+  </body>
+</html>

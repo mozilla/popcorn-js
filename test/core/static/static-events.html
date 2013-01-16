@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Popcorn.events", 44, function() {
+
+        var eventTypes = [ "UIEvents", "MouseEvents", "Events" ],
+            natives = "",
+            events,
+            eventsReturned,
+            idx = 0,
+            len,
+            okay = true;
+
+        eventTypes.forEach (function( e ) {
+          ok( Popcorn.Events[ e ], e + " Exists" )
+        });
+
+        natives = Popcorn.Events[ eventTypes[ 0 ] ] + " " + Popcorn.Events[ eventTypes[ 1 ] ] + " " + Popcorn.Events[ eventTypes[ 2 ] ];
+        events = natives.split( /\s+/g );
+        eventsReturned = Popcorn.events.all;
+        len = events.length;
+
+        for ( ; idx++ < len && okay; ) {
+          okay = events[ idx ] === eventsReturned[ idx ];
+        }
+
+        ok( okay, "Native events are correctly being handled" );
+
+        equal( typeof Popcorn.Events.Natives, "string", "Popcorn.Events.Natives is a string" );
+        equal( typeof Popcorn.events, "object", "Popcorn.events is an object" );
+
+        Popcorn.forEach( eventsReturned, function( e ) {
+          ok( Popcorn.events.isNative ( e ), e + " is a native event" );
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Static Methods - Events ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+    </div>
+  </body>
+</html>
