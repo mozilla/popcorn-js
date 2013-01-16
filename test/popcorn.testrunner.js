@@ -134,11 +134,13 @@
           fail + "</b>, <b class='passed'>" +
           pass + "</b>, " + total + ")</b>";
 
+        main_b.testList = ol;
+
         // set up click listener for expanding inner test list
         main_b.addEventListener( "click", function( e ) {
-          var next = e.target.nextSibling.nextSibling,
-              display = next.style.display;
-          next.style.display = display === "none" ? "block" : "none";
+          var ol = e.target.testList,
+              display = ol.style.display;
+          ol.style.display = display === "none" ? "block" : "none";
         }, false );
 
         // build main_li, append all children and then append to result list
