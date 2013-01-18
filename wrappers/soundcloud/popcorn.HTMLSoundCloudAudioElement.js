@@ -442,7 +442,7 @@
           self.dispatchEvent( "loadstart" );
           self.dispatchEvent( "progress" );
         };
-        elem.src = "http://w.soundcloud.com/player/?url=" + data.uri +
+        elem.src = "https://w.soundcloud.com/player/?url=" + data.uri +
           "&show_artwork=false" +
           "&buying=false" +
           "&liking=false" +
