@@ -239,7 +239,7 @@
       player.unbind( SC.Widget.Events.FINISH );
 
       parent.removeChild( elem );
-      elem = document.createElement( "iframe" )
+      elem = document.createElement( "iframe" );
     }
 
     self.play = function() {
