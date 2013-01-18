@@ -18,7 +18,7 @@
         popcorn = Popcorn( media, options );
 
     // Set the src "soon" but return popcorn instance first, so
-    // the caller can get get error events.
+    // the caller can listen for error events.
     setTimeout( function() {
       media.src = url;
     }, 0 );
