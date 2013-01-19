@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Modify cue or trackevent w/ update function provided", 3, function() {
+        var $pop = Popcorn( "#video" ),
+            numTrackEvents,
+            id = "test-id",
+            updateOptions = {
+              text: "New Text"
+            };
+
+        Popcorn.plugin( "updateprovided", {
+          _setup: function() {},
+          start: function() {},
+          end: function(){},
+          _teardown: function( trackEvent ) {
+            ok( false, "Teardown function was called when an update function was provided" );
+          },
+          _update: function( trackEvent, newOptions ) {
+            ok( true, "Successfully called track events update function" );
+            deepEqual( newOptions.text, updateOptions.text, "Successfully received the new update options" );
+            trackEvent.text = newOptions.text;
+          }
+        });
+
+        $pop.updateprovided( id, { start: 2, end: 5 } );
+
+        numTrackEvents = $pop.data.trackEvents.byStart.length;
+
+        $pop.updateprovided( id, updateOptions );
+        equal( $pop.data.trackEvents.byStart.length, numTrackEvents, "Total number of track events didn't change" );
+
+        Popcorn.removePlugin( "updateprovided" );
+        $pop.destroy();
+
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Trackevents - Update Function ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

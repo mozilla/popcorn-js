@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Updates apply to options object if plugin is defined as an Object (#1384)", 2 , function() {
+        var $pop = Popcorn( "#video" ),
+            trackEvent;
+
+        Popcorn.plugin( "definedByObject", {
+            start: Popcorn.nop,
+            end: Popcorn.nop,
+            _update: function( trackEvent, options ) {
+              trackEvent.text = options.text;
+            },
+            _setup: function( options ) {
+              options.toString = function() {
+                return options.text;
+              };
+            }
+          }
+        );
+
+        $pop.definedByObject( "fooTest", {
+          text: "foo"
+        });
+
+        trackEvent = $pop.getTrackEvent( "fooTest" );
+
+        equal( trackEvent.toString(), "foo", "Calling toString on the track event returns initialized value" );
+
+        $pop.definedByObject( "fooTest", {
+          text: "newFoo"
+        });
+
+        equal( trackEvent.toString(), "newFoo", "After an update, calling toString on the track event returns updated value" );
+
+        $pop.removePlugin( "definedByObject" );
+        $pop.destroy();
+
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Trackevents - modify (object creation pattern) ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

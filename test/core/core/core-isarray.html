@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "isArray", 18, function() {
+
+        var empty = [],
+            fastSmall = [ 1 ],
+            slow = [],
+            slowSmall = [],
+            all = null;
+
+        slowSmall[ 999999 ] = 0;
+        slowSmall.length = 0;
+        slow.slow = 0;
+
+        all = [ [], [ 1 ], new Array, Array( 0 ), "abc".match( /(a)/g ), slow, slowSmall ];
+
+        all.forEach(function( a ) {
+          ok( Popcorn.isArray( a ), "Popcorn.isArray(" + JSON.stringify( a ) + ")" );
+        });
+
+        equal( Popcorn.isArray.length, 1, "Popcorn.isArray.length, 1" );
+
+        ok( !Popcorn.isArray(), "!Popcorn.isArray(), false" );
+        ok( !Popcorn.isArray({}), "!Popcorn.isArray({}), false" );
+        ok( !Popcorn.isArray( null ), "!Popcorn.isArray(null), false" );
+        ok( !Popcorn.isArray( undefined ), "!Popcorn.isArray(undefined)" );
+        ok( !Popcorn.isArray( 17 ), "!Popcorn.isArray(17), false" );
+        ok( !Popcorn.isArray( "Array" ), "!Popcorn.isArray('Array'), false" );
+        ok( !Popcorn.isArray( Math.PI ), "!Popcorn.isArray(Math.PI), false" );
+        ok( !Popcorn.isArray( true ), "!Popcorn.isArray(true), false" );
+        ok( !Popcorn.isArray( false ), "!Popcorn.isArray(false), false" );
+        ok( !Popcorn.isArray( { __proto__: Array.prototype, length:1, 0:1, 1:2 } ), "{__proto__: Array.prototype, length:1, 0:1, 1:2}" );
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Core - Popcorn.isArray ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Create empty cue and modify later", 5, function() {
+        var p = Popcorn( "#video" );
+
+        p.on( "cuechange", function( data ) {
+          ok( true, "'cuechange' event fired" );
+        });
+
+        p.on( "canplayall", function() {
+
+          // create an empty cue that does nothing
+          p.cue( "empty-cue" );
+
+          equal( p.data.trackEvents.byStart[ 1 ].id, "empty-cue", "'empty-cue' was created" );
+
+          equal( p.data.trackEvents.byStart[ 1 ].start, -1, "'empty-cue' was created at -1" );
+
+          // update the empty cue to do something at 10s
+          p.cue( "empty-cue", 10, function() {
+
+            ok( true, "'empty-cue' at 10s seconds should fire, even though it started as empty cue" );
+
+            start();
+            p.destroy();
+          });
+
+          equal( p.data.trackEvents.byStart[ 1 ].start, 10, "'empty-cue' was updated" );
+
+          p.play( 9 );
+        });
+
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Popcorn TrackEvents - empty cue, mod later ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

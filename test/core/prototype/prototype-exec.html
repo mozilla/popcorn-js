@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "exec", function() {
+
+        var popped = Popcorn( "#video" ),
+            expects = 3,
+            count = 0,
+            loop = 0,
+            flags = {
+              looped: false,
+              smpte: false
+            };
+
+        expect( expects + 1 );
+
+        function plus(){
+          if ( ++count == expects ) {
+
+            setTimeout(function() {
+
+              equal( loop, 2, "cue callback repeat check, only called twice" );
+              Popcorn.removePlugin( popped, "cue" );
+              popped.destroy();
+              start();
+            }, 1000 );
+          }
+        }
+
+        // Supports SMPTE
+        popped.cue( "00:00:04", function() {
+          if ( !flags.smpte ) {
+            flags.smpte = true;
+            ok( true, "cue supports SMPTE" );
+            plus();
+          }
+        });
+
+
+        popped.cue( 4, function() {
+          ok( loop < 2, "cue callback fired " + ++loop );
+          plus();
+
+          if ( !flags.looped ) {
+            flags.looped = true;
+            this.on( "seeked", function onSeeked() {
+              this.off( "seeked", onSeeked );
+            });
+            this.currentTime( 3 );
+          }
+        });
+
+        popped.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady )
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+          });
+          this.currentTime( 3 );
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Prototype - exec ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

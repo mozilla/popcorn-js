@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "end undefined or false should never be fired", 1, function() {
+
+        var $pop = Popcorn( "#video" ),
+            endFired = false;
+
+        Popcorn.plugin( "neverEndingStory", {
+          end: function() {
+            ok( false, "" );
+            endFired = true;
+          }
+        });
+
+        Popcorn.plugin( "endingStory", {
+          end: function() {
+            ok( !endFired, "end should not of been fired." );
+            start();
+          }
+        });
+
+        $pop.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+
+          $pop.neverEndingStory({});
+          $pop.neverEndingStory({ end: false });
+          $pop.neverEndingStory({ end: undefined });
+          $pop.endingStory({ end: $pop.duration() });
+
+          this.currentTime( this.duration() );
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Popcorn TrackEvents - Undefined End ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

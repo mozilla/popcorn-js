@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Popcorn.* Static Methods", function() {
+
+        var statics = [ "forEach", "extend", "error", "guid", "sizeOf", "nop",
+                        "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent", "position", "disable", "enable", "timeUpdate" ],
+          substatics = [ "addTrackEvent", "removeTrackEvent", "getTrackEvents", "getTrackEvent" ];
+
+        expect( statics.length + substatics.length );
+
+        statics.forEach(function( val, idx ) {
+
+          equal( typeof Popcorn[ val ], "function" , "Popcorn." + val + "() is a provided static function" );
+        });
+
+        substatics.forEach(function( val, idx ) {
+
+          equal( typeof Popcorn[ val ].ref, "function" , "Popcorn." + val + ".ref() is a private use static function" );
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Core - Debug ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+    </div>
+  </body>
+</html>

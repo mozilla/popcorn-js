@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Popcorn.byId", 5, function() {
+        var completed, a, b;
+
+        function done() {
+          if ( ++completed === 2 ) {
+            a.destroy();
+            b.destroy();
+            start();
+          }
+        }
+
+        completed = 0;
+
+        a = Popcorn( "#video" );
+        b = Popcorn( "#video", {
+          id: "my-custom-id"
+        });
+
+        try {
+          Popcorn( "#video", {
+            id: "my-custom-id"
+          });
+        } catch (e) {
+          equal( e.message,  "Popcorn.js Error: Cannot use duplicate ID (my-custom-id)", "Attempting to use a duplicate ID will throw" );
+        }
+
+
+        equal( Popcorn.byId( "non-existant" ), null, "Popcorn.byId('non-existant') returns `null`" );
+
+        a.on( "canplayall", function() {
+          ok( this.id, "this.id exists because a default was provided" );
+          ok( /^video/.test( this.id ), "default id has nodeName prefix" );
+
+          done();
+        });
+
+        b.on( "canplayall", function() {
+          deepEqual( Popcorn.byId( "my-custom-id" ).media, this.media, "Popcorn.byId('my-custom-id') returns the correct instance" );
+
+          done();
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Core - Popcorn.byId ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

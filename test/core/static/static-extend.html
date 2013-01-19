@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "Popcorn.extend", 12, function() {
+
+        var dest = {},
+            obj1 = {
+              "key11": "value",
+              "key12": 9001,
+              "key13": function() { return true; }
+            },
+            obj2 = {
+              "key21": "String",
+              "key22": 9002,
+              "key23": function() { return false; }
+            },
+            prop;
+
+        Popcorn.extend( dest, obj1 );
+
+        for ( prop in obj1 ) {
+          equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop );
+        }
+
+        equal( typeof dest[ "key13" ], "function", "dest[key13] is a function" );
+
+        dest = {};
+
+        Popcorn.extend( dest, obj1, obj2 );
+
+        for ( prop in obj1 ) {
+          equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop + ", when extending 2 objects" );
+        }
+
+        for ( prop in obj2 ) {
+          equal( dest.hasOwnProperty( prop ), true, "{dest} has property: " + prop + ", when extending 2 objects" );
+        }
+
+        equal( typeof dest[ "key13" ], "function","dest[key13] is a function" );
+
+        equal( typeof dest[ "key23" ], "function","dest[key23] is a function" );
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Static Methods - Popcorn.extend ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+    </div>
+  </body>
+</html>

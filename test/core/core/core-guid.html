@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "guid", 6, function() {
+
+        var count = 3,
+            guids = [],
+            temp;
+
+        for ( var i = 0; i < count; i++ ) {
+
+          temp = Popcorn.guid();
+
+          if ( i > 0 ) {
+            notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+          } else {
+            ok( temp, "Popcorn.guid() returns value" );
+          }
+
+          guids.push( temp );
+        }
+
+        guids = [];
+
+        for ( var i = 0; i < count; i++ ) {
+
+          temp = Popcorn.guid( "pre" );
+
+          if ( i > 0 ) {
+            notEqual( temp, guids[ guids.length - 1 ], "Current guid does not equal last guid" );
+          } else {
+            ok( temp, "Popcorn.guid( 'pre' ) returns value" );
+          }
+
+          guids.push( temp );
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Core - Popcorn.guid ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+    </div>
+  </body>
+</html>

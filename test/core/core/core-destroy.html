@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Popcorn.destroy", 10, function() {
+        var popcorn = Popcorn( "#video" ),
+            pcorn,
+            playCounter = 0,
+            timeUpdateCounter = 0;
+
+        //  initially no listeners
+        equal( Popcorn.sizeOf( popcorn.data.events ), 0, "Initially no events have been added" );
+
+        equal( playCounter, 0, "playCounter is intially 0" );
+
+        equal( timeUpdateCounter, 0, "timeUpdateCounter is intially 0" );
+
+        //  add some event listeners for testing
+        popcorn.on( "timeupdate", function( event ) {
+          timeUpdateCounter++;
+          popcorn.pause();
+        });
+        popcorn.on( "play", function( event ) {
+          playCounter++;
+        });
+
+        popcorn.on( "pause", function() {
+
+          equal( Popcorn.sizeOf( popcorn.data.events ), 5, "popcorn.data.events has correct number of events - before Popcorn.destroy" );
+
+          ok( playCounter > 0, "playCounter is greater than 0, events are being triggered" );
+
+          ok( timeUpdateCounter > 0, "timeUpdateCounter is greater than 0, events are being triggered" );
+
+          playCounter = timeUpdateCounter = 0;
+
+          popcorn.destroy();
+
+          equal( Popcorn.instances.length, 0, "The instance was removed" );
+
+          //  Doing this to ensure we are working, a fail will run before this if the old popcorn instances events were
+          //  not properly destroyed
+          pcorn = Popcorn( "#video" );
+
+          pcorn.cue( 3, function() {
+            pcorn.pause();
+
+            ok( timeUpdateCounter === 0, "The timeUpdateCounter should be 0" );
+            ok( playCounter === 0, "The playCounter should be 0" );
+            ok( true, "Second popcorn instance's event was fired instead of first popcorn instance" );
+            pcorn.destroy();
+            start();
+          });
+
+          popcorn.play( 0 );
+          pcorn.play( 0 );
+        });
+
+        popcorn.cue( 1, function() {
+          ok( false, "This cue should never have been run, destroy not working" );
+        });
+
+        popcorn.on( "canplayall", function ready() {
+          popcorn.off( "canplayall", ready );
+          popcorn.play( 0 );
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Core - Popcorn.destroy ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Plugin Closure", function() {
+
+        var popped = Popcorn( "#video" ),
+            methods = "load play pause currentTime mute volume roundTime exec removePlugin",
+            expects = 8,
+            count = 0;
+
+        function plus() {
+          if ( ++count == expects ) {
+            Popcorn.removePlugin( "closure" );
+            popped.destroy();
+            start();
+          }
+        }
+
+        expect( expects );
+
+        Popcorn.plugin( "closure", function() {
+
+          var startCount = 0;
+          var endCount = 0;
+
+          return {
+
+            _setup: function( options ) {
+              options.startCount = 0;
+              options.endCount = 0;
+            },
+            start: function( event, options ) {
+              // called once for each instance; the test will fail if startCount is not actually unique per instance
+              equal( startCount++, options.startCount++, options.nick + " has correct start counts" );
+              plus();
+            },
+            end: function( event, options ) {
+              // likewise for endCount
+              equal( endCount++, options.endCount++, options.nick + " has correct end counts" );
+              plus();
+
+              // running tracks again to make sure data increments uniquly
+              this.on( "seeked", function onSeeked() {
+                this.off( "seeked", onSeeked );
+                this.play();
+              });
+              this.currentTime( 5 );
+            }
+          };
+        });
+
+        popped.closure({
+          start: 5,
+          end: 6,
+          nick: "first closure track"
+        })
+        .closure({
+          start: 5,
+          end: 6,
+          nick: "second closure track"
+        });
+
+        popped.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+          this.on( "seeked", function onSeeked() {
+            this.off( "seeked", onSeeked );
+            this.play();
+          });
+          this.currentTime( 5 );
+        });
+
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Plugin - Closure ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

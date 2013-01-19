@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Remove TrackEvents by parameters", 2, function() {
+        var $pop = Popcorn( "#video" ),
+            tracks = 6,
+            result = false,
+            remaining;
+
+        Popcorn.plugin( "removeme" , function() {
+          return {
+            start: function( event, options ) {},
+            end: function( event, options ) {}
+          };
+        });
+
+        $pop.on( "canplayall", function onReady() {
+          $pop.off( "canplayall", onReady );
+
+          // Add 6 of the TrackEvents for the "removeme" plugin
+          // Doing so and testing against an object with many of the
+          // same trackevents will ensure that the implementation correctly
+          // removes _all_ trackevents of a given type.
+          while ( tracks-- ) {
+            $pop.removeme({
+              start: 0,
+              end: 10
+            });
+          }
+
+          equal( $pop.data.trackEvents.count, 8, "8 trackevents: 2 padding, 6 user" );
+
+          $pop.data.trackEvents.remove({ plugin: "removeme" });
+
+          equal( $pop.data.trackEvents.count, 2, "2 trackevents: 2 padding, 0 user" );
+
+          start();
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Trackevents - Remove by parameters ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

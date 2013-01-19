@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Popcorn.getScript()", function() {
+
+        var expects = 8,
+            count = 0;
+
+        function plus() {
+          if ( ++count === expects ) {
+            start();
+            delete window[ "testFunction" ];
+          }
+        }
+
+        expect( expects );
+
+        Popcorn.xhr({
+
+          url: "../../data/remoteA.js",
+
+          dataType: "script",
+
+          success: function() {
+
+            ok( true, "getScript A returned" );
+            plus();
+            ok( Popcorn.AlphaLib, "Popcorn.xhr.getScript remoteA.js loaded: `Popcorn.AlphaLib` is available" );
+            plus();
+          }
+        });
+
+        Popcorn.getScript(
+
+          "../../data/remoteB.js",
+          function() {
+
+            ok( true, "getScript B returned" );
+            plus();
+            ok( Popcorn.BetaLib , "Popcorn.getScript remoteB.js loaded: `Popcorn.BetaLib` is available " );
+            plus();
+          }
+        );
+
+        Popcorn.getScript(
+
+          "http://popcornjs.org/code/test/data/testfunction2.js",
+          function() {
+
+            ok( true, "getScript C returned" );
+            plus();
+            ok( ( "testFunction2" in window ), "Popcorn.getScript data/testfunction.js loaded: `testFunction2` is available" );
+            plus();
+
+            delete window[ "testFunction2" ];
+          }
+        );
+
+        var cb = function( id ) {
+          if ( window.testFunction ) {
+            ok( true, "testFunction called by plugin id#: " + id );
+            plus();
+          } else {
+            ok( false, "testFunction called by plugin id#: " + id );
+            plus();
+          }
+        }
+
+        Popcorn.getScript( "../../data/testfunction.js", function() { cb( 1 ); } );
+        Popcorn.getScript( "../../data/testfunction.js", function() { cb( 2 ); } );
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ XHR - Popcorn.getScript() ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

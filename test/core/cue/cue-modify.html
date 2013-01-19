@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Modify cue or track event after creation", 7, function() {
+        var p = Popcorn( "#video" ),
+            passed = 0;
+
+        Popcorn.plugin( "modifyMe", {
+          start: function( event, options ) {
+            var floor = Math.floor( this.currentTime() );
+
+            // This test will fail the unit if it is run
+            if ( floor === 10 ) {
+              ok( false, "Plugin track start at 10 seconds should never fire because it is changed to 11 seconds" );
+            }
+
+            if ( floor === 11 ) {
+              ok( true, "Plugin track start at 11 seconds fired, it was changed from 10 to 11" );
+              passed++;
+
+              equal( options.content, "Hola!", "Plugin track content property was updated" );
+              passed++;
+            }
+
+            // This is the passing test for the unchanged plugin call
+            if ( floor === 12 ) {
+              ok( true, "Plugin track start at 12 seconds fired (unchanged)" );
+              passed++;
+            }
+          },
+          end: function() {
+            var floor = Math.floor( this.currentTime() );
+
+            // This test will fail the unit if it is run
+            if ( floor === 11 ) {
+              ok( false, "Plugin track end at 11 seconds should never fire because it is changed to 12 seconds" );
+            }
+
+            if ( floor === 12 ) {
+              ok( true, "Plugin track end at 12 seconds fired, it was changed from 11 to 12" );
+              passed++;
+            }
+
+            if ( passed === 4 ) {
+              start();
+              p.destroy();
+            }
+          }
+        });
+
+        p.on( "canplayall", function() {
+
+          // traditional, unchanging cue
+          p.cue( 11, function() {
+            ok( true, "Cue at 11 seconds fired (unchanged)" );
+          });
+
+          // set a cue at 10 seconds
+          p.cue( "cue-id", 10, function() {
+            ok( false, "Cue at 10 seconds should never fire, because it is changed to 12 seconds" );
+          });
+
+          // now I want to change that cue to 12:
+          p.cue( "cue-id", 12 );
+
+          // set a cue with id, time and function
+          p.cue( "cue-id2", 10, function() {
+            ok( true, "Cue with id, time and function is created and fired" );
+          });
+
+          // now change the function...
+          p.cue( "cue-id", function() {
+            ok( true, "Cue at 12 seconds fired, it was changed from 10 to 12" );
+          });
+
+          // traditional, unchanging plugin call
+          p.modifyMe({
+            start: 12,
+            end: 13
+          });
+
+          // set up a new changeable trackevent
+          p.modifyMe( "plugin-id", {
+            start: 10,
+            end: 11,
+            content: "Hi!"
+          });
+
+          // change it to start at 11
+          p.modifyMe( "plugin-id", {
+            start: 11,
+            content: "Hola!"
+          });
+
+          // change it to end at 12
+          p.modifyMe( "plugin-id", {
+            end: 12
+          });
+
+          p.play( 9 );
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Cue - modify ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

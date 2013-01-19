@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      asyncTest( "Plug-ins with a `once` attribute should be removed after `end` is fired.", 3, function() {
+
+        var $pop = Popcorn( "#video" ),
+            startFired = 0;
+            endFired = 0;
+
+        Popcorn.plugin( "onceplugin", {
+          start: function() {
+            if ( !startFired ) {
+              ok( true, "start called once" );
+              startFired++;
+            } else {
+              ok( false, "Start should oly execute once!" )
+              startFired++;
+            }
+          },
+          end: function() {
+            if ( !endFired ) {
+              ok( true, "end called once" );
+              this.currentTime( 3 );
+              endFired++;
+            } else {
+              ok( false, "End should only execute once!" );
+              endFired++;
+            }
+          }
+        });
+
+        $pop.onceplugin({ start: 1, end: 2, once: true });
+
+        $pop.cue( 4, function() {
+          ok( startFired === 1 && endFired === 1, "start and end called once each" );
+          start();
+        });
+
+        $pop.on( "canplayall", function onReady() {
+          this.off( "canplayall", onReady );
+          this.play();
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Popcorn TrackEvents - once attribute ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>

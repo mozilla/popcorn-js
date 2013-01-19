@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn Test Suite</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
+    <script src="../../jquery.js"></script>
+    <script src="../../qunit/qunit.js"></script>
+    <script src="../../../popcorn.js"></script>
+    <script src="../../popcorn.inject.js"></script>
+    <script>
+      test( "on/off/emit", 6, function() {
+
+        var $pop = Popcorn( "#video" );
+
+        var decoyCalled = false,
+            finishCount = 0;
+
+        var finishTest = function() {
+          finishCount++;
+
+          if( finishCount === 1 ) {
+            deepEqual( this, $pop, "`this` is the popcorn instance" );
+            equal( typeof this.data.events.foo, "object", "events hash registered at this.data.events.foo" );
+            equal( Popcorn.sizeOf( this.data.events.foo ), 2, "Two events are registered" );
+          } else if( finishCount === 2 ) {
+            equal( Popcorn.sizeOf( this.data.events.foo ), 1, "Only one event is registered" );
+          } else {
+            ok( false, "global off() is broken" );
+          }
+        };
+
+        var decoyFunc = function() {
+          equal( decoyCalled, false, "second callback on is called precisely once" );
+          decoyCalled = true;
+        };
+
+        $pop.on( "foo", finishTest );
+        $pop.on( "foo", decoyFunc );
+
+        $pop.emit( "foo" );
+
+        $pop.off( "foo", decoyFunc );
+
+        $pop.emit( "foo" );
+
+        $pop.off( "foo" );
+
+        equal( $pop.data.events.foo, null, "events hash is null at this.data.events.foo" );
+
+        $pop.emit( "foo" ); // shouldn't do anything
+
+        $pop.destroy();
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn.js Test Suite[ Events - on/off/emit ]</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <video id="video" class="dom-tests" data-custom="foo"
+        style="width:300px"
+        controls
+        preload="auto">
+
+        <source id="mp4"
+          src="../../trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <source id="webm"
+          src="../../trailer.webm"
+          type='video/webm; codecs="vp8, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+
+      </video>
+    </div>
+  </body>
+</html>
