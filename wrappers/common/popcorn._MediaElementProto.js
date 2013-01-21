@@ -211,6 +211,12 @@
       get: function() {
         return 1.0;
       }
+    },
+
+    style: {
+      get: function() {
+        return this.parentNode.style;
+      }
     }
 
     // TODO:
