@@ -193,6 +193,7 @@
           // XXX: this should really live in cued below, but doesn't work.
 
           // force an initial play on the video, to remove autostart on initial seekTo.
+          player.mute();
           player.playVideo();
           break;
 
@@ -206,7 +207,7 @@
           if( firstPlay ) {
             // fake ready event
             firstPlay = false;
-
+            player[ impl.muted ? "mute" : "unMute" ]();
             // Set initial paused state
             if( impl.autoplay || !impl.paused ) {
               impl.paused = false;
