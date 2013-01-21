@@ -255,21 +255,22 @@
 
     function changeCurrentTime( aTime ) {
       impl.currentTime = aTime;
-      if( !playerReady ) {
-        addMediaReadyCallback( function() {
-
-          onSeeking();
-          player.seekTo( aTime );
-        });
-        return;
-      }
 
       // Convert to ms
       aTime = aTime * 1000;
 
-      onSeeking();
-      player.seekTo( aTime );
-      onSeeked();
+      function seek() {
+        onSeeking();
+        player.seekTo( aTime );
+        onSeeked();
+      }
+
+      if( !playerReady ) {
+        addMediaReadyCallback( seek );
+        return;
+      }
+
+      seek();
     }
 
     function onSeeking() {
