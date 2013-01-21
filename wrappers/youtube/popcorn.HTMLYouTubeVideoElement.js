@@ -79,8 +79,8 @@
         duration: NaN,
         ended: false,
         paused: true,
-        width: parent.width|0   ? parent.width  : MIN_WIDTH,
-        height: parent.height|0 ? parent.height : MIN_HEIGHT,
+        width: parent.offsetWidth|0   ? parent.offsetWidth  : MIN_WIDTH,
+        height: parent.offsetHeight|0 ? parent.offsetHeight : MIN_HEIGHT,
         error: null
       },
       playerReady = false,
@@ -193,6 +193,7 @@
           // XXX: this should really live in cued below, but doesn't work.
 
           // force an initial play on the video, to remove autostart on initial seekTo.
+          player.mute();
           player.playVideo();
           break;
 
@@ -206,7 +207,7 @@
           if( firstPlay ) {
             // fake ready event
             firstPlay = false;
-
+            player[ impl.muted ? "mute" : "unMute" ]();
             // Set initial paused state
             if( impl.autoplay || !impl.paused ) {
               impl.paused = false;
@@ -339,8 +340,8 @@
       aSrc = regexYouTube.exec( aSrc )[ 1 ];
 
       player = new YT.Player( elem, {
-        width: impl.width,
-        height: impl.height,
+        width: "100%",
+        height: "100%",
         wmode: playerVars.wmode,
         videoId: aSrc,
         playerVars: playerVars,
@@ -552,6 +553,25 @@
         }
       },
 
+
+      offsetWidth: {
+        get: function() {
+          return elem.width;
+        },
+        set: function( aValue ) {
+          impl.width = aValue;
+        }
+      },
+
+      offsetHeight: {
+        get: function() {
+          return elem.height;
+        },
+        set: function( aValue ) {
+          impl.height = aValue;
+        }
+      },
+
       currentTime: {
         get: function() {
           return getCurrentTime();
@@ -636,7 +656,7 @@
 
   // Helper for identifying URLs we know how to play.
   HTMLYouTubeVideoElement.prototype._canPlaySrc = function( url ) {
-    return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/).test( url ) ?
+    return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu).*(?:\/|v=)(.{11})/).test( url ) ?
       "probably" :
       EMPTY_STRING;
   };

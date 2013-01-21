@@ -189,6 +189,18 @@
       }
     },
 
+    id: {
+      get: function() {
+        return this.parentNode.id;
+      }
+    },
+
+    style: {
+      get: function() {
+        return this.parentNode.style;
+      }
+    },
+
     seekable: {
       get: function() {
         return _fakeTimeRanges;
