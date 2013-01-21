@@ -254,8 +254,13 @@
     };
 
     function changeCurrentTime( aTime ) {
+      impl.currentTime = aTime;
       if( !playerReady ) {
-        addPlayerReadyCallback( function() { changeCurrentTime( aTime ); } );
+        addMediaReadyCallback( function() {
+
+          onSeeking();
+          player.seekTo( aTime );
+        });
         return;
       }
 
@@ -264,6 +269,7 @@
 
       onSeeking();
       player.seekTo( aTime );
+      onSeeked();
     }
 
     function onSeeking() {
@@ -372,7 +378,6 @@
           break;
         case "seek":
           onCurrentTime( event.data );
-          onSeeked();
           break;
       }
     }
