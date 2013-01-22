@@ -79,8 +79,8 @@
         duration: NaN,
         ended: false,
         paused: true,
-        width: parent.offsetWidth|0   ? parent.offsetWidth  : MIN_WIDTH,
-        height: parent.offsetHeight|0 ? parent.offsetHeight : MIN_HEIGHT,
+        width: parent.width|0   ? parent.width  : MIN_WIDTH,
+        height: parent.height|0 ? parent.height : MIN_HEIGHT,
         error: null
       },
       playerReady = false,
@@ -540,25 +540,6 @@
         set: function( aValue ) {
           elem.height = aValue;
           impl.height = elem.height;
-        }
-      },
-
-
-      offsetWidth: {
-        get: function() {
-          return elem.width;
-        },
-        set: function( aValue ) {
-          impl.width = aValue;
-        }
-      },
-
-      offsetHeight: {
-        get: function() {
-          return elem.height;
-        },
-        set: function( aValue ) {
-          impl.height = aValue;
         }
       },
 
