@@ -254,16 +254,23 @@
     };
 
     function changeCurrentTime( aTime ) {
-      if( !playerReady ) {
-        addPlayerReadyCallback( function() { changeCurrentTime( aTime ); } );
-        return;
-      }
+      impl.currentTime = aTime;
 
       // Convert to ms
       aTime = aTime * 1000;
 
-      onSeeking();
-      player.seekTo( aTime );
+      function seek() {
+        onSeeking();
+        player.seekTo( aTime );
+        onSeeked();
+      }
+
+      if( !playerReady ) {
+        addMediaReadyCallback( seek );
+        return;
+      }
+
+      seek();
     }
 
     function onSeeking() {
@@ -372,7 +379,6 @@
           break;
         case "seek":
           onCurrentTime( event.data );
-          onSeeked();
           break;
       }
     }
