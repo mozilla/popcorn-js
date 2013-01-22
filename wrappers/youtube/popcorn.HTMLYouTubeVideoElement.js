@@ -91,8 +91,7 @@
       mediaReadyCallbacks = [],
       currentTimeInterval,
       timeUpdateInterval,
-      firstPlay = true,
-      forcedLoadMetadata = false;
+      firstPlay = true;
 
     // Namespace all events we'll produce
     self._eventNamespace = Popcorn.guid( "HTMLYouTubeVideoElement::" );
@@ -108,17 +107,6 @@
 
     function onPlayerReady( event ) {
       playerReady = true;
-    }
-
-    // YouTube sometimes sends a duration of 0.  From the docs:
-    // "Note that getDuration() will return 0 until the video's metadata is loaded,
-    // which normally happens just after the video starts playing."
-    function forceLoadMetadata() {
-      if( !forcedLoadMetadata ) {
-        forcedLoadMetadata = true;
-        self.play();
-        self.pause();
-      }
     }
 
     function getDuration() {
@@ -138,8 +126,6 @@
           self.dispatchEvent( "durationchange" );
         }
       } else {
-        // Force loading metadata, and wait on duration>0
-        forceLoadMetadata();
         setTimeout( getDuration, 50 );
       }
 
@@ -192,6 +178,10 @@
         case -1:
           // XXX: this should really live in cued below, but doesn't work.
 
+          // Browsers using flash will have the pause() call take too long and cause some
+          // sound to leak out. Muting before to prevent this.
+          player.mute();
+
           // force an initial play on the video, to remove autostart on initial seekTo.
           player.playVideo();
           break;
@@ -213,6 +203,11 @@
               addMediaReadyCallback( function() { onPlay(); } );
             } else {
               player.pauseVideo();
+            }
+
+            // Ensure video will now be unmuted when playing due to the mute on initial load.
+            if( !impl.muted ) {
+              player.unMute();
             }
             
             impl.readyState = self.HAVE_METADATA;
@@ -357,7 +352,6 @@
 
       // Queue a get duration call so we'll have duration info
       // and can dispatch durationchange.
-      forcedLoadMetadata = false;
       getDuration();
     }
 
@@ -411,9 +405,6 @@
     }
 
     function onPlay() {
-      // We've called play once (maybe through autoplay),
-      // no need to force it from now on.
-      forcedLoadMetadata = true;
 
       if( impl.ended ) {
         changeCurrentTime( 0 );
