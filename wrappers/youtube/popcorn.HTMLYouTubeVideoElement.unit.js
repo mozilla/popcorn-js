@@ -60,6 +60,15 @@ var testData = {
       ok( !Popcorn.HTMLYouTubeVideoElement._canPlaySrc( "www.youtube.com" ), "Youtube can't play www.youtube.com without a video id" );
       start();
     });
+
+    test( "YouTube 04 - property getters for parent style height/width", 2, function() {
+
+      var video = testData.createMedia( "#video" );
+
+      equal( video.width, 360, "Returned expected parent element width" );
+      equal( video.height, 300, "Returned expected parent element height" );
+    });
+
   }
 
 };
