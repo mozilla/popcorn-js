@@ -217,6 +217,12 @@
       get: function() {
         return this.parentNode.style;
       }
+    },
+
+    id: {
+      get: function() {
+        return this.parentNode.id;
+      }
     }
 
     // TODO:
