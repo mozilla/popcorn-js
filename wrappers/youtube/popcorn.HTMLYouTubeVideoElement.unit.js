@@ -31,6 +31,17 @@ var testData = {
 
     });
 
+    asyncTest( "YouTube 02 - _canPlaySrc", 6, function() {
+
+      ok( Popcorn.HTMLYouTubeVideoElement._canPlaySrc( "http://youtube.com/watch/v/6v3jsVivU6U?format=json" ), "youtube can play url in this format: http://youtube.com/watch/v/6v3jsVivU6U?format=json" );
+      ok( Popcorn.HTMLYouTubeVideoElement._canPlaySrc( "http://www.youtube.com/v/M3r2XDceM6A&amp;fs=1" ), "youtube can play url in this format: http://www.youtube.com/v/M3r2XDceM6A&amp;fs=1" );
+      ok( Popcorn.HTMLYouTubeVideoElement._canPlaySrc( "youtube.com/v/M3r2XDceM6A&fs=1" ), "youtube can play url in this format: youtube.com/v/M3r2XDceM6A&fs=1" );
+      ok( Popcorn.HTMLYouTubeVideoElement._canPlaySrc( "www.youtube.com/v/M3r2XDceM6A&amp;fs=1" ), "youtube can play url in this format: www.youtube.com/v/M3r2XDceM6A&amp;fs=1" );
+      ok( !Popcorn.HTMLYouTubeVideoElement._canPlaySrc( "http://www.youtube.com" ), "Youtube can't play http://www.youtube.com without a video id" );
+      ok( !Popcorn.HTMLYouTubeVideoElement._canPlaySrc( "www.youtube.com" ), "Youtube can't play www.youtube.com without a video id" );
+      start();
+    });
+
   }
 };
 
