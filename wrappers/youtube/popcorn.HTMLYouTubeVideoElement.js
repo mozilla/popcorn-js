@@ -111,8 +111,7 @@
 
     function getDuration() {
       if( !mediaReady ) {
-        // Queue a getDuration() call so we have correct duration info for loadedmetadata
-        addMediaReadyCallback( function() { getDuration(); } );
+        // loadedmetadata properly sets the duration, so nothing to do here yet.
         return impl.duration;
       }
 
@@ -209,7 +208,8 @@
             if( !impl.muted ) {
               player.unMute();
             }
-            
+
+            impl.duration = player.getDuration();
             impl.readyState = self.HAVE_METADATA;
             self.dispatchEvent( "loadedmetadata" );
             currentTimeInterval = setInterval( monitorCurrentTime,
