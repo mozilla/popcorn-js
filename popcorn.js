@@ -425,19 +425,16 @@
 
     position: function( elem ) {
 
-      var clientRect,
+      if ( !elem.parentNode ) {
+        return null;
+      }
+
+      var clientRect = elem.getBoundingClientRect(),
           bounds = {},
           doc = elem.ownerDocument,
           docElem = document.documentElement,
           body = document.body,
           clientTop, clientLeft, scrollTop, scrollLeft, top, left;
-
-      // IE9 Fix
-      try {
-        clientRect = elem.getBoundingClientRect();
-      } catch ( e ) {
-        clientRect = { top: 0, left: 0, right: 0, bottom: 0, height: 0, width: 0 };
-      }
 
       //  Determine correct clientTop/Left
       clientTop = docElem.clientTop || body.clientTop || 0;
