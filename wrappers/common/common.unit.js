@@ -739,14 +739,7 @@ asyncTest( "T34 - paused state during autoplay", 10, function() {
 
 });
 
-test( "T35 - style property accessible on wrapper object", 1, function() {
-
-  var video = testData.createMedia( "#video" );
-
-  ok( video.style, "Style property on wrapper object isn't null" );
-});
-
-asyncTest( "T36 - duration ready in loadedmetadata", 1, function() {
+asyncTest( "T35 - duration ready in loadedmetadata", 1, function() {
 
   var video = testData.createMedia( "#video" );
 

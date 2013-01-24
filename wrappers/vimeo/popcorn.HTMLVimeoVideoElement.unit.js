@@ -31,6 +31,25 @@ var testData = {
 
     });
 
+  },
+
+  playerSpecificSyncTests: function() {
+
+    // Testing the id property inherited from MediaElementProto
+    test( "Vimeo 01 - id property accessible on wrapper object", 1, function() {
+
+      var video = testData.createMedia( "#video" );
+
+      ok( video.id, "id property on wrapper object isn't null" );
+    });
+
+    // Testing the style property inherited from MediaElementProto
+    test( "Vimeo 02 - style property accessible on wrapper object", 1, function() {
+
+      var video = testData.createMedia( "#video" );
+
+      ok( video.style, "Style property on wrapper object isn't null" );
+    });
   }
 
 };

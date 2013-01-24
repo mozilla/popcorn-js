@@ -30,8 +30,27 @@ var testData = {
       video.src = testData.videoSrc + "&autoplay=1&loop=1";
 
     });
+  },
 
-    asyncTest( "YouTube 02 - _canPlaySrc", 6, function() {
+  playerSpecificSyncTests: function() {
+
+    // Testing the id property inherited from MediaElementProto
+    test( "YouTube 01 - id property accessible on wrapper object", 1, function() {
+
+      var video = testData.createMedia( "#video" );
+
+      ok( video.id, "id property on wrapper object isn't null" );
+    });
+
+    // Testing the style property inherited from MediaElementProto
+    test( "YouTube 02 - style property accessible on wrapper object", 1, function() {
+
+      var video = testData.createMedia( "#video" );
+
+      ok( video.style, "Style property on wrapper object isn't null" );
+    });
+
+    test( "YouTube 03 - _canPlaySrc", 6, function() {
 
       ok( Popcorn.HTMLYouTubeVideoElement._canPlaySrc( "http://youtube.com/watch/v/6v3jsVivU6U?format=json" ), "youtube can play url in this format: http://youtube.com/watch/v/6v3jsVivU6U?format=json" );
       ok( Popcorn.HTMLYouTubeVideoElement._canPlaySrc( "http://www.youtube.com/v/M3r2XDceM6A&amp;fs=1" ), "youtube can play url in this format: http://www.youtube.com/v/M3r2XDceM6A&amp;fs=1" );
@@ -41,8 +60,8 @@ var testData = {
       ok( !Popcorn.HTMLYouTubeVideoElement._canPlaySrc( "www.youtube.com" ), "Youtube can't play www.youtube.com without a video id" );
       start();
     });
-
   }
+
 };
 
 // YouTube tends to fail when the iframes live in the qunit-fixture
