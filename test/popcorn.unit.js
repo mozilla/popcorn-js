@@ -5135,6 +5135,35 @@ test( "Call definition function if plugin is defined by a function (#1384)", 2 ,
 
 });
 
+test( "Changes to track event start/end fire an internal update", 2, function() {
+  var $pop = Popcorn( "#video" );
+
+  Popcorn.plugin( "testPlugin", {
+    _setup: function( options ) {
+      setTimeout( function() {
+console.log( $pop.data.trackEvents.byStart[ 1 ].start );
+        options.start = 15;
+console.log( $pop.data.trackEvents.byStart[ 1 ].start );
+      }, 0 );
+    },
+    _teardown: function() {},
+    start: function() {
+      console.log( "started" );
+    },
+    end: function() {
+      console.log( "ended" );
+    }
+  });
+
+  $pop.testPlugin({
+    start: 10,
+    end: 20
+  });
+console.log( $pop.data.trackEvents.byStart[ 1 ].start );
+  ok(true);
+  ok(true);
+});
+
 test( "Filter TrackEvents by parameters", 4, function() {
   var $pop = Popcorn( "#video" ),
       tracks = 6,
