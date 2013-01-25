@@ -5,10 +5,6 @@
   CURRENT_TIME_MONITOR_MS = 10,
   EMPTY_STRING = "",
 
-  // YouTube suggests 200x200 as minimum, video spec says 300x150.
-  MIN_WIDTH = 300,
-  MIN_HEIGHT = 200,
-
   // Example: http://www.youtube.com/watch?v=12345678901
   regexYouTube = /^.*(?:\/|v=)(.{11})/,
 
@@ -79,8 +75,6 @@
         duration: NaN,
         ended: false,
         paused: true,
-        width: parent.width|0   ? parent.width  : MIN_WIDTH,
-        height: parent.height|0 ? parent.height : MIN_HEIGHT,
         error: null
       },
       playerReady = false,
@@ -288,8 +282,6 @@
         destroyPlayer();
       }
 
-      elem.width = impl.width;
-      elem.height = impl.height;
       parent.appendChild( elem );
 
       // Use any player vars passed on the URL
@@ -334,8 +326,8 @@
       aSrc = regexYouTube.exec( aSrc )[ 1 ];
 
       player = new YT.Player( elem, {
-        width: impl.width,
-        height: impl.height,
+        width: "100%",
+        height: "100%",
         wmode: playerVars.wmode,
         videoId: aSrc,
         playerVars: playerVars,
@@ -525,21 +517,13 @@
 
       width: {
         get: function() {
-          return elem.width;
-        },
-        set: function( aValue ) {
-          elem.width = aValue;
-          impl.width = elem.width;
+          return self.parentNode.offsetWidth;
         }
       },
 
       height: {
         get: function() {
-          return elem.height;
-        },
-        set: function( aValue ) {
-          elem.height = aValue;
-          impl.height = elem.height;
+          return self.parentNode.offsetHeight;
         }
       },
 
