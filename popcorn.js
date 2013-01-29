@@ -425,6 +425,10 @@
 
     position: function( elem ) {
 
+      if ( !elem.parentNode ) {
+        return null;
+      }
+
       var clientRect = elem.getBoundingClientRect(),
           bounds = {},
           doc = elem.ownerDocument,
