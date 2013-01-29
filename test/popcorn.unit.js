@@ -1536,7 +1536,7 @@ test( "Popcorn.dom.find() throws for invalid selectors in debug mode", function(
 
 
 module( "Popcorn Position" );
-test( "position", 25, function() {
+test( "position", 26, function() {
 
   var $absolute = $( ".absolute" ),
       $relative = $( ".relative" ),
@@ -1653,6 +1653,9 @@ test( "position", 25, function() {
   } catch( e ) {
     ok( false, e );
   }
+
+  var node = document.createElement( "video" );
+  equal( Popcorn.position( node ), null, "Nodes without a parent cannot have a position." );
 
   p.destroy();
   $( "#position-tests" ).hide();
