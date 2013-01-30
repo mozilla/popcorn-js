@@ -583,8 +583,6 @@
             throw "Volume value must be between 0.0 and 1.0";
           }
 
-          // Remap from HTML5's 0-1 to YouTube's 0-100 range
-          aValue = aValue * 100;
           setVolume( aValue );
         }
       },
