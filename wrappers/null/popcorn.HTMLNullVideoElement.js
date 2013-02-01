@@ -244,14 +244,18 @@
         addPlayerReadyCallback( function() { self.play(); } );
         return;
       }
-      player.play();
-      onPlay();
+      if ( impl.paused ) {
+        player.play();
+        onPlay();
+      }
     };
 
     function onPause() {
-      impl.paused = true;
-      clearInterval( timeUpdateInterval );
-      self.dispatchEvent( "pause" );
+      if ( !impl.paused ) {
+        impl.paused = true;
+        clearInterval( timeUpdateInterval );
+        self.dispatchEvent( "pause" );
+      }
     }
 
     self.pause = function() {
