@@ -26,6 +26,7 @@
     this.currentTime = options.currentTime || 0;
     this.duration = options.duration || NaN;
     this.playInterval = null;
+    this.paused = true;
     this.ended = options.endedCallback || Popcorn.nop;
   }
 
@@ -43,12 +44,18 @@
 
     play: function() {
       var video = this;
-      this.playInterval = setInterval( function() { nullPlay( video ); },
-                                       DEFAULT_UPDATE_RESOLUTION_MS );
+      if ( this.paused ) {
+        this.paused = false;
+        this.playInterval = setInterval( function() { nullPlay( video ); },
+                                         DEFAULT_UPDATE_RESOLUTION_MS );
+      }
     },
 
     pause: function() {
-      clearInterval( this.playInterval );
+      if ( !this.paused ) {
+        this.paused = true;
+        clearInterval( this.playInterval );
+      }
     },
 
     seekTo: function( aTime ) {
@@ -245,7 +252,9 @@
         return;
       }
       player.play();
-      onPlay();
+      if ( impl.paused ) {
+        onPlay();
+      }
     };
 
     function onPause() {
@@ -260,7 +269,9 @@
         return;
       }
       player.pause();
-      onPause();
+      if ( !impl.paused ) {
+        onPause();
+      }
     };
 
     function onEnded() {
