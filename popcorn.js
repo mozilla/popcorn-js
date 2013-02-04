@@ -663,6 +663,7 @@
 
             // remove existing cue so a new one can be added via trackEvents.add
             this.data.trackEvents.remove( id );
+            TrackEvent.end( this, trackEvent );
             // Update track event references
             Popcorn.removeTrackEvent.ref( this, id );
 
@@ -728,12 +729,17 @@
         }
       };
 
+      if ( trackEvent ) {
+        options = Popcorn.extend( trackEvent, options );
+      }
+
       if ( eventType === "cuechange" ) {
 
         //  Supports user defined track event id
         options._id = options.id || options._id || Popcorn.guid( options._natives.type );
 
         this.data.trackEvents.add( options );
+        TrackEvent.start( this, options );
 
         this.timeUpdate( this, null, true );
 
@@ -1081,6 +1087,58 @@
     Abstract.put.call( this, track );
   }
 
+  // Determine if a TrackEvent's "start" and "trackstart" must be called.
+  TrackEvent.start = function( instance, track ) {
+
+    if ( track.end > instance.media.currentTime &&
+        track.start <= instance.media.currentTime && !track._running ) {
+
+      track._running = true;
+      instance.data.running[ track._natives.type ].push( track );
+
+      if ( !instance.data.disabled[ track._natives.type ] ) {
+
+        track._natives.start.call( instance, null, track );
+
+        instance.emit( "trackstart",
+          Popcorn.extend( {}, track, {
+            plugin: track._natives.type,
+            type: "trackstart",
+            track: track
+          })
+        );
+      }
+    }
+  };
+
+  // Determine if a TrackEvent's "end" and "trackend" must be called.
+  TrackEvent.end = function( instance, track ) {
+
+    var runningPlugins;
+
+    if ( ( track.end <= instance.media.currentTime ||
+        track.start > instance.media.currentTime ) && track._running ) {
+
+      runningPlugins = instance.data.running[ track._natives.type ];
+
+      track._running = false;
+      runningPlugins.splice( runningPlugins.indexOf( track ), 1 );
+
+      if ( !instance.data.disabled[ track._natives.type ] ) {
+
+        track._natives.end.call( instance, null, track );
+
+        instance.emit( "trackend",
+          Popcorn.extend( {}, track, {
+            plugin: track._natives.type,
+            type: "trackend",
+            track: track
+          })
+        );
+      }
+    }
+  };
+
   // Internal Only - construct "TrackEvents"
   // data type objects that are used by the Popcorn
   // instance, stored at p.data.trackEvents
@@ -1177,26 +1235,6 @@
       this.parent.data.trackEvents.endIndex++;
     }
 
-    // Display track event immediately if it's enabled and current
-    if ( track.end > this.parent.media.currentTime &&
-        track.start <= this.parent.media.currentTime ) {
-
-      track._running = true;
-      this.parent.data.running[ track._natives.type ].push( track );
-
-      if ( !this.parent.data.disabled[ track._natives.type ] ) {
-
-        track._natives.start.call( this.parent, null, track );
-
-        this.parent.emit( "trackstart",
-          Popcorn.extend({}, track, {
-            plugin: track._natives.type,
-            type: "trackstart",
-            track: track
-          })
-        );
-      }
-    }
   };
 
   TrackEvents.prototype.remove = function( removeId, state ) {
@@ -1215,7 +1253,7 @@
       return this;
     }
 
-    var start, end, animate, historyLen, track, runningPlugins,
+    var start, end, animate, historyLen, track,
         length = this.byStart.length,
         index = 0,
         indexWasAt = 0,
@@ -1315,49 +1353,6 @@
     // Update ordered history array
     this.parent.data.history = history;
 
-    // Always assume that the comparable start and end are
-    // the _current_ values.
-    // This supports TrackEvent invariant enforcement.
-    comparable.start = track.start;
-    comparable.end = track.end;
-
-    // If a previous state has been provided to override the comparison,
-    // enforce the previous state.
-    // This supports TrackEvent invariant enforcement.
-    if ( state && state.previous ) {
-      comparable.start = state.previous.start !== undefined ?
-        state.previous.start : comparable.start;
-
-      comparable.end = state.previous.end !== undefined ?
-        state.previous.end : comparable.end;
-    }
-
-    // Determine if a TrackEvent's "end" and "trackend" must be called
-    // as a consequence of removal from the .trackEvents array.
-    //
-    // This value may be the _current_ state of the TrackEvent or an
-    // explicitly provided state override.
-    if ( comparable.end > this.parent.media.currentTime &&
-        comparable.start <= this.parent.media.currentTime ) {
-
-      runningPlugins = this.parent.data.running[ track._natives.type ];
-
-      track._running = false;
-      runningPlugins.splice( runningPlugins.indexOf( track ), 1 );
-
-      if ( !this.parent.data.disabled[ track._natives.type ] ) {
-
-        track._natives.end.call( this.parent, null, track );
-
-        this.parent.emit( "trackend",
-          Popcorn.extend({}, track, {
-            plugin: track._natives.type,
-            type: "trackend",
-            track: track
-          })
-        );
-      }
-    }
   };
 
   // Helper function used to retrieve old values of properties that
@@ -1409,6 +1404,7 @@
     }
 
     obj.data.trackEvents.add( track );
+    TrackEvent.start( obj, track );
 
     this.timeUpdate( obj, null, true );
 
@@ -1830,13 +1826,14 @@
           runningPlugins.splice( runningPlugins.indexOf( options ), 1 ) &&
           natives.end.apply( this, args );
 
-          this.emit( "trackend",
-            Popcorn.extend({}, options, {
-              plugin: natives.type,
-              type: "trackend",
-              track: Popcorn.getTrackEvent( this, options.id || options._id )
-            })
-          );
+        args[ 1 ]._running = false;
+        this.emit( "trackend",
+          Popcorn.extend( {}, options, {
+            plugin: natives.type,
+            type: "trackend",
+            track: Popcorn.getTrackEvent( this, options.id || options._id )
+          })
+        );
       }, natives._teardown );
 
       // extend teardown to always trigger trackteardown after teardown
@@ -1940,6 +1937,7 @@
         }
 
         this.data.trackEvents.add( options );
+        TrackEvent.start( this, options );
 
         this.timeUpdate( this, null, true );
 
@@ -2010,12 +2008,16 @@
               trackEvent.end = options.end;
             }
 
+            TrackEvent.end( this, trackEvent );
+
             if ( isfn ) {
               definition.call( this, trackEvent );
             }
+
             trackEvent._natives._update.call( this, trackEvent, options );
 
             this.data.trackEvents.add( trackEvent );
+            TrackEvent.start( this, trackEvent );
           } else {
             // This branch is taken when there is no explicitly defined
             // _update method for a plugin. Which will occur either explicitly or
@@ -2029,18 +2031,13 @@
             // This supports TrackEvent invariant enforcement.
             Popcorn.extend( trackEvent, options );
 
+            this.data.trackEvents.remove( id );
+
             // If a _teardown function was defined,
             // enforce for track event removals
             if ( trackEvent._natives._teardown ) {
               trackEvent._natives._teardown.call( this, trackEvent );
             }
-
-            // In order to ensure the correct start/end method invocation behaviour in the case
-            // of enabled and current plugin events that are being updated, provide an explicit
-            // STATE object as the second parameter to trackEvents.remove(x, x, STATE).
-            //
-            // The STATE object supports TrackEvent invariant enforcement.
-            this.data.trackEvents.remove( id, { previous: previousOpts } );
 
             // Update track event references
             Popcorn.removeTrackEvent.ref( this, id );
@@ -2064,6 +2061,7 @@
               }
 
               this.data.trackEvents.add( trackEvent );
+              TrackEvent.start( this, trackEvent );
 
               this.timeUpdate( this, null, true );
 
