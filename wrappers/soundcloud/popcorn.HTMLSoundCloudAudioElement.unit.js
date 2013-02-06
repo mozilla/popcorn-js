@@ -25,6 +25,12 @@ var testData = {
 
       ok( video.style, "Style property on wrapper object isn't null" );
     });
+
+    test( "SoundCloud 03 - canPlaySrc for HTTPS sources", 1, function() {
+      var video = testData.createMedia( "#video" );
+
+      ok( video._canPlaySrc( "https://soundcloud.com/user9067901/tone-pad" ), "SoundCloud returns true for HTTPS sources." );
+    });
   },
 
   shortVideoSrc: "http://soundcloud.com/user9067901/tone-pad",
