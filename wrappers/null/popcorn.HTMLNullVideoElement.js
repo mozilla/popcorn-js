@@ -364,7 +364,6 @@
           return getCurrentTime();
         },
         set: function( aValue ) {
-console.log( aValue );
           changeCurrentTime( aValue );
         }
       },

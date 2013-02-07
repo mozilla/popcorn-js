@@ -534,9 +534,9 @@ asyncTest( "T25 - ended [Known to fail with Vimeo+Chrome, Vimeo+Firefox (ticket 
         video.removeEventListener( "ended", onEnded, false );
         ok( true, "ended fired at end" );
         start();
-      }, false);
-    }, false);
-  }, false);
+      }, false );
+    }, false );
+  }, false );
 
   video.autoplay = true;
   video.muted = true;
