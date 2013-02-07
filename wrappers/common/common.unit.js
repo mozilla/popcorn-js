@@ -511,7 +511,7 @@ asyncTest( "T24 - currentTime, seeking, seeked [Known to fail with Vimeo+Firefox
 });
 
 
-asyncTest( "T25 - ended [Known to fail with Vimeo+Chrome, Vimeo+Firefox (ticket #1266)]", 3, function() {
+asyncTest( "T25 - ended [Known to fail with Vimeo+Chrome, Vimeo+Firefox (ticket #1266)]", 4, function() {
 
   var video = testData.createMedia( "#video" );
   var duration = testData.shortVideoSrc ? testData.shortExpectedDuration : testData.expectedDuration;
@@ -525,6 +525,7 @@ asyncTest( "T25 - ended [Known to fail with Vimeo+Chrome, Vimeo+Firefox (ticket 
   video.addEventListener( "pause", function onPause() {
     video.removeEventListener( "pause", onPause, false );
     ok( true, "pause fired at end" );
+    ok( video.ended, "pause fired at end [Known to fail in youtube due to pause events being fired at some unspecified time after a seekTo call.]" );
 
     video.addEventListener( "timeupdate", function onTimeUpdate() {
       video.removeEventListener( "timeupdate", onTimeUpdate, false );
