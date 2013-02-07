@@ -511,7 +511,7 @@ asyncTest( "T24 - currentTime, seeking, seeked [Known to fail with Vimeo+Firefox
 });
 
 
-asyncTest( "T25 - ended [Known to fail with Vimeo+Chrome, Vimeo+Firefox (ticket #1266)]", 1, function() {
+asyncTest( "T25 - ended [Known to fail with Vimeo+Chrome, Vimeo+Firefox (ticket #1266)]", 3, function() {
 
   var video = testData.createMedia( "#video" );
   var duration = testData.shortVideoSrc ? testData.shortExpectedDuration : testData.expectedDuration;
@@ -522,10 +522,20 @@ asyncTest( "T25 - ended [Known to fail with Vimeo+Chrome, Vimeo+Firefox (ticket 
     video.currentTime = duration - 1;
   }, false);
 
-  video.addEventListener( "ended", function onEnded() {
-    video.removeEventListener( "ended", onEnded, false );
-    ok( true, "ended fired at end" );
-    start();
+  video.addEventListener( "pause", function onPause() {
+    video.removeEventListener( "pause", onPause, false );
+    ok( true, "pause fired at end" );
+
+    video.addEventListener( "timeupdate", function onTimeUpdate() {
+      video.removeEventListener( "timeupdate", onTimeUpdate, false );
+      ok( true, "timeupdate fired at end" );
+
+      video.addEventListener( "ended", function onEnded() {
+        video.removeEventListener( "ended", onEnded, false );
+        ok( true, "ended fired at end" );
+        start();
+      }, false);
+    }, false);
   }, false);
 
   video.autoplay = true;

@@ -199,6 +199,9 @@
         addPlayerReadyCallback( function() { changeCurrentTime( aTime ); } );
         return;
       }
+      if( impl.ended ) {
+        impl.ended = false;
+      }
 
       onSeeking();
       player.seekTo( aTime );
@@ -231,6 +234,7 @@
       } else {
         if( impl.ended ) {
           changeCurrentTime( 0 );
+          impl.ended = false;
         }
 
         if ( impl.paused ) {
@@ -280,7 +284,7 @@
         self.play();
       } else {
         impl.ended = true;
-        clearInterval( timeUpdateInterval );
+        onPause();
         self.dispatchEvent( "timeupdate" );
         self.dispatchEvent( "ended" );
       }
@@ -360,6 +364,7 @@
           return getCurrentTime();
         },
         set: function( aValue ) {
+console.log( aValue );
           changeCurrentTime( aValue );
         }
       },

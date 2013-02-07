@@ -375,6 +375,10 @@
         return;
       }
 
+      if( impl.ended ) {
+        impl.ended = false;
+      }
+
       onSeeking();
       player.seekTo( aTime );
     }
@@ -400,6 +404,7 @@
 
       if( impl.ended ) {
         changeCurrentTime( 0 );
+        impl.ended = false;
       }
       timeUpdateInterval = setInterval( onTimeUpdate,
                                         self._util.TIMEUPDATE_MS );
@@ -448,6 +453,8 @@
         self.play();
       } else {
         impl.ended = true;
+        onPause();
+        self.dispatchEvent( "timeupdate" );
         self.dispatchEvent( "ended" );
       }
     }
