@@ -342,10 +342,10 @@
         // restart playing after ended.  Also, the onPause callback won't get
         // called when we do self.pause() here, so we manually set impl.paused
         // to get the state right.
+        impl.ended = true;
         self.pause();
         onPause();
-
-        impl.ended = true;
+        self.dispatchEvent( "timeupdate" );
         self.dispatchEvent( "ended" );
       }
     }
