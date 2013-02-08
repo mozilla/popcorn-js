@@ -196,6 +196,10 @@
               impl.paused = false;
               addMediaReadyCallback( function() { onPlay(); } );
             } else {
+              // if a pause happens while seeking, ensure we catch it.
+              // in youtube seeks fire pause events, and we don't want to listen to that.
+              // except for the case of an actual pause.
+              catchRoguePauseEvent = false;
               player.pauseVideo();
             }
 
@@ -382,10 +386,6 @@
         return;
       }
 
-      if( impl.ended ) {
-        impl.ended = false;
-      }
-
       onSeeking();
       player.seekTo( aTime );
     }
@@ -395,12 +395,15 @@
     }
 
     function onSeeking() {
+      // a seek in youtube fires a paused event.
+      // we don't want to listen for this, so this state catches the event.
       catchRoguePauseEvent = true;
       impl.seeking = true;
       self.dispatchEvent( "seeking" );
     }
 
     function onSeeked() {
+      impl.ended = false;
       impl.seeking = false;
       self.dispatchEvent( "timeupdate" );
       self.dispatchEvent( "seeked" );
@@ -452,6 +455,10 @@
         addMediaReadyCallback( function() { self.pause(); } );
         return;
       }
+      // if a pause happens while seeking, ensure we catch it.
+      // in youtube seeks fire pause events, and we don't want to listen to that.
+      // except for the case of an actual pause.
+      catchRoguePauseEvent = false;
       player.pauseVideo();
     };
 

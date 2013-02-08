@@ -199,9 +199,6 @@
         addPlayerReadyCallback( function() { changeCurrentTime( aTime ); } );
         return;
       }
-      if( impl.ended ) {
-        impl.ended = false;
-      }
 
       onSeeking();
       player.seekTo( aTime );
@@ -218,6 +215,7 @@
     }
 
     function onSeeked() {
+      impl.ended = false;
       impl.seeking = false;
       self.dispatchEvent( "timeupdate" );
       self.dispatchEvent( "seeked" );
