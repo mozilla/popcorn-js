@@ -71,6 +71,7 @@
       options._iframe = document.createElement( "iframe" );
       options._iframe.setAttribute( "width", "100%" );
       options._iframe.setAttribute( "height", "100%" );
+      options._iframe.setAttribute( "scrolling", options.scrolling || "yes" );
       options._iframe.id = options.id;
       options._iframe.src = options.src;
       options._iframe.style.display = "none";
