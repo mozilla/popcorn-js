@@ -4,12 +4,7 @@
 
   CURRENT_TIME_MONITOR_MS = 16,
   EMPTY_STRING = "",
-  VIMEO_HOST = window.location.protocol + "//player.vimeo.com",
-
-  // Vimeo doesn't give a suggested min size, YouTube suggests 200x200
-  // as minimum, video spec says 300x150.
-  MIN_WIDTH = 300,
-  MIN_HEIGHT = 200;
+  VIMEO_HOST = window.location.protocol + "//player.vimeo.com";
 
   // Utility wrapper around postMessage interface
   function VimeoPlayer( vimeoIFrame ) {
@@ -76,8 +71,6 @@
         duration: NaN,
         ended: false,
         paused: true,
-        width: parent.width|0   ? parent.width  : MIN_WIDTH,
-        height: parent.height|0 ? parent.height : MIN_HEIGHT,
         error: null
       },
       playerReady = false,
@@ -428,8 +421,8 @@
       src += optionsArray.join( "&" );
 
       elem.id = playerUID;
-      elem.width = impl.width; // 500?
-      elem.height = impl.height; // 281?
+      elem.style.width = "100%";
+      elem.style.height = "100%";
       elem.frameBorder = 0;
       elem.webkitAllowFullScreen = true;
       elem.mozAllowFullScreen = true;
@@ -517,26 +510,6 @@
         },
         set: function( aValue ) {
           impl.loop = self._util.isAttributeSet( aValue );
-        }
-      },
-
-      width: {
-        get: function() {
-          return elem.width;
-        },
-        set: function( aValue ) {
-          elem.width = aValue;
-          impl.width = elem.width;
-        }
-      },
-
-      height: {
-        get: function() {
-          return elem.height;
-        },
-        set: function( aValue ) {
-          elem.height = aValue;
-          impl.height = elem.height;
         }
       },
 
