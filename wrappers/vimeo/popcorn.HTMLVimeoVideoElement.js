@@ -513,6 +513,18 @@
         }
       },
 
+      width: {
+        get: function() {
+          return self.parentNode.offsetWidth;
+        }
+      },
+
+      height: {
+        get: function() {
+          return self.parentNode.offsetHeight;
+        }
+      },
+
       currentTime: {
         get: function() {
           return impl.currentTime;
