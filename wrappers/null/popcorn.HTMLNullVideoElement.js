@@ -215,6 +215,7 @@
     }
 
     function onSeeked() {
+      impl.ended = false;
       impl.seeking = false;
       self.dispatchEvent( "timeupdate" );
       self.dispatchEvent( "seeked" );
@@ -231,6 +232,7 @@
       } else {
         if( impl.ended ) {
           changeCurrentTime( 0 );
+          impl.ended = false;
         }
 
         if ( impl.paused ) {
@@ -280,7 +282,7 @@
         self.play();
       } else {
         impl.ended = true;
-        clearInterval( timeUpdateInterval );
+        onPause();
         self.dispatchEvent( "timeupdate" );
         self.dispatchEvent( "ended" );
       }

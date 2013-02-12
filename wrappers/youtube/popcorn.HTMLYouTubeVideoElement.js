@@ -78,6 +78,7 @@
         error: null
       },
       playerReady = false,
+      catchRoguePauseEvent = false,
       mediaReady = false,
       loopedPlay = false,
       player,
@@ -182,6 +183,10 @@
         // ended
         case YT.PlayerState.ENDED:
           onEnded();
+          // Seek back to the start of the video to reset the player,
+          // otherwise the player can become locked out.
+          // I do not see this happen all the time or on all systems.
+          player.seekTo( 0 );
           break;
 
         // playing
@@ -195,6 +200,10 @@
               impl.paused = false;
               addMediaReadyCallback( function() { onPlay(); } );
             } else {
+              // if a pause happens while seeking, ensure we catch it.
+              // in youtube seeks fire pause events, and we don't want to listen to that.
+              // except for the case of an actual pause.
+              catchRoguePauseEvent = false;
               player.pauseVideo();
             }
 
@@ -231,6 +240,12 @@
 
         // paused
         case YT.PlayerState.PAUSED:
+          // a seekTo call fires a pause event, which we don't want at this point.
+          // as long as a seekTo continues to do this, we can safly toggle this state.
+          if ( catchRoguePauseEvent ) {
+            catchRoguePauseEvent = false;
+            break;
+          }
           onPause();
           break;
 
@@ -384,11 +399,15 @@
     }
 
     function onSeeking() {
+      // a seek in youtube fires a paused event.
+      // we don't want to listen for this, so this state catches the event.
+      catchRoguePauseEvent = true;
       impl.seeking = true;
       self.dispatchEvent( "seeking" );
     }
 
     function onSeeked() {
+      impl.ended = false;
       impl.seeking = false;
       self.dispatchEvent( "timeupdate" );
       self.dispatchEvent( "seeked" );
@@ -400,6 +419,7 @@
 
       if( impl.ended ) {
         changeCurrentTime( 0 );
+        impl.ended = false;
       }
       timeUpdateInterval = setInterval( onTimeUpdate,
                                         self._util.TIMEUPDATE_MS );
@@ -439,6 +459,10 @@
         addMediaReadyCallback( function() { self.pause(); } );
         return;
       }
+      // if a pause happens while seeking, ensure we catch it.
+      // in youtube seeks fire pause events, and we don't want to listen to that.
+      // except for the case of an actual pause.
+      catchRoguePauseEvent = false;
       player.pauseVideo();
     };
 
@@ -448,6 +472,8 @@
         self.play();
       } else {
         impl.ended = true;
+        onPause();
+        self.dispatchEvent( "timeupdate" );
         self.dispatchEvent( "ended" );
       }
     }
