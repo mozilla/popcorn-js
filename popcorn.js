@@ -2329,10 +2329,7 @@
     dataType: "",
     success: Popcorn.nop,
     type: "GET",
-    async: true,
-    xhr: function() {
-      return new global.XMLHttpRequest();
-    }
+    async: true
   };
 
   Popcorn.xhr = function( options ) {
@@ -2353,7 +2350,7 @@
     var settings = Popcorn.extend( {}, setup, options );
 
     //  Create new XMLHttpRequest object
-    settings.ajax  = settings.xhr();
+    settings.ajax = new XMLHttpRequest();
 
     if ( settings.ajax ) {
 
