@@ -5354,6 +5354,31 @@ test( "Basic", 2, function() {
   equal( typeof Popcorn.xhr.httpData, "function" , "Popcorn.xhr.httpData is a provided static function" );
 });
 
+asyncTest( "Request Type: GET", 1, function() {
+  Popcorn.xhr({
+    url: "data/method.php?a=1",
+    type: "GET",
+    dataType: "json",
+    success: function( data ) {
+      equal( data.method, "get", "Successful request type: GET" );
+      start();
+    }
+  });
+});
+
+asyncTest( "Request Type: POST", 1, function() {
+  Popcorn.xhr({
+    url: "data/method.php",
+    type: "POST",
+    data: "a=1",
+    dataType: "json",
+    success: function( data ) {
+      equal( data.method, "post", "Successful request type: POST" );
+      start();
+    }
+  });
+});
+
 asyncTest( "Text Response", 2, function() {
 
   Popcorn.xhr({
