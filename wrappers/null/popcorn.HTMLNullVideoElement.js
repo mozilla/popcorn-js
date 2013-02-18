@@ -23,6 +23,7 @@
   temporalRegex = /#t=(\d+)?,?(\d+)?/;
 
   function NullPlayer( options ) {
+    this.startTime = 0;
     this.currentTime = options.currentTime || 0;
     this.duration = options.duration || NaN;
     this.playInterval = null;
@@ -31,12 +32,12 @@
   }
 
   function nullPlay( video ) {
-    if( video.currentTime + DEFAULT_UPDATE_RESOLUTION_S >= video.duration ) {
+    video.currentTime += ( Date.now() - video.startTime ) / 1000;
+    video.startTime = Date.now();
+    if( video.currentTime >= video.duration ) {
       video.currentTime = video.duration;
       video.pause();
       video.ended();
-    } else {
-      video.currentTime += DEFAULT_UPDATE_RESOLUTION_S;
     }
   }
 
@@ -46,6 +47,7 @@
       var video = this;
       if ( this.paused ) {
         this.paused = false;
+        this.startTime = Date.now();
         this.playInterval = setInterval( function() { nullPlay( video ); },
                                          DEFAULT_UPDATE_RESOLUTION_MS );
       }
