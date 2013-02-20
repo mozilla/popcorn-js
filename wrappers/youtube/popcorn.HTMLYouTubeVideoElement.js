@@ -423,7 +423,7 @@
       }
       timeUpdateInterval = setInterval( onTimeUpdate,
                                         self._util.TIMEUPDATE_MS );
-
+      impl.paused = false;
       if( playerPaused ) {
         playerPaused = false;
 
@@ -446,6 +446,7 @@
     };
 
     function onPause() {
+      impl.paused = true;
       if ( !playerPaused ) {
         playerPaused = true;
         clearInterval( timeUpdateInterval );
