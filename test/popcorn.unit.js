@@ -1121,6 +1121,8 @@ asyncTest( "mute", function() {
 
   function plus(){
     if ( ++count == expects ) {
+      video.mute();
+      audio.mute();
       video.destroy();
       audio.destroy();
       start();
@@ -1129,6 +1131,7 @@ asyncTest( "mute", function() {
 
   video.on( "muted", function() {
 
+    this.off( "muted" );
     equal( this.media.muted, true, "Video `muted` attribute is true when muted" );
     plus();
 
@@ -1136,12 +1139,14 @@ asyncTest( "mute", function() {
 
   }).on( "unmuted", function() {
 
+    this.off( "unmuted" );
     equal( this.media.muted, false, "Video `muted` attribute is false when unmuted" );
     plus();
   });
 
   audio.on( "muted", function() {
 
+    this.off( "muted" );
     equal( this.media.muted, true, "Audio `muted` attribute is true when muted" );
     plus();
 
@@ -1149,6 +1154,7 @@ asyncTest( "mute", function() {
 
   }).on( "unmuted", function() {
 
+    this.off( "unmuted" );
     equal( this.media.muted, false, "Audio `muted` attribute is false when unmuted" );
     plus();
   });
