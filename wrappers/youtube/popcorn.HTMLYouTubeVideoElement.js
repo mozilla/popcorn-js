@@ -102,6 +102,14 @@
 
     function onPlayerReady( event ) {
       playerReady = true;
+      // XXX: this should really live in cued below, but doesn't work.
+
+      // Browsers using flash will have the pause() call take too long and cause some
+      // sound to leak out. Muting before to prevent this.
+      player.mute();
+
+      // force an initial play on the video, to remove autostart on initial seekTo.
+      player.playVideo();
     }
 
     function getDuration() {
@@ -170,14 +178,6 @@
 
         // unstarted
         case -1:
-          // XXX: this should really live in cued below, but doesn't work.
-
-          // Browsers using flash will have the pause() call take too long and cause some
-          // sound to leak out. Muting before to prevent this.
-          player.mute();
-
-          // force an initial play on the video, to remove autostart on initial seekTo.
-          player.playVideo();
           break;
 
         // ended
