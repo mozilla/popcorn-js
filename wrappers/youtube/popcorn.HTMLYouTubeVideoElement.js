@@ -79,6 +79,7 @@
       },
       playerReady = false,
       catchRoguePauseEvent = false,
+      catchRoguePlayEvent = false,
       mediaReady = false,
       loopedPlay = false,
       player,
@@ -233,6 +234,9 @@
             // We can't easily determine canplaythrough, but will send anyway.
             impl.readyState = self.HAVE_ENOUGH_DATA;
             self.dispatchEvent( "canplaythrough" );
+          } else if ( catchRoguePlayEvent ) {
+            catchRoguePlayEvent = false;
+            player.pauseVideo();
           } else {
             onPlay();
           }
@@ -424,6 +428,7 @@
       timeUpdateInterval = setInterval( onTimeUpdate,
                                         self._util.TIMEUPDATE_MS );
       impl.paused = false;
+
       if( playerPaused ) {
         playerPaused = false;
 
@@ -474,6 +479,8 @@
       } else {
         impl.ended = true;
         onPause();
+        // YouTube will fire a Playing State change after the video has ended, causing it to loop.
+        catchRoguePlayEvent = true;
         self.dispatchEvent( "timeupdate" );
         self.dispatchEvent( "ended" );
       }
