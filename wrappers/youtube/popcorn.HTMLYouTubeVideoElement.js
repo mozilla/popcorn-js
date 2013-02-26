@@ -102,6 +102,14 @@
     }
 
     function onPlayerReady( event ) {
+      var onMuted = function() {
+        if ( player.isMuted() ) {
+          // force an initial play on the video, to remove autostart on initial seekTo.
+          player.playVideo();
+        } else {
+          setTimeout( onMuted, 0 );
+        }
+      };
       playerReady = true;
       // XXX: this should really live in cued below, but doesn't work.
 
@@ -109,8 +117,8 @@
       // sound to leak out. Muting before to prevent this.
       player.mute();
 
-      // force an initial play on the video, to remove autostart on initial seekTo.
-      player.playVideo();
+      // ensure we are muted.
+      onMuted();
     }
 
     function getDuration() {
@@ -176,10 +184,6 @@
 
     function onPlayerStateChange( event ) {
       switch( event.data ) {
-
-        // unstarted
-        case -1:
-          break;
 
         // ended
         case YT.PlayerState.ENDED:
