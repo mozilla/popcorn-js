@@ -194,7 +194,7 @@
             // fake ready event
             firstPlay = false;
 
-            addPlayerReadyCallback( function() {
+            addMediaReadyCallback( function() {
               bufferedInterval = setInterval( monitorBuffered, 50 );
             });
 

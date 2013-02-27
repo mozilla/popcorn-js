@@ -69,10 +69,10 @@ var testData = {
       equal( video.height, 300, "Returned expected parent element height" );
     });
 
-    asyncTest( "YouTube 02 - buffered", function() {
+    asyncTest( "YouTube 05 - buffered", function() {
 
       var video = testData.createMedia( "#video" ),
-        buffered = video.buffered;
+          buffered = video.buffered;
 
       video.addEventListener( "progress", function onProgress() {
         var end = buffered.end(0);
@@ -98,9 +98,7 @@ var testData = {
         ok( e, "selecting a time range > 0 throws an error" );
       }
     });
-
   }
-
 };
 
 // YouTube tends to fail when the iframes live in the qunit-fixture
