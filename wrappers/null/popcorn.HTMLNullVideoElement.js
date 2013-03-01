@@ -173,8 +173,8 @@
 
       // Parse out the start and duration, if specified
       var fragments = temporalRegex.exec( aSrc ),
-          start = fragments[ 1 ],
-          duration = fragments [ 2 ];
+          start = +fragments[ 1 ],
+          duration = +fragments[ 2 ];
 
       player = new NullPlayer({
         currentTime: start,
