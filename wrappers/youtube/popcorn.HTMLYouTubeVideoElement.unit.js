@@ -75,26 +75,26 @@ var testData = {
           buffered = video.buffered;
 
       video.addEventListener( "progress", function onProgress() {
-        var end = buffered.end(0);
-        equal( buffered.start(0), 0, "video.buffered range start is always 0" );
+        var end = buffered.end( 0 );
+        equal( buffered.start( 0 ), 0, "video.buffered range start is always 0" );
         if ( end > 0 ) {
-          ok( true, "buffered.end(0) " + end + " > 0 on progress" );
+          ok( true, "buffered.end( 0 ) " + end + " > 0 on progress" );
           video.removeEventListener( "progress", onProgress, false );
           start();
         } else {
-          ok( end >= 0, "buffered.end(0): " + end + " >= 0 on progress" );
+          ok( end >= 0, "buffered.end( 0 ): " + end + " >= 0 on progress" );
         }
       }, false);
 
       video.src = testData.videoSrc + "&autoplay=1&loop=1";
       ok( buffered && typeof buffered === "object", "video.buffered exists" );
       equal( buffered.length, 1, "video.buffered.length === 1" );
-      equal( buffered.start(0), 0, "video.buffered range start is always 0" );
-      equal( buffered.end(0), 0, "video.buffered range end is 0" );
+      equal( buffered.start( 0 ), 0, "video.buffered range start is always 0" );
+      equal( buffered.end( 0 ), 0, "video.buffered range end is 0" );
       try {
-        buffered.start(1);
+        buffered.start( 1 );
         ok( false, "selecting a time range > 0 should throw an error" );
-      } catch (e) {
+      } catch ( e ) {
         ok( e, "selecting a time range > 0 throws an error" );
       }
     });

@@ -194,14 +194,16 @@
             // fake ready event
             firstPlay = false;
 
-            addMediaReadyCallback( function() {
+            addMediaReadyCallback(function() {
               bufferedInterval = setInterval( monitorBuffered, 50 );
             });
 
             // Set initial paused state
             if( impl.autoplay || !impl.paused ) {
               impl.paused = false;
-              addMediaReadyCallback( function() { onPlay(); } );
+              addMediaReadyCallback(function() {
+                onPlay();
+              });
             } else {
               // if a pause happens while seeking, ensure we catch it.
               // in youtube seeks fire pause events, and we don't want to listen to that.
@@ -264,7 +266,8 @@
           break;
       }
 
-      if (event.data !== YT.PlayerState.BUFFERING && playerState === YT.PlayerState.BUFFERING) {
+      if ( event.data !== YT.PlayerState.BUFFERING &&
+           playerState === YT.PlayerState.BUFFERING ) {
         onProgress();
       }
 
@@ -393,7 +396,7 @@
 
         onProgress();
 
-        if (fraction >= 1) {
+        if ( fraction >= 1 ) {
           clearInterval( bufferedInterval );
         }
       }
@@ -661,7 +664,7 @@
         get: function () {
           var timeRanges = {
             start: function( index ) {
-              if (index === 0) {
+              if ( index === 0 ) {
                 return 0;
               }
 
@@ -670,9 +673,9 @@
             },
             end: function( index ) {
               var duration;
-              if (index === 0) {
+              if ( index === 0 ) {
                 duration = getDuration();
-                if (!duration) {
+                if ( !duration ) {
                   return 0;
                 }
 
