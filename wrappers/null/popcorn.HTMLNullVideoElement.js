@@ -371,6 +371,12 @@
       duration: {
         get: function() {
           return getDuration();
+        },
+        set: function( val ) {
+          if ( !isNaN( val ) ) {
+            player.duration = val;
+            self.dispatchEvent( "durationchange" );
+          }
         }
       },
 
