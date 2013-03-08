@@ -245,6 +245,20 @@
         //  Check for no duration info (NaN)
         videoDurationPlus = duration != duration ? Number.MAX_VALUE : duration + 1;
 
+        self.on( "durationchange", function() {
+          var byEnd = self.data.trackEvents.byEnd,
+              byStart = self.data.trackEvents.byStart,
+              newDuration = self.duration(),
+              newEndPaddingDuration = newDuration != newDuration ? Number.MAX_VALUE : newDuration + 1;
+
+          byEnd.splice( byEnd.length - 1, 1 );
+          byStart.splice( byStart.length - 1, 1 );
+          Popcorn.addTrackEvent( self, {
+            start: newEndPaddingDuration,
+            end: newEndPaddingDuration
+          });
+        });
+
         Popcorn.addTrackEvent( self, {
           start: videoDurationPlus,
           end: videoDurationPlus
