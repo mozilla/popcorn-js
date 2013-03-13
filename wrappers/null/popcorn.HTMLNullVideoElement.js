@@ -93,6 +93,7 @@
         paused: 1, // 1 vs. true to differentiate first time access
         error: null
       },
+      waiting = false,
       playerReadyCallbacks = [],
       timeUpdateInterval;
 
@@ -226,6 +227,9 @@
     }
 
     function onPlay() {
+      if ( waiting ) {
+        return;
+      }
       // Deal with first time play vs. subsequent.
       if( impl.paused === 1 ) {
         impl.paused = false;
@@ -251,6 +255,9 @@
     }
 
     self.play = function() {
+      if ( waiting ) {
+        return;
+      }
       if( !playerReady ) {
         addPlayerReadyCallback( function() { self.play(); } );
         return;
@@ -262,12 +269,18 @@
     };
 
     function onPause() {
+      if ( waiting ) {
+        return;
+      }
       impl.paused = true;
       clearInterval( timeUpdateInterval );
       self.dispatchEvent( "pause" );
     }
 
     self.pause = function() {
+      if ( waiting ) {
+        return;
+      }
       if( !playerReady ) {
         addPlayerReadyCallback( function() { self.pause(); } );
         return;
@@ -279,6 +292,8 @@
     };
 
     self._wait = function() {
+console.log( "waiting" );
+      waiting = true;
       if ( !impl.paused ) {
         clearInterval( timeUpdateInterval );
       }
@@ -286,7 +301,8 @@
       self.dispatchEvent( "waiting" );
     };
 
-    self._unwait = function() {
+    self._unWait = function() {
+      waiting = false;
       if ( !impl.paused ) {
         timeUpdateInterval = setInterval( onTimeUpdate,
                                           self._util.TIMEUPDATE_MS );

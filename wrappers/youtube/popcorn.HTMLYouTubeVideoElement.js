@@ -78,6 +78,7 @@
         error: null
       },
       playerReady = false,
+      waiting = false,
       catchRoguePauseEvent = false,
       catchRoguePlayEvent = false,
       mediaReady = false,
@@ -149,7 +150,7 @@
     function onPlayerError(event) {
       // There's no perfect mapping to HTML5 errors from YouTube errors.
       var err = { name: "MediaError" };
-
+console.log( event.data );
       switch( event.data ) {
 
         // invalid parameter
@@ -186,6 +187,7 @@
     }
 
     function onPlayerStateChange( event ) {
+console.log( event.data );
       switch( event.data ) {
 
         // ended
@@ -250,6 +252,8 @@
           } else if ( catchRoguePlayEvent ) {
             catchRoguePlayEvent = false;
             player.pauseVideo();
+          } else if ( waiting ) {
+            player.pauseVideo();
           } else {
             onPlay();
           }
@@ -262,6 +266,8 @@
           if ( catchRoguePauseEvent ) {
             catchRoguePauseEvent = false;
             break;
+          } else if ( waiting ) {
+            break;
           }
           onPause();
           break;
@@ -270,6 +276,7 @@
         case YT.PlayerState.BUFFERING:
           impl.networkState = self.NETWORK_LOADING;
           impl.readyState = self.HAVE_CURRENT_DATA;
+console.log( "waiting youtube wrapper" );
           self.dispatchEvent( "waiting" );
           break;
 
@@ -462,7 +469,9 @@
     }
 
     function onPlay() {
-
+      if ( waiting ) {
+        return;
+      }
       if( impl.ended ) {
         changeCurrentTime( 0 );
         impl.ended = false;
@@ -488,6 +497,9 @@
     }
 
     self.play = function() {
+      if ( waiting ) {
+        return;
+      }
       impl.paused = false;
       if( !mediaReady ) {
         addMediaReadyCallback( function() { self.play(); } );
@@ -497,6 +509,9 @@
     };
 
     function onPause() {
+      if ( waiting ) {
+        return;
+      }
       impl.paused = true;
       if ( !playerPaused ) {
         playerPaused = true;
@@ -506,6 +521,9 @@
     }
 
     self.pause = function() {
+      if ( waiting ) {
+        return;
+      }
       impl.paused = true;
       if( !mediaReady ) {
         addMediaReadyCallback( function() { self.pause(); } );
@@ -516,6 +534,29 @@
       // except for the case of an actual pause.
       catchRoguePauseEvent = false;
       player.pauseVideo();
+    };
+
+    self._wait = function() {
+      waiting = true;
+      if ( !impl.paused ) {
+        clearInterval( timeUpdateInterval );
+      }
+      impl.readyState = self.HAVE_CURRENT_DATA;
+      self.dispatchEvent( "waiting" );
+    };
+
+    self._unWait = function() {
+      waiting = false;
+      if ( !impl.paused ) {
+        timeUpdateInterval = setInterval( onTimeUpdate,
+                                          self._util.TIMEUPDATE_MS );
+      }
+
+      impl.readyState = self.HAVE_FUTURE_DATA;
+      self.dispatchEvent( "canplay" );
+
+      impl.readyState = self.HAVE_ENOUGH_DATA;
+      self.dispatchEvent( "canplaythrough" );
     };
 
     function onEnded() {
