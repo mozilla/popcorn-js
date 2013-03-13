@@ -278,6 +278,27 @@
       }
     };
 
+    self._wait = function() {
+      if ( !impl.paused ) {
+        clearInterval( timeUpdateInterval );
+      }
+      impl.readyState = self.HAVE_CURRENT_DATA;
+      self.dispatchEvent( "waiting" );
+    };
+
+    self._unwait = function() {
+      if ( !impl.paused ) {
+        timeUpdateInterval = setInterval( onTimeUpdate,
+                                          self._util.TIMEUPDATE_MS );
+      }
+
+      impl.readyState = self.HAVE_FUTURE_DATA;
+      self.dispatchEvent( "canplay" );
+
+      impl.readyState = self.HAVE_ENOUGH_DATA;
+      self.dispatchEvent( "canplaythrough" );
+    };
+
     function onEnded() {
       if( impl.loop ) {
         changeCurrentTime( 0 );

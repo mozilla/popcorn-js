@@ -269,6 +269,7 @@
         // buffering
         case YT.PlayerState.BUFFERING:
           impl.networkState = self.NETWORK_LOADING;
+          impl.readyState = self.HAVE_CURRENT_DATA;
           self.dispatchEvent( "waiting" );
           break;
 
@@ -281,6 +282,12 @@
       if ( event.data !== YT.PlayerState.BUFFERING &&
            playerState === YT.PlayerState.BUFFERING ) {
         onProgress();
+
+        impl.readyState = self.HAVE_FUTURE_DATA;
+        self.dispatchEvent( "canplay" );
+
+        impl.readyState = self.HAVE_ENOUGH_DATA;
+        self.dispatchEvent( "canplaythrough" );
       }
 
       playerState = event.data;
