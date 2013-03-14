@@ -60,6 +60,19 @@
       }
     },
 
+    wait: function() {
+      if ( !this.paused ) {
+        clearInterval( this.playInterval );
+      }
+    },
+
+    unWait: function() {
+      if ( !this.paused ) {
+        this.playInterval = setInterval( function() { nullPlay( video ); },
+                                         DEFAULT_UPDATE_RESOLUTION_MS );
+      }
+    },
+
     seekTo: function( aTime ) {
       aTime = aTime < 0 ? 0 : aTime;
       aTime = aTime > this.duration ? this.duration : aTime;
@@ -292,9 +305,9 @@
     };
 
     self._wait = function() {
-console.log( "waiting" );
       waiting = true;
       if ( !impl.paused ) {
+        player.wait();
         clearInterval( timeUpdateInterval );
       }
       impl.readyState = self.HAVE_CURRENT_DATA;
@@ -304,6 +317,8 @@ console.log( "waiting" );
     self._unWait = function() {
       waiting = false;
       if ( !impl.paused ) {
+console.log( "unwait" );
+        player.unWait();
         timeUpdateInterval = setInterval( onTimeUpdate,
                                           self._util.TIMEUPDATE_MS );
       }

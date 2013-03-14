@@ -150,7 +150,6 @@
     function onPlayerError(event) {
       // There's no perfect mapping to HTML5 errors from YouTube errors.
       var err = { name: "MediaError" };
-console.log( event.data );
       switch( event.data ) {
 
         // invalid parameter
@@ -187,7 +186,6 @@ console.log( event.data );
     }
 
     function onPlayerStateChange( event ) {
-console.log( event.data );
       switch( event.data ) {
 
         // ended
@@ -206,7 +204,7 @@ console.log( event.data );
             firstPlay = false;
 
             addMediaReadyCallback(function() {
-              bufferedInterval = setInterval( monitorBuffered, 50 );
+              bufferedInterval = setInterval( monitorBuffered, 350 );
             });
 
             // Set initial paused state
@@ -276,7 +274,6 @@ console.log( event.data );
         case YT.PlayerState.BUFFERING:
           impl.networkState = self.NETWORK_LOADING;
           impl.readyState = self.HAVE_CURRENT_DATA;
-console.log( "waiting youtube wrapper" );
           self.dispatchEvent( "waiting" );
           break;
 
@@ -288,13 +285,8 @@ console.log( "waiting youtube wrapper" );
 
       if ( event.data !== YT.PlayerState.BUFFERING &&
            playerState === YT.PlayerState.BUFFERING ) {
+
         onProgress();
-
-        impl.readyState = self.HAVE_FUTURE_DATA;
-        self.dispatchEvent( "canplay" );
-
-        impl.readyState = self.HAVE_ENOUGH_DATA;
-        self.dispatchEvent( "canplaythrough" );
       }
 
       playerState = event.data;
@@ -493,6 +485,20 @@ console.log( "waiting youtube wrapper" );
     }
 
     function onProgress() {
+
+      if ( impl.currentTime / impl.duration > lastLoadedFraction ) {
+        impl.networkState = self.NETWORK_LOADING;
+        impl.readyState = self.HAVE_CURRENT_DATA;
+        self.dispatchEvent( "waiting" );
+      } else if ( impl.readyState < self.HAVE_FUTURE_DATA ) {
+
+        impl.readyState = self.HAVE_FUTURE_DATA;
+        self.dispatchEvent( "canplay" );
+
+        impl.readyState = self.HAVE_ENOUGH_DATA;
+        self.dispatchEvent( "canplaythrough" );
+      }
+
       self.dispatchEvent( "progress" );
     }
 
