@@ -90,6 +90,14 @@
       playerReadyCallbacks.unshift( callback );
     }
 
+    function callPlayerReadyCallbacks() {
+      var i = playerReadyCallbacks.length;
+      while( i-- ) {
+        playerReadyCallbacks[ i ]();
+        playerReadyCallbacks.pop();
+      }
+    }
+
     // SoundCloud's widget fires its READY event too early for the audio
     // to be used (i.e., the widget is setup, but not the audio decoder).
     // To deal with this we have to wait on loadProgress to fire with a
@@ -200,11 +208,7 @@
           impl.readyState = self.HAVE_ENOUGH_DATA;
           self.dispatchEvent( "canplaythrough" );
 
-          var i = playerReadyCallbacks.length;
-          while( i-- ) {
-            playerReadyCallbacks[ i ]();
-            delete playerReadyCallbacks[ i ];
-          }
+          callPlayerReadyCallbacks();
 
           // Auto-start if necessary
           if( impl.paused && impl.autoplay ) {

@@ -32,7 +32,10 @@
   }
 
   function nullPlay( video ) {
-    video.currentTime += ( Date.now() - video.startTime ) / 1000;
+    var diff = Date.now() - video.startTime;
+    if ( diff > 0 ) {
+      video.currentTime += diff / 1000;
+    }
     video.startTime = Date.now();
     if( video.currentTime >= video.duration ) {
       video.currentTime = video.duration;
@@ -67,7 +70,9 @@
     },
 
     unWait: function() {
+      var video = this;
       if ( !this.paused ) {
+        this.startTime = Date.now();
         this.playInterval = setInterval( function() { nullPlay( video ); },
                                          DEFAULT_UPDATE_RESOLUTION_MS );
       }
@@ -123,6 +128,14 @@
       playerReadyCallbacks.unshift( callback );
     }
 
+    function callPlayerReadyCallbacks() {
+      var i = playerReadyCallbacks.length;
+      while( i-- ) {
+        playerReadyCallbacks[ i ]();
+        playerReadyCallbacks.pop();
+      }
+    }
+
     function onPlayerReady( ) {
       playerReady = true;
 
@@ -138,11 +151,7 @@
       impl.readyState = self.HAVE_ENOUGH_DATA;
       self.dispatchEvent( "canplaythrough" );
 
-      var i = playerReadyCallbacks.length;
-      while( i-- ) {
-        playerReadyCallbacks[ i ]();
-        delete playerReadyCallbacks[ i ];
-      }
+      callPlayerReadyCallbacks();
 
       // Auto-start if necessary
       if( impl.autoplay ) {
@@ -211,7 +220,7 @@
     }
 
     function changeCurrentTime( aTime ) {
-      if( !playerReady ) {
+      if( !playerReady || waiting ) {
         addPlayerReadyCallback( function() { changeCurrentTime( aTime ); } );
         return;
       }
@@ -268,10 +277,8 @@
     }
 
     self.play = function() {
-      if ( waiting ) {
-        return;
-      }
-      if( !playerReady ) {
+console.log( waiting, "in play" );
+      if( !playerReady || waiting ) {
         addPlayerReadyCallback( function() { self.play(); } );
         return;
       }
@@ -291,10 +298,8 @@
     }
 
     self.pause = function() {
-      if ( waiting ) {
-        return;
-      }
-      if( !playerReady ) {
+console.log( waiting, "in pause" );
+      if( !playerReady || waiting ) {
         addPlayerReadyCallback( function() { self.pause(); } );
         return;
       }
@@ -305,29 +310,35 @@
     };
 
     self._wait = function() {
-      waiting = true;
-      if ( !impl.paused ) {
+      if ( !waiting ) {
+        waiting = true;
         player.wait();
-        clearInterval( timeUpdateInterval );
+        if ( !impl.paused ) {
+          clearInterval( timeUpdateInterval );
+        }
+        impl.readyState = self.HAVE_CURRENT_DATA;
+        self.dispatchEvent( "waiting" );
       }
-      impl.readyState = self.HAVE_CURRENT_DATA;
-      self.dispatchEvent( "waiting" );
     };
 
     self._unWait = function() {
-      waiting = false;
-      if ( !impl.paused ) {
-console.log( "unwait" );
+      if ( waiting ) {
+        waiting = false;
+
+        callPlayerReadyCallbacks();
+
         player.unWait();
-        timeUpdateInterval = setInterval( onTimeUpdate,
-                                          self._util.TIMEUPDATE_MS );
+        if ( !impl.paused ) {
+          timeUpdateInterval = setInterval( onTimeUpdate,
+                                            self._util.TIMEUPDATE_MS );
+        }
+
+        impl.readyState = self.HAVE_FUTURE_DATA;
+        self.dispatchEvent( "canplay" );
+
+        impl.readyState = self.HAVE_ENOUGH_DATA;
+        self.dispatchEvent( "canplaythrough" );
       }
-
-      impl.readyState = self.HAVE_FUTURE_DATA;
-      self.dispatchEvent( "canplay" );
-
-      impl.readyState = self.HAVE_ENOUGH_DATA;
-      self.dispatchEvent( "canplaythrough" );
     };
 
     function onEnded() {

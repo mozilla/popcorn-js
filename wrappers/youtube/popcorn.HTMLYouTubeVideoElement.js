@@ -105,6 +105,14 @@
       mediaReadyCallbacks.unshift( callback );
     }
 
+    function callMediaReadyCallbacks() {
+      var i = mediaReadyCallbacks.length;
+      while( i-- ) {
+        mediaReadyCallbacks[ i ]();
+        mediaReadyCallbacks.pop();
+      }
+    }
+
     function onPlayerReady( event ) {
       var onMuted = function() {
         if ( player.isMuted() ) {
@@ -238,11 +246,7 @@
             self.dispatchEvent( "canplay" );
 
             mediaReady = true;
-            var i = mediaReadyCallbacks.length;
-            while( i-- ) {
-              mediaReadyCallbacks[ i ]();
-              delete mediaReadyCallbacks[ i ];
-            }
+            callMediaReadyCallbacks();
 
             // We can't easily determine canplaythrough, but will send anyway.
             impl.readyState = self.HAVE_ENOUGH_DATA;
@@ -478,6 +482,7 @@
         // Only 1 play when video.loop=true
         if ( ( impl.loop && !loopedPlay ) || !impl.loop ) {
           loopedPlay = true;
+console.log( "onplay" );
           self.dispatchEvent( "play" );
         }
         self.dispatchEvent( "playing" );
@@ -503,11 +508,9 @@
     }
 
     self.play = function() {
-      if ( waiting ) {
-        return;
-      }
       impl.paused = false;
-      if( !mediaReady ) {
+console.log( waiting, "youtube play" );
+      if( !mediaReady || waiting ) {
         addMediaReadyCallback( function() { self.play(); } );
         return;
       }
@@ -527,11 +530,8 @@
     }
 
     self.pause = function() {
-      if ( waiting ) {
-        return;
-      }
       impl.paused = true;
-      if( !mediaReady ) {
+      if( !mediaReady || waiting ) {
         addMediaReadyCallback( function() { self.pause(); } );
         return;
       }
@@ -543,26 +543,35 @@
     };
 
     self._wait = function() {
+      if ( !waiting ) {
       waiting = true;
-      if ( !impl.paused ) {
-        clearInterval( timeUpdateInterval );
+        if ( !impl.paused ) {
+          playerPaused = true;
+          player.pauseVideo();
+          clearInterval( timeUpdateInterval );
+        }
+        impl.readyState = self.HAVE_CURRENT_DATA;
+        self.dispatchEvent( "waiting" );
       }
-      impl.readyState = self.HAVE_CURRENT_DATA;
-      self.dispatchEvent( "waiting" );
     };
 
     self._unWait = function() {
-      waiting = false;
-      if ( !impl.paused ) {
-        timeUpdateInterval = setInterval( onTimeUpdate,
-                                          self._util.TIMEUPDATE_MS );
+      if ( waiting ) {
+        waiting = false;
+        callMediaReadyCallbacks();
+        if ( !impl.paused ) {
+          playerPaused = false;
+          player.playVideo();
+          timeUpdateInterval = setInterval( onTimeUpdate,
+                                            self._util.TIMEUPDATE_MS );
+        }
+
+        impl.readyState = self.HAVE_FUTURE_DATA;
+        self.dispatchEvent( "canplay" );
+
+        impl.readyState = self.HAVE_ENOUGH_DATA;
+        self.dispatchEvent( "canplaythrough" );
       }
-
-      impl.readyState = self.HAVE_FUTURE_DATA;
-      self.dispatchEvent( "canplay" );
-
-      impl.readyState = self.HAVE_ENOUGH_DATA;
-      self.dispatchEvent( "canplaythrough" );
     };
 
     function onEnded() {

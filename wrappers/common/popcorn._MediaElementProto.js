@@ -117,7 +117,11 @@
         };
 
       customEvent.initCustomEvent( this._eventNamespace + name, false, false, detail );
-      document.dispatchEvent( customEvent );
+      try{
+        document.dispatchEvent( customEvent );
+      } catch(e) {
+        debugger;
+      }
     },
 
     load: Popcorn.nop,
