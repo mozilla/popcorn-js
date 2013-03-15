@@ -482,7 +482,6 @@
         // Only 1 play when video.loop=true
         if ( ( impl.loop && !loopedPlay ) || !impl.loop ) {
           loopedPlay = true;
-console.log( "onplay" );
           self.dispatchEvent( "play" );
         }
         self.dispatchEvent( "playing" );
@@ -509,7 +508,6 @@ console.log( "onplay" );
 
     self.play = function() {
       impl.paused = false;
-console.log( waiting, "youtube play" );
       if( !mediaReady || waiting ) {
         addMediaReadyCallback( function() { self.play(); } );
         return;
@@ -560,8 +558,8 @@ console.log( waiting, "youtube play" );
         waiting = false;
         callMediaReadyCallbacks();
         if ( !impl.paused ) {
-          playerPaused = false;
           player.playVideo();
+          clearInterval( timeUpdateInterval );
           timeUpdateInterval = setInterval( onTimeUpdate,
                                             self._util.TIMEUPDATE_MS );
         }

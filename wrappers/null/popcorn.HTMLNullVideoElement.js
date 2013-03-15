@@ -73,6 +73,7 @@
       var video = this;
       if ( !this.paused ) {
         this.startTime = Date.now();
+        clearInterval( this.playInterval );
         this.playInterval = setInterval( function() { nullPlay( video ); },
                                          DEFAULT_UPDATE_RESOLUTION_MS );
       }
@@ -277,7 +278,6 @@
     }
 
     self.play = function() {
-console.log( waiting, "in play" );
       if( !playerReady || waiting ) {
         addPlayerReadyCallback( function() { self.play(); } );
         return;
@@ -298,7 +298,6 @@ console.log( waiting, "in play" );
     }
 
     self.pause = function() {
-console.log( waiting, "in pause" );
       if( !playerReady || waiting ) {
         addPlayerReadyCallback( function() { self.pause(); } );
         return;
@@ -322,13 +321,14 @@ console.log( waiting, "in pause" );
     };
 
     self._unWait = function() {
-      if ( waiting ) {
+      if ( waiting && player ) {
         waiting = false;
 
         callPlayerReadyCallbacks();
 
         player.unWait();
         if ( !impl.paused ) {
+          clearInterval( timeUpdateInterval );
           timeUpdateInterval = setInterval( onTimeUpdate,
                                             self._util.TIMEUPDATE_MS );
         }
