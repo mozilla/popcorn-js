@@ -78,6 +78,7 @@
         error: null
       },
       playerReady = false,
+      waiting = false,
       catchRoguePauseEvent = false,
       catchRoguePlayEvent = false,
       mediaReady = false,
@@ -102,6 +103,14 @@
 
     function addMediaReadyCallback( callback ) {
       mediaReadyCallbacks.unshift( callback );
+    }
+
+    function callMediaReadyCallbacks() {
+      var i = mediaReadyCallbacks.length;
+      while( i-- ) {
+        mediaReadyCallbacks[ i ]();
+        mediaReadyCallbacks.pop();
+      }
     }
 
     function onPlayerReady( event ) {
@@ -149,7 +158,6 @@
     function onPlayerError(event) {
       // There's no perfect mapping to HTML5 errors from YouTube errors.
       var err = { name: "MediaError" };
-
       switch( event.data ) {
 
         // invalid parameter
@@ -204,7 +212,7 @@
             firstPlay = false;
 
             addMediaReadyCallback(function() {
-              bufferedInterval = setInterval( monitorBuffered, 50 );
+              bufferedInterval = setInterval( monitorBuffered, 350 );
             });
 
             // Set initial paused state
@@ -238,17 +246,15 @@
             self.dispatchEvent( "canplay" );
 
             mediaReady = true;
-            var i = mediaReadyCallbacks.length;
-            while( i-- ) {
-              mediaReadyCallbacks[ i ]();
-              delete mediaReadyCallbacks[ i ];
-            }
+            callMediaReadyCallbacks();
 
             // We can't easily determine canplaythrough, but will send anyway.
             impl.readyState = self.HAVE_ENOUGH_DATA;
             self.dispatchEvent( "canplaythrough" );
           } else if ( catchRoguePlayEvent ) {
             catchRoguePlayEvent = false;
+            player.pauseVideo();
+          } else if ( waiting ) {
             player.pauseVideo();
           } else {
             onPlay();
@@ -262,6 +268,8 @@
           if ( catchRoguePauseEvent ) {
             catchRoguePauseEvent = false;
             break;
+          } else if ( waiting ) {
+            break;
           }
           onPause();
           break;
@@ -269,6 +277,7 @@
         // buffering
         case YT.PlayerState.BUFFERING:
           impl.networkState = self.NETWORK_LOADING;
+          impl.readyState = self.HAVE_CURRENT_DATA;
           self.dispatchEvent( "waiting" );
           break;
 
@@ -280,6 +289,7 @@
 
       if ( event.data !== YT.PlayerState.BUFFERING &&
            playerState === YT.PlayerState.BUFFERING ) {
+
         onProgress();
       }
 
@@ -455,7 +465,9 @@
     }
 
     function onPlay() {
-
+      if ( waiting ) {
+        return;
+      }
       if( impl.ended ) {
         changeCurrentTime( 0 );
         impl.ended = false;
@@ -477,12 +489,26 @@
     }
 
     function onProgress() {
+
+      if ( impl.currentTime / impl.duration > lastLoadedFraction ) {
+        impl.networkState = self.NETWORK_LOADING;
+        impl.readyState = self.HAVE_CURRENT_DATA;
+        self.dispatchEvent( "waiting" );
+      } else if ( impl.readyState < self.HAVE_FUTURE_DATA ) {
+
+        impl.readyState = self.HAVE_FUTURE_DATA;
+        self.dispatchEvent( "canplay" );
+
+        impl.readyState = self.HAVE_ENOUGH_DATA;
+        self.dispatchEvent( "canplaythrough" );
+      }
+
       self.dispatchEvent( "progress" );
     }
 
     self.play = function() {
       impl.paused = false;
-      if( !mediaReady ) {
+      if( !mediaReady || waiting ) {
         addMediaReadyCallback( function() { self.play(); } );
         return;
       }
@@ -490,6 +516,9 @@
     };
 
     function onPause() {
+      if ( waiting ) {
+        return;
+      }
       impl.paused = true;
       if ( !playerPaused ) {
         playerPaused = true;
@@ -500,7 +529,7 @@
 
     self.pause = function() {
       impl.paused = true;
-      if( !mediaReady ) {
+      if( !mediaReady || waiting ) {
         addMediaReadyCallback( function() { self.pause(); } );
         return;
       }
@@ -509,6 +538,38 @@
       // except for the case of an actual pause.
       catchRoguePauseEvent = false;
       player.pauseVideo();
+    };
+
+    self._wait = function() {
+      if ( !waiting ) {
+      waiting = true;
+        if ( !impl.paused ) {
+          playerPaused = true;
+          player.pauseVideo();
+          clearInterval( timeUpdateInterval );
+        }
+        impl.readyState = self.HAVE_CURRENT_DATA;
+        self.dispatchEvent( "waiting" );
+      }
+    };
+
+    self._unWait = function() {
+      if ( waiting ) {
+        waiting = false;
+        callMediaReadyCallbacks();
+        if ( !impl.paused ) {
+          player.playVideo();
+          clearInterval( timeUpdateInterval );
+          timeUpdateInterval = setInterval( onTimeUpdate,
+                                            self._util.TIMEUPDATE_MS );
+        }
+
+        impl.readyState = self.HAVE_FUTURE_DATA;
+        self.dispatchEvent( "canplay" );
+
+        impl.readyState = self.HAVE_ENOUGH_DATA;
+        self.dispatchEvent( "canplaythrough" );
+      }
     };
 
     function onEnded() {

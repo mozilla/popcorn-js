@@ -93,6 +93,14 @@
       playerReadyCallbacks.unshift( callback );
     }
 
+    function callPlayerReadyCallbacks() {
+      var i = playerReadyCallbacks.length;
+      while( i-- ) {
+        playerReadyCallbacks[ i ]();
+        playerReadyCallbacks.pop();
+      }
+    }
+
     function onPlayerReady( event ) {
       player.addEventListener( 'loadProgress' );
       player.addEventListener( 'playProgress' );
@@ -131,12 +139,6 @@
           // Auto-start if necessary
           if( impl.autoplay ) {
             self.play();
-          }
-
-          var i = playerReadyCallbacks.length;
-          while( i-- ) {
-            playerReadyCallbacks[ i ]();
-            delete playerReadyCallbacks[ i ];
           }
         }
       }
