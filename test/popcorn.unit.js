@@ -299,6 +299,48 @@ asyncTest( "TrackEvent Invariant", 1, function() {
   });
 });
 
+
+test( "TrackEvent construction w/ Defaults (#1454)", 2, function() {
+  var p = Popcorn( "#video" ),
+      a, b;
+
+  Popcorn.plugin( "temp", {
+    start: function() {},
+    end: function() {}
+  });
+
+  // Create a trackevent before defaults are created
+  p.temp({
+    id: "a",
+    start: 1,
+    end: 2
+  });
+
+  a = p.getTrackEvent( "a" );
+
+  // Setup a defaults, all newly created trackevents
+  // for this plugin will have these applied.
+  p.defaults( "temp", {
+    foo: 1
+  });
+
+  // Create a trackevent that will have the defaults
+  // applied.
+  p.temp({
+    id: "b",
+    start: 1,
+    end: 2
+  });
+
+  b = p.getTrackEvent( "b" );
+
+  equal(
+    a.constructor, b.constructor, "TrackEvents are correctly constructed when defaults are applied"
+  );
+
+  Popcorn.removePlugin( "temp" );
+});
+
 test( "Popcorn.removeTrackEvent", 5, function() {
 
   var pop = Popcorn( "#video" ),
