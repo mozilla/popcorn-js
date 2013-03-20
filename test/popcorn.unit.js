@@ -300,7 +300,7 @@ asyncTest( "TrackEvent Invariant", 1, function() {
 });
 
 
-test( "TrackEvent construction w/ Defaults (#1454)", 2, function() {
+test( "TrackEvent construction w/ Defaults (#1454)", 1, function() {
   var p = Popcorn( "#video" ),
       a, b;
 
@@ -339,6 +339,7 @@ test( "TrackEvent construction w/ Defaults (#1454)", 2, function() {
   );
 
   Popcorn.removePlugin( "temp" );
+  p.destroy();
 });
 
 test( "Popcorn.removeTrackEvent", 5, function() {

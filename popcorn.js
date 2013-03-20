@@ -1371,6 +1371,7 @@
 
   // Internal Only - Adds track events to the instance object
   Popcorn.addTrackEvent = function( obj, track ) {
+    var temp;
 
     if ( track instanceof TrackEvent ) {
       return;
@@ -1383,7 +1384,14 @@
     if ( track && track._natives && track._natives.type &&
         ( obj.options.defaults && obj.options.defaults[ track._natives.type ] ) ) {
 
-      track = Popcorn.extend( {}, obj.options.defaults[ track._natives.type ], track );
+      // To ensure that the TrackEvent Invariant Policy is enforced,
+      // First, copy the properties of the newly created track event event
+      // to a temporary holder
+      temp = Popcorn.extend( {}, track );
+
+      // Next, copy the default onto the newly created trackevent, followed by the
+      // temporary holder.
+      Popcorn.extend( track, obj.options.defaults[ track._natives.type ], temp );
     }
 
     if ( track._natives ) {
