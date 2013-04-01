@@ -389,6 +389,21 @@
       }
     }
 
+    mediaWrapper = Popcorn.HTMLJWPlayerVideoElement;
+    if ( mediaWrapper ) {
+      var jwDiv = document.createElement( "div" );
+      jwDiv.id = Popcorn.guid( "popcorn-jwplayer-" );
+      node.appendChild( jwDiv );
+      media = mediaWrapper( jwDiv );
+      popcorn = Popcorn( media, options );
+      // Set src, but not until after we return the media so the caller
+      // can get error events, if any.
+      setTimeout( function() {
+        media.src = src[ 0 ];
+      }, 0 );
+      return popcorn;
+    }
+
     // If we don't have any players or wrappers that can handle this,
     // Default to using HTML5 video.  Similar to the HTMLVideoElement
     // wrapper, we put a video in the div passed to us via:
