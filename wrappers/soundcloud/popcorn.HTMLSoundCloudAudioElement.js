@@ -449,7 +449,8 @@
           "&sharing=false" +
           "&download=false" +
           "&show_comments=false" +
-          "&show_user=false";
+          "&show_user=false" +
+          "&single_active=false";
       });
     }
 
