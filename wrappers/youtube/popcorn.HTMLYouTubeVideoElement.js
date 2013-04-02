@@ -360,7 +360,7 @@
       impl.controls = playerVars.controls;
 
       // Set wmode to transparent to show video overlays
-      playerVars.wmode = playerVars.wmode || "transparent";
+      playerVars.wmode = playerVars.wmode || "opaque";
 
       // Get video ID out of youtube url
       aSrc = regexYouTube.exec( aSrc )[ 1 ];
