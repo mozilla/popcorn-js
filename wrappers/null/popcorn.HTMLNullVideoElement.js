@@ -20,7 +20,7 @@
   // We currently support simple temporal fragments:
   //   #t=,100   -- a null video of 100s (starts at 0s)
   //   #t=5,100  -- a null video of 100s, which starts at 5s (i.e., 95s duration)
-  temporalRegex = /#t=(\d+)?,?(\d+)?/;
+  temporalRegex = /#t=(\d+\.?\d*)?,?(\d+\.?\d*)/;
 
   function NullPlayer( options ) {
     this.startTime = 0;
@@ -438,7 +438,7 @@
 
   // Helper for identifying URLs we know how to play.
   HTMLNullVideoElement.prototype._canPlaySrc = function( url ) {
-    return ( /#t=\d*,?\d+?/ ).test( url ) ?
+    return ( temporalRegex ).test( url ) ?
       "probably" :
       EMPTY_STRING;
   };
