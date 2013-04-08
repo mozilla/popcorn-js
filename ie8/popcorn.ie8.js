@@ -18,14 +18,23 @@
 
     event = ( event === "load" ) ? "onreadystatechange" : "on" + event;
 
-    this.attachEvent( event, callBack );
+    if( event === "onreadystatechange" ){
+      callBack.readyStateCheck = callBack.readyStateCheck || function( e ){
+
+        if( self.readyState === "loaded" ){
+          callBack( e );
+        }
+      };
+    }
+
+    this.attachEvent( event, ( callBack.readyStateCheck || callBack ) );
   };
 
   HTMLScriptElement.prototype.removeEventListener = HTMLScriptElement.prototype.removeEventListener || function( event, callBack ) {
 
     event = ( event === "load" ) ? "onreadystatechange" : "on" + event;
 
-    this.detachEvent( event, callBack );
+    this.detachEvent( event, ( callBack.readyStateCheck || callBack ) );
   };
 
   document.createEvent = document.createEvent || function ( type ) {
