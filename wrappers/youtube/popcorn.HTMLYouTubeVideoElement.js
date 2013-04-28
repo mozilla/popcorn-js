@@ -609,6 +609,16 @@
         }
       },
 
+      playbackRate: {
+        get: function() {
+          return player.getPlaybackRate();
+        },
+        set: function( aValue ) {
+          self.dispatchEvent("ratechange");
+          player.setPlaybackRate(aValue);
+        }
+      },
+
       duration: {
         get: function() {
           return getDuration();
