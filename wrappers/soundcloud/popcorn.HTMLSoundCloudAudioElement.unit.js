@@ -31,6 +31,12 @@ var testData = {
 
       ok( video._canPlaySrc( "https://soundcloud.com/user9067901/tone-pad" ), "SoundCloud returns true for HTTPS sources." );
     });
+
+    test( "SoundCloud 04 - can't rate playback", 1, function() {
+      var video = testData.createMedia( "#video" );
+      
+      ok( video.canRatePlayback === false, "Can't rate playback");
+    });
   },
 
   shortVideoSrc: "http://soundcloud.com/user9067901/tone-pad",

@@ -30,6 +30,39 @@ var testData = {
       video.src = testData.videoSrc + "&autoplay=1&loop=1";
 
     });
+
+    // This test is tricky since it depends on the player used
+    // Works only with the HTML5 one (http://www.youtube.com/html5)
+    asyncTest( "Youtube 02 - can play back rate", 1, function() {
+      var video = testData.createMedia( "#video" );
+
+      video.src = testData.videoSrc;
+
+      video.addEventListener("loadeddata", function onLoadedData() {
+        video.removeEventListener("loadeddata", onLoadedData);
+        equal( video.canRatePlayback, true, "Can rate playback" );
+        start();
+      }, false);
+    });
+
+    asyncTest( "Youtube 03 - change playback rate", 2, function() {
+      var video = testData.createMedia( "#video" );
+
+      video.src = testData.videoSrc;
+
+      video.addEventListener("loadeddata", function onLoadedData() {
+        video.removeEventListener("loadeddata", onLoadedData);
+        equal( video.playbackRate, 1, "Playback rate is 1 by default" );
+
+        video.addEventListener("ratechange", function onRateChange () {
+          video.removeEventListener("ratechange", onRateChange);
+          equal( video.playbackRate, 2, "Playback rate is 2" );
+          start();
+        }, false);
+
+        video.playbackRate = 2;  
+      }, false);
+    });
   },
 
   playerSpecificSyncTests: function() {
@@ -97,7 +130,7 @@ var testData = {
       } catch ( e ) {
         ok( e, "selecting a time range > 0 throws an error" );
       }
-    });
+    })
   }
 };
 

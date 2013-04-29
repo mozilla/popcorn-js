@@ -27,6 +27,11 @@ var testData = {
       ok( video.duration === 123 && video.currentTime === 12.54, "Correct duration and currentTime" );
 
     });
+
+    test( "Null Wrapper 02 - can't rate playback", 1, function() {
+      var video = testData.createMedia( "#video" );
+      ok( video.canRatePlayback === false, "Can't rate playback");
+    });
   }
 
 };

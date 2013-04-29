@@ -762,6 +762,13 @@ asyncTest( "T35 - duration ready in loadedmetadata", 1, function() {
   video.src = testData.videoSrc;
 });
 
+test( "T35 - networkState", function() {
+
+  var video = testData.createMedia( "#video" );
+  ok( video.canRatePlayback === false, "Can't rate playback by default");
+
+});
+
 // Add any player-specific sync tests now
 if( testData.playerSpecificSyncTests ) {
   testData.playerSpecificSyncTests();
