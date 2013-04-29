@@ -630,7 +630,6 @@
           return player.getPlaybackRate();
         },
         set: function( aValue ) {
-          self.dispatchEvent("ratechange");
           player.setPlaybackRate(aValue);
         }
       },
