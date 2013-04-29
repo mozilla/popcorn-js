@@ -286,6 +286,10 @@
       playerState = event.data;
     }
 
+    function onPlaybackRateChange() {
+      self.dispatchEvent('ratechange');
+    }
+
     function destroyPlayer() {
       if( !( playerReady && player ) ) {
         return;
@@ -374,7 +378,8 @@
         events: {
           'onReady': onPlayerReady,
           'onError': onPlayerError,
-          'onStateChange': onPlayerStateChange
+          'onStateChange': onPlayerStateChange,
+          'onPlaybackRateChange': onPlaybackRateChange
         }
       });
 
