@@ -3,6 +3,7 @@
   var
 
   CURRENT_TIME_MONITOR_MS = 10,
+  PAUSE_SEEK_THRESHOLD = 0.1,
   EMPTY_STRING = "",
 
   // Example: http://www.youtube.com/watch?v=12345678901
@@ -78,7 +79,6 @@
         error: null
       },
       playerReady = false,
-      catchRoguePauseEvent = false,
       catchRoguePlayEvent = false,
       mediaReady = false,
       loopedPlay = false,
@@ -214,10 +214,6 @@
                 onPlay();
               });
             } else {
-              // if a pause happens while seeking, ensure we catch it.
-              // in youtube seeks fire pause events, and we don't want to listen to that.
-              // except for the case of an actual pause.
-              catchRoguePauseEvent = false;
               player.pauseVideo();
             }
 
@@ -257,13 +253,16 @@
 
         // paused
         case YT.PlayerState.PAUSED:
-          // a seekTo call fires a pause event, which we don't want at this point.
-          // as long as a seekTo continues to do this, we can safly toggle this state.
-          if ( catchRoguePauseEvent ) {
-            catchRoguePauseEvent = false;
-            break;
+          // seeking fires a pause event.  Try to catch this and emit
+          // seeking/seeked events instead of pause.
+          var playerTime = player.getCurrentTime();
+          if ( ABS( impl.currentTime - playerTime ) > PAUSE_SEEK_THRESHOLD) { 
+              impl.currentTime = playerTime;
+              onSeeking();
+              onSeeked();
+          } else {
+              onPause();
           }
-          onPause();
           break;
 
         // buffering
@@ -390,10 +389,6 @@
     function monitorCurrentTime() {
       var playerTime = player.getCurrentTime();
       if ( !impl.seeking ) {
-        if ( ABS( impl.currentTime - playerTime ) * 1000 > CURRENT_TIME_MONITOR_MS ) {
-          onSeeking();
-          onSeeked();
-        }
         impl.currentTime = playerTime;
       } else if ( ABS( playerTime - impl.currentTime ) < 1 ) {
         onSeeked();
@@ -440,7 +435,6 @@
     function onSeeking() {
       // a seek in youtube fires a paused event.
       // we don't want to listen for this, so this state catches the event.
-      catchRoguePauseEvent = true;
       impl.seeking = true;
       self.dispatchEvent( "seeking" );
     }
@@ -507,7 +501,6 @@
       // if a pause happens while seeking, ensure we catch it.
       // in youtube seeks fire pause events, and we don't want to listen to that.
       // except for the case of an actual pause.
-      catchRoguePauseEvent = false;
       player.pauseVideo();
     };
 
