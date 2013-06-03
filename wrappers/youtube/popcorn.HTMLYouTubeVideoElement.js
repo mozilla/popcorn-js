@@ -390,7 +390,7 @@
     function monitorCurrentTime() {
       var playerTime = player.getCurrentTime();
       if ( !impl.seeking ) {
-        if ( ABS( impl.currentTime - playerTime ) > CURRENT_TIME_MONITOR_MS ) {
+        if ( ABS( impl.currentTime - playerTime ) * 1000 > CURRENT_TIME_MONITOR_MS ) {
           onSeeking();
           onSeeked();
         }
