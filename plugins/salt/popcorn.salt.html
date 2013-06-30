@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Popcorn Salt Plugin</title>
+<script src="../../popcorn.js"></script>
+<script src="popcorn.salt.js"></script>
+<style>  
+  #contentContainer{
+    position: absolute;
+  }
+  #overlaysContainer{
+    position: absolute;
+    top:0px;
+    left:0px;
+    height:80%;
+    width:100%;
+  }
+  #blockLayoutTest{
+    position:relative;
+    top:20px;
+    left:20px;
+    display:block;
+    font-family: Arial, sans-serif;
+    color:white;
+
+  }
+  #inlineLayoutTest{
+    position:relative;
+    top:20px;
+    left:20px;
+    display:inline;
+    font-family: Arial, sans-serif;
+    color:white;
+  }
+</style>
+
+<script>
+    Popcorn( function () {
+      var p = Popcorn( "#video" );
+
+      p.salt( {
+          start: 1,
+          end: 3,
+          target: 'inlineLayoutTest'
+        } );
+
+        p.salt( {
+          start: 4,
+          end: 6,
+          target: 'blockLayoutTest'
+        } ); 
+
+    p.play();
+});
+
+</script>
+
+</head>
+<body>
+ <h1 id="qunit-header">Popcorn Salt Plug-in Demo</h1>
+  <p> Inline-display text will be shown from seconds 1-3.</p>
+  <p> Block-display text will be shown from seconds 4-6.</p>
+
+
+    <div id="contentContainer">
+        <video controls height="450" width="800" id="video">
+          <source src="../../test/trailer.mp4" type='video/mp4; codecs="avc1, mp4a"'>
+          <source src="../../test/trailer.ogv" type='video/ogg; codecs="theora, vorbis"'>
+          <source src="../../test/trailer.webm" type='video/webm; codecs="vp8, vorbis"'>
+        </video>    
+        <div id="overlaysContainer">
+          <div id="blockLayoutTest">
+            This element is block positioned.
+          </div>
+          <div id="inlineLayoutTest">
+            This element is inline positioned.
+          </div>
+        </div>
+    </div>
+</body>
+</html>
