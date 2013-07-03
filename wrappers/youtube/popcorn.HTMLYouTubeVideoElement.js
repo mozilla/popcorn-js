@@ -186,6 +186,7 @@
     }
 
     function onPlayerStateChange( event ) {
+
       switch( event.data ) {
 
         // ended
@@ -257,6 +258,13 @@
 
         // paused
         case YT.PlayerState.PAUSED:
+
+          // Youtube fires a paused event before an ended event.
+          // We have no need for this.
+          if ( player.getDuration() === player.getCurrentTime() ) {
+            break;
+          }
+
           // a seekTo call fires a pause event, which we don't want at this point.
           // as long as a seekTo continues to do this, we can safly toggle this state.
           if ( catchRoguePauseEvent ) {
