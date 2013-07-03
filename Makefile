@@ -68,8 +68,9 @@ EFFECTS_SRC := $(filter-out %unit.js, $(shell find $(EFFECTS_DIR) -name 'popcorn
 # Grab all popcorn.<Module-name>.js files from modules dir
 MODULES_SRC := $(filter-out %unit.js, $(shell find $(MODULES_DIR) -name 'popcorn.*.js' -print))
 
-# Grab all popcorn.<wrapper-name>.js files from modules dir
-WRAPPERS_SRC := $(filter-out %unit.js, $(shell find $(WRAPPERS_DIR) -name 'popcorn.*.js' -print))
+# Grab all popcorn.<wrapper-name>.js files from wrappers dir
+WRAPPERS_SRC := $(WRAPPERS_DIR)/common/popcorn._MediaElementProto.js \
+                $(filter-out %unit.js %MediaElementProto.js, $(shell find $(WRAPPERS_DIR) -name 'popcorn.*.js' -print))
 
 # Grab all popcorn.<plugin-name>.unit.js files from plugins dir
 PLUGINS_UNIT := $(shell find ${PLUGINS_DIR} -name 'popcorn.*.unit.js' -print)
