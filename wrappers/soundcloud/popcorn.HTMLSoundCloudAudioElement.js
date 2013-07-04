@@ -148,31 +148,27 @@
     // we don't call pause() right away, but wait on loadedProgress to be 1
     // before we do.
     function onPlayerReady( data ) {
-      player.bind( SC.Widget.Events.LOAD_PROGRESS, function( data ) {
+
+      // Turn down the volume and kick-off a play to force load
+      player.setVolume( 0 );
+      player.bind( SC.Widget.Events.PLAY_PROGRESS, function( data ) {
 
         // If we're getting the HTML5 audio, loadedProgress will be 0 or 1.
         // If we're getting Flash, it will be 0 or > 0.  Prefer > 0 to make
         // both happy.
         if( data.loadedProgress > 0 ) {
-          player.unbind( SC.Widget.Events.LOAD_PROGRESS );
+          player.unbind( SC.Widget.Events.PLAY_PROGRESS );
+
+          player.bind( SC.Widget.Events.PAUSE, function( data ) {
+            player.unbind( SC.Widget.Events.PAUSE );
+
+            // Play/Pause cycle is done, restore volume and continue loading.
+            player.setVolume( 100 );
+            onLoaded();
+          });
           player.pause();
         }
       });
-
-      player.bind( SC.Widget.Events.PLAY, function( data ) {
-        player.unbind( SC.Widget.Events.PLAY );
-
-        player.bind( SC.Widget.Events.PAUSE, function( data ) {
-          player.unbind( SC.Widget.Events.PAUSE );
-
-          // Play/Pause cycle is done, restore volume and continue loading.
-          player.setVolume( 100 );
-          onLoaded();
-        });
-      });
-
-      // Turn down the volume and kick-off a play to force load
-      player.setVolume( 0 );
       player.play();
     }
 
