@@ -11,7 +11,6 @@
       <script src="../../plugins/googlefeed/popcorn.googlefeed.js"></script>
       <script src="../../plugins/image/popcorn.image.js"></script>
       <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
-      <script src="../../plugins/twitter/popcorn.twitter.js"></script>
       <script>
         // Helper function to get elements
         function element(id) {
@@ -39,13 +38,6 @@
               numberofimages: '8',
               target: 'flickrdiv'
             })
-            .twitter({
-              start: 20,
-              end: 45,
-              title: 'Oil Spill',
-              src: '#oilspill',
-              target: 'twitterdiv'
-            })
             .subtitle({
               start: 5,
               end: 15,
@@ -54,7 +46,7 @@
               language: "en"
             })
             .webpage({
-              id: "webpages-a", 
+              id: "webpages-a",
               start: 0,
               end: 15,
               src: 'http://webmademovies.org/',
@@ -117,7 +109,7 @@
             var volume = (popcorn.volume() === 1) ? 0.5 : 1;
             popcorn.volume(volume);
           }, false);
-          
+
           element('btn-mute').addEventListener('click', function() {
             popcorn.mute( !popcorn.media.muted );
           }, false);
@@ -157,7 +149,6 @@
         <ul>
           <li>From 5 to 40 seconds, the footnote 'The video is "RiP: A Remix Manifesto", by Brett Gaylor' will appear below 'Footnote Area'.</li>
           <li>From 20 to 40 seconds, the a flickr stream of 8 images  tagged 'georgia' will appear below 'Flickr Area'.</li>
-          <li>From 20 to 45 seconds, tweets tagged #oilspill will appear below 'Twitter Area'.</li>
           <li>From 5 to 15 seconds, the Mozilla Drumbeat logo will appear below 'Image Area'.</li>
           <li>From 5 to 15 seconds, the subtitle 'This is overlaid on top of the video. You can hightlight it!' will appear in front of the video.</li>
           <li>From 0 to 20 seconds, blogs from 'http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml' will appear below 'Google Feed Area'.</li>
@@ -169,9 +160,6 @@
       </div>
       <div id="flickrdiv" width="50%" height="50%">
         <strong>Flickr Area</strong><br />
-      </div>
-      <div id="twitterdiv" width="50%" height="50%">
-        <strong>Twitter Area</strong><br />
       </div>
       <div id="imagediv" width="50%" height="50%">
         <strong>Image Area</strong><br />

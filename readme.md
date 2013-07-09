@@ -7,7 +7,7 @@ Overview
 -------------
 Popcorn.js is Mozilla's HTML5 video and media library for the open web.  It allows web developers, filmmakers, artists, designers and others to easily create timeline based web productions. Popcorn.js helps simplify media API and implementation differences between browsers and includes a powerful event system and a rich plugin architecture and plugins.
 
-Popcorn.js can be used with almost any media type you can imagine, from HTML5 audio and video, to YouTube and Vimeo, to SoundCloud, etc.  Popcorn.js also has plugins to allow content from popular web sites and services to be integrated easily, for example, Wikipedia, Twitter, Facebook, Google Maps, etc.
+Popcorn.js can be used with almost any media type you can imagine, from HTML5 audio and video, to YouTube and Vimeo, to SoundCloud, etc.  Popcorn.js also has plugins to allow content from popular web sites and services to be integrated easily, for example, Wikipedia, Facebook, Google Maps, etc.
 
 Anything you can do on the web can be turned into a Popcorn.js plugin, and become part of a timeline-based web experience.  Popcorn.js breaks video out of the box and allows media to fully interact with the rest of the web.
 

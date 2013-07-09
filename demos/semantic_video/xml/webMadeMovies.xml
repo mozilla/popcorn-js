@@ -90,15 +90,12 @@
       <footnote in="00:00:00" out="00:15:00" target="footnotediv">This video made exclusively for drumbeat.org </footnote>
       <tagthisperson target="inthisvideo" in="00:00:05:02" out="00:00:10:07" person="Steve Song" />
       <attribution in="00:00:05:02" out="00:00:10:07" target="container5" resourceid="villagetelcoattrib"></attribution>
-      <twitter in="00:00:05:02" out="00:00:10:07" title="Steve Song" src="@stevesong" target="personaltwitter" width="238" height="120"/>
       <wikipedia in="00:00:05:02" out="00:00:10:07" resourceid="villagetelco" numberofwords="200" lang="en" target="wikidiv"/>
       <flickr in="00:00:05:02" out="00:00:10:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
 
-      <twitter in="00:00:10:07" out="00:00:18:04" title="Oil Spill" src="#oilspill" target="twitter" width="238" height="120"/>
       <attribution in="00:00:10:07" out="00:00:18:04" target="container5">Grassroots Mapping, Tungsten Monkey</attribution>
 
       <tagthisperson target="inthisvideo" in="00:00:18:04" out="00:00:25:02" person="Keyboard Cat"/>
-      <twitter in="00:00:18:04" out="00:00:25:02" title="Keyboard Cat" src="#keyboardcat" target="twitter" width="238" height="120"/>
       <attribution in="00:00:18:04" out="00:00:25:02" target="container5">KeyBoard Cat, Charlie Schmidt</attribution>
 
       <tagthisperson target="inthisvideo" in="00:00:28:09" out="00:00:29:07" person="Jeffrey Warren" />
@@ -109,25 +106,21 @@
 
       <tagthisperson target="inthisvideo" in="00:00:41:00" out="00:01:07:09" person="Jeffrey Warren" />
       <flickr in="00:00:41:00" out="00:01:07:09" target="personalflickr" userid="35034346917@N01" numberofimages="8" padding="4px"/>
-      <twitter in="00:00:41:00" out="00:01:07:09" title="Oil Spill" src="#oilspill" target="twitter" width="238" height="120"/>
       <googlemap resourceid="grandislewiki" in="00:00:41:00" out="00:01:07:09" lat="29.2720" lng="-90.0233 " target="container2" zoom="8"/>
       <wikipedia in="00:00:41:00" out="00:01:07:09" resourceid="oilspill" numberofwords="200" target="wikidiv"/>
       <footnote in="00:00:41:00" out="00:01:07:09" target="footnotediv">Learn more about Grass Roots mapping at www.grassrootsmapping.org</footnote>
-      <twitter in="00:01:07:10" out="00:01:25:07" title="Steve Song" src="@stevesong" target="personaltwitter" width="238" height="120"/>
       <flickr in="00:01:07:10" out="00:01:25:07" target="personalflickr" userid="78868639@N00" numberofimages="8" padding="4px"/>
       <googlemap id="CapeTown" resourceid="capetownwiki" in="00:01:07:10" out="00:01:32:07" lat="-33.9238" lng="18.4233" target="container2" zoom="8"/>
       <wikipedia in="00:01:07:10" out="00:01:32:07" resourceid="villagetelco" numberofwords="200" target="wikidiv"/>
       <tagthisperson target="inthisvideo" in="00:01:25:08" out="00:01:32:07" person="Michael Adeyeye" />
 
       <tagthisperson target="inthisvideo" in="00:01:32:08" out="00:01:38:02" person="Charlie Schmidt" />
-      <twitter in="00:01:32:08" out="00:01:57:11" title="Charlie Schmidt" src="@chuckieart" target="personaltwitter" width="238" height="120"/>
       <googlemap id="MITMediaLab" resourceid="mitmedialabhome" in="00:01:32:08" out="00:01:57:11" lat="42.3613" lng="-71.0863" target="container2" zoom="12"/>
       <tagthisperson target="inthisvideo" in="00:01:38:02" out="00:01:41:10" person="Keyboard Cat" />
       <tagthisperson target="inthisvideo" in="00:01:41:11" out="00:01:57:11" person="Charlie Schmidt" />
 
       <tagthisperson target="inthisvideo" in="00:02:09:00" out="00:03:07:05" person="Jonathan Zittrain" />
 
-      <twitter in="00:02:09:00" out="00:03:07:05" title="Jonathan Zittrain" src="@zittrain" target="personaltwitter" width="238" height="120"/>
       <googlemap resourceid="harvardlawhome" in="00:02:09:00" out="00:03:07:05" lat="42.4222" long="-88.6137" target="container2" zoom="12"/>
 
       <wikipedia in="00:02:09:00" out="00:02:20:00" resourceid="zittrain" numberofwords="200" target="wikidiv"/>
@@ -146,7 +139,6 @@
 
       <wikipedia in="00:02:41:00" out="00:02:57:00" resourceid="internetprotocol" numberofwords="200" target="wikidiv"/>
       <wikipedia in="00:02:57:01" out="00:03:03:00" resourceid="timbernerslee" numberofwords="200" target="wikidiv"/>
-      <twitter in="00:02:57:01" out="00:03:03:00" title="Tim Berners-Lee" src="@timberners_lee" target="twitter" width="238" height="120"/>
 
       <wikipedia in="00:03:03:01" out="00:03:28:00" resourceid="worldwideweb" numberofwords="200" target="wikidiv"/>
 
@@ -160,20 +152,17 @@
       <tagthisperson target="inthisvideo" in="00:03:21:01" out="00:03:28:06" person="Computer Chronicles guy #3" />
 
       <tagthisperson target="inthisvideo" in="00:03:43:00" out="00:03:56:00" person="Jonathan Zittrain" />
-      <twitter in="00:03:43:00" out="00:03:56:00" title="Jonathan Zittrain" src="@zittrain" target="personaltwitter" width="238" height="120"/>
       <footnote in="00:03:43:00" out="00:03:57:00" target="footnotediv">Read Zittrain's book 'The Future of the Internet — And How to Stop It'</footnote>
 
       <tagthisperson target="inthisvideo" in="00:03:59:00" out="00:04:03:05" person="Mona Kasra" />
       <tagthisperson target="inthisvideo" in="00:04:03:06" out="00:04:07:00" person="Noah Workman" />
-      <twitter in="00:04:03:06" out="00:04:07:00" title="Noah Workman" src="@noahworkman" target="personaltwitter" width="238" height="120"/>
       <tagthisperson target="inthisvideo" in="00:04:03:06" out="00:04:13:01" person="Wilken Sanches" />
       <attribution in="00:04:10:00" out="00:04:13:00" target="container5" resourceid="attrib"></attribution>
       <tagthisperson target="inthisvideo" in="00:04:13:02" out="00:04:19:05" person="Keechang Kim" />
-      <twitter in="00:04:19:06" out="00:04:24:01" title="Celine Celines" src="from:celinecelines" target="personaltwitter" width="238" height="120"/>
       <tagthisperson target="inthisvideo" in="00:04:19:06" out="00:04:24:01" person="Celine Celines" />
       <flickr in="00:04:19:06" out="00:04:24:01" target="personalflickr" userid="13072070@N00" numberofimages="8" padding="4px"/>
       <lastfm in="00:40:00" out="01:24:00" artist="yacht" target="lastfmdiv" apikey="30ac38340e8be75f9268727cb4526b3d"/>
-	  
+
     </resources>
 
     <map>
