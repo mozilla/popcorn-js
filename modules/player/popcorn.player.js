@@ -393,7 +393,12 @@
     // Default to using HTML5 video.  Similar to the HTMLVideoElement
     // wrapper, we put a video in the div passed to us via:
     // Popcorn.smart( div, src, options )
-    var videoHTML, videoID = Popcorn.guid( "popcorn-video-" );
+    var videoHTML, videoID = Popcorn.guid( "popcorn-video-" ),
+        videoHTMLContainer = document.createElement( "div" );
+
+    videoHTMLContainer.style.width = "100%";
+    videoHTMLContainer.style.height = "100%";
+    node.appendChild( videoHTMLContainer );
 
     // IE9 doesn't like dynamic creation of source elements on <video>
     // so we do it in one shot via innerHTML.
@@ -402,7 +407,7 @@
       videoHTML += '<source src="' + src[ i ] + '">';
     }
     videoHTML += "</video>";
-    node.innerHTML = videoHTML;
+    videoHTMLContainer.innerHTML = videoHTML;
 
     if ( options && options.events && options.events.error ) {
       node.addEventListener( "error", options.events.error, false );
