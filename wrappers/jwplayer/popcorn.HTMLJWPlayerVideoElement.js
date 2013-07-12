@@ -102,18 +102,24 @@ console.log( "ready check" );
     }
 
     function onPlayerReady() {
-      playerReady = true;
-      impl.readyState = self.HAVE_METADATA;
-      self.dispatchEvent( "loadedmetadata" );
-      self.dispatchEvent( "loadeddata" );
-      impl.readyState = self.HAVE_FUTURE_DATA;
-      self.dispatchEvent( "canplay" );
-      impl.readyState = self.HAVE_ENOUGH_DATA;
-      self.dispatchEvent( "canplaythrough" );
+      player.onPlay(function() {
+        player.onPause(function() {
+          playerReady = true;
+          impl.readyState = self.HAVE_METADATA;
+          self.dispatchEvent( "loadedmetadata" );
+          self.dispatchEvent( "loadeddata" );
+          impl.readyState = self.HAVE_FUTURE_DATA;
+          self.dispatchEvent( "canplay" );
+          impl.readyState = self.HAVE_ENOUGH_DATA;
+          self.dispatchEvent( "canplaythrough" );
+        });      
+        player.pause();
+      });
+      player.play();
     }
 
     function getDuration() {
-      if( !mediaReady ) {
+      /*if( !mediaReady ) {
         // loadedmetadata properly sets the duration, so nothing to do here yet.
         return impl.duration;
       }
@@ -129,9 +135,9 @@ console.log( "ready check" );
         }
       } else {
         setTimeout( getDuration, 50 );
-      }
+      }*/
 
-      return newDuration;
+      return player.getDuration();
     }
 
     function onPlayerError() {
@@ -393,6 +399,7 @@ console.log( "ready check" );
     }
 
     self.play = function() {
+      self.dispatchEvent( "play" );
       /*impl.paused = false;
       if( !mediaReady ) {
         addMediaReadyCallback( function() { self.play(); } );
