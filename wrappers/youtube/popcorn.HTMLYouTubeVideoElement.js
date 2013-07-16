@@ -78,6 +78,7 @@
         error: null
       },
       playerReady = false,
+      waitForAutoplay = false,
       catchRoguePauseEvent = false,
       catchRoguePlayEvent = false,
       mediaReady = false,
@@ -115,6 +116,72 @@
       } else {
         setTimeout( forceCorrectDuration, 50 );
       }
+    }
+
+    function waitForReadyCheck() {
+      var currentTime = player.getCurrentTime(),
+          paused = player.getPlayerState();
+      if ( currentTime === 0 && paused === YT.PlayerState.PAUSED ) {
+        if ( impl.autoplay || !impl.paused ) {
+          waitForAutoplay = true;
+          impl.paused = false;
+          addMediaReadyCallback(function() {
+            onPlay();
+          });
+          player.playVideo();
+        } else {
+          wrapperReady();
+        }
+      } else {
+        setTimeout( waitForReadyCheck, 50 );
+      }
+    }
+
+    function wrapperReady() {
+
+      impl.networkState = self.NETWORK_LOADING;
+      self.dispatchEvent( "loadstart" );
+      self.dispatchEvent( "progress" );
+
+      addMediaReadyCallback(function() {
+        bufferedInterval = setInterval( monitorBuffered, 50 );
+      });
+
+      // Set initial paused state
+      if( impl.autoplay || !impl.paused ) {
+        impl.paused = false;
+        addMediaReadyCallback(function() {
+          onPlay();
+        });
+      }
+
+      // Ensure video will now be unmuted when playing due to the mute on initial load.
+      if( !impl.muted ) {
+        player.unMute();
+      }
+
+      impl.duration = player.getDuration();
+      self.dispatchEvent( "durationchange" );
+      impl.readyState = self.HAVE_METADATA;
+      self.dispatchEvent( "loadedmetadata" );
+      currentTimeInterval = setInterval( monitorCurrentTime,
+                                         CURRENT_TIME_MONITOR_MS );
+      
+      self.dispatchEvent( "loadeddata" );
+
+      impl.readyState = self.HAVE_FUTURE_DATA;
+      self.dispatchEvent( "canplay" );
+
+      mediaReady = true;
+      var i = mediaReadyCallbacks.length;
+      while( i-- ) {
+        mediaReadyCallbacks[ i ]();
+        delete mediaReadyCallbacks[ i ];
+      }
+
+      // We can't easily determine canplaythrough, but will send anyway.
+      impl.readyState = self.HAVE_ENOUGH_DATA;
+      self.dispatchEvent( "canplaythrough" );
     }
 
     function onPlayerReady( event ) {
@@ -183,52 +250,11 @@
         // ended
         case YT.PlayerState.ENDED:
           if ( firstEnd ) {
-            addMediaReadyCallback(function() {
-              bufferedInterval = setInterval( monitorBuffered, 50 );
-            });
-
-            // Set initial paused state
-            if( impl.autoplay || !impl.paused ) {
-              impl.paused = false;
-              addMediaReadyCallback(function() {
-                onPlay();
-              });
-            } else {
-              // if a pause happens while seeking, ensure we catch it.
-              // in youtube seeks fire pause events, and we don't want to listen to that.
-              // except for the case of an actual pause.
-              catchRoguePauseEvent = false;
-              player.pauseVideo();
-            }
-
-            // Ensure video will now be unmuted when playing due to the mute on initial load.
-            if( !impl.muted ) {
-              player.unMute();
-            }
 
             firstEnd = false;
             player.seekTo( 0 );
-            impl.duration = player.getDuration();
-            impl.readyState = self.HAVE_METADATA;
-            self.dispatchEvent( "loadedmetadata" );
-            currentTimeInterval = setInterval( monitorCurrentTime,
-                                               CURRENT_TIME_MONITOR_MS );
-            
-            self.dispatchEvent( "loadeddata" );
-
-            impl.readyState = self.HAVE_FUTURE_DATA;
-            self.dispatchEvent( "canplay" );
-
-            mediaReady = true;
-            var i = mediaReadyCallbacks.length;
-            while( i-- ) {
-              mediaReadyCallbacks[ i ]();
-              delete mediaReadyCallbacks[ i ];
-            }
-
-            // We can't easily determine canplaythrough, but will send anyway.
-            impl.readyState = self.HAVE_ENOUGH_DATA;
-            self.dispatchEvent( "canplaythrough" );
+            player.pauseVideo();
+            waitForReadyCheck();
             break;
           }
           onEnded();
@@ -237,13 +263,14 @@
         // playing
         case YT.PlayerState.PLAYING:
           if( firstPlay ) {
-            // fake ready event
             firstPlay = false;
           } else if ( catchRoguePlayEvent ) {
             catchRoguePlayEvent = false;
             player.pauseVideo();
-          } else {
+          } else if ( mediaReady ) {
             onPlay();
+          } else if ( waitForAutoplay ) {
+            wrapperReady();
           }
           break;
 
@@ -255,7 +282,9 @@
           if ( player.getDuration() === player.getCurrentTime() ) {
             break;
           }
-
+          if ( !mediaReady ) {
+            break;
+          }
           // a seekTo call fires a pause event, which we don't want at this point.
           // as long as a seekTo continues to do this, we can safly toggle this state.
           if ( catchRoguePauseEvent ) {
@@ -277,7 +306,7 @@
           break;
       }
 
-      if ( event.data !== YT.PlayerState.BUFFERING &&
+      if ( mediaReady && event.data !== YT.PlayerState.BUFFERING &&
            playerState === YT.PlayerState.BUFFERING ) {
         onProgress();
       }
@@ -376,10 +405,6 @@
           'onStateChange': onPlayerStateChange
         }
       });
-
-      impl.networkState = self.NETWORK_LOADING;
-      self.dispatchEvent( "loadstart" );
-      self.dispatchEvent( "progress" );
     }
 
     function monitorCurrentTime() {
@@ -642,9 +667,7 @@
 
       volume: {
         get: function() {
-          // Remap from HTML5's 0-1 to YouTube's 0-100 range
-          var volume = getVolume();
-          return volume / 100;
+          return getVolume();
         },
         set: function( aValue ) {
           if( aValue < 0 || aValue > 1 ) {
