@@ -108,10 +108,12 @@
 
     function forceCorrectDuration() {
       var duration = player.getDuration();
-      // Duration is not 0, so start checking for correct duration.
+      // Duration is not 0, so start checking for a duration.
       if ( duration ) {
         // By seeking to the end we force an ended event
         // and thus get proper duration.
+        // This also forces the video to play
+        // because YouTube fires a play on initial seek.
         player.seekTo( duration - 1 );
       } else {
         setTimeout( forceCorrectDuration, 50 );
@@ -123,6 +125,7 @@
           paused = player.getPlayerState();
       if ( currentTime === 0 && paused === YT.PlayerState.PAUSED ) {
         if ( impl.autoplay || !impl.paused ) {
+          // If we need to autoplay, do that now and wait for it.
           waitForAutoplay = true;
           impl.paused = false;
           addMediaReadyCallback(function() {
@@ -152,6 +155,7 @@
         player.unMute();
       }
 
+      // The duration should be correct now.
       impl.duration = player.getDuration();
       self.dispatchEvent( "durationchange" );
       impl.readyState = self.HAVE_METADATA;
@@ -179,7 +183,7 @@
     function onPlayerReady( event ) {
       var onMuted = function() {
         if ( player.isMuted() ) {
-          // force an initial play on the video, to remove autostart on initial seekTo.
+          // Seek to the end of the video to force correct duration.
           forceCorrectDuration();
         } else {
           setTimeout( onMuted, 0 );
@@ -243,9 +247,12 @@
         case YT.PlayerState.ENDED:
           if ( firstEnd ) {
 
+            // This ended event is setup to force correct duration.
             firstEnd = false;
+            // Reset the video's time and playing status.
             player.seekTo( 0 );
             player.pauseVideo();
+            // Wait for both the seek and pause to be finished.
             waitForReadyCheck();
             break;
           }
@@ -263,6 +270,7 @@
             onPlay();
           } else if ( waitForAutoplay ) {
             waitForAutoplay = false;
+            // Once an autoplaying video is playing, we can fire ready events.
             wrapperReady();
           }
           break;
