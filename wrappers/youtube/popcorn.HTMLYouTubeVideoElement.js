@@ -147,14 +147,6 @@
         bufferedInterval = setInterval( monitorBuffered, 50 );
       });
 
-      // Set initial paused state
-      if( impl.autoplay || !impl.paused ) {
-        impl.paused = false;
-        addMediaReadyCallback(function() {
-          onPlay();
-        });
-      }
-
       // Ensure video will now be unmuted when playing due to the mute on initial load.
       if( !impl.muted ) {
         player.unMute();
@@ -270,6 +262,7 @@
           } else if ( mediaReady ) {
             onPlay();
           } else if ( waitForAutoplay ) {
+            waitForAutoplay = false;
             wrapperReady();
           }
           break;
