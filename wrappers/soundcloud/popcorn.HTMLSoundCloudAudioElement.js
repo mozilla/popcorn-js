@@ -72,6 +72,7 @@
         error: null
       },
       playerReady = false,
+      playerPaused = true,
       player,
       playerReadyCallbacks = [],
       timeUpdateInterval,
@@ -125,10 +126,20 @@
       });
 
       player.bind( SC.Widget.Events.SEEK, function( data ) {
+        // Handle this as seconds.
+        var aTime = data.currentPosition / 1000;
+        if ( impl.seeking ) {
+          if ( impl.currentTime / impl.duration >= data.loadedProgress ) {
+            player.seekTo( impl.currentTime * 1000 );
+          } else {
+            onSeeked();
+          }
+          return;
+        }
         onStateChange({
           type: "seek",
           // currentTime is in ms vs. s
-          data: data.currentPosition / 1000
+          data: aTime
         });
       });
 
@@ -150,12 +161,12 @@
     function onPlayerReady( data ) {
 
       // Turn down the volume and kick-off a play to force load
-      player.setVolume( 0 );
       player.bind( SC.Widget.Events.PLAY_PROGRESS, function( data ) {
 
-        // If we're getting the HTML5 audio, loadedProgress will be 0 or 1.
-        // If we're getting Flash, it will be 0 or > 0.  Prefer > 0 to make
-        // both happy.
+        // Turn down the volume.
+        // Loading has to be kicked off before volume can be changed.
+        player.setVolume( 0 );
+        // Wait for both flash and HTML5 to be fully loaded.
         if( data.loadedProgress > 0 ) {
           player.unbind( SC.Widget.Events.PLAY_PROGRESS );
 
@@ -239,6 +250,7 @@
     }
 
     self.play = function() {
+      impl.paused = false;
       if( !playerReady ) {
         addPlayerReadyCallback( function() { self.play(); } );
         return;
@@ -258,7 +270,6 @@
       function seek() {
         onSeeking();
         player.seekTo( aTime );
-        onSeeked();
       }
 
       if( !playerReady ) {
@@ -285,18 +296,21 @@
     }
 
     self.pause = function() {
+      impl.paused = true;
       if( !playerReady ) {
         addPlayerReadyCallback( function() { self.pause(); } );
         return;
       }
-
       player.pause();
     };
 
     function onPause() {
       impl.paused = true;
-      clearInterval( timeUpdateInterval );
-      self.dispatchEvent( "pause" );
+      if( !playerPaused ) {
+        playerPaused = true;
+        clearInterval( timeUpdateInterval );
+        self.dispatchEvent( "pause" );
+      }
     }
 
     function onTimeUpdate() {
@@ -317,8 +331,10 @@
       timeUpdateInterval = setInterval( onTimeUpdate,
                                         self._util.TIMEUPDATE_MS );
 
-      if( impl.paused ) {
-        impl.paused = false;
+      impl.paused = false;
+
+      if ( playerPaused ) {
+        playerPaused = false;
 
         // Only 1 play when video.loop=true
         if ( !impl.loop ) {
