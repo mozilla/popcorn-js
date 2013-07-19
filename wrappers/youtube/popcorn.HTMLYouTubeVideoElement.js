@@ -78,7 +78,6 @@
         error: null
       },
       playerReady = false,
-      waitForAutoplay = false,
       catchRoguePauseEvent = false,
       catchRoguePlayEvent = false,
       mediaReady = false,
@@ -91,8 +90,7 @@
       lastLoadedFraction = 0,
       currentTimeInterval,
       timeUpdateInterval,
-      firstPlay = true,
-      firstEnd = true;
+      firstPlay = true;
 
     // Namespace all events we'll produce
     self._eventNamespace = Popcorn.guid( "HTMLYouTubeVideoElement::" );
@@ -106,85 +104,11 @@
       mediaReadyCallbacks.unshift( callback );
     }
 
-    function forceCorrectDuration() {
-      var duration = player.getDuration();
-      // Duration is not 0, so start checking for a duration.
-      if ( duration ) {
-        // By seeking to the end we force an ended event
-        // and thus get proper duration.
-        // This also forces the video to play
-        // because YouTube fires a play on initial seek.
-        player.seekTo( duration - 1 );
-      } else {
-        setTimeout( forceCorrectDuration, 50 );
-      }
-    }
-
-    function waitForReadyCheck() {
-      var currentTime = player.getCurrentTime(),
-          paused = player.getPlayerState();
-      if ( currentTime === 0 && paused === YT.PlayerState.PAUSED ) {
-        if ( impl.autoplay || !impl.paused ) {
-          // If we need to autoplay, do that now and wait for it.
-          waitForAutoplay = true;
-          impl.paused = false;
-          addMediaReadyCallback(function() {
-            onPlay();
-          });
-          player.playVideo();
-        } else {
-          wrapperReady();
-        }
-      } else {
-        setTimeout( waitForReadyCheck, 50 );
-      }
-    }
-
-    function wrapperReady() {
-
-      impl.networkState = self.NETWORK_LOADING;
-      self.dispatchEvent( "loadstart" );
-      self.dispatchEvent( "progress" );
-
-      addMediaReadyCallback(function() {
-        bufferedInterval = setInterval( monitorBuffered, 50 );
-      });
-
-      // Ensure video will now be unmuted when playing due to the mute on initial load.
-      if( !impl.muted ) {
-        player.unMute();
-      }
-
-      // The duration should be correct now.
-      impl.duration = player.getDuration();
-      self.dispatchEvent( "durationchange" );
-      impl.readyState = self.HAVE_METADATA;
-      self.dispatchEvent( "loadedmetadata" );
-      currentTimeInterval = setInterval( monitorCurrentTime,
-                                         CURRENT_TIME_MONITOR_MS );
-      
-      self.dispatchEvent( "loadeddata" );
-
-      impl.readyState = self.HAVE_FUTURE_DATA;
-      self.dispatchEvent( "canplay" );
-
-      mediaReady = true;
-      var i = mediaReadyCallbacks.length;
-      while( i-- ) {
-        mediaReadyCallbacks[ i ]();
-        delete mediaReadyCallbacks[ i ];
-      }
-
-      // We can't easily determine canplaythrough, but will send anyway.
-      impl.readyState = self.HAVE_ENOUGH_DATA;
-      self.dispatchEvent( "canplaythrough" );
-    }
-
     function onPlayerReady( event ) {
       var onMuted = function() {
         if ( player.isMuted() ) {
-          // Seek to the end of the video to force correct duration.
-          forceCorrectDuration();
+          // force an initial play on the video, to remove autostart on initial seekTo.
+          player.playVideo();
         } else {
           setTimeout( onMuted, 0 );
         }
@@ -198,6 +122,28 @@
 
       // ensure we are muted.
       onMuted();
+    }
+
+    function getDuration() {
+      if( !mediaReady ) {
+        // loadedmetadata properly sets the duration, so nothing to do here yet.
+        return impl.duration;
+      }
+
+      var oldDuration = impl.duration,
+          newDuration = player.getDuration();
+
+      // Deal with duration=0 from YouTube
+      if( newDuration ) {
+        if( oldDuration !== newDuration ) {
+          impl.duration = newDuration;
+          self.dispatchEvent( "durationchange" );
+        }
+      } else {
+        setTimeout( getDuration, 50 );
+      }
+
+      return newDuration;
     }
 
     function onPlayerError(event) {
@@ -245,33 +191,68 @@
 
         // ended
         case YT.PlayerState.ENDED:
-          if ( firstEnd ) {
-
-            // This ended event is setup to force correct duration.
-            firstEnd = false;
-            // Reset the video's time and playing status.
-            player.seekTo( 0 );
-            player.pauseVideo();
-            // Wait for both the seek and pause to be finished.
-            waitForReadyCheck();
-            break;
-          }
           onEnded();
+          // Seek back to the start of the video to reset the player,
+          // otherwise the player can become locked out.
+          // I do not see this happen all the time or on all systems.
+          player.seekTo( 0 );
           break;
 
         // playing
         case YT.PlayerState.PLAYING:
           if( firstPlay ) {
+            // fake ready event
             firstPlay = false;
+
+            addMediaReadyCallback(function() {
+              bufferedInterval = setInterval( monitorBuffered, 50 );
+            });
+
+            // Set initial paused state
+            if( impl.autoplay || !impl.paused ) {
+              impl.paused = false;
+              addMediaReadyCallback(function() {
+                onPlay();
+              });
+            } else {
+              // if a pause happens while seeking, ensure we catch it.
+              // in youtube seeks fire pause events, and we don't want to listen to that.
+              // except for the case of an actual pause.
+              catchRoguePauseEvent = false;
+              player.pauseVideo();
+            }
+
+            // Ensure video will now be unmuted when playing due to the mute on initial load.
+            if( !impl.muted ) {
+              player.unMute();
+            }
+
+            impl.duration = player.getDuration();
+            impl.readyState = self.HAVE_METADATA;
+            self.dispatchEvent( "loadedmetadata" );
+            currentTimeInterval = setInterval( monitorCurrentTime,
+                                               CURRENT_TIME_MONITOR_MS );
+            
+            self.dispatchEvent( "loadeddata" );
+
+            impl.readyState = self.HAVE_FUTURE_DATA;
+            self.dispatchEvent( "canplay" );
+
+            mediaReady = true;
+            var i = mediaReadyCallbacks.length;
+            while( i-- ) {
+              mediaReadyCallbacks[ i ]();
+              delete mediaReadyCallbacks[ i ];
+            }
+
+            // We can't easily determine canplaythrough, but will send anyway.
+            impl.readyState = self.HAVE_ENOUGH_DATA;
+            self.dispatchEvent( "canplaythrough" );
           } else if ( catchRoguePlayEvent ) {
             catchRoguePlayEvent = false;
             player.pauseVideo();
-          } else if ( mediaReady ) {
+          } else {
             onPlay();
-          } else if ( waitForAutoplay ) {
-            waitForAutoplay = false;
-            // Once an autoplaying video is playing, we can fire ready events.
-            wrapperReady();
           }
           break;
 
@@ -283,9 +264,7 @@
           if ( player.getDuration() === player.getCurrentTime() ) {
             break;
           }
-          if ( !mediaReady ) {
-            break;
-          }
+
           // a seekTo call fires a pause event, which we don't want at this point.
           // as long as a seekTo continues to do this, we can safly toggle this state.
           if ( catchRoguePauseEvent ) {
@@ -307,7 +286,7 @@
           break;
       }
 
-      if ( mediaReady && event.data !== YT.PlayerState.BUFFERING &&
+      if ( event.data !== YT.PlayerState.BUFFERING &&
            playerState === YT.PlayerState.BUFFERING ) {
         onProgress();
       }
@@ -406,6 +385,14 @@
           'onStateChange': onPlayerStateChange
         }
       });
+
+      impl.networkState = self.NETWORK_LOADING;
+      self.dispatchEvent( "loadstart" );
+      self.dispatchEvent( "progress" );
+
+      // Queue a get duration call so we'll have duration info
+      // and can dispatch durationchange.
+      getDuration();
     }
 
     function monitorCurrentTime() {
@@ -632,7 +619,7 @@
 
       duration: {
         get: function() {
-          return impl.duration;
+          return getDuration();
         }
       },
 
@@ -668,7 +655,9 @@
 
       volume: {
         get: function() {
-          return getVolume();
+          // Remap from HTML5's 0-1 to YouTube's 0-100 range
+          var volume = getVolume();
+          return volume / 100;
         },
         set: function( aValue ) {
           if( aValue < 0 || aValue > 1 ) {
@@ -708,7 +697,7 @@
             end: function( index ) {
               var duration;
               if ( index === 0 ) {
-                duration = impl.duration;
+                duration = getDuration();
                 if ( !duration ) {
                   return 0;
                 }
