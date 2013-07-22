@@ -91,7 +91,6 @@
       lastLoadedFraction = 0,
       currentTimeInterval,
       timeUpdateInterval,
-      firstPlay = true,
       firstEnd = true;
 
     // Namespace all events we'll produce
