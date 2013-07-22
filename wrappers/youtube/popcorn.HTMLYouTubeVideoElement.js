@@ -261,9 +261,7 @@
 
         // playing
         case YT.PlayerState.PLAYING:
-          if( firstPlay ) {
-            firstPlay = false;
-          } else if ( catchRoguePlayEvent ) {
+          if ( catchRoguePlayEvent ) {
             catchRoguePlayEvent = false;
             player.pauseVideo();
           } else if ( mediaReady ) {
