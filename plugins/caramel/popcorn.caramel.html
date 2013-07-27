@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Popcorn Caramel Plugin</title>
+<script src="../../popcorn.js"></script>
+<script src="popcorn.caramel.js"></script>
+
+
+<script>
+
+//this is the function that I will pass to my caramel call
+function showParams( e, options ) {
+  e.target.innerHTML = options.param_1+" "+options.param_2+" "+options.param_3;
+}
+
+Popcorn( function () {
+      var p = Popcorn( "#video" );
+
+      p.caramel( {
+          url: 'http://popcornjs.org/',
+          target: 'urlClickTest'
+        } );
+
+        p.caramel( {
+          function_name:'showParams',
+          function_params:{'param_1':'This function has ','param_2': 3, 'param_3':'optional parameters.' },
+          target: 'functionClickTest'
+        } ); 
+
+    p.play();
+});
+</script>
+<style>  
+  #contentContainer{
+    position: absolute;
+  }
+  #overlaysContainer{
+    position: absolute;
+    top:0px;
+    left:0px;
+    height:80%;
+    width:100%;
+  }
+  #urlClickTest{
+    position:relative;
+    top:0px;
+    left:300px;
+    width: 150px;
+    border:solid 3px blue;
+    display:block;
+    padding:3px;
+    font-family: Arial, sans-serif;
+
+  }
+  #functionClickTest{
+    position:relative;
+    top:20px;
+    left:300px;
+    width: 150px;
+    border:solid 3px green;
+    padding:3px;
+    font-family: Arial, sans-serif;
+  }
+</style>
+
+</head>
+<body>
+ <h1 id="qunit-header">Popcorn Caramel Plug-in Demo</h1>
+  <p> When the blue outline button is clicked, a window to the popcorn.js homepage will open in a new tab/window.</p>
+  <p> When the green outline button is clicked, its contents will be replaced with the optional parameters that were passed to caramel.</p>
+    <div id="contentContainer">
+        <video controls width="250" id="video">
+          <source src="../../test/trailer.mp4" type='video/mp4; codecs="avc1, mp4a"'>
+          <source src="../../test/trailer.ogv" type='video/ogg; codecs="theora, vorbis"'>
+          <source src="../../test/trailer.webm" type='video/webm; codecs="vp8, vorbis"'>
+        </video>    
+        <div id="overlaysContainer">
+          <div id="urlClickTest">
+            Click on this div opens a new window.
+          </div>
+          <div id="functionClickTest">
+            Clicking this div rewrites contents to show function parameters.
+          </div>
+        </div>
+    </div>
+</body>
+</html>

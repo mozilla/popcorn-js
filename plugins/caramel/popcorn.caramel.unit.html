@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Popcorn Caramel Plugin</title>
+<link rel="stylesheet" href="../../test/qunit/qunit.css" type="text/css" media="screen">
+<script src="../../test/qunit/qunit.js"></script>
+<script src="../../popcorn.js"></script>
+<script src="../code/popcorn.code.js"></script>
+<script src="popcorn.caramel.js"></script>
+<script src="popcorn.caramel.unit.js"></script>
+
+<script>
+function showParams( e, options ) {
+  e.target.innerHTML = options.param_1+" "+options.param_2+" "+options.param_3;
+}
+</script>
+<style>  
+  #contentContainer{
+    position: absolute;
+  }
+  #overlaysContainer{
+    position: absolute;
+    top:0px;
+    left:0px;
+    height:80%;
+    width:100%;
+  }
+  #urlClickTest{
+    position:relative;
+    top:0px;
+    left:300px;
+    width: 150px;
+    border:solid 3px blue;
+    display:block;
+    padding:3px;
+    font-family: Arial, sans-serif;
+
+  }
+  #functionClickTest{
+    position:relative;
+    top:20px;
+    left:300px;
+    width: 150px;
+    border:solid 3px green;
+    padding:3px;
+    font-family: Arial, sans-serif;
+  }
+</style>
+
+</head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+    <div id="contentContainer">
+        <video controls width="250" id="video">
+          <source src="../../test/trailer.mp4" type='video/mp4; codecs="avc1, mp4a"'>
+          <source src="../../test/trailer.ogv" type='video/ogg; codecs="theora, vorbis"'>
+          <source src="../../test/trailer.webm" type='video/webm; codecs="vp8, vorbis"'>
+        </video>    
+        <div id="overlaysContainer">
+          <div id="urlClickTest">
+            Click on this div opens a new window.
+          </div>
+          <div id="functionClickTest">
+            Clicking this div rewrites contents to show function parameters.
+          </div>
+        </div>
+    </div>
+</body>
+</html>
