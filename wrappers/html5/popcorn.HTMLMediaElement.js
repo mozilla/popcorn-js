@@ -19,6 +19,9 @@
     // Add the helper function _canPlaySrc so this works like other wrappers.
     media._canPlaySrc = canPlaySrc;
 
+    // HTML5 player can always rate playback
+    media.canRatePlayback = true;
+
     return media;
   }
 

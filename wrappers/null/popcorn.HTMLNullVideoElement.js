@@ -368,6 +368,14 @@
         }
       },
 
+      // Determine if the player can rate the playback
+      // For NullPlayer, it is always false
+      canRatePlayback: {
+          get: function() {
+              return false;
+          }
+      },
+
       duration: {
         get: function() {
           return getDuration();

@@ -290,6 +290,10 @@
       playerState = event.data;
     }
 
+    function onPlaybackRateChange() {
+      self.dispatchEvent('ratechange');
+    }
+
     function destroyPlayer() {
       if( !( playerReady && player ) ) {
         return;
@@ -378,7 +382,8 @@
         events: {
           'onReady': onPlayerReady,
           'onError': onPlayerError,
-          'onStateChange': onPlayerStateChange
+          'onStateChange': onPlayerStateChange,
+          'onPlaybackRateChange': onPlaybackRateChange
         }
       });
 
@@ -610,6 +615,26 @@
         },
         set: function( aValue ) {
           changeCurrentTime( aValue );
+        }
+      },
+
+      // Determine if the player can rate the playback
+      // For Youtube, only the HTML5 player is supporting that feature
+      // To determine if the current player is an HTML5 or Flash we use a hack
+      // By looking for the absence of cueVideoByFlashvars property
+      // More information here: http://stackoverflow.com/questions/12486655/detect-if-client-using-html5-youtube-player
+      canRatePlayback: {
+          get: function() {
+              return !player.cueVideoByFlashvars;
+          }
+      },
+
+      playbackRate: {
+        get: function() {
+          return player.getPlaybackRate();
+        },
+        set: function( aValue ) {
+          player.setPlaybackRate(aValue);
         }
       },
 

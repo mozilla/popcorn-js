@@ -50,6 +50,11 @@ var testData = {
 
       ok( video.style, "Style property on wrapper object isn't null" );
     });
+
+    test( "Vimeo 03 - can't rate playback", 1, function() {
+      var video = testData.createMedia( "#video" );
+      ok( video.canRatePlayback === false, "Can't rate playback");
+    });
   }
 
 };

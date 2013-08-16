@@ -223,6 +223,12 @@
       get: function() {
         return this.parentNode.id;
       }
+    },
+
+    canRatePlayback: {
+      get: function() {
+        return false;
+      }
     }
 
     // TODO:

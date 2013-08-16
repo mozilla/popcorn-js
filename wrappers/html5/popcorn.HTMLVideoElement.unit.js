@@ -42,4 +42,24 @@ var testData = {
     return Popcorn.HTMLVideoElement( id );
   }
 
+  test( "HTML5 Media Wrapper 01 - can rate playback", 1, function() {
+      var video = testData.createMedia( "#video" );
+      ok( video.canRatePlayback === true, "Can rate playback");
+    });
+
+  asyncTest( "HTML5 Media Wrapper 02 - change playback rate", 2, function() {
+      var video = testData.createMedia( "#video" );
+
+      video.on("loadeddata", function () {
+        equal( video.playbackRate, 1, "Playback rate is 1 by default" );
+
+        video.on("ratechange", function onRateChange () {
+          video.off("ratechange", onRateChange);
+          equal( video.playbackRate, 2, "Playback rate is 2" );
+        });
+        video.playbackRate(2);  
+      });
+      
+    });
+
 };

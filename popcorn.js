@@ -165,6 +165,11 @@
       //  Get media element by id or object reference
       this.media = matches || entity;
 
+      // This method is also define in the HTMLMediaElement wrapper
+      // This is a hack since this wrapper is never instantiate
+      // See https://bugzilla.mozilla.org/show_bug.cgi?id=866750
+      this.media.canRatePlayback = true;
+
       //  inner reference to this media element's nodeName string value
       nodeName = ( this.media.nodeName && this.media.nodeName.toLowerCase() ) || "video";
 

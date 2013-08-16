@@ -585,6 +585,14 @@
         }
       },
 
+      // Determine if the player can rate the playback
+      // Soundcloud player can't rate playback, always return false
+      canRatePlayback: {
+          get: function() {
+              return false;
+          }
+      },
+
       duration: {
         get: function() {
           return impl.duration;
