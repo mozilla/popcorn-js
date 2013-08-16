@@ -68,6 +68,8 @@
         preload: EMPTY_STRING,
         controls: false,
         loop: false,
+        playbackRate: 1.0,
+        defaultPlaybackRate: 1.0,
         poster: EMPTY_STRING,
         volume: 1,
         muted: false,
@@ -183,6 +185,10 @@
 
       impl.error = err;
       self.dispatchEvent( "error" );
+    }
+
+    function onPlaybackRateChange() {
+      self.dispatchEvent('ratechange');
     }
 
     function onPlayerStateChange( event ) {
@@ -378,7 +384,8 @@
         events: {
           'onReady': onPlayerReady,
           'onError': onPlayerError,
-          'onStateChange': onPlayerStateChange
+          'onStateChange': onPlayerStateChange,
+          'onPlaybackRateChange': onPlaybackRateChange
         }
       });
 
@@ -676,6 +683,26 @@
       error: {
         get: function() {
           return impl.error;
+        }
+      },
+
+      playbackRate: {
+        get: function() {
+          return impl.playbackRate;
+        },
+        set: function( value ) {
+          if ( value === 0.0 ) {
+            throw "NOT_SUPPORTED_ERR";
+          } else if ( impl.playbackRate !== value ) {
+            impl.playbackRate = value;
+            player.setPlaybackRate( value );
+          }
+        }
+      },
+
+      defaultPlaybackRate: {
+        get: function() {
+          return impl.defaultPlaybackRate;
         }
       },
 

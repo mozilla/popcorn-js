@@ -69,7 +69,30 @@ var testData = {
       equal( video.height, 300, "Returned expected parent element height" );
     });
 
-    asyncTest( "YouTube 05 - buffered", function() {
+    asyncTest( "YouTube 05 - YouTube playback rate", 4, function() {
+
+      var video = testData.createMedia( "#video" );
+
+      equal( video.defaultPlaybackRate, 1.0, "defaultPlaybackRate is 1.0" );
+      equal( video.playbackRate, 1.0, "initialPlaybackRate is 1.0" );
+
+      video.addEventListener( "loadedmetadata", function() {
+        try {
+          video.playbackRate = 0.0;
+        } catch ( e ) {
+          equal( e, "NOT_SUPPORTED_ERR", "playbackRate of 0.0 throws an error" );
+        }
+        video.addEventListener( "ratechange", function() {
+          equal( video.playbackRate, 2.0, "defaultPlaybackRate is 1.0" );
+          start();
+        }, false );
+        video.playbackRate = 2.0;
+      }, false );
+
+      video.src = testData.videoSrc + "&autoplay=1&loop=1";
+    });
+
+    asyncTest( "YouTube 06 - buffered", function() {
 
       var video = testData.createMedia( "#video" ),
           buffered = video.buffered;
