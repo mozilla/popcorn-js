@@ -9,7 +9,6 @@
   jwCallbacks = [];
 
   function onJWPlayerAPIReady() {
-console.log( "ready" );
     jwReady = true;
     var i = jwCallbacks.length;
     while( i-- ) {
@@ -19,7 +18,6 @@ console.log( "ready" );
   };
 
   function jwplayerReadyCheck() {
-console.log( "ready check" );
     if ( window.jwplayer ) {
       onJWPlayerAPIReady();
     } else {
@@ -76,11 +74,11 @@ console.log( "ready check" );
       },
       playerReady = false,
       catchRoguePauseEvent = false,
-      catchRoguePlayEvent = false,
       mediaReady = false,
       loopedPlay = false,
       player,
       playerPaused = true,
+      pauseOnReady = false,
       mediaReadyCallbacks = [],
       playerState = -1,
       bufferedInterval,
@@ -101,21 +99,75 @@ console.log( "ready check" );
       mediaReadyCallbacks.unshift( callback );
     }
 
+    function onReady() {
+
+      impl.duration = player.getDuration();
+      impl.readyState = self.HAVE_METADATA;
+      self.dispatchEvent( "loadedmetadata" );
+      self.dispatchEvent( "loadeddata" );
+
+      impl.readyState = self.HAVE_FUTURE_DATA;
+      self.dispatchEvent( "canplay" );
+
+      mediaReady = true;
+      var i = 0;
+      while( i++ < mediaReadyCallbacks.length ) {
+        mediaReadyCallbacks[ i ]();
+        delete mediaReadyCallbacks[ i ];
+      }
+      // We can't easily determine canplaythrough, but will send anyway.
+      impl.readyState = self.HAVE_ENOUGH_DATA;
+      self.dispatchEvent( "canplaythrough" );
+    }
+
     function onPlayerReady() {
-      player.onPlay(function() {
-        player.onPause(function() {
-          playerReady = true;
-          impl.readyState = self.HAVE_METADATA;
-          self.dispatchEvent( "loadedmetadata" );
-          self.dispatchEvent( "loadeddata" );
-          impl.readyState = self.HAVE_FUTURE_DATA;
-          self.dispatchEvent( "canplay" );
-          impl.readyState = self.HAVE_ENOUGH_DATA;
-          self.dispatchEvent( "canplaythrough" );
-        });      
-        player.pause();
+      player.onPause(function() {
+        if ( catchRoguePauseEvent ) {
+          catchRoguePauseEvent = false;
+        } else if ( pauseOnReady ) {
+          pauseOnReady = false;
+          onReady();
+        } else {
+          onPause();
+        }
       });
-      player.play();
+      player.onTime(function( e ) {
+        impl.currentTime = e.position;
+        if ( !impl.seeking ) {
+          self.dispatchEvent( "timeupdate" );
+        }
+      });
+      player.onSeek(function( e ) {
+        if ( impl.seeking ) {
+          onSeeked();
+        }
+      });
+      player.onPlay(function() {
+        if ( firstPlay ) {
+          // fake ready event
+          firstPlay = false;
+
+          // Set initial paused state
+          if( impl.autoplay || !impl.paused ) {
+            impl.paused = false;
+            addMediaReadyCallback(function() {
+              onPlay();
+            });
+            onReady();
+          } else {
+            pauseOnReady = true;
+            player.pause( true );
+          }
+        } else if ( catchRoguePlayEvent ) {
+          catchRoguePlayEvent = false;
+          catchRoguePauseEvent = true;
+          // Repause without triggering any events.
+          player.pause( true );
+        } else {
+          onPlay();
+        }
+      });
+      player.play( true );
     }
 
     function getDuration() {
@@ -140,7 +192,7 @@ console.log( "ready check" );
       return player.getDuration();
     }
 
-    function onPlayerError() {
+    function onPlayerError( e ) {
       var err = { name: "MediaError" };
 
       // TODO: figure out jwplayer errors.
@@ -293,7 +345,8 @@ console.log( "ready check" );
       jwplayer( parent.id ).setup({
         file: aSrc,
         width: "100%",
-        height: "100%"
+        height: "100%",
+        controls: false
       });
 
       player = jwplayer( parent.id );
@@ -337,10 +390,9 @@ console.log( "ready check" );
     }
 
     function changeCurrentTime( aTime ) {
-      /*impl.currentTime = aTime;
+      impl.currentTime = aTime;
       if( !mediaReady ) {
         addMediaReadyCallback( function() {
-
           onSeeking();
           player.seek( aTime );
         });
@@ -348,38 +400,35 @@ console.log( "ready check" );
       }
 
       onSeeking();
-      player.seek( aTime );*/
-    }
-
-    function onTimeUpdate() {
-      //self.dispatchEvent( "timeupdate" );
+      player.seek( aTime );
     }
 
     function onSeeking() {
-      /*// a seek in youtube fires a paused event.
+      // a seek in youtube fires a paused event.
       // we don't want to listen for this, so this state catches the event.
-      catchRoguePauseEvent = true;
+      //catchRoguePauseEvent = true;
       impl.seeking = true;
-      self.dispatchEvent( "seeking" );*/
+      // jwplayer plays right after a seek, we do not want this.
+      if ( impl.paused ) {
+        catchRoguePlayEvent = true;
+      }
+      self.dispatchEvent( "seeking" );
     }
 
     function onSeeked() {
-      /*impl.ended = false;
+      impl.ended = false;
       impl.seeking = false;
       self.dispatchEvent( "timeupdate" );
       self.dispatchEvent( "seeked" );
       self.dispatchEvent( "canplay" );
-      self.dispatchEvent( "canplaythrough" );*/
+      self.dispatchEvent( "canplaythrough" );
     }
 
     function onPlay() {
-
-      /*if( impl.ended ) {
+      if( impl.ended ) {
         changeCurrentTime( 0 );
         impl.ended = false;
       }
-      timeUpdateInterval = setInterval( onTimeUpdate,
-                                        self._util.TIMEUPDATE_MS );
       impl.paused = false;
 
       if( playerPaused ) {
@@ -391,7 +440,7 @@ console.log( "ready check" );
           self.dispatchEvent( "play" );
         }
         self.dispatchEvent( "playing" );
-      }*/
+      }
     }
 
     function onProgress() {
@@ -400,34 +449,29 @@ console.log( "ready check" );
 
     self.play = function() {
       self.dispatchEvent( "play" );
-      /*impl.paused = false;
+      impl.paused = false;
       if( !mediaReady ) {
         addMediaReadyCallback( function() { self.play(); } );
         return;
       }
-      player.playVideo();*/
+      player.play( true );
     };
 
     function onPause() {
-      /*impl.paused = true;
+      impl.paused = true;
       if ( !playerPaused ) {
         playerPaused = true;
-        clearInterval( timeUpdateInterval );
         self.dispatchEvent( "pause" );
-      }*/
+      }
     }
 
     self.pause = function() {
-      /*impl.paused = true;
+      impl.paused = true;
       if( !mediaReady ) {
         addMediaReadyCallback( function() { self.pause(); } );
         return;
       }
-      // if a pause happens while seeking, ensure we catch it.
-      // in youtube seeks fire pause events, and we don't want to listen to that.
-      // except for the case of an actual pause.
-      catchRoguePauseEvent = false;
-      player.pauseVideo();*/
+      player.pause( true );
     };
 
     function onEnded() {
@@ -445,7 +489,7 @@ console.log( "ready check" );
     }
 
     function setVolume( aValue ) {
-      impl.volume = aValue;
+      /*impl.volume = aValue;
       if( !mediaReady ) {
         addMediaReadyCallback( function() {
           setVolume( impl.volume );
@@ -453,18 +497,18 @@ console.log( "ready check" );
         return;
       }
       player.setVolume( impl.volume * 100 );
-      self.dispatchEvent( "volumechange" );
+      self.dispatchEvent( "volumechange" );*/
     }
 
     function setMuted( aValue ) {
-      impl.muted = aValue;
+      /*impl.muted = aValue;
       if( !mediaReady ) {
         addMediaReadyCallback( function() { setMuted( impl.muted ); } );
         return;
       }
       player.setMute( aValue );
       // TODO: consider using onMute/onVolume for this, if applicable.
-      self.dispatchEvent( "volumechange" );
+      self.dispatchEvent( "volumechange" );*/
     }
 
     function getMuted() {
