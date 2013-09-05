@@ -74,6 +74,7 @@
       },
       playerReady = false,
       catchRoguePauseEvent = false,
+      catchRoguePlayEvent = false,
       mediaReady = false,
       loopedPlay = false,
       player,
