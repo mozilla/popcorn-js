@@ -53,7 +53,6 @@
 
     var self = this,
       parent = typeof id === "string" ? document.querySelector( id ) : id,
-      //elem = document.createElement( "div" ),
       impl = {
         src: EMPTY_STRING,
         networkState: self.NETWORK_EMPTY,
@@ -79,14 +78,11 @@
       loopedPlay = false,
       player,
       playerPaused = true,
-      pauseOnReady = false,
       mediaReadyCallbacks = [],
       playerState = -1,
-      bufferedInterval,
       lastLoadedFraction = 0,
-      currentTimeInterval,
-      timeUpdateInterval,
-      firstPlay = true;
+      firstPlay = true,
+      firstPause = false;
 
     // Namespace all events we'll produce
     self._eventNamespace = Popcorn.guid( "HTMLJWPlayerVideoElement::" );
@@ -101,94 +97,104 @@
     }
 
     function onReady() {
+      // JWPlayer needs a play/pause to force ready state.
+      // However, the ready state does not happen until after the play/pause callbacks.
+      // So we put this inside a setTimeout to ensure we do this afterwards,
+      // thus, actually being ready.
+      setTimeout( function() {
+        impl.duration = player.getDuration();
+        impl.readyState = self.HAVE_METADATA;
+        self.dispatchEvent( "loadedmetadata" );
+        self.dispatchEvent( "loadeddata" );
 
-      impl.duration = player.getDuration();
-      impl.readyState = self.HAVE_METADATA;
-      self.dispatchEvent( "loadedmetadata" );
-      self.dispatchEvent( "loadeddata" );
+        impl.readyState = self.HAVE_FUTURE_DATA;
+        self.dispatchEvent( "canplay" );
 
-      impl.readyState = self.HAVE_FUTURE_DATA;
-      self.dispatchEvent( "canplay" );
+        mediaReady = true;
 
-      mediaReady = true;
-      var i = 0;
-      while( i++ < mediaReadyCallbacks.length ) {
-        mediaReadyCallbacks[ i ]();
-        delete mediaReadyCallbacks[ i ];
+        var i = 0;
+        while( mediaReadyCallbacks.length ) {
+          mediaReadyCallbacks[ i ]();
+          mediaReadyCallbacks.shift();
+        }
+        // We can't easily determine canplaythrough, but will send anyway.
+        impl.readyState = self.HAVE_ENOUGH_DATA;
+        self.dispatchEvent( "canplaythrough" );
+      }, 0 );
+    }
+
+    // JWPlayer events cannot be removed, so we use functions inside the event.
+    // This way we can change these functions to "remove" events.
+    function onPauseEvent() {
+      if ( catchRoguePauseEvent ) {
+        catchRoguePauseEvent = false;
+      } else if ( firstPause ) {
+        firstPause = false;
+        onReady();
+      } else {
+        onPause();
       }
-      // We can't easily determine canplaythrough, but will send anyway.
-      impl.readyState = self.HAVE_ENOUGH_DATA;
-      self.dispatchEvent( "canplaythrough" );
+    }
+    function onPlayEvent() {
+      if ( firstPlay ) {
+        // fake ready event
+        firstPlay = false;
+
+        // Set initial paused state
+        if( impl.autoplay || !impl.paused ) {
+          impl.paused = false;
+          addMediaReadyCallback(function() {
+            onPlay();
+          });
+          onReady();
+        } else {
+          firstPause = true;
+          player.pause( true );
+        }
+      } else if ( catchRoguePlayEvent ) {
+        catchRoguePlayEvent = false;
+        catchRoguePauseEvent = true;
+        // Repause without triggering any events.
+        player.pause( true );
+      } else {
+        onPlay();
+      }
+    }
+    function onTimeEvent() {
+      impl.currentTime = player.getPosition();
+      if ( !impl.seeking ) {
+        self.dispatchEvent( "timeupdate" );
+      }
+    }
+    function onSeekEvent() {
+      if ( impl.seeking ) {
+        onSeeked();
+      }
     }
 
     function onPlayerReady() {
       player.onPause(function() {
-        if ( catchRoguePauseEvent ) {
-          catchRoguePauseEvent = false;
-        } else if ( pauseOnReady ) {
-          pauseOnReady = false;
-          onReady();
-        } else {
-          onPause();
-        }
+        onPauseEvent();
       });
-      player.onTime(function( e ) {
-        impl.currentTime = e.position;
-        if ( !impl.seeking ) {
-          self.dispatchEvent( "timeupdate" );
-        }
+      player.onTime(function() {
+        onTimeEvent();
       });
-      player.onSeek(function( e ) {
-        if ( impl.seeking ) {
-          onSeeked();
-        }
+      player.onSeek(function() {
+        onSeekEvent();
       });
       player.onPlay(function() {
-        if ( firstPlay ) {
-          // fake ready event
-          firstPlay = false;
-
-          // Set initial paused state
-          if( impl.autoplay || !impl.paused ) {
-            impl.paused = false;
-            addMediaReadyCallback(function() {
-              onPlay();
-            });
-            onReady();
-          } else {
-            pauseOnReady = true;
-            player.pause( true );
-          }
-        } else if ( catchRoguePlayEvent ) {
-          catchRoguePlayEvent = false;
-          catchRoguePauseEvent = true;
-          // Repause without triggering any events.
-          player.pause( true );
-        } else {
-          onPlay();
-        }
+        onPlayEvent();
+      });
+      player.onBufferChange(function() {
+        onProgress();
+      });
+      player.onComplete(function() {
+        onEnded();
       });
       player.play( true );
     }
 
     function getDuration() {
-      /*if( !mediaReady ) {
-        // loadedmetadata properly sets the duration, so nothing to do here yet.
-        return impl.duration;
-      }
-
-      var oldDuration = impl.duration,
-          newDuration = player.getDuration();
-
-      // Deal with duration=0
-      if( newDuration ) {
-        if( oldDuration !== newDuration ) {
-          impl.duration = newDuration;
-          self.dispatchEvent( "durationchange" );
-        }
-      } else {
-        setTimeout( getDuration, 50 );
-      }*/
 
       return player.getDuration();
     }
@@ -196,127 +202,19 @@
     function onPlayerError( e ) {
       var err = { name: "MediaError" };
 
-      // TODO: figure out jwplayer errors.
-      err.message = "Unknown error.";
+      err.message = e.message;
       err.code = 5;
 
       impl.error = err;
       self.dispatchEvent( "error" );
     }
 
-    /*function onPlayerStateChange( event ) {
-      switch( event.data ) {
-
-        // ended
-        case YT.PlayerState.ENDED:
-          onEnded();
-          // Seek back to the start of the video to reset the player,
-          // otherwise the player can become locked out.
-          // I do not see this happen all the time or on all systems.
-          player.seekTo( 0 );
-          break;
-
-        // playing
-        case YT.PlayerState.PLAYING:
-          if( firstPlay ) {
-            // fake ready event
-            firstPlay = false;
-
-            addMediaReadyCallback(function() {
-              bufferedInterval = setInterval( monitorBuffered, 50 );
-            });
-
-            // Set initial paused state
-            if( impl.autoplay || !impl.paused ) {
-              impl.paused = false;
-              addMediaReadyCallback(function() {
-                onPlay();
-              });
-            } else {
-              // if a pause happens while seeking, ensure we catch it.
-              // in youtube seeks fire pause events, and we don't want to listen to that.
-              // except for the case of an actual pause.
-              catchRoguePauseEvent = false;
-              player.pauseVideo();
-            }
-
-            // Ensure video will now be unmuted when playing due to the mute on initial load.
-            if( !impl.muted ) {
-              player.unMute();
-            }
-
-            impl.duration = player.getDuration();
-            impl.readyState = self.HAVE_METADATA;
-            self.dispatchEvent( "loadedmetadata" );
-            currentTimeInterval = setInterval( monitorCurrentTime,
-                                               CURRENT_TIME_MONITOR_MS );
-            
-            self.dispatchEvent( "loadeddata" );
-
-            impl.readyState = self.HAVE_FUTURE_DATA;
-            self.dispatchEvent( "canplay" );
-
-            mediaReady = true;
-            var i = mediaReadyCallbacks.length;
-            while( i-- ) {
-              mediaReadyCallbacks[ i ]();
-              delete mediaReadyCallbacks[ i ];
-            }
-
-            // We can't easily determine canplaythrough, but will send anyway.
-            impl.readyState = self.HAVE_ENOUGH_DATA;
-            self.dispatchEvent( "canplaythrough" );
-          } else if ( catchRoguePlayEvent ) {
-            catchRoguePlayEvent = false;
-            player.pauseVideo();
-          } else {
-            onPlay();
-          }
-          break;
-
-        // paused
-        case YT.PlayerState.PAUSED:
-          // a seekTo call fires a pause event, which we don't want at this point.
-          // as long as a seekTo continues to do this, we can safly toggle this state.
-          if ( catchRoguePauseEvent ) {
-            catchRoguePauseEvent = false;
-            break;
-          }
-          onPause();
-          break;
-
-        // buffering
-        case YT.PlayerState.BUFFERING:
-          impl.networkState = self.NETWORK_LOADING;
-          self.dispatchEvent( "waiting" );
-          break;
-
-        // video cued
-        case YT.PlayerState.CUED:
-          // XXX: cued doesn't seem to fire reliably, bug in youtube api?
-          break;
-      }
-
-      if ( event.data !== YT.PlayerState.BUFFERING &&
-           playerState === YT.PlayerState.BUFFERING ) {
-        onProgress();
-      }
-
-      playerState = event.data;
-    }*/
-
     function destroyPlayer() {
       if( !( playerReady && player ) ) {
         return;
       }
-      // TODO: figure out how to destroy a player.
-      /*clearInterval( currentTimeInterval );
-      clearInterval( bufferedInterval );
-      player.stopVideo();
-      player.clearVideo();
 
-      parent.removeChild( elem );
-      elem = document.createElement( "div" );*/
+      player.destroy();
     }
 
     function changeSrc( aSrc ) {
@@ -342,7 +240,6 @@
         destroyPlayer();
       }
 
-      //parent.appendChild( elem );
       jwplayer( parent.id ).setup({
         file: aSrc,
         width: "100%",
@@ -355,36 +252,9 @@
       player.onError( onPlayerError );
 
       impl.networkState = self.NETWORK_LOADING;
-      //self.dispatchEvent( "loadstart" );
-      //self.dispatchEvent( "progress" );
+      self.dispatchEvent( "loadstart" );
+      self.dispatchEvent( "progress" );
     }
-
-    /*function monitorCurrentTime() {
-      var playerTime = player.getCurrentTime();
-      if ( !impl.seeking ) {
-        impl.currentTime = playerTime;
-        if ( ABS( impl.currentTime - playerTime ) > CURRENT_TIME_MONITOR_MS ) {
-          onSeeking();
-          onSeeked();
-        }
-      } else if ( ABS( playerTime - impl.currentTime ) < 1 ) {
-        onSeeked();
-      }
-    }*/
-
-    /*function monitorBuffered() {
-      var fraction = player.getVideoLoadedFraction();
-
-      if ( lastLoadedFraction !== fraction ) {
-        lastLoadedFraction = fraction;
-
-        onProgress();
-
-        if ( fraction >= 1 ) {
-          clearInterval( bufferedInterval );
-        }
-      }
-    }*/
 
     function getCurrentTime() {
       return impl.currentTime;
@@ -476,21 +346,19 @@
     };
 
     function onEnded() {
-      /*if( impl.loop ) {
+      if( impl.loop ) {
         changeCurrentTime( 0 );
         self.play();
       } else {
         impl.ended = true;
         onPause();
-        // YouTube will fire a Playing State change after the video has ended, causing it to loop.
-        catchRoguePlayEvent = true;
         self.dispatchEvent( "timeupdate" );
         self.dispatchEvent( "ended" );
-      }*/
+      }
     }
 
     function setVolume( aValue ) {
-      /*impl.volume = aValue;
+      impl.volume = aValue;
       if( !mediaReady ) {
         addMediaReadyCallback( function() {
           setVolume( impl.volume );
@@ -498,18 +366,17 @@
         return;
       }
       player.setVolume( impl.volume * 100 );
-      self.dispatchEvent( "volumechange" );*/
+      self.dispatchEvent( "volumechange" );
     }
 
     function setMuted( aValue ) {
-      /*impl.muted = aValue;
+      impl.muted = aValue;
       if( !mediaReady ) {
         addMediaReadyCallback( function() { setMuted( impl.muted ); } );
         return;
       }
       player.setMute( aValue );
-      // TODO: consider using onMute/onVolume for this, if applicable.
-      self.dispatchEvent( "volumechange" );*/
+      self.dispatchEvent( "volumechange" );
     }
 
     function getMuted() {
@@ -630,7 +497,7 @@
         get: function() {
           return impl.error;
         }
-      }/*,
+      },
 
       buffered: {
         get: function () {
@@ -669,7 +536,7 @@
 
           return timeRanges;
         }
-      }*/
+      }
     });
   }
 
@@ -678,15 +545,13 @@
 
   // Helper for identifying URLs we know how to play.
   HTMLJWPlayerVideoElement.prototype._canPlaySrc = function( url ) {
-    //return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu).*(?:\/|v=)(.{11})/).test( url ) ?
-    //  "probably" :
-    //  EMPTY_STRING;
+    // Because of the nature of JWPlayer playing all media types,
+    // it can potentially play all url formats.
     return "probably";
   };
 
   // We'll attempt to support a mime type of video/x-youtube
   HTMLJWPlayerVideoElement.prototype.canPlayType = function( type ) {
-    //return type === "video/x-youtube" ? "probably" : EMPTY_STRING;
     return "probably";
   };
 
