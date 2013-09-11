@@ -177,13 +177,17 @@
         onPauseEvent();
       });
       player.onTime(function() {
-        onTimeEvent();
+        if ( !impl.ended ) {
+          onTimeEvent();
+        }
       });
       player.onSeek(function() {
         onSeekEvent();
       });
       player.onPlay(function() {
-        onPlayEvent();
+        if ( !impl.ended ) {
+          onPlayEvent();
+        }
       });
       player.onBufferChange(function() {
         onProgress();
@@ -296,10 +300,6 @@
     }
 
     function onPlay() {
-      if( impl.ended ) {
-        changeCurrentTime( 0 );
-        impl.ended = false;
-      }
       impl.paused = false;
 
       if( playerPaused ) {
@@ -324,6 +324,10 @@
       if( !mediaReady ) {
         addMediaReadyCallback( function() { self.play(); } );
         return;
+      }
+      if( impl.ended ) {
+        changeCurrentTime( 0 );
+        impl.ended = false;
       }
       player.play( true );
     };
