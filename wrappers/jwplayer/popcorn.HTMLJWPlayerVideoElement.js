@@ -234,7 +234,7 @@
 
       impl.src = aSrc;
 
-      // Make sure YouTube is ready, and if not, register a callback
+      // Make sure JWPlayer is ready, and if not, register a callback
       if( !isJWPlayerReady() ) {
         addJWPlayerCallback( function() { changeSrc( aSrc ); } );
         return;

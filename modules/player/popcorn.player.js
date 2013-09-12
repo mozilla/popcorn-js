@@ -389,32 +389,33 @@
       }
     }
 
-    mediaWrapper = Popcorn.HTMLJWPlayerVideoElement;
-    if ( mediaWrapper ) {
-      var jwDiv = document.createElement( "div" );
-      jwDiv.id = Popcorn.guid( "popcorn-jwplayer-" );
-      node.appendChild( jwDiv );
-      media = mediaWrapper( jwDiv );
-      popcorn = Popcorn( media, options );
-      // Set src, but not until after we return the media so the caller
-      // can get error events, if any.
-      setTimeout( function() {
-        media.src = src[ 0 ];
-      }, 0 );
-      return popcorn;
-    }
-
     // If we don't have any players or wrappers that can handle this,
     // Default to using HTML5 video.  Similar to the HTMLVideoElement
     // wrapper, we put a video in the div passed to us via:
     // Popcorn.smart( div, src, options )
-    var videoHTML, videoID = Popcorn.guid( "popcorn-video-" ),
+    var videoHTML,
+        videoElement,
+        videoID = Popcorn.guid( "popcorn-video-" ),
         videoHTMLContainer = document.createElement( "div" );
 
     videoHTMLContainer.style.width = "100%";
     videoHTMLContainer.style.height = "100%";
-    node.appendChild( videoHTMLContainer );
 
+    // If we only have one source, do not bother with source elements.
+    // This means we don't have the IE9 hack,
+    // and we can properly listen to error events.
+    // That way an error event can be told to backup to Flash if it fails.
+    if ( src.length === 1 ) {
+      videoElement = document.createElement( "video" );
+      videoElement.id = videoID;
+      node.appendChild( videoElement );
+      setTimeout( function() {
+        videoElement.src = src[ 0 ];
+      }, 0 );
+      return Popcorn( '#' + videoID, options );
+    }
+
+    node.appendChild( videoHTMLContainer );
     // IE9 doesn't like dynamic creation of source elements on <video>
     // so we do it in one shot via innerHTML.
     videoHTML = '<video id="' +  videoID + '" preload=auto autobuffer>';
