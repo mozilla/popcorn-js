@@ -106,7 +106,7 @@
 
     init: function( entity, options ) {
 
-      var matches, nodeName,
+      var matches, nodeName, readyEntity,
           self = this;
 
       //  Supports Popcorn(function () { /../ })
@@ -138,13 +138,11 @@
             document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
 
             //  Execute all ready function in the stack
-            for ( var i = 0, readyStackLength = readyStack.length; i < readyStackLength; i++ ) {
-
-              readyStack[ i ].call( document, Popcorn );
-
+            while(readyStack.length > 0) {
+              readyEntity = readyStack.pop();
+              readyEntity.call( document, Popcorn );
             }
-            //  GC readyStack
-            readyStack = null;
+            
           };
 
           //  Register global DOM ready listener
