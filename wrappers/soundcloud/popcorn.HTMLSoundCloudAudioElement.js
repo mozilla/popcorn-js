@@ -126,21 +126,22 @@
       });
 
       player.bind( SC.Widget.Events.SEEK, function( data ) {
-        // Handle this as seconds.
-        var aTime = data.currentPosition / 1000;
-        if ( impl.seeking ) {
-          if ( impl.currentTime / impl.duration >= data.loadedProgress ||
-               Math.floor( aTime ) !== Math.floor( impl.currentTime ) ) {
-            player.seekTo( impl.currentTime * 1000 );
-          } else {
-            onSeeked();
+        player.getPosition( function( currentTimeInMS ) {
+          // Convert milliseconds to seconds.
+          var currentTimeInSeconds = currentTimeInMS / 1000;
+          if ( impl.seeking ) {
+            if ( Math.floor( currentTimeInSeconds ) !== Math.floor( impl.currentTime ) ) {
+              // Convert Seconds back to milliseconds.
+              player.seekTo( impl.currentTime * 1000 );
+            } else {
+              onSeeked();
+            }
+            return;
           }
-          return;
-        }
-        onStateChange({
-          type: "seek",
-          // currentTime is in ms vs. s
-          data: aTime
+          onStateChange({
+            type: "seek",
+            data: currentTimeInSeconds
+          });
         });
       });
 
@@ -170,7 +171,7 @@
         if( data.currentPosition > 0 ) {
           player.unbind( SC.Widget.Events.PLAY_PROGRESS );
 
-          player.bind( SC.Widget.Events.PAUSE, function( data ) {
+          player.bind( SC.Widget.Events.PAUSE, function() {
             player.unbind( SC.Widget.Events.PAUSE );
 
             // Play/Pause cycle is done, restore volume and continue loading.
