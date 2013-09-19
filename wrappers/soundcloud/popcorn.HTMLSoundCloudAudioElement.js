@@ -129,7 +129,8 @@
         // Handle this as seconds.
         var aTime = data.currentPosition / 1000;
         if ( impl.seeking ) {
-          if ( impl.currentTime / impl.duration >= data.loadedProgress ) {
+          if ( impl.currentTime / impl.duration >= data.loadedProgress ||
+               Math.floor( aTime ) !== Math.floor( impl.currentTime ) ) {
             player.seekTo( impl.currentTime * 1000 );
           } else {
             onSeeked();
@@ -162,12 +163,11 @@
 
       // Turn down the volume and kick-off a play to force load
       player.bind( SC.Widget.Events.PLAY_PROGRESS, function( data ) {
-
         // Turn down the volume.
         // Loading has to be kicked off before volume can be changed.
         player.setVolume( 0 );
-        // Wait for both flash and HTML5 to be fully loaded.
-        if( data.loadedProgress > 0 ) {
+        // Wait for both flash and HTML5 to play something.
+        if( data.currentPosition > 0 ) {
           player.unbind( SC.Widget.Events.PLAY_PROGRESS );
 
           player.bind( SC.Widget.Events.PAUSE, function( data ) {
@@ -175,7 +175,12 @@
 
             // Play/Pause cycle is done, restore volume and continue loading.
             player.setVolume( 100 );
-            onLoaded();
+            player.bind( SC.Widget.Events.SEEK, function() {
+              player.unbind( SC.Widget.Events.SEEK );
+              onLoaded();
+            });
+            // Re seek back to 0, then we're back to default, loaded, and ready to go.
+            player.seekTo( 0 );
           });
           player.pause();
         }
