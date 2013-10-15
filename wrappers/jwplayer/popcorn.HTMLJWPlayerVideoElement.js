@@ -27,7 +27,7 @@
 
   function isJWPlayerReady() {
     // If the jwplayer API isn't injected, do it now.
-    if( !jwLoaded ) {
+    if ( !jwLoaded ) {
       var tag = document.createElement( "script" );
       var protocol = window.location.protocol === "file:" ? "http:" : "";
 
@@ -46,8 +46,7 @@
 
   function HTMLJWPlayerVideoElement( id ) {
 
-    // YouTube iframe API requires postMessage
-    if( !window.postMessage ) {
+    if ( !window.postMessage ) {
       throw "ERROR: HTMLJWPlayerVideoElement requires window.postMessage";
     }
 
@@ -89,7 +88,7 @@
 
     self.parentNode = parent;
 
-    // Mark this as YouTube
+    // Mark this as JWPlayer
     self._util.type = "JWPlayer";
 
     function addMediaReadyCallback( callback ) {
@@ -141,11 +140,9 @@
         firstPlay = false;
 
         // Set initial paused state
-        if( impl.autoplay || !impl.paused ) {
+        if ( impl.autoplay || !impl.paused ) {
           impl.paused = false;
-          addMediaReadyCallback(function() {
-            onPlay();
-          });
+          addMediaReadyCallback( onPlay );
           onReady();
         } else {
           firstPause = true;
@@ -173,33 +170,24 @@
     }
 
     function onPlayerReady() {
-      player.onPause(function() {
-        onPauseEvent();
-      });
+      player.onPause( onPauseEvent );
       player.onTime(function() {
         if ( !impl.ended ) {
           onTimeEvent();
         }
       });
-      player.onSeek(function() {
-        onSeekEvent();
-      });
+      player.onSeek( onSeekEvent );
       player.onPlay(function() {
         if ( !impl.ended ) {
           onPlayEvent();
         }
       });
-      player.onBufferChange(function() {
-        onProgress();
-      });
-      player.onComplete(function() {
-        onEnded();
-      });
+      player.onBufferChange( onProgress );
+      player.onComplete( onEnded );
       player.play( true );
     }
 
     function getDuration() {
-
       return player.getDuration();
     }
 
@@ -214,7 +202,7 @@
     }
 
     function destroyPlayer() {
-      if( !( playerReady && player ) ) {
+      if ( !( playerReady && player ) ) {
         return;
       }
 
@@ -222,7 +210,7 @@
     }
 
     function changeSrc( aSrc ) {
-      if( !self._canPlaySrc( aSrc ) ) {
+      if ( !self._canPlaySrc( aSrc ) ) {
         impl.error = {
           name: "MediaError",
           message: "Media Source Not Supported",
@@ -235,12 +223,12 @@
       impl.src = aSrc;
 
       // Make sure JWPlayer is ready, and if not, register a callback
-      if( !isJWPlayerReady() ) {
+      if ( !isJWPlayerReady() ) {
         addJWPlayerCallback( function() { changeSrc( aSrc ); } );
         return;
       }
 
-      if( playerReady ) {
+      if ( playerReady ) {
         destroyPlayer();
       }
 
@@ -266,7 +254,7 @@
 
     function changeCurrentTime( aTime ) {
       impl.currentTime = aTime;
-      if( !mediaReady ) {
+      if ( !mediaReady ) {
         addMediaReadyCallback( function() {
           onSeeking();
           player.seek( aTime );
@@ -279,9 +267,6 @@
     }
 
     function onSeeking() {
-      // a seek in youtube fires a paused event.
-      // we don't want to listen for this, so this state catches the event.
-      //catchRoguePauseEvent = true;
       impl.seeking = true;
       // jwplayer plays right after a seek, we do not want this.
       if ( impl.paused ) {
@@ -302,7 +287,7 @@
     function onPlay() {
       impl.paused = false;
 
-      if( playerPaused ) {
+      if ( playerPaused ) {
         playerPaused = false;
 
         // Only 1 play when video.loop=true
@@ -321,11 +306,11 @@
     self.play = function() {
       self.dispatchEvent( "play" );
       impl.paused = false;
-      if( !mediaReady ) {
+      if ( !mediaReady ) {
         addMediaReadyCallback( function() { self.play(); } );
         return;
       }
-      if( impl.ended ) {
+      if ( impl.ended ) {
         changeCurrentTime( 0 );
         impl.ended = false;
       }
@@ -342,7 +327,7 @@
 
     self.pause = function() {
       impl.paused = true;
-      if( !mediaReady ) {
+      if ( !mediaReady ) {
         addMediaReadyCallback( function() { self.pause(); } );
         return;
       }
@@ -350,7 +335,7 @@
     };
 
     function onEnded() {
-      if( impl.loop ) {
+      if ( impl.loop ) {
         changeCurrentTime( 0 );
         self.play();
       } else {
@@ -363,7 +348,7 @@
 
     function setVolume( aValue ) {
       impl.volume = aValue;
-      if( !mediaReady ) {
+      if ( !mediaReady ) {
         addMediaReadyCallback( function() {
           setVolume( impl.volume );
         });
@@ -375,7 +360,7 @@
 
     function setMuted( aValue ) {
       impl.muted = aValue;
-      if( !mediaReady ) {
+      if ( !mediaReady ) {
         addMediaReadyCallback( function() { setMuted( impl.muted ); } );
         return;
       }
@@ -394,7 +379,7 @@
           return impl.src;
         },
         set: function( aSrc ) {
-          if( aSrc && aSrc !== impl.src ) {
+          if ( aSrc && aSrc !== impl.src ) {
             changeSrc( aSrc );
           }
         }
@@ -480,7 +465,7 @@
           return impl.volume;
         },
         set: function( aValue ) {
-          if( aValue < 0 || aValue > 1 ) {
+          if ( aValue < 0 || aValue > 1 ) {
             throw "Volume value must be between 0.0 and 1.0";
           }
 
@@ -554,7 +539,7 @@
     return "probably";
   };
 
-  // We'll attempt to support a mime type of video/x-youtube
+  // This could potentially support everything. It is a bit of a catch all player.
   HTMLJWPlayerVideoElement.prototype.canPlayType = function( type ) {
     return "probably";
   };
