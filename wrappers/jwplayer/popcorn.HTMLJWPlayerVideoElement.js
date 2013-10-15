@@ -122,6 +122,7 @@
       }, 0 );
     }
 
+    // TODO: (maybe)
     // JWPlayer events cannot be removed, so we use functions inside the event.
     // This way we can change these functions to "remove" events.
     function onPauseEvent() {
@@ -146,6 +147,7 @@
           onReady();
         } else {
           firstPause = true;
+          catchRoguePlayEvent = true;
           player.pause( true );
         }
       } else if ( catchRoguePlayEvent ) {
