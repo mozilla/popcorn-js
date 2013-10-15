@@ -102,6 +102,7 @@
       // thus, actually being ready.
       setTimeout( function() {
         impl.duration = player.getDuration();
+        self.dispatchEvent( "durationchange" );
         impl.readyState = self.HAVE_METADATA;
         self.dispatchEvent( "loadedmetadata" );
         self.dispatchEvent( "loadeddata" );
@@ -159,12 +160,7 @@
         onPlay();
       }
     }
-    function onTimeEvent() {
-      impl.currentTime = player.getPosition();
-      if ( !impl.seeking ) {
-        self.dispatchEvent( "timeupdate" );
-      }
-    }
+
     function onSeekEvent() {
       if ( impl.seeking ) {
         onSeeked();
@@ -174,8 +170,9 @@
     function onPlayerReady() {
       player.onPause( onPauseEvent );
       player.onTime(function() {
-        if ( !impl.ended ) {
-          onTimeEvent();
+        if ( !impl.ended && !impl.seeking ) {
+          impl.currentTime = player.getPosition();
+          self.dispatchEvent( "timeupdate" );
         }
       });
       player.onSeek( onSeekEvent );
@@ -195,9 +192,8 @@
 
     function onPlayerError( e ) {
       var err = { name: "MediaError" };
-
       err.message = e.message;
-      err.code = 5;
+      err.code = e.code || 5;
 
       impl.error = err;
       self.dispatchEvent( "error" );
@@ -244,6 +240,22 @@
       player = jwplayer( parent.id );
       player.onReady( onPlayerReady );
       player.onError( onPlayerError );
+      jwplayer.utils.log = function( msg, obj ) {
+        if ( typeof console !== "undefined" && typeof console.log !== "undefined" ) {
+          if ( obj ) {
+            console.log( msg, obj );
+          } else {
+            console.log( msg );
+          }
+        }
+
+        if (msg === "No suitable players found and fallback enabled" ) {
+          onPlayerError({
+            message: "No suitable players found and fallback enabled",
+            code: 4
+          });
+        }
+      };
 
       impl.networkState = self.NETWORK_LOADING;
       self.dispatchEvent( "loadstart" );
@@ -339,7 +351,6 @@
     function onEnded() {
       if ( impl.loop ) {
         changeCurrentTime( 0 );
-        self.play();
       } else {
         impl.ended = true;
         onPause();
