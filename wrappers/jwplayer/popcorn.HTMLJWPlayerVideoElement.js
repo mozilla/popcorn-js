@@ -249,9 +249,9 @@
           }
         }
 
-        if (msg === "No suitable players found and fallback enabled" ) {
+        if ( msg === "No suitable players found and fallback enabled" ) {
           onPlayerError({
-            message: "No suitable players found and fallback enabled",
+            message: msg,
             code: 4
           });
         }
