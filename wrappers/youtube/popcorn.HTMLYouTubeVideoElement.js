@@ -57,6 +57,7 @@
     }
 
     var self = this,
+      initialData = 0,
       parent = typeof id === "string" ? document.querySelector( id ) : id,
       elem = document.createElement( "div" ),
       impl = {
@@ -185,6 +186,63 @@
       self.dispatchEvent( "error" );
     }
 
+    function waitForEnoughData() {
+      var thisData = player.getVideoLoadedFraction();
+      if ( initialData === 0 || thisData === initialData) {
+        initialData = thisData;
+        setTimeout( waitForEnoughData, 0 );
+      } else {
+        onFirstPlay();
+      }
+    }
+
+    function onFirstPlay() {
+      addMediaReadyCallback(function() {
+        bufferedInterval = setInterval( monitorBuffered, 50 );
+      });
+
+      // Set initial paused state
+      if( impl.autoplay || !impl.paused ) {
+        impl.paused = false;
+        addMediaReadyCallback(function() {
+          onPlay();
+        });
+      } else {
+        // if a pause happens while seeking, ensure we catch it.
+        // in youtube seeks fire pause events, and we don't want to listen to that.
+        // except for the case of an actual pause.
+        catchRoguePauseEvent = false;
+        player.pauseVideo();
+      }
+
+      // Ensure video will now be unmuted when playing due to the mute on initial load.
+      if( !impl.muted ) {
+        player.unMute();
+      }
+
+      impl.duration = player.getDuration();
+      impl.readyState = self.HAVE_METADATA;
+      self.dispatchEvent( "loadedmetadata" );
+      currentTimeInterval = setInterval( monitorCurrentTime,
+                                         CURRENT_TIME_MONITOR_MS );
+
+      self.dispatchEvent( "loadeddata" );
+
+      impl.readyState = self.HAVE_FUTURE_DATA;
+      self.dispatchEvent( "canplay" );
+
+      mediaReady = true;
+      var i = mediaReadyCallbacks.length;
+      while( i-- ) {
+        mediaReadyCallbacks[ i ]();
+        delete mediaReadyCallbacks[ i ];
+      }
+
+      // We can't easily determine canplaythrough, but will send anyway.
+      impl.readyState = self.HAVE_ENOUGH_DATA;
+      self.dispatchEvent( "canplaythrough" );
+    }
+
     function onPlayerStateChange( event ) {
 
       switch( event.data ) {
@@ -199,51 +257,7 @@
           if( firstPlay ) {
             // fake ready event
             firstPlay = false;
-
-            addMediaReadyCallback(function() {
-              bufferedInterval = setInterval( monitorBuffered, 50 );
-            });
-
-            // Set initial paused state
-            if( impl.autoplay || !impl.paused ) {
-              impl.paused = false;
-              addMediaReadyCallback(function() {
-                onPlay();
-              });
-            } else {
-              // if a pause happens while seeking, ensure we catch it.
-              // in youtube seeks fire pause events, and we don't want to listen to that.
-              // except for the case of an actual pause.
-              catchRoguePauseEvent = false;
-              player.pauseVideo();
-            }
-
-            // Ensure video will now be unmuted when playing due to the mute on initial load.
-            if( !impl.muted ) {
-              player.unMute();
-            }
-
-            impl.duration = player.getDuration();
-            impl.readyState = self.HAVE_METADATA;
-            self.dispatchEvent( "loadedmetadata" );
-            currentTimeInterval = setInterval( monitorCurrentTime,
-                                               CURRENT_TIME_MONITOR_MS );
-            
-            self.dispatchEvent( "loadeddata" );
-
-            impl.readyState = self.HAVE_FUTURE_DATA;
-            self.dispatchEvent( "canplay" );
-
-            mediaReady = true;
-            var i = mediaReadyCallbacks.length;
-            while( i-- ) {
-              mediaReadyCallbacks[ i ]();
-              delete mediaReadyCallbacks[ i ];
-            }
-
-            // We can't easily determine canplaythrough, but will send anyway.
-            impl.readyState = self.HAVE_ENOUGH_DATA;
-            self.dispatchEvent( "canplaythrough" );
+            waitForEnoughData();
           } else if ( catchRoguePlayEvent ) {
             catchRoguePlayEvent = false;
             player.pauseVideo();
