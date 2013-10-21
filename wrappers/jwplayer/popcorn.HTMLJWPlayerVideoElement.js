@@ -28,12 +28,14 @@
   function isJWPlayerReady() {
     // If the jwplayer API isn't injected, do it now.
     if ( !jwLoaded ) {
-      var tag = document.createElement( "script" );
-      var protocol = window.location.protocol === "file:" ? "http:" : "";
+      if ( !window.jwplayer ) {
+        var tag = document.createElement( "script" );
+        var protocol = window.location.protocol === "file:" ? "http:" : "";
 
-      tag.src = protocol + "//jwpsrv.com/library/zaIF4JI9EeK2FSIACpYGxA.js";
-      var firstScriptTag = document.getElementsByTagName( "script" )[ 0 ];
-      firstScriptTag.parentNode.insertBefore( tag, firstScriptTag );
+        tag.src = protocol + "//jwpsrv.com/library/zaIF4JI9EeK2FSIACpYGxA.js";
+        var firstScriptTag = document.getElementsByTagName( "script" )[ 0 ];
+        firstScriptTag.parentNode.insertBefore( tag, firstScriptTag );
+      }
       jwLoaded = true;
       jwplayerReadyCheck();
     }
