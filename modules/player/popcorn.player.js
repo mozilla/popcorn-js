@@ -411,7 +411,7 @@
       node.appendChild( videoElement );
       setTimeout( function() {
         // Hack to decode html characters like &amp; to &
-        var decodeDiv = document.createElement('div');
+        var decodeDiv = document.createElement( "div" );
         decodeDiv.innerHTML = src[ 0 ];
 
         videoElement.src = decodeDiv.firstChild.nodeValue;
