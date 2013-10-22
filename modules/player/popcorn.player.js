@@ -410,7 +410,11 @@
       videoElement.id = videoID;
       node.appendChild( videoElement );
       setTimeout( function() {
-        videoElement.src = src[ 0 ];
+        // Hack to decode html characters like &amp; to &
+        var decodeDiv = document.createElement( "div" );
+        decodeDiv.innerHTML = src[ 0 ];
+
+        videoElement.src = decodeDiv.firstChild.nodeValue;
       }, 0 );
       return Popcorn( '#' + videoID, options );
     }
