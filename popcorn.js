@@ -117,7 +117,7 @@
         //  If document ready has already fired
         if ( document.readyState === "complete" ) {
 
-          entity( document, Popcorn );
+          entity.call( document, Popcorn );
 
           return;
         }
