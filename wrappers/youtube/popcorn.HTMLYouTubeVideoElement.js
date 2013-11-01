@@ -81,6 +81,7 @@
       catchRoguePauseEvent = false,
       catchRoguePlayEvent = false,
       mediaReady = false,
+      durationReady = false,
       loopedPlay = false,
       player,
       playerPaused = true,
@@ -124,28 +125,6 @@
       onMuted();
     }
 
-    function getDuration() {
-      if( !mediaReady ) {
-        // loadedmetadata properly sets the duration, so nothing to do here yet.
-        return impl.duration;
-      }
-
-      var oldDuration = impl.duration,
-          newDuration = player.getDuration();
-
-      // Deal with duration=0 from YouTube
-      if( newDuration ) {
-        if( oldDuration !== newDuration ) {
-          impl.duration = newDuration;
-          self.dispatchEvent( "durationchange" );
-        }
-      } else {
-        setTimeout( getDuration, 50 );
-      }
-
-      return newDuration;
-    }
-
     function onPlayerError(event) {
       // There's no perfect mapping to HTML5 errors from YouTube errors.
       var err = { name: "MediaError" };
@@ -185,6 +164,53 @@
       self.dispatchEvent( "error" );
     }
 
+    // This function needs duration and first play to be ready.
+    function onFirstPlay() {
+      addMediaReadyCallback(function() {
+        bufferedInterval = setInterval( monitorBuffered, 50 );
+      });
+
+      // Set initial paused state
+      if( impl.autoplay || !impl.paused ) {
+        impl.paused = false;
+        addMediaReadyCallback(function() {
+          onPlay();
+        });
+      } else {
+        // if a pause happens while seeking, ensure we catch it.
+        // in youtube seeks fire pause events, and we don't want to listen to that.
+        // except for the case of an actual pause.
+        catchRoguePauseEvent = false;
+        player.pauseVideo();
+      }
+
+      // Ensure video will now be unmuted when playing due to the mute on initial load.
+      if( !impl.muted ) {
+        player.unMute();
+      }
+
+      impl.readyState = self.HAVE_METADATA;
+      self.dispatchEvent( "loadedmetadata" );
+      currentTimeInterval = setInterval( monitorCurrentTime,
+                                         CURRENT_TIME_MONITOR_MS );
+
+      self.dispatchEvent( "loadeddata" );
+
+      impl.readyState = self.HAVE_FUTURE_DATA;
+      self.dispatchEvent( "canplay" );
+
+      mediaReady = true;
+      var i = mediaReadyCallbacks.length;
+      while( i-- ) {
+        mediaReadyCallbacks[ i ]();
+        delete mediaReadyCallbacks[ i ];
+      }
+
+      // We can't easily determine canplaythrough, but will send anyway.
+      impl.readyState = self.HAVE_ENOUGH_DATA;
+      self.dispatchEvent( "canplaythrough" );
+    }
+
     function onPlayerStateChange( event ) {
 
       switch( event.data ) {
@@ -200,50 +226,10 @@
             // fake ready event
             firstPlay = false;
 
-            addMediaReadyCallback(function() {
-              bufferedInterval = setInterval( monitorBuffered, 50 );
-            });
-
-            // Set initial paused state
-            if( impl.autoplay || !impl.paused ) {
-              impl.paused = false;
-              addMediaReadyCallback(function() {
-                onPlay();
-              });
-            } else {
-              // if a pause happens while seeking, ensure we catch it.
-              // in youtube seeks fire pause events, and we don't want to listen to that.
-              // except for the case of an actual pause.
-              catchRoguePauseEvent = false;
-              player.pauseVideo();
+            // Duration ready happened first, we're now ready.
+            if ( durationReady ) {
+              onFirstPlay();
             }
-
-            // Ensure video will now be unmuted when playing due to the mute on initial load.
-            if( !impl.muted ) {
-              player.unMute();
-            }
-
-            impl.duration = player.getDuration();
-            impl.readyState = self.HAVE_METADATA;
-            self.dispatchEvent( "loadedmetadata" );
-            currentTimeInterval = setInterval( monitorCurrentTime,
-                                               CURRENT_TIME_MONITOR_MS );
-            
-            self.dispatchEvent( "loadeddata" );
-
-            impl.readyState = self.HAVE_FUTURE_DATA;
-            self.dispatchEvent( "canplay" );
-
-            mediaReady = true;
-            var i = mediaReadyCallbacks.length;
-            while( i-- ) {
-              mediaReadyCallbacks[ i ]();
-              delete mediaReadyCallbacks[ i ];
-            }
-
-            // We can't easily determine canplaythrough, but will send anyway.
-            impl.readyState = self.HAVE_ENOUGH_DATA;
-            self.dispatchEvent( "canplaythrough" );
           } else if ( catchRoguePlayEvent ) {
             catchRoguePlayEvent = false;
             player.pauseVideo();
@@ -369,6 +355,19 @@
       // Get video ID out of youtube url
       aSrc = regexYouTube.exec( aSrc )[ 1 ];
 
+      var xhrURL = "https://gdata.youtube.com/feeds/api/videos/" + aSrc + "?v=2&alt=jsonc&callback=?";
+      // Get duration value.
+      Popcorn.getJSONP( xhrURL, function( resp ) {
+        impl.duration = resp.data.duration;
+        self.dispatchEvent( "durationchange" );
+        durationReady = true;
+
+        // First play happened first, we're now ready.
+        if ( !firstPlay ) {
+          onFirstPlay();
+        }
+      });
+
       player = new YT.Player( elem, {
         width: "100%",
         height: "100%",
@@ -385,10 +384,6 @@
       impl.networkState = self.NETWORK_LOADING;
       self.dispatchEvent( "loadstart" );
       self.dispatchEvent( "progress" );
-
-      // Queue a get duration call so we'll have duration info
-      // and can dispatch durationchange.
-      getDuration();
     }
 
     function monitorCurrentTime() {
@@ -411,10 +406,6 @@
         lastLoadedFraction = fraction;
 
         onProgress();
-
-        if ( fraction >= 1 ) {
-          clearInterval( bufferedInterval );
-        }
       }
     }
 
@@ -615,7 +606,7 @@
 
       duration: {
         get: function() {
-          return getDuration();
+          return impl.duration();
         }
       },
 
@@ -691,14 +682,12 @@
               throw "INDEX_SIZE_ERR: DOM Exception 1";
             },
             end: function( index ) {
-              var duration;
               if ( index === 0 ) {
-                duration = getDuration();
-                if ( !duration ) {
+                if ( !impl.duration ) {
                   return 0;
                 }
 
-                return duration * player.getVideoLoadedFraction();
+                return impl.duration * lastLoadedFraction;
               }
 
               //throw fake DOMException/INDEX_SIZE_ERR
