@@ -91,7 +91,7 @@
       lastLoadedFraction = 0,
       currentTimeInterval,
       timeUpdateInterval,
-      firstPlay = true;
+      firstPlay = false;
 
     // Namespace all events we'll produce
     self._eventNamespace = Popcorn.guid( "HTMLYouTubeVideoElement::" );
@@ -222,9 +222,9 @@
 
         // playing
         case YT.PlayerState.PLAYING:
-          if( firstPlay ) {
+          if( !firstPlay ) {
             // fake ready event
-            firstPlay = false;
+            firstPlay = true;
 
             // Duration ready happened first, we're now ready.
             if ( durationReady ) {
@@ -280,6 +280,8 @@
       if( !( playerReady && player ) ) {
         return;
       }
+      durationReady = false;
+      firstPlay = false;
       clearInterval( currentTimeInterval );
       clearInterval( bufferedInterval );
       player.stopVideo();
@@ -358,12 +360,20 @@
       var xhrURL = "https://gdata.youtube.com/feeds/api/videos/" + aSrc + "?v=2&alt=jsonc&callback=?";
       // Get duration value.
       Popcorn.getJSONP( xhrURL, function( resp ) {
+        var warning = "failed to retreive duration data, reason: ";
+        if ( resp.error ) {
+          console.warn( warning + resp.error.message );
+          return ;
+        } else if ( !resp.data ) {
+          console.warn( warning + "no response data" );
+          return;
+        }
         impl.duration = resp.data.duration;
         self.dispatchEvent( "durationchange" );
         durationReady = true;
 
         // First play happened first, we're now ready.
-        if ( !firstPlay ) {
+        if ( firstPlay ) {
           onFirstPlay();
         }
       });
