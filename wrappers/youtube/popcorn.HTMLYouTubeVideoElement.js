@@ -412,9 +412,8 @@
     function monitorBuffered() {
       var fraction = player.getVideoLoadedFraction();
 
-      if ( lastLoadedFraction !== fraction ) {
+      if ( fraction && lastLoadedFraction !== fraction ) {
         lastLoadedFraction = fraction;
-
         onProgress();
       }
     }
