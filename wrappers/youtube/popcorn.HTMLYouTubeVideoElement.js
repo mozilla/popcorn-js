@@ -285,8 +285,8 @@
       clearInterval( bufferedInterval );
       player.stopVideo();
       player.clearVideo();
-
-      parent.removeChild( elem );
+      player.destroy();
+      mediaReadyCallbacks = [];
       elem = document.createElement( "div" );
     }
 
@@ -310,7 +310,14 @@
       }
 
       if( playerReady ) {
-        destroyPlayer();
+        if( mediaReady ) {
+          destroyPlayer();
+        } else {
+          addMediaReadyCallback( function() {
+            changeSrc( aSrc );
+          });
+          return;
+        }
       }
 
       parent.appendChild( elem );
@@ -343,7 +350,7 @@
 
       // Specify our domain as origin for iframe security
       var domain = window.location.protocol === "file:" ? "*" :
-        window.location.protocol + "//" + window.location.host;
+      window.location.protocol + "//" + window.location.host;
       playerVars.origin = playerVars.origin || domain;
 
       // Show/hide controls. Sync with impl.controls and prefer URL value.
