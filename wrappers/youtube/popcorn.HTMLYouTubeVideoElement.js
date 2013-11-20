@@ -200,10 +200,9 @@
       self.dispatchEvent( "canplay" );
 
       mediaReady = true;
-      var i = mediaReadyCallbacks.length;
-      while( i-- ) {
-        mediaReadyCallbacks[ i ]();
-        delete mediaReadyCallbacks[ i ];
+      while( mediaReadyCallbacks.length ) {
+        mediaReadyCallbacks[ 0 ]();
+        mediaReadyCallbacks.shift();
       }
 
       // We can't easily determine canplaythrough, but will send anyway.
