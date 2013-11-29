@@ -250,6 +250,49 @@
           end: videoDurationPlus
         });
 
+        if ( !self.isDestroyed ) {
+          self.data.durationChange = function() {
+            var newDuration = self.media.duration,
+                byStart = self.data.trackEvents.byStart,
+                byEnd = self.data.trackEvents.byEnd;
+
+            // Remove old padding events
+            byStart.pop();
+            byEnd.pop();
+
+            // Remove any internal tracking of events that have end times greater than duration
+            // otherwise their end events will never be hit.
+            for ( var k = byEnd.length - 1; k > 0; k-- ) {
+              if ( byEnd[ k ].end > newDuration ) {
+                self.removeTrackEvent( byEnd[ k ]._id );
+              }
+            }
+
+            // Remove any internal tracking of events that have end times greater than duration
+            // otherwise their end events will never be hit.
+            for ( var i = 0; i < byStart.length; i++ ) {
+              if ( byStart[ i ].end > newDuration ) {
+                self.removeTrackEvent( byStart[ i ]._id );
+              }
+            }
+
+            // References to byEnd/byStart are reset, so accessing it this way is
+            // forced upon us.
+            self.data.trackEvents.byEnd.push({
+              start: newDuration,
+              end: newDuration
+            });
+
+            self.data.trackEvents.byStart.push({
+              start: newDuration,
+              end: newDuration
+            });
+          };
+
+          // Listen for duration changes and adjust internal tracking of event timings
+          self.media.addEventListener( "durationchange", self.data.durationChange, false );
+        }
+
         if ( self.options.frameAnimation ) {
 
           //  if Popcorn is created with frameAnimation option set to true,
