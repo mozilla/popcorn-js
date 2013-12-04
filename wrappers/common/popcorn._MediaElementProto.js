@@ -55,7 +55,7 @@
   };
 
   // Make sure the browser has MediaError
-  MediaError = MediaError || (function() {
+  window.MediaError = window.MediaError || (function() {
     function MediaError(code, msg) {
       this.code = code || null;
       this.message = msg || "";
@@ -70,45 +70,44 @@
   }());
 
 
-  function MediaElementProto(){}
-  MediaElementProto.prototype = {
+  function MediaElementProto() {
+    var protoElement = {};
+	if ( !Object.prototype.__defineGetter__ ) {
+	  protoElement = document.createElement( "div" );
+	}
+	protoElement._util = {
+    // Each wrapper stamps a type.
+    type: "HTML5",
 
-    _util: {
+    // How often to trigger timeupdate events
+    TIMEUPDATE_MS: 250,
 
-      // Each wrapper stamps a type.
-      type: "HTML5",
+    // Standard width and height
+    MIN_WIDTH: 300,
+    MIN_HEIGHT: 150,
 
-      // How often to trigger timeupdate events
-      TIMEUPDATE_MS: 250,
-
-      // Standard width and height
-      MIN_WIDTH: 300,
-      MIN_HEIGHT: 150,
-
-      // Check for attribute being set or value being set in JS.  The following are true:
-      //   autoplay
-      //   autoplay="true"
-      //   v.autoplay=true;
-      isAttributeSet: function( value ) {
-        return ( typeof value === "string" || value === true );
-      },
-
-      parseUri: parseUri
-
+    // Check for attribute being set or value being set in JS.  The following are true:
+    //   autoplay
+    //   autoplay="true"
+    //   v.autoplay=true;
+    isAttributeSet: function( value ) {
+      return ( typeof value === "string" || value === true );
     },
 
+    parseUri: parseUri
+	};
     // Mimic DOM events with custom, namespaced events on the document.
     // Each media element using this prototype needs to provide a unique
     // namespace for all its events via _eventNamespace.
-    addEventListener: function( type, listener, useCapture ) {
+    protoElement.addEventListener = function( type, listener, useCapture ) {
       document.addEventListener( this._eventNamespace + type, listener, useCapture );
-    },
+    };
 
-    removeEventListener: function( type, listener, useCapture ) {
+    protoElement.removeEventListener = function( type, listener, useCapture ) {
       document.removeEventListener( this._eventNamespace + type, listener, useCapture );
-    },
+    };
 
-    dispatchEvent: function( name ) {
+    protoElement.dispatchEvent = function( name ) {
       var customEvent = document.createEvent( "CustomEvent" ),
         detail = {
           type: name,
@@ -118,53 +117,48 @@
 
       customEvent.initCustomEvent( this._eventNamespace + name, false, false, detail );
       document.dispatchEvent( customEvent );
-    },
+    };
 
-    load: Popcorn.nop,
+    protoElement.load = Popcorn.nop;
 
-    canPlayType: function( url ) {
+    protoElement.canPlayType = function( url ) {
       return "";
-    },
+    };
 
     // Popcorn expects getBoundingClientRect to exist, forward to parent node.
-    getBoundingClientRect: function() {
+    protoElement.getBoundingClientRect = function() {
       return this.parentNode.getBoundingClientRect();
-    },
+    };
 
-    NETWORK_EMPTY: 0,
-    NETWORK_IDLE: 1,
-    NETWORK_LOADING: 2,
-    NETWORK_NO_SOURCE: 3,
+    protoElement.NETWORK_EMPTY = 0;
+    protoElement.NETWORK_IDLE = 1;
+    protoElement.NETWORK_LOADING = 2;
+    protoElement.NETWORK_NO_SOURCE = 3;
 
-    HAVE_NOTHING: 0,
-    HAVE_METADATA: 1,
-    HAVE_CURRENT_DATA: 2,
-    HAVE_FUTURE_DATA: 3,
-    HAVE_ENOUGH_DATA: 4
-
-  };
-
-  MediaElementProto.prototype.constructor = MediaElementProto;
-
-  Object.defineProperties( MediaElementProto.prototype, {
+    protoElement.HAVE_NOTHING = 0;
+    protoElement.HAVE_METADATA = 1;
+    protoElement.HAVE_CURRENT_DATA = 2;
+    protoElement.HAVE_FUTURE_DATA = 3;
+    protoElement.HAVE_ENOUGH_DATA = 4;
+	Object.defineProperties( protoElement, {
 
     currentSrc: {
       get: function() {
-        return this.src !== undefined ? this.src : "";
+      return this.src !== undefined ? this.src : "";
       }
     },
 
     // We really can't do much more than "auto" with most of these.
     preload: {
       get: function() {
-        return "auto";
+      return "auto";
       },
       set: Popcorn.nop
     },
 
     controls: {
       get: function() {
-        return true;
+      return true;
       },
       set: Popcorn.nop
     },
@@ -172,56 +166,56 @@
     // TODO: it would be good to overlay an <img> using this URL
     poster: {
       get: function() {
-        return "";
+      return "";
       },
       set: Popcorn.nop
     },
 
     crossorigin: {
       get: function() {
-        return "";
+      return "";
       }
     },
 
     played: {
       get: function() {
-        return _fakeTimeRanges;
+      return _fakeTimeRanges;
       }
     },
 
     seekable: {
       get: function() {
-        return _fakeTimeRanges;
+      return _fakeTimeRanges;
       }
     },
 
     buffered: {
       get: function() {
-        return _fakeTimeRanges;
+      return _fakeTimeRanges;
       }
     },
 
     defaultMuted: {
       get: function() {
-        return false;
+      return false;
       }
     },
 
     defaultPlaybackRate: {
       get: function() {
-        return 1.0;
+      return 1.0;
       }
     },
 
     style: {
       get: function() {
-        return this.parentNode.style;
+      return this.parentNode.style;
       }
     },
 
     id: {
       get: function() {
-        return this.parentNode.id;
+      return this.parentNode.id;
       }
     }
 
@@ -230,7 +224,9 @@
     //   playbackRate
     //   startOffsetTime
 
-  });
+    });
+    return protoElement;
+  }
 
   Popcorn._MediaElementProto = MediaElementProto;
 
