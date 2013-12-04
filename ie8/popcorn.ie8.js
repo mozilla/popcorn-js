@@ -18,14 +18,23 @@
 
     event = ( event === "load" ) ? "onreadystatechange" : "on" + event;
 
-    this.attachEvent( event, callBack );
+    if( event === "onreadystatechange" ){
+      callBack.readyStateCheck = callBack.readyStateCheck || function( e ){
+
+        if( self.readyState === "loaded" ){
+          callBack( e );
+        }
+      };
+    }
+
+    this.attachEvent( event, ( callBack.readyStateCheck || callBack ) );
   };
 
   HTMLScriptElement.prototype.removeEventListener = HTMLScriptElement.prototype.removeEventListener || function( event, callBack ) {
 
     event = ( event === "load" ) ? "onreadystatechange" : "on" + event;
 
-    this.detachEvent( event, callBack );
+    this.detachEvent( event, ( callBack.readyStateCheck || callBack ) );
   };
 
   document.createEvent = document.createEvent || function ( type ) {
@@ -259,7 +268,7 @@
         if (hasProperty(desc, "enumerable"))
           d.enumerable = !!obj.enumerable;
         if (hasProperty(desc, "configurable"))
-          d.configurable = !!obj.configurable;
+          d.configurable = !!desc.configurable;
         if (hasProperty(desc, "value"))
           d.value = obj.value;
         if (hasProperty(desc, "writable"))

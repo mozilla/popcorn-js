@@ -12,10 +12,9 @@
       <script src="../plugins/flickr/popcorn.flickr.js"></script>
       <script src="../plugins/webpage/popcorn.webpage.js"></script>
       <script src="../plugins/googlefeed/popcorn.googlefeed.js"></script>
-      <script src="../plugins/image/popcorn.image.js"></script>
       <script src="../plugins/subtitle/popcorn.subtitle.js"></script>
       <script>
-        var attachEvent = function( element, event, callBack ) {
+        var addEventListenerHelper = function( element, event, callBack ) {
 
           if ( element.addEventListener ) {
 
@@ -35,7 +34,7 @@
 
         var done = false;
 
-        attachEvent( document, "DOMContentLoaded", function( e ) {
+        addEventListenerHelper( document, "DOMContentLoaded", function( e ) {
 
           if ( done ) {
 
@@ -85,13 +84,6 @@
                 title: "Planet Feed",
                 orientation: "Vertical"
             })*/
-            .image({
-              start: 5, // seconds
-              end: 15, // seconds
-              href: "http://www.drumbeat.org/",
-              src: "https://www.drumbeat.org/media//images/drumbeat-logo-splash.png",
-              target: "imagediv"
-            })
           .listen( "durationchange", function() {
             element( "player-duration" ).innerHTML = popcorn.duration();
           })
@@ -116,7 +108,7 @@
 
           // Single play/pause button
 
-          attachEvent( element( "btn-play-pause" ), "click", function() {
+          addEventListenerHelper( element( "btn-play-pause" ), "click", function() {
 
             if ( paused ) {
               popcorn.play();
@@ -126,18 +118,18 @@
           }, false);
 
           // Seek
-          attachEvent( element( "btn-seek" ), "click", function() {
+          addEventListenerHelper( element( "btn-seek" ), "click", function() {
 
             popcorn.currentTime( 30 );
           }, false);
 
           // Volume
-          attachEvent( element( "btn-volume" ), "click", function() {
+          addEventListenerHelper( element( "btn-volume" ), "click", function() {
             var volume = ( popcorn.volume() === 1 ) ? 0.5 : 1;
             popcorn.volume( volume );
           }, false);
 
-          attachEvent( element( "btn-mute" ), "click", function() {
+          addEventListenerHelper( element( "btn-mute" ), "click", function() {
             popcorn.mute( !popcorn.media.muted );
           }, false );
         }, false );
