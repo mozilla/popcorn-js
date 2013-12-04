@@ -74,7 +74,7 @@
 
   function HTMLNullVideoElement( id ) {
 
-    var self = this,
+    var self = new Popcorn._MediaElementProto(),
       parent = typeof id === "string" ? document.querySelector( id ) : id,
       elem = document.createElement( "div" ),
       playerReady = false,
@@ -445,26 +445,27 @@
         }
       }
     });
+
+    self._canPlaySrc = Popcorn.HTMLNullVideoElement._canPlaySrc;
+    self.canPlayType = Popcorn.HTMLNullVideoElement.canPlayType;
+
+    return self;
   }
 
-  HTMLNullVideoElement.prototype = new Popcorn._MediaElementProto();
-  HTMLNullVideoElement.prototype.constructor = HTMLNullVideoElement;
+  Popcorn.HTMLNullVideoElement = function( id ) {
+    return new HTMLNullVideoElement( id );
+  };
 
   // Helper for identifying URLs we know how to play.
-  HTMLNullVideoElement.prototype._canPlaySrc = function( url ) {
+  Popcorn.HTMLNullVideoElement._canPlaySrc = function( url ) {
     return ( temporalRegex ).test( url ) ?
       "probably" :
       EMPTY_STRING;
   };
 
   // We'll attempt to support a mime type of video/x-nullvideo
-  HTMLNullVideoElement.prototype.canPlayType = function( type ) {
+  Popcorn.HTMLNullVideoElement.canPlayType = function( type ) {
     return type === "video/x-nullvideo" ? "probably" : EMPTY_STRING;
   };
-
-  Popcorn.HTMLNullVideoElement = function( id ) {
-    return new HTMLNullVideoElement( id );
-  };
-  Popcorn.HTMLNullVideoElement._canPlaySrc = HTMLNullVideoElement.prototype._canPlaySrc;
 
 }( Popcorn, document ));

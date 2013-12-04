@@ -52,7 +52,7 @@
       throw "ERROR: HTMLJWPlayerVideoElement requires window.postMessage";
     }
 
-    var self = this,
+    var self = new Popcorn._MediaElementProto(),
       parent = typeof id === "string" ? document.querySelector( id ) : id,
       impl = {
         src: EMPTY_STRING,
@@ -548,26 +548,27 @@
         }
       }
     });
+
+    self._canPlaySrc = Popcorn.HTMLJWPlayerVideoElement._canPlaySrc;
+    self.canPlayType = Popcorn.HTMLJWPlayerVideoElement.canPlayType;
+
+    return self;
   }
 
-  HTMLJWPlayerVideoElement.prototype = new Popcorn._MediaElementProto();
-  HTMLJWPlayerVideoElement.prototype.constructor = HTMLJWPlayerVideoElement;
+  Popcorn.HTMLJWPlayerVideoElement = function( id ) {
+    return new HTMLJWPlayerVideoElement( id );
+  };
 
   // Helper for identifying URLs we know how to play.
-  HTMLJWPlayerVideoElement.prototype._canPlaySrc = function( url ) {
+  Popcorn.HTMLJWPlayerVideoElement._canPlaySrc = function( url ) {
     // Because of the nature of JWPlayer playing all media types,
     // it can potentially play all url formats.
     return "probably";
   };
 
   // This could potentially support everything. It is a bit of a catch all player.
-  HTMLJWPlayerVideoElement.prototype.canPlayType = function( type ) {
+  Popcorn.HTMLJWPlayerVideoElement.canPlayType = function( type ) {
     return "probably";
   };
-
-  Popcorn.HTMLJWPlayerVideoElement = function( id ) {
-    return new HTMLJWPlayerVideoElement( id );
-  };
-  Popcorn.HTMLJWPlayerVideoElement._canPlaySrc = HTMLJWPlayerVideoElement.prototype._canPlaySrc;
 
 }( Popcorn, window, document ));

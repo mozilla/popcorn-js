@@ -49,7 +49,7 @@
       throw "ERROR: HTMLVimeoVideoElement requires window.postMessage";
     }
 
-    var self = this,
+    var self = new Popcorn._MediaElementProto(),
       parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
       elem = document.createElement( "iframe" ),
       impl = {
@@ -598,25 +598,26 @@
         }
       }
     });
+
+    self._canPlaySrc = Popcorn.HTMLVimeoVideoElement._canPlaySrc;
+    self.canPlayType = Popcorn.HTMLVimeoVideoElement.canPlayType;
+
+    return self;
   }
 
-  HTMLVimeoVideoElement.prototype = new Popcorn._MediaElementProto();
-  HTMLVimeoVideoElement.prototype.constructor = HTMLVimeoVideoElement;
+  Popcorn.HTMLVimeoVideoElement = function( id ) {
+    return new HTMLVimeoVideoElement( id );
+  };
 
   // Helper for identifying URLs we know how to play.
-  HTMLVimeoVideoElement.prototype._canPlaySrc = function( url ) {
+  Popcorn.HTMLVimeoVideoElement._canPlaySrc = function( url ) {
     return ( (/player.vimeo.com\/video\/\d+/).test( url ) ||
              (/vimeo.com\/\d+/).test( url ) ) ? "probably" : EMPTY_STRING;
   };
 
   // We'll attempt to support a mime type of video/x-vimeo
-  HTMLVimeoVideoElement.prototype.canPlayType = function( type ) {
+  Popcorn.HTMLVimeoVideoElement.canPlayType = function( type ) {
     return type === "video/x-vimeo" ? "probably" : EMPTY_STRING;
   };
-
-  Popcorn.HTMLVimeoVideoElement = function( id ) {
-    return new HTMLVimeoVideoElement( id );
-  };
-  Popcorn.HTMLVimeoVideoElement._canPlaySrc = HTMLVimeoVideoElement.prototype._canPlaySrc;
 
 }( Popcorn, window, document ));
