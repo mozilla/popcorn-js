@@ -14,6 +14,20 @@
     document.detachEvent( event, callBack );
   };
 
+  window.addEventListener = window.addEventListener || function( event, callBack ) {
+
+    event = "on" + event;
+
+    window.attachEvent( event, callBack );
+  };
+
+  window.removeEventListener = window.removeEventListener || function( event, callBack ) {
+
+    event = "on" + event;
+
+    window.detachEvent( event, callBack );
+  };
+
   HTMLScriptElement.prototype.addEventListener = HTMLScriptElement.prototype.addEventListener || function( event, callBack ) {
 
     event = ( event === "load" ) ? "onreadystatechange" : "on" + event;
