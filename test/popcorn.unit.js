@@ -1021,6 +1021,50 @@ test( "Bogus Selector", 2, function() {
   }
 });
 
+asyncTest( "durationchange", 7, function() {
+  var media = Popcorn.HTMLNullVideoElement( "#null-video" ),
+      pop;
+
+  Popcorn.plugin( "durationPlugin" , function(){
+    return {
+      _setup: function( options ) {},
+      start: function( event, options ) {},
+      end: function( event, options ) {},
+      _teardown: function( options ) {
+        ok( true, "Teardown was called when trackevents removed from durationchange" );
+      }
+    };
+  });
+
+  // Set initial duration to a 20 second video
+  media.src = "#t=,20";
+  pop = Popcorn( media );
+
+  pop.durationPlugin({ start: "12", end: "14" });
+
+  pop.on( "durationchange", function() {
+    pop.off( "durationchange" );
+
+    var byStart = pop.data.trackEvents.byStart,
+        byEnd = pop.data.trackEvents.byEnd;
+
+    equal( byStart.length, 2, "byStart should only contain the padding trackevents" );
+    equal( byEnd.length, 2, "byEnd should only contain the padding trackevents" );
+    ok( byStart[ 1 ].end === 10, "Padding event value should be equal to new duration. byStart.end" );
+    ok( byStart[ 1 ].start === 10, "Padding event value should be equal to new duration. byStart.start" );
+    ok( byEnd[ 1 ].end === 10, "Padding event value should be equal to new duration. byEnd.end" );
+    ok( byEnd[ 1 ].start === 10, "Padding event value should be equal to new duration. byEnd.start" );
+
+    Popcorn.removePlugin( "durationPlugin" );
+    pop.destroy();
+    start();
+  });
+
+  // Change to a media source with a different duration,
+  // and with a duration less than the start of our one trackevent
+  pop.media.src = "#t=,10";
+});
+
 module( "Popcorn Static" );
 
 test( "Popcorn.[addTrackEvent | removeTrackEvent].ref()", 2, function() {
