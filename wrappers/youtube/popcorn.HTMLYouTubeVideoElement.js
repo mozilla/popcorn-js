@@ -102,7 +102,7 @@
     self._util.type = "YouTube";
 
     function addMediaReadyCallback( callback ) {
-      mediaReadyCallbacks.unshift( callback );
+      mediaReadyCallbacks.push( callback );
     }
 
     function onPlayerReady( event ) {
@@ -279,14 +279,18 @@
       if( !( playerReady && player ) ) {
         return;
       }
+      onPause();
       durationReady = false;
+      mediaReady = false;
       firstPlay = false;
+      loopedPlay = false;
+      impl.currentTime = 0;
+      mediaReadyCallbacks = [];
       clearInterval( currentTimeInterval );
       clearInterval( bufferedInterval );
       player.stopVideo();
       player.clearVideo();
       player.destroy();
-      mediaReadyCallbacks = [];
       elem = document.createElement( "div" );
     }
 

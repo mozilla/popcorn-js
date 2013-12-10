@@ -99,7 +99,7 @@ var testData = {
       }
     });
 
-    asyncTest( "YouTube 06 - source changes", 2, function() {
+    asyncTest( "YouTube 06 - source changes", 3, function() {
 
       var video = testData.createMedia( "#video" );
 
@@ -107,8 +107,14 @@ var testData = {
         ok( true, "first source ready event is fired" );
         video.removeEventListener( "loadedmetadata", loadedmetadata, false );
         video.addEventListener( "loadedmetadata", function() {
+          video.pause();
           ok( true, "second source ready event is fired" );
-          start();
+          video.addEventListener( "play", function() {
+            equal( video.currentTime, 2, "times change properly after source changes" );
+            start();
+          }, false );
+          video.currentTime = 2;
+          video.play();
         }, false );
         video.src = "http://www.youtube.com/watch?v=HMnyrTe-j6U&autoplay=1&loop=1";
       }, false );
