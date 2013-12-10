@@ -28,6 +28,7 @@
     this.duration = options.duration || NaN;
     this.playInterval = null;
     this.paused = true;
+    this.defaultPlaybackRate = 1;
     this.playbackRate = 1;
     this.ended = options.endedCallback || Popcorn.nop;
   }
@@ -309,10 +310,6 @@
       return impl.muted;
     }
 
-    function setPlaybackRate( aValue ) {
-      player.playbackRate = aValue;
-    }
-
     Object.defineProperties( self, {
 
       src: {
@@ -435,10 +432,7 @@
           return player.playbackRate;   
         },
         set: function( aValue ) {
-          if (aValue < 0 ) {
-            throw "playbackRate value must be above 0";
-          }
-          setPlaybackRate( aValue );
+             player.playbackRate = aValue;
         }
       },
 
