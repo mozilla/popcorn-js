@@ -28,16 +28,20 @@
     this.duration = options.duration || NaN;
     this.playInterval = null;
     this.paused = true;
+    this.defaultPlaybackRate = 1;
+    this.playbackRate = 1;
     this.ended = options.endedCallback || Popcorn.nop;
   }
 
   function nullPlay( video ) {
-    video.currentTime += ( Date.now() - video.startTime ) / 1000;
+    video.currentTime += ( Date.now() - video.startTime ) / (1000 / video.playbackRate);
     video.startTime = Date.now();
     if( video.currentTime >= video.duration ) {
-      video.currentTime = video.duration;
-      video.pause();
+      video.pause(video.duration);
       video.ended();
+    }
+    if( video.currentTime < 0 ) {
+       video.pause(0);   
     }
   }
 
@@ -422,6 +426,16 @@
         },
         set: function( aValue ) {
           setMuted( self._util.isAttributeSet( aValue ) );
+        }
+      },
+      
+      playbackRate: {
+        get: function() {
+          return player.playbackRate;   
+        },
+        set: function( aValue ) {
+          player.playbackRate = aValue;
+          self.dispatchEvent( "ratechange" );
         }
       },
 

@@ -27,6 +27,25 @@ var testData = {
       ok( video.duration === 123 && video.currentTime === 12.54, "Correct duration and currentTime" );
 
     });
+      
+    asyncTest( "Null Wrapper 02 - Null playbackRate testing ", 1,  function() {
+
+      video  = testData.createMedia( "#video" );
+
+      video.src = "#t=,9";
+      pop = Popcorn( video );
+      pop.playbackRate( -1 );
+      pop.play( 5 );
+
+      pop.cue( 2, function(){
+        ok( pop.playbackRate() === -1, "Correct playbackRate" );
+        start();
+      });
+
+      pop.cue( 6, function(){
+        ok( false, "Incorrect playbackRate" );
+      });
+    });
   }
 
 };
