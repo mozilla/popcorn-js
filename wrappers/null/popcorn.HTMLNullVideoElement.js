@@ -37,9 +37,11 @@
     video.currentTime += ( Date.now() - video.startTime ) / (1000 / video.playbackRate);
     video.startTime = Date.now();
     if( video.currentTime >= video.duration ) {
-      video.currentTime = video.duration;
-      video.pause();
+      video.pause(video.duration);
       video.ended();
+    }
+    if( video.currentTime < 0 ) {
+       video.pause(0);   
     }
   }
 

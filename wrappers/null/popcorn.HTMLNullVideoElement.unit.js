@@ -27,6 +27,19 @@ var testData = {
       ok( video.duration === 123 && video.currentTime === 12.54, "Correct duration and currentTime" );
 
     });
+      
+    asyncTest( "Null Wrapper 02 - Null playbackRate testing ", 1,  function() {
+
+      nullVid = Popcorn.HTMLNullVideoElement("#video");
+      nullVid.src = "#t=,9";
+      vid = Popcorn(nullVid);
+      vid.playbackRate(-1);
+      vid.play(5);
+      vid.cue(2, function(){
+        ok( vid.playbackRate() === -1, "Correct playbackRate");
+        start();
+      });
+    });
   }
 
 };
