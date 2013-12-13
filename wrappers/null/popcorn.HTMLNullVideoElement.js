@@ -434,7 +434,8 @@
           return player.playbackRate;   
         },
         set: function( aValue ) {
-             player.playbackRate = aValue;
+          player.playbackRate = aValue;
+          self.dispatchEvent( "ratechange" );
         }
       },
 
