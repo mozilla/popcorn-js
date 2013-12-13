@@ -30,17 +30,20 @@ var testData = {
       
     asyncTest( "Null Wrapper 02 - Null playbackRate testing ", 1,  function() {
 
-      nullVid = Popcorn.HTMLNullVideoElement("#video");
-      nullVid.src = "#t=,9";
-      vid = Popcorn(nullVid);
-      vid.playbackRate(-1);
-      vid.play(5);
-      vid.cue(2, function(){
-        ok( vid.playbackRate() === -1, "Correct playbackRate");
+      video  = testData.createMedia( "#video" );
+
+      video.src = "#t=,9";
+      pop = Popcorn( video );
+      pop.playbackRate( -1 );
+      pop.play( 5 );
+
+      pop.cue( 2, function(){
+        ok( pop.playbackRate() === -1, "Correct playbackRate" );
         start();
       });
-      vid.cue(6, function(){
-        ok( false, "Incorrect playbackRate");
+
+      pop.cue( 6, function(){
+        ok( false, "Incorrect playbackRate" );
       });
     });
   }
