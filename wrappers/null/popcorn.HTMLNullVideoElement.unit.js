@@ -39,6 +39,9 @@ var testData = {
         ok( vid.playbackRate() === -1, "Correct playbackRate");
         start();
       });
+      vid.cue(6, function(){
+        ok( false, "Incorrect playbackRate");
+      });
     });
   }
 
