@@ -1,0 +1,14 @@
+{
+  "name": "popcorn-js",
+  "version": "1.5.0",
+  "main": "popcorn.js",
+  "keywords": [
+    "html5",
+    "media",
+    "video",
+    "audio",
+    "popcornjs",
+    "popcorn",
+    "popcorn.js"
+  ]
+}
