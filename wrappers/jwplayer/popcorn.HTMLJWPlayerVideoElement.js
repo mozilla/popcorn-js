@@ -220,6 +220,12 @@
         return;
       }
 
+      // Use any player vars passed on the URL
+      var playerVars = self._util.parseUri( aSrc ).queryKey;
+
+      // Show/hide controls. Sync with impl.controls and prefer URL value.
+      impl.controls = playerVars.controls = playerVars.controls || impl.controls;
+
       impl.src = aSrc;
 
       // Make sure JWPlayer is ready, and if not, register a callback
@@ -236,7 +242,7 @@
         file: aSrc,
         width: "100%",
         height: "100%",
-        controls: false
+        controls: impl.controls
       });
 
       player = jwplayer( parent.id );
