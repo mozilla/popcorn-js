@@ -253,6 +253,7 @@
         if ( !self.isDestroyed ) {
           self.data.durationChange = function() {
             var newDuration = self.media.duration,
+                newDurationPlus = newDuration + 1,
                 byStart = self.data.trackEvents.byStart,
                 byEnd = self.data.trackEvents.byEnd;
 
@@ -279,13 +280,13 @@
             // References to byEnd/byStart are reset, so accessing it this way is
             // forced upon us.
             self.data.trackEvents.byEnd.push({
-              start: newDuration,
-              end: newDuration
+              start: newDurationPlus,
+              end: newDurationPlus
             });
 
             self.data.trackEvents.byStart.push({
-              start: newDuration,
-              end: newDuration
+              start: newDurationPlus,
+              end: newDurationPlus
             });
           };
 
