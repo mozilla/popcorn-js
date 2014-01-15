@@ -110,7 +110,7 @@
     self._util.type = "NullVideo";
 
     function addPlayerReadyCallback( callback ) {
-      playerReadyCallbacks.unshift( callback );
+      playerReadyCallbacks.push( callback );
     }
 
     function onPlayerReady( ) {
@@ -128,10 +128,9 @@
       impl.readyState = self.HAVE_ENOUGH_DATA;
       self.dispatchEvent( "canplaythrough" );
 
-      var i = playerReadyCallbacks.length;
-      while( i-- ) {
-        playerReadyCallbacks[ i ]();
-        delete playerReadyCallbacks[ i ];
+      while( playerReadyCallbacks.length ) {
+        playerReadyCallbacks[ 0 ]();
+        playerReadyCallbacks.shift();
       }
 
       // Auto-start if necessary
