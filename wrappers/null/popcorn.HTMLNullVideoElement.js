@@ -113,7 +113,8 @@
       playerReadyCallbacks.push( callback );
     }
 
-    function onPlayerReady( ) {
+    function onPlayerReady() {
+      var callback;
       playerReady = true;
 
       impl.networkState = self.NETWORK_IDLE;
@@ -129,8 +130,8 @@
       self.dispatchEvent( "canplaythrough" );
 
       while( playerReadyCallbacks.length ) {
-        playerReadyCallbacks[ 0 ]();
-        playerReadyCallbacks.shift();
+        callback = playerReadyCallbacks.shift();
+        callback();
       }
 
       // Auto-start if necessary
