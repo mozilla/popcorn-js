@@ -78,10 +78,7 @@
         error: null
       },
       playerReady = false,
-      catchRoguePauseEvent = false,
-      catchRoguePlayEvent = false,
       mediaReady = false,
-      durationReady = false,
       loopedPlay = false,
       player,
       playerPaused = true,
@@ -90,8 +87,7 @@
       bufferedInterval,
       lastLoadedFraction = 0,
       currentTimeInterval,
-      timeUpdateInterval,
-      firstPlay = false;
+      timeUpdateInterval;
 
     // Namespace all events we'll produce
     self._eventNamespace = Popcorn.guid( "HTMLYouTubeVideoElement::" );
@@ -105,10 +101,22 @@
       mediaReadyCallbacks.push( callback );
     }
 
+    function catchRoguePlayEvent() {
+      player.pauseVideo();
+      removeYouTubeEvent( "play", catchRoguePlayEvent );
+      addYouTubeEvent( "play", onPlay );
+    }
+
+    function catchRoguePauseEvent() {
+      addYouTubeEvent( "pause", onPause );
+      removeYouTubeEvent( "pause", catchRoguePauseEvent );
+    }
+
     function onPlayerReady( event ) {
       var onMuted = function() {
         if ( player.isMuted() ) {
           // force an initial play on the video, to remove autostart on initial seekTo.
+          addYouTubeEvent( "play", onFirstPlay );
           player.playVideo();
         } else {
           setTimeout( onMuted, 0 );
@@ -164,24 +172,13 @@
       self.dispatchEvent( "error" );
     }
 
-    // This function needs duration and first play to be ready.
-    function onFirstPlay() {
-      addMediaReadyCallback(function() {
-        bufferedInterval = setInterval( monitorBuffered, 50 );
-      });
-
+    function onReady() {
       // Set initial paused state
       if( impl.autoplay || !impl.paused ) {
         impl.paused = false;
         addMediaReadyCallback(function() {
           onPlay();
         });
-      } else {
-        // if a pause happens while seeking, ensure we catch it.
-        // in youtube seeks fire pause events, and we don't want to listen to that.
-        // except for the case of an actual pause.
-        catchRoguePauseEvent = false;
-        player.pauseVideo();
       }
 
       // Ensure video will now be unmuted when playing due to the mute on initial load.
@@ -200,15 +197,60 @@
       self.dispatchEvent( "canplay" );
 
       mediaReady = true;
+
       while( mediaReadyCallbacks.length ) {
         mediaReadyCallbacks[ 0 ]();
         mediaReadyCallbacks.shift();
       }
+      bufferedInterval = setInterval( monitorBuffered, 50 );
 
       // We can't easily determine canplaythrough, but will send anyway.
       impl.readyState = self.HAVE_ENOUGH_DATA;
       self.dispatchEvent( "canplaythrough" );
     }
+
+    function onFirstPause() {
+      if ( player.getCurrentTime() > 0 ) {
+        setTimeout( onFirstPause, 0 );
+        return;
+      }
+      addYouTubeEvent( "play", onPlay );
+      addYouTubeEvent( "pause", onPause );
+      removeYouTubeEvent( "pause", onFirstPause );
+
+      onReady();
+    }
+
+    // This function needs duration and first play to be ready.
+    function onFirstPlay() {
+      if ( player.getCurrentTime() === 0 ) {
+        setTimeout( onFirstPlay, 0 );
+        return;
+      }
+      removeYouTubeEvent( "play", onFirstPlay );
+      addYouTubeEvent( "pause", onFirstPause );
+
+      player.seekTo( 0 );
+      player.pauseVideo();
+    }
+
+    function addYouTubeEvent( event, listener ) {
+      self.addEventListener( "youtube-" + event, listener, false );
+    }
+    function removeYouTubeEvent( event, listener ) {
+      self.removeEventListener( "youtube-" + event, listener, false );
+    }
+    function dispatchYouTubeEvent( event ) {
+      self.dispatchEvent( "youtube-" + event );
+    }
+
+    function onBuffering() {
+      impl.networkState = self.NETWORK_LOADING;
+      self.dispatchEvent( "waiting" );
+    }
+
+    addYouTubeEvent( "buffering", onBuffering );
+    addYouTubeEvent( "ended", onEnded );
 
     function onPlayerStateChange( event ) {
 
@@ -216,49 +258,22 @@
 
         // ended
         case YT.PlayerState.ENDED:
-          onEnded();
+          dispatchYouTubeEvent( "ended" );
           break;
 
         // playing
         case YT.PlayerState.PLAYING:
-          if( !firstPlay ) {
-            // fake ready event
-            firstPlay = true;
-
-            // Duration ready happened first, we're now ready.
-            if ( durationReady ) {
-              onFirstPlay();
-            }
-          } else if ( catchRoguePlayEvent ) {
-            catchRoguePlayEvent = false;
-            player.pauseVideo();
-          } else {
-            onPlay();
-          }
+          dispatchYouTubeEvent( "play" );
           break;
 
         // paused
         case YT.PlayerState.PAUSED:
-
-          // Youtube fires a paused event before an ended event.
-          // We have no need for this.
-          if ( player.getDuration() === player.getCurrentTime() ) {
-            break;
-          }
-
-          // a seekTo call fires a pause event, which we don't want at this point.
-          // as long as a seekTo continues to do this, we can safly toggle this state.
-          if ( catchRoguePauseEvent ) {
-            catchRoguePauseEvent = false;
-            break;
-          }
-          onPause();
+          dispatchYouTubeEvent( "pause" );
           break;
 
         // buffering
         case YT.PlayerState.BUFFERING:
-          impl.networkState = self.NETWORK_LOADING;
-          self.dispatchEvent( "waiting" );
+          dispatchYouTubeEvent( "buffering" );
           break;
 
         // video cued
@@ -280,9 +295,7 @@
         return;
       }
       onPause();
-      durationReady = false;
       mediaReady = false;
-      firstPlay = false;
       loopedPlay = false;
       impl.currentTime = 0;
       mediaReadyCallbacks = [];
@@ -380,30 +393,24 @@
         }
         impl.duration = resp.data.duration;
         self.dispatchEvent( "durationchange" );
-        durationReady = true;
 
-        // First play happened first, we're now ready.
-        if ( firstPlay ) {
-          onFirstPlay();
-        }
+        player = new YT.Player( elem, {
+          width: "100%",
+          height: "100%",
+          wmode: playerVars.wmode,
+          videoId: aSrc,
+          playerVars: playerVars,
+          events: {
+            'onReady': onPlayerReady,
+            'onError': onPlayerError,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+
+        impl.networkState = self.NETWORK_LOADING;
+        self.dispatchEvent( "loadstart" );
+        self.dispatchEvent( "progress" );
       });
-
-      player = new YT.Player( elem, {
-        width: "100%",
-        height: "100%",
-        wmode: playerVars.wmode,
-        videoId: aSrc,
-        playerVars: playerVars,
-        events: {
-          'onReady': onPlayerReady,
-          'onError': onPlayerError,
-          'onStateChange': onPlayerStateChange
-        }
-      });
-
-      impl.networkState = self.NETWORK_LOADING;
-      self.dispatchEvent( "loadstart" );
-      self.dispatchEvent( "progress" );
     }
 
     function monitorCurrentTime() {
@@ -454,7 +461,8 @@
     function onSeeking() {
       // a seek in youtube fires a paused event.
       // we don't want to listen for this, so this state catches the event.
-      catchRoguePauseEvent = true;
+      addYouTubeEvent( "pause", catchRoguePauseEvent );
+      removeYouTubeEvent( "pause", onPause );
       impl.seeking = true;
       self.dispatchEvent( "seeking" );
     }
@@ -497,13 +505,20 @@
     self.play = function() {
       impl.paused = false;
       if( !mediaReady ) {
-        addMediaReadyCallback( function() { self.play(); } );
+        addMediaReadyCallback( function() {
+          self.play();
+        });
         return;
       }
       player.playVideo();
     };
 
     function onPause() {
+      // Youtube fires a paused event before an ended event.
+      // We have no need for this.
+      if ( player.getDuration() === player.getCurrentTime() ) {
+        return;
+      }
       impl.paused = true;
       if ( !playerPaused ) {
         playerPaused = true;
@@ -515,13 +530,15 @@
     self.pause = function() {
       impl.paused = true;
       if( !mediaReady ) {
-        addMediaReadyCallback( function() { self.pause(); } );
+        addMediaReadyCallback( function() {
+          self.pause();
+        });
         return;
       }
       // if a pause happens while seeking, ensure we catch it.
       // in youtube seeks fire pause events, and we don't want to listen to that.
       // except for the case of an actual pause.
-      catchRoguePauseEvent = false;
+      catchRoguePauseEvent();
       player.pauseVideo();
     };
 
@@ -533,7 +550,8 @@
         impl.ended = true;
         onPause();
         // YouTube will fire a Playing State change after the video has ended, causing it to loop.
-        catchRoguePlayEvent = true;
+        addYouTubeEvent( "play", catchRoguePlayEvent );
+        removeYouTubeEvent( "play", onPlay );
         self.dispatchEvent( "timeupdate" );
         self.dispatchEvent( "ended" );
       }
@@ -559,7 +577,9 @@
     function setMuted( aValue ) {
       impl.muted = aValue;
       if( !mediaReady ) {
-        addMediaReadyCallback( function() { setMuted( impl.muted ); } );
+        addMediaReadyCallback( function() {
+          setMuted( impl.muted );
+        });
         return;
       }
       player[ aValue ? "mute" : "unMute" ]();
