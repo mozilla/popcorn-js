@@ -173,11 +173,17 @@
     }
 
     function onReady() {
+
+      addYouTubeEvent( "play", onPlay );
+      addYouTubeEvent( "pause", onPause );
       // Set initial paused state
       if( impl.autoplay || !impl.paused ) {
+        removeYouTubeEvent( "play", onReady );
         impl.paused = false;
         addMediaReadyCallback(function() {
-          onPlay();
+          if ( !impl.paused ) {
+            onPlay();
+          }
         });
       }
 
@@ -197,12 +203,12 @@
       self.dispatchEvent( "canplay" );
 
       mediaReady = true;
+      bufferedInterval = setInterval( monitorBuffered, 50 );
 
       while( mediaReadyCallbacks.length ) {
         mediaReadyCallbacks[ 0 ]();
         mediaReadyCallbacks.shift();
       }
-      bufferedInterval = setInterval( monitorBuffered, 50 );
 
       // We can't easily determine canplaythrough, but will send anyway.
       impl.readyState = self.HAVE_ENOUGH_DATA;
@@ -214,11 +220,14 @@
         setTimeout( onFirstPause, 0 );
         return;
       }
-      addYouTubeEvent( "play", onPlay );
-      addYouTubeEvent( "pause", onPause );
       removeYouTubeEvent( "pause", onFirstPause );
 
-      onReady();
+      if( impl.autoplay || !impl.paused ) {
+        addYouTubeEvent( "play", onReady );
+        player.playVideo();
+      } else {
+        onReady();
+      }
     }
 
     // This function needs duration and first play to be ready.
@@ -268,7 +277,11 @@
 
         // paused
         case YT.PlayerState.PAUSED:
-          dispatchYouTubeEvent( "pause" );
+          // Youtube fires a paused event before an ended event.
+          // We have no need for this.
+          if ( player.getDuration() !== player.getCurrentTime() ) {
+            dispatchYouTubeEvent( "pause" );
+          }
           break;
 
         // buffering
@@ -477,7 +490,6 @@
     }
 
     function onPlay() {
-
       if( impl.ended ) {
         changeCurrentTime( 0 );
         impl.ended = false;
@@ -485,7 +497,6 @@
       timeUpdateInterval = setInterval( onTimeUpdate,
                                         self._util.TIMEUPDATE_MS );
       impl.paused = false;
-
       if( playerPaused ) {
         playerPaused = false;
 
@@ -514,11 +525,6 @@
     };
 
     function onPause() {
-      // Youtube fires a paused event before an ended event.
-      // We have no need for this.
-      if ( player.getDuration() === player.getCurrentTime() ) {
-        return;
-      }
       impl.paused = true;
       if ( !playerPaused ) {
         playerPaused = true;
@@ -555,23 +561,6 @@
         self.dispatchEvent( "timeupdate" );
         self.dispatchEvent( "ended" );
       }
-    }
-
-    function setVolume( aValue ) {
-      impl.volume = aValue;
-      if( !mediaReady ) {
-        addMediaReadyCallback( function() {
-          setVolume( impl.volume );
-        });
-        return;
-      }
-      player.setVolume( impl.volume * 100 );
-      self.dispatchEvent( "volumechange" );
-    }
-
-    function getVolume() {
-      // YouTube has getVolume(), but for sync access we use impl.volume
-      return impl.volume;
     }
 
     function setMuted( aValue ) {
@@ -681,16 +670,21 @@
 
       volume: {
         get: function() {
-          // Remap from HTML5's 0-1 to YouTube's 0-100 range
-          var volume = getVolume();
-          return volume / 100;
+          return impl.volume
         },
         set: function( aValue ) {
           if( aValue < 0 || aValue > 1 ) {
             throw "Volume value must be between 0.0 and 1.0";
           }
-
-          setVolume( aValue );
+          impl.volume = aValue;
+          if( !mediaReady ) {
+            addMediaReadyCallback( function() {
+              self.volume = aValue;
+            });
+            return;
+          }
+          player.setVolume( impl.volume * 100 );
+          self.dispatchEvent( "volumechange" );
         }
       },
 
