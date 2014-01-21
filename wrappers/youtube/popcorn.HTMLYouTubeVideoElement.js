@@ -674,7 +674,7 @@
 
       volume: {
         get: function() {
-          return impl.volume
+          return impl.volume;
         },
         set: function( aValue ) {
           if( aValue < 0 || aValue > 1 ) {
