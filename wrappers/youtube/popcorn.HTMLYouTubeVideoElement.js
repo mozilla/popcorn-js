@@ -216,11 +216,11 @@
     }
 
     function onFirstPause() {
+      removeYouTubeEvent( "pause", onFirstPause );
       if ( player.getCurrentTime() > 0 ) {
         setTimeout( onFirstPause, 0 );
         return;
       }
-      removeYouTubeEvent( "pause", onFirstPause );
 
       if( impl.autoplay || !impl.paused ) {
         addYouTubeEvent( "play", onReady );
@@ -232,13 +232,12 @@
 
     // This function needs duration and first play to be ready.
     function onFirstPlay() {
+      removeYouTubeEvent( "play", onFirstPlay );
       if ( player.getCurrentTime() === 0 ) {
         setTimeout( onFirstPlay, 0 );
         return;
       }
-      removeYouTubeEvent( "play", onFirstPlay );
       addYouTubeEvent( "pause", onFirstPause );
-
       player.seekTo( 0 );
       player.pauseVideo();
     }
@@ -307,6 +306,11 @@
       if( !( playerReady && player ) ) {
         return;
       }
+
+      removeYouTubeEvent( "buffering", onBuffering );
+      removeYouTubeEvent( "ended", onEnded );
+      removeYouTubeEvent( "play", onPlay );
+      removeYouTubeEvent( "pause", onPause );
       onPause();
       mediaReady = false;
       loopedPlay = false;
