@@ -12,42 +12,47 @@
 
   // Setup for YouTube API
   ytReady = false,
-  ytLoaded = false,
+  ytLoading = false,
   ytCallbacks = [];
 
-  function isYouTubeReady() {
-    // If the YouTube iframe API isn't injected, to it now.
-    if( !ytLoaded ) {
-      var tag = document.createElement( "script" );
-      var protocol = window.location.protocol === "file:" ? "http:" : "";
+  function onYouTubeIframeAPIReady() {
+    if ( YT.loaded ) {
+      ytReady = true;
+      while( ytCallbacks.length ) {
+        ytCallbacks[ 0 ]();
+        ytCallbacks.shift();
+      }
+    } else {
+      setTimeout( onYouTubeIframeAPIReady, 1000 );
+    }
+  }
 
-      tag.src = protocol + "//www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName( "script" )[ 0 ];
-      firstScriptTag.parentNode.insertBefore( tag, firstScriptTag );
-      ytLoaded = true;
+  function isYouTubeReady() {
+    var tag,
+        protocol,
+        firstScriptTag;
+    // If we area already waiting, do nothing.
+    if( !ytLoading ) {
+      // If script is already there, check if it is loaded.
+      if ( window.YT ) {
+        onYouTubeIframeAPIReady();
+      } else {
+        tag = document.createElement( "script" );
+        protocol = window.location.protocol === "file:" ? "http:" : "";
+        // Wait for the script to be loaded, then check if it's ready.
+        tag.addEventListener( "load", onYouTubeIframeAPIReady, false);
+        tag.src = protocol + "//www.youtube.com/iframe_api";
+        firstScriptTag = document.getElementsByTagName( "script" )[ 0 ];
+        firstScriptTag.parentNode.insertBefore( tag, firstScriptTag );
+      }
+      ytLoading = true;
     }
     return ytReady;
   }
 
   function addYouTubeCallback( callback ) {
-    ytCallbacks.unshift( callback );
+    ytCallbacks.push( callback );
   }
-
-  // An existing YouTube references can break us.
-  // Remove it and use the one we can trust.
-  if ( window.YT ) {
-    window.quarantineYT = window.YT;
-    window.YT = null;
-  }
-
-  window.onYouTubeIframeAPIReady = function() {
-    ytReady = true;
-    var i = ytCallbacks.length;
-    while( i-- ) {
-      ytCallbacks[ i ]();
-      delete ytCallbacks[ i ];
-    }
-  };
 
   function HTMLYouTubeVideoElement( id ) {
 
