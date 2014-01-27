@@ -5714,6 +5714,14 @@ if ( !/file/.test( location.protocol ) ) {
     );
   });
 
+  asyncTest( "JSONP Error", 1, function() {
+
+    Popcorn.getJSONP( "http://localhost/404.gif", function( resp ) {
+      ok( resp.error, "Popcorn.getJSONP returns error events." );
+      start();
+    });
+  });
+
 } else {
   test( "JSONP Response", 1, function() {
 
