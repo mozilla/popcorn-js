@@ -2565,9 +2565,21 @@
       head.removeChild( script );
     }, false );
 
-    script.src = url;
+    script.addEventListener( "error",  function( e ) {
+      //  Handling remote script loading callbacks
+      success && success( { error: e } );
+
+      //  Executing for JSONP requests
+      if ( !isScript ) {
+        //  Garbage collect the callback
+        delete window[ callback ];
+      }
+      //  Garbage collect the script resource
+      head.removeChild( script );
+    }, false );
 
     head.insertBefore( script, head.firstChild );
+    script.src = url;
 
     return;
   };
