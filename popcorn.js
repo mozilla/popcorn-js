@@ -2578,8 +2578,8 @@
       head.removeChild( script );
     }, false );
 
-    head.insertBefore( script, head.firstChild );
     script.src = url;
+    head.insertBefore( script, head.firstChild );
 
     return;
   };
