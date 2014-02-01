@@ -1,7 +1,7 @@
 // PARSER: 0.3 SRT
 (function (Popcorn) {
   /**
-   * SRT popcorn parser plug-in 
+   * SRT popcorn parser plug-in
    * Parses subtitle files in the SRT format.
    * Times are expected in HH:MM:SS,MIL format, though HH:MM:SS.MIL also supported
    * Ignore styling, which may occur after the end time or in-text
@@ -9,12 +9,12 @@
    * SSA-style tags are stripped, HTML style tags are left for the browser to handle:
    *    HTML: <font>, <b>, <i>, <u>, <s>
    *    SSA:  \N or \n, {\cmdArg1}, {\cmd(arg1, arg2, ...)}
-   
+
    * Data parameter is given by Popcorn, will need a text.
    * Text is the file contents to be parsed
-   * 
+   *
    * @param {Object} data
-   * 
+   *
    * Example:
     1
     00:00:25,712 --> 00:00:30.399
@@ -52,6 +52,7 @@
       sub = {};
       text = [];
 
+      i = nextNonEmptyLine( lines, i );
       sub.id = parseInt( lines[i++], 10 );
 
       // Split on '-->' delimiter, trimming spaces as well
@@ -74,7 +75,7 @@
       // Join into 1 line, SSA-style linebreaks
       // Strip out other SSA-style tags
       sub.text = text.join( "\\N" ).replace( /\{(\\[\w]+\(?([\w\d]+,?)+\)?)+\}/gi, "" );
-      
+
       // Escape HTML entities
       sub.text = sub.text.replace( /</g, "&lt;" ).replace( />/g, "&gt;" );
 
@@ -113,6 +114,14 @@
     } catch ( e ) {
       return 0;
     }
+  }
+
+  function nextNonEmptyLine( linesArray, position ) {
+    var idx = position;
+    while ( !linesArray[idx] ) {
+      idx++;
+    }
+    return idx;
   }
 
   function lastNonEmptyLine( linesArray ) {
