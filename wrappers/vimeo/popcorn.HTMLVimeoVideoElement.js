@@ -4,7 +4,7 @@
 
   CURRENT_TIME_MONITOR_MS = 16,
   EMPTY_STRING = "",
-  VIMEO_HOST = window.location.protocol + "//player.vimeo.com";
+  VIMEO_HOST = "https://player.vimeo.com";
 
   // Utility wrapper around postMessage interface
   function VimeoPlayer( vimeoIFrame ) {
