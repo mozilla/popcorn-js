@@ -1,4 +1,0 @@
-
-[submodule "modules/sequence"]
-	path = modules/sequence
-	url = https://github.com/rwldrn/popcorn.sequence.git
