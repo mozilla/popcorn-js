@@ -4,17 +4,17 @@
     <title>Popcorn Youtube Player Example</title>
       <script src="popcorn.ie8.js"></script>
       <script src="../popcorn.js"></script>
+      <script src="../wrappers/common/popcorn._mediaElementProto.js"></script>
+      <script src="../wrappers/youtube/popcorn.HTMLYouTubeVideoElement.js"></script>
       <script src="../modules/player/popcorn.player.js"></script>
       <script src="../players/youtube/popcorn.youtube.js"></script>
       <script src="../plugins/footnote/popcorn.footnote.js"></script>
       <script src="../plugins/flickr/popcorn.flickr.js"></script>
-      <script src="../plugins/attribution/popcorn.attribution.js"></script>
       <script src="../plugins/webpage/popcorn.webpage.js"></script>
       <script src="../plugins/googlefeed/popcorn.googlefeed.js"></script>
-      <script src="../plugins/image/popcorn.image.js"></script>
       <script src="../plugins/subtitle/popcorn.subtitle.js"></script>
       <script>
-        var attachEvent = function( element, event, callBack ) {
+        var addEventListenerHelper = function( element, event, callBack ) {
 
           if ( element.addEventListener ) {
 
@@ -34,7 +34,7 @@
 
         var done = false;
 
-        attachEvent( document, "DOMContentLoaded", function( e ) {
+        addEventListenerHelper( document, "DOMContentLoaded", function( e ) {
 
           if ( done ) {
 
@@ -62,16 +62,6 @@
               numberofimages: "8",
               target: "flickrdiv"
             })
-            .attribution({
-              start: 5, // seconds
-              end: 60, // seconds
-              nameofwork: "Internet",
-              nameofworkurl: "http://www.archive.org/details/CC1232_internet",
-              copyrightholder: "The Computer Chronicles",
-              license: "CC-BY-NC-ND",
-              licenseurl: "http://creativecommons.org/licenses/by-nc-nd/2.0/",
-              target: "attribdiv"
-            })
             .subtitle({
               start: 5, // seconds
               end: 15, // seconds
@@ -94,13 +84,6 @@
                 title: "Planet Feed",
                 orientation: "Vertical"
             })*/
-            .image({
-              start: 5, // seconds
-              end: 15, // seconds
-              href: "http://www.drumbeat.org/",
-              src: "https://www.drumbeat.org/media//images/drumbeat-logo-splash.png",
-              target: "imagediv"
-            })
           .listen( "durationchange", function() {
             element( "player-duration" ).innerHTML = popcorn.duration();
           })
@@ -125,7 +108,7 @@
 
           // Single play/pause button
 
-          attachEvent( element( "btn-play-pause" ), "click", function() {
+          addEventListenerHelper( element( "btn-play-pause" ), "click", function() {
 
             if ( paused ) {
               popcorn.play();
@@ -135,18 +118,18 @@
           }, false);
 
           // Seek
-          attachEvent( element( "btn-seek" ), "click", function() {
+          addEventListenerHelper( element( "btn-seek" ), "click", function() {
 
             popcorn.currentTime( 30 );
           }, false);
 
           // Volume
-          attachEvent( element( "btn-volume" ), "click", function() {
+          addEventListenerHelper( element( "btn-volume" ), "click", function() {
             var volume = ( popcorn.volume() === 1 ) ? 0.5 : 1;
             popcorn.volume( volume );
           }, false);
 
-          attachEvent( element( "btn-mute" ), "click", function() {
+          addEventListenerHelper( element( "btn-mute" ), "click", function() {
             popcorn.mute( !popcorn.media.muted );
           }, false );
         }, false );
@@ -185,7 +168,6 @@
         <ul>
           <li>From 5 to 40 seconds, the footnote 'The video is "RiP: A Remix Manifesto", by Brett Gaylor' will appear below 'Footnote Area'.</li>
           <li>From 20 to 40 seconds, the a flickr stream of 8 images  tagged 'georgia' will appear below 'Flickr Area'.</li>
-          <li>From 5 to 60 seconds, the Creative Commons license will appear below 'Attributions Area'.</li>
           <li>From 5 to 15 seconds, the Mozilla Drumbeat logo will appear below 'Image Area'.</li>
           <li>From 5 to 15 seconds, the subtitle 'This is overlaid on top of the video. You can hightlight it!' will appear in front of the video.</li>
           <li>From 0 to 20 seconds, blogs from 'http://zenit.senecac.on.ca/~chris.tyler/planet/rss20.xml' will appear below 'Google Feed Area'.</li>
@@ -194,9 +176,6 @@
       </div>
       <div id="footnotediv" width="50%" height="50%">
         <strong>Footnote Area</strong><br />
-      </div>
-      <div id="attribdiv" width="50%" height="50%">
-        <strong>Attributions Area</strong><br />
       </div>
       <div id="flickrdiv" width="50%" height="50%">
         <strong>Flickr Area</strong><br />
