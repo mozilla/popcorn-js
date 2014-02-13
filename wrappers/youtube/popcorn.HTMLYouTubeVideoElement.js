@@ -16,11 +16,12 @@
   ytCallbacks = [];
 
   function onYouTubeIframeAPIReady() {
+    var callback;
     if ( YT.loaded ) {
       ytReady = true;
       while( ytCallbacks.length ) {
-        ytCallbacks[ 0 ]();
-        ytCallbacks.shift();
+        callback = ytCallbacks.shift();
+        callback();
       }
     } else {
       setTimeout( onYouTubeIframeAPIReady, 1000 );
@@ -28,22 +29,17 @@
   }
 
   function isYouTubeReady() {
-    var tag,
-        protocol,
-        firstScriptTag;
+    var script;
     // If we area already waiting, do nothing.
     if( !ytLoading ) {
       // If script is already there, check if it is loaded.
       if ( window.YT ) {
         onYouTubeIframeAPIReady();
       } else {
-        tag = document.createElement( "script" );
-        protocol = window.location.protocol === "file:" ? "http:" : "";
-        // Wait for the script to be loaded, then check if it's ready.
-        tag.addEventListener( "load", onYouTubeIframeAPIReady, false);
-        tag.src = protocol + "//www.youtube.com/iframe_api";
-        firstScriptTag = document.getElementsByTagName( "script" )[ 0 ];
-        firstScriptTag.parentNode.insertBefore( tag, firstScriptTag );
+        script = document.createElement( "script" );
+        script.addEventListener( "load", onYouTubeIframeAPIReady, false);
+        script.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild( script );
       }
       ytLoading = true;
     }
