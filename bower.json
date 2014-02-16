@@ -10,5 +10,19 @@
     "popcornjs",
     "popcorn",
     "popcorn.js"
+  ],
+  "ignore": [
+    "AUTHORS",
+    "CHANGELOG.md",
+    "LICENSE_HEADER",
+    "Makefile",
+    "build",
+    "demos",
+    "effects",
+    "example.html",
+    "test",
+    "tests.conf",
+    "tools",
+    "unsupported"
   ]
 }
