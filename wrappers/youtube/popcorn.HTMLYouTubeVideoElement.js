@@ -57,7 +57,7 @@
       throw "ERROR: HTMLYouTubeVideoElement requires window.postMessage";
     }
 
-    var self = this,
+    var self = new Popcorn._MediaElementProto(),
       parent = typeof id === "string" ? document.querySelector( id ) : id,
       elem = document.createElement( "div" ),
       impl = {
@@ -114,6 +114,7 @@
     }
 
     function onPlayerReady( event ) {
+
       var onMuted = function() {
         if ( player.isMuted() ) {
           // force an initial play on the video, to remove autostart on initial seekTo.
@@ -401,6 +402,7 @@
       var xhrURL = "https://gdata.youtube.com/feeds/api/videos/" + aSrc + "?v=2&alt=jsonc&callback=?";
       // Get duration value.
       Popcorn.getJSONP( xhrURL, function( resp ) {
+
         var warning = "failed to retreive duration data, reason: ";
         if ( resp.error ) {
           console.warn( warning + resp.error.message );
@@ -742,29 +744,31 @@
           });
 
           return timeRanges;
-        }
+        },
+        configurable: true
       }
     });
+
+    self._canPlaySrc = Popcorn.HTMLYouTubeVideoElement._canPlaySrc;
+    self.canPlayType = Popcorn.HTMLYouTubeVideoElement.canPlayType;
+
+    return self;
   }
 
-  HTMLYouTubeVideoElement.prototype = new Popcorn._MediaElementProto();
-  HTMLYouTubeVideoElement.prototype.constructor = HTMLYouTubeVideoElement;
+  Popcorn.HTMLYouTubeVideoElement = function( id ) {
+    return new HTMLYouTubeVideoElement( id );
+  };
 
   // Helper for identifying URLs we know how to play.
-  HTMLYouTubeVideoElement.prototype._canPlaySrc = function( url ) {
+  Popcorn.HTMLYouTubeVideoElement._canPlaySrc = function( url ) {
     return (/(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu).*(?:\/|v=)(.{11})/).test( url ) ?
       "probably" :
       EMPTY_STRING;
   };
 
   // We'll attempt to support a mime type of video/x-youtube
-  HTMLYouTubeVideoElement.prototype.canPlayType = function( type ) {
+  Popcorn.HTMLYouTubeVideoElement.canPlayType = function( type ) {
     return type === "video/x-youtube" ? "probably" : EMPTY_STRING;
   };
-
-  Popcorn.HTMLYouTubeVideoElement = function( id ) {
-    return new HTMLYouTubeVideoElement( id );
-  };
-  Popcorn.HTMLYouTubeVideoElement._canPlaySrc = HTMLYouTubeVideoElement.prototype._canPlaySrc;
 
 }( Popcorn, window, document ));
