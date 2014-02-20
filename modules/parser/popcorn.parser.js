@@ -39,15 +39,15 @@
         parseFn,
         parser = {};
 
-    parseFn = function( filename, callback, target ) {
+    parseFn = function( filename, callback, options ) {
 
       if ( !filename ) {
         return this;
       }
 
       // fixes parameters for overloaded function call
-      if (typeof callback !== "function" && !target) {
-        target = callback;
+      if (typeof callback !== "function" && !options) {
+        options = callback;
         callback = null;
       }
 
@@ -58,7 +58,7 @@
         dataType: type,
         success: function( data ) {
 
-          var tracksObject = definition( data, target ),
+          var tracksObject = definition( data, options ),
               tracksData,
               tracksDataLen,
               tracksDef,
