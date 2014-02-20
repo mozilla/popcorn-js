@@ -86,8 +86,8 @@
       sub.text = sub.text.replace( /\\N/gi, "<br />" );
       
       if ( options && options[ "target" ] ) {
-		sub.target = options[ "target" ];
-	  }
+        sub.target = options[ "target" ];
+      }
   
       subs.push( createTrack( "subtitle", sub ) );
     }
