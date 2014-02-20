@@ -26,7 +26,7 @@
     SSA tags with {\i1} would open and close italicize {\i0}, but are stripped
     Multiple {\pos(142,120)\b1}SSA tags are stripped
    */
-  Popcorn.parser( "parseSRT", function( data ) {
+  Popcorn.parser( "parseSRT", function( data, options ) {
 
     // declare needed variables
     var retObj = {
@@ -84,6 +84,11 @@
       // Later modified by kev: http://kevin.deldycke.com/2007/03/ultimate-regular-expression-for-html-tag-parsing-with-php/
       sub.text = sub.text.replace( /&lt;(\/?(font|b|u|i|s))((\s+(\w|\w[\w\-]*\w)(\s*=\s*(?:\".*?\"|'.*?'|[^'\">\s]+))?)+\s*|\s*)(\/?)&gt;/gi, "<$1$3$7>" );
       sub.text = sub.text.replace( /\\N/gi, "<br />" );
+      
+      if ( options && options[ "target" ] ) {
+        sub.target = options[ "target" ];
+      }
+  
       subs.push( createTrack( "subtitle", sub ) );
     }
 
