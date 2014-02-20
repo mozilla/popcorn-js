@@ -85,8 +85,8 @@
       sub.text = sub.text.replace( /&lt;(\/?(font|b|u|i|s))((\s+(\w|\w[\w\-]*\w)(\s*=\s*(?:\".*?\"|'.*?'|[^'\">\s]+))?)+\s*|\s*)(\/?)&gt;/gi, "<$1$3$7>" );
       sub.text = sub.text.replace( /\\N/gi, "<br />" );
       
-      if (options && options["target"]) {
-		sub.target = options["target"];
+      if ( options && options[ "target" ] ) {
+		sub.target = options[ "target" ];
 	  }
   
       subs.push( createTrack( "subtitle", sub ) );

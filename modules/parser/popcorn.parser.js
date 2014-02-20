@@ -46,7 +46,7 @@
       }
 
       // fixes parameters for overloaded function call
-      if (typeof callback !== "function" && !options) {
+      if ( typeof callback !== "function" && !options ) {
         options = callback;
         callback = null;
       }
