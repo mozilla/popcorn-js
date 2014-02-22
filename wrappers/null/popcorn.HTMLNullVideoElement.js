@@ -201,6 +201,9 @@
     }
 
     function changeCurrentTime( aTime ) {
+      if ( aTime === getCurrentTime() ) {
+        return;
+      }
       if( !playerReady ) {
         addPlayerReadyCallback( function() { changeCurrentTime( aTime ); } );
         return;

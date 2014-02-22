@@ -458,11 +458,10 @@
       }
     }
 
-    function getCurrentTime() {
-      return impl.currentTime;
-    }
-
     function changeCurrentTime( aTime ) {
+      if ( aTime === impl.currentTime ) {
+        return;
+      }
       impl.currentTime = aTime;
       if( !mediaReady ) {
         addMediaReadyCallback( function() {
@@ -635,7 +634,7 @@
 
       currentTime: {
         get: function() {
-          return getCurrentTime();
+          return impl.currentTime;
         },
         set: function( aValue ) {
           changeCurrentTime( aValue );
