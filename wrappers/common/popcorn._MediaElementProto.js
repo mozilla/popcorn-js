@@ -104,8 +104,11 @@
     protoElement.addEventListener = function( evtName, fn ) {
 
       if ( !events[ evtName ] ) {
-
         events[ evtName ] = [];
+      }
+
+      if ( events[ evtName ].indexOf( fn ) !== -1 ) {
+        return;
       }
 
       events[ evtName ].push( fn );
@@ -116,7 +119,6 @@
           listeners = events[ evtName ];
 
       if ( !listeners ){
-
         return;
       }
 
@@ -124,8 +126,8 @@
       for ( i = events[ evtName ].length - 1; i >= 0; i-- ) {
 
         if( fn === listeners[ i ] ) {
-
           listeners.splice( i, 1 );
+          return;
         }
       }
     };
