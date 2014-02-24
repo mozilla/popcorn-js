@@ -101,62 +101,24 @@
     // Mimic DOM events with custom, namespaced events on the document.
     // Each media element using this prototype needs to provide a unique
     // namespace for all its events via _eventNamespace.
-    protoElement.addEventListener = function( evtName, fn ) {
-
-      if ( !events[ evtName ] ) {
-
-        events[ evtName ] = [];
-      }
-
-      events[ evtName ].push( fn );
+    protoElement.addEventListener = function( type, listener, useCapture ) {
+      document.addEventListener( this._eventNamespace + type, listener, useCapture );
     };
 
-    protoElement.removeEventListener = function( evtName, fn ) {
-      var i,
-          listeners = events[ evtName ];
-
-      if ( !listeners ){
-
-        return;
-      }
-
-      // walk backwards so we can safely splice
-      for ( i = events[ evtName ].length - 1; i >= 0; i-- ) {
-
-        if( fn === listeners[ i ] ) {
-
-          listeners.splice( i, 1 );
-        }
-      }
+    protoElement.removeEventListener = function( type, listener, useCapture ) {
+      document.removeEventListener( this._eventNamespace + type, listener, useCapture );
     };
 
-    protoElement.dispatchEvent = function( oEvent ) {
+    protoElement.dispatchEvent = function( name ) {
+      var customEvent = document.createEvent( "CustomEvent" ),
+        detail = {
+          type: name,
+          target: this.parentNode,
+          data: null
+        };
 
-      var evt,
-          self = this,
-          eventInterface,
-          eventName = oEvent.type;
-
-      // A string was passed, create event object
-      if ( !eventName ) {
-
-        eventName = oEvent;
-        eventInterface  = Popcorn.events.getInterface( eventName );
-
-        if ( eventInterface ) {
-
-          evt = document.createEvent( eventInterface );
-          evt.initEvent( eventName, true, true, window, 1 );
-        }
-      }
-
-      if ( events[ eventName ] ) {
-
-        for ( var i = 0; i < events[ eventName ].length; i++ ) {
-
-          events[ eventName ][ i ].call( self, evt, self );
-        }
-      }
+      customEvent.initCustomEvent( this._eventNamespace + name, false, false, detail );
+      document.dispatchEvent( customEvent );
     };
 
     protoElement.load = Popcorn.nop;
