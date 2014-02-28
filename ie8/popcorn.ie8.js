@@ -1,18 +1,135 @@
 (function() {
 
-  document.addEventListener = document.addEventListener || function( event, callBack ) {
+  if ( !document.addEventListener && !document.removeEventListener && !document.dispatchEvent ) {
+    var events = {};
 
-    event = ( event === "DOMContentLoaded" ) ? "onreadystatechange" : "on" + event;
+    var addEventListener = function( eventName, callBack ) {
 
-    document.attachEvent( event, callBack );
-  };
+      eventName = ( eventName === "DOMContentLoaded" ) ? "readystatechange" : eventName;
 
-  document.removeEventListener = document.removeEventListener || function( event, callBack ) {
+      if ( Event[ eventName.toUpperCase() ] || eventName === "readystatechange" ) {
+        document.attachEvent( "on" + eventName, callBack );
+        return;
+      }
 
-    event = ( event === "DOMContentLoaded" ) ? "onreadystatechange" : "on" + event;
+      if ( !events[ eventName ] ) {
+        events[ eventName ] = {
+          events: [],
+          queue: [],
+          active: false
+        };
+      }
 
-    document.detachEvent( event, callBack );
-  };
+      if ( events[ eventName ].active ) {
+        events[ eventName ].queue.push( callBack );
+      } else {
+        events[ eventName ].events.push( callBack );
+      }
+    };
+
+    var removeEventListener = function( eventName, callBack ) {
+
+      eventName = ( eventName === "DOMContentLoaded" ) ? "readystatechange" : eventName;
+
+      var i = 0,
+          listeners = events[ eventName ];
+
+      if ( Event[ eventName.toUpperCase() ] || eventName === "readystatechange" ) {
+        document.detachEvent( "on" + eventName, callBack );
+        return;
+      }
+
+      if ( !listeners ) {
+        return;
+      }
+
+      for ( i = listeners.events.length - 1; i >= 0; i-- ) {
+        if ( callBack === listeners.events[ i ] ) {
+          delete listeners.events[ i ];
+        }
+      }
+
+      for ( i = listeners.queue.length - 1; i >= 0; i-- ) {
+        if ( callBack === listeners.queue[ i ] ) {
+          delete listeners.queue[ i ];
+        }
+      }
+    };
+
+    var dispatchEvent = function( eventObject ) {
+      var evt,
+          self = this,
+          eventInterface,
+          listeners,
+          eventName = eventObject.type,
+          queuedListener;
+
+      // A string was passed, create event object
+      if ( !eventName ) {
+
+        eventName = eventObject;
+        eventInterface  = Popcorn.events.getInterface( eventName );
+
+        if ( eventInterface ) {
+
+          evt = document.createEvent( eventInterface );
+          evt.initCustomEvent( eventName, true, true, window, 1 );
+        }
+      }
+
+      listeners = events[ eventName ];
+
+      if ( listeners ) {
+        listeners.active = true;
+
+        for ( var i = 0; i < listeners.events.length; i++ ) {
+          if ( listeners.events[ i ] ) {
+            listeners.events[ i ].call( self, evt, self );
+          }
+        }
+
+        if ( listeners.queue.length ) {
+          while ( listeners.queue.length ) {
+            queuedListener = listeners.queue.shift();
+            
+            if ( queuedListener ) {
+              listeners.events.push( queuedListener );
+            }
+          }
+        }
+
+        listeners.active = false;
+
+        listeners.events.forEach(function( listener ) {
+          if ( !listener ) {
+            listeners.events.splice( listeners.events.indexOf( listener ), 1 );
+          }
+        });
+
+        listeners.queue.forEach(function( listener ) {
+          if ( !listener ) {
+            listeners.queue.splice( listeners.queue.indexOf( listener ), 1 );
+          }
+        });
+      }
+    };
+
+    document.addEventListener = addEventListener;
+    document.removeEventListener = removeEventListener;
+    document.dispatchEvent = dispatchEvent;
+
+  }
+
+  if ( !Event.prototype.preventDefault ) {
+    Event.prototype.preventDefault = function() {
+      this.returnValue = false;
+    };
+  }
+  if ( !Event.prototype.stopPropagation ) {
+    Event.prototype.stopPropagation = function() {
+      this.cancelBubble = true;
+    };
+  }
 
   window.addEventListener = window.addEventListener || function( event, callBack ) {
 
@@ -58,9 +175,14 @@
       target : null,
       currentTarget : null,
       cancelable : false,
+      detail: false,
       bubbles : false,
       initEvent : function (type, bubbles, cancelable)  {
-          this.type = type;
+        this.type = type;
+      },
+      initCustomEvent: function(type, bubbles, cancelable, detail) {
+        this.type = type;
+        this.detail = detail;
       },
       stopPropagation : function () {},
       stopImmediatePropagation : function () {}

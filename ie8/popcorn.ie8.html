@@ -4,7 +4,7 @@
     <title>Popcorn Youtube Player Example</title>
       <script src="popcorn.ie8.js"></script>
       <script src="../popcorn.js"></script>
-      <script src="../wrappers/common/popcorn._mediaElementProto.js"></script>
+      <script src="../wrappers/common/popcorn._MediaElementProto.js"></script>
       <script src="../wrappers/jwplayer/popcorn.HTMLJWPlayerVideoElement.js"></script>
       <script src="../plugins/footnote/popcorn.footnote.js"></script>
       <script src="../plugins/flickr/popcorn.flickr.js"></script>
@@ -160,14 +160,9 @@
       <div>
         <h3>Description</h3>
         <p>
-          This demo will showcase how a Youtube flash video can be integrated into Popcorn. This  is done by making the flash video masquerade as HTML 5 video.<br />
-          Due to the Flash security model, this demo must be  run from a web server<br />
+          This demo will showcase how an HTML5 video can be integrated into Popcorn using our JWPlayer Wrapper. This is done by wrapping the HTML5 video in a flash object and making the flash object masquerade as HTML 5 video.<br />
+          Due to the Flash security model, this demo must be run from a web server<br />
           From 5 to 40 seconds, the footnote 'The video is "RiP: A Remix Manifesto", by Brett Gaylor' will appear below 'Footnote Area'.
-        <hr >
-          Youtube does support their player to be chromeless (hidden controls), but their controls are left in to provide richer interaction.<br />
-          Custom controls have been developed and tied into their player for this demo.<br />
-          Clicking play/pause or seeking in either the video or via custom controls will cause the other to update.<br />
-          The video can be specified in the HTML source by giving the youtube web site url (http://www.youtube.com/watch?v=VIDEOID) to either Popcorn.youtube or as the div src attribute.<br/>
         </p>
         <h4>Expected Events</h4>
         <ul>
