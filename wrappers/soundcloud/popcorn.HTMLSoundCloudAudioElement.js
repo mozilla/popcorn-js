@@ -437,6 +437,20 @@
       playerReady = false;
 
       SC.get( "/resolve", { url: aSrc }, function( data ) {
+        var err;
+        if ( data.errors ) {
+          err = { name: "MediaError" };
+          // Not sure why this is in an array, and how multiple errors should be handled.
+          // For now, I'll just use the first. We just need something.
+          if ( data.errors[ 0 ] ) {
+            if ( data.errors[ 0 ].error_message === "404 - Not Found" ) {
+              err.message = "Video not found.";
+              err.code = MediaError.MEDIA_ERR_NETWORK;
+            }
+          }
+          impl.error = err;
+          self.dispatchEvent( "error" );
+        }
         elem.id = Popcorn.guid( "soundcloud-" );
         elem.width = impl.width;
         elem.height = impl.height;
