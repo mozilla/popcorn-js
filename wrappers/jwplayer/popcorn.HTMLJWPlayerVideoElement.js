@@ -30,9 +30,8 @@
     if ( !jwLoaded ) {
       if ( !window.jwplayer ) {
         var tag = document.createElement( "script" );
-        var protocol = window.location.protocol === "file:" ? "http:" : "";
-
-        tag.src = protocol + "//jwpsrv.com/library/zaIF4JI9EeK2FSIACpYGxA.js";
+        
+        tag.src = "https://jwpsrv.com/library/zaIF4JI9EeK2FSIACpYGxA.js";
         var firstScriptTag = document.getElementsByTagName( "script" )[ 0 ];
         firstScriptTag.parentNode.insertBefore( tag, firstScriptTag );
       }
