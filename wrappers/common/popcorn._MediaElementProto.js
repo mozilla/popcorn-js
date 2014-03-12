@@ -147,7 +147,8 @@
       currentSrc: {
         get: function() {
           return this.src !== undefined ? this.src : "";
-        }
+        },
+        configurable: true
       },
 
       parentNode: {
@@ -156,7 +157,8 @@
         },
         set: function( val ) {
           parentNode = val;
-        }
+        },
+        configurable: true
       },
       
       // We really can't do much more than "auto" with most of these.
@@ -164,14 +166,16 @@
         get: function() {
           return "auto";
         },
-        set: Popcorn.nop
+        set: Popcorn.nop,
+        configurable: true
       },
 
       controls: {
         get: function() {
           return true;
         },
-        set: Popcorn.nop
+        set: Popcorn.nop,
+        configurable: true
       },
 
       // TODO: it would be good to overlay an <img> using this URL
@@ -179,25 +183,29 @@
         get: function() {
           return "";
         },
-        set: Popcorn.nop
+        set: Popcorn.nop,
+        configurable: true
       },
 
       crossorigin: {
         get: function() {
           return "";
-        }
+        },
+        configurable: true
       },
 
       played: {
         get: function() {
           return _fakeTimeRanges;
-        }
+        },
+        configurable: true
       },
 
       seekable: {
         get: function() {
           return _fakeTimeRanges;
-        }
+        },
+        configurable: true
       },
 
       buffered: {
@@ -210,25 +218,29 @@
       defaultMuted: {
         get: function() {
           return false;
-        }
+        },
+        configurable: true
       },
 
       defaultPlaybackRate: {
         get: function() {
           return 1.0;
-        }
+        },
+        configurable: true
       },
 
       style: {
         get: function() {
           return this.parentNode.style;
-        }
+        },
+        configurable: true
       },
 
       id: {
         get: function() {
           return this.parentNode.id;
-        }
+        },
+        configurable: true
       }
 
       // TODO:
