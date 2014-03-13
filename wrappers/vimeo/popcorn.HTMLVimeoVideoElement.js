@@ -76,6 +76,7 @@
       playerReady = false,
       playerUID = Popcorn.guid(),
       player,
+      playerPaused = true,
       playerReadyCallbacks = [],
       timeUpdateInterval,
       currentTimeInterval,
@@ -164,6 +165,7 @@
     }
 
     self.play = function() {
+      impl.paused = false;
       if( !playerReady ) {
         addPlayerReadyCallback( function() { self.play(); } );
         return;
@@ -196,6 +198,7 @@
     }
 
     self.pause = function() {
+      impl.paused = true;
       if( !playerReady ) {
         addPlayerReadyCallback( function() { self.pause(); } );
         return;
@@ -206,8 +209,11 @@
 
     function onPause() {
       impl.paused = true;
-      clearInterval( timeUpdateInterval );
-      self.dispatchEvent( "pause" );
+      if ( !playerPaused ) {
+        playerPaused = true;
+        clearInterval( timeUpdateInterval );
+        self.dispatchEvent( "pause" );
+      }
     }
 
     function onTimeUpdate() {
@@ -232,8 +238,9 @@
       timeUpdateInterval = setInterval( onTimeUpdate,
                                         self._util.TIMEUPDATE_MS );
 
-      if( impl.paused ) {
-        impl.paused = false;
+      impl.paused = false;
+      if( playerPaused ) {
+        playerPaused = false;
 
         // Only 1 play when video.loop=true
         if ( !impl.loop ) {
@@ -359,10 +366,6 @@
         case "seek":
           onCurrentTime( parseFloat( data.data.seconds ) );
           onSeeked();
-          // Deal with Vimeo playing when paused after a seek
-          if( impl.paused ) {
-            self.pause();
-          }
           break;
       }
     }
