@@ -30,7 +30,7 @@
     if ( !jwLoaded ) {
       if ( !window.jwplayer ) {
         var tag = document.createElement( "script" );
-        
+
         tag.src = "https://jwpsrv.com/library/zaIF4JI9EeK2FSIACpYGxA.js";
         var firstScriptTag = document.getElementsByTagName( "script" )[ 0 ];
         firstScriptTag.parentNode.insertBefore( tag, firstScriptTag );
@@ -532,16 +532,9 @@
 
               //throw fake DOMException/INDEX_SIZE_ERR
               throw "INDEX_SIZE_ERR: DOM Exception 1";
-            }
+            },
+            length: 1
           };
-
-          Object.defineProperties( timeRanges, {
-            length: {
-              get: function() {
-                return 1;
-              }
-            }
-          });
 
           return timeRanges;
         }
