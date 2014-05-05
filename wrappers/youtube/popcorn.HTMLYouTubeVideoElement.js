@@ -734,16 +734,9 @@
 
               //throw fake DOMException/INDEX_SIZE_ERR
               throw "INDEX_SIZE_ERR: DOM Exception 1";
-            }
+            },
+            length: 1
           };
-
-          Object.defineProperties( timeRanges, {
-            length: {
-              get: function() {
-                return 1;
-              }
-            }
-          });
 
           return timeRanges;
         },
