@@ -334,6 +334,7 @@
       if ( impl.ended ) {
         changeCurrentTime( 0 );
         impl.ended = false;
+        impl.seeking = false;
       }
       player.play( true );
     };
