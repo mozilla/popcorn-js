@@ -393,45 +393,31 @@
     // Default to using HTML5 video.  Similar to the HTMLVideoElement
     // wrapper, we put a video in the div passed to us via:
     // Popcorn.smart( div, src, options )
-    var videoHTML,
-        videoElement,
-        videoID = Popcorn.guid( "popcorn-video-" ),
-        videoHTMLContainer = document.createElement( "div" );
+    var videoElement,
+        videoID = Popcorn.guid( "popcorn-video-" );
 
-    videoHTMLContainer.style.width = "100%";
-    videoHTMLContainer.style.height = "100%";
+    videoElement = document.createElement( "video" );
+    videoElement.id = videoID;
+    node.appendChild( videoElement );
+    setTimeout( function() {
+      function decodeSrc( source ) {
+          // Hack to decode html characters like &amp; to &
+          var decodeDiv = document.createElement( "div" );
+          decodeDiv.innerHTML = source;
+          return decodeDiv.firstChild.nodeValue;
+      }
 
-    // If we only have one source, do not bother with source elements.
-    // This means we don't have the IE9 hack,
-    // and we can properly listen to error events.
-    // That way an error event can be told to backup to Flash if it fails.
-    if ( src.length === 1 ) {
-      videoElement = document.createElement( "video" );
-      videoElement.id = videoID;
-      node.appendChild( videoElement );
-      setTimeout( function() {
-        // Hack to decode html characters like &amp; to &
-        var decodeDiv = document.createElement( "div" );
-        decodeDiv.innerHTML = src[ 0 ];
-
-        videoElement.src = decodeDiv.firstChild.nodeValue;
-      }, 0 );
-      return Popcorn( '#' + videoID, options );
-    }
-
-    node.appendChild( videoHTMLContainer );
-    // IE9 doesn't like dynamic creation of source elements on <video>
-    // so we do it in one shot via innerHTML.
-    videoHTML = '<video id="' +  videoID + '" preload=auto autobuffer>';
-    for ( i = 0, srcLength = src.length; i < srcLength; i++ ) {
-      videoHTML += '<source src="' + src[ i ] + '">';
-    }
-    videoHTML += "</video>";
-    videoHTMLContainer.innerHTML = videoHTML;
-
-    if ( options && options.events && options.events.error ) {
-      node.addEventListener( "error", options.events.error, false );
-    }
+      // If we only have one source, do not bother with source elements.
+      if ( src.length === 1 ) {
+        videoElement.src = decodeSrc( src[ 0 ] );
+      } else {
+        for ( var i = 0, srcLength = src.length; i < srcLength; i++ ) {
+          var source = document.createElement( "source" );
+          source.src = decodeSrc( src[ i ] );
+          videoElement.appendChild( source );
+        }
+      }
+    }, 0 );
     return Popcorn( '#' + videoID, options );
   };
 })( Popcorn );
