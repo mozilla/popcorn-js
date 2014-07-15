@@ -139,9 +139,7 @@
             options.trackedContainer = trackMediaElement( target );
             options.trackedContainer.element.appendChild( options.anchor );
           } else {
-            if ( target ) {
-              target.appendChild( options.anchor );
-            }
+            target.appendChild( options.anchor );
           }
         }
 
