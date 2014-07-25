@@ -61,7 +61,7 @@
         loop: false,
         poster: EMPTY_STRING,
         // SC Volume values are 0-100, we remap to 0-1 in volume getter/setter
-        volume: 100,
+        volume: 1,
         muted: 0,
         currentTime: 0,
         duration: NaN,
@@ -175,7 +175,7 @@
             player.unbind( SC.Widget.Events.PAUSE );
 
             // Play/Pause cycle is done, restore volume and continue loading.
-            player.setVolume( 100 );
+            player.setVolume( 1 );
             player.bind( SC.Widget.Events.SEEK, function() {
               player.unbind( SC.Widget.Events.SEEK );
               onLoaded();
@@ -643,17 +643,12 @@
 
       volume: {
         get: function() {
-          // Remap from HTML5's 0-1 to SoundCloud's 0-100 range
-          var volume = getVolume();
-          return volume / 100;
+          return getVolume();
         },
         set: function( aValue ) {
           if( aValue < 0 || aValue > 1 ) {
             throw "Volume value must be between 0.0 and 1.0";
           }
-
-          // Remap from HTML5's 0-1 to SoundCloud's 0-100 range
-          aValue = aValue * 100;
           setVolume( aValue );
         }
       },
