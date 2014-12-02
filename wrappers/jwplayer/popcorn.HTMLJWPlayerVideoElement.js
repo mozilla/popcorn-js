@@ -96,14 +96,26 @@
       mediaReadyCallbacks.unshift( callback );
     }
 
+    //JWPlayer set the duration only after the video has started playing
+    //http://support.jwplayer.com/customer/portal/questions/8145072-does-getduration-work-
+    //Hence, in order to get the duration properly need to wait until duration is available
+    function getCorrectDuration(){
+      duration = player.getDuration();
+      if(duration == -1){
+        setTimeout(getCorrectDuration, 0);
+      } else {
+        impl.duration = duration
+        self.dispatchEvent( "durationchange" );
+      }
+    }
+
     function onReady() {
       // JWPlayer needs a play/pause to force ready state.
       // However, the ready state does not happen until after the play/pause callbacks.
       // So we put this inside a setTimeout to ensure we do this afterwards,
       // thus, actually being ready.
+      getCorrectDuration();
       setTimeout( function() {
-        impl.duration = player.getDuration();
-        self.dispatchEvent( "durationchange" );
         impl.readyState = self.HAVE_METADATA;
         self.dispatchEvent( "loadedmetadata" );
         self.dispatchEvent( "loadeddata" );
