@@ -96,8 +96,7 @@
       mediaReadyCallbacks.unshift( callback );
     }
 
-    //JWPlayer set the duration only after the video has started playing
-    //http://support.jwplayer.com/customer/portal/questions/8145072-does-getduration-work-
+    //JWPlayer sets the duration only after the video has started playing
     //Hence, in order to get the duration properly need to wait until duration is available
     function getCorrectDuration(){
       var duration = player.getDuration();
