@@ -100,7 +100,7 @@
     //http://support.jwplayer.com/customer/portal/questions/8145072-does-getduration-work-
     //Hence, in order to get the duration properly need to wait until duration is available
     function getCorrectDuration(){
-      duration = player.getDuration();
+      var duration = player.getDuration();
       if(duration == -1){
         setTimeout(getCorrectDuration, 0);
       } else {
