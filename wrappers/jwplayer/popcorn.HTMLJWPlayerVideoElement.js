@@ -237,13 +237,14 @@
         destroyPlayer();
       }
 
-      //ExecOnline: allow source to be a hash
       var params = {
         width: "100%",
         height: "100%",
         controls: impl.controls
       };
 
+      // Source can either be a single file or multiple files that represent
+      // different quality
       if(typeof aSrc == "string"){
         params["file"] = aSrc;
       } else {
