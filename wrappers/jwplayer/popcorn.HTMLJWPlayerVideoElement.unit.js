@@ -5,6 +5,8 @@ var testData = {
   expectedDuration: 64.544,
 
   createMedia: function( id ) {
-    return Popcorn.HTMLJWPlayerVideoElement( id );
+    pop = Popcorn.HTMLJWPlayerVideoElement( id );
+    pop.autoplay = true;
+    return pop;
   }
 };
