@@ -105,6 +105,7 @@
       } else {
         impl.duration = duration
         self.dispatchEvent( "durationchange" );
+        playerReady = true;
       }
     }
 
