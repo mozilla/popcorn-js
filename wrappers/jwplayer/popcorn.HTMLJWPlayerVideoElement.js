@@ -96,26 +96,17 @@
       mediaReadyCallbacks.unshift( callback );
     }
 
-    //JWPlayer sets the duration only after the video has started playing
-    //Hence, in order to get the duration properly need to wait until duration is available
-    function getCorrectDuration(){
+    function waitForMetaData(){
       var duration = player.getDuration();
+      //JWPlayer sets the duration only after the video has started playing
+      //Hence, we assume that when duration is available all
+      //other metadata is also ready
       if(duration == -1){
-        setTimeout(getCorrectDuration, 0);
+        setTimeout(waitForMetaData, 0);
       } else {
         impl.duration = duration
         self.dispatchEvent( "durationchange" );
         playerReady = true;
-      }
-    }
-
-    function onReady() {
-      // JWPlayer needs a play/pause to force ready state.
-      // However, the ready state does not happen until after the play/pause callbacks.
-      // So we put this inside a setTimeout to ensure we do this afterwards,
-      // thus, actually being ready.
-      getCorrectDuration();
-      setTimeout( function() {
         impl.readyState = self.HAVE_METADATA;
         self.dispatchEvent( "loadedmetadata" );
         self.dispatchEvent( "loadeddata" );
@@ -133,7 +124,12 @@
         // We can't easily determine canplaythrough, but will send anyway.
         impl.readyState = self.HAVE_ENOUGH_DATA;
         self.dispatchEvent( "canplaythrough" );
-      }, 0 );
+      }
+    }
+
+    function onReady() {
+      // JWPlayer needs a play/pause to force ready state.
+      waitForMetaData();
     }
 
     // TODO: (maybe)
