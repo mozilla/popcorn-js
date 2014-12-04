@@ -245,12 +245,21 @@
         destroyPlayer();
       }
 
-      jwplayer( parent.id ).setup({
-        file: aSrc,
+      var params = {
         width: "100%",
         height: "100%",
         controls: impl.controls
-      });
+      };
+
+      // Source can either be a single file or multiple files that represent
+      // different quality
+      if(typeof aSrc == "string"){
+        params["file"] = aSrc;
+      } else {
+        params["sources"] = aSrc;
+      }
+
+      jwplayer( parent.id ).setup(params);
 
       player = jwplayer( parent.id );
       player.onReady( onPlayerReady );
