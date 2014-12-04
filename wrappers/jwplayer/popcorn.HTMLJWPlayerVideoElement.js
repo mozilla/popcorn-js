@@ -237,12 +237,20 @@
         destroyPlayer();
       }
 
-      jwplayer( parent.id ).setup({
-        file: aSrc,
+      //ExecOnline: allow source to be a hash
+      var params = {
         width: "100%",
         height: "100%",
         controls: impl.controls
-      });
+      };
+
+      if(typeof aSrc == "string"){
+        params["file"] = aSrc;
+      } else {
+        params["sources"] = aSrc;
+      }
+
+      jwplayer( parent.id ).setup(params);
 
       player = jwplayer( parent.id );
       player.onReady( onPlayerReady );
