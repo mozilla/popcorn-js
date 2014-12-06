@@ -325,7 +325,7 @@
     function onPlay() {
       impl.paused = false;
 
-      if ( playerPaused ) {
+      if ( playerReady && playerPaused ) {
         playerPaused = false;
 
         // Only 1 play when video.loop=true
