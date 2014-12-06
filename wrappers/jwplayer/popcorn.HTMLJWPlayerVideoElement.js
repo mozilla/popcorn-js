@@ -569,10 +569,16 @@
   };
 
   // Helper for identifying URLs we know how to play.
-  Popcorn.HTMLJWPlayerVideoElement._canPlaySrc = function( url ) {
+  Popcorn.HTMLJWPlayerVideoElement._canPlaySrc = function( source ) {
     // Because of the nature of JWPlayer playing all media types,
     // it can potentially play all url formats.
-    return "probably";
+    if(typeof source == "string"){
+      if(/.+\.+/g.exec(source)){
+        return "probably";
+      }
+    } else {
+      return "probably"
+    }
   };
 
   // This could potentially support everything. It is a bit of a catch all player.
