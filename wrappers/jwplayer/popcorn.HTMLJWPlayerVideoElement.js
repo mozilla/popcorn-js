@@ -101,7 +101,7 @@
       //JWPlayer sets the duration only after the video has started playing
       //Hence, we assume that when duration is available all
       //other metadata is also ready
-      if(duration == -1){
+      if(duration == -1 || duration == undefined){
         setTimeout(waitForMetaData, 0);
       } else {
         impl.duration = duration
