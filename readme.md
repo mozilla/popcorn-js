@@ -22,7 +22,7 @@ The Popcorn.js community is a mix of developers, filmmakers, artists, and everyt
 * [Twitter @popcornjs](https://twitter.com/#!/popcornjs)
 * [Documentation](http://popcornjs.org/documentation)
 * [Example Web Productions built with Popcorn.js](http://popcornjs.org/demos)
-* [File a Bug](https://webmademovies.lighthouseapp.com/projects/63272-popcornjs/tickets/new)
+* [File a Bug](https://github.com/mozilla/popcorn-js/issues)
 
 
 For Developers
@@ -58,4 +58,4 @@ Popcorn.js is built and maintained by a growing community, with the support of:
 
 Changelog
 -------------
-A changelog can be found [here](https://webmademovies.lighthouseapp.com/projects/63272/changelog).
+A changelog can be found [here](https://github.com/mozilla/popcorn-js/releases).
