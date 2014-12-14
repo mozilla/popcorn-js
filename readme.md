@@ -29,7 +29,7 @@ For Developers
 -------------
 You can follow the project's bugs and activity [here](https://webmademovies.lighthouseapp.com/projects/63272-popcornjs/overview).
 
-Project workflow and developer guidelines are available [here](https://webmademovies.lighthouseapp.com/projects/63272/workflow).
+Project workflow and developer guidelines are available [here](http://popcornjs.org/documentation).
 
 
 For Plugin Authors
@@ -51,7 +51,7 @@ Acknowledgements
 Popcorn.js is built and maintained by a growing community, with the support of:
 
 * [Mozilla](https://www.mozilla.org/)
-* [Mozilla Popcorn](http://mozillapopcorn.org/)
+* [Mozilla Popcorn](https://mozillalabs.com/en-US/popcorn/)
 * [Seneca College's Centre for Development of Open Technology](http://zenit.senecac.on.ca/wiki/index.php/Main_Page)
 * [Bocoup](http://bocoup.com/)
 
