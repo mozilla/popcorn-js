@@ -27,7 +27,7 @@ The Popcorn.js community is a mix of developers, filmmakers, artists, and everyt
 
 For Developers
 -------------
-You can follow the project's bugs and activity [here](https://webmademovies.lighthouseapp.com/projects/63272-popcornjs/overview).
+You can follow the project's bugs and activity [here](https://github.com/mozilla/popcorn-js/issues).
 
 Project workflow and developer guidelines are available [here](http://popcornjs.org/documentation).
 
