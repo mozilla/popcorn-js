@@ -6,7 +6,7 @@ asyncTest( "Popcorn Image Plugin", function() {
       setupId,
       imagediv = document.getElementById( "imagediv" ),
       sources = [
-        "https://www.drumbeat.org/media//images/drumbeat-logo-splash.png",
+        "http://www.drumbeat.org/images/drumbeat-logo-splash.png",
         "http://www.petmountain.com/category/mini/organic-dog-supplies/520/organic-dog-supplies.jpg",
         "http://www.botskool.com/sites/default/files/images/javascript.png"
       ];
@@ -87,7 +87,7 @@ asyncTest( "Zerostart doesn't rehide", 1, function() {
     popped.image({
       start: 0,
       end: 3,
-      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      src: "http://www.drumbeat.org/images/drumbeat-logo-splash.png",
       target: "zerostart"
     });
 
@@ -114,7 +114,7 @@ asyncTest( "size test", 4, function() {
     popped.image({
       start: 0,
       end: 3,
-      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      src: "http://www.drumbeat.org/images/drumbeat-logo-splash.png",
       target: "withsize"
     });
 
@@ -123,12 +123,12 @@ asyncTest( "size test", 4, function() {
     popped.image({
       start: 0,
       end: 3,
-      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      src: "http://www.drumbeat.org/images/drumbeat-logo-splash.png",
       target: "withsize"
     }).image({
       start: 0,
       end: 3,
-      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      src: "http://www.drumbeat.org/images/drumbeat-logo-splash.png",
       target: "withsize"
     });
 
@@ -137,7 +137,7 @@ asyncTest( "size test", 4, function() {
     popped.image({
       start: 0,
       end: 3,
-      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      src: "http://www.drumbeat.org/images/drumbeat-logo-splash.png",
       target: "withoutsizeinsize"
     });
 
@@ -160,7 +160,7 @@ asyncTest( "media element target test", 2, function() {
     popped.image({
       start: 1,
       end: 4,
-      src: "https://www.drumbeat.org/media/images/drumbeat-logo-splash.png",
+      src: "http://www.drumbeat.org/images/drumbeat-logo-splash.png",
       target: "video"
     });
     popped.pause();

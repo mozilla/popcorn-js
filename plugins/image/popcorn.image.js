@@ -132,16 +132,15 @@
         options.anchor.style.display = "none";
 
         // add the widget's div to the target div.
-        // if target is <video> or <audio>, create a container and routinely 
+        // if target is <video> or <audio>, create a container and routinely
         // update its size/position to be that of the media
         if ( target ) {
           if ( [ "VIDEO", "AUDIO" ].indexOf( target.nodeName ) > -1 ) {
             options.trackedContainer = trackMediaElement( target );
             options.trackedContainer.element.appendChild( options.anchor );
+          } else {
+            target.appendChild( options.anchor );
           }
-          else {
-            target && target.appendChild( options.anchor );
-          }          
         }
 
         img.addEventListener( "load", function() {
