@@ -704,7 +704,7 @@ asyncTest( "T34 - paused state during autoplay", 10, function() {
 
   var video = testData.createMedia( "#video" ),
       loadedMetaDataFired = false,
-      canplayFired = false,
+      canPlayFired = false,
       playFired = false,
       playingFired = false,
       canPlayThrough = false;
