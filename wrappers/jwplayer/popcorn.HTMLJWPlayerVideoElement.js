@@ -248,6 +248,7 @@
       var params = {
         width: "100%",
         height: "100%",
+        autostart: impl.autoplay,
         controls: impl.controls
       };
 
