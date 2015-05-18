@@ -101,7 +101,7 @@
       //JWPlayer sets the duration only after the video has started playing
       //Hence, we assume that when duration is available all
       //other metadata is also ready
-      if(duration == -1){
+      if(duration == -1 || duration == undefined){
         setTimeout(waitForMetaData, 0);
       } else {
         impl.duration = duration
@@ -248,6 +248,7 @@
       var params = {
         width: "100%",
         height: "100%",
+        autostart: impl.autoplay,
         controls: impl.controls
       };
 
@@ -325,7 +326,7 @@
     function onPlay() {
       impl.paused = false;
 
-      if ( playerPaused ) {
+      if ( playerReady && playerPaused ) {
         playerPaused = false;
 
         // Only 1 play when video.loop=true
@@ -569,10 +570,16 @@
   };
 
   // Helper for identifying URLs we know how to play.
-  Popcorn.HTMLJWPlayerVideoElement._canPlaySrc = function( url ) {
+  Popcorn.HTMLJWPlayerVideoElement._canPlaySrc = function( source ) {
     // Because of the nature of JWPlayer playing all media types,
     // it can potentially play all url formats.
-    return "probably";
+    if(typeof source == "string"){
+      if(/.+\.+/g.exec(source)){
+        return "probably";
+      }
+    } else {
+      return "probably"
+    }
   };
 
   // This could potentially support everything. It is a bit of a catch all player.
