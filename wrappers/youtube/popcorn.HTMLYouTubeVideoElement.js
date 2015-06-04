@@ -424,9 +424,9 @@
         }
       });
 
-        impl.networkState = self.NETWORK_LOADING;
-        self.dispatchEvent( "loadstart" );
-        self.dispatchEvent( "progress" );
+      impl.networkState = self.NETWORK_LOADING;
+      self.dispatchEvent( "loadstart" );
+      self.dispatchEvent( "progress" );
     }
 
     function monitorCurrentTime() {
