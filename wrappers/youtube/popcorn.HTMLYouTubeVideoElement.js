@@ -256,6 +256,11 @@
 
     function onBuffering() {
       impl.networkState = self.NETWORK_LOADING;
+      var newDuration = player.getDuration();
+      if (impl.duration !== newDuration) {
+        impl.duration = newDuration;
+        self.dispatchEvent( "durationchange" );
+      }
       self.dispatchEvent( "waiting" );
     }
 
@@ -406,38 +411,22 @@
       // Get video ID out of youtube url
       aSrc = regexYouTube.exec( aSrc )[ 1 ];
 
-      var xhrURL = "https://gdata.youtube.com/feeds/api/videos/" + aSrc + "?v=2&alt=jsonc&callback=?";
-      // Get duration value.
-      Popcorn.getJSONP( xhrURL, function( resp ) {
-
-        var warning = "failed to retreive duration data, reason: ";
-        if ( resp.error ) {
-          console.warn( warning + resp.error.message );
-          return ;
-        } else if ( !resp.data ) {
-          console.warn( warning + "no response data" );
-          return;
+      player = new YT.Player( elem, {
+        width: "100%",
+        height: "100%",
+        wmode: playerVars.wmode,
+        videoId: aSrc,
+        playerVars: playerVars,
+        events: {
+          'onReady': onPlayerReady,
+          'onError': onPlayerError,
+          'onStateChange': onPlayerStateChange
         }
-        impl.duration = resp.data.duration;
-        self.dispatchEvent( "durationchange" );
-
-        player = new YT.Player( elem, {
-          width: "100%",
-          height: "100%",
-          wmode: playerVars.wmode,
-          videoId: aSrc,
-          playerVars: playerVars,
-          events: {
-            'onReady': onPlayerReady,
-            'onError': onPlayerError,
-            'onStateChange': onPlayerStateChange
-          }
-        });
-
-        impl.networkState = self.NETWORK_LOADING;
-        self.dispatchEvent( "loadstart" );
-        self.dispatchEvent( "progress" );
       });
+
+      impl.networkState = self.NETWORK_LOADING;
+      self.dispatchEvent( "loadstart" );
+      self.dispatchEvent( "progress" );
     }
 
     function monitorCurrentTime() {
