@@ -1,5 +1,11 @@
 .DS_Store
-dist
+dist/popcorn-ie8*
+dist/popcorn.modules*
+dist/popcorn.players*
+dist/popcorn.parsers*
+dist/popcorn.plugins*
+dist/popcorn.effects*
+dist/popcorn.js
 *~
 \.\#*
 \#*\#

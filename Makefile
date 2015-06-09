@@ -101,6 +101,16 @@ POPCORN_COMPLETE_LIST := --js ${POPCORN_SRC} \
 POPCORN_COMPLETE_DIST = ${DIST_DIR}/popcorn-complete.js
 POPCORN_COMPLETE_MIN = ${DIST_DIR}/popcorn-complete.min.js
 
+# popcorn - plugins
+POPCORN_WRAPPERS_LIST := --js ${POPCORN_SRC} \
+                         $(shell for js in ${MODULES_SRC} ; do echo --js $$js ; done) \
+                         $(shell for js in ${WRAPPERS_SRC} ; do echo --js $$js ; done) \
+                         $(shell for js in ${EFFECTS_SRC} ; do echo --js $$js ; done) \
+                         $(shell for js in ${PARSERS_SRC} ; do echo --js $$js ; done) \
+                         $(shell for js in ${PLAYERS_SRC} ; do echo --js $$js ; done)
+POPCORN_WRAPPERS_DIST = ${DIST_DIR}/popcorn-wrappers.js
+POPCORN_WRAPPERS_MIN = ${DIST_DIR}/popcorn-wrappers.min.js
+
 # For IE8 compat we include a subset of all files, known to work with IE8.
 POPCORN_IE8_FILES := \
   $(IE8_DIR)/popcorn.ie8.js \
@@ -123,7 +133,7 @@ add_version = cat $(1) | sed -e 's/@VERSION/${VERSION}/' > $(1).__tmp__ ; \
 # Run the file through jslint
 run_lint = @@$(RHINO) build/jslint-check.js $(1)
 
-all: setup popcorn modules wrappers plugins parsers players effects complete min ie8
+all: setup popcorn modules wrappers plugins parsers players effects complete min ie8 wrappers-complete
 	@@echo "Popcorn build complete.  To create a testing mirror, run: make testing."
 
 check: lint lint-plugins lint-parsers lint-players lint-effects lint-modules lint-wrappers
@@ -139,7 +149,7 @@ ${POPCORN_DIST}: $(POPCORN_SRC) | $(DIST_DIR)
 	@@$(call add_license, $(POPCORN_DIST))
 	@@$(call add_version, $(POPCORN_DIST))
 
-min: setup ${POPCORN_MIN} ${MODULES_MIN} $(WRAPPERS_MIN) ${PLUGINS_MIN} ${PARSERS_MIN} ${PLAYERS_MIN} $(EFFECTS_MIN) ${POPCORN_COMPLETE_MIN}
+min: setup ${POPCORN_MIN} ${MODULES_MIN} $(WRAPPERS_MIN) ${PLUGINS_MIN} ${PARSERS_MIN} ${PLAYERS_MIN} $(EFFECTS_MIN) ${POPCORN_COMPLETE_MIN} ${POPCORN_WRAPPERS_MIN}
 
 ${POPCORN_MIN}: ${POPCORN_DIST}
 	@@echo "Building" ${POPCORN_MIN}
@@ -152,6 +162,12 @@ ${POPCORN_COMPLETE_MIN}: ${POPCORN_SRC} ${MODULES_SRC} ${PLUGINS_SRC} ${PARSERS_
 	@@$(call compile, $(POPCORN_COMPLETE_LIST), $(POPCORN_COMPLETE_MIN))
 	@@$(call add_license, $(POPCORN_COMPLETE_MIN))
 	@@$(call add_version, $(POPCORN_COMPLETE_MIN))
+
+${POPCORN_WRAPPERS_MIN}: ${POPCORN_SRC} ${MODULES_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} $(EFFECTS_SRC) ${DIST_DIR}
+	@@echo "Building" ${POPCORN_WRAPPERS_MIN}
+	@@$(call compile, $(POPCORN_WRAPPERS_LIST), $(POPCORN_WRAPPERS_MIN))
+	@@$(call add_license, $(POPCORN_WRAPPERS_MIN))
+	@@$(call add_version, $(POPCORN_WRAPPERS_MIN))
 
 modules: setup ${MODULES_DIST}
 
@@ -218,6 +234,12 @@ complete: setup ${POPCORN_SRC} ${MODULES_SRC} ${WRAPPERS_SRC} ${PARSERS_SRC} ${P
 	@@cat ${POPCORN_SRC} ${MODULES_SRC} ${WRAPPERS_SRC} ${PLUGINS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) > $(POPCORN_COMPLETE_DIST)
 	@@$(call add_license, $(POPCORN_COMPLETE_DIST))
 	@@$(call add_version, $(POPCORN_COMPLETE_DIST))
+
+wrappers-complete:
+	@@echo "Building popcorn + modules + wrappers + plugins + parsers + players + effects..."
+	@@cat ${POPCORN_SRC} ${MODULES_SRC} ${WRAPPERS_SRC} ${PARSERS_SRC} ${PLAYERS_SRC} $(EFFECTS_SRC) > $(POPCORN_WRAPPERS_DIST)
+	@@$(call add_license, $(POPCORN_WRAPPERS_DIST))
+	@@$(call add_version, $(POPCORN_WRAPPERS_DIST))
 
 ie8: $(POPCORN_IE8_MIN)
 
