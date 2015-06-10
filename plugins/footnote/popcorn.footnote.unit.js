@@ -64,7 +64,7 @@ test( "Popcorn Footnote Plugin", function() {
     plus();
 
     popped.pause().removeTrackEvent( setupId );
-    ok( !footnotediv.children[ 1 ], "removed footnote was properly destroyed" );
+    ok( !footnotediv.children[ 2 ], "removed footnote was properly destroyed" );
     plus();
   });
   popped.play().volume( 0 );
