@@ -54,6 +54,8 @@ test( "Popcorn Footnote Plugin", function() {
     plus();
     equal( footnotediv.children [ 0 ].nodeName, "DIV", "Default HTML element is a div");
     plus();
+    equal ( footnotediv.children [ 0 ].className, "", "No CSS selector is set by default");
+    plus();
   });
 
   popped.exec( 1, function() {
