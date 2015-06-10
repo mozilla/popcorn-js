@@ -59,6 +59,11 @@
           type: "text",
           label: "Element"
         },
+        selector: {
+          elem: "input",
+          type: "text",
+          label: "Selector"
+        },
         target: "footnote-container"
       }
     },
