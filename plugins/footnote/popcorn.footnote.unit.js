@@ -55,7 +55,7 @@ test( "Popcorn Footnote Plugin", function() {
   });
 
   popped.exec( 3, function() {
-    equal( footnotediv.children[ 1 ].style.display, "inline", "second footnote is visible on the page" );
+    equal( footnotediv.children[ 2 ].style.display, "inline", "second footnote is visible on the page" );
     plus();
   });
 
