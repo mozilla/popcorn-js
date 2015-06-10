@@ -54,6 +54,11 @@ test( "Popcorn Footnote Plugin", function() {
     plus();
   });
 
+  popped.exec( 1, function() {
+    equal( footnotediv.children[ 1 ].className, "selector-test", "CSS selector is set by selector options parameter");
+    plus();
+  });
+
   popped.exec( 3, function() {
     equal( footnotediv.children[ 2 ].style.display, "inline", "second footnote is visible on the page" );
     plus();
