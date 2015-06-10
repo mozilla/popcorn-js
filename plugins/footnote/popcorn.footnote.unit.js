@@ -57,6 +57,8 @@ test( "Popcorn Footnote Plugin", function() {
   popped.exec( 1, function() {
     equal( footnotediv.children[ 1 ].className, "selector-test", "CSS selector is set by selector options parameter");
     plus();
+    equal( footnotediv.children[ 1 ].nodeName, "LI", "HTML element is set by element options parameter");
+    plus();
   });
 
   popped.exec( 3, function() {
