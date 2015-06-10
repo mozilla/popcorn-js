@@ -11,6 +11,9 @@
    * Text is the text that you want to appear in the target
    * Target is the id of the document element that the text needs to be
    * attached to, this target element must exist on the DOM
+   * Options parameter can take element or selector.
+   * Element will override the default div element and append a valid HTML element to the DOM
+   * Selector will add the CSS class of your choice to the appended footnotes
    *
    * @param {Object} options
    *
