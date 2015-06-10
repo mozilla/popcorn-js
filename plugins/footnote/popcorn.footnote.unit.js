@@ -38,7 +38,7 @@ test( "Popcorn Footnote Plugin", function() {
   setupId = popped.getLastTrackEventId();
 
   popped.exec( 0, function() {
-    equal( footnotediv.childElementCount, 2, "footnotediv now has two inner elements" );
+    equal( footnotediv.childElementCount, 3, "footnotediv now has three inner elements" );
     plus();
     equal( footnotediv.children[ 0 ].innerHTML, "This video made exclusively for drumbeat.org", "footnote displaing correct information" );
     plus();
