@@ -29,6 +29,14 @@ test( "Popcorn Footnote Plugin", function() {
     target: "footnotediv"
   })
   .footnote({
+    start: 1,
+    end: 2,
+    text: "Element and selector test",
+    element: "li",
+    selector: "selector-test",
+    target: "footnotediv"
+  })
+  .footnote({
     start: 2,
     end: 4,
     text: "Visit webmademovies.org for more details",
