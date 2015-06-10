@@ -23,6 +23,8 @@
    *      start: 5, // seconds
    *      end: 15, // seconds
    *      text: 'This video made exclusively for drumbeat.org',
+   *      element: 'li',
+   *      selector: 'footnote',
    *      target: 'footnotediv'
    *    });
    **/
