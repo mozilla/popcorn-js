@@ -52,6 +52,8 @@ test( "Popcorn Footnote Plugin", function() {
     plus();
     equal( footnotediv.children[ 0 ].style.display, "inline", "footnote is visible on the page" );
     plus();
+    equal( footnotediv.children [ 0 ].nodeName, "DIV", "Default HTML element is a div");
+    plus();
   });
 
   popped.exec( 1, function() {
