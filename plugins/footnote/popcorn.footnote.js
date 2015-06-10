@@ -54,6 +54,11 @@
           type: "text",
           label: "Text"
         },
+        element: {
+          elem: "input",
+          type: "text",
+          label: "Element"
+        },
         target: "footnote-container"
       }
     },
