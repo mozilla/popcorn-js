@@ -1,7 +1,7 @@
 test( "Popcorn Footnote Plugin", function() {
 
   var popped = Popcorn( "#video" ),
-      expects = 10,
+      expects = 11,
       count = 0,
       setupId,
       footnotediv = document.getElementById( "footnotediv" );
