@@ -16,7 +16,7 @@ test( "Popcorn Footnote Plugin", function() {
 
   stop();
 
-  ok( "footnote" in popped, "footnote is a mehtod of the popped instance" );
+  ok( "footnote" in popped, "footnote is a method of the popped instance" );
   plus();
 
   equal( footnotediv.childElementCount, 0, "initially, there is nothing inside the footnotediv" );
