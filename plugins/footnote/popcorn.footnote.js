@@ -72,7 +72,14 @@
 
       var target = Popcorn.dom.find( options.target );
 
-      options._container = document.createElement( "div" );
+      if (options.element) {
+        options._container = document.createElement(options.element);
+      } else {
+        options._container = document.createElement("div");
+      }
+      if (options.selector) {
+        options._container.classList.add(options.selector);
+      }
       options._container.style.display = "none";
       options._container.innerHTML  = options.text;
 
