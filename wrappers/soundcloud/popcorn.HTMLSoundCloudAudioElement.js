@@ -20,7 +20,7 @@
           // XXX: SoundCloud won't let us use real URLs with the API,
           // so we have to lookup the track URL, requiring authentication.
           SC.initialize({
-            client_id: "PRaNFlda6Bhf5utPjUsptg"
+            client_id: Popcorn.SOUND_CLOUD_CLIENT_ID
           });
 
           var i = scCallbacks.length;
@@ -700,5 +700,7 @@
   Popcorn.HTMLSoundCloudAudioElement.canPlayType = function( type ) {
     return type === "audio/x-soundcloud" ? "probably" : EMPTY_STRING;
   };
+
+  Popcorn.SOUND_CLOUD_CLIENT_ID = Popcorn.SOUND_CLOUD_CLIENT_ID || "PRaNFlda6Bhf5utPjUsptg";
 
 }( Popcorn, window, document ));
