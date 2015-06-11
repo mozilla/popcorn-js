@@ -13,8 +13,8 @@
   function isSoundCloudReady() {
     // If the SoundCloud Widget API + JS SDK aren't loaded, do it now.
     if( !scLoaded ) {
-      Popcorn.getScript( "https://w.soundcloud.com/player/api.js", function() {
-        Popcorn.getScript( "https://connect.soundcloud.com/sdk.js", function() {
+      Popcorn.getScript( Popcorn.SOUND_CLOUD_API_JS, function() {
+        Popcorn.getScript( Popcorn.SOUND_CLOUD_SDK_JS, function() {
           scReady = true;
 
           // XXX: SoundCloud won't let us use real URLs with the API,
@@ -702,5 +702,7 @@
   };
 
   Popcorn.SOUND_CLOUD_CLIENT_ID = Popcorn.SOUND_CLOUD_CLIENT_ID || "PRaNFlda6Bhf5utPjUsptg";
+  Popcorn.SOUND_CLOUD_SDK_JS = Popcorn.SOUND_CLOUD_SDK_JS || "https://connect.soundcloud.com/sdk.js";
+  Popcorn.SOUND_CLOUD_API_JS = Popcorn.SOUND_CLOUD_API_JS || "https://w.soundcloud.com/player/api.js";
 
 }( Popcorn, window, document ));
