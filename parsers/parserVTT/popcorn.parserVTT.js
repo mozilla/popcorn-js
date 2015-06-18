@@ -30,11 +30,11 @@
         lines,
         text,
         sub,
-        rNewLine = /(?:\r\n|\r|\n)/gm;
+        rNewLine = /\r\n|\n\r|\n|\r/g;
 
     // Here is where the magic happens
     // Split on line breaks
-    lines = data.text.split( rNewLine );
+    lines = data.text.replace( rNewLine, "\n" ).split( "\n" );
     len = lines.length;
 
     // Check for BOF token
