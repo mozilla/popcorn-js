@@ -219,7 +219,9 @@
 
     function onFirstPause() {
       removeYouTubeEvent( "pause", onFirstPause );
-      if ( player.getCurrentTime() > 0 ) {
+      // IE sometimes refuses to seek to exactly 0.
+      var playerTime = player.getCurrentTime();
+      if ( playerTime > 0 && !( playerTime < 0.2 && !impl.seeking && playerState === YT.PlayerState.PAUSED ) ) {
         setTimeout( onFirstPause, 0 );
         return;
       }
@@ -240,8 +242,8 @@
         return;
       }
       addYouTubeEvent( "pause", onFirstPause );
-      player.seekTo( 0 );
       player.pauseVideo();
+      player.seekTo( 0 );
     }
 
     function addYouTubeEvent( event, listener ) {
