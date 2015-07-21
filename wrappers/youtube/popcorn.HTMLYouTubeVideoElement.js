@@ -220,6 +220,8 @@
     function onFirstPause() {
       removeYouTubeEvent( "pause", onFirstPause );
       if ( player.getCurrentTime() > 0 ) {
+        player.seekTo( 0 );
+        player.pauseVideo();
         setTimeout( onFirstPause, 0 );
         return;
       }
@@ -236,12 +238,15 @@
     function onFirstPlay() {
       removeYouTubeEvent( "play", onFirstPlay );
       if ( player.getCurrentTime() === 0 ) {
+        player.playVideo();
         setTimeout( onFirstPlay, 0 );
         return;
       }
       addYouTubeEvent( "pause", onFirstPause );
       player.seekTo( 0 );
-      player.pauseVideo();
+      setTimeout(function() {
+        player.pauseVideo();
+      }, 500);
     }
 
     function addYouTubeEvent( event, listener ) {

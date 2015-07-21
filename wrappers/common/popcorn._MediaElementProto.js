@@ -110,14 +110,16 @@
     };
 
     protoElement.dispatchEvent = function( name ) {
-      var customEvent = document.createEvent( "CustomEvent" ),
-        detail = {
+      var customEvent = new CustomEvent(this._eventNamespace + name, {
+        detail: {
           type: name,
           target: this.parentNode,
           data: null
-        };
+        },
+        bubbles: true,
+        cancelable: false
+      });
 
-      customEvent.initCustomEvent( this._eventNamespace + name, false, false, detail );
       document.dispatchEvent( customEvent );
     };
 
