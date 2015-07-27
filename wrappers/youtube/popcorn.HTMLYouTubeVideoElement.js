@@ -217,7 +217,9 @@
       self.dispatchEvent( "canplaythrough" );
     }
 
-    function onFirstPause() {
+    function onFirstPause(timeoutID) {
+      if (timeoutID)
+        clearTimeout(timeoutID);
       removeYouTubeEvent( "pause", onFirstPause );
       if ( player.getCurrentTime() > 0 ) {
         setTimeout( onFirstPause, 0 );
@@ -239,7 +241,9 @@
         setTimeout( onFirstPlay, 0 );
         return;
       }
-      addYouTubeEvent( "pause", onFirstPause );
+      // On Chrome the pause event is not fired
+      // so we back it with a timeout
+      addYouTubeEvent( "pause", onFirstPause, setTimeout(onFirstPause, 200) );
       player.seekTo( 0 );
       player.pauseVideo();
     }
