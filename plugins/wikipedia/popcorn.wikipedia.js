@@ -112,7 +112,7 @@ var wikiCallback;
         options._link.setAttribute( "target", "_blank" );
 
         // add the title of the article to the link
-        options._link.innerHTML = options.title || data.parse.displaytitle;
+        options._link.innerHTML = options.title || data.parse.displaytitle || data.parse.title;
 
         // get the content of the wiki article
         options._desc = document.createElement( "p" );
@@ -128,7 +128,7 @@ var wikiCallback;
       };
 
       if ( options.src ) {
-        Popcorn.getScript( "//" + options.lang + ".wikipedia.org/w/api.php?action=parse&props=text&redirects&page=" +
+        Popcorn.getScript( "//" + options.lang + ".wikipedia.org/w/api.php?action=parse&prop=text&redirects&page=" +
           options.src.slice( options.src.lastIndexOf( "/" ) + 1 )  + "&format=json&callback=wikiCallback" + _guid );
       }
 
