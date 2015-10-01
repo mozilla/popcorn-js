@@ -107,19 +107,21 @@ var wikiCallback;
       // and stores it by appending values to the options object
       window[ "wikiCallback" + _guid ]  = function ( data ) {
 
+        var pageId = Object.keys(data.query.pages)[0];
+        var content = data.query.pages[pageId];
+
         options._link = document.createElement( "a" );
         options._link.setAttribute( "href", options.src );
         options._link.setAttribute( "target", "_blank" );
 
         // add the title of the article to the link
-        options._link.innerHTML = options.title || data.parse.displaytitle || data.parse.title;
+        options._link.innerHTML = options.title || content.title;
 
         // get the content of the wiki article
         options._desc = document.createElement( "p" );
 
-        // get the article text and remove any special characters
-        _text = data.parse.text[ "*" ].substr( data.parse.text[ "*" ].indexOf( "<p>" ) );
-        _text = _text.replace( /((<(.|\n)+?>)|(\((.*?)\) )|(\[(.*?)\]))/g, "" );
+        // get the article text
+        _text = content.extract;
 
         _text = _text.split( " " );
         options._desc.innerHTML = ( _text.slice( 0, ( _text.length >= options.numberofwords ? options.numberofwords : _text.length ) ).join (" ") + " ..." ) ;
@@ -128,7 +130,7 @@ var wikiCallback;
       };
 
       if ( options.src ) {
-        Popcorn.getScript( "//" + options.lang + ".wikipedia.org/w/api.php?action=parse&prop=text&redirects&page=" +
+        Popcorn.getScript( "//" + options.lang + ".wikipedia.org/w/api.php?action=query&prop=extracts&exintro=&explaintext=&redirects&titles=" +
           options.src.slice( options.src.lastIndexOf( "/" ) + 1 )  + "&format=json&callback=wikiCallback" + _guid );
       }
 
