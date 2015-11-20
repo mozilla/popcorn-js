@@ -124,7 +124,7 @@
           } else {
             self.dispatchEvent( "loadedmetadata" );
             //remove loading image so we can click actual youtube play button
-            document.getElementsByClassName('loading-message')[0].style.display = "none";
+            document.getElementsByClassName("loading-message")[0].style.display = "none";
           }
         } else {
           setTimeout( onMuted, 0 );
