@@ -119,7 +119,13 @@
         if ( player.isMuted() ) {
           // force an initial play on the video, to remove autostart on initial seekTo.
           addYouTubeEvent( "play", onFirstPlay );
-          player.playVideo();
+          if (!navigator.userAgent.match(/(iPad|iPhone|iPod|Android)/g)) {
+            player.playVideo();
+          } else {
+            self.dispatchEvent( "loadedmetadata" );
+            //remove loading image so we can click actual youtube play button
+            document.getElementsByClassName('loading-message')[0].style.display = "none";
+          }
         } else {
           setTimeout( onMuted, 0 );
         }
