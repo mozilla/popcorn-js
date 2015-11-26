@@ -123,6 +123,9 @@
             player.playVideo();
           } else {
             self.dispatchEvent( "loadedmetadata" );
+            setTimeout(function() {
+              document.getElementById("controls-big-play-button").click();
+            }, 10);
             //remove loading image so we can click actual youtube play button
             document.getElementsByClassName("loading-message")[0].style.display = "none";
           }
