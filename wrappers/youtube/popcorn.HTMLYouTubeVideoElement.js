@@ -116,7 +116,7 @@
     function onPlayerReady( event ) {
 
       var onMuted = function() {
-        if ( player.isMuted() ) {
+        if ( self.muted ) {
           // force an initial play on the video, to remove autostart on initial seekTo.
           addYouTubeEvent( "play", onFirstPlay );
           if (!navigator.userAgent.match(/(iPad|iPhone|iPod|Android)/g)) {
@@ -141,7 +141,7 @@
 
       // Browsers using flash will have the pause() call take too long and cause some
       // sound to leak out. Muting before to prevent this.
-      player.mute();
+      self.muted = true;
 
       // ensure we are muted.
       onMuted();
@@ -203,7 +203,7 @@
 
       // Ensure video will now be unmuted when playing due to the mute on initial load.
       if( !impl.muted ) {
-        player.unMute();
+        self.muted = false;
       }
 
       impl.readyState = self.HAVE_METADATA;
