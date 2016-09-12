@@ -422,7 +422,7 @@
         playerVars.html5 = 1;
       }
 
-      playerVars.playsinline = true;
+      playerVars.playsinline = 1;
       // Get video ID out of youtube url
       aSrc = regexYouTube.exec( aSrc )[ 1 ];
 
