@@ -427,9 +427,9 @@
       elem.style.width = "100%";
       elem.style.height = "100%";
       elem.frameBorder = 0;
-      elem.webkitAllowFullScreen = true;
-      elem.mozAllowFullScreen = true;
-      elem.allowFullScreen = true;
+      elem.setAttribute('webkitAllowFullScreen', '')
+      elem.setAttribute('mozAllowFullScreen', '')
+      elem.setAttribute('allowFullScreen', '')
       parent.appendChild( elem );
       elem.src = src;
 
