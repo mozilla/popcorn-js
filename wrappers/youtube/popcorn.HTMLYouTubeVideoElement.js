@@ -15,7 +15,15 @@
   ytLoading = false,
   ytCallbacks = [];
 
+  var videoElement;
+  var initialZindex;
+
   function onYouTubeIframeAPIReady() {
+    videoElement = document.querySelector('.popcorn-sequencer');
+    if (videoElement) {
+      initialZindex = videoElement.style.zIndex;
+    }
+
     var callback;
     if ( YT.loaded ) {
       ytReady = true;
@@ -125,12 +133,16 @@
             self.dispatchEvent( "loadedmetadata" );
             setTimeout(function() {
               var el = document.getElementById("controls-big-play-button");
-              if (el) { 
+              if (el) {
                 el.click();
               }
             }, 10);
             //remove loading image so we can click actual youtube play button
             document.getElementsByClassName("loading-message")[0].style.display = "none";
+            if (videoElement) {
+              videoElement.style.zIndex = 99999999999;
+            }
+
           }
         } else {
           setTimeout( onMuted, 0 );
@@ -248,6 +260,7 @@
 
     // This function needs duration and first play to be ready.
     function onFirstPlay() {
+      videoElement.style.zIndex = initialZindex;
       removeYouTubeEvent( "play", onFirstPlay );
       if ( player.getCurrentTime() === 0 ) {
         setTimeout( onFirstPlay, 0 );
