@@ -260,7 +260,10 @@
 
     // This function needs duration and first play to be ready.
     function onFirstPlay() {
-      videoElement.style.zIndex = initialZindex;
+      if (videoElement) {
+        videoElement.style.zIndex = initialZindex;
+      }
+
       removeYouTubeEvent( "play", onFirstPlay );
       if ( player.getCurrentTime() === 0 ) {
         setTimeout( onFirstPlay, 0 );
