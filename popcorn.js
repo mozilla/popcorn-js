@@ -1415,11 +1415,20 @@
   Popcorn.addTrackEvent = function( obj, track ) {
     var temp;
 
+    function isMobile() {
+      return navigator.userAgent.match(/(iPad|iPhone|iPod|Android)/g);
+    }
+
     if ( track instanceof TrackEvent ) {
       return;
     }
 
     track = new TrackEvent( track );
+
+    // throw track event if it's not from mobile
+    if (isMobile() && track.mobile === false) {
+      return;
+    }
 
     // Determine if this track has default options set for it
     // If so, apply them to the track object
