@@ -134,8 +134,12 @@
         callback();
       }
 
+      function isMobile() {
+        return navigator.userAgent.match(/(iPad|iPhone|iPod|Android)/g);
+      }
+
       // Auto-start if necessary
-      if( impl.autoplay ) {
+      if( impl.autoplay && !isMobile() ) {
         self.play();
       }
     }
