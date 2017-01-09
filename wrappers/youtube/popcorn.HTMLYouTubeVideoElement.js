@@ -200,6 +200,12 @@
 
     function onReady() {
 
+      var newDuration = player.getDuration();
+      if (impl.duration !== newDuration) {
+        impl.duration = newDuration;
+        self.dispatchEvent( "durationchange" );
+      }
+
       addYouTubeEvent( "play", onPlay );
       addYouTubeEvent( "pause", onPause );
       // Set initial paused state
@@ -286,11 +292,6 @@
 
     function onBuffering() {
       impl.networkState = self.NETWORK_LOADING;
-      var newDuration = player.getDuration();
-      if (impl.duration !== newDuration) {
-        impl.duration = newDuration;
-        self.dispatchEvent( "durationchange" );
-      }
       self.dispatchEvent( "waiting" );
     }
 
