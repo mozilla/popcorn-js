@@ -1,3 +1,10 @@
+This project is no longer maintained
+====================================
+
+Mozilla no longer maintains this project. However, if you think you can take it in a new, modern direction, get in touch with us and we can discuss transferring ownership of the project to you.
+
+---
+
 Popcorn.js
 =============
 Mozilla's HTML5 Video Framework: [http://popcornjs.org](http://popcornjs.org)
