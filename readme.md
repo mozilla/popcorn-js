@@ -7,7 +7,7 @@ Mozilla no longer maintains this project. However, if you think you can take it 
 
 Popcorn.js
 =============
-Mozilla's HTML5 Video Framework: [http://popcornjs.org](http://popcornjs.org)
+Mozilla's HTML5 Video Framework
 
 
 Overview
@@ -27,8 +27,7 @@ The Popcorn.js community is a mix of developers, filmmakers, artists, and everyt
 * [Mailing List for Users](https://mail.mozilla.org/listinfo/community-popcorn)
 * [IRC Channel for Developers and Technical Users](irc://irc.mozilla.org/popcorn)
 * [Twitter @popcornjs](https://twitter.com/#!/popcornjs)
-* [Documentation](http://popcornjs.org/documentation)
-* [Example Web Productions built with Popcorn.js](http://popcornjs.org/demos)
+* [Documentation](https://mozilla.github.io/popcorn-docs)
 * [File a Bug](https://github.com/mozilla/popcorn-js/issues)
 
 
@@ -36,14 +35,11 @@ For Developers
 -------------
 You can follow the project's bugs and activity [here](https://github.com/mozilla/popcorn-js/issues).
 
-Project workflow and developer guidelines are available [here](http://popcornjs.org/documentation).
-
-
 For Plugin Authors
 -------------
 Popcorn.js offers a powerful plugin architecture. Plugins are a way for developers to wrap web functionality and allow it to be placed on a timeline, responding to a point in a video or other media resource.
 
-Take a look at our growing [gallery of officially supported plugins](http://popcornjs.org/popcorn-docs/plugins/).
+Take a look at our growing [gallery of officially supported plugins](https://mozilla.github.io/popcorn-docs/plugins/).
 
 Have you built a cool plugin, or have an idea for one? Let us know!
 
