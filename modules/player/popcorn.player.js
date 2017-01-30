@@ -427,7 +427,7 @@
       videoHTML += '<source src="' + src[ i ] + '">';
     }
     videoHTML += "</video>";
-    videoHTMLContainer.innerHTML = videoHTML;
+    videoHTMLContainer.outerHTML = videoHTML;
 
     if ( options && options.events && options.events.error ) {
       node.addEventListener( "error", options.events.error, false );
