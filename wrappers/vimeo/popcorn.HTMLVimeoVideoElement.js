@@ -74,7 +74,7 @@
         error: null
       },
       playerReady = false,
-      playerUID = Popcorn.guid(),
+      playerUID = Popcorn.guid("player_"),
       player,
       playerPaused = true,
       playerReadyCallbacks = [],
@@ -297,7 +297,12 @@
           player.addEventListener( "loadProgress" );
           player.addEventListener( "pause" );
           player.setVolume( 0 );
-          player.play();
+          if (!navigator.userAgent.match(/(iPad|iPhone|iPod|Android)/g)) {
+            player.play();
+            setTimeout(onPlayerReady, 3000);
+          } else {
+            onPlayerReady();
+          }
           break;
         case "loadProgress":
           var duration = parseFloat( data.data.duration );
@@ -307,6 +312,13 @@
           }
           break;
         case "pause":
+          player.setVolume( 1 );
+          // Switch message pump to use run-time message callback vs. startup
+          window.removeEventListener( "message", startupMessage, false );
+          window.addEventListener( "message", onStateChange, false );
+          onPlayerReady();
+          break;
+         default:
           player.setVolume( 1 );
           // Switch message pump to use run-time message callback vs. startup
           window.removeEventListener( "message", startupMessage, false );
@@ -366,6 +378,10 @@
         case "seek":
           onCurrentTime( parseFloat( data.data.seconds ) );
           onSeeked();
+          break;
+         default:
+         self.dispatchEvent( "progress" );
+         document.getElementsByClassName("loading-message")[0].style.display = "none";
           break;
       }
     }
