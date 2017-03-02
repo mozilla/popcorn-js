@@ -614,9 +614,7 @@
               this.media.currentTime = Popcorn.util.toSeconds( arg );
             }
 
-            this.media[ name ]();
-
-            return this;
+            return this.media[ name ]( arg );
           }
 
           if ( arg != null ) {
