@@ -2573,16 +2573,31 @@
     }, false );
 
     script.addEventListener( "error",  function( e ) {
-      //  Handling remote script loading callbacks
-      success && success( { error: e } );
+      //check if media embedding disabled on SC side or if it's just unplayable
+      var checkRequest = new XMLHttpRequest();
+      checkRequest.open('GET',url, true);
+      checkRequest.onreadystatechange = function(){
+        if (checkRequest.readyState === 4) {
+          //  Handling remote script loading callbacks
+          if(checkRequest.status === 403){
+            //embedding forbidden
+            success && success( { sharing: 'private' } );
+          } else {
+            //media unplayable
+            success && success( { error: e } );
+          }
 
-      //  Executing for JSONP requests
-      if ( !isScript ) {
-        //  Garbage collect the callback
-        delete window[ callback ];
-      }
-      //  Garbage collect the script resource
-      head.removeChild( script );
+          //  Executing for JSONP requests
+          if ( !isScript ) {
+            //  Garbage collect the callback
+            delete window[ callback ];
+          }
+          //  Garbage collect the script resource
+          head.removeChild( script );
+        }
+      };
+      checkRequest.timeout = 10000;
+      checkRequest.send();
     }, false );
 
     script.src = url;
