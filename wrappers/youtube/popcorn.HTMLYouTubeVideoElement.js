@@ -15,7 +15,15 @@
   ytLoading = false,
   ytCallbacks = [];
 
+  var videoElement;
+  var initialZindex;
+
   function onYouTubeIframeAPIReady() {
+    videoElement = document.querySelector('.popcorn-sequencer');
+    if (videoElement) {
+      initialZindex = videoElement.style.zIndex;
+    }
+
     var callback;
     if ( YT.loaded ) {
       ytReady = true;
@@ -116,10 +124,26 @@
     function onPlayerReady( event ) {
 
       var onMuted = function() {
-        if ( player.isMuted() ) {
+        if ( self.muted ) {
           // force an initial play on the video, to remove autostart on initial seekTo.
           addYouTubeEvent( "play", onFirstPlay );
-          player.playVideo();
+          if (!navigator.userAgent.match(/(iPad|iPhone|iPod|Android)/g)) {
+            player.playVideo();
+          } else {
+            self.dispatchEvent( "loadedmetadata" );
+            setTimeout(function() {
+              var el = document.getElementById("controls-big-play-button");
+              if (el) {
+                el.click();
+              }
+            }, 10);
+            //remove loading image so we can click actual youtube play button
+            document.getElementsByClassName("loading-message")[0].style.display = "none";
+            if (videoElement) {
+              videoElement.style.zIndex = 99999999999;
+            }
+
+          }
         } else {
           setTimeout( onMuted, 0 );
         }
@@ -129,7 +153,7 @@
 
       // Browsers using flash will have the pause() call take too long and cause some
       // sound to leak out. Muting before to prevent this.
-      player.mute();
+      self.muted = true;
 
       // ensure we are muted.
       onMuted();
@@ -176,6 +200,12 @@
 
     function onReady() {
 
+      var newDuration = player.getDuration();
+      if (impl.duration !== newDuration) {
+        impl.duration = newDuration;
+        self.dispatchEvent( "durationchange" );
+      }
+
       addYouTubeEvent( "play", onPlay );
       addYouTubeEvent( "pause", onPause );
       // Set initial paused state
@@ -191,7 +221,7 @@
 
       // Ensure video will now be unmuted when playing due to the mute on initial load.
       if( !impl.muted ) {
-        player.unMute();
+        self.muted = false;
       }
 
       impl.readyState = self.HAVE_METADATA;
@@ -219,7 +249,9 @@
 
     function onFirstPause() {
       removeYouTubeEvent( "pause", onFirstPause );
-      if ( player.getCurrentTime() > 0 ) {
+      // IE sometimes refuses to seek to exactly 0.
+      var playerTime = player.getCurrentTime();
+      if ( playerTime > 0 && !( playerTime < 0.2 && !impl.seeking && playerState === YT.PlayerState.PAUSED ) ) {
         setTimeout( onFirstPause, 0 );
         return;
       }
@@ -234,14 +266,18 @@
 
     // This function needs duration and first play to be ready.
     function onFirstPlay() {
+      if (videoElement) {
+        videoElement.style.zIndex = initialZindex;
+      }
+
       removeYouTubeEvent( "play", onFirstPlay );
       if ( player.getCurrentTime() === 0 ) {
         setTimeout( onFirstPlay, 0 );
         return;
       }
       addYouTubeEvent( "pause", onFirstPause );
-      player.seekTo( 0 );
       player.pauseVideo();
+      player.seekTo( 0 );
     }
 
     function addYouTubeEvent( event, listener ) {
@@ -256,11 +292,6 @@
 
     function onBuffering() {
       impl.networkState = self.NETWORK_LOADING;
-      var newDuration = player.getDuration();
-      if (impl.duration !== newDuration) {
-        impl.duration = newDuration;
-        self.dispatchEvent( "durationchange" );
-      }
       self.dispatchEvent( "waiting" );
     }
 
@@ -408,6 +439,7 @@
         playerVars.html5 = 1;
       }
 
+      playerVars.playsinline = 1;
       // Get video ID out of youtube url
       aSrc = regexYouTube.exec( aSrc )[ 1 ];
 
