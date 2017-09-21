@@ -1,7 +1,7 @@
 This project is no longer maintained
 ====================================
 
-Mozilla no longer maintains this project. However, if you think you can take it in a new, modern direction, get in touch with us and we can discuss transferring ownership of the project to you.
+Mozilla no longer maintains this project. There is a fork with more active development [here](https://github.com/menismu/popcorn-js), if you're interested in further development of PopcornJS you may want to check that out.
 
 ---
 
