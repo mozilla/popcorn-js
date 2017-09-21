@@ -257,7 +257,7 @@
       if(typeof aSrc == "string"){
         params["file"] = aSrc;
       } else {
-        params["sources"] = aSrc;
+        params["playlist"] = aSrc; //ExecOnline
       }
 
       jwplayer( parent.id ).setup(params);
