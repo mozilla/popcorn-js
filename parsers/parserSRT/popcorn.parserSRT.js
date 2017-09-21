@@ -39,9 +39,12 @@
         idx = 0,
         lines,
         time,
+        timeDelimiter = /[\t ]*-->[\t ]*/,
         text,
         endIdx,
-        sub;
+        sub,
+        keepReadingText,
+        tempLine;
 
     // Here is where the magic happens
     // Split on line breaks
@@ -51,12 +54,13 @@
     for( i=0; i < endIdx; i++ ) {
       sub = {};
       text = [];
+      keepReadingText = true;
 
       i = nextNonEmptyLine( lines, i );
       sub.id = parseInt( lines[i++], 10 );
 
       // Split on '-->' delimiter, trimming spaces as well
-      time = lines[i++].split( /[\t ]*-->[\t ]*/ );
+      time = lines[i++].split(timeDelimiter);
 
       sub.start = toSeconds( time[0] );
 
@@ -68,8 +72,17 @@
       sub.end = toSeconds( time[1] );
 
       // Build single line of text from multi-line subtitle in file
-      while ( i < endIdx && lines[i] ) {
+      while ( i < endIdx && keepReadingText && lines[i] ) {
         text.push( lines[i++] );
+
+        // If there are blank line(s) and the line after nextNonEmptyLine doesn't match the timeDelimiter - skip the blank line(s) and treat the nextNonEmptyLine as continued text
+        tempLine = lines[1 + nextNonEmptyLine(lines, i)];
+        if (!lines[i] && tempLine && !tempLine.match(timeDelimiter)) {
+		    i = nextNonEmptyLine(lines, i);
+        }
+        else if (!lines[i]) {
+            keepReadingText = false;
+        }
       }
 
       // Join into 1 line, SSA-style linebreaks
@@ -123,7 +136,7 @@
 
   function nextNonEmptyLine( linesArray, position ) {
     var idx = position;
-    while ( !linesArray[idx] ) {
+    while ( !linesArray[idx] && 1 + linesArray.length > idx) {
       idx++;
     }
     return idx;
