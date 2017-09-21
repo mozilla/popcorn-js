@@ -42,7 +42,7 @@ test( "Popcorn wikipedia Plugin", function() {
       src: "http://en.wikipedia.org/wiki/Bunny",
       title: "This is an article about bunnies",
       target: "wikidiv",
-      numberofwords: 1000
+      numberofwords: 80
     })
     .volume( 0 )
     .play();
@@ -59,7 +59,7 @@ test( "Popcorn wikipedia Plugin", function() {
     // subtract 1 from length for the  '...' added in by the plugin
     equal( theArticle.children[ 1 ].innerHTML.split( " " ).length -1, 22, "wikidiv contains 22 words" );
     plus();
-    equal( theArticle.children[ 3 ].innerHTML.split( " " ).length - 1, 1000, "redirected article successfully retrieved 1000 words" );
+    equal( theArticle.children[ 3 ].innerHTML.split( " " ).length - 1, 80, "redirected article successfully retrieved 80 words" );
     plus();
   });
 
