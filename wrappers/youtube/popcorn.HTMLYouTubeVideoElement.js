@@ -30,7 +30,7 @@
 
   function isYouTubeReady() {
     var script;
-    // If we area already waiting, do nothing.
+    // If we are already waiting, do nothing.
     if( !ytLoading ) {
       // If script is already there, check if it is loaded.
       if ( window.YT ) {
