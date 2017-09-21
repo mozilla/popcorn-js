@@ -174,6 +174,13 @@
       self.dispatchEvent( "error" );
     }
 
+    function unMuteAfterReady() {
+      removeYouTubeEvent( "play", unMuteAfterReady );
+      if( !impl.muted ) {
+        player.unMute();
+      }
+    }
+
     function onReady() {
 
       addYouTubeEvent( "play", onPlay );
@@ -190,9 +197,7 @@
       }
 
       // Ensure video will now be unmuted when playing due to the mute on initial load.
-      if( !impl.muted ) {
-        player.unMute();
-      }
+      addYouTubeEvent( "play", unMuteAfterReady );
 
       impl.readyState = self.HAVE_METADATA;
       self.dispatchEvent( "loadedmetadata" );
@@ -569,7 +574,12 @@
       impl.muted = aValue;
       if( !mediaReady ) {
         addMediaReadyCallback( function() {
-          setMuted( impl.muted );
+          impl.muted = aValue;
+          self.dispatchEvent( "volumechange" );
+        });
+        addYouTubeEvent( "play", function volumeWhenReady() {
+          removeYouTubeEvent( "play", volumeWhenReady );
+          player[ aValue ? "mute" : "unMute" ]();
         });
         return;
       }
@@ -681,7 +691,12 @@
           impl.volume = aValue;
           if( !mediaReady ) {
             addMediaReadyCallback( function() {
-              self.volume = aValue;
+              impl.volume = aValue;
+              self.dispatchEvent( "volumechange" );
+            });
+            addYouTubeEvent( "play", function volumeWhenReady() {
+              removeYouTubeEvent( "play", volumeWhenReady );
+              player.setVolume( impl.volume * 100 );
             });
             return;
           }
