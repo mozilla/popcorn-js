@@ -11,6 +11,9 @@
    * Text is the text that you want to appear in the target
    * Target is the id of the document element that the text needs to be
    * attached to, this target element must exist on the DOM
+   * Options parameter can take element or selector.
+   * Element will override the default div element and append a valid HTML element to the DOM
+   * Selector will add the CSS class of your choice to the appended footnotes
    *
    * @param {Object} options
    *
@@ -20,6 +23,8 @@
    *      start: 5, // seconds
    *      end: 15, // seconds
    *      text: 'This video made exclusively for drumbeat.org',
+   *      element: 'li',
+   *      selector: 'footnote',
    *      target: 'footnotediv'
    *    });
    **/
@@ -49,6 +54,16 @@
           type: "text",
           label: "Text"
         },
+        element: {
+          elem: "input",
+          type: "text",
+          label: "Element"
+        },
+        selector: {
+          elem: "input",
+          type: "text",
+          label: "Selector"
+        },
         target: "footnote-container"
       }
     },
@@ -57,7 +72,14 @@
 
       var target = Popcorn.dom.find( options.target );
 
-      options._container = document.createElement( "div" );
+      if (options.element) {
+        options._container = document.createElement(options.element);
+      } else {
+        options._container = document.createElement("div");
+      }
+      if (options.selector) {
+        options._container.classList.add(options.selector);
+      }
       options._container.style.display = "none";
       options._container.innerHTML  = options.text;
 
