@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popcorn SAMI parser 1.0 Plug-in Demo</title>
+    <script src="../../popcorn.js"></script>
+    <script src="../../modules/parser/popcorn.parser.js"></script>
+    <script src="../../plugins/subtitle/popcorn.subtitle.js"></script>
+    <script src="popcorn.parserSAMI.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var p = Popcorn('#video')
+        .parseSAMI('data/data.matchingtagsinbody.smi')
+        .volume(0)
+        .play();
+      }, false);
+    </script>
+    <style type="text/css">
+      .videoContent
+      {
+        float:right;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="qunit-header">Popcorn SAMI parser 1.0 Plug-in Demo</h1>
+
+    <div class="videoContent">
+      <video id="video"
+        controls
+        width= "310px"
+        poster="../../test/poster.png">
+
+        <source id="mp4"
+          src="../../test/trailer.mp4"
+          type='video/mp4; codecs="avc1, mp4a"'>
+
+        <source id="ogv"
+          src="../../test/trailer.ogv"
+          type='video/ogg; codecs="theora, vorbis"'>
+
+        <p>Your user agent does not support the HTML5 Video element.</p>
+      </video>
+    </div>
+
+    <h4>Expected Output</h4>
+    <ul>
+      <li>From 0 to 1 seconds, "SAMI 0000 text" is shown in the video.</li>
+      <li>From 1 to 2 seconds, "SAMI 1000 text" is shown in the video.</li>
+      <li>From 2 to 3 seconds, "SAMI 2000 text" is shown in the video.</li>
+      <li>From 3 to 6 seconds, "SAMI 3000 text" is shown in the video.</li>
+    </ul>
+
+    <h4>Subtitle Source<h4>
+    <!--iframe id="srcDisplay" src="data/data.smi" style="width: 100%; height: 15em;" ></iframe-->
+  </body>
+</html>
