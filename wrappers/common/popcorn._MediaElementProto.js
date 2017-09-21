@@ -69,6 +69,18 @@
     return MediaError;
   }());
 
+  // Make sure the browser has CustomEvent
+  window.CustomEvent = window.customEvent || (function () {
+    function CustomEvent ( event, params ) {
+      params = params || { bubbles: false, cancelable: false, detail: {}};
+      var evt = document.createEvent( 'CustomEvent' );
+      evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+      return evt;
+    };
+
+    CustomEvent.prototype = window.Event.prototype;
+    return CustomEvent;
+  }());
 
   function MediaElementProto() {
     var protoElement = {},
@@ -110,14 +122,16 @@
     };
 
     protoElement.dispatchEvent = function( name ) {
-      var customEvent = document.createEvent( "CustomEvent" ),
-        detail = {
+      var customEvent = new CustomEvent(this._eventNamespace + name, {
+        detail: {
           type: name,
           target: this.parentNode,
           data: null
-        };
+        },
+        bubbles: true,
+        cancelable: false
+      });
 
-      customEvent.initCustomEvent( this._eventNamespace + name, false, false, detail );
       document.dispatchEvent( customEvent );
     };
 
