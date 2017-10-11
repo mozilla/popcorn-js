@@ -137,8 +137,9 @@
           var i = playerReadyCallbacks.length;
           while( i-- ) {
             playerReadyCallbacks[ i ]();
-            delete playerReadyCallbacks[ i ];
           }
+
+          playerReadyCallbacks = [];
         }
       }
     }
@@ -391,7 +392,9 @@
         destroyPlayer();
       }
 
+      // Reset Player state variables.
       playerReady = false;
+      impl.duration = NaN;
 
       var src = self._util.parseUri( aSrc ),
         queryKey = src.queryKey,
