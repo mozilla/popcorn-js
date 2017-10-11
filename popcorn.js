@@ -1126,8 +1126,34 @@
 
   // Internal Only - construct simple "TrackEvent"
   // data type objects
-  function TrackEvent( track ) {
+  function TrackEvent( track, observer ) {
+    var start = track.start,
+        end = track.end;
+
     Abstract.put.call( this, track );
+
+    Object.defineProperties( this, {
+      start: {
+        get: function() {
+          return start;
+        },
+        set: function( aStart ) {
+          observer.remove( this._id );
+          start = aStart;
+          observer.add( this );
+        }
+      },
+      end: {
+        get: function() {
+          return end;
+        },
+        set: function( aEnd ) {
+          observer.remove( this._id );
+          end = aEnd;
+          observer.add( this );
+        }
+      }
+    });
   }
 
   // Determine if a TrackEvent's "start" and "trackstart" must be called.
@@ -1241,9 +1267,6 @@
     if ( track && track._id ) {
       this.parent.data.history.push( track._id );
     }
-
-    track.start = Popcorn.util.toSeconds( track.start, this.parent.options.framerate );
-    track.end   = Popcorn.util.toSeconds( track.end, this.parent.options.framerate );
 
     for ( startIndex = byStart.length - 1; startIndex >= 0; startIndex-- ) {
 
@@ -1419,7 +1442,10 @@
       return;
     }
 
-    track = new TrackEvent( track );
+    track.start = Popcorn.util.toSeconds( track.start, obj.options.framerate );
+    track.end   = Popcorn.util.toSeconds( track.end, obj.options.framerate );
+
+    track = new TrackEvent( track, obj.data.trackEvents );
 
     // Determine if this track has default options set for it
     // If so, apply them to the track object
