@@ -6,30 +6,32 @@
       createDefaultContainer = function( context, id ) {
 
         var ctxContainer = context.container = document.createElement( "div" ),
+            body = document.getElementsByTagName( 'body' )[ 0 ],
             style = ctxContainer.style,
             media = context.media;
 
+        // we update sub position regularly in case video is resized/moved
         var updatePosition = function() {
-          var position = context.position();
-          // the video element must have height and width defined
-          style.fontSize = "18px";
-          style.width = media.offsetWidth + "px";
-          style.top = position.top  + media.offsetHeight - ctxContainer.offsetHeight - 40 + "px";
-          style.left = position.left + "px";
+          var bcRect = media.getBoundingClientRect();
+          
+          style.width = bcRect.width + "px";
+          style.left = bcRect.left + "px";
+          style.top = bcRect.top + window.scrollY + bcRect.height - ctxContainer.offsetHeight - 40 + "px";
 
-          setTimeout( updatePosition, 10 );
+          setTimeout( updatePosition, 100 );
         };
 
         ctxContainer.id = id || Popcorn.guid();
         style.position = "absolute";
         style.color = "white";
         style.textShadow = "black 2px 2px 6px";
+        style.fontSize = "18px";
         style.fontWeight = "bold";
         style.textAlign = "center";
 
-        updatePosition();
+        body.appendChild( ctxContainer );
 
-        context.media.parentNode.appendChild( ctxContainer );
+        updatePosition();
 
         return ctxContainer;
       };
